@@ -10,14 +10,13 @@ from django_rest_passwordreset.serializers import PasswordValidateMixin
 from django_rest_passwordreset.signals import (
     post_password_reset,
     pre_password_reset,
-    reset_password_token_created,
 )
 from drf_spectacular.utils import extend_schema
 from rest_framework import exceptions, serializers, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
-from care.users.model.password_reset import PasswordResetToken
+from care.users.models import PasswordResetToken
 from config.ratelimit import ratelimit
 
 User = get_user_model()
@@ -214,29 +213,22 @@ class ResetPasswordRequestToken(GenericAPIView):
                 )
 
                 # Create new token
-                token = PasswordResetToken.objects.create(
+                PasswordResetToken.objects.create(
                     user=user,
                     user_agent=request.META.get(HTTP_USER_AGENT_HEADER, ""),
                     ip_address=request.META.get(HTTP_IP_ADDRESS_HEADER, ""),
                 )
-
-                # Emit the signal that triggers the email sending
-                reset_password_token_created.send(
-                    sender=self.__class__,
-                    instance=self,
-                    reset_password_token=token,
-                )
-                if not active_user_found and not getattr(
-                    settings, "DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE", False
-                ):
-                    raise exceptions.ValidationError(
-                        {
-                            "username": [
-                                _(
-                                    "There is no active user associated with this username or the password can not be changed"
-                                )
-                            ],
-                        }
-                    )
+        if not active_user_found and not getattr(
+            settings, "DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE", False
+        ):
+            raise exceptions.ValidationError(
+                {
+                    "username": [
+                        _(
+                            "There is no active user associated with this username or the password can not be changed"
+                        )
+                    ],
+                }
+            )
 
         return Response({"status": "OK"})

@@ -1,14 +1,19 @@
 import secrets
 import string
 import uuid
+from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.core.exceptions import ValidationError
+from django.core.mail import EmailMessage
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
+from django.template.loader import render_to_string
 from django.urls import reverse
-from django.utils.timezone import now
+from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
+from rest_framework import exceptions
 
 from care.utils.models.base import BaseFlag, BaseModel
 from care.utils.models.validators import (
@@ -445,7 +450,7 @@ class UserFacilityAllocation(models.Model):
     facility = models.ForeignKey(
         "facility.Facility", on_delete=models.CASCADE, related_name="+"
     )
-    start_date = models.DateTimeField(default=now)
+    start_date = models.DateTimeField(default=timezone.now)
     end_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
@@ -488,3 +493,84 @@ class UserFlag(BaseFlag):
     @classmethod
     def get_all_flags(cls, user_id: int) -> tuple[FlagName]:
         return super().get_all_flags(user_id)
+
+
+class PasswordResetToken(models.Model):
+    """Model for storing password reset tokens"""
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="custom_password_reset_tokens",  # Changed from "password_reset_tokens"
+    )
+    key = models.CharField(max_length=64, unique=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    expires_at = models.DateTimeField()
+    user_agent = models.CharField(max_length=256, blank=True)
+    ip_address = models.GenericIPAddressField(blank=True, null=True)
+    is_used = models.BooleanField(default=False)
+
+    class Meta:
+        verbose_name = "Password Reset Token"
+        verbose_name_plural = "Password Reset Tokens"
+
+    def __str__(self):
+        return f"Password reset token for user {self.user}"
+
+    def save(self, *args, **kwargs):
+        # Check if this is a new token being created
+        is_new = not self.pk
+
+        if not self.key:
+            self.key = self.generate_key()
+        if not self.expires_at:
+            expiry_hours = getattr(settings, "PASSWORD_RESET_EXPIRY_HOURS", 24)
+            self.expires_at = timezone.now() + timedelta(hours=expiry_hours)
+        super().save(*args, **kwargs)
+        if is_new:
+            self.password_reset_token_created()
+        return self
+
+    def password_reset_token_created(self):
+        """
+        Handles password reset tokens
+        When a token is created, an e-mail needs to be sent to the user
+        """
+        try:
+            # Create context for email template
+            context = {
+                "current_user": self.user,
+                "username": self.user.username,
+                "email": self.user.email,
+                "reset_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{self.key}",
+            }
+
+            # Render email HTML content from template
+            email_html_message = render_to_string(
+                settings.USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH, context
+            )
+            # Create and send the email
+            msg = EmailMessage(
+                "Password Reset for Care",
+                email_html_message,
+                settings.DEFAULT_FROM_EMAIL,
+                (self.user.email,),
+            )
+            msg.content_subtype = "html"  # Main content is now text/html
+            msg.send()
+        except ValidationError as e:
+            raise exceptions.ValidationError({"message": e.messages}) from e
+
+    @classmethod
+    def generate_key(cls):
+        """Generate a cryptographically strong unique token key"""
+        return secrets.token_urlsafe(48)  # 64 characters in base64 encoding
+
+    def is_valid(self):
+        """Check if token is valid (not expired and not used)"""
+        return not self.is_used and timezone.now() < self.expires_at
+
+    @classmethod
+    def clear_expired(cls):
+        """Delete all expired tokens"""
+        cls.objects.filter(expires_at__lt=timezone.now()).delete()
