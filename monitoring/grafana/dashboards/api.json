@@ -1,12 +1,12 @@
 {
   "id": null,
-  "uid": "care-api-dashboard",
-  "title": "Care API Dashboard",
-  "tags": ["django", "api", "rest"],
+  "uid": "api-dashboard",
+  "title": "API Dashboard",
+  "tags": ["django", "api"],
   "timezone": "Asia/Kolkata",
   "version": 1,
   "schemaVersion": 40,
-  "refresh": "30s",
+  "refresh": "10s",
   "templating": {
     "list": [
       {

@@ -1,12 +1,12 @@
 {
   "id": null,
-  "uid": "care-celery-dashboard",
-  "title": "Care Celery Dashboard",
-  "tags": ["django", "celery", "tasks"],
+  "uid": "celery-dashboard",
+  "title": "Celery Dashboard",
+  "tags": ["celery", "tasks"],
   "timezone": "Asia/Kolkata",
   "version": 1,
   "schemaVersion": 40,
-  "refresh": "30s",
+  "refresh": "10s",
   "templating": {
     "list": [
       {
