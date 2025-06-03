@@ -3,6 +3,7 @@ from enum import Enum
 
 from django.contrib.auth import get_user_model
 from pydantic import UUID4, BaseModel, Field, model_validator
+from pydantic_core.core_schema import ValidationInfo
 from rest_framework.exceptions import ValidationError
 
 from care.emr.models import Encounter, FileUpload
@@ -93,6 +94,21 @@ class ConsentUpdateSpec(ConsentBaseSpec):
     encounter: UUID4 | None = None
     decision: DecisionType | None = None
     note: str | None = None
+
+    @model_validator(mode="after")
+    def validate_status(self, info: ValidationInfo):
+        context = info.context or {}
+        is_update = context.get("is_update", False)
+        model_obj = context.get("object")
+
+        if (
+            is_update
+            and model_obj
+            and model_obj.status == ConsentStatusChoices.entered_in_error.value
+        ):
+            raise ValueError("Cannot update status that is entered in error")
+
+        return self
 
     def perform_extra_deserialization(self, is_update, obj):
         if is_update:

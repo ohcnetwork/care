@@ -1,7 +1,8 @@
 from datetime import datetime
 from enum import Enum
 
-from pydantic import UUID4, field_validator
+from pydantic import UUID4, field_validator, model_validator
+from pydantic_core.core_schema import ValidationInfo
 
 from care.emr.models import Device, DeviceEncounterHistory, DeviceLocationHistory
 from care.emr.registries.device_type.device_registry import DeviceTypeRegistry
@@ -65,6 +66,19 @@ class DeviceCreateSpec(DeviceSpecBase):
 
 class DeviceUpdateSpec(DeviceSpecBase):
     care_metadata: dict = {}
+
+    @model_validator(mode="after")
+    def validate_status(self, info: ValidationInfo):
+        context = info.context or {}
+        is_update = context.get("is_update", False)
+        model_obj = context.get("object")
+        if (
+            is_update
+            and model_obj
+            and model_obj.status == DeviceStatusChoices.entered_in_error.value
+        ):
+            raise ValueError("Cannot update status that is entered in error")
+        return self
 
 
 class DeviceListSpec(DeviceCreateSpec):

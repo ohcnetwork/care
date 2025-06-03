@@ -168,14 +168,14 @@ class TestDeviceViewSet(DeviceBaseTest):
         self.assertEqual(response.status_code, 200)
 
     def test_update_device_without_permissions(self):
-        device = self.create_device()
+        device = self.create_device(status=DeviceStatusChoices.active.value)
         url = self.get_device_detail_url(device)
         data = self.generate_device_data()
         response = self.client.put(url, data=data, format="json")
         self.assertEqual(response.status_code, 403)
 
     def test_update_device_with_permissions(self):
-        device = self.create_device()
+        device = self.create_device(status=DeviceStatusChoices.active.value)
         self.add_permissions([DevicePermissions.can_manage_devices.name])
         url = self.get_device_detail_url(device)
         data = self.generate_device_data()
@@ -184,7 +184,9 @@ class TestDeviceViewSet(DeviceBaseTest):
         self.assertEqual(response.json()["registered_name"], data["registered_name"])
 
     def test_update_device_with_care_plan(self):
-        device = self.create_device(care_type="camera")
+        device = self.create_device(
+            care_type="camera", status=DeviceStatusChoices.active.value
+        )
         self.add_permissions([DevicePermissions.can_manage_devices.name])
         url = self.get_device_detail_url(device)
         data = self.generate_device_data()

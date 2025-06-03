@@ -220,7 +220,9 @@ class TestConsentViewSet(CareAPITestBase):
         encounter = self.create_encounter(
             patient=self.patient, facility=self.facility, organization=self.organization
         )
-        consent = self.create_consent(encounter=encounter)
+        consent = self.create_consent(
+            encounter=encounter, status=ConsentStatusChoices.active.value
+        )
 
         url = self._get_consent_url(consent.external_id)
         consent_data_updated = self.generate_data_for_consent(encounter)
@@ -232,7 +234,9 @@ class TestConsentViewSet(CareAPITestBase):
         encounter = self.create_encounter(
             patient=self.patient, facility=self.facility, organization=self.organization
         )
-        consent = self.create_consent(encounter=encounter)
+        consent = self.create_consent(
+            encounter=encounter, status=ConsentStatusChoices.active.value
+        )
 
         url = self._get_consent_url(consent.external_id)
         consent_data_updated = model_to_dict(consent)

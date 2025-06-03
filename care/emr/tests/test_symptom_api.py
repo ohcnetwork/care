@@ -503,7 +503,11 @@ class TestSymptomViewSet(CareAPITestBase):
             facility=self.facility,
             organization=self.organization,
         )
-        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+        symptom = self.create_symptom(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.confirmed.value,
+        )
 
         url = self._get_symptom_url(symptom.external_id)
         symptom_data_updated = model_to_dict(symptom)
@@ -531,7 +535,11 @@ class TestSymptomViewSet(CareAPITestBase):
             facility=self.facility,
             organization=self.organization,
         )
-        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+        symptom = self.create_symptom(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.confirmed.value,
+        )
 
         url = self._get_symptom_url(symptom.external_id)
         symptom_data_updated = model_to_dict(symptom)
@@ -560,7 +568,11 @@ class TestSymptomViewSet(CareAPITestBase):
             facility=self.facility,
             organization=self.organization,
         )
-        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+        symptom = self.create_symptom(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.confirmed.value,
+        )
 
         url = self._get_symptom_url(symptom.external_id)
         symptom_data_updated = model_to_dict(symptom)
@@ -589,7 +601,11 @@ class TestSymptomViewSet(CareAPITestBase):
             facility=self.facility,
             organization=self.organization,
         )
-        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+        symptom = self.create_symptom(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.confirmed.value,
+        )
 
         url = self._get_symptom_url(symptom.external_id)
         symptom_data_updated = model_to_dict(symptom)
@@ -616,7 +632,11 @@ class TestSymptomViewSet(CareAPITestBase):
             organization=self.organization,
             status=StatusChoices.completed.value,
         )
-        symptom = self.create_symptom(encounter=encounter, patient=self.patient)
+        symptom = self.create_symptom(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.confirmed.value,
+        )
 
         url = self._get_symptom_url(symptom.external_id)
         symptom_data_updated = model_to_dict(symptom)

@@ -1,7 +1,8 @@
 import datetime
 from enum import Enum
 
-from pydantic import UUID4
+from pydantic import UUID4, model_validator
+from pydantic_core.core_schema import ValidationInfo
 from rest_framework.exceptions import ValidationError
 
 from care.emr.models import TokenBooking
@@ -70,6 +71,20 @@ class TokenBookingBaseSpec(EMRResource):
 
 class TokenBookingWriteSpec(TokenBookingBaseSpec):
     status: BookingStatusChoices
+
+    @model_validator(mode="after")
+    def validate_status(self, info: ValidationInfo):
+        context = info.context or {}
+        is_update = context.get("is_update", False)
+        model_obj = context.get("object")
+
+        if (
+            is_update
+            and model_obj
+            and model_obj.status == BookingStatusChoices.entered_in_error.value
+        ):
+            raise ValueError("Cannot update status that is entered in error")
+        return self
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.status in CANCELLED_STATUS_CHOICES:

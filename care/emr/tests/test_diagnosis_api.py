@@ -501,7 +501,11 @@ class TestDiagnosisViewSet(CareAPITestBase):
             facility=self.facility,
             organization=self.organization,
         )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
+        diagnosis = self.create_diagnosis(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.provisional.value,
+        )
 
         url = self._get_diagnosis_url(diagnosis.external_id)
         diagnosis_data_updated = model_to_dict(diagnosis)
@@ -529,7 +533,11 @@ class TestDiagnosisViewSet(CareAPITestBase):
             facility=self.facility,
             organization=self.organization,
         )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
+        diagnosis = self.create_diagnosis(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.provisional.value,
+        )
 
         url = self._get_diagnosis_url(diagnosis.external_id)
         diagnosis_data_updated = model_to_dict(diagnosis)
@@ -558,7 +566,11 @@ class TestDiagnosisViewSet(CareAPITestBase):
             facility=self.facility,
             organization=self.organization,
         )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
+        diagnosis = self.create_diagnosis(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.provisional.value,
+        )
 
         url = self._get_diagnosis_url(diagnosis.external_id)
         diagnosis_data_updated = model_to_dict(diagnosis)
@@ -587,7 +599,11 @@ class TestDiagnosisViewSet(CareAPITestBase):
             facility=self.facility,
             organization=self.organization,
         )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
+        diagnosis = self.create_diagnosis(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.provisional.value,
+        )
 
         url = self._get_diagnosis_url(diagnosis.external_id)
         diagnosis_data_updated = model_to_dict(diagnosis)
@@ -614,7 +630,11 @@ class TestDiagnosisViewSet(CareAPITestBase):
             organization=self.organization,
             status=StatusChoices.completed.value,
         )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
+        diagnosis = self.create_diagnosis(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.provisional.value,
+        )
 
         url = self._get_diagnosis_url(diagnosis.external_id)
         diagnosis_data_updated = model_to_dict(diagnosis)

@@ -2,7 +2,8 @@ import datetime
 from enum import Enum
 
 from django.utils.timezone import is_aware, make_aware
-from pydantic import UUID4, field_validator
+from pydantic import UUID4, field_validator, model_validator
+from pydantic_core.core_schema import ValidationInfo
 from rest_framework.generics import get_object_or_404
 
 from care.emr.models.condition import Condition
@@ -145,6 +146,25 @@ class ConditionUpdateSpec(BaseConditionSpec):
     onset: ConditionOnSetSpec = {}
     abatement: ConditionAbatementSpec = {}
     note: str | None = None
+
+    @model_validator(mode="after")
+    def validate_verification_status(self, info: ValidationInfo):
+        context = info.context or {}
+        is_update = context.get("is_update", False)
+        model_obj = context.get("object")
+
+        if (
+            is_update
+            and model_obj
+            and (
+                model_obj.verification_status
+                == VerificationStatusChoices.entered_in_error.value
+            )
+        ):
+            raise ValueError(
+                "Cannot update verification status that is entered in error"
+            )
+        return self
 
 
 class ChronicConditionUpdateSpec(ConditionUpdateSpec):
