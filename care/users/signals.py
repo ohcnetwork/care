@@ -10,6 +10,10 @@ from django_rest_passwordreset.signals import reset_password_token_created
 
 from .models import UserFacilityAllocation
 
+# import logging
+
+# logger = logging.getLogger(__name__)
+
 
 @receiver(reset_password_token_created)
 def password_reset_token_created(
@@ -19,6 +23,11 @@ def password_reset_token_created(
     Handles password reset tokens
     When a token is created, an e-mail needs to be sent to the user
     """
+    # Add debugging logs
+    # logger.debug(f"Password reset token created for user: {reset_password_token.user.username}")
+    # logger.debug(f"Token key: {reset_password_token.key}")
+    # logger.debug(f"Reset URL: {settings.CURRENT_DOMAIN}/password_reset/{reset_password_token.key}")
+
     # send an e-mail to the user
     context = {
         "current_user": reset_password_token.user,
@@ -31,7 +40,7 @@ def password_reset_token_created(
     email_html_message = render_to_string(
         settings.USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH, context
     )
-
+    # logger.debug(f"Email content: {email_html_message}")
     msg = EmailMessage(
         "Password Reset for Care",
         email_html_message,
@@ -39,7 +48,9 @@ def password_reset_token_created(
         (reset_password_token.user.email,),
     )
     msg.content_subtype = "html"  # Main content is now text/html
+    # logger.debug("Attempting to send password reset email...")
     msg.send()
+    # logger.debug("Password reset email sent")
 
 
 @receiver(pre_save, sender=settings.AUTH_USER_MODEL)
