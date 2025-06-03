@@ -69,6 +69,14 @@ class MedicationStatementSpec(BaseMedicationStatementSpec):
             raise ValueError(err)
         return encounter
 
+    @field_validator("effective_period")
+    @classmethod
+    def validate_effective_period(cls, effective_period):
+        if effective_period and effective_period.start and effective_period.end:
+            if effective_period.start > effective_period.end:
+                raise ValueError("Start date must be before end date")
+        return effective_period
+
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
             obj.encounter = Encounter.objects.get(
