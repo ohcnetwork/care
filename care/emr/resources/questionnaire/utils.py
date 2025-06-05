@@ -1,5 +1,5 @@
 import uuid
-from datetime import datetime, time
+from datetime import datetime
 from urllib.parse import urlparse
 
 from dateutil.parser import isoparse
@@ -106,29 +106,21 @@ def validate_data(values, value_type, questionnaire_ref):  # noqa PLR0912
     return errors
 
 
-def normalize_value(value):  # noqa PLR0911
+def normalize_boolean_value(value):
+    """
+    Convert strings like 'true', 'false', '1', '0' , 'yes','no' to proper boolean values.
+
+    This helps when comparing condition values in `enable_when`, where
+    answers may come as strings but actually mean True or False.
+
+    If the value doesn't look like a boolean, return it as-is.
+    """
     if isinstance(value, str):
-        val = value.strip()
-        if val.lower() in ["true", "1"]:
+        val = value.strip().lower()
+        if val in ["true", "1", "yes"]:
             return True
-        if val.lower() in ["false", "0"]:
+        if val in ["false", "0", "no"]:
             return False
-        try:
-            if "." not in val:
-                return int(val)
-        except ValueError:
-            pass
-        try:
-            return float(val)
-        except ValueError:
-            pass
-        try:
-            parsed = isoparse(val)
-            if parsed.time() == time.min:
-                return parsed.date()
-            return parsed
-        except Exception:
-            return val.strip()
     return value
 
 
@@ -162,9 +154,9 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
         else:
             condition_value = responses[condition_question_id].values[0].value
 
-        condition_value = normalize_value(condition_value)
+        condition_value = normalize_boolean_value(condition_value)
         operator = condition["operator"]
-        expected_answer = normalize_value(condition["answer"])
+        expected_answer = normalize_boolean_value(condition["answer"])
 
         # Evaluate the condition based on the operator.
         if operator == "exists":
