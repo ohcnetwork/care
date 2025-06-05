@@ -157,6 +157,45 @@ class TestScheduleViewSet(CareAPITestBase):
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
+    def test_list_schedule_filtered_by_month_range(self):
+        """Test various valid_from and valid_to edge cases"""
+
+        permissions = [UserSchedulePermissions.can_list_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        filter_from = datetime(2025, 6, 1, 0, 0, tzinfo=UTC)
+        filter_to = datetime(2025, 6, 30, 23, 59, tzinfo=UTC)
+
+        schedule_1 = self.create_schedule(valid_from=filter_from, valid_to=filter_to)
+
+        schedule_2 = self.create_schedule(
+            valid_from=filter_from - timedelta(days=5), valid_to=filter_to
+        )
+
+        schedule_3 = self.create_schedule(
+            valid_from=filter_from, valid_to=filter_to + timedelta(days=5)
+        )
+
+        schedule_4 = self.create_schedule(
+            valid_from=filter_to + timedelta(days=2),
+            valid_to=filter_to + timedelta(days=20),
+        )
+
+        response = self.client.get(
+            self.base_url,
+            {
+                "valid_from": filter_from.isoformat(),
+                "valid_to": filter_to.isoformat(),
+            },
+            format="json",
+        )
+
+        self.assertContains(response, str(schedule_1.external_id), status_code=200)
+        self.assertContains(response, str(schedule_2.external_id), status_code=200)
+        self.assertContains(response, str(schedule_3.external_id), status_code=200)
+        self.assertNotContains(response, str(schedule_4.external_id), status_code=200)
+
     def test_create_schedule_with_permissions(self):
         """Users with can_write_user_schedule permission can create schedules."""
         permissions = [UserSchedulePermissions.can_write_user_schedule.name]
@@ -480,8 +519,10 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
     def create_exception(self, **kwargs):
         from care.emr.models import AvailabilityException
 
-        valid_from = datetime.now(UTC).date()
-        valid_to = (datetime.now(UTC) + timedelta(days=1)).date()
+        valid_from = kwargs.get("valid_from", datetime.now(UTC).date())
+        valid_to = kwargs.get(
+            "valid_to", (datetime.now(UTC) + timedelta(days=1)).date()
+        )
         return AvailabilityException.objects.create(
             resource=self.resource,
             valid_from=valid_from,
@@ -519,6 +560,49 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         """Users without can_list_user_schedule permission cannot list exceptions."""
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_list_exceptions_filtered_by_month_range(self):
+        """Test various valid_from and valid_to edge cases"""
+
+        permissions = [UserSchedulePermissions.can_list_user_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        filter_from = datetime(2025, 6, 1, 0, 0, tzinfo=UTC)
+        filter_to = datetime(2025, 6, 30, 23, 59, tzinfo=UTC)
+
+        exception_1 = self.create_exception(
+            valid_from=filter_from.date(), valid_to=filter_to.date()
+        )
+
+        exception_2 = self.create_exception(
+            valid_from=(filter_from - timedelta(days=5)).date(),
+            valid_to=filter_to.date(),
+        )
+
+        exception_3 = self.create_exception(
+            valid_from=filter_from.date(),
+            valid_to=(filter_to + timedelta(days=5)).date(),
+        )
+
+        exception_4 = self.create_exception(
+            valid_from=(filter_to + timedelta(days=5)).date(),
+            valid_to=(filter_to + timedelta(days=25)).date(),
+        )
+
+        response = self.client.get(
+            self.base_url,
+            {
+                "valid_from": filter_from.isoformat(),
+                "valid_to": filter_to.isoformat(),
+            },
+            format="json",
+        )
+
+        self.assertContains(response, str(exception_1.external_id), status_code=200)
+        self.assertContains(response, str(exception_2.external_id), status_code=200)
+        self.assertContains(response, str(exception_3.external_id), status_code=200)
+        self.assertNotContains(response, str(exception_4.external_id), status_code=200)
 
     def test_create_exception_with_permissions(self):
         """Users with can_write_user_schedule permission can create exceptions."""
