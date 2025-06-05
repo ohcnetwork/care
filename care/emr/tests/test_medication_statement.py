@@ -1,8 +1,8 @@
 from datetime import UTC, datetime, timedelta
 from pydantic import ValidationError
 
+from care.emr.resources.base import PeriodSpec
 from care.emr.resources.medication.statement.spec import MedicationStatementSpec
-from care.emr.resources.common.period import Period
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -29,7 +29,7 @@ class TestMedicationStatementSpec(CareAPITestBase):
         start_date = datetime.now(UTC)
         end_date = start_date + timedelta(days=7)
 
-        period = Period(start=start_date, end=end_date)
+        period = PeriodSpec(start=start_date, end=end_date)
 
         data = {
             "status": "active",
@@ -44,16 +44,7 @@ class TestMedicationStatementSpec(CareAPITestBase):
         start_date = datetime.now(UTC)
         end_date = start_date - timedelta(days=7)  # End date before start date
 
-        period = Period(start=start_date, end=end_date)
-
-        data = {
-            "status": "active",
-            "medication": self.valid_code,
-            "encounter": self.encounter.external_id,
-            "effective_period": period,
-        }
-
         with self.assertRaises(ValidationError) as context:
-            MedicationStatementSpec(**data)
+            PeriodSpec(start=start_date, end=end_date)
 
-        self.assertIn("Start date must be before end date", str(context.exception))
+        self.assertIn("Start Date cannot be greater than End Date", str(context.exception))

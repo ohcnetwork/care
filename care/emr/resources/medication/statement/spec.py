@@ -5,8 +5,7 @@ from pydantic import UUID4, Field, field_validator
 
 from care.emr.models.encounter import Encounter
 from care.emr.models.medication_statement import MedicationStatement
-from care.emr.resources.base import EMRResource
-from care.emr.resources.common.period import Period
+from care.emr.resources.base import EMRResource, PeriodSpec
 from care.emr.resources.medication.valueset.medication import CARE_MEDICATION_VALUESET
 from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
@@ -42,7 +41,7 @@ class BaseMedicationStatementSpec(EMRResource):
         None,
     )  # consider using Dosage from MedicationRequest
 
-    effective_period: Period | None = None
+    effective_period: PeriodSpec
 
     encounter: UUID4
 
@@ -56,7 +55,7 @@ class MedicationStatementUpdateSpec(EMRResource):
     __exclude__ = ["patient", "encounter"]
 
     status: MedicationStatementStatus
-    effective_period: Period | None = None
+    effective_period: PeriodSpec
     note: str | None = None
 
 
@@ -69,13 +68,6 @@ class MedicationStatementSpec(BaseMedicationStatementSpec):
             raise ValueError(err)
         return encounter
 
-    @field_validator("effective_period")
-    @classmethod
-    def validate_effective_period(cls, effective_period):
-        if effective_period and effective_period.start and effective_period.end:
-            if effective_period.start > effective_period.end:
-                raise ValueError("Start date must be before end date")
-        return effective_period
 
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
