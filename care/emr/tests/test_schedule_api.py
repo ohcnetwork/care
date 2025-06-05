@@ -165,19 +165,19 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         filter_from = datetime(2025, 6, 1, 0, 0, tzinfo=UTC)
-        filter_to = datetime(2025, 6, 30, 23, 59, tzinfo=UTC)
+        filter_to = filter_from + timedelta(days=29)
 
-        schedule_1 = self.create_schedule(valid_from=filter_from, valid_to=filter_to)
+        within_range = self.create_schedule(valid_from=filter_from, valid_to=filter_to)
 
-        schedule_2 = self.create_schedule(
+        left_overlap = self.create_schedule(
             valid_from=filter_from - timedelta(days=5), valid_to=filter_to
         )
 
-        schedule_3 = self.create_schedule(
+        right_overlap = self.create_schedule(
             valid_from=filter_from, valid_to=filter_to + timedelta(days=5)
         )
 
-        schedule_4 = self.create_schedule(
+        outside_range = self.create_schedule(
             valid_from=filter_to + timedelta(days=2),
             valid_to=filter_to + timedelta(days=20),
         )
@@ -191,10 +191,12 @@ class TestScheduleViewSet(CareAPITestBase):
             format="json",
         )
 
-        self.assertContains(response, str(schedule_1.external_id), status_code=200)
-        self.assertContains(response, str(schedule_2.external_id), status_code=200)
-        self.assertContains(response, str(schedule_3.external_id), status_code=200)
-        self.assertNotContains(response, str(schedule_4.external_id), status_code=200)
+        self.assertContains(response, str(within_range.external_id), status_code=200)
+        self.assertContains(response, str(left_overlap.external_id), status_code=200)
+        self.assertContains(response, str(right_overlap.external_id), status_code=200)
+        self.assertNotContains(
+            response, str(outside_range.external_id), status_code=200
+        )
 
     def test_create_schedule_with_permissions(self):
         """Users with can_write_user_schedule permission can create schedules."""
@@ -568,26 +570,24 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        filter_from = datetime(2025, 6, 1, 0, 0, tzinfo=UTC)
-        filter_to = datetime(2025, 6, 30, 23, 59, tzinfo=UTC)
+        filter_from = datetime(2025, 6, 1).date()
+        filter_to = filter_from + timedelta(days=29)
 
-        exception_1 = self.create_exception(
-            valid_from=filter_from.date(), valid_to=filter_to.date()
+        within_range = self.create_exception(valid_from=filter_from, valid_to=filter_to)
+
+        left_overlap = self.create_exception(
+            valid_from=filter_from - timedelta(days=5),
+            valid_to=filter_to,
         )
 
-        exception_2 = self.create_exception(
-            valid_from=(filter_from - timedelta(days=5)).date(),
-            valid_to=filter_to.date(),
+        right_overlap = self.create_exception(
+            valid_from=filter_from,
+            valid_to=filter_to + timedelta(days=5),
         )
 
-        exception_3 = self.create_exception(
-            valid_from=filter_from.date(),
-            valid_to=(filter_to + timedelta(days=5)).date(),
-        )
-
-        exception_4 = self.create_exception(
-            valid_from=(filter_to + timedelta(days=5)).date(),
-            valid_to=(filter_to + timedelta(days=25)).date(),
+        outside_range = self.create_exception(
+            valid_from=filter_to + timedelta(days=5),
+            valid_to=filter_to + timedelta(days=25),
         )
 
         response = self.client.get(
@@ -599,10 +599,12 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
             format="json",
         )
 
-        self.assertContains(response, str(exception_1.external_id), status_code=200)
-        self.assertContains(response, str(exception_2.external_id), status_code=200)
-        self.assertContains(response, str(exception_3.external_id), status_code=200)
-        self.assertNotContains(response, str(exception_4.external_id), status_code=200)
+        self.assertContains(response, str(within_range.external_id), status_code=200)
+        self.assertContains(response, str(left_overlap.external_id), status_code=200)
+        self.assertContains(response, str(right_overlap.external_id), status_code=200)
+        self.assertNotContains(
+            response, str(outside_range.external_id), status_code=200
+        )
 
     def test_create_exception_with_permissions(self):
         """Users with can_write_user_schedule permission can create exceptions."""
