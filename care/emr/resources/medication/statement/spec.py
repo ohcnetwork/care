@@ -68,7 +68,6 @@ class MedicationStatementSpec(BaseMedicationStatementSpec):
             raise ValueError(err)
         return encounter
 
-
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
             obj.encounter = Encounter.objects.get(

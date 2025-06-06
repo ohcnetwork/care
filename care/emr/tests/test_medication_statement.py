@@ -1,4 +1,5 @@
 from datetime import UTC, datetime, timedelta
+
 from pydantic import ValidationError
 
 from care.emr.resources.base import PeriodSpec
@@ -47,4 +48,6 @@ class TestMedicationStatementSpec(CareAPITestBase):
         with self.assertRaises(ValidationError) as context:
             PeriodSpec(start=start_date, end=end_date)
 
-        self.assertIn("Start Date cannot be greater than End Date", str(context.exception))
+        self.assertIn(
+            "Start Date cannot be greater than End Date", str(context.exception)
+        )
