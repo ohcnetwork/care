@@ -15,6 +15,9 @@ from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.observation.spec import ObservationSpec, ObservationStatus
 from care.emr.resources.questionnaire.spec import QuestionType
 
+BOOLEAN_TRUE_STRINGS = ("true", "on", "ok", "y", "yes", "1")
+BOOLEAN_FALSE_STRINGS = ("false", "off", "no", "n", "0")
+
 
 def create_responses_mapping(results_list):
     """
@@ -108,7 +111,7 @@ def validate_data(values, value_type, questionnaire_ref):  # noqa PLR0912
 
 def normalize_boolean_value(value):
     """
-    Convert strings like 'true', 'false', '1', '0' , 'yes','no' to proper boolean values.
+    Convert BOOLEAN_TRUE_STRING and BOOLEAN_FALSE_STRING to proper boolean values.
 
     This helps when comparing condition values in `enable_when`, where
     answers may come as strings but actually mean True or False.
@@ -117,9 +120,9 @@ def normalize_boolean_value(value):
     """
     if isinstance(value, str):
         val = value.strip().lower()
-        if val in ["true", "1", "yes"]:
+        if val in BOOLEAN_TRUE_STRINGS:
             return True
-        if val in ["false", "0", "no"]:
+        if val in BOOLEAN_FALSE_STRINGS:
             return False
     return value
 
