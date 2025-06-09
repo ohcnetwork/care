@@ -84,21 +84,23 @@ services:
       - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources
       - grafana-data:/var/lib/grafana
     environment:
+      - GF_PATHS_DATA=/var/lib/grafana
+      - GF_PATHS_LOGS=/var/log/grafanaMore actions
+      - GF_PATHS_PLUGINS=/var/lib/grafana/plugins
       - GF_USERS_ALLOW_SIGN_UP=false
       - GF_LOG_LEVEL=warn
     ports:
       - "3000:3000"
     depends_on:
       - prometheus
-      - alertmanager
 
   node-exporter:
     image: prom/node-exporter:latest
     restart: unless-stopped
     volumes:
-      - /proc:/host/proc:ro
-      - /sys:/host/sys:ro
-      - /:/rootfs:ro
+      - /proc:/host/proc
+      - /sys:/host/sys
+      - /:/rootfs
     command:
       - "--path.procfs=/host/proc"
       - "--path.sysfs=/host/sys"
@@ -112,13 +114,11 @@ services:
     image: gcr.io/cadvisor/cadvisor:latest
     restart: unless-stopped
     volumes:
-      - /:/rootfs:ro
-      - /var/run:/var/run:ro
-      - /sys:/sys:ro
-      - /var/lib/docker/:/var/lib/docker:ro
-      - /dev/disk/:/dev/disk:ro
-    command:
-      - "--log_level=warn"
+      - /:/rootfs
+      - /var/run:/var/run
+      - /sys:/sys
+      - /var/lib/docker/:/var/lib/docker
+      - /dev/disk/:/dev/disk
     ports:
       - "8080:8080"
 

@@ -6,7 +6,7 @@
   "timezone": "Asia/Kolkata",
   "version": 1,
   "schemaVersion": 40,
-  "refresh": "10s",
+  "refresh": "30s",
   "time": {
     "from": "now-30m",
     "to": "now"
