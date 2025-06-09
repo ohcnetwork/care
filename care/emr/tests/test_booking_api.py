@@ -2,6 +2,7 @@ from datetime import UTC, datetime, timedelta
 
 from django.test.utils import ignore_warnings, override_settings
 from django.urls import reverse
+from django.utils import timezone
 
 from care.emr.models import (
     Availability,
@@ -336,6 +337,7 @@ class TestBookingViewSet(CareAPITestBase):
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
             UserSchedulePermissions.can_create_appointment.name,
+            UserSchedulePermissions.can_reschedule_appointment.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -358,6 +360,7 @@ class TestBookingViewSet(CareAPITestBase):
         permissions = [
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
+            UserSchedulePermissions.can_create_appointment.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -376,8 +379,61 @@ class TestBookingViewSet(CareAPITestBase):
         self.assertContains(
             response,
             status_code=403,
-            text="You do not have permission to create appointments",
+            text="You do not have permission to reschedule appointments",
         )
+
+    def test_reschedule_booking_to_another_user_resource_of_same_facility(self):
+        """Users can reschedule bookings via the re-schedule endpoint with another user resource of same facility."""
+        permissions = [
+            UserSchedulePermissions.can_write_user_booking.name,
+            UserSchedulePermissions.can_list_user_booking.name,
+            UserSchedulePermissions.can_create_appointment.name,
+            UserSchedulePermissions.can_reschedule_appointment.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        new_user = self.create_user()
+        new_resource = self.create_resource(user=new_user, facility=self.facility)
+        new_slot = self.create_slot(resource=new_resource)
+        booking = self.create_booking()
+        reschedule_url = reverse(
+            "appointments-reschedule",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": booking.external_id,
+            },
+        )
+        data = {"new_slot": new_slot.external_id}
+        response = self.client.post(reschedule_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_reschedule_booking_to_another_user_resource_of_another_facility(self):
+        """Users cannot reschedule bookings via the re-schedule endpoint with another user resource of different facility."""
+        permissions = [
+            UserSchedulePermissions.can_write_user_booking.name,
+            UserSchedulePermissions.can_list_user_booking.name,
+            UserSchedulePermissions.can_create_appointment.name,
+            UserSchedulePermissions.can_reschedule_appointment.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        new_user = self.create_user()
+        new_facility = self.create_facility(user=self.user)
+        new_resource = self.create_resource(user=new_user, facility=new_facility)
+        new_slot = self.create_slot(resource=new_resource)
+        booking = self.create_booking()
+        reschedule_url = reverse(
+            "appointments-reschedule",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": booking.external_id,
+            },
+        )
+        data = {"new_slot": new_slot.external_id}
+        response = self.client.post(reschedule_url, data, format="json")
+        self.assertEqual(response.status_code, 404)
 
     def test_reschedule_booking_with_slot_in_past(self):
         """Users cannot reschedule bookings to slots that are in the past."""
@@ -385,6 +441,7 @@ class TestBookingViewSet(CareAPITestBase):
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
             UserSchedulePermissions.can_create_appointment.name,
+            UserSchedulePermissions.can_reschedule_appointment.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -1071,8 +1128,10 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         )
         data = {
             "user": self.user.external_id,
-            "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
-            "to_date": (datetime.now(UTC) + timedelta(days=7)).strftime("%Y-%m-%d"),
+            "from_date": timezone.make_naive(timezone.now()).strftime("%Y-%m-%d"),
+            "to_date": (
+                timezone.make_naive(timezone.now()) + timedelta(days=7)
+            ).strftime("%Y-%m-%d"),
         }
         availability_stats_url = reverse(
             "slot-availability-stats",

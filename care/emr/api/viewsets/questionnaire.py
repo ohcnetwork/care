@@ -48,7 +48,7 @@ class QuestionnaireTagsViewSet(EMRModelViewSet):
     def permissions_controller(self, request):
         if self.action in ["list", "retrieve"]:
             return True
-        if self.action in ["create", "update", "delete"]:
+        if self.action in ["create", "update", "destroy"]:
             return request.user.is_superuser
         return False
 

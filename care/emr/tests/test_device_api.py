@@ -43,9 +43,10 @@ class DeviceBaseTest(CareAPITestBase, FacilityLocationMixin):
         return data
 
     def create_device(self, **kwargs):
+        facility = kwargs.pop("facility", self.facility)
         self.client.force_authenticate(self.super_user)
         url = reverse(
-            "device-list", kwargs={"facility_external_id": self.facility.external_id}
+            "device-list", kwargs={"facility_external_id": facility.external_id}
         )
         data = self.generate_device_data(**kwargs)
         response = self.client.post(url, data=data, format="json")
@@ -114,8 +115,23 @@ class TestDeviceViewSet(DeviceBaseTest):
 
     def test_list_devices(self):
         self.add_permissions([DevicePermissions.can_list_devices.name])
+
+        facility2 = self.create_facility(user=self.user)
+        self.create_device(facility=facility2)
+
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 1)
+
+    def test_list_devices_for_super_user(self):
+        facility2 = self.create_facility(user=self.user)
+        self.create_device(facility=facility2)
+
+        self.client.force_authenticate(self.super_user)
+
+        response = self.client.get(self.base_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 1)
 
     def test_retrieve_device(self):
         self.add_permissions([DevicePermissions.can_list_devices.name])
