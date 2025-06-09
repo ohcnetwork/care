@@ -1,6 +1,7 @@
 groups:
   - name: care_alerts
     rules:
+      # Application Availability Alerts
       - alert: EndpointDown
         expr: absent(up{job="django"} == 1)
         for: 1m
@@ -8,8 +9,9 @@ groups:
           severity: critical
         annotations:
           summary: "API endpoint down"
-          description: "API endpoint unreachable for more than 1 minute."
+          description: "Django service unavailable for over 1 minute."
 
+      # Application Performance Alerts
       - alert: HighRequestLatency
         expr: histogram_quantile(0.95, sum(rate(care_request_duration_seconds_bucket[5m])) by (le, endpoint)) > 1
         for: 5m
@@ -17,7 +19,7 @@ groups:
           severity: warning
         annotations:
           summary: "High API request latency"
-          description: "95th percentile latency for '{{ $labels.endpoint }}' exceeds 1 second over the last 5 minutes."
+          description: "95th percentile latency exceeds 1s on '{{ $labels.endpoint }}' over 5 minutes."
 
       - alert: HighErrorRate
         expr: sum(rate(care_requests_total{status=~"5.."}[5m])) / sum(rate(care_requests_total[5m])) > 0.01
@@ -26,17 +28,27 @@ groups:
           severity: warning
         annotations:
           summary: "High error rate detected"
-          description: "Server errors (HTTP 5xx) exceed 1% of total requests in the last 5 minutes."
+          description: "HTTP 5xx errors exceed 1% of total requests over 5 minutes."
 
-      - alert: SlowDatabaseQueries
-        expr: histogram_quantile(0.95, sum(rate(django_db_execute_duration_seconds_bucket[5m])) by (le)) > 0.5
+      - alert: AuthenticationFailureSpike
+        expr: increase(care_requests_total{endpoint=~".*/auth/.*",status=~"4.."}[5m]) > 50
         for: 5m
         labels:
           severity: warning
         annotations:
-          summary: "Slow database queries detected"
-          description: "95th percentile database query latency exceeds 500 ms over the last 5 minutes."
+          summary: "High authentication failure rate"
+          description: "Over 50 HTTP 4xx errors on auth endpoints in 5 minutes."
 
+      - alert: RateLimitingTriggered
+        expr: increase(care_requests_total{status="429"}[5m]) > 50
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Rate limiting triggered"
+          description: "More than 50 HTTP 429 responses served in 5 minutes."
+
+      # Application Resource Usage Alerts
       - alert: HighCPUUsage
         expr: rate(process_cpu_seconds_total{job="django"}[5m]) > 0.8
         for: 5m
@@ -44,7 +56,7 @@ groups:
           severity: warning
         annotations:
           summary: "High CPU usage"
-          description: "CPU usage above 80% for the last 5 minutes."
+          description: "Django CPU usage exceeded 80% for 5 minutes."
 
       - alert: HighMemoryUsage
         expr: process_resident_memory_bytes{job="django"} > 524288000
@@ -53,4 +65,98 @@ groups:
           severity: warning
         annotations:
           summary: "High memory usage"
-          description: "Memory usage above 500MB for the last 5 minutes."
+          description: "Django memory usage exceeded 500MB for 5 minutes."
+
+      - alert: SlowDatabaseQueries
+        expr: histogram_quantile(0.95, sum(rate(django_db_execute_duration_seconds_bucket[5m])) by (le)) > 0.5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Slow DB queries"
+          description: "95th percentile DB query time exceeded 500ms over 5 minutes."
+
+      # Core Infrastructure Alerts
+      - alert: DatabaseConnectionFailure
+        expr: django_db_connection_error_total > 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "DB connection failure"
+          description: "At least one failed DB connection attempt in the last minute."
+
+      - alert: DatabaseConnectionPoolExhaustion
+        expr: django_db_connections_used / django_db_connections_max > 0.9
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "DB pool nearly full"
+          description: "DB connection pool usage exceeded 90% for 3 minutes."
+
+      - alert: RedisConnectionFailure
+        expr: absent(redis_up) or redis_up == 0
+        for: 2m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Redis unavailable"
+          description: "Redis service unavailable for 2 consecutive minutes."
+
+      - alert: CacheSystemDegraded
+        expr: django_cache_hits_total / (django_cache_hits_total + django_cache_misses_total) < 0.5
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Cache performance degraded"
+          description: "Cache hit ratio dropped below 50% over 10 minutes."
+
+      # Background Worker Alerts
+      - alert: CeleryWorkerDown
+        expr: absent(celery_worker_up) or celery_worker_up == 0
+        for: 3m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Celery workers down"
+          description: "No Celery worker active for 3 minutes."
+
+      - alert: CeleryTaskQueueBacklog
+        expr: celery_queue_length > 1000
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Task queue backlog"
+          description: "Celery queue has over 1000 pending tasks for 10 minutes."
+
+      # Disk Usage Alerts
+      - alert: HighDiskUsage
+        expr: (node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_avail_bytes{mountpoint="/"}) / node_filesystem_size_bytes{mountpoint="/"} * 100 > 85
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High disk usage"
+          description: "Root disk usage exceeded 85% for over 10 minutes."
+
+      - alert: CriticalDiskUsage
+        expr: (node_filesystem_size_bytes{mountpoint="/"} - node_filesystem_avail_bytes{mountpoint="/"}) / node_filesystem_size_bytes{mountpoint="/"} * 100 > 95
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "Critical disk usage"
+          description: "Root disk usage exceeded 95%; storage nearly full."
+
+      # Object Storage Alerts
+      - alert: MinIOStorageDown
+        expr: absent(up{job="minio"}) or up{job="minio"} == 0
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "MinIO down"
+          description: "MinIO storage service unavailable for 5 minutes."
