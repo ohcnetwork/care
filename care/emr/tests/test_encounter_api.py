@@ -1,9 +1,13 @@
+import uuid
+
+from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 from model_bakery import baker
 from rest_framework import status
 
 from care.emr.models.location import FacilityLocation, FacilityLocationEncounter
+from care.emr.resources.encounter.spec import StatusChoices
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
@@ -195,3 +199,63 @@ class EncounterAPITests(CareAPITestBase):
         results = response.data.get("results", [])
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["id"], str(self.encounter.external_id))
+
+    # TESTS FOR VALIDATION
+    def test_validate_data_max_encounters(self):
+        self.get_list_view_permission()
+        for _ in range(settings.MAX_ACTIVE_ENCOUNTERS_PER_PATIENT):
+            self.create_encounter(
+                patient=self.patient,
+                facility=self.facility,
+                organization=self.facility_organization,
+                status=StatusChoices.in_progress.value,
+            )
+        # Try to add more that the limit
+        response = self.client.post(
+            self.url,
+            {
+                "patient": str(self.patient.external_id),
+                "facility": str(self.facility.external_id),
+                "status": StatusChoices.in_progress.value,
+                "encounter_class": "amb",
+                "priority": "routine",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn(
+            "Patient already has maximum number of active encounters",
+            response.data["errors"][0]["msg"],
+        )
+
+    def test_validate_data_patient_not_exists(self):
+        self.get_list_view_permission()
+        response = self.client.post(
+            self.url,
+            {
+                "patient": str(uuid.uuid4()),  # Non-existent patient
+                "facility": str(self.facility.external_id),
+                "status": StatusChoices.in_progress.value,
+                "encounter_class": "amb",
+                "priority": "routine",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Patient does not exist", response.data["errors"][0]["msg"])
+
+    def test_validate_data_facility_not_exists(self):
+        self.get_list_view_permission()
+        response = self.client.post(
+            self.url,
+            {
+                "patient": str(self.patient.external_id),
+                "facility": str(uuid.uuid4()),  # Non-existent facility
+                "status": StatusChoices.in_progress.value,
+                "encounter_class": "amb",
+                "priority": "routine",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Facility does not exist", response.data["errors"][0]["msg"])
