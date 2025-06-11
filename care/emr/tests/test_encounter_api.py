@@ -1,4 +1,5 @@
 import uuid
+from secrets import choice
 
 from django.conf import settings
 from django.urls import reverse
@@ -7,6 +8,10 @@ from model_bakery import baker
 from rest_framework import status
 
 from care.emr.models.location import FacilityLocation, FacilityLocationEncounter
+from care.emr.resources.encounter.constants import (
+    ClassChoices,
+    EncounterPriorityChoices,
+)
 from care.emr.resources.encounter.spec import StatusChoices
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
@@ -30,15 +35,16 @@ class EncounterAPITests(CareAPITestBase):
         self.client.force_authenticate(user=self.user)
         self.url = reverse("encounter-list")
 
-    def _get_details_url(self):
-        return reverse(
+    def _get_detail_url(self, facility_external_id, patient_external_id):
+        url = reverse(
             "encounter-detail", kwargs={"external_id": self.encounter.external_id}
         )
+        url += f"?facility={facility_external_id}&patient={patient_external_id}"
+        return url
 
     def get_list_view_permission(self):
         permissions = [
             EncounterPermissions.can_list_encounter.name,
-            # EncounterPermissions.can_read_encounter.name,
             PatientPermissions.can_view_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
@@ -259,3 +265,94 @@ class EncounterAPITests(CareAPITestBase):
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("Facility does not exist", response.data["errors"][0]["msg"])
+
+    # TESTS FOR CRUD OPERATIONS
+
+    def test_create_encounter_with_permissions(self):
+        role = self.create_role_with_permissions(
+            permissions=[EncounterPermissions.can_create_encounter.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        encounter_data = {
+            "patient": str(self.patient.external_id),
+            "facility": str(self.facility.external_id),
+            "status": StatusChoices.in_progress.value,
+            "encounter_class": choice(list(ClassChoices)).value,
+            "priority": choice(list(EncounterPriorityChoices)).value,
+        }
+        response = self.client.post(self.url, encounter_data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+
+    def test_create_encounter_without_permissions(self):
+        encounter_data = {
+            "patient": str(self.patient.external_id),
+            "facility": str(self.facility.external_id),
+            "status": StatusChoices.in_progress.value,
+            "encounter_class": choice(list(ClassChoices)).value,
+            "priority": choice(list(EncounterPriorityChoices)).value,
+        }
+        response = self.client.post(self.url, encounter_data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to create encounter", response.data["detail"]
+        )
+
+    def test_retrieve_encounter_with_permissions(self):
+        role = self.create_role_with_permissions(
+            permissions=[
+                EncounterPermissions.can_read_encounter.name,
+                PatientPermissions.can_list_patients.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        response = self.client.get(
+            self._get_detail_url(self.facility.external_id, self.patient.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(self.encounter.external_id))
+
+    def test_retrieve_encounter_without_permissions(self):
+        response = self.client.get(
+            self._get_detail_url(self.facility.external_id, self.patient.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("User Cannot access patient", response.data["detail"])
+
+    # def test_update_encounter_with_permissions(self):
+    #     role = self.create_role_with_permissions(
+    #         permissions=[
+    #             EncounterPermissions.can_list_encounter.name,
+    #             EncounterPermissions.can_write_encounter.name,
+    #             PatientPermissions.can_list_patients.name,
+    #             EncounterPermissions.can_read_encounter.name,
+    #             PatientPermissions.can_view_clinical_data.name,
+
+    #         ]
+    #     )
+    #     self.attach_role_facility_organization_user(
+    #         self.facility_organization, self.user, role
+    #     )
+    #     update_data = {
+    #     "patient": str(self.patient.external_id),
+    #     "facility": str(self.facility.external_id),
+    #     "status": StatusChoices.completed.value,
+    #     "priority": self.encounter.priority,
+    #     "encounter_class": self.encounter.encounter_class,
+    #     "discharge_summary_advice": "Follow up in 1 week",
+    #     "status_history": {"history": []},  # Include this in your request
+    # }
+    #     response = self.client.put(
+    #         self._get_detail_url(self.facility.external_id, self.patient.external_id),
+    #         update_data,
+    #         format="json"
+    #     )
+    #     print(response.data)
+    #     self.assertEqual(response.status_code, 200)
+    #     self.assertEqual(response.data["status"], StatusChoices.completed.value)
+    #     self.assertEqual(response.data["discharge_summary_advice"], "Follow up in 1 week")
