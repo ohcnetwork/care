@@ -1,0 +1,80 @@
+# TODO:
+# - Secrets (django_secret_key, postgres_password, minio_access_key, minio_secret_key)
+# - MinIO service
+# - Celery worker and beat
+# - Traefik
+# - Healthchecks
+# - Probably some other stuff too
+
+networks:
+  care-network:
+    driver: overlay
+    attachable: true
+  care-db-network:
+    driver: overlay
+    attachable: true
+
+volumes:
+  postgres-data:
+    driver: local
+  redis-data:
+    driver: local
+
+services:
+  db:
+    image: postgres:16-alpine
+    networks:
+      - care-db-network
+    environment:
+      POSTGRES_DB: care
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres  # For dev phase only
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+
+  redis:
+    image: redis:7.4-alpine
+    networks:
+      - care-network
+    volumes:
+      - redis-data:/data
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+
+  backend:
+    image: ghcr.io/ohcnetwork/care:latest
+    networks:
+      - care-network
+      - care-db-network
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@db:5432/care
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      DJANGO_SETTINGS_MODULE: config.settings.deployment
+      DJANGO_DEBUG: "True"  # Use True for initial phase
+      DJANGO_SECRET_KEY: dev-secret-key
+    entrypoint: ["bash", "start.sh"]
+    ports:
+      - "9000:9000"
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
