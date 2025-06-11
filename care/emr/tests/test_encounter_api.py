@@ -1,5 +1,6 @@
 import uuid
 from secrets import choice
+from unittest.mock import patch
 
 from django.conf import settings
 from django.urls import reverse
@@ -34,6 +35,13 @@ class EncounterAPITests(CareAPITestBase):
         )
         self.client.force_authenticate(user=self.user)
         self.url = reverse("encounter-list")
+        self.encounter_data = {
+            "patient": str(self.patient.external_id),
+            "facility": str(self.facility.external_id),
+            "status": StatusChoices.in_progress.value,
+            "encounter_class": choice(list(ClassChoices)).value,
+            "priority": choice(list(EncounterPriorityChoices)).value,
+        }
 
     def _get_detail_url(self, facility_external_id, patient_external_id):
         url = reverse(
@@ -219,13 +227,7 @@ class EncounterAPITests(CareAPITestBase):
         # Try to add more that the limit
         response = self.client.post(
             self.url,
-            {
-                "patient": str(self.patient.external_id),
-                "facility": str(self.facility.external_id),
-                "status": StatusChoices.in_progress.value,
-                "encounter_class": "amb",
-                "priority": "routine",
-            },
+            self.encounter_data,
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -236,15 +238,11 @@ class EncounterAPITests(CareAPITestBase):
 
     def test_validate_data_patient_not_exists(self):
         self.get_list_view_permission()
+        self.encounter_data["patient"] = str(uuid.uuid4())  # Non-existent patient
+        self.encounter.save()
         response = self.client.post(
             self.url,
-            {
-                "patient": str(uuid.uuid4()),  # Non-existent patient
-                "facility": str(self.facility.external_id),
-                "status": StatusChoices.in_progress.value,
-                "encounter_class": "amb",
-                "priority": "routine",
-            },
+            self.encounter_data,
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -252,15 +250,11 @@ class EncounterAPITests(CareAPITestBase):
 
     def test_validate_data_facility_not_exists(self):
         self.get_list_view_permission()
+        self.encounter_data["facility"] = str(uuid.uuid4())  # Non-existent facility
+        self.encounter.save()
         response = self.client.post(
             self.url,
-            {
-                "patient": str(self.patient.external_id),
-                "facility": str(uuid.uuid4()),  # Non-existent facility
-                "status": StatusChoices.in_progress.value,
-                "encounter_class": "amb",
-                "priority": "routine",
-            },
+            self.encounter_data,
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -275,25 +269,11 @@ class EncounterAPITests(CareAPITestBase):
         self.attach_role_facility_organization_user(
             self.facility_organization, self.user, role
         )
-        encounter_data = {
-            "patient": str(self.patient.external_id),
-            "facility": str(self.facility.external_id),
-            "status": StatusChoices.in_progress.value,
-            "encounter_class": choice(list(ClassChoices)).value,
-            "priority": choice(list(EncounterPriorityChoices)).value,
-        }
-        response = self.client.post(self.url, encounter_data, format="json")
+        response = self.client.post(self.url, self.encounter_data, format="json")
         self.assertEqual(response.status_code, 200, response.data)
 
     def test_create_encounter_without_permissions(self):
-        encounter_data = {
-            "patient": str(self.patient.external_id),
-            "facility": str(self.facility.external_id),
-            "status": StatusChoices.in_progress.value,
-            "encounter_class": choice(list(ClassChoices)).value,
-            "priority": choice(list(EncounterPriorityChoices)).value,
-        }
-        response = self.client.post(self.url, encounter_data, format="json")
+        response = self.client.post(self.url, self.encounter_data, format="json")
         self.assertEqual(response.status_code, 403)
         self.assertIn(
             "You do not have permission to create encounter", response.data["detail"]
@@ -356,3 +336,201 @@ class EncounterAPITests(CareAPITestBase):
     #     self.assertEqual(response.status_code, 200)
     #     self.assertEqual(response.data["status"], StatusChoices.completed.value)
     #     self.assertEqual(response.data["discharge_summary_advice"], "Follow up in 1 week")
+
+
+class EncounterOrganizationAPITests(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.user)
+        self.patient = self.create_patient()
+        self.facility_organization = self.create_facility_organization(
+            facility=self.facility
+        )
+        self.encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.url = reverse("encounter-list")
+
+    def _get_detail_url(self, path):
+        url = reverse(
+            "encounter-detail", kwargs={"external_id": self.encounter.external_id}
+        )
+        url += f"{path}/"
+        return url
+
+    def get_role_with_permissions(self):
+        role = self.create_role_with_permissions(
+            permissions=[
+                EncounterPermissions.can_write_encounter.name,
+                PatientPermissions.can_view_clinical_data.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+
+    def test_list_encounter_organizations_with_permissions(self):
+        self.get_role_with_permissions()
+        path = "organizations"
+        response = self.client.get(self._get_detail_url(path), format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+
+    def test_list_encounter_organizations_without_permissions(self):
+        path = "organizations"
+        response = self.client.get(self._get_detail_url(path), format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update encounter", response.data["detail"]
+        )
+
+    def test_add_encounter_organization_with_permissions(self):
+        self.get_role_with_permissions()
+        new_organization = self.create_facility_organization(facility=self.facility)
+        path = "organizations_add"
+        response = self.client.post(
+            self._get_detail_url(path),
+            {"organization": str(new_organization.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(new_organization.external_id))
+
+    def test_add_encounter_organization_without_permissions(self):
+        new_organization = self.create_facility_organization(facility=self.facility)
+        path = "organizations_add"
+        response = self.client.post(
+            self._get_detail_url(path),
+            {"organization": str(new_organization.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update encounter", response.data["detail"]
+        )
+
+    def test_remove_encounter_organization_with_permissions(self):
+        self.get_role_with_permissions()
+        path = "organizations_remove"
+        response = self.client.delete(
+            self._get_detail_url(path),
+            {"organization": str(self.facility_organization.external_id)},
+            format="json",
+        )
+        path_get = "organizations"
+        self.assertEqual(response.status_code, 200)
+        response = self.client.get(
+            self._get_detail_url(path_get),
+            format="json",
+        )
+        # to check if the organization is removed
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 0)
+
+    def test_remove_encounter_organization_without_permissions(self):
+        path = "organizations_remove"
+        response = self.client.delete(
+            self._get_detail_url(path),
+            {"organization": str(self.facility_organization.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update encounter", response.data["detail"]
+        )
+
+    def test_remove_encounter_invalid_organization(self):
+        self.get_role_with_permissions()
+        path = "organizations_remove"
+        response = self.client.delete(
+            self._get_detail_url(path),
+            {"organization": str(uuid.uuid4())},  # Non-existent organization
+            format="json",
+        )
+        self.assertEqual(response.status_code, 404)
+
+    def test_remove_encounter_organization_incompatible(self):
+        self.get_role_with_permissions()
+        new_facility = self.create_facility(user=self.user)
+        new_organization = self.create_facility_organization(facility=new_facility)
+        path = "organizations_remove"
+        response = self.client.delete(
+            self._get_detail_url(path),
+            {"organization": str(new_organization.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "Organization Incompatible with Encounter", response.data["detail"]
+        )
+
+    def test_generate_discharge_summary_with_permissions(self):
+        self.patient.year_of_birth = 2000
+        self.patient.save()
+        role = self.create_role_with_permissions(
+            permissions=[
+                PatientPermissions.can_view_clinical_data.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        # 3. Mock the necessary functions to isolate the test
+        with (
+            patch(
+                "care.emr.reports.discharge_summary.get_progress"
+            ) as mock_get_progress,
+            patch("care.emr.reports.discharge_summary.set_lock") as mock_set_lock,
+            patch(
+                "care.emr.tasks.discharge_summary.generate_discharge_summary_task.delay"
+            ) as mock_task,
+        ):
+            mock_get_progress.return_value = None
+
+            path = "generate_discharge_summary"
+            url = self._get_detail_url(path)
+            response = self.client.post(
+                url, {"external_id": str(self.encounter.external_id)}, format="json"
+            )
+            self.assertEqual(response.status_code, 202)
+            self.assertIn(
+                "Discharge Summary will be generated shortly", response.data["detail"]
+            )
+
+        mock_get_progress.assert_called_once_with(self.encounter.external_id)
+        mock_set_lock.assert_called_once_with(self.encounter.external_id, 1)
+        mock_task.assert_called_once_with(self.encounter.external_id)
+
+    def test_generate_discharge_summary_without_permissions(self):
+        path = "generate_discharge_summary"
+        url = self._get_detail_url(path)
+        response = self.client.post(
+            url, {"external_id": str(self.encounter.external_id)}, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Permission denied to user", response.data["detail"])
+
+    def test_generate_discharge_summary_with_conflict(self):
+        self.patient.year_of_birth = 2000
+        self.patient.save()
+        self.get_role_with_permissions()
+        with patch(
+            "care.emr.reports.discharge_summary.get_progress"
+        ) as mock_get_progress:
+            # Return 75% to simulate a discharge summary that's already being generated
+            mock_get_progress.return_value = 75
+
+            path = "generate_discharge_summary"
+            url = self._get_detail_url(path)
+            response = self.client.post(
+                url, {"external_id": str(self.encounter.external_id)}, format="json"
+            )
+            self.assertEqual(response.status_code, 409)
+            self.assertIn(
+                "Discharge Summary is already being generated", response.data["detail"]
+            )
+            self.assertIn("75%", response.data["detail"])
