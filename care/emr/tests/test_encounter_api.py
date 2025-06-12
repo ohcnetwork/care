@@ -32,6 +32,8 @@ class EncounterAPITests(CareAPITestBase):
             patient=self.patient,
             facility=self.facility,
             organization=self.facility_organization,
+            status_history={"history": []},
+            encounter_class_history={"history": []},
         )
         self.client.force_authenticate(user=self.user)
         self.url = reverse("encounter-list")
@@ -41,6 +43,8 @@ class EncounterAPITests(CareAPITestBase):
             "status": StatusChoices.in_progress.value,
             "encounter_class": choice(list(ClassChoices)).value,
             "priority": choice(list(EncounterPriorityChoices)).value,
+            "discharge_summary_advice": "",
+            "external_identifier": "12345",
         }
 
     def _get_detail_url(self, facility_external_id, patient_external_id):
@@ -304,38 +308,25 @@ class EncounterAPITests(CareAPITestBase):
         self.assertEqual(response.status_code, 403)
         self.assertIn("User Cannot access patient", response.data["detail"])
 
-    # def test_update_encounter_with_permissions(self):
-    #     role = self.create_role_with_permissions(
-    #         permissions=[
-    #             EncounterPermissions.can_list_encounter.name,
-    #             EncounterPermissions.can_write_encounter.name,
-    #             PatientPermissions.can_list_patients.name,
-    #             EncounterPermissions.can_read_encounter.name,
-    #             PatientPermissions.can_view_clinical_data.name,
-
-    #         ]
-    #     )
-    #     self.attach_role_facility_organization_user(
-    #         self.facility_organization, self.user, role
-    #     )
-    #     update_data = {
-    #     "patient": str(self.patient.external_id),
-    #     "facility": str(self.facility.external_id),
-    #     "status": StatusChoices.completed.value,
-    #     "priority": self.encounter.priority,
-    #     "encounter_class": self.encounter.encounter_class,
-    #     "discharge_summary_advice": "Follow up in 1 week",
-    #     "status_history": {"history": []},  # Include this in your request
-    # }
-    #     response = self.client.put(
-    #         self._get_detail_url(self.facility.external_id, self.patient.external_id),
-    #         update_data,
-    #         format="json"
-    #     )
-    #     print(response.data)
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(response.data["status"], StatusChoices.completed.value)
-    #     self.assertEqual(response.data["discharge_summary_advice"], "Follow up in 1 week")
+    def test_update_encounter_with_permissions(self):
+        role = self.create_role_with_permissions(
+            permissions=[
+                EncounterPermissions.can_write_encounter.name,
+                EncounterPermissions.can_read_encounter.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        update_data = self.encounter_data.copy()
+        update_data["status"] = StatusChoices.completed.value
+        response = self.client.put(
+            self._get_detail_url(self.facility.external_id, self.patient.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["status"], StatusChoices.completed.value)
 
 
 class EncounterOrganizationAPITests(CareAPITestBase):
@@ -366,6 +357,7 @@ class EncounterOrganizationAPITests(CareAPITestBase):
         role = self.create_role_with_permissions(
             permissions=[
                 EncounterPermissions.can_write_encounter.name,
+                EncounterPermissions.can_read_encounter.name,
                 PatientPermissions.can_view_clinical_data.name,
             ]
         )
@@ -534,3 +526,99 @@ class EncounterOrganizationAPITests(CareAPITestBase):
                 "Discharge Summary is already being generated", response.data["detail"]
             )
             self.assertIn("75%", response.data["detail"])
+
+    # TESTS FOR CARE TEAM MANAGEMENT
+
+    def test_add_care_team_member_with_permissions(self):
+        self.get_role_with_permissions()
+        new_user = self.create_user()
+        path = "set_care_team_members"
+        response = self.client.post(
+            self._get_detail_url(path),
+            {
+                "members": [
+                    {
+                        "user_id": str(new_user.external_id),
+                        "role": {"code": "NURSE", "system": "local"},
+                    }
+                ]
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_add_care_team_member_without_permissions(self):
+        new_user = self.create_user()
+        path = "set_care_team_members"
+        response = self.client.post(
+            self._get_detail_url(path),
+            {
+                "members": [
+                    {
+                        "user_id": str(new_user.external_id),
+                        "role": {"code": "NURSE", "system": "local"},
+                    }
+                ]
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update encounter", response.data["detail"]
+        )
+
+    def test_add_duplicate_user_care_team_member(self):
+        self.get_role_with_permissions()
+        new_user = self.create_user()
+        path = "set_care_team_members"
+        response = self.client.post(
+            self._get_detail_url(path),
+            {
+                "members": [
+                    {
+                        "user_id": str(new_user.external_id),
+                        "role": {"code": "NURSE", "system": "local"},
+                    },
+                    {
+                        "user_id": str(new_user.external_id),
+                        "role": {"code": "NURSE", "system": "local"},
+                    },
+                ]
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "repeats are not allowed", response.data["errors"][0]["msg"]["user"]
+        )
+
+    def test_add_treating_doctor_care_team_member(self):
+        role = self.create_role_with_permissions(
+            permissions=[
+                EncounterPermissions.can_write_encounter.name,
+                PatientPermissions.can_view_clinical_data.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+
+        path = "set_care_team_members"
+        new_user = self.create_user()
+        response = self.client.post(
+            self._get_detail_url(path),
+            {
+                "members": [
+                    {
+                        "user_id": str(new_user.external_id),
+                        "role": {"code": "TREATING_DOCTOR", "system": "local"},
+                    }
+                ]
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "Treating doctor does not have permission on encounter",
+            response.data["detail"],
+        )
