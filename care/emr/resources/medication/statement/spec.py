@@ -41,7 +41,7 @@ class BaseMedicationStatementSpec(EMRResource):
         None,
     )  # consider using Dosage from MedicationRequest
 
-    effective_period: PeriodSpec
+    effective_period: PeriodSpec | None = None
 
     encounter: UUID4
 
