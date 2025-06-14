@@ -1,34 +1,19 @@
-# TODO:
-# - Secrets (django_secret_key, postgres_password, minio_access_key, minio_secret_key)
-# - MinIO service
-# - Celery worker and beat
-# - Traefik
-# - Healthchecks
-# - Probably some other stuff too
-
 networks:
-  care-network:
-    driver: overlay
-    attachable: true
-  care-db-network:
-    driver: overlay
-    attachable: true
+  default:
+    name: care
 
 volumes:
   postgres-data:
-    driver: local
   redis-data:
-    driver: local
+  minio-data:
 
 services:
   db:
-    image: postgres:16-alpine
-    networks:
-      - care-db-network
+    image: postgres:alpine
     environment:
       POSTGRES_DB: care
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres  # For dev phase only
+      POSTGRES_PASSWORD: postgres123
     volumes:
       - postgres-data:/var/lib/postgresql/data
     deploy:
@@ -40,11 +25,22 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 3
+      # resources:
+      #   limits:
+      #     memory: 2G
+      #     cpus: '1.0'
+      #   reservations:
+      #     memory: 1G
+      #     cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   redis:
     image: redis:7.4-alpine
-    networks:
-      - care-network
     volumes:
       - redis-data:/data
     deploy:
@@ -56,25 +52,186 @@ services:
         condition: on-failure
         delay: 5s
         max_attempts: 3
+      # resources:
+      #   limits:
+      #     memory: 1G
+      #     cpus: '0.5'
+      #   reservations:
+      #     memory: 512M
+      #     cpus: '0.25'
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  minio:
+    image: minio/minio:latest
+    ports:
+      - "9100:9000" # MinIO API
+      - "9101:9001" # MinIO Console
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      # resources:
+      #   limits:
+      #     memory: 1G
+      #     cpus: '0.5'
+      #   reservations:
+      #     memory: 512M
+      #     cpus: '0.25'
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
 
   backend:
-    image: ghcr.io/ohcnetwork/care:latest
-    networks:
-      - care-network
-      - care-db-network
+    image: ghcr.io/ohcnetwork/care:production-latest
+    ports:
+      - "9000:9000"
     environment:
-      DATABASE_URL: postgres://postgres:postgres@db:5432/care
+      DATABASE_URL: postgres://postgres:postgres123@db:5432/care
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: care
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
       DJANGO_SETTINGS_MODULE: config.settings.deployment
-      DJANGO_DEBUG: "True"  # Use True for initial phase
-      DJANGO_SECRET_KEY: dev-secret-key
+      BUCKET_ENDPOINT: http://minio:9000
+      BUCKET_EXTERNAL_ENDPOINT: http://localhost:9100
+      BUCKET_KEY: minioadmin
+      BUCKET_SECRET: minioadmin123
+      FILE_UPLOAD_BUCKET: patient-bucket
+      FACILITY_S3_BUCKET: facility-bucket
+      # DJANGO_SECURE_SSL_REDIRECT: "False"
     entrypoint: ["bash", "start.sh"]
-    ports:
-      - "9000:9000"
     deploy:
-      replicas: 1
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 30s
+        failure_action: rollback
+        order: start-first
+      rollback_config:
+        parallelism: 1
+        delay: 10s
+        failure_action: pause
+        order: stop-first
       restart_policy:
         condition: on-failure
         delay: 10s
         max_attempts: 3
+        window: 120s
+      # resources:
+      #   limits:
+      #     memory: 2G
+      #     cpus: '1.0'
+      #   reservations:
+      #     memory: 1G
+      #     cpus: '0.5'
+    healthcheck:
+      test: ["CMD", "./healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    depends_on:
+      - db
+      - redis
+      - minio
+
+  celery-worker:
+    image: ghcr.io/ohcnetwork/care:production-latest
+    environment:
+      DATABASE_URL: postgres://postgres:postgres123@db:5432/care
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: care
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      DJANGO_SETTINGS_MODULE: config.settings.deployment
+      BUCKET_ENDPOINT: http://minio:9000
+      BUCKET_EXTERNAL_ENDPOINT: http://localhost:9100
+      BUCKET_KEY: minioadmin
+      BUCKET_SECRET: minioadmin123
+      FILE_UPLOAD_BUCKET: patient-bucket
+      FACILITY_S3_BUCKET: facility-bucket
+    entrypoint: ["bash", "celery_worker.sh"]
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      # resources:
+      #   limits:
+      #     memory: 1G
+      #     cpus: '0.5'
+      #   reservations:
+      #     memory: 512M
+      #     cpus: '0.25'
+    depends_on:
+      - db
+      - redis
+      - backend
+
+  celery-beat:
+    image: ghcr.io/ohcnetwork/care:production-latest
+    environment:
+      DATABASE_URL: postgres://postgres:postgres123@db:5432/care
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres123
+      POSTGRES_HOST: db
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: care
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/0
+      DJANGO_SETTINGS_MODULE: config.settings.deployment
+      BUCKET_ENDPOINT: http://minio:9000
+      BUCKET_EXTERNAL_ENDPOINT: http://localhost:9100
+      BUCKET_KEY: minioadmin
+      BUCKET_SECRET: minioadmin123
+      FILE_UPLOAD_BUCKET: patient-bucket
+      FACILITY_S3_BUCKET: facility-bucket
+    entrypoint: ["bash", "celery_beat.sh"]
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+        delay: 10s
+        max_attempts: 3
+        window: 120s
+      # resources:
+      #   limits:
+      #     memory: 512M
+      #     cpus: '0.5'
+      #   reservations:
+      #     memory: 256M
+      #     cpus: '0.25'
+    depends_on:
+      - db
+      - redis
+      - backend
