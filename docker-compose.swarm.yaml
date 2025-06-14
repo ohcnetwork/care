@@ -34,10 +34,9 @@ services:
       #     cpus: '0.5'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
-      interval: 30s
+      interval: 60s
       timeout: 10s
-      retries: 3
-      start_period: 30s
+      retries: 2
 
   redis:
     image: redis:7.4-alpine
@@ -61,10 +60,9 @@ services:
       #     cpus: '0.25'
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
+      interval: 60s
       timeout: 10s
-      retries: 3
-      start_period: 10s
+      retries: 2
 
   minio:
     image: minio/minio:latest
@@ -95,32 +93,31 @@ services:
       #     cpus: '0.25'
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
-      interval: 30s
+      interval: 60s
       timeout: 10s
-      retries: 3
-      start_period: 30s
+      retries: 2
 
   backend:
     image: ghcr.io/ohcnetwork/care:production-latest
     ports:
       - "9000:9000"
     environment:
+      DJANGO_SETTINGS_MODULE: config.settings.deployment
+      # DJANGO_SECURE_SSL_REDIRECT: "False"
       DATABASE_URL: postgres://postgres:postgres123@db:5432/care
+      POSTGRES_DB: care
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres123
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
-      POSTGRES_DB: care
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
-      DJANGO_SETTINGS_MODULE: config.settings.deployment
       BUCKET_ENDPOINT: http://minio:9000
       BUCKET_EXTERNAL_ENDPOINT: http://localhost:9100
       BUCKET_KEY: minioadmin
       BUCKET_SECRET: minioadmin123
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
-      # DJANGO_SECURE_SSL_REDIRECT: "False"
     entrypoint: ["bash", "start.sh"]
     deploy:
       replicas: 2
@@ -148,10 +145,10 @@ services:
       #     cpus: '0.5'
     healthcheck:
       test: ["CMD", "./healthcheck.sh"]
-      interval: 30s
+      interval: 60s
       timeout: 10s
-      retries: 3
-      start_period: 60s
+      retries: 2
+      start_period: 30s
     depends_on:
       - db
       - redis
@@ -160,15 +157,15 @@ services:
   celery-worker:
     image: ghcr.io/ohcnetwork/care:production-latest
     environment:
+      DJANGO_SETTINGS_MODULE: config.settings.deployment
       DATABASE_URL: postgres://postgres:postgres123@db:5432/care
+      POSTGRES_DB: care
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres123
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
-      POSTGRES_DB: care
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
-      DJANGO_SETTINGS_MODULE: config.settings.deployment
       BUCKET_ENDPOINT: http://minio:9000
       BUCKET_EXTERNAL_ENDPOINT: http://localhost:9100
       BUCKET_KEY: minioadmin
@@ -193,17 +190,16 @@ services:
     depends_on:
       - db
       - redis
-      - backend
 
   celery-beat:
     image: ghcr.io/ohcnetwork/care:production-latest
     environment:
       DATABASE_URL: postgres://postgres:postgres123@db:5432/care
+      POSTGRES_DB: care
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres123
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
-      POSTGRES_DB: care
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
       DJANGO_SETTINGS_MODULE: config.settings.deployment
@@ -234,4 +230,3 @@ services:
     depends_on:
       - db
       - redis
-      - backend
