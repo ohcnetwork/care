@@ -1,6 +1,8 @@
 networks:
   default:
     name: care
+    driver: overlay
+    attachable: true
 
 volumes:
   postgres-data:
@@ -20,7 +22,8 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.role == manager
+          - node.role == worker
+          - node.labels.tier == data
       restart_policy:
         condition: on-failure
         delay: 5s
@@ -46,7 +49,8 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.role == manager
+          - node.role == worker
+          - node.labels.tier == data
       restart_policy:
         condition: on-failure
         delay: 5s
@@ -79,7 +83,8 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.role == manager
+          - node.role == worker
+          - node.labels.tier == data
       restart_policy:
         condition: on-failure
         delay: 5s
@@ -119,6 +124,10 @@ services:
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
       replicas: 2
+      placement:
+        constraints:
+          - node.role == worker
+          - node.labels.tier == application
       update_config:
         parallelism: 1
         delay: 30s
@@ -136,7 +145,7 @@ services:
         window: 120s
       labels:
         - "traefik.enable=true"
-        - "traefik.http.routers.care-backend.rule=Host(`localhost`)"
+        - "traefik.http.routers.care-backend.rule=Host(`care.localhost`)"
         - "traefik.http.routers.care-backend.entrypoints=web"
         - "traefik.http.routers.care-backend.service=care-backend"
         - "traefik.http.services.care-backend.loadbalancer.server.port=9000"
@@ -153,10 +162,6 @@ services:
       timeout: 10s
       retries: 2
       start_period: 30s
-    depends_on:
-      - db
-      - redis
-      - minio
 
   celery-worker:
     image: ghcr.io/ohcnetwork/care:production-latest
@@ -179,6 +184,10 @@ services:
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
       replicas: 2
+      placement:
+        constraints:
+          - node.role == worker
+          - node.labels.tier == application
       restart_policy:
         condition: on-failure
         delay: 10s
@@ -191,9 +200,6 @@ services:
       #   reservations:
       #     memory: 512M
       #     cpus: '0.25'
-    depends_on:
-      - db
-      - redis
 
   celery-beat:
     image: ghcr.io/ohcnetwork/care:production-latest
@@ -218,7 +224,8 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.role == manager
+          - node.role == worker
+          - node.labels.tier == application
       restart_policy:
         condition: on-failure
         delay: 10s
@@ -231,9 +238,6 @@ services:
       #   reservations:
       #     memory: 256M
       #     cpus: '0.25'
-    depends_on:
-      - db
-      - redis
 
   traefik:
     image: traefik:v3.4
@@ -242,6 +246,7 @@ services:
       - "8080:8080" # Traefik Dashboard
     command:
       - --api.dashboard=true
+      - --api.insecure=true
       - --providers.swarm=true
       - --providers.swarm.exposedbydefault=false
       - --providers.swarm.network=care
