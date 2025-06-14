@@ -99,8 +99,7 @@ services:
 
   backend:
     image: ghcr.io/ohcnetwork/care:production-latest
-    ports:
-      - "9000:9000"
+    entrypoint: ["bash", "start.sh"]
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.deployment
       # DJANGO_SECURE_SSL_REDIRECT: "False"
@@ -118,7 +117,6 @@ services:
       BUCKET_SECRET: minioadmin123
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
-    entrypoint: ["bash", "start.sh"]
     deploy:
       replicas: 2
       update_config:
@@ -136,6 +134,12 @@ services:
         delay: 10s
         max_attempts: 3
         window: 120s
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.care-backend.rule=Host(`localhost`)"
+        - "traefik.http.routers.care-backend.entrypoints=web"
+        - "traefik.http.routers.care-backend.service=care-backend"
+        - "traefik.http.services.care-backend.loadbalancer.server.port=9000"
       # resources:
       #   limits:
       #     memory: 2G
@@ -156,6 +160,7 @@ services:
 
   celery-worker:
     image: ghcr.io/ohcnetwork/care:production-latest
+    entrypoint: ["bash", "celery_worker.sh"]
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.deployment
       DATABASE_URL: postgres://postgres:postgres123@db:5432/care
@@ -172,7 +177,6 @@ services:
       BUCKET_SECRET: minioadmin123
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
-    entrypoint: ["bash", "celery_worker.sh"]
     deploy:
       replicas: 2
       restart_policy:
@@ -193,6 +197,7 @@ services:
 
   celery-beat:
     image: ghcr.io/ohcnetwork/care:production-latest
+    entrypoint: ["bash", "celery_beat.sh"]
     environment:
       DATABASE_URL: postgres://postgres:postgres123@db:5432/care
       POSTGRES_DB: care
@@ -209,7 +214,6 @@ services:
       BUCKET_SECRET: minioadmin123
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
-    entrypoint: ["bash", "celery_beat.sh"]
     deploy:
       replicas: 1
       placement:
@@ -230,3 +234,27 @@ services:
     depends_on:
       - db
       - redis
+
+  traefik:
+    image: traefik:v3.4
+    ports:
+      - "80:80" # HTTP
+      - "8080:8080" # Traefik Dashboard
+    command:
+      - --api.dashboard=true
+      - --providers.swarm=true
+      - --providers.swarm.exposedbydefault=false
+      - --providers.swarm.network=care
+      - --entrypoints.web.address=:80
+      - --log.level=INFO
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
