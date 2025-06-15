@@ -8,6 +8,7 @@ volumes:
   postgres-data:
   redis-data:
   minio-data:
+  # letsencrypt-data:
 
 services:
   db:
@@ -107,7 +108,7 @@ services:
     entrypoint: ["bash", "start.sh"]
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.deployment
-      # DJANGO_SECURE_SSL_REDIRECT: "False"
+      DJANGO_SECURE_SSL_REDIRECT: "False"
       DATABASE_URL: postgres://postgres:postgres123@db:5432/care
       POSTGRES_DB: care
       POSTGRES_USER: postgres
@@ -145,9 +146,15 @@ services:
         window: 120s
       labels:
         - "traefik.enable=true"
+        # HTTP router
         - "traefik.http.routers.care-backend.rule=Host(`care.localhost`)"
         - "traefik.http.routers.care-backend.entrypoints=web"
         - "traefik.http.routers.care-backend.service=care-backend"
+        # HTTPS router
+        # - "traefik.http.routers.care-backend-secure.rule=Host(`care.areeb.dev`)"
+        # - "traefik.http.routers.care-backend-secure.entrypoints=websecure"
+        # - "traefik.http.routers.care-backend-secure.service=care-backend"
+        # - "traefik.http.routers.care-backend-secure.tls.certresolver=letsencrypt"
         - "traefik.http.services.care-backend.loadbalancer.server.port=9000"
       # resources:
       #   limits:
@@ -243,6 +250,7 @@ services:
     image: traefik:v3.4
     ports:
       - "80:80" # HTTP
+      - "443:443" # HTTPS
       - "8080:8080" # Traefik Dashboard
     command:
       - --api.dashboard=true
@@ -251,9 +259,20 @@ services:
       - --providers.swarm.exposedbydefault=false
       - --providers.swarm.network=care
       - --entrypoints.web.address=:80
+      # - --entrypoints.websecure.address=:443
+      # Redirect HTTP to HTTPS
+      # - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      # - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      # - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      # - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      # - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      # - --certificatesresolvers.letsencrypt.acme.email=hi@areeb.dev
+      # - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      # - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
       - --log.level=INFO
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      # - letsencrypt-data:/letsencrypt
     deploy:
       replicas: 1
       placement:
