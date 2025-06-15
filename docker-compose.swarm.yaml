@@ -38,9 +38,9 @@ services:
       #     cpus: '0.5'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
-      interval: 60s
+      interval: 30s
       timeout: 10s
-      retries: 2
+      retries: 3
 
   redis:
     image: redis:7.4-alpine
@@ -65,9 +65,9 @@ services:
       #     cpus: '0.25'
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 60s
+      interval: 30s
       timeout: 10s
-      retries: 2
+      retries: 3
 
   minio:
     image: minio/minio:latest
@@ -99,16 +99,16 @@ services:
       #     cpus: '0.25'
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
-      interval: 60s
+      interval: 30s
       timeout: 10s
-      retries: 2
+      retries: 3
 
   backend:
     image: ghcr.io/ohcnetwork/care:production-latest
     entrypoint: ["bash", "start.sh"]
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.deployment
-      DJANGO_SECURE_SSL_REDIRECT: "False"
+      # DJANGO_SECURE_SSL_REDIRECT: "False"
       DATABASE_URL: postgres://postgres:postgres123@db:5432/care
       POSTGRES_DB: care
       POSTGRES_USER: postgres
@@ -165,10 +165,9 @@ services:
       #     cpus: '0.5'
     healthcheck:
       test: ["CMD", "./healthcheck.sh"]
-      interval: 60s
+      interval: 30s
       timeout: 10s
-      retries: 2
-      start_period: 30s
+      retries: 3
 
   celery-worker:
     image: ghcr.io/ohcnetwork/care:production-latest
@@ -212,6 +211,7 @@ services:
     image: ghcr.io/ohcnetwork/care:production-latest
     entrypoint: ["bash", "celery_beat.sh"]
     environment:
+      DJANGO_SETTINGS_MODULE: config.settings.deployment
       DATABASE_URL: postgres://postgres:postgres123@db:5432/care
       POSTGRES_DB: care
       POSTGRES_USER: postgres
@@ -220,7 +220,6 @@ services:
       POSTGRES_PORT: 5432
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
-      DJANGO_SETTINGS_MODULE: config.settings.deployment
       BUCKET_ENDPOINT: http://minio:9000
       BUCKET_EXTERNAL_ENDPOINT: http://localhost:9100
       BUCKET_KEY: minioadmin
@@ -264,6 +263,7 @@ services:
       # - --entrypoints.web.http.redirections.entrypoint.to=websecure
       # - --entrypoints.web.http.redirections.entrypoint.scheme=https
       # - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      # Let's Encrypt setup
       # - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
       # - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
       # - --certificatesresolvers.letsencrypt.acme.email=hi@areeb.dev
