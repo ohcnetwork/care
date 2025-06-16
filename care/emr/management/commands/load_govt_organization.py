@@ -110,6 +110,7 @@ class Command(BaseCommand):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.migration_id = int(datetime.now(tz=UTC).timestamp() * 1000)
+        self.country = "India"
 
     def add_arguments(self, parser):
         parser.add_argument(
@@ -148,8 +149,9 @@ class Command(BaseCommand):
             "system_generated": True,
             "level_cache": 0,
             "metadata": {
-                "country": "india",
+                "country": self.country,
                 "govt_org_type": "state",
+                "govt_org_children_type": "district",
             },
             "meta": {
                 "migration_id": self.migration_id,
@@ -184,8 +186,9 @@ class Command(BaseCommand):
                 "system_generated": True,
                 "level_cache": 1,
                 "metadata": {
-                    "country": "india",
+                    "country": self.country,
                     "govt_org_type": "district",
+                    "govt_org_children_type": "local_body",
                 },
                 "meta": {
                     "migration_id": self.migration_id,
@@ -232,7 +235,6 @@ class Command(BaseCommand):
                 )
                 if not dist_obj:
                     continue
-                body_type = local_body.get("localbody_code", " ")[0]
                 local_body_objs.append(
                     Organization(
                         root_org=dist_obj.parent,
@@ -242,11 +244,10 @@ class Command(BaseCommand):
                         level_cache=2,
                         system_generated=True,
                         metadata={
-                            "country": "india",
-                            "govt_org_type": local_body_choice_map.get(
-                                body_type, "other_local_body"
-                            ),
-                            "lsg_code": local_body.get(
+                            "country": self.country,
+                            "govt_org_type": "local_body",
+                            "govt_org_children_type": "ward",
+                            "govt_org_id": local_body.get(
                                 "lsg_code", local_body.get("localbody_code")
                             ),
                         },
@@ -299,9 +300,9 @@ class Command(BaseCommand):
                                     system_generated=True,
                                     level_cache=3,
                                     metadata={
-                                        "country": "india",
+                                        "country": self.country,
                                         "govt_org_type": "ward",
-                                        "ward_number": get_ward_number(ward),
+                                        "govt_org_id": get_ward_number(ward),
                                     },
                                     meta={
                                         "migration_id": self.migration_id,

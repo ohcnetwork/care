@@ -1620,6 +1620,39 @@ class QuestionnaireEnableWhenSubmissionTests(QuestionnaireTestBase):
             saved_qids, {q1["id"]}, "Q2 and Q3 inside nested group should be removed"
         )
 
+    def test_enable_when_boolean_answer_as_boolean(self):
+        # Q2 is enabled if Q1 == true (actual boolean True, not string)
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "integer",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "equals", "answer": "true"}
+                ],
+            },
+        ]
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        responses = [
+            {"question_id": self.questions[0]["id"], "values": [{"value": "true"}]},
+            {"question_id": self.questions[1]["id"], "values": [{"value": "10"}]},
+        ]
+        status_code, response_data = self._submit(responses)
+        self.assertEqual(
+            status_code,
+            200,
+            f"Valid boolean condition with actual boolean True should succeed: {response_data}",
+        )
+        saved_qids = {
+            resp["question_id"] for resp in response_data.get("responses", [])
+        }
+        self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be saved")
+        self.assertIn(self.questions[1]["id"], saved_qids, "Q2 should be enabled")
+
 
 class RequiredFieldValidationTests(QuestionnaireTestBase):
     """

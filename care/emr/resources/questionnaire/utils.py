@@ -15,6 +15,9 @@ from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.observation.spec import ObservationSpec, ObservationStatus
 from care.emr.resources.questionnaire.spec import QuestionType
 
+BOOLEAN_TRUE_STRINGS = ("true", "on", "ok", "y", "yes", "1")
+BOOLEAN_FALSE_STRINGS = ("false", "off", "no", "n", "0")
+
 
 def create_responses_mapping(results_list):
     """
@@ -106,6 +109,24 @@ def validate_data(values, value_type, questionnaire_ref):  # noqa PLR0912
     return errors
 
 
+def normalize_boolean_value(value):
+    """
+    Convert BOOLEAN_TRUE_STRING and BOOLEAN_FALSE_STRING to proper boolean values.
+
+    This helps when comparing condition values in `enable_when`, where
+    answers may come as strings but actually mean True or False.
+
+    If the value doesn't look like a boolean, return it as-is.
+    """
+    if isinstance(value, str):
+        val = value.strip().lower()
+        if val in BOOLEAN_TRUE_STRINGS:
+            return True
+        if val in BOOLEAN_FALSE_STRINGS:
+            return False
+    return value
+
+
 def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
     """
     Check if a question should be enabled based on its enable_when conditions.
@@ -139,8 +160,9 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
             # For choice questions, check all selected values
             condition_values = [v.value for v in values]
 
+        condition_value = normalize_boolean_value(condition_value)
         operator = condition["operator"]
-        expected_answer = condition["answer"]
+        expected_answer = normalize_boolean_value(condition["answer"])
 
         # Evaluate the condition based on the operator.
         if operator == "exists":
