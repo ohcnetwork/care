@@ -16,19 +16,18 @@ class RoleApiTestCase(CareAPITestBase):
             facility=self.facility
         )
 
-        # Create test permissions with valid slugs
         self.permissions = []
         valid_slugs = ["can_read_facility", "can_create_patient", "can_list_user"]
         for slug in valid_slugs:
-            context = slug.split("_")[1].upper()
+            context = slug.split("_")[2].upper()
             perm = baker.make(
                 PermissionModel,
                 slug=slug,
-                name=f"Can {slug.split('_')[1].capitalize()} {context.capitalize()}",
-                description=f"Permission to {slug.split('_')[1]} {context.lower()}",
+                name=f"Can {slug.split('_')[2].capitalize()} {context.capitalize()}",
+                description=f"Permission to {slug.split('_')[2]} {context.lower()}",
                 context=context,
             )
-        self.permissions.append(perm)
+            self.permissions.append(perm)
         self.role_list_url = reverse("role-list")
         self.role_data = {
             "name": "Test Role",
@@ -119,17 +118,14 @@ class RoleApiTestCase(CareAPITestBase):
             "permissions": [self.permissions[0].slug],
         }
         response = self.client.post(self.role_list_url, role_data, format="json")
-        if response.status_code == status.HTTP_400_BAD_REQUEST:
-            self.assertFalse(RoleModel.objects.filter(name=role_data["name"]).exists())
-        else:
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-            self.assertIn("id", response.json())
-            external_id = response.json()["id"]
-            created_role = RoleModel.objects.get(external_id=external_id)
-            self.assertEqual(created_role.name, role_data["name"])
-            permissions = RolePermission.objects.filter(role=created_role)
-            self.assertEqual(permissions.count(), 1)
-            self.assertEqual(permissions[0].permission, self.permissions[0])
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("id", response.json())
+        external_id = response.json()["id"]
+        created_role = RoleModel.objects.get(external_id=external_id)
+        self.assertEqual(created_role.name, role_data["name"])
+        permissions = RolePermission.objects.filter(role=created_role)
+        self.assertEqual(permissions.count(), 1)
+        self.assertEqual(permissions[0].permission, self.permissions[0])
 
     def test_create_role_without_permissions_as_superuser(self):
         """Superusers can create roles without specifying permissions"""
