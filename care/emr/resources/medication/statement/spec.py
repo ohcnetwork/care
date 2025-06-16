@@ -55,7 +55,7 @@ class MedicationStatementUpdateSpec(EMRResource):
     __exclude__ = ["patient", "encounter"]
 
     status: MedicationStatementStatus
-    effective_period: PeriodSpec
+    effective_period: PeriodSpec | None = None
     note: str | None = None
 
 
