@@ -143,7 +143,7 @@ class TokenBookingViewSet(
         new_slot = get_object_or_404(
             TokenSlot,
             external_id=request_data.new_slot,
-            resource=existing_booking.token_slot.resource,
+            resource__facility_id=facility.id,
         )
         with transaction.atomic():
             self.cancel_appointment_handler(
