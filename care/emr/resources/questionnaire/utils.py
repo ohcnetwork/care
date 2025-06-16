@@ -132,38 +132,55 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
             condition_question_id not in responses
             or not responses[condition_question_id].values
         ):
-            condition_value = None
+            condition_values = []
         else:
-            condition_value = responses[condition_question_id].values[0].value
+            # Get all values for the question
+            values = responses[condition_question_id].values
+            # For choice questions, check all selected values
+            condition_values = [v.value for v in values]
 
         operator = condition["operator"]
         expected_answer = condition["answer"]
 
         # Evaluate the condition based on the operator.
         if operator == "exists":
-            result = condition_value is not None
+            result = len(condition_values) > 0
         elif operator == "equals":
-            result = condition_value == expected_answer
+            # Check if any value matches
+            result = expected_answer in condition_values
         elif operator == "not_equals":
-            result = condition_value != expected_answer
+            # Check if none of the values match
+            result = expected_answer not in condition_values
         elif operator == "greater":
             try:
-                result = float(condition_value) > float(expected_answer)
+                # Check if any value is greater
+                result = any(
+                    float(v) > float(expected_answer) for v in condition_values
+                )
             except (TypeError, ValueError):
                 result = False
         elif operator == "less":
             try:
-                result = float(condition_value) < float(expected_answer)
+                # Check if any value is less
+                result = any(
+                    float(v) < float(expected_answer) for v in condition_values
+                )
             except (TypeError, ValueError):
                 result = False
         elif operator == "greater_or_equals":
             try:
-                result = float(condition_value) >= float(expected_answer)
+                # Check if any value is greater or equal
+                result = any(
+                    float(v) >= float(expected_answer) for v in condition_values
+                )
             except (TypeError, ValueError):
                 result = False
         elif operator == "less_or_equals":
             try:
-                result = float(condition_value) <= float(expected_answer)
+                # Check if any value is less or equal
+                result = any(
+                    float(v) <= float(expected_answer) for v in condition_values
+                )
             except (TypeError, ValueError):
                 result = False
         else:
