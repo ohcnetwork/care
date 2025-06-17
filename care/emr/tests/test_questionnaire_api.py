@@ -2474,3 +2474,263 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         payload = {"organizations": [self.organization.external_id]}
         response = self.client.post(url, payload, format="json")
         self.assertEqual(response.status_code, 200)
+
+
+class QuestionnaireRepeatableEnableWhenAllBehaviorTests(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_super_user()
+        self.organization = self.create_organization()
+        self.facility = self.create_facility(self.user)
+        self.facility_organization = self.create_facility_organization(self.facility)
+        self.patient = self.create_patient()
+        self.encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+
+        self.base_url = reverse("questionnaire-list")
+        self.questionnaire = self._create_questionnaire()
+        self.questions = self.questionnaire["questions"]
+        self.q_choice = next(q for q in self.questions if q["link_id"] == "1")
+        self.q_text = next(q for q in self.questions if q["link_id"] == "2")
+
+    def _create_questionnaire(self):
+        questionnaire_data = {
+            "title": "Appointment New",
+            "slug": "Appointment",
+            "status": "active",
+            "subject_type": "encounter",
+            "organizations": [str(self.organization.external_id)],
+            "questions": [
+                {
+                    "id": "3d09bcc5-5007-4166-8e5a-3d9d782be896",
+                    "text": "Normal Question",
+                    "type": "choice",
+                    "link_id": "1",
+                    "repeats": True,
+                    "answer_option": [{"value": "1"}, {"value": "2"}, {"value": "3"}],
+                },
+                {
+                    "id": "409cabeb-e334-438b-a2a5-d9c378e93528",
+                    "text": "New Question",
+                    "type": "text",
+                    "link_id": "2",
+                    "enable_when": [
+                        {"answer": "1", "operator": "equals", "question": "1"},
+                        {"answer": "2", "operator": "equals", "question": "1"},
+                    ],
+                    # 'enable_behavior': 'all' is default and implied
+                },
+            ],
+        }
+        response = self.client.post(self.base_url, questionnaire_data, format="json")
+        self.assertEqual(response.status_code, 200)
+        return response.json()
+
+    def _submit(self, results):
+        payload = {
+            "resource_id": str(self.encounter.external_id),
+            "patient": str(self.patient.external_id),
+            "encounter": str(self.encounter.external_id),
+            "results": results,
+        }
+        submit_url = reverse(
+            "questionnaire-submit", kwargs={"slug": self.questionnaire["slug"]}
+        )
+        response = self.client.post(submit_url, payload, format="json")
+        return response.status_code, response.json()
+
+    def test_text_enabled_when_all_conditions_met(self):
+        """Q2 should be saved when both '1' and '2' are selected in Q1"""
+        results = [
+            {
+                "question_id": self.q_choice["id"],
+                "values": [{"value": "1"}, {"value": "2"}],
+            },
+            {"question_id": self.q_text["id"], "values": [{"value": "valid"}]},
+        ]
+        status, data = self._submit(results)
+        self.assertEqual(status, 200)
+        saved_qids = {r["question_id"] for r in data["responses"]}
+        self.assertIn(self.q_text["id"], saved_qids)
+
+    def test_text_disabled_if_only_one_condition_met(self):
+        """Q2 should NOT be saved if only '1' is selected"""
+        results = [
+            {"question_id": self.q_choice["id"], "values": [{"value": "1"}]},
+            {"question_id": self.q_text["id"], "values": [{"value": "invalid"}]},
+        ]
+        status, data = self._submit(results)
+        self.assertEqual(status, 200)
+        self.assertNotIn(
+            self.q_text["id"], {r["question_id"] for r in data["responses"]}
+        )
+
+    def test_text_disabled_if_other_value_selected(self):
+        """Q2 should NOT be saved if Q1 is '3'"""
+        results = [
+            {"question_id": self.q_choice["id"], "values": [{"value": "3"}]},
+            {"question_id": self.q_text["id"], "values": [{"value": "invalid"}]},
+        ]
+        status, data = self._submit(results)
+        self.assertEqual(status, 200)
+        self.assertNotIn(
+            self.q_text["id"], {r["question_id"] for r in data["responses"]}
+        )
+
+    def test_text_disabled_if_parent_question_missing(self):
+        """Q2 should NOT be saved if Q1 is missing"""
+        results = [
+            {"question_id": self.q_text["id"], "values": [{"value": "invalid"}]},
+        ]
+        status, data = self._submit(results)
+        self.assertEqual(status, 200)
+        self.assertNotIn(
+            self.q_text["id"], {r["question_id"] for r in data["responses"]}
+        )
+
+    def test_text_disabled_if_only_other_value_with_one_condition(self):
+        """Q2 should NOT be saved if '2' and '3' are selected"""
+        results = [
+            {
+                "question_id": self.q_choice["id"],
+                "values": [{"value": "2"}, {"value": "3"}],
+            },
+            {"question_id": self.q_text["id"], "values": [{"value": "invalid"}]},
+        ]
+        status, data = self._submit(results)
+        self.assertEqual(status, 200)
+        self.assertNotIn(
+            self.q_text["id"], {r["question_id"] for r in data["responses"]}
+        )
+
+
+class QuestionnaireRepeatableEnableWhenAnyBehaviorTests(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_super_user()
+        self.organization = self.create_organization()
+        self.facility = self.create_facility(self.user)
+        self.facility_organization = self.create_facility_organization(self.facility)
+        self.patient = self.create_patient()
+        self.encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+
+        self.base_url = reverse("questionnaire-list")
+        self.questionnaire = self._create_questionnaire()
+        self.questions = self.questionnaire["questions"]
+        self.q_choice = next(q for q in self.questions if q["link_id"] == "1")
+        self.q_text = next(q for q in self.questions if q["link_id"] == "2")
+
+    def _create_questionnaire(self):
+        questionnaire_data = {
+            "title": "Appointment New - Any",
+            "slug": "Appointment-any",
+            "status": "active",
+            "subject_type": "encounter",
+            "organizations": [str(self.organization.external_id)],
+            "questions": [
+                {
+                    "id": "3d09bcc5-5007-4166-8e5a-3d9d782be896",
+                    "text": "Normal Question",
+                    "type": "choice",
+                    "link_id": "1",
+                    "repeats": True,
+                    "answer_option": [{"value": "1"}, {"value": "2"}, {"value": "3"}],
+                },
+                {
+                    "id": "409cabeb-e334-438b-a2a5-d9c378e93528",
+                    "text": "New Question",
+                    "type": "text",
+                    "link_id": "2",
+                    "enable_behavior": "any",
+                    "enable_when": [
+                        {"answer": "1", "operator": "equals", "question": "1"},
+                        {"answer": "2", "operator": "equals", "question": "1"},
+                    ],
+                },
+            ],
+        }
+        response = self.client.post(self.base_url, questionnaire_data, format="json")
+        self.assertEqual(response.status_code, 200)
+        return response.json()
+
+    def _submit(self, results):
+        payload = {
+            "resource_id": str(self.encounter.external_id),
+            "patient": str(self.patient.external_id),
+            "encounter": str(self.encounter.external_id),
+            "results": results,
+        }
+        submit_url = reverse(
+            "questionnaire-submit", kwargs={"slug": self.questionnaire["slug"]}
+        )
+        response = self.client.post(submit_url, payload, format="json")
+        return response.status_code, response.json()
+
+    def test_text_enabled_when_both_conditions_met(self):
+        """Q2 should be saved when both '1' and '2' are selected in Q1"""
+        results = [
+            {
+                "question_id": self.q_choice["id"],
+                "values": [{"value": "1"}, {"value": "2"}],
+            },
+            {"question_id": self.q_text["id"], "values": [{"value": "valid"}]},
+        ]
+        status, data = self._submit(results)
+        self.assertEqual(status, 200)
+        saved_qids = {r["question_id"] for r in data["responses"]}
+        self.assertIn(self.q_text["id"], saved_qids)
+
+    def test_text_enabled_if_only_one_condition_met(self):
+        """Q2 should be saved if only '1' is selected"""
+        results = [
+            {"question_id": self.q_choice["id"], "values": [{"value": "1"}]},
+            {"question_id": self.q_text["id"], "values": [{"value": "valid"}]},
+        ]
+        status, data = self._submit(results)
+        self.assertEqual(status, 200)
+        self.assertIn(self.q_text["id"], {r["question_id"] for r in data["responses"]})
+
+    def test_text_enabled_if_other_value_plus_one_match(self):
+        """Q2 should be saved if '2' and '3' are selected (since '2' matches)"""
+        results = [
+            {
+                "question_id": self.q_choice["id"],
+                "values": [{"value": "2"}, {"value": "3"}],
+            },
+            {"question_id": self.q_text["id"], "values": [{"value": "valid"}]},
+        ]
+        status, data = self._submit(results)
+        self.assertEqual(status, 200)
+        self.assertIn(self.q_text["id"], {r["question_id"] for r in data["responses"]})
+
+    def test_text_disabled_if_no_condition_met(self):
+        """Q2 should NOT be saved if only '3' is selected"""
+        results = [
+            {"question_id": self.q_choice["id"], "values": [{"value": "3"}]},
+            {"question_id": self.q_text["id"], "values": [{"value": "invalid"}]},
+        ]
+        status, data = self._submit(results)
+        self.assertEqual(status, 200)
+        self.assertNotIn(
+            self.q_text["id"], {r["question_id"] for r in data["responses"]}
+        )
+
+    def test_text_disabled_if_parent_question_missing(self):
+        """Q2 should NOT be saved if Q1 is missing"""
+        results = [
+            {"question_id": self.q_text["id"], "values": [{"value": "invalid"}]},
+        ]
+        status, data = self._submit(results)
+        self.assertEqual(status, 200)
+        self.assertNotIn(
+            self.q_text["id"], {r["question_id"] for r in data["responses"]}
+        )
