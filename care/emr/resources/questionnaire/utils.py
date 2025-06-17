@@ -436,40 +436,45 @@ def convert_to_observation_spec(
     return constructed_observation_mapping
 
 
-def remove_nested_questions(group_question, responses, results):
-    if "questions" not in group_question:
-        return
-    for child in group_question["questions"]:
-        responses.pop(child["id"], None)
-        results.results = [
-            r for r in results.results if str(r.question_id) != child["id"]
-        ]
-        # If it's another group inside, clean it recursively
-        if child.get("type") == QuestionType.group.value:
-            remove_nested_questions(child, responses, results)
+def collect_and_validate_enable_when_questions(
+    questions, responses, questionnaire_obj, errors, parent=None
+):
+    """
+    Walk the questions and:
+     - If enable_when fails → add to errors
+     - Otherwise recurse into groups and keep the question
+    Returns the filtered list of “enabled” questions.
+    """
+    valid = []
+    for q in questions:
+        # check enable_when
+        if q.get("enable_when") and not is_question_enabled(
+            q, responses, questionnaire_obj
+        ):
+            errors.append(
+                {
+                    "question_id": q["id"],
+                    "type": "enable_when_failed",
+                    "msg": (
+                        f"Question '{q.get('link_id', q['id'])}' "
+                        "is not permitted by its enable_when conditions"
+                    ),
+                }
+            )
+            # do not include q in valid
+            continue
 
+        # if it's a group, recurse for its children
+        if q["type"] == QuestionType.group.value:
+            grp = q.copy()
+            grp["questions"] = collect_and_validate_enable_when_questions(
+                q["questions"], responses, questionnaire_obj, errors, parent=q["id"]
+            )
+            valid.append(grp)
+        else:
+            valid.append(q)
 
-def prune_nested_disabled_questions(question, responses, results, questionnaire_obj):
-    if question.get("questions"):
-        enabled_children = []
-        for child in question["questions"]:
-            if "enable_when" in child and not is_question_enabled(
-                child, responses, questionnaire_obj
-            ):
-                responses.pop(child["id"], None)
-                results.results = [
-                    r for r in results.results if str(r.question_id) != child["id"]
-                ]
-                if child.get("type") == QuestionType.group.value:
-                    remove_nested_questions(child, responses, results)
-            else:
-                # Recursively check deeper levels
-                if child.get("type") == QuestionType.group.value:
-                    prune_nested_disabled_questions(
-                        child, responses, results, questionnaire_obj
-                    )
-                enabled_children.append(child)
-        question["questions"] = enabled_children
+    return valid
 
 
 def get_link_id_map(questions):
@@ -484,7 +489,7 @@ def get_link_id_map(questions):
     return mapping
 
 
-def handle_response(questionnaire_obj: Questionnaire, results, user):  # noqa: PLR0912
+def handle_response(questionnaire_obj: Questionnaire, results, user):
     """
     Generate observations and questionnaire responses after validation
     """
@@ -519,28 +524,10 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):  # noqa: P
                 "msg": "Empty Questionnaire cannot be submitted",
             }
         )
-    valid_questions = []
-    for question in questionnaire_obj.questions:
-        if "enable_when" in question and not is_question_enabled(
-            question, responses, questionnaire_obj
-        ):
-            # Remove disabled question and any responses
-            responses.pop(question["id"], None)
-            results.results = [
-                r for r in results.results if str(r.question_id) != question["id"]
-            ]
-            # Also remove nested ones if it's a group
-            if question["type"] == QuestionType.group.value:
-                remove_nested_questions(question, responses, results)
-        else:
-            # Only keep enabled questions
-            if question["type"] == QuestionType.group.value:
-                prune_nested_disabled_questions(
-                    question, responses, results, questionnaire_obj
-                )
-            valid_questions.append(question)
 
-    questionnaire_obj.questions = valid_questions
+    questionnaire_obj.questions = collect_and_validate_enable_when_questions(
+        questionnaire_obj.questions, responses, questionnaire_obj, errors
+    )
 
     for question in questionnaire_obj.questions:
         validate_question_result(
