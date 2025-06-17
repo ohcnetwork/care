@@ -446,20 +446,32 @@ def collect_and_validate_enable_when_questions(
     Returns the filtered list of “enabled” questions.
     """
 
-    def any_answered(q):
-        if q["id"] in responses:
+    def any_answered(q, resp_map):
+        resp = resp_map.get(q["id"])
+
+        # Direct answer for simple question
+        if resp and getattr(resp, "values", None):
             return True
+
+        # Repeating group: inspect sub_results
+        if resp and getattr(resp, "sub_results", None):
+            for sub in resp.sub_results:
+                sub_resp_map = create_responses_mapping(sub)
+                if any_answered(q, sub_resp_map):
+                    return True
+
+        # Recursively check child questions if present (for nested groups)
         if q.get("questions"):
-            return any(any_answered(child) for child in q["questions"])
+            return any(any_answered(child, resp_map) for child in q["questions"])
+
         return False
 
     valid = []
     for q in questions:
-        # check enable_when condition
         is_enabled = is_question_enabled(q, responses, questionnaire_obj)
 
         if not is_enabled:
-            if any_answered(q):
+            if any_answered(q, responses):
                 errors.append(
                     {
                         "question_id": q["id"],
@@ -470,9 +482,9 @@ def collect_and_validate_enable_when_questions(
                         ),
                     }
                 )
-            continue  # skip adding to valid
+            continue  # skip this question/group
 
-        # if it's a group, recurse
+        # Recurse into groups
         if q["type"] == QuestionType.group.value:
             grp = q.copy()
             grp["questions"] = collect_and_validate_enable_when_questions(
