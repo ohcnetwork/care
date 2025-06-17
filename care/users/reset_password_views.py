@@ -5,8 +5,9 @@ from django.contrib.auth.password_validation import (
     validate_password,
 )
 from django.core.exceptions import ValidationError
+from django.core.mail import EmailMessage
+from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
-from django_rest_passwordreset.serializers import PasswordValidateMixin
 from django_rest_passwordreset.signals import (
     post_password_reset,
     pre_password_reset,
@@ -16,7 +17,6 @@ from rest_framework import exceptions, serializers, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
-from care.users.models import PasswordResetToken
 from config.ratelimit import ratelimit
 
 User = get_user_model()
@@ -36,7 +36,7 @@ class ResetPasswordCheckSerializer(serializers.Serializer):
     status = serializers.CharField(read_only=True, help_text="Request status")
 
 
-class ResetPasswordConfirmSerializer(PasswordValidateMixin, serializers.Serializer):
+class ResetPasswordConfirmSerializer(serializers.Serializer):
     token = serializers.CharField(
         write_only=True, help_text="The token that was sent to the user's email address"
     )
@@ -61,32 +61,32 @@ class ResetPasswordCheck(GenericAPIView):
     @extend_schema(tags=["auth"])
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        token = serializer.validated_data["token"]
+        try:
+            serializer.is_valid(raise_exception=True)
+            token = serializer.validated_data["token"]
+        except Exception:
+            raise
 
         if ratelimit(request, "reset", [token], "20/h"):
             return Response(
                 {"detail": "Too Many Requests. Please try again later."},
                 status=status.HTTP_429_TOO_MANY_REQUESTS,
             )
-
-        try:
-            token = PasswordResetToken.objects.get(key=token, is_used=False)
-            if not token.is_valid():
-                # Token has expired
+        # Verify token
+        user, error_message = User.verify_password_reset_token(token)
+        if not user:
+            # Check if it's an expiration error
+            if error_message == "Token has expired":
                 return Response(
-                    {
-                        "status": "expired",
-                        "detail": "The password reset link has expired",
-                    },
+                    {"status": "expired", "detail": error_message},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            return Response({"status": "OK"})
-        except PasswordResetToken.DoesNotExist:
             return Response(
-                {"status": "notfound", "detail": "The password reset link is invalid"},
-                status=status.HTTP_404_NOT_FOUND,
+                {"status": "invalid", "detail": error_message},
+                status=status.HTTP_400_BAD_REQUEST,
             )
+
+        return Response({"status": "OK"})
 
 
 class ResetPasswordConfirm(GenericAPIView):
@@ -111,48 +111,36 @@ class ResetPasswordConfirm(GenericAPIView):
                 status=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
-        # Find token
-        try:
-            token = PasswordResetToken.objects.get(key=token, is_used=False)
-
-            # Check if token is valid
-            if not token.is_valid():
-                return Response(
-                    {"status": "expired", "detail": "Token has expired"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            user = token.user
-            serializer.context["user"] = user
-
-            # Validate the password again with the user context
-            try:
-                validate_password(
-                    password,
-                    user=user,
-                    password_validators=get_password_validators(
-                        settings.AUTH_PASSWORD_VALIDATORS
-                    ),
-                )
-            except ValidationError as e:
-                # raise a validation error for the serializer
-                raise exceptions.ValidationError({"password": e.messages}) from e
-
-            pre_password_reset.send(sender=self.__class__, user=user)
-            user.set_password(password)
-            user.save()
-
-            # Mark token as used
-            token.is_used = True
-            token.save()
-            post_password_reset.send(sender=self.__class__, user=user)
-            return Response({"status": "OK"})
-
-        except PasswordResetToken.DoesNotExist:
+        # Verify token and get user
+        user, error_message = User.verify_password_reset_token(token)
+        if not user:
             return Response(
-                {"status": "invalid", "detail": "Invalid token"},
-                status=status.HTTP_404_NOT_FOUND,
+                {"status": "invalid", "detail": error_message},
+                status=status.HTTP_400_BAD_REQUEST,
             )
+        serializer.context["user"] = user
+
+        try:
+            validate_password(
+                password,
+                user=user,
+                password_validators=get_password_validators(
+                    settings.AUTH_PASSWORD_VALIDATORS
+                ),
+            )
+        except ValidationError as e:
+            raise exceptions.ValidationError({"password": e.messages}) from e
+
+        # Reset password
+        pre_password_reset.send(sender=self.__class__, user=user)
+        user.set_password(password)
+
+        # Clear the reset flag to invalidate the token
+        user.password_reset_required = False
+        user.save(update_fields=["password", "password_reset_required"])
+
+        post_password_reset.send(sender=self.__class__, user=user)
+        return Response({"status": "OK"})
 
 
 class ResetPasswordRequestToken(GenericAPIView):
@@ -195,29 +183,22 @@ class ResetPasswordRequestToken(GenericAPIView):
         #     )
         # before we continue, delete all existing expired tokens
         # Find user by username or email
-        users = User.objects.filter(username=username)
-        if not users.exists():
-            users = User.objects.filter(email=username)
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            user = None
 
         active_user_found = False
-        # Clear expired tokens
-        PasswordResetToken.clear_expired()
+        # Generate token for matching user
+        if user and user.is_active:
+            active_user_found = True
 
-        # Get or create token for each matching user
-        for user in users:
-            if user.is_active:
-                active_user_found = True
-                # Invalidate existing tokens
-                PasswordResetToken.objects.filter(user=user, is_used=False).update(
-                    is_used=True
-                )
+            # Set reset required flag to make this a one-time token
+            user.password_reset_required = True
+            user.save(update_fields=["password_reset_required"])
+            token = user.generate_password_reset_token()
+            self.send_password_reset_email(user, token)
 
-                # Create new token
-                PasswordResetToken.objects.create(
-                    user=user,
-                    user_agent=request.META.get(HTTP_USER_AGENT_HEADER, ""),
-                    ip_address=request.META.get(HTTP_IP_ADDRESS_HEADER, ""),
-                )
         if not active_user_found and not getattr(
             settings, "DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE", False
         ):
@@ -225,10 +206,35 @@ class ResetPasswordRequestToken(GenericAPIView):
                 {
                     "username": [
                         _(
-                            "There is no active user associated with this username or the password can not be changed"
+                            "There is no active user associated with this username or the password cannot be changed"
                         )
-                    ],
+                    ]
                 }
             )
 
         return Response({"status": "OK"})
+
+    def send_password_reset_email(self, user, token):
+        """
+        Sends the password reset email to the user.
+        """
+        try:
+            context = {
+                "current_user": user,
+                "username": user.username,
+                "email": user.email,
+                "reset_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{token}",
+            }
+            email_html_message = render_to_string(
+                settings.USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH, context
+            )
+            msg = EmailMessage(
+                "Password Reset for Care",
+                email_html_message,
+                settings.DEFAULT_FROM_EMAIL,
+                (user.email,),
+            )
+            msg.content_subtype = "html"
+            msg.send()
+        except ValidationError as e:
+            raise exceptions.ValidationError({"message": e.messages}) from e

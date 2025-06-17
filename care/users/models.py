@@ -1,19 +1,15 @@
 import secrets
 import string
 import uuid
-from datetime import timedelta
 
+import jwt
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
-from django.core.exceptions import ValidationError
-from django.core.mail import EmailMessage
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
-from django.template.loader import render_to_string
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from rest_framework import exceptions
 
 from care.utils.models.base import BaseFlag, BaseModel
 from care.utils.models.validators import (
@@ -334,6 +330,8 @@ class User(AbstractUser):
         blank=True,
         on_delete=models.PROTECT,
     )
+    # password reset boolean
+    password_reset_required = models.BooleanField(default=False)
 
     objects = CustomUserManager()
 
@@ -429,6 +427,92 @@ class User(AbstractUser):
     def get_all_flags(self):
         return UserFlag.get_all_flags(self.id)
 
+    def generate_password_reset_token(self):
+        """Generate a JWT token with HMAC-SHA256 signature"""
+        token_id = secrets.token_hex(16)
+        exp_time = timezone.now() + timezone.timedelta(hours=24)
+
+        # Create the payload
+        payload = {
+            "iat": timezone.now(),
+            "exp": exp_time,
+            "jti": token_id,
+            "sub": str(self.external_id),
+            "type": "password_reset",
+            "username": self.username,
+        }
+
+        secret_key = settings.SECRET_KEY
+        signing_key = f"{secret_key}:{self.password}"
+
+        return jwt.encode(payload, signing_key, algorithm="HS256")
+
+    @classmethod
+    def verify_password_reset_token(cls, token):
+        """Verify a password reset token using HMAC-SHA256"""
+
+        # Helper function to decode token without verifying signature
+        def decode_token(token_to_decode):
+            try:
+                payload = jwt.decode(
+                    token_to_decode, key=None, options={"verify_signature": False}
+                )
+                username = payload.get("username")
+                if not username:
+                    return None, "Invalid token format"
+                return username, None
+            except jwt.ExpiredSignatureError:
+                return None, "Token has expired"
+            except jwt.InvalidTokenError:
+                return None, "Invalid token"
+            except Exception as e:
+                return None, f"Error verifying token: {e!s}"
+
+        # Helper function to get and validate user
+        def get_user(username):
+            try:
+                user = cls.objects.get(username=username)
+                if not user.password_reset_required:
+                    return None, "No password reset requested"
+                return user, None
+            except cls.DoesNotExist:
+                return None, "User not found"
+
+        # Helper function to verify token signature and contents
+        def verify_signature(token_to_verify, user_to_verify):
+            secret_key = settings.SECRET_KEY
+            signing_key = f"{secret_key}:{user_to_verify.password}"
+
+            try:
+                payload = jwt.decode(token_to_verify, signing_key, algorithms=["HS256"])
+
+                # Verify token type
+                token_type = payload.get("type")
+                if token_type != "password_reset":
+                    return None, "Invalid token type"
+
+                # Verify user match
+                token_sub = payload.get("sub")
+                user_external_id = str(user_to_verify.external_id)
+                if token_sub != user_external_id:
+                    return None, "Token doesn't match user"
+
+                return user_to_verify, None
+            except jwt.ExpiredSignatureError:
+                return None, "Token has expired"
+            except jwt.InvalidTokenError:
+                return None, "Invalid token signature"
+            except Exception as e:
+                return None, f"Error verifying token: {e!s}"
+
+        username, error = decode_token(token)
+        if error:
+            return None, error
+        user, error = get_user(username)
+        if error:
+            return None, error
+        return verify_signature(token, user)
+
     def save(self, *args, **kwargs) -> None:
         """
         While saving, if the local body is not null, then district will be local body's district
@@ -493,84 +577,3 @@ class UserFlag(BaseFlag):
     @classmethod
     def get_all_flags(cls, user_id: int) -> tuple[FlagName]:
         return super().get_all_flags(user_id)
-
-
-class PasswordResetToken(models.Model):
-    """Model for storing password reset tokens"""
-
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE,
-        related_name="custom_password_reset_tokens",  # Changed from "password_reset_tokens"
-    )
-    key = models.CharField(max_length=64, unique=True, db_index=True)
-    created_at = models.DateTimeField(auto_now_add=True)
-    expires_at = models.DateTimeField()
-    user_agent = models.CharField(max_length=256, blank=True)
-    ip_address = models.GenericIPAddressField(blank=True, null=True)
-    is_used = models.BooleanField(default=False)
-
-    class Meta:
-        verbose_name = "Password Reset Token"
-        verbose_name_plural = "Password Reset Tokens"
-
-    def __str__(self):
-        return f"Password reset token for user {self.user}"
-
-    def save(self, *args, **kwargs):
-        # Check if this is a new token being created
-        is_new = not self.pk
-
-        if not self.key:
-            self.key = self.generate_key()
-        if not self.expires_at:
-            expiry_hours = getattr(settings, "PASSWORD_RESET_EXPIRY_HOURS", 24)
-            self.expires_at = timezone.now() + timedelta(hours=expiry_hours)
-        super().save(*args, **kwargs)
-        if is_new:
-            self.password_reset_token_created()
-        return self
-
-    def password_reset_token_created(self):
-        """
-        Handles password reset tokens
-        When a token is created, an e-mail needs to be sent to the user
-        """
-        try:
-            # Create context for email template
-            context = {
-                "current_user": self.user,
-                "username": self.user.username,
-                "email": self.user.email,
-                "reset_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{self.key}",
-            }
-
-            # Render email HTML content from template
-            email_html_message = render_to_string(
-                settings.USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH, context
-            )
-            # Create and send the email
-            msg = EmailMessage(
-                "Password Reset for Care",
-                email_html_message,
-                settings.DEFAULT_FROM_EMAIL,
-                (self.user.email,),
-            )
-            msg.content_subtype = "html"  # Main content is now text/html
-            msg.send()
-        except ValidationError as e:
-            raise exceptions.ValidationError({"message": e.messages}) from e
-
-    @classmethod
-    def generate_key(cls):
-        """Generate a cryptographically strong unique token key"""
-        return secrets.token_urlsafe(48)  # 64 characters in base64 encoding
-
-    def is_valid(self):
-        """Check if token is valid (not expired and not used)"""
-        return not self.is_used and timezone.now() < self.expires_at
-
-    @classmethod
-    def clear_expired(cls):
-        """Delete all expired tokens"""
-        cls.objects.filter(expires_at__lt=timezone.now()).delete()
