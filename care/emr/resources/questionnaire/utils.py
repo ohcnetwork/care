@@ -165,7 +165,7 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
 
         # Evaluate the condition across all values
         if operator == "exists":
-            result = bool(all_values)
+            result = bool(all_values) if expected_answer else not bool(all_values)
         elif operator == "equals":
             result = expected_answer in all_values
         elif operator == "not_equals":
