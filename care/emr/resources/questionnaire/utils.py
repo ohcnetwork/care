@@ -165,7 +165,7 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
 
         # Evaluate the condition across all values
         if operator == "exists":
-            result = bool(all_values)
+            result = bool(all_values) if expected_answer else not bool(all_values)
         elif operator == "equals":
             result = expected_answer in all_values
         elif operator == "not_equals":
@@ -441,30 +441,38 @@ def collect_and_validate_enable_when_questions(
 ):
     """
     Walk the questions and:
-     - If enable_when fails → add to errors
+     - If enable_when fails → check if it (or its children) were answered → error
      - Otherwise recurse into groups and keep the question
     Returns the filtered list of “enabled” questions.
     """
+
+    def any_answered(q):
+        if q["id"] in responses:
+            return True
+        if q.get("questions"):
+            return any(any_answered(child) for child in q["questions"])
+        return False
+
     valid = []
     for q in questions:
-        # check enable_when
-        if q.get("enable_when") and not is_question_enabled(
-            q, responses, questionnaire_obj
-        ):
-            errors.append(
-                {
-                    "question_id": q["id"],
-                    "type": "enable_when_failed",
-                    "msg": (
-                        f"Question '{q.get('link_id', q['id'])}' "
-                        "is not permitted by its enable_when conditions"
-                    ),
-                }
-            )
-            # do not include q in valid
-            continue
+        # check enable_when condition
+        is_enabled = is_question_enabled(q, responses, questionnaire_obj)
 
-        # if it's a group, recurse for its children
+        if not is_enabled:
+            if any_answered(q):
+                errors.append(
+                    {
+                        "question_id": q["id"],
+                        "type": "enable_when_failed",
+                        "msg": (
+                            f"Question or group '{q.get('link_id', q['id'])}' "
+                            "is not permitted by its enable_when conditions"
+                        ),
+                    }
+                )
+            continue  # skip adding to valid
+
+        # if it's a group, recurse
         if q["type"] == QuestionType.group.value:
             grp = q.copy()
             grp["questions"] = collect_and_validate_enable_when_questions(

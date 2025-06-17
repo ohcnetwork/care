@@ -1659,6 +1659,42 @@ class QuestionnaireEnableWhenSubmissionTests(QuestionnaireTestBase):
         self.assertIn(self.questions[0]["id"], saved_qids, "Q1 should be saved")
         self.assertIn(self.questions[1]["id"], saved_qids, "Q2 should be enabled")
 
+    def test_exists_operator_false(self):
+        """Q2 must be enabled when Q1 is unanswered and enable_when exists=false."""
+        questions = [
+            {"link_id": "1", "type": "boolean", "text": "Q1"},
+            {
+                "link_id": "2",
+                "type": "integer",
+                "text": "Q2",
+                "enable_when": [
+                    {"question": "1", "operator": "exists", "answer": "false"}
+                ],
+            },
+        ]
+        # Create questionnaire and stash slug/questions
+        questionnaire = self._create_questionnaire(questions)
+        self.questionnaire_data = questionnaire
+        self.questions = questionnaire["questions"]
+
+        # Only submit Q2 (Q1 omitted → all_values = [])
+        responses = [
+            {
+                "question_id": self.questions[1]["id"],
+                "values": [{"value": "42"}],
+            },
+        ]
+        status, data = self._submit(responses)
+
+        # Should succeed and include Q2 since exists=false and no Q1 answer
+        self.assertEqual(status, 200, f"Expected 200 but got {status}: {data}")
+        saved_qids = {r["question_id"] for r in data["responses"]}
+        self.assertIn(
+            self.questions[1]["id"],
+            saved_qids,
+            "Q2 should be present when Q1 is unanswered and exists=false",
+        )
+
 
 class RequiredFieldValidationTests(QuestionnaireTestBase):
     """
@@ -2573,12 +2609,12 @@ class QuestionnaireRepeatableEnableWhenAllBehaviorTests(CareAPITestBase):
         self.assertEqual(status, 400)
         errors = data.get("errors", [])
         self.assertTrue(
-            any(e["type"] == "enable_when_failed" for e in errors),
-            f"Expected an enable_when_failed error, got {errors}",
-        )
-        self.assertTrue(
-            any(self.q_text["link_id"] in e["msg"] for e in errors),
-            f"Expected link_id '{self.q_text['link_id']}' in error messages, got {errors}",
+            any(
+                e["type"] == "enable_when_failed"
+                and e["question_id"] == self.q_text["id"]
+                for e in errors
+            ),
+            f"Expected enable_when_failed for question {self.q_text['id']}, got {errors}",
         )
 
     def test_text_disabled_if_other_value_selected(self):
@@ -2591,12 +2627,12 @@ class QuestionnaireRepeatableEnableWhenAllBehaviorTests(CareAPITestBase):
         self.assertEqual(status, 400)
         errors = data.get("errors", [])
         self.assertTrue(
-            any(e["type"] == "enable_when_failed" for e in errors),
-            f"Expected an enable_when_failed error, got {errors}",
-        )
-        self.assertTrue(
-            any(self.q_text["link_id"] in e["msg"] for e in errors),
-            f"Expected link_id '{self.q_text['link_id']}' in error messages, got {errors}",
+            any(
+                e["type"] == "enable_when_failed"
+                and e["question_id"] == self.q_text["id"]
+                for e in errors
+            ),
+            f"Expected enable_when_failed for question {self.q_text['id']}, got {errors}",
         )
 
     def test_text_disabled_if_parent_question_missing(self):
@@ -2608,12 +2644,12 @@ class QuestionnaireRepeatableEnableWhenAllBehaviorTests(CareAPITestBase):
         self.assertEqual(status, 400)
         errors = data.get("errors", [])
         self.assertTrue(
-            any(e["type"] == "enable_when_failed" for e in errors),
-            f"Expected an enable_when_failed error, got {errors}",
-        )
-        self.assertTrue(
-            any(self.q_text["link_id"] in e["msg"] for e in errors),
-            f"Expected link_id '{self.q_text['link_id']}' in error messages, got {errors}",
+            any(
+                e["type"] == "enable_when_failed"
+                and e["question_id"] == self.q_text["id"]
+                for e in errors
+            ),
+            f"Expected enable_when_failed for question {self.q_text['id']}, got {errors}",
         )
 
     def test_text_disabled_if_mixed_values_and_one_match(self):
@@ -2629,12 +2665,12 @@ class QuestionnaireRepeatableEnableWhenAllBehaviorTests(CareAPITestBase):
         self.assertEqual(status, 400)
         errors = data.get("errors", [])
         self.assertTrue(
-            any(e["type"] == "enable_when_failed" for e in errors),
-            f"Expected an enable_when_failed error, got {errors}",
-        )
-        self.assertTrue(
-            any(self.q_text["link_id"] in e["msg"] for e in errors),
-            f"Expected link_id '{self.q_text['link_id']}' in error messages, got {errors}",
+            any(
+                e["type"] == "enable_when_failed"
+                and e["question_id"] == self.q_text["id"]
+                for e in errors
+            ),
+            f"Expected enable_when_failed for question {self.q_text['id']}, got {errors}",
         )
 
 
@@ -2753,13 +2789,14 @@ class QuestionnaireRepeatableEnableWhenAnyBehaviorTests(CareAPITestBase):
         status, data = self._submit(results)
         self.assertEqual(status, 400)
         errors = data.get("errors", [])
+        # Assert failure on question_id, not message text
         self.assertTrue(
-            any(e["type"] == "enable_when_failed" for e in errors),
-            f"Expected an enable_when_failed error, got {errors}",
-        )
-        self.assertTrue(
-            any(self.q_text["link_id"] in e["msg"] for e in errors),
-            f"Expected link_id '{self.q_text['link_id']}' in error messages, got {errors}",
+            any(
+                e["type"] == "enable_when_failed"
+                and e["question_id"] == self.q_text["id"]
+                for e in errors
+            ),
+            f"Expected enable_when_failed for Q2 ({self.q_text['id']}), got {errors}",
         )
 
     def test_text_disabled_if_parent_question_missing(self):
@@ -2770,11 +2807,12 @@ class QuestionnaireRepeatableEnableWhenAnyBehaviorTests(CareAPITestBase):
         status, data = self._submit(results)
         self.assertEqual(status, 400)
         errors = data.get("errors", [])
+        # Assert failure on question_id, not message text
         self.assertTrue(
-            any(e["type"] == "enable_when_failed" for e in errors),
-            f"Expected an enable_when_failed error, got {errors}",
-        )
-        self.assertTrue(
-            any(self.q_text["link_id"] in e["msg"] for e in errors),
-            f"Expected link_id '{self.q_text['link_id']}' in error messages, got {errors}",
+            any(
+                e["type"] == "enable_when_failed"
+                and e["question_id"] == self.q_text["id"]
+                for e in errors
+            ),
+            f"Expected enable_when_failed for Q2 ({self.q_text['id']}), got {errors}",
         )
