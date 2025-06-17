@@ -169,7 +169,7 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
         elif operator == "equals":
             result = expected_answer in all_values
         elif operator == "not_equals":
-            result = all(v != expected_answer for v in all_values)
+            result = bool(all_values) and all(v != expected_answer for v in all_values)
         elif operator == "greater":
             try:
                 result = any(float(v) > float(expected_answer) for v in all_values)
