@@ -2,7 +2,6 @@ networks:
   default:
     name: care
     driver: overlay
-    attachable: true
 
 volumes:
   postgres-data:
@@ -27,18 +26,16 @@ services:
           - node.labels.tier == data
       restart_policy:
         condition: on-failure
-        delay: 5s
-        max_attempts: 3
       # resources:
       #   limits:
+      #     memory: 4G
+      #     cpus: '2.0'
+      #   reservations:
       #     memory: 2G
       #     cpus: '1.0'
-      #   reservations:
-      #     memory: 1G
-      #     cpus: '0.5'
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
-      interval: 30s
+      interval: 60s
       timeout: 10s
       retries: 3
 
@@ -52,20 +49,20 @@ services:
         constraints:
           - node.role == worker
           - node.labels.tier == data
+      update_config:
+        failure_action: rollback
       restart_policy:
         condition: on-failure
-        delay: 5s
-        max_attempts: 3
       # resources:
       #   limits:
+      #     memory: 2G
+      #     cpus: '1.0'
+      #   reservations:
       #     memory: 1G
       #     cpus: '0.5'
-      #   reservations:
-      #     memory: 512M
-      #     cpus: '0.25'
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
-      interval: 30s
+      interval: 60s
       timeout: 10s
       retries: 3
 
@@ -86,20 +83,20 @@ services:
         constraints:
           - node.role == worker
           - node.labels.tier == data
+      update_config:
+        failure_action: rollback
       restart_policy:
         condition: on-failure
-        delay: 5s
-        max_attempts: 3
       # resources:
       #   limits:
+      #     memory: 2G
+      #     cpus: '1.0'
+      #   reservations:
       #     memory: 1G
       #     cpus: '0.5'
-      #   reservations:
-      #     memory: 512M
-      #     cpus: '0.25'
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
-      interval: 30s
+      interval: 60s
       timeout: 10s
       retries: 3
 
@@ -107,8 +104,8 @@ services:
     image: ghcr.io/ohcnetwork/care:production-latest
     entrypoint: ["bash", "start.sh"]
     environment:
-      DJANGO_SETTINGS_MODULE: config.settings.deployment
-      # DJANGO_SECURE_SSL_REDIRECT: "False"
+      DJANGO_SETTINGS_MODULE: config.settings.production
+      DJANGO_SECURE_SSL_REDIRECT: "False"
       DATABASE_URL: postgres://postgres:postgres123@db:5432/care
       POSTGRES_DB: care
       POSTGRES_USER: postgres
@@ -131,19 +128,12 @@ services:
           - node.labels.tier == application
       update_config:
         parallelism: 1
-        delay: 30s
         failure_action: rollback
         order: start-first
-      rollback_config:
-        parallelism: 1
-        delay: 10s
-        failure_action: pause
-        order: stop-first
       restart_policy:
         condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
+        delay: 30s
+        max_attempts: 2
       labels:
         - "traefik.enable=true"
         # HTTP router
@@ -173,7 +163,7 @@ services:
     image: ghcr.io/ohcnetwork/care:production-latest
     entrypoint: ["bash", "celery_worker.sh"]
     environment:
-      DJANGO_SETTINGS_MODULE: config.settings.deployment
+      DJANGO_SETTINGS_MODULE: config.settings.production
       DATABASE_URL: postgres://postgres:postgres123@db:5432/care
       POSTGRES_DB: care
       POSTGRES_USER: postgres
@@ -194,24 +184,26 @@ services:
         constraints:
           - node.role == worker
           - node.labels.tier == application
+      update_config:
+        parallelism: 1
+        failure_action: rollback
       restart_policy:
         condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
+        delay: 30s
+        max_attempts: 2
       # resources:
       #   limits:
       #     memory: 1G
-      #     cpus: '0.5'
+      #     cpus: '1.0'
       #   reservations:
       #     memory: 512M
-      #     cpus: '0.25'
+      #     cpus: '0.5'
 
   celery-beat:
     image: ghcr.io/ohcnetwork/care:production-latest
     entrypoint: ["bash", "celery_beat.sh"]
     environment:
-      DJANGO_SETTINGS_MODULE: config.settings.deployment
+      DJANGO_SETTINGS_MODULE: config.settings.production
       DATABASE_URL: postgres://postgres:postgres123@db:5432/care
       POSTGRES_DB: care
       POSTGRES_USER: postgres
@@ -232,11 +224,13 @@ services:
         constraints:
           - node.role == worker
           - node.labels.tier == application
+      update_config:
+        failure_action: rollback
+        order: stop-first
       restart_policy:
         condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 120s
+        delay: 30s
+        max_attempts: 2
       # resources:
       #   limits:
       #     memory: 512M
@@ -278,7 +272,16 @@ services:
       placement:
         constraints:
           - node.role == manager
+      update_config:
+        failure_action: rollback
       restart_policy:
         condition: on-failure
-        delay: 5s
-        max_attempts: 3
+        delay: 30s
+        max_attempts: 2
+      # resources:
+      #   limits:
+      #     memory: 512M
+      #     cpus: '0.5'
+      #   reservations:
+      #     memory: 256M
+      #     cpus: '0.25'
