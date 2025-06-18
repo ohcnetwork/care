@@ -145,6 +145,9 @@ class TokenBookingViewSet(
             external_id=request_data.new_slot,
             resource__facility_id=facility.id,
         )
+        if existing_booking.token_slot.id == new_slot.id:
+            raise ValidationError("Cannot reschedule to the same slot")
+
         with transaction.atomic():
             self.cancel_appointment_handler(
                 existing_booking,
