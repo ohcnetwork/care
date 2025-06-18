@@ -7,6 +7,7 @@ from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common import Coding
 from care.emr.resources.observation.valueset import (
     CARE_OBSERVATION_VALUSET,
     CARE_UCUM_UNITS,
@@ -90,7 +91,8 @@ class EnableWhen(QuestionnaireBaseSpec):
 
 
 class AnswerOption(QuestionnaireBaseSpec):
-    value: Any = Field(description="Value based on question type")
+    display: str = Field(description="Display value for the option")
+    value: str | int | Coding = Field(description="Value for the option")
     initial_selected: bool = Field(
         default=False,
         description="Whether option is initially selected",
@@ -98,12 +100,21 @@ class AnswerOption(QuestionnaireBaseSpec):
 
     @field_validator("value")
     @classmethod
-    def validate_value(cls, value: str, info):
+    def validate_value_field(cls, value: str, info):
         if not value.strip():
             raise ValueError(
                 "All the answer option values must be provided for custom choices"
             )
         return value.strip()
+
+    @field_validator("display")
+    @classmethod
+    def validate_display_field(cls, display_value: str, info):
+        if not display_value.strip():
+            raise ValueError(
+                "All the answer option display values must be provided for custom choices"
+            )
+        return display_value.strip()
 
 
 class Question(QuestionnaireBaseSpec):
