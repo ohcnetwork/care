@@ -213,7 +213,7 @@ wait_for_services() {
         docker_cmd="docker exec swarm-manager docker"
     fi
 
-    for attempt in {1..30}; do
+    for attempt in {1..15}; do
         ready=0
         total=0
 
@@ -231,7 +231,7 @@ wait_for_services() {
             return 0
         fi
 
-        echo "   Attempt $attempt/30: $ready/$total services ready"
+        echo "   Attempt $attempt/15: $ready/$total services ready"
         sleep 10
     done
 
