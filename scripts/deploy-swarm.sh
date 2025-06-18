@@ -274,7 +274,20 @@ show_status() {
 # SERVICE MANAGEMENT FUNCTIONS
 # =====================================================
 show_logs() {
-    service_name="${1:-backend}"
+    if [ -z "${1:-}" ]; then
+        echo "Error: Service name is required"
+        echo "Usage: $0 logs <service_name>"
+        echo ""
+        echo "Available services:"
+        if [ "$DEPLOYMENT_MODE" = "single" ]; then
+            docker service ls --filter "label=com.docker.stack.namespace=$STACK_NAME" --format "{{.Name}}" | sed "s/${STACK_NAME}_//"
+        else
+            docker exec swarm-manager docker service ls --filter "label=com.docker.stack.namespace=$STACK_NAME" --format "{{.Name}}" | sed "s/${STACK_NAME}_//"
+        fi
+        return 1
+    fi
+
+    service_name="$1"
 
     if [ "$DEPLOYMENT_MODE" = "single" ]; then
         docker_cmd="docker"
@@ -295,8 +308,21 @@ show_logs() {
 }
 
 scale_service() {
-    service_name="${1:-backend}"
-    replicas="${2:-2}"
+    if [ -z "${1:-}" ] || [ -z "${2:-}" ]; then
+        echo "Error: Service name and replica count are required"
+        echo "Usage: $0 scale <service_name> <replica_count>"
+        echo ""
+        echo "Available services:"
+        if [ "$DEPLOYMENT_MODE" = "single" ]; then
+            docker service ls --filter "label=com.docker.stack.namespace=$STACK_NAME" --format "{{.Name}}" | sed "s/${STACK_NAME}_//"
+        else
+            docker exec swarm-manager docker service ls --filter "label=com.docker.stack.namespace=$STACK_NAME" --format "{{.Name}}" | sed "s/${STACK_NAME}_//"
+        fi
+        return 1
+    fi
+
+    service_name="$1"
+    replicas="$2"
 
     if [ "$DEPLOYMENT_MODE" = "single" ]; then
         docker_cmd="docker"
@@ -318,7 +344,20 @@ scale_service() {
 }
 
 restart_service() {
-    service_name="${1:-backend}"
+    if [ -z "${1:-}" ]; then
+        echo "Error: Service name is required"
+        echo "Usage: $0 restart <service_name>"
+        echo ""
+        echo "Available services:"
+        if [ "$DEPLOYMENT_MODE" = "single" ]; then
+            docker service ls --filter "label=com.docker.stack.namespace=$STACK_NAME" --format "{{.Name}}" | sed "s/${STACK_NAME}_//"
+        else
+            docker exec swarm-manager docker service ls --filter "label=com.docker.stack.namespace=$STACK_NAME" --format "{{.Name}}" | sed "s/${STACK_NAME}_//"
+        fi
+        return 1
+    fi
+
+    service_name="$1"
 
     if [ "$DEPLOYMENT_MODE" = "single" ]; then
         docker_cmd="docker"
@@ -417,15 +456,15 @@ case "${1:-deploy}" in
         ;;
     logs)
         detect_deployment_mode
-        show_logs "${2:-backend}"
+        show_logs "${2:-}"
         ;;
     scale)
         detect_deployment_mode
-        scale_service "${2:-backend}" "${3:-2}"
+        scale_service "${2:-}" "${3:-}"
         ;;
     restart)
         detect_deployment_mode
-        restart_service "${2:-backend}"
+        restart_service "${2:-}"
         ;;
     update)
         detect_deployment_mode
@@ -444,9 +483,9 @@ case "${1:-deploy}" in
         echo "  deploy      - Deploy the Care stack (choose single or multi-node)"
         echo "  remove      - Remove the Care stack, volumes, and cleanup infrastructure"
         echo "  status      - Show stack status and access URLs"
-        echo "  logs        - Show service logs (default: backend)"
-        echo "  scale       - Scale a service (default: backend to 2 replicas)"
-        echo "  restart     - Force restart a service (default: backend)"
+        echo "  logs        - Show service logs"
+        echo "  scale       - Scale a service"
+        echo "  restart     - Force restart a service"
         echo "  update      - Update the stack with current compose file"
         echo ""
         ;;
