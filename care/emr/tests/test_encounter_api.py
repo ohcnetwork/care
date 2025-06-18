@@ -15,6 +15,9 @@ from care.emr.resources.encounter.constants import (
 )
 from care.emr.resources.encounter.spec import StatusChoices
 from care.security.permissions.encounter import EncounterPermissions
+from care.security.permissions.facility_organization import (
+    FacilityOrganizationPermissions,
+)
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -268,13 +271,28 @@ class EncounterAPITests(CareAPITestBase):
 
     def test_create_encounter_with_permissions(self):
         role = self.create_role_with_permissions(
-            permissions=[EncounterPermissions.can_create_encounter.name]
+            permissions=[
+                EncounterPermissions.can_create_encounter.name,
+                EncounterPermissions.can_read_encounter.name,
+                PatientPermissions.can_list_patients.name,
+            ]
         )
         self.attach_role_facility_organization_user(
             self.facility_organization, self.user, role
         )
-        response = self.client.post(self.url, self.encounter_data, format="json")
-        self.assertEqual(response.status_code, 200, response.data)
+        created_response = self.client.post(
+            self.url, self.encounter_data, format="json"
+        )
+        self.assertEqual(created_response.status_code, 200, created_response.data)
+
+        detail_url = reverse(
+            "encounter-detail", kwargs={"external_id": created_response.data["id"]}
+        )
+        query_params = f"?facility={created_response.data['facility']['id']}&patient={created_response.data['patient']['id']}"
+        get_response = self.client.get(detail_url + query_params, format="json")
+
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], str(created_response.data["id"]))
 
     def test_create_encounter_without_permissions(self):
         response = self.client.post(self.url, self.encounter_data, format="json")
@@ -313,6 +331,7 @@ class EncounterAPITests(CareAPITestBase):
             permissions=[
                 EncounterPermissions.can_write_encounter.name,
                 EncounterPermissions.can_read_encounter.name,
+                PatientPermissions.can_list_patients.name,
             ]
         )
         self.attach_role_facility_organization_user(
@@ -325,8 +344,16 @@ class EncounterAPITests(CareAPITestBase):
             update_data,
             format="json",
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200, response.data)
         self.assertEqual(response.data["status"], StatusChoices.completed.value)
+
+        # get_response = self.client.get(
+        #     self._get_detail_url(self.facility.external_id, self.patient.external_id),
+        #     format="json",
+        # )
+        # print(get_response.data)
+        # self.assertEqual(response.status_code, 200)
+        # self.assertEqual(get_response.data["status"], StatusChoices.completed.value)
 
 
 class EncounterOrganizationAPITests(CareAPITestBase):
@@ -359,6 +386,7 @@ class EncounterOrganizationAPITests(CareAPITestBase):
                 EncounterPermissions.can_write_encounter.name,
                 EncounterPermissions.can_read_encounter.name,
                 PatientPermissions.can_view_clinical_data.name,
+                FacilityOrganizationPermissions.can_view_facility_organization.name,
             ]
         )
         self.attach_role_facility_organization_user(
@@ -391,6 +419,12 @@ class EncounterOrganizationAPITests(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(new_organization.external_id))
+        path = "organizations"
+        response = self.client.get(self._get_detail_url(path), format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("results", response.data)
+        ids = [org["id"] for org in response.data["results"]]
+        self.assertIn(str(new_organization.external_id), ids)
 
     def test_add_encounter_organization_without_permissions(self):
         new_organization = self.create_facility_organization(facility=self.facility)
