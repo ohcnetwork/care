@@ -66,7 +66,7 @@ def verify_password_reset_token(token):
     return (user, error_message) if not error_message else (None, error_message)
 
 
-def send_password_reset_email(user):
+def send_password_reset_email(user, mail_type):
     """
     Sends the password reset email to the user.
     """
@@ -78,16 +78,30 @@ def send_password_reset_email(user):
             "email": user.email,
             "reset_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{token}",
         }
-        email_html_message = render_to_string(
-            settings.USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH, context
-        )
-        msg = EmailMessage(
-            "Password Reset for Care",
-            email_html_message,
-            settings.DEFAULT_FROM_EMAIL,
-            (user.email,),
-        )
-        msg.content_subtype = "html"
-        msg.send()
+        if mail_type == "create_password":
+            email_html_message = render_to_string(
+                settings.USER_CREATE_PASSWORD_EMAIL_TEMPLATE_PATH, context
+            )
+            msg = EmailMessage(
+                "Set Up Your Password for Care",
+                email_html_message,
+                settings.DEFAULT_FROM_EMAIL,
+                (user.email,),
+            )
+            msg.content_subtype = "html"
+            msg.send()
+        else:
+            email_html_message = render_to_string(
+                settings.USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH, context
+            )
+            msg = EmailMessage(
+                "Password Reset for Care",
+                email_html_message,
+                settings.DEFAULT_FROM_EMAIL,
+                (user.email,),
+            )
+            msg.content_subtype = "html"
+            msg.send()
+
     except ValidationError as e:
         raise exceptions.ValidationError({"message": e.messages}) from e

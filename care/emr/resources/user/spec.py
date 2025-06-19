@@ -4,7 +4,7 @@ from enum import Enum
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from pydantic import UUID4, Field, field_validator
+from pydantic import UUID4, BaseModel, Field, field_validator
 from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Organization
@@ -165,3 +165,28 @@ class PublicUserReadSpec(UserBaseSpec):
     def perform_extra_serialization(cls, mapping, obj: User):
         mapping["id"] = str(obj.external_id)
         mapping["profile_picture_url"] = obj.read_profile_picture_url()
+
+
+class ResetPasswordCheckRequest(BaseModel):
+    token: str
+
+
+class ResetPasswordCheckResponse(BaseModel):
+    status: str
+
+
+class ResetPasswordConfirmRequest(BaseModel):
+    token: str
+    password: str
+
+
+class ResetPasswordConfirmResponse(BaseModel):
+    status: str
+
+
+class ResetPasswordRequestTokenRequest(BaseModel):
+    username: str
+
+
+class ResetPasswordRequestTokenResponse(BaseModel):
+    status: str

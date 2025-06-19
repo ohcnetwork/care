@@ -11,11 +11,18 @@ from django_rest_passwordreset.signals import (
     pre_password_reset,
 )
 from drf_spectacular.utils import extend_schema
-from pydantic import BaseModel, Field
 from rest_framework import exceptions, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
+from care.emr.resources.user.spec import (
+    ResetPasswordCheckRequest,
+    ResetPasswordCheckResponse,
+    ResetPasswordConfirmRequest,
+    ResetPasswordConfirmResponse,
+    ResetPasswordRequestTokenRequest,
+    ResetPasswordRequestTokenResponse,
+)
 from care.emr.utils.reset_password import (
     send_password_reset_email,
     verify_password_reset_token,
@@ -23,35 +30,6 @@ from care.emr.utils.reset_password import (
 from config.ratelimit import ratelimit
 
 User = get_user_model()
-
-
-class ResetPasswordCheckRequest(BaseModel):
-    token: str = Field(
-        ..., description="The token that was sent to the user's email address"
-    )
-
-
-class ResetPasswordCheckResponse(BaseModel):
-    status: str = Field(..., description="Request status")
-
-
-class ResetPasswordConfirmRequest(BaseModel):
-    token: str = Field(
-        ..., description="The token that was sent to the user's email address"
-    )
-    password: str = Field(..., description="The new password")
-
-
-class ResetPasswordConfirmResponse(BaseModel):
-    status: str = Field(..., description="Request status")
-
-
-class ResetPasswordRequestTokenRequest(BaseModel):
-    username: str
-
-
-class ResetPasswordRequestTokenResponse(BaseModel):
-    status: str = Field(..., description="Request status")
 
 
 class ResetPasswordCheck(GenericAPIView):
@@ -144,7 +122,6 @@ class ResetPasswordConfirm(GenericAPIView):
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
         try:
-            # Django's built-in password validation
             validate_password(
                 password,
                 user=user,
@@ -155,10 +132,9 @@ class ResetPasswordConfirm(GenericAPIView):
         except ValidationError as e:
             raise exceptions.ValidationError({"password": e.messages}) from e
 
-        # Reset password
         pre_password_reset.send(sender=self.__class__, user=user)
         user.set_password(password)
-        user.save()  # Remove update_fields to ensure full save
+        user.save()
 
         post_password_reset.send(sender=self.__class__, user=user)
 
@@ -221,7 +197,8 @@ class ResetPasswordRequestToken(GenericAPIView):
         # Generate token for matching user
         if user and user.is_active:
             active_user_found = True
-            send_password_reset_email(user)
+            mail_type = "reset_password"
+            send_password_reset_email(user, mail_type)
 
         if not active_user_found and not getattr(
             settings, "DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE", False

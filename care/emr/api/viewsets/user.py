@@ -75,7 +75,8 @@ class UserViewSet(EMRModelViewSet):
             )
             if not instance.has_usable_password():
                 try:
-                    send_password_reset_email(instance)
+                    mail_type = "create_password"
+                    send_password_reset_email(instance, mail_type)
                 except Exception as e:
                     raise IntegrityError(
                         "User creation failed due to email error."
