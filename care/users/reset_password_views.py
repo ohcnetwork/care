@@ -5,8 +5,6 @@ from django.contrib.auth.password_validation import (
     validate_password,
 )
 from django.core.exceptions import ValidationError
-from django.core.mail import EmailMessage
-from django.template.loader import render_to_string
 from django.utils.translation import gettext_lazy as _
 from django_rest_passwordreset.signals import (
     post_password_reset,
@@ -17,6 +15,10 @@ from rest_framework import exceptions, serializers, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
+from care.emr.utils.reset_password import (
+    send_password_reset_email,
+    verify_password_reset_token,
+)
 from config.ratelimit import ratelimit
 
 User = get_user_model()
@@ -73,7 +75,7 @@ class ResetPasswordCheck(GenericAPIView):
                 status=status.HTTP_429_TOO_MANY_REQUESTS,
             )
         # Verify token
-        user, error_message = User.verify_password_reset_token(token)
+        user, error_message = verify_password_reset_token(token)
         if not user:
             # Check if it's an expiration error
             if error_message == "Token has expired":
@@ -112,7 +114,7 @@ class ResetPasswordConfirm(GenericAPIView):
             )
 
         # Verify token and get user
-        user, error_message = User.verify_password_reset_token(token)
+        user, error_message = verify_password_reset_token(token)
         if not user:
             return Response(
                 {"status": "invalid", "detail": error_message},
@@ -135,9 +137,7 @@ class ResetPasswordConfirm(GenericAPIView):
         pre_password_reset.send(sender=self.__class__, user=user)
         user.set_password(password)
 
-        # Clear the reset flag to invalidate the token
-        user.password_reset_required = False
-        user.save(update_fields=["password", "password_reset_required"])
+        user.save(update_fields=["password"])
 
         post_password_reset.send(sender=self.__class__, user=user)
         return Response({"status": "OK"})
@@ -192,12 +192,7 @@ class ResetPasswordRequestToken(GenericAPIView):
         # Generate token for matching user
         if user and user.is_active:
             active_user_found = True
-
-            # Set reset required flag to make this a one-time token
-            user.password_reset_required = True
-            user.save(update_fields=["password_reset_required"])
-            token = user.generate_password_reset_token()
-            self.send_password_reset_email(user, token)
+            send_password_reset_email(user)
 
         if not active_user_found and not getattr(
             settings, "DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE", False
@@ -213,28 +208,3 @@ class ResetPasswordRequestToken(GenericAPIView):
             )
 
         return Response({"status": "OK"})
-
-    def send_password_reset_email(self, user, token):
-        """
-        Sends the password reset email to the user.
-        """
-        try:
-            context = {
-                "current_user": user,
-                "username": user.username,
-                "email": user.email,
-                "reset_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{token}",
-            }
-            email_html_message = render_to_string(
-                settings.USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH, context
-            )
-            msg = EmailMessage(
-                "Password Reset for Care",
-                email_html_message,
-                settings.DEFAULT_FROM_EMAIL,
-                (user.email,),
-            )
-            msg.content_subtype = "html"
-            msg.send()
-        except ValidationError as e:
-            raise exceptions.ValidationError({"message": e.messages}) from e

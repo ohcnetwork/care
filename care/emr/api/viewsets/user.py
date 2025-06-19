@@ -18,7 +18,7 @@ from care.emr.resources.user.spec import (
     UserTypeRoleMapping,
     UserUpdateSpec,
 )
-from care.emr.utils.send_password_reset_mail import send_password_creation_email
+from care.emr.utils.reset_password import send_password_reset_email
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.users.api.serializers.user import UserImageUploadSerializer, UserSerializer
@@ -75,7 +75,7 @@ class UserViewSet(EMRModelViewSet):
             )
             if not instance.has_usable_password():
                 try:
-                    send_password_creation_email(instance)
+                    send_password_reset_email(instance)
                 except Exception as e:
                     raise IntegrityError(
                         "User creation failed due to email error."
