@@ -223,6 +223,9 @@ FREQUENCY_MAP = {
     },
 }
 
+# this is initialized when the entry function is called
+FALLBACK_USER_ID = None
+
 
 def parse_dosage_str(dosage_str):
     # Match patterns like "1mg", "2.2mg", "1 mg"
@@ -257,13 +260,23 @@ def get_medication_request_medication(prescription):
     }
 
 
+consultation_medication_request_category_map = {
+    "HI": "outpatient", #"vr"
+    "A": "inpatient", #"imp"
+    "RR": "outpatient", #"amb"
+    "DC": "outpatient", #"hh"
+    "DD": "inpatient", #"emer"
+    "R": "inpatient", #"emer"
+}
+
 def get_medication_request_category(prescription):
     if prescription.prescription_type == "DISCHARGE":
         return "discharge"
-    if prescription.consultation.suggestion == "A":
-        return "inpatient"
-    if prescription.consultation.suggestion == "OP":
-        return "outpatient"
+    elif prescription.consultation:
+        return consultation_medication_request_category_map.get(
+            prescription.consultation.type
+        )
+
 
 
 def get_dosage_instruction_timing(prescription):
@@ -287,7 +300,9 @@ def migrate_medication_request(MedicationRequest, prescription):
     status, priority = "active", "routine"
     medication = get_medication_request_medication(prescription)
     category = get_medication_request_category(prescription)
-    dosage_instruction = {}
+    dosage_instruction = {
+        "as_needed_boolean": False,
+    }
 
     if prescription.instruction_on_titration:
         meta["instruction_on_titration"] = prescription.instruction_on_titration
@@ -367,8 +382,9 @@ def migrate_medication_request(MedicationRequest, prescription):
         dosage_instruction=[dosage_instruction],
         note=prescription.notes,
         authored_on=prescription.created_date,
-        requester_id=prescription.prescribed_by_id,
-        created_by_id=prescription.prescribed_by_id,
+        requester_id=prescription.prescribed_by_id or FALLBACK_USER_ID,
+        created_by_id=prescription.prescribed_by_id or FALLBACK_USER_ID,
+        updated_by_id=prescription.prescribed_by_id or FALLBACK_USER_ID,
         created_date=prescription.created_date,
         modified_date=prescription.modified_date,
         meta=meta,
@@ -415,6 +431,8 @@ def _get_administration_objects(
                 dosage=dosage,
                 note=administration.notes,
                 meta=meta,
+                created_by_id=prescription.prescribed_by_id or FALLBACK_USER_ID,
+                updated_by_id=prescription.prescribed_by_id or FALLBACK_USER_ID,
             )
         )
     return objects
@@ -426,6 +444,21 @@ def migrate_prescriptions_and_administrations(apps, schema_editor):
     from care.emr.models.medication_administration import MedicationAdministration
 
     enable_auto_time = disable_auto_time(MedicationRequest, MedicationAdministration)
+
+    User = apps.get_model("users", "User")
+    fallback_care_user, _ = User.objects.get_or_create(
+        username="careuser",
+        defaults={
+            "first_name": "Care",
+            "last_name": "User",
+            "user_type": "care_user",
+            "email": "careuser@ohc.network",
+            "phone_number": "",
+            "is_active": False,
+        }
+    )
+    global FALLBACK_USER_ID
+    FALLBACK_USER_ID = fallback_care_user.id
 
     logger.debug("Migrating Prescriptions")
     Prescription = apps.get_model("facility", "Prescription")
