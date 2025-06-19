@@ -11,7 +11,8 @@ from django_rest_passwordreset.signals import (
     pre_password_reset,
 )
 from drf_spectacular.utils import extend_schema
-from rest_framework import exceptions, serializers, status
+from pydantic import BaseModel, Field
+from rest_framework import exceptions, status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
@@ -23,32 +24,34 @@ from config.ratelimit import ratelimit
 
 User = get_user_model()
 
-HTTP_USER_AGENT_HEADER = getattr(
-    settings, "DJANGO_REST_PASSWORDRESET_HTTP_USER_AGENT_HEADER", "HTTP_USER_AGENT"
-)
-HTTP_IP_ADDRESS_HEADER = getattr(
-    settings, "DJANGO_REST_PASSWORDRESET_IP_ADDRESS_HEADER", "REMOTE_ADDR"
-)
 
-
-class ResetPasswordCheckSerializer(serializers.Serializer):
-    token = serializers.CharField(
-        write_only=True, help_text="The token that was sent to the user's email address"
+class ResetPasswordCheckRequest(BaseModel):
+    token: str = Field(
+        ..., description="The token that was sent to the user's email address"
     )
-    status = serializers.CharField(read_only=True, help_text="Request status")
 
 
-class ResetPasswordConfirmSerializer(serializers.Serializer):
-    token = serializers.CharField(
-        write_only=True, help_text="The token that was sent to the user's email address"
+class ResetPasswordCheckResponse(BaseModel):
+    status: str = Field(..., description="Request status")
+
+
+class ResetPasswordConfirmRequest(BaseModel):
+    token: str = Field(
+        ..., description="The token that was sent to the user's email address"
     )
-    password = serializers.CharField(write_only=True, help_text="The new password")
-    status = serializers.CharField(read_only=True, help_text="Request status")
+    password: str = Field(..., description="The new password")
 
 
-class ResetPasswordRequestTokenSerializer(serializers.Serializer):
-    username = serializers.CharField(write_only=True)
-    status = serializers.CharField(read_only=True, help_text="Request status")
+class ResetPasswordConfirmResponse(BaseModel):
+    status: str = Field(..., description="Request status")
+
+
+class ResetPasswordRequestTokenRequest(BaseModel):
+    username: str
+
+
+class ResetPasswordRequestTokenResponse(BaseModel):
+    status: str = Field(..., description="Request status")
 
 
 class ResetPasswordCheck(GenericAPIView):
@@ -58,37 +61,45 @@ class ResetPasswordCheck(GenericAPIView):
 
     authentication_classes = ()
     permission_classes = ()
-    serializer_class = ResetPasswordCheckSerializer
 
-    @extend_schema(tags=["auth"])
+    @extend_schema(
+        tags=["auth"],
+        request=ResetPasswordCheckRequest,
+        responses={200: ResetPasswordCheckResponse, 400: ResetPasswordCheckResponse},
+    )
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
         try:
-            serializer.is_valid(raise_exception=True)
-            token = serializer.validated_data["token"]
-        except Exception:
-            raise
+            data = ResetPasswordCheckRequest(**request.data)
+            token = data.token
+        except Exception as e:
+            return Response(
+                {"status": "error", "detail": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if ratelimit(request, "reset", [token], "20/h"):
             return Response(
                 {"detail": "Too Many Requests. Please try again later."},
                 status=status.HTTP_429_TOO_MANY_REQUESTS,
             )
+
         # Verify token
         user, error_message = verify_password_reset_token(token)
         if not user:
             # Check if it's an expiration error
             if error_message == "Token has expired":
-                return Response(
-                    {"status": "expired", "detail": error_message},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            return Response(
-                {"status": "invalid", "detail": error_message},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+                response = ResetPasswordCheckResponse(
+                    status="expired", detail=error_message
+                ).model_dump()
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-        return Response({"status": "OK"})
+            response = ResetPasswordCheckResponse(
+                status="invalid", detail=error_message
+            ).model_dump()
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+        response = ResetPasswordCheckResponse(status="OK").model_dump()
+        return Response(response)
 
 
 class ResetPasswordConfirm(GenericAPIView):
@@ -98,14 +109,25 @@ class ResetPasswordConfirm(GenericAPIView):
 
     authentication_classes = ()
     permission_classes = ()
-    serializer_class = ResetPasswordConfirmSerializer
 
-    @extend_schema(tags=["auth"])
+    @extend_schema(
+        tags=["auth"],
+        request=ResetPasswordConfirmRequest,
+        responses={
+            200: ResetPasswordConfirmResponse,
+            400: ResetPasswordConfirmResponse,
+        },
+    )
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        password = serializer.validated_data["password"]
-        token = serializer.validated_data["token"]
+        try:
+            data = ResetPasswordConfirmRequest(**request.data)
+            password = data.password
+            token = data.token
+        except Exception as e:
+            return Response(
+                {"status": "error", "detail": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if ratelimit(request, "reset", [token], "20/h"):
             return Response(
@@ -116,13 +138,13 @@ class ResetPasswordConfirm(GenericAPIView):
         # Verify token and get user
         user, error_message = verify_password_reset_token(token)
         if not user:
-            return Response(
-                {"status": "invalid", "detail": error_message},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        serializer.context["user"] = user
+            response = ResetPasswordConfirmResponse(
+                status="invalid", detail=error_message
+            ).model_dump()
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
         try:
+            # Django's built-in password validation
             validate_password(
                 password,
                 user=user,
@@ -136,30 +158,37 @@ class ResetPasswordConfirm(GenericAPIView):
         # Reset password
         pre_password_reset.send(sender=self.__class__, user=user)
         user.set_password(password)
-
-        user.save(update_fields=["password"])
+        user.save()  # Remove update_fields to ensure full save
 
         post_password_reset.send(sender=self.__class__, user=user)
-        return Response({"status": "OK"})
+
+        response = ResetPasswordConfirmResponse(status="OK").model_dump()
+        return Response(response)
 
 
 class ResetPasswordRequestToken(GenericAPIView):
     """
-    An Api View which provides a method to request a password reset token based on an e-mail address
-
-    Sends a signal reset_password_token_created when a reset token was created
+    An Api View which provides a method to request a password reset token based on an email/username
     """
 
     throttle_classes = ()
     authentication_classes = ()
     permission_classes = ()
-    serializer_class = ResetPasswordRequestTokenSerializer
 
-    @extend_schema(tags=["auth"])
+    @extend_schema(
+        tags=["auth"],
+        request=ResetPasswordRequestTokenRequest,
+        responses={200: ResetPasswordRequestTokenResponse},
+    )
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        username = serializer.validated_data["username"]
+        try:
+            data = ResetPasswordRequestTokenRequest(**request.data)
+            username = data.username
+        except Exception as e:
+            return Response(
+                {"status": "error", "detail": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if ratelimit(request, "reset", [username]):
             return Response(
@@ -207,4 +236,5 @@ class ResetPasswordRequestToken(GenericAPIView):
                 }
             )
 
-        return Response({"status": "OK"})
+        response = ResetPasswordRequestTokenResponse(status="OK").model_dump()
+        return Response(response)
