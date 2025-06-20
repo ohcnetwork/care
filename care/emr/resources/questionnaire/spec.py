@@ -111,11 +111,6 @@ class AnswerOption(QuestionnaireBaseSpec):
             )
         return value.strip()
 
-    @field_validator("display")
-    @classmethod
-    def validate_display_field(cls, display_value: str, info):
-        return display_value.strip()
-
 
 class Question(QuestionnaireBaseSpec):
     model_config = ConfigDict(populate_by_name=True)
