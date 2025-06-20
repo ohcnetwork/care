@@ -7,7 +7,7 @@ def add_display_to_answer_options(apps, schema_editor):
 
     for questionnaire in Questionnaire.objects.all():
         updated = False
-        data = questionnaire.questions
+        questions = questionnaire.questions
 
         def update_question(question):
             nonlocal updated
@@ -23,11 +23,11 @@ def add_display_to_answer_options(apps, schema_editor):
             for child in question.get("questions", []):
                 update_question(child)
 
-        for question in data.get("questions", []):
+        for question in questions:
             update_question(question)
 
         if updated:
-            questionnaire.questions = data
+            questionnaire.questions = questions
             questionnaire.save(update_fields=["questions"])
 
 
