@@ -104,10 +104,10 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
             token_slot_meta = obj.meta["token_slot"]
             mapping["token_slot"] = {
                 "id": "",
-                "availability": token_slot_meta.availability,
-                "start_datetime": token_slot_meta.start_datetime,
-                "end_datetime": token_slot_meta.end_datetime,
-                "allocated": token_slot_meta.allocated,
+                "availability": token_slot_meta["availability"],
+                "start_datetime": token_slot_meta["start_datetime"],
+                "end_datetime": token_slot_meta["end_datetime"],
+                "allocated": token_slot_meta["allocated"],
             }
             resource_user_id = token_slot_meta["resource_user_id"]
             resource_facility_id = token_slot_meta["resource_facility_id"]

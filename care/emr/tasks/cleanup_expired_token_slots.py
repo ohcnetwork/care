@@ -12,6 +12,7 @@ logger: Logger = get_task_logger(__name__)
 
 def convert_token_slot_to_dict(token_slot: TokenSlot):
     return {
+        "resource_id": token_slot.resource_id,
         "resource_user_id": token_slot.resource.user_id,
         "resource_facility_id": token_slot.resource.facility_id,
         "availability": {
@@ -44,7 +45,7 @@ def dump_expired_token_slots_to_booking_meta():
                 token_booking.meta["token_slot"] = token_slot_meta
                 token_booking.token_slot = None
                 bulk_token_booking.append(token_booking)
-        TokenBooking.objects.bulk_update(bulk_token_booking, ["meta"])
+        TokenBooking.objects.bulk_update(bulk_token_booking, ["meta", "token_slot"])
 
 
 def delete_expired_token_slots():

@@ -1,6 +1,7 @@
 from typing import Literal
 
 from django.db import transaction
+from django.db.models import Q
 from django_filters import CharFilter, DateFromToRangeFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from pydantic import UUID4, BaseModel
@@ -58,7 +59,10 @@ class TokenBookingFilters(FilterSet):
         ).first()
         if not resource:
             return queryset.none()
-        return queryset.filter(token_slot__resource=resource)
+        return queryset.filter(
+            Q(token_slot__resource=resource)
+            | Q(meta__token_slot__resource_id=resource.id)
+        )
 
 
 class TokenBookingViewSet(
@@ -95,7 +99,10 @@ class TokenBookingViewSet(
         return (
             super()
             .get_queryset()
-            .filter(token_slot__resource__facility=facility)
+            .filter(
+                Q(token_slot__resource__facility=facility)
+                | Q(meta__token_slot__resource_facility_id=facility.id)
+            )
             .select_related(
                 "token_slot",
                 "patient",
