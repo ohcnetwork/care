@@ -91,7 +91,9 @@ class EnableWhen(QuestionnaireBaseSpec):
 
 
 class AnswerOption(QuestionnaireBaseSpec):
-    display: str = Field(description="Display value for the option")
+    display: str | None = Field(
+        default=None, description="Display value for the option (optional)"
+    )
     value: str | int | Coding = Field(description="Value for the option")
     initial_selected: bool = Field(
         default=False,
@@ -100,7 +102,7 @@ class AnswerOption(QuestionnaireBaseSpec):
 
     @field_validator("value")
     @classmethod
-    def validate_value_field(cls, value: str, info):
+    def validate_value_field(cls, value: str | int | Coding, info):
         if isinstance(value, str):
             value = value.strip()
         if not value:
@@ -112,10 +114,6 @@ class AnswerOption(QuestionnaireBaseSpec):
     @field_validator("display")
     @classmethod
     def validate_display_field(cls, display_value: str, info):
-        if not display_value.strip():
-            raise ValueError(
-                "All the answer option display values must be provided for custom choices"
-            )
         return display_value.strip()
 
 
