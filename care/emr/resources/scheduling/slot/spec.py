@@ -91,15 +91,29 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["token_slot"] = TokenSlotBaseSpec.serialize(obj.token_slot).model_dump(
-            exclude=["meta"]
-        )
         mapping["patient"] = PatientOTPReadSpec.serialize(obj.patient).model_dump(
             exclude=["meta"]
         )
+        if obj.token_slot:
+            mapping["token_slot"] = TokenSlotBaseSpec.serialize(
+                obj.token_slot
+            ).model_dump(exclude=["meta"])
+            resource_user_id = obj.token_slot.resource.user_id
+            resource_facility_id = obj.token_slot.resource.facility_id
+        else:
+            token_slot_meta = obj.meta["token_slot"]
+            mapping["token_slot"] = {
+                "id": "",
+                "availability": token_slot_meta.availability,
+                "start_datetime": token_slot_meta.start_datetime,
+                "end_datetime": token_slot_meta.end_datetime,
+                "allocated": token_slot_meta.allocated,
+            }
+            resource_user_id = token_slot_meta["resource_user_id"]
+            resource_facility_id = token_slot_meta["resource_facility_id"]
         mapping["user"] = UserSpec.serialize(
-            User.objects.get(id=obj.token_slot.resource.user_id)
+            User.objects.get(id=resource_user_id)
         ).model_dump(exclude=["meta"])
         mapping["facility"] = FacilityBareMinimumSpec.serialize(
-            Facility.objects.get(id=obj.token_slot.resource.facility_id)
+            Facility.objects.get(id=resource_facility_id)
         ).model_dump(exclude=["meta"])

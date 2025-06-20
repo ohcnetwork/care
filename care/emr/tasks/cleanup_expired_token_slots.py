@@ -12,7 +12,8 @@ logger: Logger = get_task_logger(__name__)
 
 def convert_token_slot_to_dict(token_slot: TokenSlot):
     return {
-        "resource_id": token_slot.resource_id,
+        "resource_user_id": token_slot.resource.user_id,
+        "resource_facility_id": token_slot.resource.facility_id,
         "availability": {
             "name": token_slot.availability.name,
             "tokens_per_slot": token_slot.availability.tokens_per_slot,
