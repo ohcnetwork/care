@@ -101,7 +101,9 @@ class AnswerOption(QuestionnaireBaseSpec):
     @field_validator("value")
     @classmethod
     def validate_value_field(cls, value: str, info):
-        if not value.strip():
+        if isinstance(value, str):
+            value = value.strip()
+        if not value:
             raise ValueError(
                 "All the answer option values must be provided for custom choices"
             )
