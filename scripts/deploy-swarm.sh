@@ -5,13 +5,6 @@ set -euo pipefail
 STACK_NAME="care"
 COMPOSE_FILE="docker-compose.swarm.yaml"
 
-check_docker() {
-    if ! docker --version >/dev/null 2>&1; then
-        echo "Docker not installed or not running"
-        exit 1
-    fi
-}
-
 init_swarm() {
     if ! docker info --format '{{.Swarm.LocalNodeState}}' | grep -q "active"; then
         echo "Initializing Docker Swarm..."
@@ -37,14 +30,7 @@ show_status() {
     echo ""
     echo "Service Tasks:"
     docker stack ps "$STACK_NAME"
-    echo ""
-    echo "Access URLs:"
-    echo "Care Application: http://care.localhost"
-    echo "MinIO Console: http://localhost:9101"
-    echo "Traefik Dashboard: http://localhost:8080"
 }
-
-
 
 remove_stack() {
     echo "Removing stack '$STACK_NAME'..."
@@ -60,7 +46,6 @@ remove_stack() {
 
 main_deploy() {
     echo "Docker Swarm Deployment"
-    check_docker
     init_swarm
     deploy_stack
     show_status
@@ -85,7 +70,7 @@ case "${1:-deploy}" in
     *)
         echo "Commands:"
         echo "  deploy  - Deploy the CARE stack"
-        echo "  remove  - Remove the CARE stack and volumes"
+        echo "  remove  - Remove the CARE stack"
         echo "  status  - Show stack status"
         echo "  update  - Update the stack"
         ;;
