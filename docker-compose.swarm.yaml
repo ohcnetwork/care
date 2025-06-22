@@ -19,13 +19,22 @@ services:
     volumes:
       - postgres-data:/var/lib/postgresql/data
     deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == worker
-          - node.labels.tier == data
+      replicas: 2
+      # placement:
+      #   constraints:
+      #     - node.role == worker
+      #   max_replicas_per_node: 1
+      update_config:
+        failure_action: rollback
+        parallelism: 1
+        order: stop-first
+        delay: 30s
+        monitor: 60s
       restart_policy:
         condition: on-failure
+        delay: 15s
+        max_attempts: 3
+        window: 120s
       # resources:
       #   limits:
       #     memory: 4G
@@ -44,15 +53,22 @@ services:
     volumes:
       - redis-data:/data
     deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == worker
-          - node.labels.tier == data
+      replicas: 2
+      # placement:
+      #   constraints:
+      #     - node.role == worker
+      #   max_replicas_per_node: 1
       update_config:
         failure_action: rollback
+        parallelism: 1
+        order: start-first
+        delay: 15s
+        monitor: 30s
       restart_policy:
         condition: on-failure
+        delay: 15s
+        max_attempts: 3
+        window: 120s
       # resources:
       #   limits:
       #     memory: 2G
@@ -78,15 +94,22 @@ services:
       - minio-data:/data
     command: server /data --console-address ":9001"
     deploy:
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == worker
-          - node.labels.tier == data
+      replicas: 2
+      # placement:
+      #   constraints:
+      #     - node.role == worker
+      #   max_replicas_per_node: 1
       update_config:
         failure_action: rollback
+        parallelism: 1
+        order: start-first
+        delay: 30s
+        monitor: 45s
       restart_policy:
         condition: on-failure
+        delay: 15s
+        max_attempts: 3
+        window: 120s
       # resources:
       #   limits:
       #     memory: 2G
@@ -121,19 +144,22 @@ services:
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
-      replicas: 2
-      placement:
-        constraints:
-          - node.role == worker
-          - node.labels.tier == application
+      replicas: 3
+      # placement:
+      #   constraints:
+      #     - node.role == worker
+      #   max_replicas_per_node: 1
       update_config:
-        parallelism: 1
         failure_action: rollback
+        parallelism: 1
         order: start-first
+        delay: 10s
+        monitor: 30s
       restart_policy:
         condition: on-failure
-        delay: 30s
-        max_attempts: 2
+        delay: 15s
+        max_attempts: 3
+        window: 120s
       labels:
         - "traefik.enable=true"
         # HTTP router
@@ -141,10 +167,10 @@ services:
         - "traefik.http.routers.backend.entrypoints=web"
         - "traefik.http.routers.backend.service=backend"
         # HTTPS router
-        # - "traefik.http.routers.backend-secure.rule=Host(`care.areeb.dev`)"
-        # - "traefik.http.routers.backend-secure.entrypoints=websecure"
-        # - "traefik.http.routers.backend-secure.service=backend"
-        # - "traefik.http.routers.backend-secure.tls.certresolver=letsencrypt"
+        # - "traefik.http.routers.backend.rule=Host(`careapi.ohc.network`)"
+        # - "traefik.http.routers.backend.entrypoints=websecure"
+        # - "traefik.http.routers.backend.service=backend"
+        # - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
         - "traefik.http.services.backend.loadbalancer.server.port=9000"
       # resources:
       #   limits:
@@ -179,18 +205,22 @@ services:
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
-      replicas: 2
-      placement:
-        constraints:
-          - node.role == worker
-          - node.labels.tier == application
+      replicas: 3
+      # placement:
+      #   constraints:
+      #     - node.role == worker
+      #   max_replicas_per_node: 1
       update_config:
-        parallelism: 1
         failure_action: rollback
+        parallelism: 1
+        order: start-first
+        delay: 10s
+        monitor: 30s
       restart_policy:
         condition: on-failure
-        delay: 30s
-        max_attempts: 2
+        delay: 15s
+        max_attempts: 3
+        window: 120s
       # resources:
       #   limits:
       #     memory: 1G
@@ -198,6 +228,11 @@ services:
       #   reservations:
       #     memory: 512M
       #     cpus: '0.5'
+    healthcheck:
+      test: ["CMD-SHELL", "exit 0"] # Celery workers don't have a specific health check, just ensure they start
+      interval: 60s
+      timeout: 10s
+      retries: 3
 
   celery-beat:
     image: ghcr.io/ohcnetwork/care:production-latest
@@ -220,17 +255,21 @@ services:
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
       replicas: 1
-      placement:
-        constraints:
-          - node.role == worker
-          - node.labels.tier == application
+      # placement:
+      #   constraints:
+      #     - node.role == worker
+      #   max_replicas_per_node: 1
       update_config:
         failure_action: rollback
+        parallelism: 1
         order: stop-first
+        delay: 15s
+        monitor: 30s
       restart_policy:
         condition: on-failure
-        delay: 30s
-        max_attempts: 2
+        delay: 15s
+        max_attempts: 3
+        window: 120s
       # resources:
       #   limits:
       #     memory: 512M
@@ -260,24 +299,32 @@ services:
       # Let's Encrypt setup
       # - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
       # - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
-      # - --certificatesresolvers.letsencrypt.acme.email=hi@areeb.dev
+      # - --certificatesresolvers.letsencrypt.acme.email=contact@ohc.network
       # - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
       # - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
       - --log.level=INFO
+      - --ping=true
+      - --entrypoints.ping.address=:8082
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       # - letsencrypt-data:/letsencrypt
     deploy:
-      replicas: 1
+      replicas: 2
       placement:
         constraints:
           - node.role == manager
+        # max_replicas_per_node: 1
       update_config:
         failure_action: rollback
+        parallelism: 1
+        order: start-first
+        delay: 15s
+        monitor: 30s
       restart_policy:
         condition: on-failure
-        delay: 30s
-        max_attempts: 2
+        delay: 15s
+        max_attempts: 3
+        window: 120s
       # resources:
       #   limits:
       #     memory: 512M
@@ -285,3 +332,8 @@ services:
       #   reservations:
       #     memory: 256M
       #     cpus: '0.25'
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
