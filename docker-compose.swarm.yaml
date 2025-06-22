@@ -105,7 +105,7 @@ services:
     entrypoint: ["bash", "start.sh"]
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.production
-      # DJANGO_SECURE_SSL_REDIRECT: "False"
+      DJANGO_SECURE_SSL_REDIRECT: "False"
       DATABASE_URL: postgres://postgres:postgres123@db:5432/care
       POSTGRES_DB: care
       POSTGRES_USER: postgres
@@ -137,15 +137,15 @@ services:
       labels:
         - "traefik.enable=true"
         # HTTP router
-        - "traefik.http.routers.care-backend.rule=Host(`care.localhost`)"
-        - "traefik.http.routers.care-backend.entrypoints=web"
-        - "traefik.http.routers.care-backend.service=care-backend"
+        - "traefik.http.routers.backend.rule=Host(`care.localhost`)"
+        - "traefik.http.routers.backend.entrypoints=web"
+        - "traefik.http.routers.backend.service=backend"
         # HTTPS router
-        # - "traefik.http.routers.care-backend-secure.rule=Host(`care.areeb.dev`)"
-        # - "traefik.http.routers.care-backend-secure.entrypoints=websecure"
-        # - "traefik.http.routers.care-backend-secure.service=care-backend"
-        # - "traefik.http.routers.care-backend-secure.tls.certresolver=letsencrypt"
-        - "traefik.http.services.care-backend.loadbalancer.server.port=9000"
+        # - "traefik.http.routers.backend-secure.rule=Host(`care.areeb.dev`)"
+        # - "traefik.http.routers.backend-secure.entrypoints=websecure"
+        # - "traefik.http.routers.backend-secure.service=backend"
+        # - "traefik.http.routers.backend-secure.tls.certresolver=letsencrypt"
+        - "traefik.http.services.backend.loadbalancer.server.port=9000"
       # resources:
       #   limits:
       #     memory: 2G
