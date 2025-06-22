@@ -138,7 +138,7 @@ services:
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
       BUCKET_ENDPOINT: http://minio:9000
-      BUCKET_EXTERNAL_ENDPOINT: http://localhost:9100
+      BUCKET_EXTERNAL_ENDPOINT: http://EC2_PUBLIC_IP:9100
       BUCKET_KEY: minioadmin
       BUCKET_SECRET: minioadmin123
       FILE_UPLOAD_BUCKET: patient-bucket
@@ -163,7 +163,7 @@ services:
       labels:
         - "traefik.enable=true"
         # HTTP router
-        - "traefik.http.routers.backend.rule=Host(`care.localhost`)"
+        - "traefik.http.routers.backend.rule=Host(`EC2_PUBLIC_IP`)"
         - "traefik.http.routers.backend.entrypoints=web"
         - "traefik.http.routers.backend.service=backend"
         # HTTPS router
@@ -199,7 +199,7 @@ services:
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
       BUCKET_ENDPOINT: http://minio:9000
-      BUCKET_EXTERNAL_ENDPOINT: http://localhost:9100
+      BUCKET_EXTERNAL_ENDPOINT: http://EC2_PUBLIC_IP:9100
       BUCKET_KEY: minioadmin
       BUCKET_SECRET: minioadmin123
       FILE_UPLOAD_BUCKET: patient-bucket
@@ -248,7 +248,7 @@ services:
       REDIS_URL: redis://redis:6379/0
       CELERY_BROKER_URL: redis://redis:6379/0
       BUCKET_ENDPOINT: http://minio:9000
-      BUCKET_EXTERNAL_ENDPOINT: http://localhost:9100
+      BUCKET_EXTERNAL_ENDPOINT: http://EC2_PUBLIC_IP:9100
       BUCKET_KEY: minioadmin
       BUCKET_SECRET: minioadmin123
       FILE_UPLOAD_BUCKET: patient-bucket

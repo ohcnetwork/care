@@ -35,10 +35,7 @@ show_status() {
 remove_stack() {
     echo "Removing stack '$STACK_NAME'..."
     docker stack rm "$STACK_NAME"
-
-    echo "Waiting for removal..."
     sleep 10
-
     echo "Removing volumes..."
     docker volume rm ${STACK_NAME}_minio-data ${STACK_NAME}_postgres-data ${STACK_NAME}_redis-data 2>/dev/null || true
     echo "Stack removed"
