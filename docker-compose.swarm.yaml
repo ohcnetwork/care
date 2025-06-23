@@ -163,15 +163,18 @@ services:
       labels:
         - "traefik.enable=true"
         # HTTP router
-        - "traefik.http.routers.backend-http.rule=Host(`EC2_PUBLIC_IP`)"
-        - "traefik.http.routers.backend-http.entrypoints=web"
-        - "traefik.http.routers.backend-http.service=backend"
+        # - "traefik.http.routers.backend-http.rule=Host(`EC2_PUBLIC_IP`)"
+        # - "traefik.http.routers.backend-http.entrypoints=web"
+        # - "traefik.http.routers.backend-http.service=backend"
         # HTTPS router
         - "traefik.http.routers.backend-https.rule=Host(`api.areeb.dev`)"
         - "traefik.http.routers.backend-https.entrypoints=websecure"
         - "traefik.http.routers.backend-https.service=backend"
         - "traefik.http.routers.backend-https.tls.certresolver=letsencrypt"
         - "traefik.http.services.backend.loadbalancer.server.port=9000"
+        # Redirect middleware
+        # - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+        # - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
       # resources:
       #   limits:
       #     memory: 2G
@@ -293,9 +296,9 @@ services:
       - --entrypoints.web.address=:80
       - --entrypoints.websecure.address=:443
       # Redirect HTTP to HTTPS
-      # - --entrypoints.web.http.redirections.entrypoint.to=websecure
-      # - --entrypoints.web.http.redirections.entrypoint.scheme=https
-      # - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
       # Let's Encrypt setup
       - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
       - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
