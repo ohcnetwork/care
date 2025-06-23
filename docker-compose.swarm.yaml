@@ -7,7 +7,7 @@ volumes:
   postgres-data:
   redis-data:
   minio-data:
-  # letsencrypt-data:
+  letsencrypt-data:
 
 services:
   db:
@@ -167,10 +167,9 @@ services:
         - "traefik.http.routers.backend.entrypoints=web"
         - "traefik.http.routers.backend.service=backend"
         # HTTPS router
-        # - "traefik.http.routers.backend.rule=Host(`careapi.ohc.network`)"
-        # - "traefik.http.routers.backend.entrypoints=websecure"
-        # - "traefik.http.routers.backend.service=backend"
-        # - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.backend.rule=Host(`api.areeb.dev`)"
+        - "traefik.http.routers.backend.entrypoints=websecure"
+        - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
         - "traefik.http.services.backend.loadbalancer.server.port=9000"
       # resources:
       #   limits:
@@ -291,23 +290,23 @@ services:
       - --providers.swarm.exposedbydefault=false
       - --providers.swarm.network=care
       - --entrypoints.web.address=:80
-      # - --entrypoints.websecure.address=:443
+      - --entrypoints.websecure.address=:443
       # Redirect HTTP to HTTPS
-      # - --entrypoints.web.http.redirections.entrypoint.to=websecure
-      # - --entrypoints.web.http.redirections.entrypoint.scheme=https
-      # - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
       # Let's Encrypt setup
-      # - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
-      # - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
-      # - --certificatesresolvers.letsencrypt.acme.email=contact@ohc.network
-      # - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
-      # - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.letsencrypt.acme.email=contact@ohc.network
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
       - --log.level=INFO
       - --ping=true
       - --entrypoints.ping.address=:8082
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      # - letsencrypt-data:/letsencrypt
+      - letsencrypt-data:/letsencrypt
     deploy:
       replicas: 2
       placement:
