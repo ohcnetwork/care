@@ -274,7 +274,7 @@ def get_medication_request_category(prescription):
         return "discharge"
     elif prescription.consultation:
         return consultation_medication_request_category_map.get(
-            prescription.consultation.type
+            prescription.consultation.suggestion, "outpatient"
         )
 
 
