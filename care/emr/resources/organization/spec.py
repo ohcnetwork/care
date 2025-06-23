@@ -1,5 +1,7 @@
 from enum import Enum
 
+from django.conf import settings
+from django.shortcuts import get_object_or_404
 from pydantic import UUID4, model_validator
 
 from care.emr.models.organization import Organization
@@ -40,6 +42,14 @@ class OrganizationWriteSpec(OrganizationBaseSpec):
         ):
             err = "Parent not found"
             raise ValueError(err)
+
+        if self.parent:
+            parent = get_object_or_404(Organization, external_id=self.parent)
+            # Validate Depth
+            if parent.level_cache >= settings.ORGANIZATION_MAX_DEPTH:
+                error = f"Max depth reached ({settings.ORGANIZATION_MAX_DEPTH})"
+                raise ValueError(error)
+
         return self
 
     def perform_extra_deserialization(self, is_update, obj):
