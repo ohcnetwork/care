@@ -8,25 +8,25 @@ volumes:
     driver: local
     driver_opts:
       type: nfs4
-      o: addr=EC2_PUBLIC_IP,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14
+      o: addr=EC2_PRIVATE_IP,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14
       device: ":/opt/docker-data/postgres"
   redis-data:
     driver: local
     driver_opts:
       type: nfs4
-      o: addr=EC2_PUBLIC_IP,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14
+      o: addr=EC2_PRIVATE_IP,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14
       device: ":/opt/docker-data/redis"
   minio-data:
     driver: local
     driver_opts:
       type: nfs4
-      o: addr=EC2_PUBLIC_IP,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14
+      o: addr=EC2_PRIVATE_IP,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14
       device: ":/opt/docker-data/minio"
   letsencrypt-data:
     driver: local
     driver_opts:
       type: nfs4
-      o: addr=EC2_PUBLIC_IP,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14
+      o: addr=EC2_PRIVATE_IP,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14
       device: ":/opt/docker-data/letsencrypt"
 
 services:
