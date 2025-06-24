@@ -159,9 +159,7 @@ class OrganizationViewSet(EMRModelViewSet):
             .select_related("parent", "created_by", "updated_by")
             .order_by("created_date")
         )
-        if "parent" in self.request.GET and not self.request.GET.get("parent"):
-            # Filter for root organizations, For some reason its not working as intended in Django Filters
-            queryset = queryset.filter(parent__isnull=True)
+
         if getattr(self.request.user, "is_alternative_login", False):
             # OTP Mode can only access organizations of the type govt and role
             # OTP Users do not have any more permissions

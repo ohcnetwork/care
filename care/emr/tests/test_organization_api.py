@@ -4,7 +4,7 @@ from django.urls import reverse
 from care.security.permissions.organization import (
     OrganizationPermissions,
 )
-from care.security.roles.role import ADMINISTRATOR
+from care.security.roles.role import ADMINISTRATOR, STAFF_ROLE
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -339,4 +339,122 @@ class OrganizationAPITestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 403)
         self.assertContains(
             response, "Cannot delete organization with children", status_code=403
+        )
+
+    # Organization Filtering Tests
+
+    def test_otp_user_can_only_access_govt_organizations(self):
+        """Test that OTP users can only access government organizations."""
+        # Create a user with is_alternative_login flag
+        otp_user = self.create_user()
+        otp_user.is_alternative_login = True
+        otp_user.save()
+
+        self.create_organization(user=self.super_user, name="Govt Org", org_type="govt")
+        self.create_organization(user=self.super_user, name="Team Org", org_type="team")
+
+        self.client.force_authenticate(user=otp_user)
+        response = self.client.get(self.url)
+        self.assertEqual(response.status_code, 200)
+
+        org_types = [org["org_type"] for org in response.data["results"]]
+        self.assertTrue(all(org_type == "govt" for org_type in org_types))
+        self.assertNotIn("team", org_types)
+
+    def test_get_only_parent_organizations(self):
+        """Test that only parent organizations are returned."""
+        self.client.force_authenticate(user=self.super_user)
+        self.create_organization(
+            user=self.super_user, name="Parent Org 1", org_type="govt"
+        )
+        self.create_organization(
+            user=self.super_user,
+            name="Child Org 1",
+            org_type="team",
+            parent=self.root_organization,
+        )
+        response = self.client.get(
+            f"{self.url}?parent={self.root_organization.external_id}"
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_list_organizations_filtered_by_permission(self):
+        """Test that organizations can be filtered by user permissions."""
+        org1 = self.create_organization(
+            user=self.super_user, name="Org 1", org_type="govt"
+        )
+        self.create_organization(user=self.super_user, name="Org 2", org_type="team")
+        role = self.create_role_with_permissions(
+            permissions=[
+                OrganizationPermissions.can_view_organization.name,
+            ],
+            role_name=STAFF_ROLE.name,
+        )
+        # Assign permissions to the user
+        self.attach_role_organization_user(org1, self.user, role)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            f"{self.url}?permission={OrganizationPermissions.can_view_organization.name}"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            str(org1.external_id), [org["id"] for org in response.data["results"]]
+        )
+
+    def test_list_organizations_filtered_by_org_type(self):
+        """Test that organizations can be filtered by org_type."""
+        self.client.force_authenticate(user=self.user)
+        self.create_organization(user=self.super_user, name="Govt Org", org_type="govt")
+        self.create_organization(user=self.super_user, name="Team Org", org_type="team")
+        response = self.client.get(f"{self.url}?org_type=govt")
+        self.assertEqual(response.status_code, 200)
+        org_types = [org["org_type"] for org in response.data["results"]]
+        self.assertTrue(all(org_type == "govt" for org_type in org_types))
+
+    def test_list_organizations_filtered_by_name(self):
+        """Test that organizations can be filtered by name."""
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(f"{self.url}?name=Parent Organization")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(self.root_organization.external_id)
+        )
+
+    def test_list_organizations_filtered_by_parent(self):
+        """Test that organizations can be filtered by parent."""
+        self.client.force_authenticate(user=self.super_user)
+        self.create_organization(
+            user=self.super_user, name="Unrelated Org", org_type="team"
+        )
+        child_org = self.create_organization(
+            user=self.super_user,
+            name="Child Org 1",
+            org_type="team",
+            parent=self.root_organization,
+        )
+        response = self.client.get(
+            f"{self.url}?parent={self.root_organization.external_id}"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(child_org.external_id))
+
+    def test_list_organizations_filtered_by_level_cache(self):
+        """Test that organizations can be filtered by level_cache."""
+        self.client.force_authenticate(user=self.super_user)
+        org2 = self.create_organization(
+            user=self.super_user,
+            name="Child Org 1",
+            org_type="team",
+            parent=self.root_organization,
+        )
+        response = self.client.get(f"{self.url}?level_cache=1")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            str(org2.external_id), [org["id"] for org in response.data["results"]]
+        )
+        self.assertNotIn(
+            str(self.root_organization.external_id),
+            [org["id"] for org in response.data["results"]],
         )
