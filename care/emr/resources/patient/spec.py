@@ -40,7 +40,7 @@ class PatientBaseSpec(EMRResource):
     id: UUID4 | None = None
     name: str = Field(max_length=200)
     gender: GenderChoices
-    phone_number: PhoneNumber | None = Field(None, max_length=14)
+    phone_number: PhoneNumber = Field(max_length=14)
     emergency_phone_number: PhoneNumber | None = Field(None, max_length=14)
     address: str | None = None
     permanent_address: str | None = None
