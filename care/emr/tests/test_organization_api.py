@@ -458,3 +458,207 @@ class OrganizationAPITestCase(CareAPITestBase):
             str(self.root_organization.external_id),
             [org["id"] for org in response.data["results"]],
         )
+
+    def test_list_organizations_filtered_by_mine(self):
+        """Test that organizations can be filtered by mine."""
+        self.client.force_authenticate(user=self.user)
+        org1 = self.create_organization(
+            user=self.super_user, name="Govt Org", org_type="govt"
+        )
+        self.create_organization(user=self.super_user, name="Team Org", org_type="team")
+        self.attach_role_organization_user(org1, self.user, self.administrator_role)
+        response = self.client.get(f"{self.url}mine/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            str(org1.external_id), [org["id"] for org in response.data["results"]]
+        )
+
+
+class OrganizationUsersTestCase(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.super_user = self.create_super_user()
+        self.user = self.create_user()
+        self.administrator_role = self.create_role_with_permissions(
+            role_name=ADMINISTRATOR.name,
+            permissions=[
+                OrganizationPermissions.can_view_organization.name,
+                OrganizationPermissions.can_manage_organization_users.name,
+                OrganizationPermissions.can_list_organization_users.name,
+            ],
+        )
+        self.root_organization = self.create_organization(
+            user=self.super_user, name="Parent Organization", org_type="govt"
+        )
+
+    def get_url(self, organization_external_id):
+        """Get the URL for the organization users API."""
+        return reverse(
+            "organization-users-list",
+            kwargs={"organization_external_id": str(organization_external_id)},
+        )
+
+    # Adding Users to Organization
+
+    def test_add_user_to_organization_as_super_user(self):
+        """Test that a super user can add a user to an organization."""
+        self.client.force_authenticate(user=self.super_user)
+        data = {
+            "user": str(self.user.external_id),
+            "role": str(self.administrator_role.external_id),
+        }
+        response = self.client.post(
+            self.get_url(self.root_organization.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["user"]["id"], str(self.user.external_id))
+        self.assertEqual(
+            response.data["role"]["id"], str(self.administrator_role.external_id)
+        )
+        get_response = self.client.get(self.get_url(self.root_organization.external_id))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertIn(
+            str(self.user.external_id),
+            [user["user"]["id"] for user in get_response.data["results"]],
+        )
+
+    def test_add_user_to_organization_as_user_with_permission(self):
+        """Test that a user with permission can add a user to an organization."""
+        self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        new_user = self.create_user()
+        self.client.force_authenticate(user=self.user)
+        data = {
+            "user": str(new_user.external_id),
+            "role": str(self.administrator_role.external_id),
+        }
+        response = self.client.post(
+            self.get_url(self.root_organization.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["user"]["id"], str(new_user.external_id))
+        self.assertEqual(
+            response.data["role"]["id"], str(self.administrator_role.external_id)
+        )
+        get_response = self.client.get(self.get_url(self.root_organization.external_id))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertIn(
+            str(new_user.external_id),
+            [user["user"]["id"] for user in get_response.data["results"]],
+        )
+
+    def test_add_user_to_organization_as_user_without_permission(self):
+        """Test that a user without permission cannot add a user to an organization."""
+        self.client.force_authenticate(user=self.user)
+        new_user = self.create_user()
+        data = {
+            "user": str(new_user.external_id),
+            "role": str(self.administrator_role.external_id),
+        }
+        response = self.client.post(
+            self.get_url(self.root_organization.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "User does not have permission for this action",
+            status_code=403,
+        )
+
+    def test_add_user_to_organization_with_higher_role(self):
+        """Test that a user cannot add another user with a higher role."""
+        self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        new_user = self.create_user()
+        higher_role = self.create_role_with_permissions(
+            permissions=[
+                OrganizationPermissions.can_manage_organization.name,
+            ],
+            role_name="Higher Role",
+        )
+        self.client.force_authenticate(user=self.user)
+        data = {
+            "user": str(new_user.external_id),
+            "role": str(higher_role.external_id),
+        }
+        response = self.client.post(
+            self.get_url(self.root_organization.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "User does not have permission for this action",
+            status_code=403,
+        )
+
+    def test_add_user_to_the_same_organization(self):
+        """Test that a user cannot add a user to the same organization twice."""
+        self.client.force_authenticate(user=self.super_user)
+        self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        data = {
+            "user": str(self.user.external_id),
+            "role": str(self.administrator_role.external_id),
+        }
+        response = self.client.post(
+            self.get_url(self.root_organization.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "User association already exists",
+            status_code=400,
+        )
+
+    def test_add_user_to_child_organization_already_linked_to_parent(self):
+        """Test that cannot add a user to a child organization already linked to parent."""
+        self.client.force_authenticate(user=self.super_user)
+        child_organization = self.create_organization(
+            user=self.super_user,
+            name="Child Organization",
+            org_type="team",
+            parent=self.root_organization,
+        )
+        self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        data = {
+            "user": str(self.user.external_id),
+            "role": str(self.administrator_role.external_id),
+        }
+        response = self.client.post(
+            self.get_url(child_organization.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "User is already linked to a parent organization",
+            status_code=400,
+        )
+
+    def test_add_user_to_parent_organization_already_linked_to_child(self):
+        """Test that cannot add a user to a parent organization already linked to child."""
+        self.client.force_authenticate(user=self.super_user)
+        child_organization = self.create_organization(
+            user=self.super_user,
+            name="Child Organization",
+            org_type="team",
+            parent=self.root_organization,
+        )
+        self.attach_role_organization_user(
+            child_organization, self.user, self.administrator_role
+        )
+        data = {
+            "user": str(self.user.external_id),
+            "role": str(self.administrator_role.external_id),
+        }
+        response = self.client.post(
+            self.get_url(self.root_organization.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response, "User has association to some child organization", status_code=400
+        )
