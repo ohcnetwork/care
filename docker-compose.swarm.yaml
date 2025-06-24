@@ -31,7 +31,7 @@ volumes:
 
 services:
   db:
-    image: postgres:16-alpine
+    image: postgres:alpine
     environment:
       POSTGRES_DB: care
       POSTGRES_USER: postgres
