@@ -5,13 +5,33 @@ networks:
 
 volumes:
   postgres-data:
+    driver: local
+    driver_opts:
+      type: nfs4
+      o: addr=EC2_PUBLIC_IP,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14
+      device: ":/opt/docker-data/postgres"
   redis-data:
+    driver: local
+    driver_opts:
+      type: nfs4
+      o: addr=EC2_PUBLIC_IP,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14
+      device: ":/opt/docker-data/redis"
   minio-data:
+    driver: local
+    driver_opts:
+      type: nfs4
+      o: addr=EC2_PUBLIC_IP,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14
+      device: ":/opt/docker-data/minio"
   letsencrypt-data:
+    driver: local
+    driver_opts:
+      type: nfs4
+      o: addr=EC2_PUBLIC_IP,rw,noatime,rsize=8192,wsize=8192,tcp,timeo=14
+      device: ":/opt/docker-data/letsencrypt"
 
 services:
   db:
-    image: postgres:alpine
+    image: postgres:16-alpine
     environment:
       POSTGRES_DB: care
       POSTGRES_USER: postgres
@@ -22,8 +42,7 @@ services:
       replicas: 1
       # placement:
       #   constraints:
-      #     - node.role == worker
-      #   max_replicas_per_node: 1
+      #     - node.role == manager
       update_config:
         failure_action: rollback
         parallelism: 1
@@ -32,9 +51,9 @@ services:
         monitor: 60s
       restart_policy:
         condition: on-failure
-        delay: 15s
+        delay: 10s
         max_attempts: 3
-        window: 120s
+        window: 60s
       # resources:
       #   limits:
       #     memory: 4G
@@ -50,6 +69,7 @@ services:
 
   redis:
     image: redis:7.4-alpine
+    command: redis-server --appendonly yes --save 60 1 --save 300 100 --dir /data
     volumes:
       - redis-data:/data
     deploy:
@@ -57,18 +77,17 @@ services:
       # placement:
       #   constraints:
       #     - node.role == worker
-      #   max_replicas_per_node: 1
       update_config:
         failure_action: rollback
         parallelism: 1
-        order: start-first
-        delay: 15s
-        monitor: 30s
+        order: stop-first
+        delay: 30s
+        monitor: 60s
       restart_policy:
         condition: on-failure
-        delay: 15s
+        delay: 10s
         max_attempts: 3
-        window: 120s
+        window: 60s
       # resources:
       #   limits:
       #     memory: 2G
@@ -98,18 +117,17 @@ services:
       # placement:
       #   constraints:
       #     - node.role == worker
-      #   max_replicas_per_node: 1
       update_config:
         failure_action: rollback
         parallelism: 1
-        order: start-first
+        order: stop-first
         delay: 30s
-        monitor: 45s
+        monitor: 60s
       restart_policy:
         condition: on-failure
-        delay: 15s
+        delay: 10s
         max_attempts: 3
-        window: 120s
+        window: 60s
       # resources:
       #   limits:
       #     memory: 2G
@@ -119,7 +137,7 @@ services:
       #     cpus: '0.5'
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
-      interval: 60s
+      interval: 30s
       timeout: 10s
       retries: 3
 
@@ -144,11 +162,11 @@ services:
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
-      replicas: 2
-      # placement:
+      replicas: 3
+      placement:
       #   constraints:
       #     - node.role == worker
-      #   max_replicas_per_node: 1
+        max_replicas_per_node: 1
       update_config:
         failure_action: rollback
         parallelism: 1
@@ -157,24 +175,24 @@ services:
         monitor: 30s
       restart_policy:
         condition: on-failure
-        delay: 15s
+        delay: 10s
         max_attempts: 3
-        window: 120s
+        window: 60s
       labels:
         - "traefik.enable=true"
         # HTTP router
-        # - "traefik.http.routers.backend-http.rule=Host(`EC2_PUBLIC_IP`)"
-        # - "traefik.http.routers.backend-http.entrypoints=web"
-        # - "traefik.http.routers.backend-http.service=backend"
+        - "traefik.http.routers.backend-http.rule=Host(`EC2_PUBLIC_IP`)"
+        - "traefik.http.routers.backend-http.entrypoints=web"
+        - "traefik.http.routers.backend-http.service=backend"
         # HTTPS router
         - "traefik.http.routers.backend-https.rule=Host(`api.areeb.dev`)"
         - "traefik.http.routers.backend-https.entrypoints=websecure"
         - "traefik.http.routers.backend-https.service=backend"
         - "traefik.http.routers.backend-https.tls.certresolver=letsencrypt"
         - "traefik.http.services.backend.loadbalancer.server.port=9000"
-        # Redirect middleware
-        # - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
-        # - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+        # Load balancer health check
+        - "traefik.http.services.backend.loadbalancer.healthcheck.path=/health"
+        - "traefik.http.services.backend.loadbalancer.healthcheck.interval=30s"
       # resources:
       #   limits:
       #     memory: 2G
@@ -184,7 +202,7 @@ services:
       #     cpus: '0.5'
     healthcheck:
       test: ["CMD", "./healthcheck.sh"]
-      interval: 60s
+      interval: 30s
       timeout: 10s
       retries: 3
 
@@ -208,11 +226,11 @@ services:
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
-      replicas: 2
-      # placement:
+      replicas: 3
+      placement:
       #   constraints:
       #     - node.role == worker
-      #   max_replicas_per_node: 1
+        max_replicas_per_node: 1
       update_config:
         failure_action: rollback
         parallelism: 1
@@ -221,9 +239,9 @@ services:
         monitor: 30s
       restart_policy:
         condition: on-failure
-        delay: 15s
+        delay: 10s
         max_attempts: 3
-        window: 120s
+        window: 60s
       # resources:
       #   limits:
       #     memory: 1G
@@ -231,11 +249,6 @@ services:
       #   reservations:
       #     memory: 512M
       #     cpus: '0.5'
-    healthcheck:
-      test: ["CMD-SHELL", "exit 0"] # Celery workers don't have a specific health check, just ensure they start
-      interval: 60s
-      timeout: 10s
-      retries: 3
 
   celery-beat:
     image: ghcr.io/ohcnetwork/care:production-latest
@@ -258,21 +271,20 @@ services:
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
       replicas: 1
-      # placement:
-      #   constraints:
-      #     - node.role == worker
-      #   max_replicas_per_node: 1
+      placement:
+        constraints:
+          - node.role == manager
       update_config:
         failure_action: rollback
         parallelism: 1
         order: stop-first
-        delay: 15s
+        delay: 10s
         monitor: 30s
       restart_policy:
         condition: on-failure
-        delay: 15s
+        delay: 10s
         max_attempts: 3
-        window: 120s
+        window: 60s
       # resources:
       #   limits:
       #     memory: 512M
@@ -307,7 +319,6 @@ services:
       - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
       - --log.level=INFO
       - --ping=true
-      - --entrypoints.ping.address=:8082
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - letsencrypt-data:/letsencrypt
@@ -316,18 +327,17 @@ services:
       placement:
         constraints:
           - node.role == manager
-        # max_replicas_per_node: 1
       update_config:
         failure_action: rollback
         parallelism: 1
-        order: start-first
-        delay: 15s
+        order: stop-first
+        delay: 10s
         monitor: 30s
       restart_policy:
         condition: on-failure
-        delay: 15s
+        delay: 10s
         max_attempts: 3
-        window: 120s
+        window: 60s
       # resources:
       #   limits:
       #     memory: 512M
