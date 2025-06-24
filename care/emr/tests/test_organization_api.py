@@ -197,3 +197,146 @@ class OrganizationAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertContains(response, "Max depth reached (10)", status_code=400)
+
+    # Organization Update API Tests
+
+    def test_update_organization_as_super_user(self):
+        """Test that a super user can update an organization."""
+        self.client.force_authenticate(user=self.super_user)
+        data = {
+            "active": True,
+            "name": "Updated Organization",
+            "description": "This is an updated organization.",
+            "org_type": "govt",
+        }
+        response = self.client.put(
+            self.get_detail_url(self.root_organization.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        get_update_response = self.client.get(
+            self.get_detail_url(self.root_organization.external_id)
+        )
+        self.assertEqual(get_update_response.status_code, 200)
+        self.assertEqual(get_update_response.data["name"], response.data["name"])
+
+    def test_update_organization_with_org_type_as_user(self):
+        """Test that a user cannot update an organization."""
+        self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        self.client.force_authenticate(user=self.user)
+        data = {
+            "active": True,
+            "name": "Updated Organization",
+            "description": "This is an updated organization.",
+            "org_type": "govt",
+        }
+        response = self.client.put(
+            self.get_detail_url(self.root_organization.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "Organization Type cannot be updated",
+            status_code=403,
+        )
+
+    def test_update_organization_without_permission(self):
+        """Test that a user without permission cannot update an organization."""
+        self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        self.child_organization = self.create_organization(
+            user=self.super_user,
+            name="Child Organization",
+            org_type="team",
+            parent=self.root_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        data = {
+            "active": True,
+            "name": "Updated Organization",
+            "description": "This is an updated organization.",
+            "org_type": "team",
+        }
+        response = self.client.put(
+            self.get_detail_url(self.child_organization.external_id),
+            data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "User does not have the required permissions to update organizations",
+            status_code=403,
+        )
+
+    # Organization Delete API Tests
+
+    def test_delete_organization_as_super_user(self):
+        """Test that a super user can delete an organization."""
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.delete(
+            self.get_detail_url(self.root_organization.external_id)
+        )
+        self.assertEqual(response.status_code, 204)
+        get_response = self.client.get(
+            self.get_detail_url(self.root_organization.external_id)
+        )
+        self.assertEqual(get_response.status_code, 404)
+        self.assertContains(get_response, "Object not found", status_code=404)
+
+    def test_delete_organization_with_org_type_as_user(self):
+        """Test that a user cannot delete an organization."""
+        self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(
+            self.get_detail_url(self.root_organization.external_id)
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "Organization Type cannot be deleted",
+            status_code=403,
+        )
+
+    def test_delete_organization_without_permission(self):
+        """Test that a user without permission cannot delete an organization."""
+        self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        self.child_organization = self.create_organization(
+            user=self.super_user,
+            name="Child Organization",
+            org_type="team",
+            parent=self.root_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(
+            self.get_detail_url(self.child_organization.external_id)
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "User does not have the required permissions to update organizations",
+            status_code=403,
+        )
+
+    def test_delete_organization_with_children(self):
+        """Test that a user cannot delete an organization with children."""
+        self.client.force_authenticate(user=self.super_user)
+        self.create_organization(
+            user=self.super_user,
+            name="Child Organization",
+            org_type="team",
+            parent=self.root_organization,
+        )
+        response = self.client.delete(
+            self.get_detail_url(self.root_organization.external_id)
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "Cannot delete organization with children", status_code=403
+        )
