@@ -4,6 +4,7 @@ from django.db import transaction
 from django_filters import CharFilter, DateFromToRangeFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from pydantic import UUID4, BaseModel
+from rest_framework import filters as rest_framework_filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
@@ -70,7 +71,11 @@ class TokenBookingViewSet(
     pydantic_update_model = TokenBookingWriteSpec
 
     filterset_class = TokenBookingFilters
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [
+        DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+    ]
+    ordering_fields = ["created_date", "token_slot__start_datetime"]
 
     def get_facility_obj(self):
         return get_object_or_404(

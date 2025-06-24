@@ -42,9 +42,9 @@ class PatientBaseSpec(EMRResource):
     gender: GenderChoices
     phone_number: PhoneNumber = Field(max_length=14)
     emergency_phone_number: PhoneNumber | None = Field(None, max_length=14)
-    address: str
-    permanent_address: str
-    pincode: int
+    address: str | None = None
+    permanent_address: str | None = None
+    pincode: int | None = None
     deceased_datetime: StrictTZAwareDateTime | None = None
     blood_group: BloodGroupChoices | None = None
 
