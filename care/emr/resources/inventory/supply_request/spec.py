@@ -10,7 +10,10 @@ from care.emr.models.supply_request import SupplyRequest
 from care.emr.resources.base import EMRResource
 from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledgeReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
-from care.emr.resources.organization.spec import OrganizationTypeChoices
+from care.emr.resources.organization.spec import (
+    OrganizationReadSpec,
+    OrganizationTypeChoices,
+)
 
 
 class SupplyRequestStatusOptions(str, Enum):
@@ -65,7 +68,6 @@ class BaseSupplyRequestSpec(EMRResource):
     priority: SupplyRequestPriorityOptions
     reason: SupplyRequestReason
     quantity: float
-    supplier: Organization
 
 
 class SupplyRequestWriteSpec(BaseSupplyRequestSpec):
@@ -74,6 +76,7 @@ class SupplyRequestWriteSpec(BaseSupplyRequestSpec):
     deliver_from: UUID4 | None = None
     deliver_to: UUID4
     item: UUID4
+    supplier: UUID4
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.item = get_object_or_404(
@@ -104,6 +107,7 @@ class SupplyRequestReadSpec(BaseSupplyRequestSpec):
     item: UUID4
     deliver_from: dict
     deliver_to: dict
+    supplier: OrganizationReadSpec
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -116,3 +120,5 @@ class SupplyRequestReadSpec(BaseSupplyRequestSpec):
             obj.deliver_to
         ).to_json()
         mapping["item"] = ProductKnowledgeReadSpec.serialize(obj.item).to_json()
+        if obj.supplier:
+            mapping["supplier"] = Organization.serialize(obj.supplier).to_json()
