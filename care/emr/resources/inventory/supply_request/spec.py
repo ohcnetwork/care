@@ -76,7 +76,7 @@ class SupplyRequestWriteSpec(BaseSupplyRequestSpec):
     deliver_from: UUID4 | None = None
     deliver_to: UUID4
     item: UUID4
-    supplier: UUID4
+    supplier: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.item = get_object_or_404(
@@ -91,12 +91,13 @@ class SupplyRequestWriteSpec(BaseSupplyRequestSpec):
                     external_id=self.deliver_from
                 )
             )
-        obj.supplier = get_object_or_404(
-            Organization.objects.only("id").filter(external_id=self.supplier)
-        )
-        if obj.supplier.type != OrganizationTypeChoices.product_supplier.value:
-            msg = f"Supplier organization must be of type product_supplier, got: {obj.supplier.type}"
-            raise ValueError(msg)
+        if self.supplier:
+            obj.supplier = get_object_or_404(
+                Organization.objects.only("id").filter(external_id=self.supplier)
+            )
+            if obj.supplier.type != OrganizationTypeChoices.product_supplier.value:
+                msg = f"Supplier organization must be of type product_supplier, got: {obj.supplier.type}"
+                raise ValueError(msg)
         return obj
 
 
@@ -107,7 +108,7 @@ class SupplyRequestReadSpec(BaseSupplyRequestSpec):
     item: UUID4
     deliver_from: dict
     deliver_to: dict
-    supplier: OrganizationReadSpec
+    supplier: OrganizationReadSpec | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
