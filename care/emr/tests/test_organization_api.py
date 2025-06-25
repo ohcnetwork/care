@@ -498,6 +498,16 @@ class OrganizationUsersTestCase(CareAPITestBase):
             kwargs={"organization_external_id": str(organization_external_id)},
         )
 
+    def get_detail_url(self, organization_external_id, user_external_id):
+        """Get the URL for a specific organization user."""
+        return reverse(
+            "organization-users-detail",
+            kwargs={
+                "organization_external_id": str(organization_external_id),
+                "external_id": str(user_external_id),
+            },
+        )
+
     # Adding Users to Organization
 
     def test_add_user_to_organization_as_super_user(self):
@@ -661,4 +671,324 @@ class OrganizationUsersTestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 400)
         self.assertContains(
             response, "User has association to some child organization", status_code=400
+        )
+
+    # Removing Users from Organization
+
+    def test_remove_user_from_organization_as_super_user(self):
+        """Test that a super user can remove a user from an organization."""
+        org_user = self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.delete(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user.external_id
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+        get_response = self.client.get(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user.external_id
+            )
+        )
+        self.assertEqual(get_response.status_code, 404)
+
+    def test_remove_user_from_organization_as_user_with_permission(self):
+        """Test that a user with permission can remove a user from an organization."""
+        self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        user = self.create_user()
+        org_user2 = self.attach_role_organization_user(
+            self.root_organization, user, self.administrator_role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user2.external_id
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+        get_response = self.client.get(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user2.external_id
+            )
+        )
+        self.assertEqual(get_response.status_code, 404)
+
+    def test_remove_user_from_organization_as_user_without_permission(self):
+        """Test that a user without permission cannot remove a user from an organization."""
+        role = self.create_role_with_permissions(
+            role_name=STAFF_ROLE.name,
+            permissions=[
+                OrganizationPermissions.can_view_organization.name,
+                OrganizationPermissions.can_list_organization_users.name,
+            ],
+        )
+        new_user = self.create_user()
+        org_user = self.attach_role_organization_user(
+            self.root_organization, new_user, role
+        )
+        self.attach_role_organization_user(self.root_organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user.external_id
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "User does not have permission for this action",
+            status_code=403,
+        )
+
+    # getting User Details in Organization
+
+    def test_get_users_in_organization_as_super_user(self):
+        """Test that a super user can get users in an organization."""
+        self.client.force_authenticate(user=self.super_user)
+        org_user = self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        response = self.client.get(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user.external_id
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["user"]["id"], str(self.user.external_id))
+
+    def test_get_users_in_organization_as_user_with_permission(self):
+        """Test that a user with permission can get users in an organization."""
+        self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        self.client.force_authenticate(user=self.user)
+        new_user = self.create_user()
+        org_user = self.attach_role_organization_user(
+            self.root_organization, new_user, self.administrator_role
+        )
+
+        response = self.client.get(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user.external_id
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["user"]["id"], str(new_user.external_id))
+
+    def test_get_users_in_organization_as_user_without_permission(self):
+        """Test that a user without permission cannot get users in an organization."""
+
+        new_user = self.create_user()
+        role = self.create_role_with_permissions(
+            role_name=STAFF_ROLE.name,
+            permissions=[
+                OrganizationPermissions.can_view_organization.name,
+            ],
+        )
+        self.client.force_authenticate(user=self.user)
+        org_user = self.attach_role_organization_user(
+            self.root_organization, new_user, role
+        )
+        response = self.client.get(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user.external_id
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "User does not have the required permissions to list users",
+            status_code=403,
+        )
+
+    # getting User List in Organization
+
+    def test_list_users_in_organization_as_super_user(self):
+        """Test that a super user can list users in an organization."""
+        org_user = self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.get(self.get_url(self.root_organization.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            str(org_user.external_id),
+            [user["id"] for user in response.data["results"]],
+        )
+
+    def test_list_users_in_organization_as_user_with_permission(self):
+        """Test that a user with permission can list users in an organization."""
+        self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        new_user = self.create_user()
+        org_user = self.attach_role_organization_user(
+            self.root_organization, new_user, self.administrator_role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.get_url(self.root_organization.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            str(org_user.external_id),
+            [user["id"] for user in response.data["results"]],
+        )
+
+    def test_list_users_in_organization_as_user_without_permission(self):
+        """Test that a user without permission cannot list users in an organization."""
+        new_user = self.create_user()
+        role = self.create_role_with_permissions(
+            role_name=STAFF_ROLE.name,
+            permissions=[
+                OrganizationPermissions.can_view_organization.name,
+            ],
+        )
+        self.attach_role_organization_user(self.root_organization, new_user, role)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.get_url(self.root_organization.external_id))
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "User does not have the required permissions to list users",
+            status_code=403,
+        )
+
+    # getting User update in Organization
+
+    def test_update_user_in_organization_as_super_user(self):
+        """Test that a super user can update a user in an organization."""
+        self.create_role_with_permissions(
+            role_name=STAFF_ROLE.name,
+            permissions=[
+                OrganizationPermissions.can_view_organization.name,
+            ],
+        )
+        org_user = self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        self.client.force_authenticate(user=self.super_user)
+        updated_data = {
+            "role": str(self.administrator_role.external_id),
+        }
+        response = self.client.put(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user.external_id
+            ),
+            updated_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user.external_id
+            )
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(
+            get_response.data["role"]["id"], str(self.administrator_role.external_id)
+        )
+
+    def test_update_user_in_organization_as_user_with_permission(self):
+        """Test that a user with permission can update a user in an organization."""
+        self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        new_user = self.create_user(
+            username="NewUser",
+        )
+        role = self.create_role_with_permissions(
+            role_name=STAFF_ROLE.name,
+            permissions=[
+                OrganizationPermissions.can_view_organization.name,
+                OrganizationPermissions.can_list_organization_users.name,
+            ],
+        )
+        org_user = self.attach_role_organization_user(
+            self.root_organization, new_user, role
+        )
+        self.client.force_authenticate(user=self.user)
+        updated_data = {
+            "role": str(self.administrator_role.external_id),
+        }
+        response = self.client.put(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user.external_id
+            ),
+            updated_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user.external_id
+            )
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(
+            get_response.data["role"]["id"], str(self.administrator_role.external_id)
+        )
+
+    def test_update_user_in_organization_as_user_without_permission(self):
+        """Test that a user without permission cannot update a user in an organization."""
+        new_user = self.create_user()
+        role = self.create_role_with_permissions(
+            role_name=STAFF_ROLE.name,
+            permissions=[
+                OrganizationPermissions.can_view_organization.name,
+            ],
+        )
+        org_user = self.attach_role_organization_user(
+            self.root_organization, new_user, role
+        )
+        self.client.force_authenticate(user=self.user)
+        updated_data = {
+            "role": str(self.administrator_role.external_id),
+        }
+        response = self.client.put(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user.external_id
+            ),
+            updated_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "User does not have the required permissions to list users",
+            status_code=403,
+        )
+
+    def test_update_user_in_organization_with_higher_role(self):
+        """Test that a user cannot update another user with a higher role."""
+        role = self.create_role_with_permissions(
+            role_name=STAFF_ROLE.name,
+            permissions=[
+                OrganizationPermissions.can_view_organization.name,
+                OrganizationPermissions.can_list_organization_users.name,
+            ],
+        )
+        self.attach_role_organization_user(self.root_organization, self.user, role)
+        new_user = self.create_user()
+        org_user = self.attach_role_organization_user(
+            self.root_organization, new_user, role
+        )
+        self.client.force_authenticate(user=self.user)
+        updated_data = {
+            "role": str(self.administrator_role.external_id),
+        }
+        response = self.client.put(
+            self.get_detail_url(
+                self.root_organization.external_id, org_user.external_id
+            ),
+            updated_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "User does not have permission for this action",
+            status_code=403,
         )
