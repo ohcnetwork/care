@@ -2,6 +2,10 @@ networks:
   default:
     name: care
     driver: overlay
+    attachable: true
+    ipam:
+      config:
+        - subnet: 10.20.0.0/16
 
 volumes:
   postgres-data:
@@ -40,9 +44,8 @@ services:
       - postgres-data:/var/lib/postgresql/data
     deploy:
       replicas: 1
-      # placement:
-      #   constraints:
-      #     - node.role == manager
+      placement:
+        max_replicas_per_node: 1
       update_config:
         failure_action: rollback
         parallelism: 1
@@ -74,9 +77,8 @@ services:
       - redis-data:/data
     deploy:
       replicas: 1
-      # placement:
-      #   constraints:
-      #     - node.role == worker
+      placement:
+        max_replicas_per_node: 1
       update_config:
         failure_action: rollback
         parallelism: 1
@@ -114,9 +116,8 @@ services:
     command: server /data --console-address ":9001"
     deploy:
       replicas: 1
-      # placement:
-      #   constraints:
-      #     - node.role == worker
+      placement:
+        max_replicas_per_node: 1
       update_config:
         failure_action: rollback
         parallelism: 1
@@ -164,8 +165,6 @@ services:
     deploy:
       replicas: 3
       placement:
-      #   constraints:
-      #     - node.role == worker
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
@@ -228,8 +227,6 @@ services:
     deploy:
       replicas: 3
       placement:
-      #   constraints:
-      #     - node.role == worker
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
@@ -272,8 +269,7 @@ services:
     deploy:
       replicas: 1
       placement:
-        constraints:
-          - node.role == manager
+        max_replicas_per_node: 1
       update_config:
         failure_action: rollback
         parallelism: 1
@@ -327,6 +323,7 @@ services:
       placement:
         constraints:
           - node.role == manager
+        max_replicas_per_node: 1
       update_config:
         failure_action: rollback
         parallelism: 1
