@@ -23,6 +23,7 @@ class SupplyRequestFilters(filters.FilterSet):
     deliver_to = filters.UUIDFilter(field_name="deliver_to__external_id")
     item = filters.UUIDFilter(field_name="item__external_id")
     deliver_from_isnull = NullFilter(field_name="deliver_from")
+    supplier = filters.UUIDFilter(field_name="supplier__external_id")
 
 
 class SupplyRequestViewSet(

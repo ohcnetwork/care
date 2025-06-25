@@ -4,11 +4,13 @@ from django.shortcuts import get_object_or_404
 from pydantic import UUID4
 
 from care.emr.models.location import FacilityLocation
+from care.emr.models.organization import Organization
 from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.models.supply_request import SupplyRequest
 from care.emr.resources.base import EMRResource
 from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledgeReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
+from care.emr.resources.organization.spec import OrganizationTypeChoices
 
 
 class SupplyRequestStatusOptions(str, Enum):
@@ -63,6 +65,7 @@ class BaseSupplyRequestSpec(EMRResource):
     priority: SupplyRequestPriorityOptions
     reason: SupplyRequestReason
     quantity: float
+    supplier: Organization
 
 
 class SupplyRequestWriteSpec(BaseSupplyRequestSpec):
@@ -85,6 +88,12 @@ class SupplyRequestWriteSpec(BaseSupplyRequestSpec):
                     external_id=self.deliver_from
                 )
             )
+        obj.supplier = get_object_or_404(
+            Organization.objects.only("id").filter(external_id=self.supplier)
+        )
+        if obj.supplier.type != OrganizationTypeChoices.product_supplier.value:
+            msg = f"Supplier organization must be of type product_supplier, got: {obj.supplier.type}"
+            raise ValueError(msg)
         return obj
 
 
