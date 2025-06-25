@@ -8,6 +8,7 @@ from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
+from rest_framework import filters as rest_framework_filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
@@ -95,7 +96,11 @@ class FileUploadViewSet(
     pydantic_update_model = FileUploadUpdateSpec
     pydantic_read_model = FileUploadListSpec
     filterset_class = FileUploadFilter
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+    ]
+    ordering_fields = ["created_date", "modified_date"]
 
     def authorize_create(self, instance):
         file_authorizer(
