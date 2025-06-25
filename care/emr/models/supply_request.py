@@ -23,7 +23,7 @@ class SupplyRequest(EMRBaseModel):
         related_name="destination_requests",
         on_delete=models.CASCADE,
     )
-    suppliers = models.ForeignKey(
+    supplier = models.ForeignKey(
         "emr.Organization",
         on_delete=models.CASCADE,
         null=True,
