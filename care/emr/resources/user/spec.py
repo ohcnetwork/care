@@ -171,22 +171,14 @@ class ResetPasswordCheckRequest(BaseModel):
     token: str
 
 
-class ResetPasswordCheckResponse(BaseModel):
-    status: str
-
-
 class ResetPasswordConfirmRequest(BaseModel):
     token: str
     password: str
 
 
-class ResetPasswordConfirmResponse(BaseModel):
+class ResetPasswordResponse(BaseModel):
     status: str
 
 
 class ResetPasswordRequestTokenRequest(BaseModel):
     username: str
-
-
-class ResetPasswordRequestTokenResponse(BaseModel):
-    status: str

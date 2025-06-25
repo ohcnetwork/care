@@ -6,10 +6,6 @@ from django.contrib.auth.password_validation import (
 )
 from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
-from django_rest_passwordreset.signals import (
-    post_password_reset,
-    pre_password_reset,
-)
 from drf_spectacular.utils import extend_schema
 from rest_framework import exceptions, status
 from rest_framework.generics import GenericAPIView
@@ -17,11 +13,9 @@ from rest_framework.response import Response
 
 from care.emr.resources.user.spec import (
     ResetPasswordCheckRequest,
-    ResetPasswordCheckResponse,
     ResetPasswordConfirmRequest,
-    ResetPasswordConfirmResponse,
     ResetPasswordRequestTokenRequest,
-    ResetPasswordRequestTokenResponse,
+    ResetPasswordResponse,
 )
 from care.emr.utils.reset_password import (
     send_password_reset_email,
@@ -43,7 +37,7 @@ class ResetPasswordCheck(GenericAPIView):
     @extend_schema(
         tags=["auth"],
         request=ResetPasswordCheckRequest,
-        responses={200: ResetPasswordCheckResponse, 400: ResetPasswordCheckResponse},
+        responses={200: ResetPasswordResponse, 404: ResetPasswordResponse},
     )
     def post(self, request, *args, **kwargs):
         try:
@@ -66,17 +60,17 @@ class ResetPasswordCheck(GenericAPIView):
         if not user:
             # Check if it's an expiration error
             if error_message == "Token has expired":
-                response = ResetPasswordCheckResponse(
+                response = ResetPasswordResponse(
                     status="expired", detail=error_message
                 ).model_dump()
-                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+                return Response(response, status=status.HTTP_404_NOT_FOUND)
 
-            response = ResetPasswordCheckResponse(
+            response = ResetPasswordResponse(
                 status="invalid", detail=error_message
             ).model_dump()
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
 
-        response = ResetPasswordCheckResponse(status="OK").model_dump()
+        response = ResetPasswordResponse(status="OK").model_dump()
         return Response(response)
 
 
@@ -92,8 +86,8 @@ class ResetPasswordConfirm(GenericAPIView):
         tags=["auth"],
         request=ResetPasswordConfirmRequest,
         responses={
-            200: ResetPasswordConfirmResponse,
-            400: ResetPasswordConfirmResponse,
+            200: ResetPasswordResponse,
+            400: ResetPasswordResponse,
         },
     )
     def post(self, request, *args, **kwargs):
@@ -116,10 +110,10 @@ class ResetPasswordConfirm(GenericAPIView):
         # Verify token and get user
         user, error_message = verify_password_reset_token(token)
         if not user:
-            response = ResetPasswordConfirmResponse(
+            response = ResetPasswordResponse(
                 status="invalid", detail=error_message
             ).model_dump()
-            return Response(response, status=status.HTTP_400_BAD_REQUEST)
+            return Response(response, status=status.HTTP_404_NOT_FOUND)
 
         try:
             validate_password(
@@ -132,13 +126,10 @@ class ResetPasswordConfirm(GenericAPIView):
         except ValidationError as e:
             raise exceptions.ValidationError({"password": e.messages}) from e
 
-        pre_password_reset.send(sender=self.__class__, user=user)
         user.set_password(password)
         user.save()
 
-        post_password_reset.send(sender=self.__class__, user=user)
-
-        response = ResetPasswordConfirmResponse(status="OK").model_dump()
+        response = ResetPasswordResponse(status="OK").model_dump()
         return Response(response)
 
 
@@ -154,7 +145,7 @@ class ResetPasswordRequestToken(GenericAPIView):
     @extend_schema(
         tags=["auth"],
         request=ResetPasswordRequestTokenRequest,
-        responses={200: ResetPasswordRequestTokenResponse},
+        responses={200: ResetPasswordResponse, 400: ResetPasswordResponse},
     )
     def post(self, request, *args, **kwargs):
         try:
@@ -171,23 +162,6 @@ class ResetPasswordRequestToken(GenericAPIView):
                 {"detail": "Too Many Requests. Please try again later."},
                 status=status.HTTP_429_TOO_MANY_REQUESTS,
             )
-
-        # if settings.IS_PRODUCTION and (
-        #     not settings.EMAIL_HOST
-        #     or not settings.EMAIL_HOST_USER
-        #     or not settings.EMAIL_HOST_PASSWORD
-        # ):
-        #     raise exceptions.ValidationError(
-        #         {
-        #             "detail": [
-        #                 _(
-        #                     "There was a problem resetting your password. Please contact the administrator."
-        #                 )
-        #             ]
-        #         }
-        #     )
-        # before we continue, delete all existing expired tokens
-        # Find user by username or email
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
@@ -195,10 +169,6 @@ class ResetPasswordRequestToken(GenericAPIView):
 
         active_user_found = False
         # Generate token for matching user
-        if user and user.is_active:
-            active_user_found = True
-            mail_type = "reset_password"
-            send_password_reset_email(user, mail_type)
 
         if not active_user_found and not getattr(
             settings, "DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE", False
@@ -213,5 +183,10 @@ class ResetPasswordRequestToken(GenericAPIView):
                 }
             )
 
-        response = ResetPasswordRequestTokenResponse(status="OK").model_dump()
+        response = ResetPasswordResponse(status="OK").model_dump()
+        if user and user.is_active:
+            active_user_found = True
+            mail_type = "reset_password"
+            send_password_reset_email(user, mail_type)
+
         return Response(response)

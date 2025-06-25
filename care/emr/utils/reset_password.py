@@ -36,30 +36,25 @@ def verify_password_reset_token(token):
     try:
         payload = jwt.decode(token, secret_key, algorithms=["HS256"])
         username = payload.get("username")
-
         if not username:
             error_message = "Invalid token format"
-        else:
-            try:
-                user = User.objects.get(username=username)
+        user = User.objects.get(username=username)
 
-                if payload.get("type") != "password_reset":
-                    error_message = "Invalid token type"
-                elif payload.get("sub") != str(user.external_id):
-                    error_message = "Token doesn't match user"
-                else:
-                    expected_password_hash = hashlib.sha256(
-                        (user.password + secret_key).encode()
-                    ).hexdigest()
-                    if payload.get("password_hash") != expected_password_hash:
-                        error_message = "Token invalid due to password change"
-            except User.DoesNotExist:
-                error_message = "User not found"
+        expected_password_hash = hashlib.sha256(
+            (user.password + secret_key).encode()
+        ).hexdigest()
+        if payload.get("password_hash") != expected_password_hash:
+            error_message = "Token invalid due to password change"
+
+        if payload.get("type") != "password_reset":
+            error_message = "Invalid token type"
+        elif payload.get("sub") != str(user.external_id):
+            error_message = "Token doesn't match user"
 
     except jwt.ExpiredSignatureError:
-        error_message = "Token has expired"
-    except jwt.InvalidTokenError:
         error_message = "Invalid token"
+    except User.DoesNotExist:
+        error_message = "User not found"
     except Exception as e:
         error_message = f"Error verifying token: {e!s}"
 
@@ -82,26 +77,20 @@ def send_password_reset_email(user, mail_type):
             email_html_message = render_to_string(
                 settings.USER_CREATE_PASSWORD_EMAIL_TEMPLATE_PATH, context
             )
-            msg = EmailMessage(
-                "Set Up Your Password for Care",
-                email_html_message,
-                settings.DEFAULT_FROM_EMAIL,
-                (user.email,),
-            )
-            msg.content_subtype = "html"
-            msg.send()
+            subject = "Set Up Your Password for Care"
         else:
             email_html_message = render_to_string(
                 settings.USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH, context
             )
-            msg = EmailMessage(
-                "Password Reset for Care",
-                email_html_message,
-                settings.DEFAULT_FROM_EMAIL,
-                (user.email,),
-            )
-            msg.content_subtype = "html"
-            msg.send()
+        subject = "Password Reset for Care"
+        msg = EmailMessage(
+            subject,
+            email_html_message,
+            settings.DEFAULT_FROM_EMAIL,
+            (user.email,),
+        )
+        msg.content_subtype = "html"
+        msg.send()
 
     except ValidationError as e:
         raise exceptions.ValidationError({"message": e.messages}) from e

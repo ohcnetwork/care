@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
-from django.utils import timezone
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 
 from care.utils.models.base import BaseFlag, BaseModel
@@ -445,7 +445,7 @@ class UserFacilityAllocation(models.Model):
     facility = models.ForeignKey(
         "facility.Facility", on_delete=models.CASCADE, related_name="+"
     )
-    start_date = models.DateTimeField(default=timezone.now)
+    start_date = models.DateTimeField(default=now)
     end_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
