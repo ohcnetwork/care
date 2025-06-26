@@ -58,7 +58,7 @@ class BaseSupplyRequestSpec(EMRResource):
     """Base model for supply request"""
 
     __model__ = SupplyRequest
-    __exclude__ = ["item", "deliver_to", "deliver_from"]
+    __exclude__ = ["item", "deliver_to", "deliver_from", "supplier"]
 
     id: UUID4 | None = None
 
