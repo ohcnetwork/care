@@ -1,6 +1,6 @@
 from django.db import transaction
 from django.utils import timezone
-from django_filters import FilterSet, UUIDFilter
+from django_filters import DateTimeFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
@@ -29,6 +29,8 @@ from care.utils.lock import Lock
 
 class ScheduleFilters(FilterSet):
     user = UUIDFilter(field_name="resource__user__external_id")
+    valid_from = DateTimeFilter(field_name="valid_to", lookup_expr="gte")
+    valid_to = DateTimeFilter(field_name="valid_from", lookup_expr="lte")
 
 
 class ScheduleViewSet(EMRModelViewSet):

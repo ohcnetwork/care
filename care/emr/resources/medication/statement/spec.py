@@ -5,8 +5,7 @@ from pydantic import UUID4, Field, field_validator
 
 from care.emr.models.encounter import Encounter
 from care.emr.models.medication_statement import MedicationStatement
-from care.emr.resources.base import EMRResource
-from care.emr.resources.common.period import Period
+from care.emr.resources.base import EMRResource, PeriodSpec
 from care.emr.resources.medication.valueset.medication import CARE_MEDICATION_VALUESET
 from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
@@ -42,7 +41,7 @@ class BaseMedicationStatementSpec(EMRResource):
         None,
     )  # consider using Dosage from MedicationRequest
 
-    effective_period: Period | None = None
+    effective_period: PeriodSpec | None = None
 
     encounter: UUID4
 
@@ -56,7 +55,7 @@ class MedicationStatementUpdateSpec(EMRResource):
     __exclude__ = ["patient", "encounter"]
 
     status: MedicationStatementStatus
-    effective_period: Period | None = None
+    effective_period: PeriodSpec | None = None
     note: str | None = None
 
 
