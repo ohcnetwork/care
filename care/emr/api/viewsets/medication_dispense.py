@@ -37,6 +37,9 @@ class MedicationDispenseFilters(filters.FilterSet):
     patient = filters.UUIDFilter(field_name="patient__external_id")
     location = filters.UUIDFilter(field_name="location__external_id")
     item = filters.UUIDFilter(field_name="item__external_id")
+    authorizing_prescription = filters.UUIDFilter(
+        field_name="authorizing_prescription__external_id"
+    )
     exclude_status = MultiSelectFilter(field_name="status", exclude=True)
 
 
