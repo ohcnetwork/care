@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import ValidationError
+from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -39,7 +40,8 @@ class PaymentReconciliationViewSet(
     pydantic_update_model = BasePaymentReconciliationSpec
     pydantic_read_model = PaymentReconciliationReadSpec
     filterset_class = PaymentReconciliationFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering = ["-payment_datetime"]
 
     def get_facility_obj(self):
         return get_object_or_404(
