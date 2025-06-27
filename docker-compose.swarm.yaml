@@ -3,48 +3,50 @@ networks:
     name: care
     driver: overlay
     attachable: true
-    # ipam:
-    #   config:
-    #     - subnet: 10.20.0.0/24
 
 volumes:
   postgres-data:
     driver: local
     driver_opts:
-      type: nfs4
-      o: addr=EC2_PRIVATE_IP,rw,noatime,rsize=131072,wsize=131072,tcp,timeo=100
-      device: ":/opt/care-data/postgres"
+      type: none
+      o: bind
+      device: /care-data/postgres
+
   redis-data:
     driver: local
     driver_opts:
-      type: nfs4
-      o: addr=EC2_PRIVATE_IP,rw,noatime,rsize=131072,wsize=131072,tcp,timeo=100
-      device: ":/opt/care-data/redis"
+      type: none
+      o: bind
+      device: /care-data/redis
+
   minio-data:
     driver: local
     driver_opts:
-      type: nfs4
-      o: addr=EC2_PRIVATE_IP,rw,noatime,rsize=131072,wsize=131072,tcp,timeo=100
-      device: ":/opt/care-data/minio"
+      type: none
+      o: bind
+      device: /care-data/minio
+
   letsencrypt-data:
     driver: local
     driver_opts:
-      type: nfs4
-      o: addr=EC2_PRIVATE_IP,rw,noatime,rsize=131072,wsize=131072,tcp,timeo=100
-      device: ":/opt/care-data/letsencrypt"
+      type: none
+      o: bind
+      device: /care-data/letsencrypt
 
 services:
-  db:
+  postgres:
     image: postgres:alpine
     environment:
       POSTGRES_DB: care
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123
+      POSTGRES_PASSWORD: postgres
     volumes:
       - postgres-data:/var/lib/postgresql/data
     deploy:
       replicas: 1
       placement:
+        # constraints:
+        #   - node.role == worker
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
@@ -78,6 +80,8 @@ services:
     deploy:
       replicas: 1
       placement:
+        # constraints:
+        #   - node.role == worker
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
@@ -111,12 +115,14 @@ services:
       - "9101:9001" # MinIO Console
     environment:
       MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin123
+      MINIO_ROOT_PASSWORD: minioadmin
     volumes:
       - minio-data:/data
     deploy:
       replicas: 1
       placement:
+        # constraints:
+        #   - node.role == worker
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
@@ -142,15 +148,15 @@ services:
       timeout: 10s
       retries: 3
 
-  backend:
+  django:
     image: ghcr.io/ohcnetwork/care:production-latest
     entrypoint: ["bash", "start.sh"]
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.production
-      DATABASE_URL: postgres://postgres:postgres123@db:5432/care
+      DATABASE_URL: postgres://postgres:postgres@db:5432/care
       POSTGRES_DB: care
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123
+      POSTGRES_PASSWORD: postgres
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
       REDIS_URL: redis://redis:6379/0
@@ -158,12 +164,14 @@ services:
       BUCKET_ENDPOINT: http://minio:9000
       BUCKET_EXTERNAL_ENDPOINT: http://EC2_PUBLIC_IP:9100
       BUCKET_KEY: minioadmin
-      BUCKET_SECRET: minioadmin123
+      BUCKET_SECRET: minioadmin
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
       replicas: 6
       placement:
+        # constraints:
+        #   - node.role == worker
         max_replicas_per_node: 3
       update_config:
         failure_action: rollback
@@ -209,10 +217,10 @@ services:
     entrypoint: ["bash", "celery_worker.sh"]
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.production
-      DATABASE_URL: postgres://postgres:postgres123@db:5432/care
+      DATABASE_URL: postgres://postgres:postgres@db:5432/care
       POSTGRES_DB: care
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123
+      POSTGRES_PASSWORD: postgres
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
       REDIS_URL: redis://redis:6379/0
@@ -220,12 +228,14 @@ services:
       BUCKET_ENDPOINT: http://minio:9000
       BUCKET_EXTERNAL_ENDPOINT: http://EC2_PUBLIC_IP:9100
       BUCKET_KEY: minioadmin
-      BUCKET_SECRET: minioadmin123
+      BUCKET_SECRET: minioadmin
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
       replicas: 6
       placement:
+        # constraints:
+        #   - node.role == worker
         max_replicas_per_node: 3
       update_config:
         failure_action: rollback
@@ -251,10 +261,10 @@ services:
     entrypoint: ["bash", "celery_beat.sh"]
     environment:
       DJANGO_SETTINGS_MODULE: config.settings.production
-      DATABASE_URL: postgres://postgres:postgres123@db:5432/care
+      DATABASE_URL: postgres://postgres:postgres@db:5432/care
       POSTGRES_DB: care
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres123
+      POSTGRES_PASSWORD: postgres
       POSTGRES_HOST: db
       POSTGRES_PORT: 5432
       REDIS_URL: redis://redis:6379/0
@@ -262,12 +272,14 @@ services:
       BUCKET_ENDPOINT: http://minio:9000
       BUCKET_EXTERNAL_ENDPOINT: http://EC2_PUBLIC_IP:9100
       BUCKET_KEY: minioadmin
-      BUCKET_SECRET: minioadmin123
+      BUCKET_SECRET: minioadmin
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
       replicas: 1
       placement:
+        # constraints:
+        #   - node.role == manager
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
