@@ -1,13 +1,11 @@
-# TODO: Remove password from environment:, use Docker secrets in deploy-swarm
-# TODO: Update deploy script to use setup DRDB on EC2 instances for data replication across ec2's
 networks:
   default:
     name: care
     driver: overlay
     attachable: true
-    ipam:
-      config:
-        - subnet: 10.20.0.0/16
+    # ipam:
+    #   config:
+    #     - subnet: 10.20.0.0/24
 
 volumes:
   postgres-data:
@@ -164,14 +162,14 @@ services:
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
-      replicas: 3
+      replicas: 6
       placement:
-        max_replicas_per_node: 1
+        max_replicas_per_node: 3
       update_config:
         failure_action: rollback
-        parallelism: 1
+        parallelism: 2
         order: start-first
-        delay: 10s
+        delay: 15s
         monitor: 30s
       restart_policy:
         condition: on-failure
@@ -181,9 +179,9 @@ services:
       labels:
         - "traefik.enable=true"
         # HTTP router
-        - "traefik.http.routers.backend-http.rule=Host(`EC2_PUBLIC_IP`)"
-        - "traefik.http.routers.backend-http.entrypoints=web"
-        - "traefik.http.routers.backend-http.service=backend"
+        # - "traefik.http.routers.backend-http.rule=Host(`EC2_PUBLIC_IP`)"
+        # - "traefik.http.routers.backend-http.entrypoints=web"
+        # - "traefik.http.routers.backend-http.service=backend"
         # HTTPS router
         - "traefik.http.routers.backend-https.rule=Host(`api.areeb.dev`)"
         - "traefik.http.routers.backend-https.entrypoints=websecure"
@@ -226,14 +224,14 @@ services:
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
-      replicas: 3
+      replicas: 6
       placement:
-        max_replicas_per_node: 1
+        max_replicas_per_node: 3
       update_config:
         failure_action: rollback
-        parallelism: 1
+        parallelism: 2
         order: start-first
-        delay: 10s
+        delay: 15s
         monitor: 30s
       restart_policy:
         condition: on-failure
@@ -322,6 +320,8 @@ services:
     deploy:
       replicas: 1
       placement:
+        # constraints:
+        #   - node.role == manager
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
