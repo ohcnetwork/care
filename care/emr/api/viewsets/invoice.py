@@ -5,6 +5,7 @@ from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -62,7 +63,10 @@ class InvoiceViewSet(
     pydantic_read_model = InvoiceReadSpec
     pydantic_retrieve_model = InvoiceRetrieveSpec
     filterset_class = InvoiceFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering = [
+        "-created_date",
+    ]
 
     def get_facility_obj(self):
         return get_object_or_404(
