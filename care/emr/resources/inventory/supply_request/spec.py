@@ -95,8 +95,8 @@ class SupplyRequestWriteSpec(BaseSupplyRequestSpec):
             obj.supplier = get_object_or_404(
                 Organization.objects.only("id").filter(external_id=self.supplier)
             )
-            if obj.supplier.type != OrganizationTypeChoices.product_supplier.value:
-                msg = f"Supplier organization must be of type product_supplier, got: {obj.supplier.type}"
+            if obj.supplier.org_type != OrganizationTypeChoices.product_supplier.value:
+                msg = f"Supplier organization must be of type product_supplier, got: {obj.supplier.org_type}"
                 raise ValueError(msg)
         return obj
 
@@ -122,4 +122,4 @@ class SupplyRequestReadSpec(BaseSupplyRequestSpec):
         ).to_json()
         mapping["item"] = ProductKnowledgeReadSpec.serialize(obj.item).to_json()
         if obj.supplier:
-            mapping["supplier"] = Organization.serialize(obj.supplier).to_json()
+            mapping["supplier"] = OrganizationReadSpec.serialize(obj.supplier).to_json()
