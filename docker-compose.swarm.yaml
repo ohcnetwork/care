@@ -1,52 +1,58 @@
+# TODO: Persist data across nodes using GlusterFS + Update deploy-swarm.sh script
+# TODO: Use docker secrets instead of hardcoded values
 networks:
   default:
     name: care
     driver: overlay
     attachable: true
+    # ipam:
+    #   config:
+    #     - subnet: 10.20.0.0/24
 
 volumes:
   postgres-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /care-data/postgres
+    # driver: local
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: /care-data/postgres
 
   redis-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /care-data/redis
+    # driver: local
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: /care-data/redis
 
   minio-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /care-data/minio
+    # driver: local
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: /care-data/minio
 
   letsencrypt-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /care-data/letsencrypt
+    # driver: local
+    # driver_opts:
+    #   type: none
+    #   o: bind
+    #   device: /care-data/letsencrypt
 
 services:
-  postgres:
+  db:
     image: postgres:alpine
     environment:
       POSTGRES_DB: care
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
     volumes:
       - postgres-data:/var/lib/postgresql/data
     deploy:
       replicas: 1
       placement:
         # constraints:
-        #   - node.role == worker
+        #   - node.role == manager
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
@@ -59,13 +65,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 4G
-      #     cpus: '2.0'
-      #   reservations:
-      #     memory: 2G
-      #     cpus: '1.0'
+      resources:
+        limits:
+          memory: 768M
+          cpus: "0.5"
+        reservations:
+          memory: 512M
+          cpus: "0.25"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
       interval: 30s
@@ -74,14 +80,14 @@ services:
 
   redis:
     image: redis:7.4-alpine
-    command: redis-server --appendonly yes --save 60 1 --save 300 100 --dir /data
+    command: redis-server --appendonly yes --save 60 1 --save 300 100 --dir /data --maxmemory 512mb --maxmemory-policy allkeys-lru
     volumes:
       - redis-data:/data
     deploy:
       replicas: 1
       placement:
         # constraints:
-        #   - node.role == worker
+        #   - node.role == manager
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
@@ -94,13 +100,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 2G
-      #     cpus: '1.0'
-      #   reservations:
-      #     memory: 1G
-      #     cpus: '0.5'
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.3"
+        reservations:
+          memory: 256M
+          cpus: "0.15"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -122,7 +128,7 @@ services:
       replicas: 1
       placement:
         # constraints:
-        #   - node.role == worker
+        #   - node.role == manager
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
@@ -135,20 +141,20 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 2G
-      #     cpus: '1.0'
-      #   reservations:
-      #     memory: 1G
-      #     cpus: '0.5'
+      resources:
+        limits:
+          memory: 384M
+          cpus: "0.25"
+        reservations:
+          memory: 192M
+          cpus: "0.1"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
       interval: 30s
       timeout: 10s
       retries: 3
 
-  django:
+  backend:
     image: ghcr.io/ohcnetwork/care:production-latest
     entrypoint: ["bash", "start.sh"]
     environment:
@@ -172,7 +178,7 @@ services:
       placement:
         # constraints:
         #   - node.role == worker
-        max_replicas_per_node: 3
+        max_replicas_per_node: 2
       update_config:
         failure_action: rollback
         parallelism: 2
@@ -186,10 +192,6 @@ services:
         window: 60s
       labels:
         - "traefik.enable=true"
-        # HTTP router
-        # - "traefik.http.routers.backend-http.rule=Host(`EC2_PUBLIC_IP`)"
-        # - "traefik.http.routers.backend-http.entrypoints=web"
-        # - "traefik.http.routers.backend-http.service=backend"
         # HTTPS router
         - "traefik.http.routers.backend-https.rule=Host(`api.areeb.dev`)"
         - "traefik.http.routers.backend-https.entrypoints=websecure"
@@ -198,14 +200,22 @@ services:
         - "traefik.http.services.backend.loadbalancer.server.port=9000"
         # Load balancer health check
         - "traefik.http.services.backend.loadbalancer.healthcheck.path=/health"
+        - "traefik.http.services.backend.loadbalancer.healthcheck.scheme=http"
         - "traefik.http.services.backend.loadbalancer.healthcheck.interval=30s"
-      # resources:
-      #   limits:
-      #     memory: 2G
-      #     cpus: '1.0'
-      #   reservations:
-      #     memory: 1G
-      #     cpus: '0.5'
+        - "traefik.http.services.backend.loadbalancer.healthcheck.timeout=10s"
+        # Sticky sessions when using multiple nodes
+        - "traefik.http.services.backend.loadbalancer.sticky.cookie=true"
+        - "traefik.http.services.backend.loadbalancer.sticky.cookie.name=care_session"
+        # Performance optimizations when using multiple nodes
+        - "traefik.http.services.backend.loadbalancer.passHostHeader=true"
+        - "traefik.http.services.backend.loadbalancer.responseForwarding.flushInterval=100ms"
+      resources:
+        limits:
+          memory: 768M
+          cpus: "0.5"
+        reservations:
+          memory: 512M
+          cpus: "0.25"
     healthcheck:
       test: ["CMD", "./healthcheck.sh"]
       interval: 30s
@@ -236,7 +246,7 @@ services:
       placement:
         # constraints:
         #   - node.role == worker
-        max_replicas_per_node: 3
+        max_replicas_per_node: 2
       update_config:
         failure_action: rollback
         parallelism: 2
@@ -248,13 +258,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 1G
-      #     cpus: '1.0'
-      #   reservations:
-      #     memory: 512M
-      #     cpus: '0.5'
+      resources:
+        limits:
+          memory: 768M
+          cpus: "0.5"
+        reservations:
+          memory: 512M
+          cpus: "0.25"
 
   celery-beat:
     image: ghcr.io/ohcnetwork/care:production-latest
@@ -292,13 +302,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 512M
-      #     cpus: '1.0'
-      #   reservations:
-      #     memory: 256M
-      #     cpus: '0.5'
+      resources:
+        limits:
+          memory: 384M
+          cpus: "0.25"
+        reservations:
+          memory: 192M
+          cpus: "0.1"
 
   traefik:
     image: traefik:v3.4
@@ -346,13 +356,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 512M
-      #     cpus: '0.5'
-      #   reservations:
-      #     memory: 256M
-      #     cpus: '0.25'
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.2"
+        reservations:
+          memory: 128M
+          cpus: "0.1"
     healthcheck:
       test: ["CMD", "traefik", "healthcheck", "--ping"]
       interval: 30s
