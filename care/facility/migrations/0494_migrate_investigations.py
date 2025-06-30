@@ -1717,19 +1717,19 @@ def migrate_investigations(apps, schema_editor):
                     haematology_responses[deterministic_uuid(investigation_name)] = {
                         "question_id": deterministic_uuid(investigation_name),
                         "values": [{"value": value.value}],
-                        "note": value.note or None,
+                        "note": value.notes or None,
                     }
                 elif investigation_name in biochemistry_group:
                     biochemistry_responses[deterministic_uuid(investigation_name)] = {
                         "question_id": deterministic_uuid(investigation_name),
                         "values": [{"value": value.value}],
-                        "note": value.note or None,
+                        "note": value.notes or None,
                     }
                 elif investigation_name in urine_test:
                     urine_test_responses[deterministic_uuid(investigation_name)] = {
                         "question_id": deterministic_uuid(investigation_name),
                         "values": [{"value": value.value}],
-                        "note": value.note or None,
+                        "note": value.notes or None,
                     }
             if not value:
                 logger.warning(
