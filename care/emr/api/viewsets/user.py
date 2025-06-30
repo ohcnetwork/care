@@ -99,7 +99,8 @@ class UserViewSet(EMRModelViewSet):
             instance.delete()
 
     def authorize_destroy(self, instance):
-        return self.request.user.is_superuser
+        if not self.request.user.is_superuser:
+            raise PermissionDenied("You do not have permission to delete this user")
 
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):
