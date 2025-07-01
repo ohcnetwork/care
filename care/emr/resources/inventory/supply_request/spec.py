@@ -122,4 +122,4 @@ class SupplyRequestReadSpec(BaseSupplyRequestSpec):
         ).to_json()
         mapping["item"] = ProductKnowledgeReadSpec.serialize(obj.item).to_json()
         if obj.supplier:
-            mapping["supplier"] = Organization.serialize(obj.supplier).to_json()
+            mapping["supplier"] = OrganizationReadSpec.serialize(obj.supplier).to_json()
