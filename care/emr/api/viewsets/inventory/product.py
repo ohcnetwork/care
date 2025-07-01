@@ -18,7 +18,7 @@ class ProductFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     facility = filters.UUIDFilter(field_name="facility__external_id")
     product_knowledge = filters.UUIDFilter(field_name="product_knowledge__external_id")
-    name = filters.CharFilter(
+    product_knowledge_name = filters.CharFilter(
         field_name="product_knowledge__name", lookup_expr="icontains"
     )
 
