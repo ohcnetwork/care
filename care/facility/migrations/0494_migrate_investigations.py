@@ -1631,7 +1631,7 @@ def migrate_investigations(apps, schema_editor):
     bulk_questionnaire_root_link = []
 
     haematology_questionnaire, created = Questionnaire.objects.get_or_create(
-        slug="haematology_investigation",
+        slug="haematology_investigation_8a6b",
         defaults={
             **questionnaire_defaults,
             "title": "Haematology Investigation",
@@ -1643,7 +1643,7 @@ def migrate_investigations(apps, schema_editor):
         bulk_questionnaire_root_link.append(haematology_questionnaire.id)
 
     biochemistry_questionnaire, created = Questionnaire.objects.get_or_create(
-        slug="biochemistry_investigation",
+        slug="biochemistry_investigation_9f7",
         defaults={
             **questionnaire_defaults,
             "title": "Biochemistry Investigation",
@@ -1655,7 +1655,7 @@ def migrate_investigations(apps, schema_editor):
         bulk_questionnaire_root_link.append(biochemistry_questionnaire.id)
 
     urine_test_questionnaire, created = Questionnaire.objects.get_or_create(
-        slug="urine_test_investigation",
+        slug="urine_test_investigation_bc0d",
         defaults={
             **questionnaire_defaults,
             "title": "Urine Test Investigation",
@@ -1844,7 +1844,9 @@ def migrate_investigations(apps, schema_editor):
     enable_auto_time()
 
 
-def reverse_migrate_investigations(apps, schema_editor): ...
+def reverse_migrate_investigations(apps, schema_editor):
+    Questionnaire = apps.get_model("emr", "Questionnaire")
+    Questionnaire.objects.filter(meta__migration_id=MIGRATION_ID).delete()
 
 
 class Migration(migrations.Migration):
