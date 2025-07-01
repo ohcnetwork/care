@@ -22,6 +22,7 @@ class SupplyRequestFilters(filters.FilterSet):
     deliver_from = filters.UUIDFilter(field_name="deliver_from__external_id")
     deliver_to = filters.UUIDFilter(field_name="deliver_to__external_id")
     item = filters.UUIDFilter(field_name="item__external_id")
+    item_name = filters.CharFilter(field_name="item__name", lookup_expr="icontains")
     deliver_from_isnull = NullFilter(field_name="deliver_from")
     supplier = filters.UUIDFilter(field_name="supplier__external_id")
 
