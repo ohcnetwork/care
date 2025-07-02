@@ -1,10 +1,10 @@
 import datetime
 from enum import Enum
 
-from pydantic import UUID4, BaseModel, field_validator
+from pydantic import UUID4, BaseModel, field_validator, model_serializer
 
 from care.emr.models.specimen import Specimen
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.common import Coding
 from care.emr.resources.observation.valueset import CARE_BODY_SITE_VALUESET
 from care.emr.resources.specimen.valueset import (
@@ -15,6 +15,7 @@ from care.emr.resources.specimen.valueset import (
 )
 from care.emr.resources.specimen_definition.spec import SpecimenDefinitionReadSpec
 from care.emr.resources.specimen_definition.valueset import SPECIMEN_TYPE_CODE_VALUESET
+from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.users.models import User
 
@@ -65,6 +66,15 @@ class CollectionSpec(BaseModel):
             raise ValueError("Collector user not found")
         return collector
 
+    @model_serializer
+    def serialize_model(self):
+        data = dict(self)
+        if data.get("collector"):
+            data["collector_object"] = model_from_cache(
+                UserSpec, external_id=data["collector"]
+            )
+        return data
+
 
 class ProcessingSpec(BaseModel):
     """Specimen processing details"""
@@ -80,6 +90,15 @@ class ProcessingSpec(BaseModel):
         if performer and not User.objects.filter(external_id=performer).exists():
             raise ValueError("Performer user not found")
         return performer
+
+    @model_serializer
+    def serialize_model(self):
+        data = dict(self)
+        if data.get("performer"):
+            data["performer_object"] = model_from_cache(
+                UserSpec, external_id=data["performer"]
+            )
+        return data
 
 
 class BaseSpecimenSpec(EMRResource):
