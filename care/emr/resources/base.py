@@ -224,7 +224,7 @@ def model_cache_key(
     return f"serializers_cache:{db_model_name}:{pk or '*'}:{model_name or '*'}"
 
 
-def model_from_cache(model: EMRResource, quiet=True, **kwargs) -> EMRResource | None:
+def model_from_cache(model: EMRResource, quiet=True, **kwargs) -> dict[str, Any] | None:
     """
     Fetch a cacheable model instance from the cache or database.
     """
@@ -298,5 +298,5 @@ def delete_model_cache(sender, instance, **kwargs) -> None:
     """
     Signal handler to delete the cache for a model instance when it is saved or deleted.
     """
-    sender_model_string = model_string(sender.__class__)
+    sender_model_string = model_string(sender)
     cache.delete(model_cache_key(sender_model_string, pk=instance.id))
