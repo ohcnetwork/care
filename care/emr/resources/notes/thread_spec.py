@@ -1,6 +1,6 @@
 import datetime
 
-from pydantic import UUID4, field_validator
+from pydantic import UUID4, Field, field_validator
 
 from care.emr.models import Encounter
 from care.emr.models.notes import NoteThread
@@ -12,7 +12,7 @@ class NoteThreadSpec(EMRResource):
     __model__ = NoteThread
     __exclude__ = ["patient", "encounter"]
     id: UUID4 | None = None
-    title: str
+    title: str = Field(..., max_length=255)
 
 
 class NoteThreadCreateSpec(NoteThreadSpec):
