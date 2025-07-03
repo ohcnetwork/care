@@ -1,6 +1,9 @@
 from enum import Enum
 
 from care.security.permissions.activity_definition import ActivityDefinitionPermissions
+from care.security.permissions.charge_item_definition import (
+    ChargeItemDefinitionPermissions,
+)
 from care.security.permissions.device import DevicePermissions
 from care.security.permissions.diagnostic_report import DiagnosticReportPermissions
 from care.security.permissions.encounter import EncounterPermissions
@@ -54,6 +57,7 @@ class PermissionController:
         HealthcareServicePermissions,
         SpecimenPermissions,
         DiagnosticReportPermissions,
+        ChargeItemDefinitionPermissions,
     ]
 
     cache = {}
