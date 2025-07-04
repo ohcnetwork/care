@@ -23,6 +23,7 @@ from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 class ObservationStatus(str, Enum):
     final = "final"
     amended = "amended"
+    entered_in_error = "entered_in_error"
 
 
 class PerformerType(str, Enum):

@@ -1,5 +1,6 @@
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.filters import OrderingFilter
 from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
@@ -34,7 +35,8 @@ class ObservationDefinitionViewSet(
     pydantic_update_model = BaseObservationDefinitionSpec
     pydantic_read_model = ObservationDefinitionReadSpec
     filterset_class = ObservationDefinitionFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]
 
     def authorize_create(self, instance):
         """

@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import ValidationError
+from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -27,7 +28,8 @@ class ProductViewSet(
     pydantic_model = ProductWriteSpec
     pydantic_read_model = ProductReadSpec
     filterset_class = ProductFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]
 
     def get_facility_obj(self):
         return get_object_or_404(

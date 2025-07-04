@@ -88,9 +88,7 @@ class ServiceRequestViewSet(
     questionnaire_description = "Service Request"
     questionnaire_subject_type = SubjectType.patient.value
     resource_type = TagResource.service_request
-    ordering = [
-        "-created_date",
-    ]
+    ordering_fields = ["created_date", "modified_date"]
 
     def get_facility_obj(self):
         return get_object_or_404(

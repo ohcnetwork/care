@@ -64,9 +64,7 @@ class InvoiceViewSet(
     pydantic_retrieve_model = InvoiceRetrieveSpec
     filterset_class = InvoiceFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
-    ordering = [
-        "-created_date",
-    ]
+    ordering_fields = ["created_date", "modified_date"]
 
     def get_facility_obj(self):
         return get_object_or_404(

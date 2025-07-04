@@ -252,11 +252,6 @@ facility_nested_router.register(
     basename="healthcare_service",
 )
 
-facility_nested_router.register(
-    r"diagnostic_report",
-    DiagnosticReportViewSet,
-    basename="diagnostic_report",
-)
 
 facility_nested_router.register(
     r"activity_definition",
@@ -366,6 +361,12 @@ patient_nested_router.register(
 
 patient_nested_router.register(r"symptom", SymptomViewSet, basename="symptom")
 patient_nested_router.register(r"diagnosis", DiagnosisViewSet, basename="diagnosis")
+
+patient_nested_router.register(
+    r"diagnostic_report",
+    DiagnosticReportViewSet,
+    basename="diagnostic_report",
+)
 
 patient_nested_router.register(r"consent", ConsentViewSet, basename="consent")
 
