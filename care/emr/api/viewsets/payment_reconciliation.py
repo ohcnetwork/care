@@ -41,7 +41,7 @@ class PaymentReconciliationViewSet(
     pydantic_read_model = PaymentReconciliationReadSpec
     filterset_class = PaymentReconciliationFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
-    ordering_fields = ["created_date", "payment_datetime"]
+    ordering_fields = ["created_date", "modified_date", "payment_datetime"]
 
     def get_facility_obj(self):
         return get_object_or_404(

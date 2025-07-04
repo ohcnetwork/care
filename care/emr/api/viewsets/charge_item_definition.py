@@ -1,5 +1,6 @@
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.filters import OrderingFilter
 from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
@@ -15,6 +16,7 @@ from care.emr.resources.charge_item_definition.spec import (
     ChargeItemDefinitionSpec,
 )
 from care.facility.models import Facility
+from care.security.authorization.base import AuthorizationController
 
 
 class ChargeItemDefinitionFilters(filters.FilterSet):
@@ -29,29 +31,55 @@ class ChargeItemDefinitionViewSet(
     pydantic_model = ChargeItemDefinitionSpec
     pydantic_read_model = ChargeItemDefinitionReadSpec
     filterset_class = ChargeItemDefinitionFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]
 
     def get_facility_obj(self):
         return get_object_or_404(
             Facility, external_id=self.kwargs["facility_external_id"]
         )
 
-    def perform_create(self, instance):
-        instance.facility = self.get_facility_obj()
-        if ChargeItemDefinition.objects.filter(
-            slug__exact=instance.slug, facility=instance.facility
-        ).exists():
+    def validate_data(self, instance, model_obj=None):
+        queryset = ChargeItemDefinition.objects.filter(slug__exact=instance.slug)
+        if model_obj:
+            queryset = queryset.filter(facility=model_obj.facility).exclude(
+                id=model_obj.id
+            )
+        else:
+            queryset = queryset.filter(facility=self.get_facility_obj())
+        if queryset.exists():
             raise ValidationError(
                 "Charge Item Definition with this slug already exists."
             )
-        # TODO: AuthZ pending
+        return super().validate_data(instance, model_obj)
+
+    def perform_create(self, instance):
+        instance.facility = self.get_facility_obj()
         super().perform_create(instance)
 
+    def authorize_create(self, instance):
+        if not AuthorizationController.call(
+            "can_write_facility_charge_item_definition",
+            self.request.user,
+            self.get_facility_obj(),
+        ):
+            raise PermissionDenied("Access Denied to Charge Item Definition")
+
+    def authorize_update(self, request_obj, model_instance):
+        if not AuthorizationController.call(
+            "can_write_facility_charge_item_definition",
+            self.request.user,
+            model_instance.facility,
+        ):
+            raise PermissionDenied("Access Denied to Charge Item Definition")
+
     def get_queryset(self):
-        """
-        If no facility filters are applied, all objects must be returned without a facility filter.
-        If facility filter is applied, check for read permission and return all inside facility.
-        """
         base_queryset = self.database_model.objects.all()
         facility_obj = self.get_facility_obj()
+        if not AuthorizationController.call(
+            "can_list_facility_charge_item_definition",
+            self.request.user,
+            facility_obj,
+        ):
+            raise PermissionDenied("Access Denied to Charge Item Definition")
         return base_queryset.filter(facility=facility_obj)

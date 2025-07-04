@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -38,4 +39,5 @@ class SupplyRequestViewSet(
     pydantic_model = SupplyRequestWriteSpec
     pydantic_read_model = SupplyRequestReadSpec
     filterset_class = SupplyRequestFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]

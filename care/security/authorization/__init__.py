@@ -1,5 +1,6 @@
 from .activity_definition import *  # noqa
 from .base import *  # noqa
+from .charge_item_definition import *  # noqa
 from .device import *  # noqa
 from .encounter import *  # noqa
 from .facility import *  # noqa

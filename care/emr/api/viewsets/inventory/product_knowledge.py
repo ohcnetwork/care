@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -19,6 +20,7 @@ class ProductKnowledgeFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     facility = filters.UUIDFilter(field_name="facility__external_id")
     name = filters.CharFilter(lookup_expr="icontains")  # TODO : Need better searching
+    product_type = filters.CharFilter(lookup_expr="iexact")
 
 
 class ProductKnowledgeViewSet(
@@ -29,4 +31,5 @@ class ProductKnowledgeViewSet(
     pydantic_update_model = BaseProductKnowledgeSpec
     pydantic_read_model = ProductKnowledgeReadSpec
     filterset_class = ProductKnowledgeFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]

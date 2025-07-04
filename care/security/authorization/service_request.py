@@ -1,6 +1,7 @@
 from care.emr.models.location import FacilityLocation
 from care.security.authorization import AuthorizationController
 from care.security.authorization.base import AuthorizationHandler
+from care.security.permissions.diagnostic_report import DiagnosticReportPermissions
 from care.security.permissions.service_request import ServiceRequestPermissions
 from care.security.permissions.specimen import SpecimenPermissions
 
@@ -63,6 +64,20 @@ class ServiceRequestAccess(AuthorizationHandler):
             user,
             service_request,
             SpecimenPermissions.can_read_specimen.name,
+        )
+
+    def can_write_diagnostic_report(self, user, service_request):
+        return self.has_permission_on_service_request(
+            user,
+            service_request,
+            DiagnosticReportPermissions.can_write_diagnostic_report.name,
+        )
+
+    def can_read_diagnostic_report(self, user, service_request):
+        return self.has_permission_on_service_request(
+            user,
+            service_request,
+            DiagnosticReportPermissions.can_read_diagnostic_report.name,
         )
 
     def can_list_location_service_request(self, user, location):

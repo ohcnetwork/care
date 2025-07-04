@@ -6,6 +6,7 @@ from care.security.authorization.base import (
     AuthorizationController,
     AuthorizationHandler,
 )
+from care.security.permissions.diagnostic_report import DiagnosticReportPermissions
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.service_request import ServiceRequestPermissions
 
@@ -89,6 +90,14 @@ class EncounterAccess(AuthorizationHandler):
         """
         return self.check_permission_in_encounter(
             user, encounter, ServiceRequestPermissions.can_read_service_request.name
+        )
+
+    def can_read_diagnostic_report_in_encounter(self, user, encounter):
+        """
+        Check if the user has permission to read diagnostic report under this encounter
+        """
+        return self.check_permission_in_encounter(
+            user, encounter, DiagnosticReportPermissions.can_read_diagnostic_report.name
         )
 
     def can_write_service_request_in_encounter(self, user, encounter):

@@ -1,6 +1,7 @@
 import datetime
 from enum import Enum
 
+from django.shortcuts import get_object_or_404
 from pydantic import UUID4
 
 from care.emr.models.diagnostic_report import DiagnosticReport
@@ -20,7 +21,7 @@ class DiagnosticReportStatusChoices(str, Enum):
     registered = "registered"
     partial = "partial"
     preliminary = "preliminary"
-    modified = "modified"
+    # modified = "modified"
     final = "final"
 
 
@@ -40,8 +41,8 @@ class DiagnosticReportCreateSpec(DiagnosticReportSpecBase):
     service_request: UUID4
 
     def perform_extra_deserialization(self, is_update, obj):
-        obj.service_request = ServiceRequest.objects.get(
-            external_id=self.service_request
+        obj.service_request = get_object_or_404(
+            ServiceRequest, external_id=self.service_request
         )
 
 

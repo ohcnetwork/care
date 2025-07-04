@@ -1,6 +1,7 @@
 from django.db import transaction
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import ValidationError
+from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -57,7 +58,8 @@ class SupplyDeliveryViewSet(
     pydantic_read_model = SupplyDeliveryReadSpec
     pydantic_retrieve_model = SupplyDeliveryRetrieveSpec
     filterset_class = SupplyDeliveryFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]
 
     def perform_create(self, instance):
         instance.status = SupplyDeliveryStatusOptions.in_progress.value

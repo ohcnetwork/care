@@ -8,6 +8,7 @@ from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.filters import OrderingFilter
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
@@ -45,7 +46,8 @@ class PatientViewSet(EMRModelViewSet):
     pydantic_update_model = PatientUpdateSpec
     pydantic_retrieve_model = PatientRetrieveSpec
     filterset_class = PatientFilters
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]
 
     def authorize_update(self, request_obj, model_instance):
         if not AuthorizationController.call(

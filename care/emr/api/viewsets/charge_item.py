@@ -68,9 +68,7 @@ class ChargeItemViewSet(
     pydantic_read_model = ChargeItemReadSpec
     filterset_class = ChargeItemDefinitionFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
-    ordering = [
-        "-created_date",
-    ]
+    ordering_fields = ["created_date", "modified_date"]
     questionnaire_type = "charge_item"
     questionnaire_title = "Charge Item"
     questionnaire_description = "Charge Item"

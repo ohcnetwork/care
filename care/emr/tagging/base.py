@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from rest_framework.exceptions import ValidationError
 
 from care.emr.models.tag_config import TagConfig
 from care.emr.resources.tag.config_spec import TagConfigReadSpec
@@ -69,8 +70,10 @@ class SingleFacilityTagManager(BaseTagManager):
 
     def unset_tag(self, resource, tag_instance, user):
         tags = self.get_resource_tag(resource)
+        tag_instance = self.get_tag_from_external_id(tag_instance)
         if tag_instance.id not in tags:
-            raise ValueError("Tag not set")
+            # TODO Standardise and use valueerror and reraise as validation error
+            raise ValidationError("Tag not set")
         tags.remove(tag_instance.id)
         fields = self.set_instance_tag(resource, tags)
         resource.save(update_fields=fields)
