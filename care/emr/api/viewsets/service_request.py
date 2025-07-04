@@ -30,7 +30,6 @@ from care.emr.resources.activity_definition.service_request import (
 )
 from care.emr.resources.questionnaire.spec import SubjectType
 from care.emr.resources.service_request.spec import (
-    BaseServiceRequestSpec,
     ServiceRequestCreateSpec,
     ServiceRequestReadSpec,
     ServiceRequestRetrieveSpec,
@@ -78,7 +77,7 @@ class ServiceRequestViewSet(
 ):
     database_model = ServiceRequest
     pydantic_model = ServiceRequestCreateSpec
-    pydantic_update_model = BaseServiceRequestSpec
+    pydantic_update_model = ServiceRequestUpdateSpec
     pydantic_read_model = ServiceRequestReadSpec
     pydantic_retrieve_model = ServiceRequestRetrieveSpec
     filterset_class = ServiceRequestFilters
