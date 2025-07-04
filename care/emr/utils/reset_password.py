@@ -94,3 +94,10 @@ def send_password_reset_email(user, mail_type):
 
     except ValidationError as e:
         raise exceptions.ValidationError({"message": e.messages}) from e
+    except Exception as e:
+        # Custom message for email sending failure
+        raise exceptions.ValidationError(
+            {
+                "message": "Failed to send password reset email. Please contact the administrator."
+            }
+        ) from e
