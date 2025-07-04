@@ -17,6 +17,7 @@ class InventoryItemFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     net_content_gt = filters.NumberFilter(field_name="net_content", lookup_expr="gt")
     net_content = filters.RangeFilter(field_name="net_content")
+    location = filters.UUIDFilter(field_name="location__external_id")
 
 
 class InventoryItemViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
