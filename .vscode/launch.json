@@ -31,7 +31,7 @@
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
-      "args": ["test", "--keepdb"],
+      "args": ["test", "--keepdb" ],
       "django": true,
       "justMyCode": false
     },
