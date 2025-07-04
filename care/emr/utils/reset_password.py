@@ -82,7 +82,7 @@ def send_password_reset_email(user, mail_type):
             email_html_message = render_to_string(
                 settings.USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH, context
             )
-        subject = "Password Reset for Care"
+            subject = "Password Reset for Care"
         msg = EmailMessage(
             subject,
             email_html_message,

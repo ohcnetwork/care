@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db import transaction
 from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
@@ -151,6 +152,19 @@ class OrganizationViewSet(EMRModelViewSet):
                 "User does not have the required permissions to create organizations"
             )
         return True
+
+    def perform_destroy(self, instance):
+        with transaction.atomic():
+            OrganizationUser.objects.filter(organization=instance).delete()
+            instance.deleted = True
+            instance.save(update_fields=["deleted"])
+
+            parent = instance.parent
+            if parent:
+                parent.has_children = Organization.objects.filter(
+                    parent=parent
+                ).exists()
+                parent.save(update_fields=["has_children"])
 
     def get_queryset(self):
         queryset = (
