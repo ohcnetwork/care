@@ -22,6 +22,8 @@ from care.emr.resources.patient_identifier.spec import (
 
 class PatientIdentifierConfigFilters(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
+    status = filters.CharFilter(field_name="status", lookup_expr="iexact")
+    display = filters.CharFilter(field_name="config__display", lookup_expr="icontains")
 
 
 class PatientIdentifierConfigViewSet(
