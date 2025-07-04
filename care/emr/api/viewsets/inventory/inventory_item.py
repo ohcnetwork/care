@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from django_filters.filters import OrderingFilter
+from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import EMRBaseViewSet, EMRListMixin, EMRRetrieveMixin
 from care.emr.models.inventory_item import InventoryItem
