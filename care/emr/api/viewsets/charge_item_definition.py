@@ -1,5 +1,6 @@
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.filters import OrderingFilter
 from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
@@ -30,7 +31,8 @@ class ChargeItemDefinitionViewSet(
     pydantic_model = ChargeItemDefinitionSpec
     pydantic_read_model = ChargeItemDefinitionReadSpec
     filterset_class = ChargeItemDefinitionFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]
 
     def get_facility_obj(self):
         return get_object_or_404(

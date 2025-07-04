@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from django_filters.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import EMRBaseViewSet, EMRListMixin, EMRRetrieveMixin
 from care.emr.models.inventory_item import InventoryItem
@@ -24,4 +25,5 @@ class InventoryItemViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
     pydantic_read_model = InventoryItemReadSpec
     pydantic_retrieve_model = InventoryItemRetrieveSpec
     filterset_class = InventoryItemFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]

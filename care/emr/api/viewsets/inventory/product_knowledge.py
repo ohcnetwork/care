@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -29,4 +30,5 @@ class ProductKnowledgeViewSet(
     pydantic_update_model = BaseProductKnowledgeSpec
     pydantic_read_model = ProductKnowledgeReadSpec
     filterset_class = ProductKnowledgeFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]

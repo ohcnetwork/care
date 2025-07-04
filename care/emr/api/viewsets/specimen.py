@@ -1,4 +1,5 @@
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import EMRBaseViewSet, EMRRetrieveMixin, EMRUpdateMixin
 from care.emr.models.specimen import Specimen
@@ -17,6 +18,8 @@ class SpecimenViewSet(EMRRetrieveMixin, EMRUpdateMixin, EMRBaseViewSet):
     pydantic_update_model = SpecimenUpdateSpec
     pydantic_read_model = SpecimenReadSpec
     pydantic_retrieve_model = SpecimenRetrieveSpec
+    filter_backends = [OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]
 
     def authorize_update(self, request_obj, model_instance):
         service_request = model_instance.service_request

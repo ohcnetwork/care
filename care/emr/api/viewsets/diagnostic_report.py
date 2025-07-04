@@ -4,6 +4,7 @@ from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -66,7 +67,8 @@ class DiagnosticReportViewSet(
     pydantic_read_model = DiagnosticReportListSpec
     pydantic_retrieve_model = DiagnosticReportRetrieveSpec
     filterset_class = DiagnosticReportFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]
 
     def get_patient_obj(self):
         return get_object_or_404(
