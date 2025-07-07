@@ -4,7 +4,7 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
@@ -137,7 +137,7 @@ class ServiceRequestViewSet(
             self.request.user,
             encounter,
         ):
-            raise ValidationError(
+            raise PermissionDenied(
                 "You do not have permission to create a service request for this encounter"
             )
 
@@ -147,7 +147,7 @@ class ServiceRequestViewSet(
             self.request.user,
             model_instance,
         ):
-            raise ValidationError(
+            raise PermissionDenied(
                 "You do not have permission to update this service request"
             )
 
@@ -160,7 +160,7 @@ class ServiceRequestViewSet(
             self.request.user,
             model_instance,
         ):
-            raise ValidationError(
+            raise PermissionDenied(
                 "You do not have permission to read this service request"
             )
 
@@ -184,7 +184,7 @@ class ServiceRequestViewSet(
                 self.request.user,
                 location,
             ):
-                raise ValidationError(
+                raise PermissionDenied(
                     "You do not have permission to view service requests for this location"
                 )
             return queryset.filter(locations__overlap=[location.id])
@@ -197,7 +197,7 @@ class ServiceRequestViewSet(
                 self.request.user,
                 encounter,
             ):
-                raise ValidationError(
+                raise PermissionDenied(
                     "You do not have permission to view service requests for this encounter"
                 )
             return queryset.filter(encounter=encounter)
@@ -241,7 +241,7 @@ class ServiceRequestViewSet(
             self.request.user,
             service_request,
         ):
-            raise ValidationError(
+            raise PermissionDenied(
                 "You do not have permission to create a specimen for this encounter"
             )
 
