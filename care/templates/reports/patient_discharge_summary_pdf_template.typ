@@ -211,7 +211,7 @@
             [*UPLOADED AT*], [*NAME*],
         ),
         {% for file in files %}
-            "{{file.modified_date }}", text(hyphenate: true)["{{file.name }}"],
+            "{{file.modified_date }}", "{{file.name }}",
         {% endfor %}
     )
 {% endif %}
