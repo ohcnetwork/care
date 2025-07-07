@@ -16,7 +16,6 @@ class InventoryItemFilters(filters.FilterSet):
     )
     status = filters.CharFilter(lookup_expr="iexact")
     net_content_gt = filters.NumberFilter(field_name="net_content", lookup_expr="gt")
-    net_content = filters.RangeFilter(field_name="net_content")
 
 
 class InventoryItemViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
