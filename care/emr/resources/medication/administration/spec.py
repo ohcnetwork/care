@@ -160,6 +160,8 @@ class MedicationAdministrationUpdateSpec(EMRResource):
 
 class MedicationAdministrationReadSpec(BaseMedicationAdministrationSpec):
     created_by: UserSpec = dict
+    created_date: datetime
+    modified_date: datetime
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
