@@ -27,15 +27,15 @@ install_docker() {
 
     echo "Installing Docker..."
     curl -fsSL https://get.docker.com | sudo sh &> /dev/null
-    sudo usermod -aG docker $USER &> /dev/null
+    sudo usermod -aG docker ubuntu $USER &> /dev/null
     echo "Docker installed"
 }
 
 create_directories() {
-    echo ">>> Creating CARE data directories..."
-    sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres,redis,minio}
+    echo ">>> Creating base directories..."
+    sudo mkdir -p "$GLUSTER_SHARED_DIR"
     sudo chown -R $USER:$USER "$GLUSTER_SHARED_DIR"
-    echo "CARE directories created"
+    echo "Base directories created"
 }
 
 ### NETWORK / HOST CONFIG ###
@@ -197,6 +197,12 @@ mount_glusterfs() {
         else
             echo "Mount point already active"
         fi
+
+        # Create data subdirectories AFTER mounting
+        echo ">>> Creating data subdirectories..."
+        sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres,redis,minio}
+        sudo chown -R $USER:$USER "$GLUSTER_SHARED_DIR"
+        echo "Data directories created in mounted volume"
     else
         echo "GlusterFS volume not found"
     fi
