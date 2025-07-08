@@ -96,7 +96,7 @@ class ServiceRequestViewSet(
 
     def convert_external_id_to_internal_id(self, instance):
         ids = []
-        for location in instance._locations:
+        for location in instance._locations:  # noqa: SLF001
             obj = (
                 FacilityLocation.objects.only("id")
                 .filter(external_id=location, facility=instance.facility)
@@ -252,6 +252,8 @@ class ServiceRequestViewSet(
         sepcimen_data = BaseSpecimenSpec(**request.data)
         self.authorize_create_specimen(service_request)
         model_instance = sepcimen_data.de_serialize()
+        if not model_instance.accession_identifier:
+            model_instance.accession_identifier = model_instance.external_id
         model_instance.patient = service_request.patient
         model_instance.encounter = service_request.encounter
         model_instance.facility = service_request.facility
@@ -281,6 +283,8 @@ class ServiceRequestViewSet(
             request_params.specimen.model_dump(mode="json")
         )
         model_instance = serializer_obj.de_serialize(obj=specimen)
+        if not model_instance.accession_identifier:
+            model_instance.accession_identifier = model_instance.external_id
         model_instance.patient = service_request.patient
         model_instance.encounter = service_request.encounter
         model_instance.facility = service_request.facility
