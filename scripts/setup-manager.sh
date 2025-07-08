@@ -4,9 +4,9 @@ set -euo pipefail
 
 STACK_NAME="care"
 COMPOSE_FILE="docker-compose.swarm.yaml"
-GLUSTER_VOLUME_NAME="care-volume"
-GLUSTER_BRICK_DIR="/care-storage/brick"
 GLUSTER_SHARED_DIR="/care-storage/shared"
+GLUSTER_BRICK_DIR="/care-storage/brick"
+GLUSTER_VOLUME_NAME="care-volume"
 
 ### SYSTEM SETUP ###
 

@@ -3,6 +3,7 @@
 set -euo pipefail
 
 GLUSTER_SHARED_DIR="/care-storage/shared"
+GLUSTER_VOLUME_NAME="care-volume"
 
 ### SYSTEM SETUP ###
 
@@ -72,12 +73,6 @@ join_swarm_worker() {
 
 ### GLUSTERFS SETUP ###
 
-setup_glusterfs_client() {
-    echo ">>> Setting up GlusterFS client..."
-    sudo mkdir -p "$GLUSTER_MOUNT_DIR"
-    echo "GlusterFS client setup complete"
-}
-
 add_manager_hosts() {
     echo ">>> Adding manager hosts to /etc/hosts..."
 
@@ -99,9 +94,9 @@ mount_glusterfs() {
 
     for host in "${mount_hosts[@]}"; do
         if ping -c 1 "$host" &>/dev/null; then
-            if ! mountpoint -q "$GLUSTER_MOUNT_DIR"; then
-                sudo mount -t glusterfs "$host:/$GLUSTER_VOLUME_NAME" "$GLUSTER_MOUNT_DIR" 2>/dev/null && {
-                    local fstab_entry="$host:/$GLUSTER_VOLUME_NAME $GLUSTER_MOUNT_DIR glusterfs defaults,_netdev 0 0"
+            if ! mountpoint -q "$GLUSTER_SHARED_DIR"; then
+                sudo mount -t glusterfs "$host:/$GLUSTER_VOLUME_NAME" "$GLUSTER_SHARED_DIR" 2>/dev/null && {
+                    local fstab_entry="$host:/$GLUSTER_VOLUME_NAME $GLUSTER_SHARED_DIR glusterfs defaults,_netdev 0 0"
                     if ! grep -q "$GLUSTER_VOLUME_NAME" /etc/fstab; then
                         echo "$fstab_entry" | sudo tee -a /etc/fstab
                     fi
@@ -126,8 +121,6 @@ setup_worker() {
     system_update
     install_docker
     create_directories
-    setup_glusterfs_client
-
     add_manager_hosts
     join_swarm_worker
     mount_glusterfs
