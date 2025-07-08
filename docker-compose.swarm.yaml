@@ -1,5 +1,3 @@
-# TODO: Persist data across nodes using GlusterFS + Update deploy-swarm.sh script
-# TODO: Use docker secrets instead of hardcoded values
 networks:
   default:
     name: care
@@ -11,32 +9,23 @@ networks:
 
 volumes:
   postgres-data:
-    # driver: local
-    # driver_opts:
-    #   type: none
-    #   o: bind
-    #   device: /care-data/postgres
-
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /care-storage/shared/postgres
   redis-data:
-    # driver: local
-    # driver_opts:
-    #   type: none
-    #   o: bind
-    #   device: /care-data/redis
-
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /care-storage/shared/redis
   minio-data:
-    # driver: local
-    # driver_opts:
-    #   type: none
-    #   o: bind
-    #   device: /care-data/minio
-
-  letsencrypt-data:
-    # driver: local
-    # driver_opts:
-    #   type: none
-    #   o: bind
-    #   device: /care-data/letsencrypt
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /care-storage/shared/minio
 
 services:
   db:
@@ -67,10 +56,10 @@ services:
         window: 60s
       resources:
         limits:
-          memory: 768M
+          memory: 512M
           cpus: "0.5"
         reservations:
-          memory: 512M
+          memory: 256M
           cpus: "0.25"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
@@ -80,7 +69,7 @@ services:
 
   redis:
     image: redis:7.4-alpine
-    command: redis-server --appendonly yes --save 60 1 --save 300 100 --dir /data --maxmemory 512mb --maxmemory-policy allkeys-lru
+    command: redis-server --appendonly yes --save 60 1 --save 300 100 --dir /data --maxmemory 256mb --maxmemory-policy allkeys-lru
     volumes:
       - redis-data:/data
     deploy:
@@ -102,11 +91,11 @@ services:
         window: 60s
       resources:
         limits:
-          memory: 512M
-          cpus: "0.3"
-        reservations:
           memory: 256M
-          cpus: "0.15"
+          cpus: "0.5"
+        reservations:
+          memory: 128M
+          cpus: "0.25"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -144,7 +133,7 @@ services:
       resources:
         limits:
           memory: 384M
-          cpus: "0.25"
+          cpus: "0.2"
         reservations:
           memory: 192M
           cpus: "0.1"
@@ -173,8 +162,10 @@ services:
       BUCKET_SECRET: minioadmin
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
+    ports:
+      - "9000:9000"
     deploy:
-      replicas: 6
+      replicas: 10
       placement:
         # constraints:
         #   - node.role == worker
@@ -190,31 +181,12 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      labels:
-        - "traefik.enable=true"
-        # HTTPS router
-        - "traefik.http.routers.backend-https.rule=Host(`api.areeb.dev`)"
-        - "traefik.http.routers.backend-https.entrypoints=websecure"
-        - "traefik.http.routers.backend-https.service=backend"
-        - "traefik.http.routers.backend-https.tls.certresolver=letsencrypt"
-        - "traefik.http.services.backend.loadbalancer.server.port=9000"
-        # Load balancer health check
-        - "traefik.http.services.backend.loadbalancer.healthcheck.path=/health"
-        - "traefik.http.services.backend.loadbalancer.healthcheck.scheme=http"
-        - "traefik.http.services.backend.loadbalancer.healthcheck.interval=30s"
-        - "traefik.http.services.backend.loadbalancer.healthcheck.timeout=10s"
-        # Sticky sessions when using multiple nodes
-        - "traefik.http.services.backend.loadbalancer.sticky.cookie=true"
-        - "traefik.http.services.backend.loadbalancer.sticky.cookie.name=care_session"
-        # Performance optimizations when using multiple nodes
-        - "traefik.http.services.backend.loadbalancer.passHostHeader=true"
-        - "traefik.http.services.backend.loadbalancer.responseForwarding.flushInterval=100ms"
       resources:
         limits:
-          memory: 768M
+          memory: 512M
           cpus: "0.5"
         reservations:
-          memory: 512M
+          memory: 256M
           cpus: "0.25"
     healthcheck:
       test: ["CMD", "./healthcheck.sh"]
@@ -242,7 +214,7 @@ services:
       FILE_UPLOAD_BUCKET: patient-bucket
       FACILITY_S3_BUCKET: facility-bucket
     deploy:
-      replicas: 6
+      replicas: 10
       placement:
         # constraints:
         #   - node.role == worker
@@ -260,10 +232,10 @@ services:
         window: 60s
       resources:
         limits:
-          memory: 768M
+          memory: 512M
           cpus: "0.5"
         reservations:
-          memory: 512M
+          memory: 256M
           cpus: "0.25"
 
   celery-beat:
@@ -288,8 +260,8 @@ services:
     deploy:
       replicas: 1
       placement:
-        # constraints:
-        #   - node.role == manager
+        constraints:
+          - node.role == manager
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
@@ -305,66 +277,7 @@ services:
       resources:
         limits:
           memory: 384M
-          cpus: "0.25"
+          cpus: "0.5"
         reservations:
           memory: 192M
-          cpus: "0.1"
-
-  traefik:
-    image: traefik:v3.4
-    ports:
-      - "80:80" # HTTP
-      - "443:443" # HTTPS
-      - "8080:8080" # Traefik Dashboard
-    command:
-      - --api.dashboard=true
-      - --api.insecure=true
-      - --providers.swarm=true
-      - --providers.swarm.exposedbydefault=false
-      - --providers.swarm.network=care
-      - --entrypoints.web.address=:80
-      - --entrypoints.websecure.address=:443
-      # Redirect HTTP to HTTPS
-      - --entrypoints.web.http.redirections.entrypoint.to=websecure
-      - --entrypoints.web.http.redirections.entrypoint.scheme=https
-      - --entrypoints.web.http.redirections.entrypoint.permanent=true
-      # Let's Encrypt setup
-      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
-      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
-      - --certificatesresolvers.letsencrypt.acme.email=contact@ohc.network
-      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
-      - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
-      - --log.level=INFO
-      - --ping=true
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - letsencrypt-data:/letsencrypt
-    deploy:
-      replicas: 1
-      placement:
-        # constraints:
-        #   - node.role == manager
-        max_replicas_per_node: 1
-      update_config:
-        failure_action: rollback
-        parallelism: 1
-        order: stop-first
-        delay: 10s
-        monitor: 30s
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 60s
-      resources:
-        limits:
-          memory: 256M
-          cpus: "0.2"
-        reservations:
-          memory: 128M
-          cpus: "0.1"
-    healthcheck:
-      test: ["CMD", "traefik", "healthcheck", "--ping"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+          cpus: "0.25"
