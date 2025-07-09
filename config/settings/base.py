@@ -384,6 +384,9 @@ REST_FRAMEWORK = {
     "SEARCH_PARAM": "search_text",
     "DEFAULT_SCHEMA_CLASS": "care.utils.swagger.schema.AutoSchema",
     "EXCEPTION_HANDLER": "config.exception_handler.exception_handler",
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
 }
 
 # drf-spectacular (schema generation)
