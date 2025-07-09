@@ -61,9 +61,6 @@ class ValueSetViewSet(EMRModelViewSet):
     def get_queryset(self):
         return ValueSet.objects.all().select_related("created_by", "updated_by")
 
-    def get_serializer_class(self):
-        return ValueSetSpec
-
     def get_recent_view_cache_key(self, valueset_slug, user_id):
         return f"user_valueset_code_prefs:{valueset_slug}:{user_id}:recent_views"
 
