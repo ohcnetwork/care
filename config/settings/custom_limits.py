@@ -186,7 +186,7 @@ DISCOUNT_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
         "DISCOUNT_MONETARY_COMPONENT_DEFINITIONS",
         default=[
             {
-                "title": "Old Age Discount ?",
+                "title": "Old Age Discount",
                 "code": {
                     "code": "oldage",
                     "display": "Old Age Discount",
@@ -196,7 +196,7 @@ DISCOUNT_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
                 "factor": 10,
             },
             {
-                "title": "Child Discount ?",
+                "title": "Child Discount",
                 "code": {
                     "code": "child",
                     "display": "Child Discount",
@@ -205,6 +205,20 @@ DISCOUNT_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
                 "monetary_component_type": "discount",
                 "factor": 10,
             },
+        ],
+    )
+)
+
+
+INFORMATIONAL_MONETARY_CODES = MonetaryCodes(
+    env.json(
+        "INFORMATIONAL_MONETARY_CODES",
+        default=[
+            {
+                "code": "mrp",
+                "display": "MRP",
+                "system": "http://ohc.network/codes/monetary/informational",
+            }
         ],
     )
 )

@@ -93,6 +93,7 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     instance_discount_monetary_components: list[dict] = []
     instance_tax_codes: list[dict] = []
     instance_tax_monetary_components: list[dict] = []
+    instance_informational_codes: list[dict] = []
     # Identifiers
     patient_instance_identifier_configs: list[dict] = []
     patient_facility_identifier_configs: list[dict] = []
@@ -115,6 +116,7 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
         mapping["patient_facility_identifier_configs"] = (
             PatientIdentifierConfigCache.get_facility_config(obj.id)
         )
+        mapping["instance_informational_codes"] = settings.INFORMATIONAL_MONETARY_CODES
 
 
 class FacilityMonetaryCodeSpec(EMRResource):
