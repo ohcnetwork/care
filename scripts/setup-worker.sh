@@ -104,7 +104,7 @@ mount_glusterfs() {
 
                     # Create data subdirectories AFTER mounting
                     echo ">>> Creating data subdirectories..."
-                    sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres,redis,minio}
+                    sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres-master,postgres-slave1,postgres-slave2,redis,minio}
                     sudo chown -R $USER:$USER "$GLUSTER_SHARED_DIR"
                     echo "Data directories created in mounted volume"
                     return
