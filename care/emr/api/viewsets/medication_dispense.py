@@ -4,6 +4,7 @@ from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -59,7 +60,8 @@ class MedicationDispenseViewSet(
     pydantic_update_model = MedicationDispenseUpdateSpec
     pydantic_read_model = MedicationDispenseReadSpec
     filterset_class = MedicationDispenseFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]
 
     def perform_create(self, instance):
         with transaction.atomic():
