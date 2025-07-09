@@ -1,3 +1,8 @@
+import json
+from decimal import Decimal
+
+from django.core.serializers.json import DjangoJSONEncoder
+
 from care.emr.locks.billing import AccountLock
 from care.emr.models.account import Account
 from care.emr.models.charge_item import ChargeItem
@@ -13,9 +18,9 @@ from config.celery_app import app
 
 
 def calculate_payment_reconciliation_summary(payment_reconciliations):
-    total_paid = 0
+    total_paid = Decimal(0)
     for payment_reconciliation in payment_reconciliations:
-        total_paid += float(payment_reconciliation.amount)
+        total_paid += Decimal(payment_reconciliation.amount)
     return total_paid
 
 
@@ -45,7 +50,12 @@ def sync_account_items(account: Account):
         account.total_gross = charge_items_summary["gross"]
         account.total_paid = payment_reconciliation_total
         account.total_balance = account.total_gross - account.total_paid
-        account.total_price_components = charge_items_summary["total_price_components"]
+        account.total_price_components = json.loads(
+            json.dumps(
+                charge_items_summary["total_price_components"],
+                cls=DjangoJSONEncoder,
+            )
+        )
         account.calculated_at = care_now()
 
 

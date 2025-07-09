@@ -2,6 +2,7 @@
 Base settings to build other settings files upon.
 """
 
+import decimal
 import logging
 import warnings
 from datetime import datetime, timedelta
@@ -27,6 +28,10 @@ logger = logging.getLogger(__name__)
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "care"
 env = environ.Env()
+
+decimal.DefaultContext.rounding = decimal.ROUND_HALF_EVEN
+decimal.DefaultContext.prec = 2
+decimal.setcontext(decimal.DefaultContext)
 
 if READ_DOT_ENV_FILE := env.bool("DJANGO_READ_DOT_ENV_FILE", default=False):
     # OS environment variables take precedence over variables from .env

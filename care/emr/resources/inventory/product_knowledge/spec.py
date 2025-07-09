@@ -93,6 +93,7 @@ class BaseProductKnowledgeSpec(EMRResource):
 
     id: UUID4 | None = None
     slug: str
+    alternate_identifier: str | None = None
     status: ProductKnowledgeStatusOptions
     product_type: ProductTypeOptions
     code: Coding | None = None

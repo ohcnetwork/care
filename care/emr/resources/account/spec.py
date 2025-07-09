@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 from enum import Enum
 
 from django.shortcuts import get_object_or_404
@@ -54,10 +55,10 @@ class AccountReadSpec(AccountSpec):
     """Account read specification"""
 
     patient: dict
-    total_net: float
-    total_gross: float
-    total_paid: float
-    total_balance: float
+    total_net: Decimal
+    total_gross: Decimal
+    total_paid: Decimal
+    total_balance: Decimal
     calculated_at: datetime.datetime
     created_date: datetime.datetime
     modified_date: datetime.datetime
