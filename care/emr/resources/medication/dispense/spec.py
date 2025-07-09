@@ -137,6 +137,7 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
     item: dict
     charge_item: dict | None = None
     created_date: datetime
+    modified_date: datetime
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
