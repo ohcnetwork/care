@@ -1,10 +1,26 @@
 from datetime import datetime, timedelta
+from types import MappingProxyType
 
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
 
 from care.emr.models import EMRBaseModel
+
+
+def convert_mappingproxy_to_dict(obj):
+    """
+    Recursively convert MappingProxyType objects to regular dicts.
+    This is needed because Pydantic cannot serialize MappingProxyType objects.
+    """
+    if isinstance(obj, MappingProxyType):
+        return {k: convert_mappingproxy_to_dict(v) for k, v in obj.items()}
+    elif isinstance(obj, dict):
+        return {k: convert_mappingproxy_to_dict(v) for k, v in obj.items()}
+    elif isinstance(obj, (list, tuple)):
+        return [convert_mappingproxy_to_dict(item) for item in obj]
+    else:
+        return obj
 
 
 class OrganizationCommonBase(EMRBaseModel):
@@ -52,7 +68,7 @@ class OrganizationCommonBase(EMRBaseModel):
                 "name": self.parent.name,
                 "description": self.parent.description,
                 "org_type": self.parent.org_type,
-                "metadata": self.parent.metadata,
+                "metadata": convert_mappingproxy_to_dict(self.parent.metadata),
                 "parent": self.parent.cached_parent_json,
                 "level_cache": self.parent.level_cache,
                 "cache_expiry": str(

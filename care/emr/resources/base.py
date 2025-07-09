@@ -1,4 +1,5 @@
 import datetime
+from types import MappingProxyType
 from typing import Annotated, Any, Union
 
 import phonenumbers
@@ -8,6 +9,21 @@ from django.db.models.signals import post_save
 from django.utils.timezone import is_naive
 from pydantic import BaseModel, model_validator
 from pydantic_extra_types.phone_numbers import PhoneNumberValidator
+
+
+def convert_mappingproxy_to_dict(obj):
+    """
+    Recursively convert MappingProxyType objects to regular dicts.
+    This is needed because Pydantic cannot serialize MappingProxyType objects.
+    """
+    if isinstance(obj, MappingProxyType):
+        return {k: convert_mappingproxy_to_dict(v) for k, v in obj.items()}
+    elif isinstance(obj, dict):
+        return {k: convert_mappingproxy_to_dict(v) for k, v in obj.items()}
+    elif isinstance(obj, (list, tuple)):
+        return [convert_mappingproxy_to_dict(item) for item in obj]
+    else:
+        return obj
 
 
 class EMRResource(BaseModel):
@@ -151,7 +167,11 @@ class EMRResource(BaseModel):
     #     return questionnire_obj
 
     def to_json(self):
-        return self.model_dump(mode="json", exclude=["meta"])
+        # Convert the model to dict first, then convert any mappingproxy objects
+        data = self.model_dump(exclude=["meta"])
+        # Convert any mappingproxy objects to regular dicts before JSON serialization
+        cleaned_data = convert_mappingproxy_to_dict(data)
+        return cleaned_data
 
     @classmethod
     def serialize_audit_users(cls, mapping, obj):
