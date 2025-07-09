@@ -306,6 +306,9 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
 
     is_public = models.BooleanField(default=False)
 
+    discount_codes = models.JSONField(default=list)
+    discount_monetary_components = models.JSONField(default=list)
+
     class Meta:
         verbose_name_plural = "Facilities"
 

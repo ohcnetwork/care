@@ -1,5 +1,6 @@
 import json
 import secrets
+import sys
 import uuid
 from pathlib import Path
 
@@ -13,6 +14,8 @@ from care.emr.models.encounter import EncounterOrganization
 from care.emr.models.location import FacilityLocationOrganization
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.models.questionnaire import QuestionnaireOrganization
+from care.emr.resources.activity_definition.spec import BaseActivityDefinitionSpec
+from care.emr.resources.charge_item_definition.spec import ChargeItemDefinitionSpec
 from care.emr.resources.device.spec import DeviceCreateSpec
 from care.emr.resources.encounter.constants import (
     ClassChoices,
@@ -25,7 +28,9 @@ from care.emr.resources.facility_organization.spec import (
     FacilityOrganizationTypeChoices,
     FacilityOrganizationWriteSpec,
 )
+from care.emr.resources.healthcare_service.spec import BaseHealthcareServiceSpec
 from care.emr.resources.location.spec import FacilityLocationWriteSpec
+from care.emr.resources.observation_definition.spec import BaseObservationDefinitionSpec
 from care.emr.resources.organization.spec import (
     OrganizationTypeChoices,
     OrganizationWriteSpec,
@@ -36,9 +41,17 @@ from care.emr.resources.patient.spec import (
     PatientCreateSpec,
 )
 from care.emr.resources.questionnaire.spec import QuestionnaireSpec
+from care.emr.resources.specimen_definition.spec import BaseSpecimenDefinitionSpec
 from care.emr.resources.user.spec import UserCreateSpec
 from care.security.models import RoleModel
 from care.users.models import User
+
+# Override the validate_valueset function to skip validation for fixtures
+import care.emr.utils.valueset_coding_type  # noqa  # isort:skip
+
+sys.modules["care.emr.utils.valueset_coding_type"].validate_valueset = (
+    lambda _, __, code: code
+)
 
 # Roles with their user types
 ROLES_OPTIONS = {
@@ -111,6 +124,7 @@ class Command(BaseCommand):
     def _generate_fixtures(self, options):
         """Generate all the fixture data within a transaction context."""
         fake = Faker("en_IN")
+        self.fake = fake
 
         super_user, created = User.objects.get_or_create(
             username="admin",
@@ -154,7 +168,6 @@ class Command(BaseCommand):
         self.stdout.write("Created resource facility")
 
         location = self._create_location(
-            fake,
             super_user,
             facility,
             [external_facility_organization],
@@ -163,9 +176,11 @@ class Command(BaseCommand):
         )
         self.stdout.write(f"Created location: {location.name}")
 
+        self._create_lab_definition_objects_for_facility(facility, super_user)
+        self.stdout.write("Created lab objects for facility")
+
         for i in range(1, 6):
             bed = self._create_location(
-                fake,
                 super_user,
                 facility,
                 [external_facility_organization],
@@ -515,8 +530,6 @@ class Command(BaseCommand):
             if Questionnaire.objects.filter(slug=questionnaire_slug).exists():
                 continue
 
-            questionnaire["version"] = questionnaire.get("version") or "1.0"
-
             questionnaire["organizations"] = facility_organizations
             questionnaire["tags"] = []
 
@@ -538,7 +551,6 @@ class Command(BaseCommand):
 
     def _create_location(
         self,
-        fake,
         super_user,
         facility,
         organizations,
@@ -552,8 +564,8 @@ class Command(BaseCommand):
             parent=parent,
             status="active",
             operational_status="O",
-            name=name or fake.company(),
-            description=fake.text(max_nb_chars=200),
+            name=name or self.fake.company(),
+            description=self.fake.text(max_nb_chars=200),
             mode=mode,
             form=form,
         )
@@ -592,3 +604,541 @@ class Command(BaseCommand):
         device.updated_by = super_user
         device.save()
         return device
+
+    def _create_lab_definition_objects_for_facility(self, facility, user=None):  # noqa: PLR0915
+        def __create_object(model, **kwargs):
+            obj = model.de_serialize()
+            obj.facility = facility
+            obj.created_by = user or facility.created_by
+            obj.updated_by = user or facility.updated_by
+            for key, value in kwargs.items():
+                setattr(obj, key, value)
+            obj.save()
+            return obj
+
+        bio_chemistry_lab_location = self._create_location(
+            user or facility.created_by,
+            facility,
+            [facility.default_internal_organization],
+            mode="kind",
+            form="ro",
+            name="Bio-Chemistry Lab",
+        )
+
+        code_ucum_ml = {
+            "code": "mL",
+            "system": "http://unitsofmeasure.org",
+            "display": "milliliter",
+        }
+        code_ucum_h = {
+            "code": "h",
+            "system": "http://unitsofmeasure.org",
+            "display": "hours",
+        }
+        code_ucum_g_dl = {
+            "code": "g/dL",
+            "system": "http://unitsofmeasure.org",
+            "display": "gram per deciliter",
+        }
+        code_ucum_d = {
+            "code": "d",
+            "system": "http://unitsofmeasure.org",
+            "display": "days",
+        }
+        code_ucum_percent = {
+            "code": "%",
+            "system": "http://unitsofmeasure.org",
+            "display": "percent",
+        }
+        code_ucum_million_per_ul = {
+            "code": "10*6/uL",
+            "system": "http://unitsofmeasure.org",
+            "display": "million per microliter",
+        }
+        code_ucum_thousands_per_ul = {
+            "code": "10*3/uL",
+            "system": "http://unitsofmeasure.org",
+            "display": "Thousands Per MicroLiter",
+        }
+        code_hl7_bldv = {
+            "code": "BLDV",
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+            "display": "Blood venous",
+        }
+        code_hl7_ur = {
+            "code": "UR",
+            "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+            "display": "Urine",
+        }
+        code_hl7_grey_cap = {
+            "code": "grey",
+            "system": "http://terminology.hl7.org/CodeSystem/container-cap",
+            "display": "grey cap",
+        }
+        code_hl7_lavender_cap = {
+            "code": "lavender",
+            "system": "http://terminology.hl7.org/CodeSystem/container-cap",
+            "display": "lavender cap",
+        }
+        code_hl7_yellow_cap = {
+            "code": "yellow",
+            "system": "http://terminology.hl7.org/CodeSystem/container-cap",
+            "display": "yellow cap",
+        }
+        code_hl7_dark_yellow_cap = {
+            "code": "dark-yellow",
+            "system": "http://terminology.hl7.org/CodeSystem/container-cap",
+            "display": "dark yellow cap",
+        }
+        code_snomed_after_fasting = {
+            "code": "726054005",
+            "system": "http://snomed.info/sct",
+            "display": "After fasting",
+        }
+        code_snomed_same_day_before_procedure = {
+            "code": "47531000087108",
+            "system": "http://snomed.info/sct",
+            "display": "Same day but before procedure",
+        }
+        code_snomed_puncture = {
+            "code": "129300006",
+            "system": "http://snomed.info/sct",
+            "display": "Puncture - action",
+        }
+        code_snomed_urine_clean_catch = {
+            "code": "73416001",
+            "system": "http://snomed.info/sct",
+            "display": "Urine specimen collection, clean catch",
+        }
+        code_snomed_automated_count = {
+            "code": "702659008",
+            "system": "http://snomed.info/sct",
+            "display": "Automated count",
+        }
+        code_snomed_urine_dipstick = {
+            "code": "167226008",
+            "system": "http://snomed.info/sct",
+            "display": "Urine dipstick test",
+        }
+        code_snomed_cbc = {
+            "code": "26604007",
+            "system": "http://snomed.info/sct",
+            "display": "Complete blood count",
+        }
+        code_snomed_fasting_glucose = {
+            "code": "271062006",
+            "system": "http://snomed.info/sct",
+            "display": "Fasting blood glucose measurement",
+        }
+        code_loinc_fasting_glucose = {
+            "code": "1558-6",
+            "system": "http://loinc.org",
+            "display": "Fasting glucose [Mass/volume] in Serum or Plasma",
+        }
+        code_loinc_cbc_panel = {
+            "code": "58410-2",
+            "system": "http://loinc.org",
+            "display": "CBC panel - Blood by Automated count",
+        }
+        code_loinc_hemoglobin = {
+            "code": "LP32067-8",
+            "system": "http://loinc.org",
+            "display": "Hemoglobin",
+        }
+        code_loinc_hematocrit = {
+            "code": "LP15101-6",
+            "system": "http://loinc.org",
+            "display": "Hematocrit",
+        }
+        code_loinc_erythrocytes = {
+            "code": "LA12896-9",
+            "system": "http://loinc.org",
+            "display": "Erythrocytes",
+        }
+        code_loinc_platelets = {
+            "code": "LP7631-7",
+            "system": "http://loinc.org",
+            "display": "Platelets",
+        }
+        code_loinc_lipid_panel = {
+            "code": "LP97557-0",
+            "system": "http://loinc.org",
+            "display": "Lipid panel with direct LDL",
+        }
+        code_loinc_urine = {
+            "code": "LP7681-2",
+            "system": "http://loinc.org",
+            "display": "Urine",
+        }
+        code_loinc_fasting_glucose_serum = {
+            "code": "1558-6",
+            "system": "http://loinc.org",
+            "display": "Fasting glucose [Mass/volume] in Serum or Plasma",
+        }
+
+        blood_glucose_specimen_definition = __create_object(
+            BaseSpecimenDefinitionSpec(
+                slug="blood-glucose-test-specimen",
+                title="Blood Glucose Test Specimen",
+                status="active",
+                description="A venous blood specimen collected for the quantitative measurement of glucose concentration in blood. Used in diagnosis and monitoring of diabetes mellitus and glucose metabolism disorders.",
+                type_collected=code_hl7_bldv,
+                patient_preparation=[code_snomed_after_fasting],
+                collection=code_snomed_puncture,
+                type_tested={
+                    "container": {
+                        "cap": code_hl7_grey_cap,
+                        "capacity": {"unit": code_ucum_ml, "value": 5.0},
+                        "description": "Grey-top collection tube containing sodium fluoride/potassium oxalate.",
+                        "preparation": "Label tube immediately after collection. Invert gently 8-10 times to mix anticoagulant. Transport to lab under cold conditions (2-8°C) if processing is delayed.",
+                        "minimum_volume": {
+                            "quantity": {"unit": code_ucum_ml, "value": 2.0}
+                        },
+                    },
+                    "is_derived": False,
+                    "preference": "preferred",
+                    "single_use": False,
+                    "requirement": "Refrigerated (2-8°C). Specimen must be centrifuged and plasma separated within 2 hours of collection if not using fluoride tube. For accurate glucose measurement, immediate processing or use of glycolysis inhibitor tubes (e.g., sodium fluoride/potassium oxalate) is recommended.",
+                    "retention_time": {"unit": code_ucum_h, "value": 24},
+                },
+            )
+        )
+        cbc_specimen_definition = __create_object(
+            BaseSpecimenDefinitionSpec(
+                slug="cbc-blood",
+                title="CBC Blood Specimen",
+                status="active",
+                description="Whole blood specimen collected via venipuncture for performing a Complete Blood Count (CBC) test.",
+                type_collected=code_hl7_bldv,
+                patient_preparation=[],
+                collection=code_snomed_puncture,
+                type_tested={
+                    "container": {
+                        "cap": code_hl7_lavender_cap,
+                        "capacity": {"unit": code_ucum_ml, "value": 10.0},
+                        "description": "Purple top EDTA tube",
+                        "preparation": "Invert gently 8-10 times immediately after collection to mix with anticoagulant.",
+                        "minimum_volume": {
+                            "quantity": {"unit": code_ucum_ml, "value": 3.0}
+                        },
+                    },
+                    "is_derived": True,
+                    "preference": "preferred",
+                    "single_use": True,
+                    "requirement": "Collected in EDTA tube to prevent clotting.\nShould be processed within 6 hours of collection.",
+                    "retention_time": {"unit": code_ucum_h, "value": 6},
+                },
+            )
+        )
+        lipid_panel_specimen_definition = __create_object(
+            BaseSpecimenDefinitionSpec(
+                slug="lipid-panel-blood-specimen",
+                title="Lipid Panel Blood Specimen",
+                status="active",
+                description="Venous blood specimen collected to evaluate cholesterol levels including total cholesterol, HDL, LDL, and triglycerides.",
+                type_collected=code_hl7_bldv,
+                patient_preparation=[code_snomed_after_fasting],
+                collection=code_snomed_puncture,
+                type_tested={
+                    "container": {
+                        "cap": code_hl7_dark_yellow_cap,
+                        "capacity": {"unit": code_ucum_ml, "value": 5.0},
+                        "description": "Serum separator tube (SST, Gold-top)",
+                        "preparation": "Invert tube gently 5-6 times. Let stand upright for clotting. Centrifuge within 1 hour of collection.",
+                        "minimum_volume": {
+                            "quantity": {"unit": code_ucum_ml, "value": 2.0}
+                        },
+                    },
+                    "is_derived": False,
+                    "preference": "preferred",
+                    "single_use": True,
+                    "requirement": "Refrigerated (2-8°C). Allow blood to clot at room temperature for 30 minutes. Centrifuge and separate serum promptly.",
+                    "retention_time": {"unit": code_ucum_d, "value": 7},
+                },
+            )
+        )
+        urinalysis_specimen_definition = __create_object(
+            BaseSpecimenDefinitionSpec(
+                slug="urinalysis-specimen",
+                title="Urinalysis Specimen",
+                status="active",
+                description="Midstream clean-catch urine specimen collected for analysis of physical, chemical, and microscopic properties.",
+                type_collected=code_hl7_ur,
+                patient_preparation=[code_snomed_same_day_before_procedure],
+                collection=code_snomed_urine_clean_catch,
+                type_tested={
+                    "container": {
+                        "cap": code_hl7_yellow_cap,
+                        "capacity": {"unit": code_ucum_ml, "value": 100.0},
+                        "description": "Sterile urine collection container with screw cap.",
+                        "preparation": "Label container. Ensure tight seal to avoid contamination or leakage.",
+                        "minimum_volume": {
+                            "quantity": {"unit": code_ucum_ml, "value": 30.0}
+                        },
+                    },
+                    "is_derived": False,
+                    "preference": "preferred",
+                    "single_use": False,
+                    "requirement": "Up to 24 hours refrigerated. Deliver to lab within 2 hours of collection. If delayed, refrigerate immediately.",
+                    "retention_time": {"unit": code_ucum_h, "value": 2},
+                },
+            )
+        )
+
+        fasting_blood_glucose_observation_definition = __create_object(
+            BaseObservationDefinitionSpec(
+                slug="fasting_blood_glucose",
+                title="Fasting Blood Glucose",
+                status="active",
+                description="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
+                category="laboratory",
+                code=code_loinc_fasting_glucose,
+                permitted_data_type="quantity",
+            )
+        )
+        cbc_observation_definition = __create_object(
+            BaseObservationDefinitionSpec(
+                slug="CBC",
+                title="Complete Blood Count",
+                status="active",
+                description="A Complete Blood Count (CBC) is a common laboratory test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), white blood cells (WBC), hemoglobin, hematocrit, and platelets. This test is performed on whole blood using an automated hematology analyzer.",
+                category="laboratory",
+                code=code_loinc_cbc_panel,
+                permitted_data_type="quantity",
+                component=[
+                    {
+                        "code": code_loinc_hemoglobin,
+                        "permitted_unit": code_ucum_g_dl,
+                        "permitted_data_type": "quantity",
+                    },
+                    {
+                        "code": code_loinc_hematocrit,
+                        "permitted_unit": code_ucum_percent,
+                        "permitted_data_type": "quantity",
+                    },
+                    {
+                        "code": code_loinc_erythrocytes,
+                        "permitted_unit": code_ucum_million_per_ul,
+                        "permitted_data_type": "quantity",
+                    },
+                    {
+                        "code": code_loinc_platelets,
+                        "permitted_unit": code_ucum_thousands_per_ul,
+                        "permitted_data_type": "quantity",
+                    },
+                ],
+                method=code_snomed_automated_count,
+                permitted_unit=code_ucum_g_dl,
+            )
+        )
+        lipid_panel_observation_definition = __create_object(
+            BaseObservationDefinitionSpec(
+                slug="lipid-panel-observation",
+                title="Lipid Panel Observation",
+                status="active",
+                description="A comprehensive blood test measuring cholesterol and triglyceride levels to assess cardiovascular health.",
+                category="laboratory",
+                code=code_loinc_lipid_panel,
+                permitted_data_type="quantity",
+            )
+        )
+        urinalysis_observation_definition = __create_object(
+            BaseObservationDefinitionSpec(
+                slug="urinalysis-observation",
+                title="Urinalysis Observation",
+                status="active",
+                description="A diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
+                category="laboratory",
+                code=code_loinc_urine,
+                permitted_data_type="quantity",
+                method=code_snomed_urine_dipstick,
+            )
+        )
+
+        default_price_components = [
+            {
+                "code": {
+                    "code": "oldage",
+                    "system": "http://ohc.network/codes/monetary/discount",
+                    "display": "Old Age Discount",
+                },
+                "factor": 10.0,
+                "monetary_component_type": "discount",
+            },
+            {
+                "code": {
+                    "code": "igst",
+                    "system": "http://ohc.network/codes/monetary/tax",
+                    "display": "IGST",
+                },
+                "factor": 6.0,
+                "monetary_component_type": "tax",
+            },
+            {
+                "code": {
+                    "code": "gst",
+                    "system": "http://ohc.network/codes/monetary/tax",
+                    "display": "GST",
+                },
+                "factor": 6.0,
+                "monetary_component_type": "tax",
+            },
+        ]
+
+        fasting_blood_glucose_charge_definition = __create_object(
+            ChargeItemDefinitionSpec(
+                status="active",
+                title="Fasting Blood Glucose Test",
+                slug="fasting-blood-glucose-test",
+                description="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
+                purpose="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
+                price_components=[
+                    {"amount": 600.0, "monetary_component_type": "base"},
+                    *default_price_components,
+                ],
+            )
+        )
+        cbc_charge_definition = __create_object(
+            ChargeItemDefinitionSpec(
+                status="active",
+                title="Complete Blood Count (CBC)",
+                slug="complete-blood-count",
+                description="A Complete Blood Count (CBC) is a common laboratory test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), white blood cells (WBC), hemoglobin, hematocrit, and platelets. This test is performed on whole blood using an automated hematology analyzer.",
+                purpose="A Complete Blood Count (CBC) is a common laboratory test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), white blood cells (WBC), hemoglobin, hematocrit, and platelets. This test is performed on whole blood using an automated hematology analyzer.",
+                price_components=[
+                    {"amount": 450.0, "monetary_component_type": "base"},
+                    {
+                        "code": {
+                            "code": "child",
+                            "system": "http://ohc.network/codes/monetary/discount",
+                            "display": "Child Discount",
+                        },
+                        "factor": 5.0,
+                        "monetary_component_type": "discount",
+                    },
+                    *default_price_components,
+                ],
+            )
+        )
+        lipid_panel_charge_definition = __create_object(
+            ChargeItemDefinitionSpec(
+                status="active",
+                title="Lipid Panel Test",
+                slug="lipid-panel-test",
+                derived_from_uri="urn:chargeitem:lipid-panel",
+                description="Comprehensive blood test measuring cholesterol and triglyceride levels to assess cardiovascular health.",
+                purpose="Billing for lipid panel diagnostic service.",
+                price_components=[
+                    {"amount": 400.0, "monetary_component_type": "base"},
+                    *default_price_components,
+                ],
+            )
+        )
+        urinalysis_charge_definition = __create_object(
+            ChargeItemDefinitionSpec(
+                status="active",
+                title="Urinalysis Test",
+                slug="urinalysis-test",
+                derived_from_uri="urn:chargeitem:urinalysis",
+                description="Diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
+                purpose="Billing for urinalysis diagnostic service.",
+                price_components=[
+                    {"amount": 500.0, "monetary_component_type": "base"},
+                    {"amount": 15.55, "monetary_component_type": "discount"},
+                    {
+                        "code": {
+                            "code": "cgst",
+                            "system": "http://ohc.network/codes/monetary/tax",
+                            "display": "CGST",
+                        },
+                        "factor": 3.0,
+                        "monetary_component_type": "tax",
+                    },
+                    *default_price_components,
+                ],
+                version=1,
+            )
+        )
+
+        pathology_service = __create_object(
+            BaseHealthcareServiceSpec(
+                internal_type="lab",
+                name="Pathology Lab",
+                styling_metadata={"careIcon": "microscope"},
+                extra_details="",
+            ),
+            locations=[bio_chemistry_lab_location.id],
+        )
+
+        __create_object(
+            BaseActivityDefinitionSpec(
+                slug="fasting_glucose",
+                title="Fasting Blood Glucose",
+                status="active",
+                description="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
+                usage="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
+                category="laboratory",
+                kind="service_request",
+                code=code_snomed_fasting_glucose,
+                diagnostic_report_codes=[code_loinc_fasting_glucose_serum],
+            ),
+            specimen_requirements=[blood_glucose_specimen_definition.id],
+            observation_result_requirements=[
+                fasting_blood_glucose_observation_definition.id
+            ],
+            locations=[pathology_service.id],
+            charge_item_definitions=[fasting_blood_glucose_charge_definition.id],
+        )
+        __create_object(
+            BaseActivityDefinitionSpec(
+                id="76c88bae-f4a4-4200-86b9-77f9a26d1a13",
+                slug="complete_blood_count",
+                title="Complete Blood Count (CBC) Panel",
+                status="active",
+                description="A Complete Blood Count (CBC) is a common laboratory test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), white blood cells (WBC), hemoglobin, hematocrit, and platelets.",
+                usage="test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), ",
+                category="laboratory",
+                kind="service_request",
+                code=code_snomed_cbc,
+                diagnostic_report_codes=[code_loinc_cbc_panel],
+            ),
+            specimen_requirements=[cbc_specimen_definition.id],
+            observation_result_requirements=[cbc_observation_definition.id],
+            locations=[pathology_service.id],
+            charge_item_definitions=[cbc_charge_definition.id],
+        )
+        __create_object(
+            BaseActivityDefinitionSpec(
+                slug="lipid_panel",
+                title="Lipid Panel",
+                status="active",
+                derived_from_uri="urn:activity:lipid-panel",
+                description="A comprehensive blood test measuring cholesterol and triglyceride levels to assess cardiovascular health.",
+                usage="A comprehensive blood test measuring cholesterol and triglyceride levels to assess cardiovascular health.",
+                category="laboratory",
+                kind="service_request",
+                code=code_loinc_lipid_panel,
+                diagnostic_report_codes=[code_loinc_lipid_panel],
+            ),
+            specimen_requirements=[lipid_panel_specimen_definition.id],
+            observation_result_requirements=[lipid_panel_observation_definition.id],
+            locations=[pathology_service.id],
+            charge_item_definitions=[lipid_panel_charge_definition.id],
+        )
+        __create_object(
+            BaseActivityDefinitionSpec(
+                slug="urinalysis",
+                title="Urinalysis",
+                status="active",
+                description="A diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
+                usage="A diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
+                category="laboratory",
+                kind="service_request",
+                code=code_loinc_urine,
+                diagnostic_report_codes=[code_loinc_urine],
+            ),
+            specimen_requirements=[urinalysis_specimen_definition.id],
+            observation_result_requirements=[urinalysis_observation_definition.id],
+            locations=[pathology_service.id],
+            charge_item_definitions=[urinalysis_charge_definition.id],
+        )
