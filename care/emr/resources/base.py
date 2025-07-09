@@ -140,7 +140,9 @@ class EMRResource(BaseModel):
     #     return questionnire_obj
 
     def to_json(self):
-        return self.model_dump(mode="json", exclude=["meta"])
+        result = self.model_dump(mode="json")
+        result.pop("meta", None)
+        return result
 
     @classmethod
     def serialize_audit_users(cls, mapping, obj):
