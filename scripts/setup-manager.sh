@@ -27,7 +27,7 @@ install_docker() {
 
     echo "Installing Docker..."
     curl -fsSL https://get.docker.com | sudo sh &> /dev/null
-    sudo usermod -aG docker ubuntu $USER &> /dev/null
+    sudo usermod -aG docker ubuntu &> /dev/null
     echo "Docker installed"
 }
 
@@ -210,25 +210,25 @@ mount_glusterfs() {
 
 ### STACK DEPLOYMENT ###
 
-deploy_stack() {
-    echo ">>> Deploying CARE stack..."
-
-    if [ ! -f "$COMPOSE_FILE" ]; then
-        echo "Compose file $COMPOSE_FILE not found"
-        exit 1
-    fi
-
-    docker stack deploy -c "$COMPOSE_FILE" "$STACK_NAME"
-    echo "Stack deployed"
-}
-
-remove_stack() {
-    echo ">>> Removing CARE stack..."
-    docker stack rm "$STACK_NAME" 2>/dev/null || true
-    sleep 10
-    docker volume rm ${STACK_NAME}_minio-data ${STACK_NAME}_postgres-data ${STACK_NAME}_redis-data 2>/dev/null || true
-    echo "Stack removed"
-}
+# deploy_stack() {
+#     echo ">>> Deploying CARE stack..."
+#
+#     if [ ! -f "$COMPOSE_FILE" ]; then
+#         echo "Compose file $COMPOSE_FILE not found"
+#         exit 1
+#     fi
+#
+#     docker stack deploy -c "$COMPOSE_FILE" "$STACK_NAME"
+#     echo "Stack deployed"
+# }
+#
+# remove_stack() {
+#     echo ">>> Removing CARE stack..."
+#     docker stack rm "$STACK_NAME" || true
+#     sleep 10
+#     docker volume rm ${STACK_NAME}_minio-data ${STACK_NAME}_postgres-data ${STACK_NAME}_redis-data || true
+#     echo "Stack removed"
+# }
 
 ### ORCHESTRATION ###
 
@@ -263,12 +263,12 @@ main() {
         "additional")
             setup_manager "additional"
             ;;
-        "deploy")
-            deploy_stack
-            ;;
-        "remove")
-            remove_stack
-            ;;
+    #    "deploy")
+    #        deploy_stack
+    #        ;;
+    #    "remove")
+    #        remove_stack
+    #        ;;
         *)
             exit 1
             ;;

@@ -24,7 +24,7 @@ install_docker() {
 
     echo "Installing Docker..."
     curl -fsSL https://get.docker.com | sudo sh &> /dev/null
-    sudo usermod -aG docker ubuntu $USER &> /dev/null
+    sudo usermod -aG docker ubuntu &> /dev/null
     echo "Docker installed"
 }
 
