@@ -36,14 +36,23 @@ volumes:
       o: bind
       device: /care-storage/shared/minio
 
+configs:
+  postgres-master:
+    file: ./scripts/postgres_master.sh
+  postgres-slave:
+    file: ./scripts/postgres_slave.sh
+  haproxy-config:
+    file: ./haproxy.cfg
+
 services:
   db:
     image: haproxy:alpine
     ports:
       - "5432:5432" # Write operations (master)
       - "5433:5433" # Read operations (slaves)
-    volumes:
-      - ./haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
+    configs:
+      - source: haproxy-config
+        target: /usr/local/etc/haproxy/haproxy.cfg
     deploy:
       replicas: 1
       placement:
@@ -61,13 +70,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      resources:
-        limits:
-          memory: 128M
-          cpus: "0.2"
-        reservations:
-          memory: 64M
-          cpus: "0.1"
+      # resources:
+      #   limits:
+      #     memory: 128M
+      #     cpus: "0.2"
+      #   reservations:
+      #     memory: 64M
+      #     cpus: "0.1"
     healthcheck:
       test: ["CMD", "haproxy", "-c", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]
       interval: 30s
@@ -85,7 +94,10 @@ services:
       POSTGRES_REPLICATION_PASSWORD: replicator
     volumes:
       - postgres-master-data:/var/lib/postgresql/data
-      - ./postgres-master-init.sh:/docker-entrypoint-initdb.d/init.sh:ro
+    configs:
+      - source: postgres-master
+        target: /docker-entrypoint-initdb.d/init.sh
+        mode: 0755
     deploy:
       replicas: 1
       placement:
@@ -103,13 +115,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      resources:
-        limits:
-          memory: 512M
-          cpus: "0.5"
-        reservations:
-          memory: 256M
-          cpus: "0.25"
+      # resources:
+      #   limits:
+      #     memory: 512M
+      #     cpus: "0.5"
+      #   reservations:
+      #     memory: 256M
+      #     cpus: "0.25"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
       interval: 30s
@@ -128,7 +140,10 @@ services:
       POSTGRES_MASTER_PORT: 5432
     volumes:
       - postgres-slave1-data:/var/lib/postgresql/data
-      - ./postgres-slave-init.sh:/docker-entrypoint-initdb.d/init.sh:ro
+    configs:
+      - source: postgres-slave
+        target: /docker-entrypoint-initdb.d/init.sh
+        mode: 0755
     deploy:
       replicas: 1
       placement:
@@ -146,13 +161,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      resources:
-        limits:
-          memory: 512M
-          cpus: "0.5"
-        reservations:
-          memory: 256M
-          cpus: "0.25"
+      # resources:
+      #   limits:
+      #     memory: 512M
+      #     cpus: "0.5"
+      #   reservations:
+      #     memory: 256M
+      #     cpus: "0.25"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
       interval: 30s
@@ -171,7 +186,10 @@ services:
       POSTGRES_MASTER_PORT: 5432
     volumes:
       - postgres-slave2-data:/var/lib/postgresql/data
-      - ./postgres-slave-init.sh:/docker-entrypoint-initdb.d/init.sh:ro
+    configs:
+      - source: postgres-slave
+        target: /docker-entrypoint-initdb.d/init.sh
+        mode: 0755
     deploy:
       replicas: 1
       placement:
@@ -189,13 +207,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      resources:
-        limits:
-          memory: 512M
-          cpus: "0.5"
-        reservations:
-          memory: 256M
-          cpus: "0.25"
+      # resources:
+      #   limits:
+      #     memory: 512M
+      #     cpus: "0.5"
+      #   reservations:
+      #     memory: 256M
+      #     cpus: "0.25"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
       interval: 30s
@@ -224,13 +242,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      resources:
-        limits:
-          memory: 256M
-          cpus: "0.5"
-        reservations:
-          memory: 128M
-          cpus: "0.25"
+      # resources:
+      #   limits:
+      #     memory: 256M
+      #     cpus: "0.5"
+      #   reservations:
+      #     memory: 128M
+      #     cpus: "0.25"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -265,13 +283,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      resources:
-        limits:
-          memory: 384M
-          cpus: "0.2"
-        reservations:
-          memory: 192M
-          cpus: "0.1"
+      # resources:
+      #   limits:
+      #     memory: 384M
+      #     cpus: "0.2"
+      #   reservations:
+      #     memory: 192M
+      #     cpus: "0.1"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
       interval: 30s
@@ -316,13 +334,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      resources:
-        limits:
-          memory: 512M
-          cpus: "0.5"
-        reservations:
-          memory: 256M
-          cpus: "0.25"
+      # resources:
+      #   limits:
+      #     memory: 512M
+      #     cpus: "0.5"
+      #   reservations:
+      #     memory: 256M
+      #     cpus: "0.25"
     healthcheck:
       test: ["CMD", "./healthcheck.sh"]
       interval: 30s
@@ -365,13 +383,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      resources:
-        limits:
-          memory: 512M
-          cpus: "0.5"
-        reservations:
-          memory: 256M
-          cpus: "0.25"
+      # resources:
+      #   limits:
+      #     memory: 512M
+      #     cpus: "0.5"
+      #   reservations:
+      #     memory: 256M
+      #     cpus: "0.25"
 
   celery-beat:
     image: ghcr.io/ohcnetwork/care:production-latest
@@ -409,10 +427,10 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      resources:
-        limits:
-          memory: 384M
-          cpus: "0.5"
-        reservations:
-          memory: 192M
-          cpus: "0.25"
+      # resources:
+      #   limits:
+      #     memory: 384M
+      #     cpus: "0.5"
+      #   reservations:
+      #     memory: 192M
+      #     cpus: "0.25"
