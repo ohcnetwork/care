@@ -7,6 +7,7 @@ from care.security.roles.role import (
     DOCTOR_ROLE,
     FACILITY_ADMIN_ROLE,
     NURSE_ROLE,
+    PHARMACIST_ROLE,
     STAFF_ROLE,
 )
 
@@ -23,6 +24,7 @@ class FacilityLocationPermissions(enum.Enum):
             ADMINISTRATOR,
             NURSE_ROLE,
             STAFF_ROLE,
+            PHARMACIST_ROLE,
         ],
     )
     can_write_facility_locations = Permission(

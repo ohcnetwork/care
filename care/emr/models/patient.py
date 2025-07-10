@@ -44,6 +44,12 @@ class Patient(EMRBaseModel):
 
     users_cache = ArrayField(models.IntegerField(), default=list)
 
+    instance_identifiers = models.JSONField(default=list, null=True, blank=True)
+    facility_identifiers = models.JSONField(default=dict, null=True, blank=True)
+
+    instance_tags = ArrayField(models.IntegerField(), default=list)
+    facility_tags = models.JSONField(default=dict, null=True, blank=True)
+
     def get_age(self) -> str:
         start = self.date_of_birth or date(self.year_of_birth, 1, 1)
         end = (self.deceased_datetime or timezone.now()).date()
@@ -91,6 +97,22 @@ class Patient(EMRBaseModel):
             )
             self.users_cache = users
 
+    def build_instance_identifiers(self):
+        self.instance_identifiers = [
+            {"config": str(x.config.external_id), "value": x.value}
+            for x in PatientIdentifier.objects.filter(patient=self)
+        ]
+
+    def build_facility_identifiers(self, facility_id):
+        if not self.facility_identifiers:
+            self.facility_identifiers = {}
+        self.facility_identifiers[facility_id] = [
+            {"config": str(x.config.external_id), "value": x.value}
+            for x in PatientIdentifier.objects.filter(
+                patient=self, config__facility_id=facility_id
+            )
+        ]
+
     def save(self, *args, **kwargs) -> None:
         if self.date_of_birth and not self.year_of_birth:
             self.year_of_birth = self.date_of_birth.year
@@ -122,3 +144,86 @@ class PatientUser(EMRBaseModel):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.patient.save()
+
+
+class PatientIdentifierConfig(EMRBaseModel):
+    status = models.CharField(max_length=255)
+    facility = models.ForeignKey(
+        "facility.Facility", on_delete=models.CASCADE, null=True, blank=True
+    )
+    config = models.JSONField(default=dict, null=True, blank=True)
+
+
+class PatientIdentifier(EMRBaseModel):
+    facility = models.ForeignKey(
+        "facility.Facility", on_delete=models.CASCADE, null=True, blank=True
+    )
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    config = models.ForeignKey(PatientIdentifierConfig, on_delete=models.CASCADE)
+    value = models.CharField(max_length=1024, db_index=True)
+
+
+class PatientIdentifierConfigCache:
+    """
+    Configs can be cached because it changes very rarely,
+    Redis based alternative for this class can be implemented later if needed.
+    """
+
+    # TODO : Switch to Redis
+    configs = {}
+    instance_configs = None
+    facility_configs = {}
+
+    @classmethod
+    def get_config(cls, config_id) -> PatientIdentifierConfig:
+        from care.emr.resources.patient_identifier.spec import PatientIdentifierListSpec
+
+        if config_id not in cls.configs:
+            cls.configs[config_id] = PatientIdentifierListSpec.serialize(
+                PatientIdentifierConfig.objects.get(external_id=config_id)
+            ).to_json()
+        return cls.configs[config_id]
+
+    @classmethod
+    def clear_cache(cls, config_id: int | None = None):
+        if config_id is None:
+            cls.configs = {}
+        else:
+            cls.configs.pop(config_id, None)
+
+    @classmethod
+    def get_instance_config(cls) -> list[dict]:
+        from care.emr.resources.patient_identifier.spec import (
+            PatientIdentifierListSpec,
+            PatientIdentifierStatus,
+        )
+
+        return [
+            PatientIdentifierListSpec.serialize(x).to_json()
+            for x in PatientIdentifierConfig.objects.filter(
+                facility__isnull=True, status=PatientIdentifierStatus.active.value
+            )
+        ]
+
+    @classmethod
+    def get_facility_config(cls, facility_id):
+        from care.emr.resources.patient_identifier.spec import (
+            PatientIdentifierListSpec,
+            PatientIdentifierStatus,
+        )
+
+        return [
+            PatientIdentifierListSpec.serialize(x).to_json()
+            for x in PatientIdentifierConfig.objects.filter(
+                facility_id=facility_id, status=PatientIdentifierStatus.active.value
+            )
+        ]
+
+    @classmethod
+    def clear_facility_cache(cls, facility_id):
+        if cls.facility_configs:
+            cls.facility_configs.pop(facility_id, None)
+
+    @classmethod
+    def clear_instance_cache(cls):
+        cls.instance_configs = None

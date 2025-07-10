@@ -1,13 +1,15 @@
 from datetime import datetime
 from enum import Enum
 
-from pydantic import UUID4, BaseModel, Field, field_validator
+from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 
 from care.emr.models.encounter import Encounter
 from care.emr.models.medication_administration import MedicationAdministration
 from care.emr.models.medication_request import MedicationRequest
+from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common import Quantity
+from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledgeReadSpec
 from care.emr.resources.medication.valueset.administration_method import (
     CARE_ADMINISTRATION_METHOD_VALUESET,
 )
@@ -80,7 +82,7 @@ class Dosage(BaseModel):
 
 class BaseMedicationAdministrationSpec(EMRResource):
     __model__ = MedicationAdministration
-    __exclude__ = ["patient", "encounter", "request"]
+    __exclude__ = ["patient", "encounter", "request", "administered_product"]
     id: UUID4 = None
 
     status: MedicationAdministrationStatus
@@ -88,7 +90,7 @@ class BaseMedicationAdministrationSpec(EMRResource):
     status_reason: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug] | None = None
     category: MedicationAdministrationCategory | None = None
 
-    medication: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug]
+    medication: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug] | None = None
 
     authored_on: datetime | None = Field(
         None,
@@ -124,6 +126,8 @@ class BaseMedicationAdministrationSpec(EMRResource):
 
 
 class MedicationAdministrationSpec(BaseMedicationAdministrationSpec):
+    administered_product: UUID4 | None = None
+
     @field_validator("encounter")
     @classmethod
     def validate_encounter_exists(cls, encounter):
@@ -140,6 +144,13 @@ class MedicationAdministrationSpec(BaseMedicationAdministrationSpec):
             raise ValueError(err)
         return request
 
+    @model_validator(mode="after")
+    def validate_administered_product(self):
+        if self.medication and self.administered_product:
+            err = "Medication and administered product cannot be set at the same time"
+            raise ValueError(err)
+        return self
+
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
             obj.encounter = Encounter.objects.get(
@@ -147,6 +158,10 @@ class MedicationAdministrationSpec(BaseMedicationAdministrationSpec):
             )  # Needs more validation
             obj.patient = obj.encounter.patient
             obj.request = MedicationRequest.objects.get(external_id=self.request)
+            if self.administered_product:
+                obj.administered_product = ProductKnowledge.objects.get(
+                    external_id=self.administered_product
+                )
 
 
 class MedicationAdministrationUpdateSpec(EMRResource):
@@ -163,11 +178,18 @@ class MedicationAdministrationReadSpec(BaseMedicationAdministrationSpec):
     created_date: datetime
     modified_date: datetime
 
+    administered_product: dict | None = None
+
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["encounter"] = obj.encounter.external_id
         mapping["request"] = obj.request.external_id
+
+        if obj.administered_product:
+            mapping["administered_product"] = ProductKnowledgeReadSpec.serialize(
+                obj.administered_product
+            )
 
         if obj.created_by:
             mapping["created_by"] = UserSpec.serialize(obj.created_by)

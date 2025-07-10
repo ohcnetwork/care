@@ -10,6 +10,7 @@ from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.patient.otp_based_flow import PatientOTPReadSpec
 from care.emr.resources.user.spec import UserSpec
+from care.emr.tagging.base import SingleFacilityTagManager
 from care.facility.models import Facility
 from care.users.models import User
 
@@ -88,6 +89,8 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
     user: dict = {}
     facility: dict = {}
 
+    tags: list[dict] = []
+
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
@@ -103,3 +106,4 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
         mapping["facility"] = FacilityBareMinimumSpec.serialize(
             Facility.objects.get(id=obj.token_slot.resource.facility_id)
         ).model_dump(exclude=["meta"])
+        mapping["tags"] = SingleFacilityTagManager().render_tags(obj)

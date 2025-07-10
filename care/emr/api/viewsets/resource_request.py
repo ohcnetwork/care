@@ -1,5 +1,6 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters
+from rest_framework.filters import OrderingFilter
 from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
@@ -40,7 +41,8 @@ class ResourceRequestViewSet(EMRModelViewSet):
     pydantic_read_model = ResourceRequestListSpec
     pydantic_retrieve_model = ResourceRequestRetrieveSpec
     filterset_class = ResourceRequestFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]
 
     @classmethod
     def build_queryset(cls, queryset, user):
@@ -77,7 +79,8 @@ class ResourceRequestViewSet(EMRModelViewSet):
 
     def get_queryset(self):
         queryset = (
-            ResourceRequest.objects.all()
+            super()
+            .get_queryset()
             .select_related(
                 "origin_facility",
                 "approving_facility",
@@ -114,7 +117,9 @@ class ResourceRequestCommentViewSet(
     def get_queryset(self):
         resource_request_obj = self.get_resource_request_obj()
         return (
-            ResourceRequestComment.objects.filter(request=resource_request_obj)
+            super()
+            .get_queryset()
+            .filter(request=resource_request_obj)
             .select_related("created_by")
             .order_by("-created_date")
         )

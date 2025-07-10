@@ -24,3 +24,6 @@ class MedicationAdministration(EMRBaseModel):
     performer = models.JSONField(default=list)
     dosage = models.JSONField(null=True, blank=True)
     note = models.TextField(null=True, blank=True)
+    administered_product = models.ForeignKey(
+        "emr.ProductKnowledge", on_delete=models.CASCADE, null=True, blank=True
+    )

@@ -388,5 +388,88 @@
                 }
             }
         ]
+    },
+    {
+        "id": "742aec8d-0d5e-45e0-b150-07f99e7142b6",
+        "slug": "ncgdoctornotes",
+        "version": "",
+        "title": "Doctors Notes NCG",
+        "description": "",
+        "status": "active",
+        "subject_type": "encounter",
+        "styling_metadata": {},
+        "questions": [
+            {
+                "id": "d8a3287d-6c96-4ff1-8090-e679affd257b",
+                "text": "Diagnosis ",
+                "type": "group",
+                "link_id": "1",
+                "questions": [
+                    {
+                        "id": "89a0abe0-5e69-46cd-a3b8-35394aceca0f",
+                        "text": "Diagnosis",
+                        "type": "structured",
+                        "link_id": "1.1",
+                        "repeats": false,
+                        "structured_type": "diagnosis"
+                    },
+                    {
+                        "id": "25d4e6e0-a731-4787-8f86-f5f17d25c5fb",
+                        "text": "Staging",
+                        "type": "group",
+                        "link_id": "Q-1746005117407",
+                        "questions": [
+                            {
+                                "id": "a823498e-bcf6-4ee4-a595-1fff09d9bd47",
+                                "text": "TNM Staging",
+                                "type": "string",
+                                "link_id": "Q-1746005139776"
+                            },
+                            {
+                                "id": "a4bbfe96-5908-4ee3-8424-0d7c9e50c347",
+                                "text": "Other Staging",
+                                "type": "choice",
+                                "link_id": "Q-1746005140678",
+                                "answer_option": [
+                                    {
+                                        "value": "I"
+                                    },
+                                    {
+                                        "value": "II"
+                                    },
+                                    {
+                                        "value": "III"
+                                    },
+                                    {
+                                        "value": "IV"
+                                    },
+                                    {
+                                        "value": "NA"
+                                    }
+                                ]
+                            }
+                        ],
+                        "styling_metadata": {
+                            "containerClasses": "grid grid-cols-2"
+                        }
+                    }
+                ],
+                "styling_metadata": {
+                    "containerClasses": "grid grid-cols-1"
+                }
+            },
+            {
+                "id": "55fe31cd-5099-4cc7-a373-6d401a7a1aea",
+                "text": "Discussion Summary",
+                "type": "text",
+                "link_id": "2"
+            },
+            {
+                "id": "9e14479f-0113-441e-9ca0-7d1ccc1570f1",
+                "text": "Recommendation (Advice, Medications, Investigations, Referrals, and Follow-up)",
+                "type": "text",
+                "link_id": "3"
+            }
+        ]
     }
 ]
