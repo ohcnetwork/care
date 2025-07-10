@@ -9,6 +9,7 @@ from care.emr.models.medication_request import MedicationRequest
 from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.coding import Coding
+from care.emr.resources.common.validators import validate_datetime
 from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledgeReadSpec
 from care.emr.resources.medication.valueset.additional_instruction import (
     CARE_ADDITIONAL_INSTRUCTION_VALUESET,
@@ -203,6 +204,13 @@ class MedicationRequestSpec(BaseMedicationRequestSpec):
             err = "Encounter not found"
             raise ValueError(err)
         return encounter
+
+    @field_validator("authored_on")
+    @classmethod
+    def validate_authored_on(cls, authored_on: datetime):
+        if authored_on:
+            return validate_datetime(authored_on)
+        return None
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.encounter = Encounter.objects.get(external_id=self.encounter)

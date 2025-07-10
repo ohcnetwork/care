@@ -8,7 +8,7 @@ from care.emr.models.condition import Condition
 from care.emr.models.encounter import Encounter
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.coding import Coding
-from care.emr.resources.common.validators import validate_onset_datetime_field
+from care.emr.resources.common.validators import validate_datetime
 from care.emr.resources.condition.valueset import CARE_CODITION_CODE_VALUESET
 from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
@@ -55,7 +55,7 @@ class ConditionOnSetSpec(EMRResource):
     @classmethod
     def validate_onset_datetime(cls, onset_datetime: datetime.datetime):
         if onset_datetime:
-            return validate_onset_datetime_field(onset_datetime)
+            return validate_datetime(onset_datetime)
         return None
 
 
