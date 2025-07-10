@@ -7,6 +7,7 @@ from care.security.roles.role import (
     DOCTOR_ROLE,
     FACILITY_ADMIN_ROLE,
     NURSE_ROLE,
+    PHARMACIST_ROLE,
     STAFF_ROLE,
     VOLUNTEER_ROLE,
 )
@@ -51,6 +52,7 @@ class PatientPermissions(enum.Enum):
             ADMIN_ROLE,
             FACILITY_ADMIN_ROLE,
             VOLUNTEER_ROLE,
+            PHARMACIST_ROLE,
         ],
     )
     can_view_clinical_data = Permission(
@@ -71,6 +73,7 @@ class PatientPermissions(enum.Enum):
             ADMIN_ROLE,
             FACILITY_ADMIN_ROLE,
             ADMINISTRATOR,
+            PHARMACIST_ROLE,
         ],
     )
     can_submit_patient_questionnaire = Permission(

@@ -22,6 +22,8 @@ from care.emr.resources.scheduling.slot.spec import (
     TokenBookingReadSpec,
     TokenSlotBaseSpec,
 )
+from care.emr.resources.tag.config_spec import TagResource
+from care.emr.tagging.base import SingleFacilityTagManager
 from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
@@ -37,6 +39,8 @@ class SlotsForDayRequestSpec(BaseModel):
 class AppointmentBookingSpec(BaseModel):
     patient: UUID4
     reason_for_visit: str
+
+    tags: list[UUID4] = []
 
 
 class AvailabilityStatsRequestSpec(BaseModel):
@@ -229,24 +233,33 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     def create_appointment_handler(cls, obj, request_data, user):
         request_data = AppointmentBookingSpec(**request_data)
         patient = Patient.objects.filter(external_id=request_data.patient).first()
+        with transaction.atomic():
+            if (
+                TokenBooking.objects.filter(
+                    patient=patient,
+                    token_slot__start_datetime__gte=care_now(),
+                )
+                .exclude(status__in=COMPLETED_STATUS_CHOICES)
+                .count()
+                >= settings.MAX_APPOINTMENTS_PER_PATIENT
+            ):
+                error = f"Patient already has maximum number of appointments ({settings.MAX_APPOINTMENTS_PER_PATIENT})"
+                raise ValidationError(error)
 
-        if (
-            TokenBooking.objects.filter(
-                patient=patient,
-                token_slot__start_datetime__gte=care_now(),
+            if not patient:
+                raise ValidationError("Patient not found")
+            appointment = lock_create_appointment(
+                obj, patient, user, request_data.reason_for_visit
             )
-            .exclude(status__in=COMPLETED_STATUS_CHOICES)
-            .count()
-            >= settings.MAX_APPOINTMENTS_PER_PATIENT
-        ):
-            error = f"Patient already has maximum number of appointments ({settings.MAX_APPOINTMENTS_PER_PATIENT})"
-            raise ValidationError(error)
-
-        if not patient:
-            raise ValidationError("Patient not found")
-        appointment = lock_create_appointment(
-            obj, patient, user, request_data.reason_for_visit
-        )
+            if request_data.tags:
+                tag_manager = SingleFacilityTagManager()
+                tag_manager.set_tags(
+                    TagResource.token_booking,
+                    appointment,
+                    request_data.tags,
+                    user,
+                    obj.resource.facility,
+                )
         return Response(
             TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
         )

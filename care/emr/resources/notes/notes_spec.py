@@ -40,8 +40,8 @@ class NoteMessageUpdateSpec(NoteMessageSpec):
 class NoteMessageReadSpec(NoteMessageSpec):
     message_history: dict
 
-    created_by: UserSpec = dict
-    updated_by: UserSpec = dict
+    created_by: UserSpec = {}
+    updated_by: UserSpec = {}
     created_date: datetime.datetime
     modified_date: datetime.datetime
 

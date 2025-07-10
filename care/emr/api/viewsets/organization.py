@@ -80,7 +80,7 @@ class OrganizationViewSet(EMRModelViewSet):
         ):
             raise ValidationError("Organization already exists with same name")
 
-        if instance.parent and model_obj is None:
+        if model_obj is None and instance.parent:
             parent = get_object_or_404(Organization, external_id=instance.parent)
 
             # Validate Depth
