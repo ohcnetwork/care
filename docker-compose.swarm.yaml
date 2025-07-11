@@ -3,6 +3,9 @@ networks:
     name: care
     driver: overlay
     attachable: true
+    # ipam:
+    #   config:
+    #     - subnet: 10.20.0.0/24
 
 volumes:
   postgres-master-data:
