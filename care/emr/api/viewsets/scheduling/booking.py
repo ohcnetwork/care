@@ -14,6 +14,7 @@ from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
     EMRListMixin,
     EMRRetrieveMixin,
+    EMRTagMixin,
     EMRUpdateMixin,
 )
 from care.emr.api.viewsets.scheduling import lock_create_appointment
@@ -25,7 +26,9 @@ from care.emr.resources.scheduling.slot.spec import (
     TokenBookingReadSpec,
     TokenBookingWriteSpec,
 )
+from care.emr.resources.tag.config_spec import TagResource
 from care.emr.resources.user.spec import UserSpec
+from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 
@@ -36,6 +39,7 @@ class CancelBookingSpec(BaseModel):
         BookingStatusChoices.entered_in_error,
         BookingStatusChoices.rescheduled,
     ]
+    reason_for_visit: str | None = None
 
 
 class RescheduleBookingSpec(BaseModel):
@@ -63,7 +67,11 @@ class TokenBookingFilters(FilterSet):
 
 
 class TokenBookingViewSet(
-    EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRTagMixin,
 ):
     database_model = TokenBooking
     pydantic_model = TokenBookingWriteSpec
@@ -73,9 +81,13 @@ class TokenBookingViewSet(
     filterset_class = TokenBookingFilters
     filter_backends = [
         DjangoFilterBackend,
+        SingleFacilityTagFilter,
         rest_framework_filters.OrderingFilter,
     ]
+
     ordering_fields = ["created_date", "token_slot__start_datetime"]
+
+    resource_type = TagResource.token_booking
 
     def get_facility_obj(self):
         return get_object_or_404(
@@ -120,6 +132,8 @@ class TokenBookingViewSet(
                 # Free up the slot if it is not cancelled already
                 instance.token_slot.allocated -= 1
                 instance.token_slot.save()
+            if request_data.reason_for_visit:
+                instance.reason_for_visit = request_data.reason_for_visit
             instance.status = request_data.reason
             instance.updated_by = user
             instance.save()

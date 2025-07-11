@@ -50,6 +50,7 @@ django-anymail = {extras = ["amazon-ses"], version = "*"}
 pydantic-extra-types = "2.10.2"
 phonenumberslite = "==8.13.54"
 python-magic = {version = "==0.4.28", index = "python-magic-bin"}
+evalidate = "2.0.5"
 
 [dev-packages]
 boto3-stubs = { extras = ["s3", "boto3"], version = "*" }

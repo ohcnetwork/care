@@ -22,7 +22,42 @@
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
-      "args": ["runserver"],
+      "args": [
+        "runserver_plus",
+        "9000",
+        "--print-sql"
+      ],
+      "env": {
+        "DATABASE_URL": "postgres://postgres:postgres@localhost:5433/care"
+      },
+      "django": true,
+      "justMyCode": false
+    },
+    {
+      "name": "Python: Django Make Migrations",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": [
+        "makemigrations"
+      ],
+      "env": {
+        "DATABASE_URL": "postgres://postgres:postgres@localhost:5433/care"
+      },
+      "django": true,
+      "justMyCode": false
+    },
+    {
+      "name": "Python: Django Migrate",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": [
+        "migrate"
+      ],
+      "env": {
+        "DATABASE_URL": "postgres://postgres:postgres@localhost:5433/care"
+      },
       "django": true,
       "justMyCode": false
     },
@@ -31,7 +66,13 @@
       "type": "python",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
-      "args": ["test", "--keepdb"],
+      "env": {
+        "DATABASE_URL": "postgres://postgres:postgres@localhost:5433/care"
+      },
+      "args": [
+        "test",
+        "--keepdb"
+      ],
       "django": true,
       "justMyCode": false
     },
