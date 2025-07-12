@@ -17,10 +17,6 @@ from care.emr.resources.specimen.spec import SpecimenStatusOptions
 from care.emr.resources.specimen_definition.spec import (
     SpecimenDefinitionStatusOptions,
 )
-from care.security.permissions.facility_organization import (
-    FacilityOrganizationPermissions,
-)
-from care.security.permissions.location import FacilityLocationPermissions
 from care.security.permissions.service_request import ServiceRequestPermissions
 from care.security.permissions.specimen import SpecimenPermissions
 from care.utils.tests.base import CareAPITestBase
@@ -57,9 +53,6 @@ class TestSpecimenViewSet(CareAPITestBase):
             permissions=[
                 ServiceRequestPermissions.can_read_service_request.name,
                 ServiceRequestPermissions.can_write_service_request.name,
-                FacilityOrganizationPermissions.can_view_facility_organization.name,
-                FacilityLocationPermissions.can_list_facility_location_organizations.name,
-                FacilityLocationPermissions.can_list_facility_locations.name,
                 SpecimenPermissions.can_write_specimen.name,
                 SpecimenPermissions.can_read_specimen.name,
             ]
@@ -139,7 +132,6 @@ class TestSpecimenViewSet(CareAPITestBase):
             FacilityLocation,
             name="Test facility Locations",
             facility=facility,
-            status="active",
         )
 
     def create_healthcare_service(self, facility, **kwargs):
@@ -440,29 +432,27 @@ class TestSpecimenViewSet(CareAPITestBase):
             response.data["detail"],
         )
 
-    # def test_list_service_with_location_permission(self):
-    #     self.attach_role_facility_organization_user(
-    #         self.facility_organization, self.user, self.role
-    #     )
-    #     self.create_service_request(
-    #         patient=self.patient,
-    #         facility=self.facility,
-    #         encounter=self.encounter,
-    #         title="Test Service Request 2",
-    #         locations=[str(self.facility_location.id)]
-    #     )
-    #     print("Service Request Data:")
-    #     for key,value in self.service_request.__dict__.items():
-    #         print(f"{key}: {value}")
+    def test_list_service_with_location_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility.default_internal_organization, self.user, self.role
+        )
+        service_request = self.create_service_request(
+            patient=self.patient,
+            facility=self.facility,
+            encounter=self.encounter,
+            title="Test Service Request 2",
+            locations=[str(self.facility_location.id)],
+        )
 
-    #     print("Facility Location Data:")
-    #     for key, value in self.facility_location.__dict__.items():
-    #         print(f"{key}: {value}")
-    #     self.client.force_authenticate(user=self.user)
-    #     response = self.client.get(self.url + "?location=" + str(self.facility_location.external_id))
-    #     print(response.data)
-    #     self.assertEqual(response.status_code, 200)
-    #     self.assertEqual(len(response.data), 1)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.url + "?location=" + str(self.facility_location.external_id)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(service_request.external_id)
+        )
 
     def test_list_service_without_location_permission(self):
         self.client.force_authenticate(user=self.user)
