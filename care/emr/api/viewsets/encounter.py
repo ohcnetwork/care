@@ -18,6 +18,7 @@ from care.emr.api.viewsets.base import (
     EMRCreateMixin,
     EMRListMixin,
     EMRRetrieveMixin,
+    EMRTagMixin,
     EMRUpdateMixin,
 )
 from care.emr.api.viewsets.device import disassociate_device_from_encounter
@@ -38,6 +39,8 @@ from care.emr.resources.encounter.spec import (
     EncounterUpdateSpec,
 )
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
+from care.emr.resources.tag.config_spec import TagResource
+from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.emr.tasks.discharge_summary import generate_discharge_summary_task
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
@@ -75,7 +78,12 @@ class EncounterFilters(filters.FilterSet):
 
 
 class EncounterViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRTagMixin,
+    EMRBaseViewSet,
 ):
     database_model = Encounter
     pydantic_model = EncounterCreateSpec
@@ -83,19 +91,21 @@ class EncounterViewSet(
     pydantic_read_model = EncounterListSpec
     pydantic_retrieve_model = EncounterRetrieveSpec
     filterset_class = EncounterFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, SingleFacilityTagFilter]
+    resource_type = TagResource.encounter
 
     def validate_data(self, instance, model_obj=None):
         if model_obj is None:
             if (
                 self.database_model.objects.filter(
-                    patient__external_id=instance.patient
+                    patient__external_id=instance.patient,
+                    facility__external_id=instance.facility,
                 )
                 .exclude(status__in=COMPLETED_CHOICES)
                 .count()
-                >= settings.MAX_ACTIVE_ENCOUNTERS_PER_PATIENT
+                >= settings.MAX_ACTIVE_ENCOUNTERS_PER_PATIENT_IN_FACILITY
             ):
-                error = f"Patient already has maximum number of active encounters ({settings.MAX_ACTIVE_ENCOUNTERS_PER_PATIENT})"
+                error = f"Patient already has maximum number of active encounters ({settings.MAX_ACTIVE_ENCOUNTERS_PER_PATIENT_IN_FACILITY}) in the facility"
                 raise ValidationError(error)
 
             if not Patient.objects.filter(external_id=instance.patient).exists():
@@ -103,6 +113,18 @@ class EncounterViewSet(
 
             if not Facility.objects.filter(external_id=instance.facility).exists():
                 raise ValidationError("Facility does not exist")
+
+    def authorize_retrieve(self, model_instance):
+        patient = model_instance.patient
+        if AuthorizationController.call(
+            "can_view_patient_obj", self.request.user, patient
+        ):
+            return True
+        if AuthorizationController.call(
+            "can_view_encounter_obj", self.request.user, model_instance
+        ):
+            return True
+        raise PermissionDenied("You do not have permission to view this patient")
 
     def perform_create(self, instance):
         with transaction.atomic():
@@ -155,7 +177,7 @@ class EncounterViewSet(
             .order_by("-created_date")
         )
         if (
-            self.action in ["list", "retrieve"]
+            self.action in ["list"]
             and "patient" in self.request.GET
             and self.request.GET["patient"]
         ):
@@ -170,25 +192,28 @@ class EncounterViewSet(
             raise PermissionDenied("User Cannot access patient")
 
         if (
-            self.action in ["list", "retrieve"]
+            self.action in ["list"]
             and "facility" in self.request.GET
             and self.request.GET["facility"]
         ):
-            # If the user has view access to the patient, then encounter view is also granted for that patient
             facility = get_object_or_404(
                 Facility, external_id=self.request.GET["facility"]
             )
+
             return AuthorizationController.call(
                 "get_filtered_encounters", qs, self.request.user, facility
             )
-        if self.action in ["list", "retrieve"]:
+        if self.action in ["list"]:
             raise PermissionDenied("Cannot access encounters")
         return qs  # Authz Exists separately for update and deletes
 
     @action(detail=True, methods=["GET"])
     def organizations(self, request, *args, **kwargs):
+        """
+        Returns organizations associated with the encounter
+        """
         instance = self.get_object()
-        self.authorize_update({}, instance)
+        self.authorize_retrieve(instance)
         encounter_organizations = EncounterOrganization.objects.filter(
             encounter=instance
         ).select_related("organization")

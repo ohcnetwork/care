@@ -110,7 +110,7 @@ class DeviceViewSet(
         When Location is specified, Location permission is checked (or) organization filters are applied
         If location is not specified the organization cache is used
         """
-        queryset = Device.objects.all()
+        queryset = super().get_queryset()
 
         facility = self.get_facility_obj()
         facility_organizations = FacilityOrganization.objects.filter(
