@@ -34,7 +34,7 @@ class AuthorizationHandler:
         return OrganizationUser.objects.filter(**filters).exists()
 
     def check_permission_in_facility_organization(
-        self, permissions, user, orgs=None, facility=None
+        self, permissions, user, orgs=None, facility=None, root=None
     ):
         if user.is_superuser:
             return True
@@ -46,7 +46,8 @@ class AuthorizationHandler:
                 filters["organization_id__in"] = orgs
             if facility is not None:
                 filters["organization__facility"] = facility
-
+            if root:
+                filters["organization__org_type"] = "root"
             if not FacilityOrganizationUser.objects.filter(**filters).exists():
                 return False
 

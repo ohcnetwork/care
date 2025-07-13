@@ -3,6 +3,7 @@ from django.utils.decorators import method_decorator
 from django_filters import CharFilter, FilterSet, NumberFilter
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters
 from rest_framework import serializers
 from rest_framework.decorators import action, parser_classes
@@ -16,6 +17,9 @@ from care.emr.models import Organization, SchedulableUserResource
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.resources.facility.spec import (
     FacilityCreateSpec,
+    FacilityInvoiceExpressionSpec,
+    FacilityMinimalReadSpec,
+    FacilityMonetaryCodeSpec,
     FacilityReadSpec,
     FacilityRetrieveSpec,
 )
@@ -131,6 +135,41 @@ class FacilityViewSet(EMRModelViewSet):
             return Response(status=204)
         return Response({"detail": "Method not allowed"}, status=405)
 
+    @extend_schema(
+        request=FacilityMonetaryCodeSpec,
+    )
+    @action(methods=["POST"], detail=True)
+    def set_monetary_codes(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.authorize_update({}, instance)
+        serializer_obj = FacilityMonetaryCodeSpec.model_validate(
+            request.data,
+            context={
+                "is_update": True,
+                "object": instance,
+                **self.get_serializer_update_context(),
+            },
+        )
+        model_instance = serializer_obj.de_serialize(obj=instance)
+        self.perform_update(model_instance)
+        return Response(
+            self.get_retrieve_pydantic_model().serialize(model_instance).to_json()
+        )
+
+    @extend_schema(
+        request=FacilityInvoiceExpressionSpec,
+    )
+    @action(methods=["POST"], detail=True)
+    def set_invoice_expression(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.authorize_update({}, instance)
+        request_params = FacilityInvoiceExpressionSpec(**request.data)
+        instance.invoice_number_expression = request_params.invoice_number_expression
+        self.perform_update(instance)
+        return Response(
+            self.get_retrieve_pydantic_model().serialize(instance).to_json()
+        )
+
 
 class FacilitySchedulableUsersViewSet(EMRModelReadOnlyViewSet):
     database_model = User
@@ -170,9 +209,7 @@ class AllFacilityViewSet(EMRModelReadOnlyViewSet):
     authentication_classes = ()
 
     database_model = Facility
-    pydantic_model = FacilityCreateSpec
-    pydantic_read_model = FacilityReadSpec
-    pydantic_retrieve_model = FacilityRetrieveSpec
+    pydantic_read_model = FacilityMinimalReadSpec
     filterset_class = FacilityFilters
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     lookup_field = "external_id"

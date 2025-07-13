@@ -19,3 +19,8 @@ class Quantity(BaseModel):
         None,
         description="A computer processable form of the unit in some unit representation system.",
     )
+
+
+class Ratio(BaseModel):
+    numerator: Quantity
+    denominator: Quantity
