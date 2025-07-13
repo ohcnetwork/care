@@ -67,7 +67,7 @@ class SpecimenDefinitionViewSet(
         If no facility filters are applied, all objects must be returned without a facility filter.
         If facility filter is applied, check for read permission and return all inside facility.
         """
-        base_queryset = self.database_model.objects.all()
+        base_queryset = super().get_queryset()
         facility_obj = self.get_facility_obj()
         if not AuthorizationController.call(
             "can_list_facility_specimen_definition",

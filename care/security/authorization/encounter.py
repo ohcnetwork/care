@@ -8,6 +8,7 @@ from care.security.authorization.base import (
 )
 from care.security.permissions.diagnostic_report import DiagnosticReportPermissions
 from care.security.permissions.encounter import EncounterPermissions
+from care.security.permissions.medication import MedicationPermissions
 from care.security.permissions.service_request import ServiceRequestPermissions
 
 
@@ -43,6 +44,11 @@ class EncounterAccess(AuthorizationHandler):
             [EncounterPermissions.can_read_encounter.name],
             user,
             orgs=orgs,
+        )
+
+    def can_view_as_pharmacist(self, user, facility):
+        return self.check_permission_in_facility_organization(
+            [MedicationPermissions.is_pharmacist.name], user, facility=facility
         )
 
     def can_submit_encounter_questionnaire_obj(self, user, encounter):
@@ -92,6 +98,14 @@ class EncounterAccess(AuthorizationHandler):
             user, encounter, ServiceRequestPermissions.can_read_service_request.name
         )
 
+    def can_view_medication_dispense_for_encounter(self, user, encounter):
+        """
+        Check if the user has permission to read service request under this encounter
+        """
+        return self.check_permission_in_encounter(
+            user, encounter, MedicationPermissions.read_medication_dispense.name
+        )
+
     def can_read_diagnostic_report_in_encounter(self, user, encounter):
         """
         Check if the user has permission to read diagnostic report under this encounter
@@ -104,6 +118,9 @@ class EncounterAccess(AuthorizationHandler):
         """
         Check if the user has permission to create service request under this encounter
         """
+        if encounter.status in COMPLETED_CHOICES:
+            # Cannot write to a closed encounter
+            return False
         return self.check_permission_in_encounter(
             user, encounter, ServiceRequestPermissions.can_write_service_request.name
         )

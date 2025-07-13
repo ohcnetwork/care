@@ -38,7 +38,14 @@ class ServiceRequestStatusChoices(str, Enum):
     ended = "ended"
     completed = "completed"
     revoked = "revoked"
-    unknown = "unknown"
+
+
+SERVICE_REQUEST_COMPLETED_CHOICES = [
+    ServiceRequestStatusChoices.completed,
+    ServiceRequestStatusChoices.revoked,
+    ServiceRequestStatusChoices.ended,
+    ServiceRequestStatusChoices.entered_in_error,
+]
 
 
 class ServiceRequestIntentChoices(str, Enum):
@@ -63,7 +70,7 @@ class BaseServiceRequestSpec(EMRResource):
     """Base model for service requests"""
 
     __model__ = ServiceRequest
-    __exclude__ = ["encounter"]
+    __exclude__ = ["encounter", "healthcare_service", "locations"]
 
     id: str | None = None
     title: str
@@ -88,6 +95,7 @@ class ServiceRequestWriteSpec(BaseServiceRequestSpec):
             obj.healthcare_service = HealthcareService.objects.get(
                 external_id=self.healthcare_service
             )
+        obj._locations = self.locations  # noqa SLF001
 
 
 class ServiceRequestUpdateSpec(ServiceRequestWriteSpec):
@@ -101,7 +109,6 @@ class ServiceRequestUpdateSpec(ServiceRequestWriteSpec):
     code: (
         ValueSetBoundCoding[ACTIVITY_DEFINITION_PROCEDURE_CODE_VALUESET.slug] | None
     ) = None
-    locations: list[UUID4] = []
 
 
 class ServiceRequestCreateSpec(ServiceRequestWriteSpec):

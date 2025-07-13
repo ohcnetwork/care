@@ -166,10 +166,10 @@ class PatientIdentifier(EMRBaseModel):
 class PatientIdentifierConfigCache:
     """
     Configs can be cached because it changes very rarely,
-    local cache makes more sense than a redis based cache interms of IO.
     Redis based alternative for this class can be implemented later if needed.
     """
 
+    # TODO : Switch to Redis
     configs = {}
     instance_configs = None
     facility_configs = {}
@@ -193,25 +193,31 @@ class PatientIdentifierConfigCache:
 
     @classmethod
     def get_instance_config(cls) -> list[dict]:
-        from care.emr.resources.patient_identifier.spec import PatientIdentifierListSpec
+        from care.emr.resources.patient_identifier.spec import (
+            PatientIdentifierListSpec,
+            PatientIdentifierStatus,
+        )
 
-        if cls.instance_configs is None:
-            cls.instance_configs = [
-                PatientIdentifierListSpec.serialize(x).to_json()
-                for x in PatientIdentifierConfig.objects.filter(facility__isnull=True)
-            ]
-        return cls.instance_configs
+        return [
+            PatientIdentifierListSpec.serialize(x).to_json()
+            for x in PatientIdentifierConfig.objects.filter(
+                facility__isnull=True, status=PatientIdentifierStatus.active.value
+            )
+        ]
 
     @classmethod
     def get_facility_config(cls, facility_id):
-        from care.emr.resources.patient_identifier.spec import PatientIdentifierListSpec
+        from care.emr.resources.patient_identifier.spec import (
+            PatientIdentifierListSpec,
+            PatientIdentifierStatus,
+        )
 
-        if facility_id not in cls.facility_configs:
-            cls.facility_configs[facility_id] = [
-                PatientIdentifierListSpec.serialize(x).to_json()
-                for x in PatientIdentifierConfig.objects.filter(facility_id=facility_id)
-            ]
-        return cls.facility_configs[facility_id]
+        return [
+            PatientIdentifierListSpec.serialize(x).to_json()
+            for x in PatientIdentifierConfig.objects.filter(
+                facility_id=facility_id, status=PatientIdentifierStatus.active.value
+            )
+        ]
 
     @classmethod
     def clear_facility_cache(cls, facility_id):

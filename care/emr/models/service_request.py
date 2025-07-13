@@ -5,13 +5,7 @@ from care.emr.models.base import EMRBaseModel
 
 
 class ServiceRequest(EMRBaseModel):
-    facility = models.ForeignKey(
-        "facility.Facility",
-        on_delete=models.PROTECT,
-        default=None,
-        null=True,
-        blank=True,
-    )
+    facility = models.ForeignKey("facility.Facility", on_delete=models.PROTECT)
     title = models.CharField(max_length=1024)
     category = models.CharField(max_length=255)
     status = models.CharField(max_length=255)

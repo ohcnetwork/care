@@ -309,6 +309,10 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     discount_codes = models.JSONField(default=list)
     discount_monetary_components = models.JSONField(default=list)
 
+    invoice_number_expression = models.CharField(
+        max_length=1000, blank=True, null=True, default=None
+    )
+
     class Meta:
         verbose_name_plural = "Facilities"
 

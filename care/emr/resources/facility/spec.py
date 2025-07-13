@@ -1,11 +1,14 @@
 from django.conf import settings
-from pydantic import UUID4, model_validator
+from pydantic import UUID4, BaseModel, field_validator, model_validator
 
 from care.emr.models import Organization
 from care.emr.models.patient import PatientIdentifierConfigCache
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.monetary_component import MonetaryComponentDefinition
+from care.emr.resources.invoice.default_expression_evaluator import (
+    evaluate_invoice_dummy_expression,
+)
 from care.emr.resources.organization.spec import OrganizationReadSpec
 from care.emr.resources.permissions import FacilityPermissionsMixin
 from care.emr.resources.user.spec import UserSpec
@@ -39,6 +42,21 @@ DISCOUNT_CODE_COUNT_LIMIT = 100
 DISCOUNT_MONETARY_COMPONENT_COUNT_LIMIT = 100
 
 
+class FacilityInvoiceExpressionSpec(BaseModel):
+    invoice_number_expression: str
+
+    @field_validator("invoice_number_expression")
+    @classmethod
+    def validate_invoice_number_expression(cls, v):
+        if v:
+            try:
+                evaluate_invoice_dummy_expression(v)
+            except Exception as e:
+                err = "Invalid Expression"
+                raise ValueError(err) from e
+        return v
+
+
 class FacilityCreateSpec(FacilityBaseSpec):
     geo_organization: UUID4
     features: list[int]
@@ -56,6 +74,7 @@ class FacilityReadSpec(FacilityBaseSpec):
     read_cover_image_url: str
     geo_organization: dict = {}
     created_by: dict = {}
+    invoice_number_expression: str | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -78,6 +97,7 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     instance_discount_monetary_components: list[dict] = []
     instance_tax_codes: list[dict] = []
     instance_tax_monetary_components: list[dict] = []
+    instance_informational_codes: list[dict] = []
     # Identifiers
     patient_instance_identifier_configs: list[dict] = []
     patient_facility_identifier_configs: list[dict] = []
@@ -100,6 +120,7 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
         mapping["patient_facility_identifier_configs"] = (
             PatientIdentifierConfigCache.get_facility_config(obj.id)
         )
+        mapping["instance_informational_codes"] = settings.INFORMATIONAL_MONETARY_CODES
 
 
 class FacilityMonetaryCodeSpec(EMRResource):

@@ -34,6 +34,7 @@ class TagResource(str, Enum):
     service_request = "service_request"
     charge_item = "charge_item"
     patient = "patient"
+    token_booking = "token_booking"
 
 
 class TagStatus(str, Enum):
@@ -137,13 +138,15 @@ class TagConfigReadSpec(TagConfigBaseSpec):
     level_cache: int = 0
     system_generated: bool
     has_children: bool
-    parent: dict
+    parent: dict | None
     resource: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["parent"] = obj.get_parent_json()
+        parent = obj.get_parent_json()
+        if parent:
+            mapping["parent"] = parent
 
 
 class TagConfigRetrieveSpec(TagConfigReadSpec):

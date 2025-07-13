@@ -7,6 +7,7 @@ from care.security.roles.role import (
     DOCTOR_ROLE,
     FACILITY_ADMIN_ROLE,
     NURSE_ROLE,
+    PHARMACIST_ROLE,
     STAFF_ROLE,
 )
 
@@ -29,5 +30,6 @@ class SpecimenPermissions(enum.Enum):
             STAFF_ROLE,
             DOCTOR_ROLE,
             NURSE_ROLE,
+            PHARMACIST_ROLE,
         ],
     )

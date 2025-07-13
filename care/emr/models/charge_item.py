@@ -19,10 +19,14 @@ class ChargeItem(EMRBaseModel):
     account = models.ForeignKey("emr.Account", on_delete=models.CASCADE)
     status = models.CharField(max_length=255)
     code = models.JSONField(null=True, blank=True)
-    quantity = models.FloatField(null=True, blank=True)
+    quantity = models.DecimalField(
+        null=True, blank=True, max_digits=10, decimal_places=2
+    )
     unit_price_components = models.JSONField(null=True, blank=True)
     total_price_components = models.JSONField(null=True, blank=True)
-    total_price = models.FloatField(null=True, blank=True)
+    total_price = models.DecimalField(
+        null=True, blank=True, max_digits=10, decimal_places=2
+    )
     note = models.TextField(null=True, blank=True)
     override_reason = models.JSONField(null=True, blank=True)
     service_resource = models.CharField(

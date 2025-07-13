@@ -168,8 +168,8 @@ class SupplyDeliveryRetrieveSpec(SupplyDeliveryReadSpec):
     """Supply delivery retrieve specification"""
 
     supply_request: dict | None = None
-    created_by: UserSpec = dict
-    updated_by: UserSpec = dict
+    created_by: UserSpec = {}
+    updated_by: UserSpec = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

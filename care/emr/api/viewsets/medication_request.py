@@ -45,6 +45,7 @@ class MedicationRequestFilter(filters.FilterSet):
         field_name="dispense_status", exclude=True
     )
     dispense_status_isnull = NullFilter(field_name="dispense_status")
+    facility = filters.UUIDFilter(field_name="encounter__facility__external_id")
 
 
 class MedicationRequestViewSet(
@@ -66,7 +67,7 @@ class MedicationRequestViewSet(
     ordering_fields = ["created_date", "modified_date"]
 
     def get_queryset(self):
-        self.authorize_read_encounter()
+        self.authorize_read_for_medication()
         return (
             super()
             .get_queryset()
@@ -117,10 +118,16 @@ class MedicationRequestSummaryViewSet(EMRBaseViewSet):
             Facility, external_id=self.kwargs["facility_external_id"]
         )
 
+    def authorize_for_pharmacist(self, facility):
+        if not AuthorizationController.call(
+            "can_view_as_pharmacist", self.request.user, facility
+        ):
+            raise PermissionDenied("You do not have permission to view this facility")
+
     @action(methods=["GET"], detail=False)
     def summary(self, request, *args, **kwargs):
-        # TODO : Add AuthZ
         facility = self.get_facility_obj()
+        self.authorize_for_pharmacist(facility)
         queryset = (
             MedicationRequest.objects.filter(
                 encounter__facility=facility,

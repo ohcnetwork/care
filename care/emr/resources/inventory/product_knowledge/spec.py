@@ -5,7 +5,13 @@ from pydantic import UUID4, BaseModel
 from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.coding import Coding
+from care.emr.resources.common.quantity import Quantity, Ratio
+from care.emr.resources.inventory.product_knowledge.valueset import (
+    CARE_NUTRIENTS_VALUESET,
+    CARE_SUBSTANCE_VALUSET,
+)
 from care.emr.resources.specimen.spec import DurationSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.facility.models.facility import Facility
 
 
@@ -29,6 +35,17 @@ class ProductKnowledgeStatusOptions(str, Enum):
     unknown = "unknown"
 
 
+class DrugCharacteristicCode(str, Enum):
+    imprint_code = "imprint_code"
+    size = "size"
+    shape = "shape"
+    color = "color"
+    coating = "coating"
+    scoring = "scoring"
+    logo = "logo"
+    image = "image"
+
+
 class ProductName(BaseModel):
     name_type: ProductNameTypes
     name: str
@@ -39,12 +56,33 @@ class StorageGuideline(BaseModel):
     stability_duration: DurationSpec
 
 
+class ProductStrength(BaseModel):
+    ratio: Ratio
+    quantity: Quantity
+
+
+class ProductIngredient(BaseModel):
+    is_active: bool
+    substance: ValueSetBoundCoding[CARE_SUBSTANCE_VALUSET.slug]
+    strength: ProductStrength
+
+
+class ProductNutrient(BaseModel):
+    item: ValueSetBoundCoding[CARE_NUTRIENTS_VALUESET.slug]
+    amount: ProductStrength
+
+
+class DrugCharacteristic(BaseModel):
+    code: DrugCharacteristicCode
+    value: str
+
+
 class ProductDefinitionSpec(BaseModel):
-    dosage_form: Coding
-    intended_routes: list[Coding]
-    ingredients: list[dict]
-    nutrients: list[dict]
-    drug_characteristic: dict
+    dosage_form: Coding | None = None
+    intended_routes: list[Coding] = []
+    ingredients: list[ProductIngredient] = []
+    nutrients: list[ProductNutrient] = []
+    drug_characteristic: list[DrugCharacteristic] = []
 
 
 class BaseProductKnowledgeSpec(EMRResource):
@@ -55,6 +93,7 @@ class BaseProductKnowledgeSpec(EMRResource):
 
     id: UUID4 | None = None
     slug: str
+    alternate_identifier: str | None = None
     status: ProductKnowledgeStatusOptions
     product_type: ProductTypeOptions
     code: Coding | None = None

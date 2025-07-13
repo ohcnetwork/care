@@ -1,4 +1,6 @@
+from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
+from rest_framework.exceptions import PermissionDenied
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -14,6 +16,8 @@ from care.emr.resources.tag.config_spec import (
     TagConfigUpdateSpec,
     TagConfigWriteSpec,
 )
+from care.facility.models.facility import Facility
+from care.security.authorization.base import AuthorizationController
 from care.utils.filters.null_filter import NullFilter
 
 
@@ -44,14 +48,49 @@ class TagConfigViewSet(
     pydantic_update_model = TagConfigUpdateSpec
     pydantic_read_model = TagConfigReadSpec
     pydantic_retrieve_model = TagConfigRetrieveSpec
-    # TODO AuthZ for Retrieve and Update
     filterset_class = TagConfigFilters
     filter_backends = [filters.DjangoFilterBackend]
 
+    def authorize_retrieve(self, model_instance):
+        if model_instance.facility and not AuthorizationController.call(
+            "can_list_facility_tag_config", self.request.user, model_instance.facility
+        ):
+            raise PermissionDenied("You do not have permission to read tag configs")
+
+    def authorize_update(self, request_obj, model_instance):
+        if model_instance.facility and not AuthorizationController.call(
+            "can_write_facility_tag_config", self.request.user, model_instance.facility
+        ):
+            raise PermissionDenied("You do not have permission to write tag configs")
+        if not model_instance.facility and not self.request.user.is_superuser:
+            raise PermissionDenied("You do not have permission to write tag configs")
+
+    def authorize_create(self, instance):
+        if instance.facility:
+            facility = get_object_or_404(Facility, external_id=instance.facility)
+            if not AuthorizationController.call(
+                "can_write_facility_tag_config", self.request.user, facility
+            ):
+                raise PermissionDenied(
+                    "You do not have permission to write tag configs"
+                )
+        if not instance.facility and not self.request.user.is_superuser:
+            raise PermissionDenied("You do not have permission to write tag configs")
+
     def get_queryset(self):
         queryset = super().get_queryset()
-        if not self.request.GET.get("facility"):
-            queryset = queryset.filter(facility__isnull=True)
+        if self.action == "list":
+            if "facility" in self.request.GET:
+                facility = get_object_or_404(
+                    Facility, external_id=self.request.GET["facility"]
+                )
+                if not AuthorizationController.call(
+                    "can_list_facility_tag_config", self.request.user, facility
+                ):
+                    raise PermissionDenied(
+                        "You do not have permission to read tag configs"
+                    )
+                queryset = queryset.filter(facility=facility)
+            else:
+                queryset = queryset.filter(facility__isnull=True)
         return queryset
-
-    # TODO : AuthZ

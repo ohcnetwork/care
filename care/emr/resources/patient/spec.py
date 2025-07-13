@@ -56,9 +56,9 @@ class PatientBaseSpec(EMRResource):
     gender: GenderChoices
     phone_number: PhoneNumber = Field(max_length=14)
     emergency_phone_number: PhoneNumber | None = Field(None, max_length=14)
-    address: str
-    permanent_address: str
-    pincode: int
+    address: str | None = None
+    permanent_address: str | None = None
+    pincode: int | None = None
     deceased_datetime: StrictTZAwareDateTime | None = None
     blood_group: BloodGroupChoices | None = None
 
@@ -72,17 +72,21 @@ class PatientBaseSpec(EMRResource):
         return deceased_datetime
 
 
-def validate_identifier_config(config, value):
-    if (
-        config["config"]["unique"]
-        and PatientIdentifier.objects.filter(
-            config__external_id=config["id"],
-            value=value,
-        ).exists()
-    ):
+def validate_identifier_config(config, value, obj=None):
+    queryset = PatientIdentifier.objects.filter(
+        config__external_id=config["id"],
+        value=value,
+    )
+    if obj:
+        queryset = queryset.exclude(patient=obj)
+    if config["config"]["unique"] and queryset.exists():
         err = f"Identifier config {config['config']['system']} is not unique"
         raise ValueError(err)
-    if config["config"]["regex"] and not re.match(config["config"]["regex"], value):
+    if (
+        value
+        and config["config"]["regex"]
+        and not re.match(config["config"]["regex"], value)
+    ):
         err = f"Identifier config {config['config']['system']} is not valid"
         raise ValueError(err)
 
@@ -99,6 +103,8 @@ class PatientCreateSpec(PatientBaseSpec):
     age: int | None = None
 
     identifiers: list[PatientIdentifierConfigRequest] = []
+
+    tags: list[UUID4] = []
 
     @field_validator("geo_organization")
     @classmethod
@@ -133,6 +139,7 @@ class PatientCreateSpec(PatientBaseSpec):
         else:
             obj.year_of_birth = self.date_of_birth.year
         obj._identifiers = self.identifiers  # noqa: SLF001
+        obj._tags = self.tags  # noqa: SLF001
 
 
 class PatientUpdateSpec(PatientBaseSpec):
@@ -148,6 +155,8 @@ class PatientUpdateSpec(PatientBaseSpec):
     age: int | None = None
     geo_organization: UUID4 | None = None
 
+    identifiers: list[PatientIdentifierConfigRequest] = []
+
     @field_validator("geo_organization")
     @classmethod
     def validate_geo_organization(cls, geo_organization):
@@ -161,6 +170,7 @@ class PatientUpdateSpec(PatientBaseSpec):
 
     def perform_extra_deserialization(self, is_update, obj):
         if is_update:
+            obj._identifiers = self.identifiers  # noqa: SLF001
             if self.geo_organization:
                 obj.geo_organization = Organization.objects.get(
                     external_id=self.geo_organization
@@ -170,6 +180,22 @@ class PatientUpdateSpec(PatientBaseSpec):
                 obj.year_of_birth = timezone.now().year - self.age
             elif self.date_of_birth:
                 obj.year_of_birth = self.date_of_birth.year
+
+    @field_validator("identifiers")
+    @classmethod
+    def validate_identifiers(cls, identifiers, info):
+        instance_identifier_configs = PatientIdentifierConfigCache.get_instance_config()
+        configs = {str(x.config): x for x in identifiers}
+        for identifier_config in instance_identifier_configs:
+            if identifier_config["id"] in configs:
+                value = configs[identifier_config["id"]].value
+                validate_identifier_config(
+                    identifier_config, value, info.context.get("object")
+                )
+            elif identifier_config["config"]["required"]:
+                err = f"Identifier config {identifier_config['config']['system']} is required"
+                raise ValueError(err)
+        return identifiers
 
 
 class PatientListSpec(PatientBaseSpec):

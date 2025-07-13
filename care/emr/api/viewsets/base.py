@@ -282,7 +282,7 @@ class EMRBaseViewSet(GenericViewSet):
         return emr_exception_handler
 
     def get_queryset(self):
-        return self.database_model.objects.all()
+        return self.database_model.objects.all().order_by("-id")
 
     def get_retrieve_pydantic_model(self):
         if self.pydantic_retrieve_model:

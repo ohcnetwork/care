@@ -32,12 +32,13 @@ class BaseInvoiceSpec(EMRResource):
     __exclude__ = ["account", "charge_items"]
 
     id: UUID4 | None = None
-    title: str
+    title: str | None = None
     status: InvoiceStatusOptions
     cancelled_reason: str | None = None
     payment_terms: str | None = None
     note: str | None = None
     issue_date: datetime.datetime | None = None
+    number: str | None = None
 
 
 class InvoiceWriteSpec(BaseInvoiceSpec):

@@ -83,7 +83,7 @@ class ObservationDefinitionViewSet(
         If no facility filters are applied, all objects must be returned without a facility filter.
         If facility filter is applied, check for read permission and return all inside facility.
         """
-        base_queryset = self.database_model.objects.all()
+        base_queryset = super().get_queryset()
         if self.action in ["list"]:
             if "facility" in self.request.GET:
                 facility_id = self.request.GET["facility"]

@@ -101,6 +101,10 @@ class SupplyRequestWriteSpec(BaseSupplyRequestSpec):
         return obj
 
 
+class SupplyRequestUpdateSpec(BaseSupplyRequestSpec):
+    pass
+
+
 class SupplyRequestReadSpec(BaseSupplyRequestSpec):
     """Supply request read specification"""
 

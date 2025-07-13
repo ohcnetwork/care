@@ -1,3 +1,8 @@
+import json
+from decimal import Decimal
+
+from django.core.serializers.json import DjangoJSONEncoder
+
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.invoice import Invoice
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
@@ -19,14 +24,17 @@ def update_amount(price_component, total_price_components):
     existing_component = total_price_components[
         price_component["monetary_component_type"]
     ].get(key)
+
     if existing_component is None:
         existing_component = MonetaryComponent(
             monetary_component_type=price_component["monetary_component_type"],
             amount=price_component["amount"],
             code=price_component.get("code"),
         ).model_dump(mode="json")
+        existing_component["amount"] = Decimal(existing_component["amount"])
     else:
-        existing_component["amount"] += price_component["amount"]
+        existing_component["amount"] = Decimal(existing_component["amount"])
+        existing_component["amount"] += Decimal(price_component["amount"])
     total_price_components[price_component["monetary_component_type"]][key] = (
         existing_component
     )
@@ -37,8 +45,18 @@ def sync_invoice_items(invoice: Invoice):
     summary = calculate_charge_items_summary(charge_items)
     invoice.total_net = summary["net"]
     invoice.total_gross = summary["gross"]
-    invoice.total_price_components = summary["total_price_components"]
-    invoice.charge_items_copy = summary["charge_items_copy"]
+    invoice.total_price_components = json.loads(
+        json.dumps(
+            summary["total_price_components"],
+            cls=DjangoJSONEncoder,
+        )
+    )
+    invoice.charge_items_copy = json.loads(
+        json.dumps(
+            summary["charge_items_copy"],
+            cls=DjangoJSONEncoder,
+        )
+    )
 
 
 def calculate_charge_items_summary(charge_items):
@@ -51,8 +69,8 @@ def calculate_charge_items_summary(charge_items):
     costs = {}
     charge_items_copy = []
     total_price_components = {}
-    net = 0
-    gross = 0
+    net = Decimal(0)
+    gross = Decimal(0)
 
     for charge_item in charge_items:
         for price_component in charge_item.total_price_components:
@@ -64,18 +82,18 @@ def calculate_charge_items_summary(charge_items):
 
     for price_component in costs.get(MonetaryComponentType.base.value, []):
         update_amount(price_component, total_price_components)
-        net += price_component["amount"]
+        net += Decimal(price_component["amount"])
     total_price_components[MonetaryComponentType.surcharge.value] = {}
     for price_component in costs.get(MonetaryComponentType.surcharge.value, []):
         update_amount(price_component, total_price_components)
-        net += price_component["amount"]
+        net += Decimal(price_component["amount"])
     for price_component in costs.get(MonetaryComponentType.discount.value, []):
         update_amount(price_component, total_price_components)
-        net -= price_component["amount"]
+        net -= Decimal(price_component["amount"])
     gross = net
     for price_component in costs.get(MonetaryComponentType.tax.value, []):
         update_amount(price_component, total_price_components)
-        gross += price_component["amount"]
+        gross += Decimal(price_component["amount"])
 
     final_price_components = []
     for price_component in total_price_components.values():

@@ -17,6 +17,7 @@ from care.emr.models import Organization, SchedulableUserResource
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.resources.facility.spec import (
     FacilityCreateSpec,
+    FacilityInvoiceExpressionSpec,
     FacilityMinimalReadSpec,
     FacilityMonetaryCodeSpec,
     FacilityReadSpec,
@@ -153,6 +154,20 @@ class FacilityViewSet(EMRModelViewSet):
         self.perform_update(model_instance)
         return Response(
             self.get_retrieve_pydantic_model().serialize(model_instance).to_json()
+        )
+
+    @extend_schema(
+        request=FacilityInvoiceExpressionSpec,
+    )
+    @action(methods=["POST"], detail=True)
+    def set_invoice_expression(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.authorize_update({}, instance)
+        request_params = FacilityInvoiceExpressionSpec(**request.data)
+        instance.invoice_number_expression = request_params.invoice_number_expression
+        self.perform_update(instance)
+        return Response(
+            self.get_retrieve_pydantic_model().serialize(instance).to_json()
         )
 
 

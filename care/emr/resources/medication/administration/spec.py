@@ -175,6 +175,8 @@ class MedicationAdministrationUpdateSpec(EMRResource):
 
 class MedicationAdministrationReadSpec(BaseMedicationAdministrationSpec):
     created_by: UserSpec = dict
+    created_date: datetime
+    modified_date: datetime
 
     administered_product: dict | None = None
 

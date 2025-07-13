@@ -1,7 +1,10 @@
 from django.db import transaction
 from django.db.models import Count
+from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -13,6 +16,7 @@ from care.emr.api.viewsets.base import (
     EMRUpsertMixin,
 )
 from care.emr.models.encounter import Encounter
+from care.emr.models.location import FacilityLocation
 from care.emr.models.medication_dispense import MedicationDispense
 from care.emr.resources.charge_item.apply_charge_item_definition import (
     apply_charge_item_definition,
@@ -27,6 +31,7 @@ from care.emr.resources.medication.dispense.spec import (
     MedicationDispenseWriteSpec,
 )
 from care.emr.resources.medication.request.spec import MedicationRequestDispenseStatus
+from care.security.authorization.base import AuthorizationController
 from care.utils.filters.multiselect import MultiSelectFilter
 
 
@@ -35,7 +40,6 @@ class MedicationDispenseFilters(filters.FilterSet):
     category = filters.CharFilter(lookup_expr="iexact")
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
-    location = filters.UUIDFilter(field_name="location__external_id")
     item = filters.UUIDFilter(field_name="item__external_id")
     authorizing_prescription = filters.UUIDFilter(
         field_name="authorizing_prescription__external_id"
@@ -56,7 +60,8 @@ class MedicationDispenseViewSet(
     pydantic_update_model = MedicationDispenseUpdateSpec
     pydantic_read_model = MedicationDispenseReadSpec
     filterset_class = MedicationDispenseFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["created_date", "modified_date"]
 
     def perform_create(self, instance):
         with transaction.atomic():
@@ -76,14 +81,85 @@ class MedicationDispenseViewSet(
                 )
                 instance.authorizing_prescription.save()
 
+    def authorize_location_write(self, location):
+        if not AuthorizationController.call(
+            "can_write_location_medication_dispense", self.request.user, location
+        ):
+            raise PermissionDenied(
+                "You do not have permission to write medication dispenses"
+            )
+
+    def authorize_create(self, instance):
+        """
+        Creates only require permission to the location as the pharmacist will likely
+        not have access to the encounter
+        """
+        location = instance.location
+        location_obj = get_object_or_404(FacilityLocation, external_id=location)
+        self.authorize_location_write(location_obj)
+
+    def authorize_update(self, request_obj, model_instance):
+        self.authorize_location_write(model_instance.location)
+
+    def authorize_retrieve(self, model_instance):
+        if not AuthorizationController.call(
+            "can_list_location_medication_dispense",
+            self.request.user,
+            model_instance.location,
+        ) and not AuthorizationController.call(
+            "can_view_medication_dispense_for_encounter",
+            self.request.user,
+            model_instance.encounter,
+        ):
+            raise PermissionDenied(
+                "You do not have permission to read medication dispense"
+            )
+
     def perform_update(self, instance):
         with transaction.atomic():
             sync_inventory_item(instance.item)
             return super().perform_update(instance)
 
+    def authorize_location_read(self, location):
+        if not AuthorizationController.call(
+            "can_list_location_medication_dispense", self.request.user, location
+        ):
+            raise PermissionDenied(
+                "You do not have permission to read medication dispenses"
+            )
+
+    def authorize_encounter_read(self, encounter):
+        if not AuthorizationController.call(
+            "can_view_medication_dispense_for_encounter",
+            self.request.user,
+            encounter,
+        ):
+            raise PermissionDenied(
+                "You do not have permission to read medication dispenses"
+            )
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        if self.action in ["list", "summary"]:
+            if "location" in self.request.GET:
+                location = get_object_or_404(
+                    FacilityLocation, external_id=self.request.GET.get("location")
+                )
+                self.authorize_location_read(location)
+                queryset = queryset.filter(location=location)
+            elif "encounter" in self.request.GET:
+                encounter = get_object_or_404(
+                    Encounter, external_id=self.request.GET.get("encounter")
+                )
+                self.authorize_encounter_read(encounter)
+                queryset = queryset.filter(encounter=encounter)
+            else:
+                raise ValidationError("Location or encounter is required")
+        return queryset
+
     @action(methods=["GET"], detail=False)
     def summary(self, request, *args, **kwargs):
-        # TODO : Add AuthZ
         queryset = (
             self.filter_queryset(self.get_queryset())
             .values("encounter_id")

@@ -7,6 +7,7 @@ from care.security.roles.role import (
     DOCTOR_ROLE,
     FACILITY_ADMIN_ROLE,
     NURSE_ROLE,
+    PHARMACIST_ROLE,
     STAFF_ROLE,
     VOLUNTEER_ROLE,
 )
@@ -31,5 +32,6 @@ class ChargeItemDefinitionPermissions(enum.Enum):
             DOCTOR_ROLE,
             NURSE_ROLE,
             VOLUNTEER_ROLE,
+            PHARMACIST_ROLE,
         ],
     )

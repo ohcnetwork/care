@@ -4,7 +4,7 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
@@ -30,7 +30,6 @@ from care.emr.resources.activity_definition.service_request import (
 )
 from care.emr.resources.questionnaire.spec import SubjectType
 from care.emr.resources.service_request.spec import (
-    BaseServiceRequestSpec,
     ServiceRequestCreateSpec,
     ServiceRequestReadSpec,
     ServiceRequestRetrieveSpec,
@@ -55,6 +54,7 @@ class ServiceRequestFilters(filters.FilterSet):
     intent = filters.CharFilter(lookup_expr="iexact")
     do_not_perform = filters.BooleanFilter()
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
+    patient = filters.UUIDFilter(field_name="patient__external_id")
 
 
 class ApplyActivityDefinitionRequest(BaseModel):
@@ -78,7 +78,7 @@ class ServiceRequestViewSet(
 ):
     database_model = ServiceRequest
     pydantic_model = ServiceRequestCreateSpec
-    pydantic_update_model = BaseServiceRequestSpec
+    pydantic_update_model = ServiceRequestUpdateSpec
     pydantic_read_model = ServiceRequestReadSpec
     pydantic_retrieve_model = ServiceRequestRetrieveSpec
     filterset_class = ServiceRequestFilters
@@ -97,11 +97,10 @@ class ServiceRequestViewSet(
 
     def convert_external_id_to_internal_id(self, instance):
         ids = []
-        # TODO check for Authz
-        for location in instance.locations:
+        for location in instance._locations:  # noqa: SLF001
             obj = (
                 FacilityLocation.objects.only("id")
-                .filter(external_id=location, facility=instance.facility)
+                .filter(external_id=location, facility=self.get_facility_obj())
                 .first()
             )
             if not obj:
@@ -137,7 +136,7 @@ class ServiceRequestViewSet(
             self.request.user,
             encounter,
         ):
-            raise ValidationError(
+            raise PermissionDenied(
                 "You do not have permission to create a service request for this encounter"
             )
 
@@ -147,7 +146,7 @@ class ServiceRequestViewSet(
             self.request.user,
             model_instance,
         ):
-            raise ValidationError(
+            raise PermissionDenied(
                 "You do not have permission to update this service request"
             )
 
@@ -160,7 +159,7 @@ class ServiceRequestViewSet(
             self.request.user,
             model_instance,
         ):
-            raise ValidationError(
+            raise PermissionDenied(
                 "You do not have permission to read this service request"
             )
 
@@ -184,7 +183,7 @@ class ServiceRequestViewSet(
                 self.request.user,
                 location,
             ):
-                raise ValidationError(
+                raise PermissionDenied(
                     "You do not have permission to view service requests for this location"
                 )
             return queryset.filter(locations__overlap=[location.id])
@@ -197,7 +196,7 @@ class ServiceRequestViewSet(
                 self.request.user,
                 encounter,
             ):
-                raise ValidationError(
+                raise PermissionDenied(
                     "You do not have permission to view service requests for this encounter"
                 )
             return queryset.filter(encounter=encounter)
@@ -241,7 +240,7 @@ class ServiceRequestViewSet(
             self.request.user,
             service_request,
         ):
-            raise ValidationError(
+            raise PermissionDenied(
                 "You do not have permission to create a specimen for this encounter"
             )
 
@@ -254,6 +253,8 @@ class ServiceRequestViewSet(
         sepcimen_data = BaseSpecimenSpec(**request.data)
         self.authorize_create_specimen(service_request)
         model_instance = sepcimen_data.de_serialize()
+        if not model_instance.accession_identifier:
+            model_instance.accession_identifier = model_instance.external_id
         model_instance.patient = service_request.patient
         model_instance.encounter = service_request.encounter
         model_instance.facility = service_request.facility
@@ -283,6 +284,8 @@ class ServiceRequestViewSet(
             request_params.specimen.model_dump(mode="json")
         )
         model_instance = serializer_obj.de_serialize(obj=specimen)
+        if not model_instance.accession_identifier:
+            model_instance.accession_identifier = model_instance.external_id
         model_instance.patient = service_request.patient
         model_instance.encounter = service_request.encounter
         model_instance.facility = service_request.facility

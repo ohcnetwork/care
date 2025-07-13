@@ -74,7 +74,7 @@ class ChargeItemDefinitionViewSet(
             raise PermissionDenied("Access Denied to Charge Item Definition")
 
     def get_queryset(self):
-        base_queryset = self.database_model.objects.all()
+        base_queryset = super().get_queryset()
         facility_obj = self.get_facility_obj()
         if not AuthorizationController.call(
             "can_list_facility_charge_item_definition",

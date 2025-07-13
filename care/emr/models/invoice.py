@@ -17,7 +17,7 @@ class Invoice(EMRBaseModel):
         "emr.Account",
         on_delete=models.PROTECT,
     )
-    title = models.CharField(max_length=1024)
+    title = models.CharField(max_length=1024, null=True, blank=True, default=None)
     status = models.CharField(max_length=100)
     cancelled_reason = models.TextField(null=True, blank=True)
     payment_terms = models.TextField(null=True, blank=True)
@@ -28,3 +28,4 @@ class Invoice(EMRBaseModel):
     total_net = models.FloatField(default=0)
     total_gross = models.FloatField(default=0)
     issue_date = models.DateTimeField(null=True, blank=True, default=None)
+    number = models.CharField(max_length=1000, null=True, blank=True, default=None)

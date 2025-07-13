@@ -1,8 +1,8 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
-from rest_framework.filters import OrderingFilter
+from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -23,6 +23,7 @@ from care.emr.resources.account.spec import (
 )
 from care.emr.resources.account.sync_items import sync_account_items
 from care.facility.models.facility import Facility
+from care.security.authorization.base import AuthorizationController
 
 
 class AccountFilters(filters.FilterSet):
@@ -41,7 +42,12 @@ class AccountViewSet(
     pydantic_read_model = AccountReadSpec
     pydantic_retrieve_model = AccountRetrieveSpec
     filterset_class = AccountFilters
-    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        OrderingFilter,
+        SearchFilter,
+    ]
+    search_fields = ["name"]
     ordering_fields = ["created_date", "modified_date"]
 
     def get_facility_obj(self):
@@ -75,12 +81,36 @@ class AccountViewSet(
         instance.save()
         return instance
 
+    def authorize_create(self, instance):
+        if not AuthorizationController.call(
+            "can_create_account_in_facility",
+            self.request.user,
+            self.get_facility_obj(),
+        ):
+            raise PermissionDenied("You are not authorized to create accounts")
+
+    def authorize_update(self, request_obj, model_instance):
+        if not AuthorizationController.call(
+            "can_update_account_in_facility",
+            self.request.user,
+            model_instance.facility,
+        ):
+            raise PermissionDenied("You are not authorized to update accounts")
+
     @action(methods=["POST"], detail=True)
     def rebalance(self, request, *args, **kwargs):
         account = self.get_object()
+        self.authorize_update({}, account)
         sync_account_items(account)
         account.save()
         return Response(AccountRetrieveSpec.serialize(account).to_json())
 
     def get_queryset(self):
-        return super().get_queryset().filter(facility=self.get_facility_obj())
+        facility = self.get_facility_obj()
+        if not AuthorizationController.call(
+            "can_read_account_in_facility",
+            self.request.user,
+            facility,
+        ):
+            raise PermissionDenied("You are not authorized to read accounts")
+        return super().get_queryset().filter(facility=facility)

@@ -25,7 +25,7 @@ class BaseTagManager:
         for i in tag_instances:
             self.unset_tag(resource, i, user)
 
-    def get_tag_config_object(self, tag_id):
+    def get_tag_config_object(self, tag_id, facility=None):
         # TODO: Add cache
         return TagConfig.objects.filter(id=tag_id).first()
 
@@ -54,16 +54,16 @@ class SingleFacilityTagManager(BaseTagManager):
         if not tag_instance:
             return
         if tag_instance.id in tags:
-            raise ValueError("Tag already set")
+            raise ValidationError("Tag already set")
         if tag_instance.resource != resource_type:
-            raise ValueError("Tag resource does not match resource type")
+            raise ValidationError("Tag resource does not match resource type")
         if (
             tag_instance.root_tag_config
             and TagConfig.objects.filter(
                 id__in=tags, root_tag_config=tag_instance.root_tag_config
             ).exists()
         ):
-            raise ValueError("Tag Parent is already set")
+            raise ValidationError("Tag Parent is already set")
         tags.append(tag_instance.id)
         fields = self.set_instance_tag(resource, tags)
         resource.save(update_fields=fields)
@@ -96,7 +96,7 @@ class PatientInstanceTagManager(SingleFacilityTagManager):
         instance.instance_tags = tags
         return ["instance_tags"]
 
-    def get_tag_config_object(self, external_id):
+    def get_tag_config_object(self, external_id, facility=None):
         return TagConfig.objects.filter(
             external_id=external_id, facility__isnull=True
         ).first()
@@ -117,7 +117,7 @@ class PatientFacilityTagManager(SingleFacilityTagManager):
         instance.facility_tags = facility_tags
         return ["facility_tags"]
 
-    def get_tag_config_object(self, external_id):
+    def get_tag_config_object(self, external_id, facility=None):
         return TagConfig.objects.filter(
             external_id=external_id, facility=self.facility
         ).first()

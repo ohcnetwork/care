@@ -1,10 +1,13 @@
 from enum import Enum
 
 from django.shortcuts import get_object_or_404
-from pydantic import UUID4, BaseModel
+from pydantic import UUID4, BaseModel, field_validator
 
 from care.emr.models.patient import PatientIdentifierConfig
 from care.emr.resources.base import EMRResource
+from care.emr.resources.patient_identifier.default_expression_evaluator import (
+    evaluate_patient_dummy_expression,
+)
 from care.facility.models.facility import Facility
 
 
@@ -26,7 +29,6 @@ class PatientIdentifierRetrieveConfig(BaseModel):
     retrieve_with_dob: bool = False
     retrieve_with_year_of_birth: bool = False
     retrieve_with_otp: bool = False
-    retrieve_without_extra: bool = False
 
 
 class IdentifierConfig(BaseModel):
@@ -38,6 +40,18 @@ class IdentifierConfig(BaseModel):
     regex: str
     display: str
     retrieve_config: PatientIdentifierRetrieveConfig = {}
+    default_value: str | None = None
+
+    @field_validator("default_value")
+    @classmethod
+    def validate_default_value(cls, v):
+        if v:
+            try:
+                evaluate_patient_dummy_expression(v)
+            except Exception as e:
+                err = "Invalid Default Value"
+                raise ValueError(err) from e
+        return v
 
 
 class BasePatientIdentifierSpec(EMRResource):
