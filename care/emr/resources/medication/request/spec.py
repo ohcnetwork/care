@@ -5,7 +5,6 @@ from django.shortcuts import get_object_or_404
 from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 from pydantic_core.core_schema import ValidationInfo
 
-
 from care.emr.models.encounter import Encounter
 from care.emr.models.medication_request import MedicationRequest
 from care.emr.models.product_knowledge import ProductKnowledge
