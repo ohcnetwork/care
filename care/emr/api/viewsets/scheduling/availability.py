@@ -128,6 +128,8 @@ def lock_create_appointment(token_slot, patient, created_by, reason_for_visit):
             token_slot=token_slot,
             patient=patient,
             booked_by=created_by,
+            created_by=created_by,
+            updated_by=created_by,
             reason_for_visit=reason_for_visit,
             status="booked",
         )

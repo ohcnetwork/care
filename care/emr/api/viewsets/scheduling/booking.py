@@ -39,6 +39,7 @@ class CancelBookingSpec(BaseModel):
         BookingStatusChoices.entered_in_error,
         BookingStatusChoices.rescheduled,
     ]
+    reason_for_visit: str | None = None
 
 
 class RescheduleBookingSpec(BaseModel):
@@ -131,6 +132,8 @@ class TokenBookingViewSet(
                 # Free up the slot if it is not cancelled already
                 instance.token_slot.allocated -= 1
                 instance.token_slot.save()
+            if request_data.reason_for_visit:
+                instance.reason_for_visit = request_data.reason_for_visit
             instance.status = request_data.reason
             instance.updated_by = user
             instance.save()
