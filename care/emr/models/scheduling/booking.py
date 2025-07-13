@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from care.emr.models import EMRBaseModel
@@ -32,3 +33,4 @@ class TokenBooking(EMRBaseModel):
     booked_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     status = models.CharField()
     reason_for_visit = models.TextField(null=True, blank=True)
+    tags = ArrayField(models.IntegerField(), default=list)
