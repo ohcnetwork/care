@@ -320,7 +320,7 @@ class OrganizationAPITestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 403)
         self.assertContains(
             response,
-            "User does not have the required permissions to update organizations",
+            "User does not have the required permissions to delete organizations",
             status_code=403,
         )
 
