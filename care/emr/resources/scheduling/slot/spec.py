@@ -88,6 +88,10 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
     reason_for_visit: str
     user: dict = {}
     facility: dict = {}
+    created_by: UserSpec | None = None
+    updated_by: UserSpec | None = None
+    created_date: datetime.datetime
+    modified_date: datetime.datetime
 
     tags: list[dict] = []
 
@@ -107,3 +111,11 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
             Facility.objects.get(id=obj.token_slot.resource.facility_id)
         ).model_dump(exclude=["meta"])
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+        if obj.created_by:
+            mapping["created_by"] = UserSpec.serialize(obj.created_by).model_dump(
+                exclude=["meta"]
+            )
+        if obj.updated_by:
+            mapping["updated_by"] = UserSpec.serialize(obj.updated_by).model_dump(
+                exclude=["meta"]
+            )
