@@ -27,6 +27,13 @@ class HealthcareServiceAPITest(CareAPITestBase):
             "locations": [self.facility_location.external_id],
             "extra_details": "Some extra details about the service.",
         }
+        self.update_data = {
+            "name": "Updated Healthcare Service",
+            "service_type": {"code": "updated_code", "display": "Updated Code"},
+            "internal_type": HealthcareServiceInternalType.lab,
+            "locations": [self.facility_location.external_id],
+            "extra_details": "Updated extra details about the service.",
+        }
         self.role = self.create_role_with_permissions(
             permissions=[
                 HealthcareServicePermissions.can_read_healthcare_service.name,
@@ -123,6 +130,60 @@ class HealthcareServiceAPITest(CareAPITestBase):
             facility=self.facility, name="Test Healthcare Service"
         )
         response = self.client.get(self.get_detail_url(healthcare_service.external_id))
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "Access Denied to Healthcare Service", status_code=403
+        )
+
+        # Test for updating a healthcare service
+
+    def test_update_healthcare_service_as_super_user(self):
+        self.client.force_authenticate(user=self.super_user)
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility, name="Test Healthcare Service"
+        )
+        response = self.client.put(
+            self.get_detail_url(healthcare_service.external_id),
+            self.update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(healthcare_service.external_id)
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["name"], self.update_data["name"])
+
+    def test_update_healthcare_service_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility, name="Test Healthcare Service"
+        )
+        response = self.client.put(
+            self.get_detail_url(healthcare_service.external_id),
+            self.update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(healthcare_service.external_id)
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["name"], self.update_data["name"])
+
+    def test_update_healthcare_service_as_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility, name="Test Healthcare Service"
+        )
+        response = self.client.put(
+            self.get_detail_url(healthcare_service.external_id),
+            self.update_data,
+            format="json",
+        )
         self.assertEqual(response.status_code, 403)
         self.assertContains(
             response, "Access Denied to Healthcare Service", status_code=403
