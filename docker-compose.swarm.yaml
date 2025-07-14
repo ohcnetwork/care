@@ -44,6 +44,12 @@ volumes:
       type: none
       o: bind
       device: /care-storage/shared/minio
+  portainer-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /care-storage/shared/portainer
 
 configs:
   postgres-master:
@@ -475,3 +481,40 @@ services:
       #   reservations:
       #     memory: 192M
       #     cpus: "0.25"
+
+  portainer-agent:
+    image: portainer/agent:alpine
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /var/lib/docker/volumes:/var/lib/docker/volumes
+    deploy:
+      mode: global
+      restart_policy:
+        condition: on-failure
+
+  portainer:
+    image: portainer/portainer-ce:alpine
+    command: -H tcp://tasks.portainer-agent:9001 --tlsskipverify
+    ports:
+      - "9443:9443"
+    volumes:
+      - portainer-data:/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+        max_replicas_per_node: 1
+      update_config:
+        failure_action: rollback
+        order: stop-first
+      restart_policy:
+        condition: on-failure
+      # resources:
+      #   limits:
+      #     memory: 256M
+      #     cpus: "0.3"
+      #   reservations:
+      #     memory: 128M
+      #     cpus: "0.1"
