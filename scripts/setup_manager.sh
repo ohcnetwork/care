@@ -2,8 +2,6 @@
 
 set -euo pipefail
 
-STACK_NAME="care"
-COMPOSE_FILE="docker-compose.swarm.yaml"
 GLUSTER_SHARED_DIR="/care-storage/shared"
 GLUSTER_BRICK_DIR="/care-storage/brick"
 GLUSTER_VOLUME_NAME="care-volume"
@@ -27,14 +25,14 @@ install_docker() {
 
     echo "Installing Docker..."
     curl -fsSL https://get.docker.com | sudo sh &> /dev/null
-    sudo usermod -aG docker ubuntu &> /dev/null
+    sudo usermod -aG docker "$USER" &> /dev/null
     echo "Docker installed"
 }
 
 create_directories() {
     echo ">>> Creating base directories..."
     sudo mkdir -p "$GLUSTER_SHARED_DIR"
-    sudo chown -R $USER:$USER "$GLUSTER_SHARED_DIR"
+    sudo chown -R "$USER":"$USER" "$GLUSTER_SHARED_DIR"
     echo "Base directories created"
 }
 
@@ -147,7 +145,7 @@ setup_gluster_cluster() {
 
         if [[ ${#managers[@]} -gt 0 ]]; then
             echo "Waiting for other nodes..."
-            sleep 30
+            sleep 15
 
             for i in "${!managers[@]}"; do
                 sudo gluster peer probe "${managers[$i]}" || true
@@ -200,35 +198,13 @@ mount_glusterfs() {
 
         # Create data subdirectories AFTER mounting
         echo ">>> Creating data subdirectories..."
-        sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres-master,postgres-slave1,postgres-slave2,redis,minio}
-        sudo chown -R $USER:$USER "$GLUSTER_SHARED_DIR"
+        sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres-master,postgres-slave1,postgres-slave2,postgres-backups,redis,minio}
+        sudo chown -R "$USER":"$USER" "$GLUSTER_SHARED_DIR"
         echo "Data directories created in mounted volume"
     else
         echo "GlusterFS volume not found"
     fi
 }
-
-### STACK DEPLOYMENT ###
-
-# deploy_stack() {
-#     echo ">>> Deploying CARE stack..."
-#
-#     if [ ! -f "$COMPOSE_FILE" ]; then
-#         echo "Compose file $COMPOSE_FILE not found"
-#         exit 1
-#     fi
-#
-#     docker stack deploy -c "$COMPOSE_FILE" "$STACK_NAME"
-#     echo "Stack deployed"
-# }
-#
-# remove_stack() {
-#     echo ">>> Removing CARE stack..."
-#     docker stack rm "$STACK_NAME" || true
-#     sleep 10
-#     docker volume rm ${STACK_NAME}_minio-data ${STACK_NAME}_postgres-data ${STACK_NAME}_redis-data || true
-#     echo "Stack removed"
-# }
 
 ### ORCHESTRATION ###
 
@@ -263,12 +239,6 @@ main() {
         "additional")
             setup_manager "additional"
             ;;
-    #    "deploy")
-    #        deploy_stack
-    #        ;;
-    #    "remove")
-    #        remove_stack
-    #        ;;
         *)
             exit 1
             ;;

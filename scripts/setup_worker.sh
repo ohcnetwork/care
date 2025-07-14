@@ -24,14 +24,14 @@ install_docker() {
 
     echo "Installing Docker..."
     curl -fsSL https://get.docker.com | sudo sh &> /dev/null
-    sudo usermod -aG docker ubuntu &> /dev/null
+    sudo usermod -aG docker "$USER" &> /dev/null
     echo "Docker installed"
 }
 
 create_directories() {
     echo ">>> Creating base directory..."
     sudo mkdir -p "$GLUSTER_SHARED_DIR"
-    sudo chown -R $USER:$USER "$GLUSTER_SHARED_DIR"
+    sudo chown -R "$USER":"$USER" "$GLUSTER_SHARED_DIR"
     echo "Base directory created"
 }
 
@@ -104,8 +104,8 @@ mount_glusterfs() {
 
                     # Create data subdirectories AFTER mounting
                     echo ">>> Creating data subdirectories..."
-                    sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres-master,postgres-slave1,postgres-slave2,redis,minio}
-                    sudo chown -R $USER:$USER "$GLUSTER_SHARED_DIR"
+                    sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres-master,postgres-slave1,postgres-slave2,postgres-backups,redis,minio}
+                    sudo chown -R "$USER":"$USER" "$GLUSTER_SHARED_DIR"
                     echo "Data directories created in mounted volume"
                     return
                 }

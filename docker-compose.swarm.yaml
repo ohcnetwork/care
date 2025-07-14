@@ -26,6 +26,12 @@ volumes:
       type: none
       o: bind
       device: /care-storage/shared/postgres-slave2
+  postgres-backup-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /care-storage/shared/postgres-backups
   redis-data:
     driver: local
     driver_opts:
@@ -222,6 +228,38 @@ services:
       interval: 30s
       timeout: 10s
       retries: 3
+
+  db-backup:
+    image: prodrigestivill/postgres-backup-local:17-alpine
+    environment:
+      POSTGRES_HOST: postgres-master
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: care
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      SCHEDULE: "@daily"
+      BACKUP_ON_START: "TRUE"
+      TZ: "Asia/Kolkata"
+    volumes:
+      - postgres-backup-data:/backups
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+        max_replicas_per_node: 1
+      update_config:
+        failure_action: rollback
+        order: stop-first
+      restart_policy:
+        condition: on-failure
+      # resources:
+      #   limits:
+      #     memory: 256M
+      #     cpus: "0.4"
+      #   reservations:
+      #     memory: 128M
+      #     cpus: "0.1"
 
   redis:
     image: redis:7.4-alpine
