@@ -24,14 +24,12 @@ class HealthcareServiceAPITest(CareAPITestBase):
             "name": "Test Healthcare Service",
             "service_type": {"code": "test_code", "display": "Test Code"},
             "internal_type": HealthcareServiceInternalType.pharmacy,
-            "locations": [self.facility_location.external_id],
             "extra_details": "Some extra details about the service.",
         }
         self.update_data = {
             "name": "Updated Healthcare Service",
             "service_type": {"code": "updated_code", "display": "Updated Code"},
             "internal_type": HealthcareServiceInternalType.lab,
-            "locations": [self.facility_location.external_id],
             "extra_details": "Updated extra details about the service.",
         }
         self.role = self.create_role_with_permissions(
@@ -184,6 +182,187 @@ class HealthcareServiceAPITest(CareAPITestBase):
             self.update_data,
             format="json",
         )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "Access Denied to Healthcare Service", status_code=403
+        )
+
+    # Test for listing healthcare services
+
+    def test_list_healthcare_services_as_super_user_with_facility_filter(self):
+        self.client.force_authenticate(user=self.super_user)
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility, name="Test Healthcare Service"
+        )
+        other_facility = self.create_facility(
+            user=self.super_user, name="Another Facility"
+        )
+        self.create_healthcare_service(
+            facility=other_facility, name="Other Healthcare Service"
+        )
+        response = self.client.get(
+            self.base_url, {"facility": self.facility.external_id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            str(healthcare_service.external_id),
+            [item["id"] for item in response.data["results"]],
+        )
+
+    def test_list_healthcare_services_as_user_with_permission_with_facility_filter(
+        self,
+    ):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility, name="Test Healthcare Service"
+        )
+        other_facility = self.create_facility(user=self.user, name="Another Facility")
+        self.create_healthcare_service(
+            facility=other_facility, name="Other Healthcare Service"
+        )
+        response = self.client.get(
+            self.base_url, {"facility": self.facility.external_id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            str(healthcare_service.external_id),
+            [item["id"] for item in response.data["results"]],
+        )
+
+    def test_list_healthcare_services_as_user_without_permission_with_facility_filter(
+        self,
+    ):
+        self.client.force_authenticate(user=self.user)
+        self.create_healthcare_service(
+            facility=self.facility, name="Test Healthcare Service"
+        )
+        other_facility = self.create_facility(user=self.user, name="Another Facility")
+        self.create_healthcare_service(
+            facility=other_facility, name="Other Healthcare Service"
+        )
+        response = self.client.get(
+            self.base_url, {"facility": self.facility.external_id}
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "Access Denied to Healthcare Service", status_code=403
+        )
+
+    def test_list_healthcare_services_as_super_user_with_name_filter(self):
+        self.client.force_authenticate(user=self.super_user)
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility, name="Test Healthcare Service"
+        )
+        other_facility = self.create_facility(
+            user=self.super_user, name="Another Facility"
+        )
+        self.create_healthcare_service(
+            facility=other_facility, name="Other Healthcare Service"
+        )
+        response = self.client.get(self.base_url, {"name": "Test Healthcare Service"})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            str(healthcare_service.external_id),
+            [item["id"] for item in response.data["results"]],
+        )
+
+    def test_list_healthcare_services_as_user_with_permission_with_name_filter(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility, name="Test Healthcare Service"
+        )
+        other_facility = self.create_facility(user=self.user, name="Another Facility")
+        self.create_healthcare_service(
+            facility=other_facility, name="Other Healthcare Service"
+        )
+        response = self.client.get(self.base_url, {"name": "Test Healthcare Service"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(healthcare_service.external_id)
+        )
+
+    def test_list_healthcare_services_as_user_without_permission_with_name_filter(self):
+        self.client.force_authenticate(user=self.user)
+        self.create_healthcare_service(
+            facility=self.facility, name="Test Healthcare Service"
+        )
+        other_facility = self.create_facility(user=self.user, name="Another Facility")
+        self.create_healthcare_service(
+            facility=other_facility, name="Other Healthcare Service"
+        )
+        response = self.client.get(self.base_url, {"name": "Test Healthcare Service"})
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "Access Denied to Healthcare Service", status_code=403
+        )
+
+    def test_list_healthcare_services_as_super_user_with_internal_type_filter(self):
+        self.client.force_authenticate(user=self.super_user)
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility,
+            name="Test Healthcare Service",
+            internal_type=HealthcareServiceInternalType.pharmacy,
+        )
+        other_facility = self.create_facility(
+            user=self.super_user, name="Another Facility"
+        )
+        self.create_healthcare_service(
+            facility=other_facility,
+            name="Other Healthcare Service",
+            internal_type=HealthcareServiceInternalType.lab,
+        )
+        response = self.client.get(self.base_url, {"internal_type": "pharmacy"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(healthcare_service.external_id)
+        )
+
+    def test_list_healthcare_services_as_user_with_permission_with_internal_type_filter(
+        self,
+    ):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility,
+            name="Test Healthcare Service",
+            internal_type=HealthcareServiceInternalType.pharmacy,
+        )
+        other_facility = self.create_facility(user=self.user, name="Another Facility")
+        self.create_healthcare_service(
+            facility=other_facility,
+            name="Other Healthcare Service",
+            internal_type=HealthcareServiceInternalType.lab,
+        )
+        response = self.client.get(self.base_url, {"internal_type": "pharmacy"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(healthcare_service.external_id)
+        )
+
+    def test_list_healthcare_services_as_user_without_permission_with_internal_type_filter(
+        self,
+    ):
+        self.client.force_authenticate(user=self.user)
+        self.create_healthcare_service(
+            facility=self.facility,
+            name="Test Healthcare Service",
+            internal_type=HealthcareServiceInternalType.pharmacy,
+        )
+        other_facility = self.create_facility(user=self.user, name="Another Facility")
+        self.create_healthcare_service(
+            facility=other_facility,
+            name="Other Healthcare Service",
+            internal_type=HealthcareServiceInternalType.lab,
+        )
+        response = self.client.get(self.base_url, {"internal_type": "pharmacy"})
         self.assertEqual(response.status_code, 403)
         self.assertContains(
             response, "Access Denied to Healthcare Service", status_code=403
