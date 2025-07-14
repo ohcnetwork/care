@@ -50,6 +50,15 @@ class HealthcareServiceAPITest(CareAPITestBase):
             name="Test Location",
         )
 
+    def create_healthcare_service(self, facility, **kwargs):
+        from care.emr.models import HealthcareService
+
+        return baker.make(
+            HealthcareService,
+            facility=facility,
+            **kwargs,
+        )
+
     # Test for creating a healthcare service
 
     def test_create_healthcare_service_as_super_user(self):
@@ -80,6 +89,40 @@ class HealthcareServiceAPITest(CareAPITestBase):
         response = self.client.post(
             self.base_url, self.healthcare_service_data, format="json"
         )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "Access Denied to Healthcare Service", status_code=403
+        )
+
+    # Test for retrieving a healthcare service
+
+    def test_retrieve_healthcare_service_as_super_user(self):
+        self.client.force_authenticate(user=self.super_user)
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility, name="Test Healthcare Service"
+        )
+        response = self.client.get(self.get_detail_url(healthcare_service.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(healthcare_service.external_id))
+
+    def test_retrieve_healthcare_service_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility, name="Test Healthcare Service"
+        )
+        response = self.client.get(self.get_detail_url(healthcare_service.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(healthcare_service.external_id))
+
+    def test_retrieve_healthcare_service_as_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility, name="Test Healthcare Service"
+        )
+        response = self.client.get(self.get_detail_url(healthcare_service.external_id))
         self.assertEqual(response.status_code, 403)
         self.assertContains(
             response, "Access Denied to Healthcare Service", status_code=403
