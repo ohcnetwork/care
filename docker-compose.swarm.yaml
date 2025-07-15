@@ -93,7 +93,7 @@ services:
       #     memory: 64M
       #     cpus: "0.1"
 
-  postgres-master:
+  db-master:
     image: postgres:alpine
     environment:
       POSTGRES_DB: care
@@ -146,7 +146,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_REPLICATION_USER: replicator
       POSTGRES_REPLICATION_PASSWORD: replicator
-      POSTGRES_MASTER_HOST: postgres-master
+      POSTGRES_MASTER_HOST: db-master
       POSTGRES_MASTER_PORT: 5432
     volumes:
       - postgres-slave1-data:/var/lib/postgresql/data
@@ -192,7 +192,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_REPLICATION_USER: replicator
       POSTGRES_REPLICATION_PASSWORD: replicator
-      POSTGRES_MASTER_HOST: postgres-master
+      POSTGRES_MASTER_HOST: db-master
       POSTGRES_MASTER_PORT: 5432
     volumes:
       - postgres-slave2-data:/var/lib/postgresql/data
@@ -232,8 +232,15 @@ services:
 
   db-backup:
     image: prodrigestivill/postgres-backup-local:17-alpine
+    entrypoint: >
+      sh -c "
+        until pg_isready -h db-master -p 5432 -U postgres; do
+          sleep 2;
+        done;
+        /init.sh
+      "
     environment:
-      POSTGRES_HOST: postgres-master
+      POSTGRES_HOST: db-master
       POSTGRES_PORT: 5432
       POSTGRES_DB: care
       POSTGRES_USER: postgres
