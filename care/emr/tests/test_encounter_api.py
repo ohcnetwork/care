@@ -224,7 +224,7 @@ class EncounterAPITests(CareAPITestBase):
     # TESTS FOR VALIDATION
     def test_validate_data_max_encounters(self):
         self.get_list_view_permission()
-        for _ in range(settings.MAX_ACTIVE_ENCOUNTERS_PER_PATIENT):
+        for _ in range(settings.MAX_ACTIVE_ENCOUNTERS_PER_PATIENT_IN_FACILITY):
             self.create_encounter(
                 patient=self.patient,
                 facility=self.facility,
@@ -324,7 +324,9 @@ class EncounterAPITests(CareAPITestBase):
             format="json",
         )
         self.assertEqual(response.status_code, 403)
-        self.assertIn("User Cannot access patient", response.data["detail"])
+        self.assertIn(
+            "You do not have permission to view this patient", response.data["detail"]
+        )
 
     def test_update_encounter_with_permissions(self):
         role = self.create_role_with_permissions(
@@ -347,13 +349,12 @@ class EncounterAPITests(CareAPITestBase):
         self.assertEqual(response.status_code, 200, response.data)
         self.assertEqual(response.data["status"], StatusChoices.completed.value)
 
-        # get_response = self.client.get(
-        #     self._get_detail_url(self.facility.external_id, self.patient.external_id),
-        #     format="json",
-        # )
-        # print(get_response.data)
-        # self.assertEqual(response.status_code, 200)
-        # self.assertEqual(get_response.data["status"], StatusChoices.completed.value)
+        get_response = self.client.get(
+            self._get_detail_url(self.facility.external_id, self.patient.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(get_response.data["status"], StatusChoices.completed.value)
 
 
 class EncounterOrganizationAPITests(CareAPITestBase):
@@ -405,7 +406,7 @@ class EncounterOrganizationAPITests(CareAPITestBase):
         response = self.client.get(self._get_detail_url(path), format="json")
         self.assertEqual(response.status_code, 403)
         self.assertIn(
-            "You do not have permission to update encounter", response.data["detail"]
+            "You do not have permission to view this patient", response.data["detail"]
         )
 
     def test_add_encounter_organization_with_permissions(self):
