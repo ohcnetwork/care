@@ -92,11 +92,6 @@ services:
       #   reservations:
       #     memory: 64M
       #     cpus: "0.1"
-    healthcheck:
-      test: ["CMD", "haproxy", "-c", "-f", "/usr/local/etc/haproxy/haproxy.cfg"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   postgres-master:
     image: postgres:alpine
@@ -262,7 +257,7 @@ services:
       # resources:
       #   limits:
       #     memory: 256M
-      #     cpus: "0.4"
+      #     cpus: "0.2"
       #   reservations:
       #     memory: 128M
       #     cpus: "0.1"
@@ -291,11 +286,11 @@ services:
         window: 60s
       # resources:
       #   limits:
-      #     memory: 256M
-      #     cpus: "0.5"
+      #     memory: 384M
+      #     cpus: "0.3"
       #   reservations:
-      #     memory: 128M
-      #     cpus: "0.25"
+      #     memory: 256M
+      #     cpus: "0.1"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -333,7 +328,7 @@ services:
       # resources:
       #   limits:
       #     memory: 384M
-      #     cpus: "0.2"
+      #     cpus: "0.3"
       #   reservations:
       #     memory: 192M
       #     cpus: "0.1"
@@ -513,8 +508,8 @@ services:
         condition: on-failure
       # resources:
       #   limits:
-      #     memory: 256M
+      #     memory: 128M
       #     cpus: "0.3"
       #   reservations:
-      #     memory: 128M
+      #     memory: 64M
       #     cpus: "0.1"

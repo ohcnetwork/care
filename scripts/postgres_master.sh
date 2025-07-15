@@ -11,16 +11,24 @@ psql -U postgres -c "CREATE USER replicator REPLICATION LOGIN PASSWORD 'replicat
   echo "Replication user already exists."
 }
 
-cat >> /var/lib/postgresql/data/postgresql.conf << EOF
+# Only modify postgresql.conf if not already modified
+CONF="/var/lib/postgresql/data/postgresql.conf"
+if ! grep -q "wal_level = replica" "$CONF"; then
+  cat >> "$CONF" << EOF
 wal_level = replica
 max_wal_senders = 3
 max_replication_slots = 3
 hot_standby = on
 wal_keep_size = 1GB
 EOF
+fi
 
 # Configure pg_hba.conf for replication connections
-echo "host replication replicator all md5" >> /var/lib/postgresql/data/pg_hba.conf
+HBA="/var/lib/postgresql/data/pg_hba.conf"
+if ! grep -q "^host replication replicator" "$HBA"; then
+  echo "host replication replicator all md5" >> "$HBA"
+fi
+
 pg_ctl reload -D /var/lib/postgresql/data
 
 psql -U postgres -c "SELECT pg_create_physical_replication_slot('slave1_slot');" || {
