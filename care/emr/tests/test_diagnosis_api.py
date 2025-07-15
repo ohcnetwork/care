@@ -316,7 +316,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         self.assertIn("errors", response.json())
         error = response.json()["errors"][0]
         self.assertEqual(error["type"], "value_error")
-        self.assertIn("Onset date cannot be in the future", error["msg"])
+        self.assertIn("Date cannot be in the future", error["msg"])
 
     def test_create_diagnosis_with_permissions_and_encounter_status_completed(self):
         """
