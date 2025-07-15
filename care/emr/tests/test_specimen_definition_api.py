@@ -65,18 +65,17 @@ class SpecimenDefinitionAPITest(CareAPITestBase):
             },
         )
 
-    def create_specimen_definition(self):
+    def create_specimen_definition(self, **kwargs):
         return baker.make(
             "emr.SpecimenDefinition",
             facility=self.facility,
-            slug="test-specimen-definition",
-            title="Test Specimen Definition",
             status=SpecimenDefinitionStatusOptions.active,
             description="This is a test specimen definition.",
             type_collected={"code": "blood", "display": "Blood"},
             patient_preparation=[{"code": "fasting", "display": "Fasting"}],
             collection={"code": "venipuncture", "display": "Venipuncture"},
             type_tested={"code": "cbc", "display": "Complete Blood Count"},
+            **kwargs,
         )
 
     # Test for creating a specimen definition
@@ -122,7 +121,9 @@ class SpecimenDefinitionAPITest(CareAPITestBase):
             role=self.role,
             facility_organization=self.facility_organization,
         )
-        self.create_specimen_definition()
+        self.create_specimen_definition(
+            slug=self.specimen_definition_data["slug"], title="test-specimen-definition"
+        )
         self.client.force_authenticate(user=self.user)
         response = self.client.post(
             self.base_url, self.specimen_definition_data, format="json"
@@ -133,3 +134,45 @@ class SpecimenDefinitionAPITest(CareAPITestBase):
             "Specimen Definition with this slug already exists.",
             status_code=400,
         )
+
+    # Test for retrieving a specimen definition
+
+    def test_retrieve_specimen_definition_as_super_user(self):
+        specimen_definition = self.create_specimen_definition(
+            slug="test-specimen-definition", title="Test Specimen Definition"
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(self.get_detail_url(specimen_definition.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(specimen_definition.external_id))
+
+    def test_retrieve_specimen_definition_as_user_with_permission(self):
+        specimen_definition = self.create_specimen_definition(
+            slug="test-specimen-definition", title="Test Specimen Definition"
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.get_detail_url(specimen_definition.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(specimen_definition.external_id))
+
+    def test_retrieve_specimen_definition_without_permission(self):
+        specimen_definition = self.create_specimen_definition(
+            slug="test-specimen-definition", title="Test Specimen Definition"
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.get_detail_url(specimen_definition.external_id))
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "Access Denied to Specimen Definition", status_code=403
+        )
+
+    def test_retrieve_non_existent_specimen_definition(self):
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(self.get_detail_url("non-existent-id"))
+        self.assertEqual(response.status_code, 404)
+        self.assertContains(response, "Object not found", status_code=404)
