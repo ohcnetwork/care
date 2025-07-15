@@ -176,3 +176,93 @@ class SpecimenDefinitionAPITest(CareAPITestBase):
         response = self.client.get(self.get_detail_url("non-existent-id"))
         self.assertEqual(response.status_code, 404)
         self.assertContains(response, "Object not found", status_code=404)
+
+    # Test for updating a specimen definition
+
+    def test_update_specimen_definition_as_super_user(self):
+        specimen_definition = self.create_specimen_definition(
+            slug="test-specimen-definition", title="Test Specimen Definition"
+        )
+        self.client.force_authenticate(user=self.superuser)
+        update_data = self.specimen_definition_data.copy()
+        update_data["title"] = "Updated Test Specimen Definition"
+        update_data["slug"] = "updated-test-specimen-definition"
+        update_data["status"] = SpecimenDefinitionStatusOptions.retired
+        update_data["type_collected"] = {
+            "code": "urine",
+            "display": "Urine",
+        }
+        response = self.client.put(
+            self.get_detail_url(specimen_definition.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(specimen_definition.external_id)
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["title"], update_data["title"])
+        self.assertEqual(get_response.data["slug"], update_data["slug"])
+        self.assertEqual(get_response.data["status"], update_data["status"])
+        self.assertEqual(
+            get_response.data["type_collected"], update_data["type_collected"]
+        )
+
+    def test_update_specimen_definition_as_user_with_permission(self):
+        specimen_definition = self.create_specimen_definition(
+            slug="test-specimen-definition", title="Test Specimen Definition"
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        update_data = self.specimen_definition_data.copy()
+        update_data["title"] = "Updated Test Specimen Definition"
+        update_data["slug"] = "updated-test-specimen-definition"
+        update_data["status"] = SpecimenDefinitionStatusOptions.retired
+        update_data["type_collected"] = {
+            "code": "urine",
+            "display": "Urine",
+        }
+        response = self.client.put(
+            self.get_detail_url(specimen_definition.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(specimen_definition.external_id)
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["title"], update_data["title"])
+        self.assertEqual(get_response.data["slug"], update_data["slug"])
+        self.assertEqual(get_response.data["status"], update_data["status"])
+        self.assertEqual(
+            get_response.data["type_collected"], update_data["type_collected"]
+        )
+
+    def test_update_specimen_definition_without_permission(self):
+        specimen_definition = self.create_specimen_definition(
+            slug="test-specimen-definition", title="Test Specimen Definition"
+        )
+        self.client.force_authenticate(user=self.user)
+        update_data = self.specimen_definition_data.copy()
+        update_data["title"] = "Updated Test Specimen Definition"
+        update_data["slug"] = "updated-test-specimen-definition"
+        update_data["status"] = SpecimenDefinitionStatusOptions.retired
+        update_data["type_collected"] = {
+            "code": "urine",
+            "display": "Urine",
+        }
+        response = self.client.put(
+            self.get_detail_url(specimen_definition.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "Access Denied to Specimen Definition", status_code=403
+        )
