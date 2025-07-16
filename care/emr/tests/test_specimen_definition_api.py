@@ -303,3 +303,39 @@ class SpecimenDefinitionAPITest(CareAPITestBase):
         self.assertContains(
             response, "Access Denied to Specimen Definition", status_code=403
         )
+
+    # Test for filtering specimen definitions
+
+    def test_filter_specimen_definitions_by_title(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_specimen_definition(
+            slug="test-specimen-definition",
+            title="Test Specimen Definition",
+        )
+        self.create_specimen_definition(
+            slug="test-specimen-definition-2", title="Test Sample Definition"
+        )
+        response = self.client.get(
+            self.base_url, {"title": "Test Specimen Definition"}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["title"], "Test Specimen Definition"
+        )
+
+    def test_filter_specimen_definitions_by_status(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_specimen_definition(
+            slug="test-specimen-definition",
+            title="Test Specimen Definition",
+        )
+        self.create_specimen_definition(
+            slug="test-specimen-definition-2",
+            title="Test Sample Definition",
+        )
+        response = self.client.get(self.base_url, {"status": "active"}, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        for result in response.data["results"]:
+            self.assertEqual(result["status"], "active")
