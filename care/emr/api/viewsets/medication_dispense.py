@@ -74,7 +74,7 @@ class MedicationDispenseViewSet(
                 charge_item.save()
                 instance.charge_item = charge_item
             super().perform_create(instance)
-            sync_inventory_item(instance.item)
+            sync_inventory_item(instance.item.location, instance.item.product)
             if instance.authorizing_prescription:
                 instance.authorizing_prescription.dispense_status = (
                     MedicationRequestDispenseStatus.partial.value
@@ -117,7 +117,7 @@ class MedicationDispenseViewSet(
 
     def perform_update(self, instance):
         with transaction.atomic():
-            sync_inventory_item(instance.item)
+            sync_inventory_item(instance.item.location, instance.item.product)
             return super().perform_update(instance)
 
     def authorize_location_read(self, location):

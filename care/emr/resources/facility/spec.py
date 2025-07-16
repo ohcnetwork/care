@@ -3,7 +3,7 @@ from pydantic import UUID4, BaseModel, field_validator, model_validator
 
 from care.emr.models import Organization
 from care.emr.models.patient import PatientIdentifierConfigCache
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, cacheable
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.monetary_component import MonetaryComponentDefinition
 from care.emr.resources.invoice.default_expression_evaluator import (
@@ -19,6 +19,7 @@ from care.facility.models import (
 )
 
 
+@cacheable
 class FacilityBareMinimumSpec(EMRResource):
     __model__ = Facility
     __exclude__ = ["geo_organization"]
