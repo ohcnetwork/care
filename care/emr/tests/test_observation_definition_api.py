@@ -156,3 +156,55 @@ class ObservationDefinitionAPITest(CareAPITestBase):
             str(response.data),
         )
         self.assertIn("Cannot create a definition with this type", str(response.data))
+
+    # Test cases for retrieve observation definition
+
+    def test_retrieve_observation_definition_as_superuser(self):
+        observation_definition = self.create_observation_definition(
+            facility=self.facility
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.get_detail_url(observation_definition.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(observation_definition.external_id))
+
+    def test_retrieve_observation_definition_as_user_with_permission(self):
+        observation_definition = self.create_observation_definition(
+            facility=self.facility
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.get_detail_url(observation_definition.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(observation_definition.external_id))
+
+    def test_retrieve_observation_definition_without_permission(self):
+        observation_definition = self.create_observation_definition(
+            facility=self.facility
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.get_detail_url(observation_definition.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Access Denied to Observation Definition", str(response.data))
+
+    def test_retrieve_observation_definition_without_facility_as_user(self):
+        """Retrieve observation definition without facility as any user should return 200."""
+        observation_definition = self.create_observation_definition()
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.get_detail_url(observation_definition.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(observation_definition.external_id))
