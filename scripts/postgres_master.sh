@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e
 
 until pg_isready -U postgres; do
@@ -18,8 +17,6 @@ if ! grep -q "wal_level = replica" "$CONF"; then
 wal_level = replica
 max_wal_senders = 3
 max_replication_slots = 3
-hot_standby = on
-wal_keep_size = 1GB
 EOF
 fi
 
@@ -34,6 +31,7 @@ pg_ctl reload -D /var/lib/postgresql/data
 psql -U postgres -c "SELECT pg_create_physical_replication_slot('slave1_slot');" || {
   echo "Replication slot slave1_slot already exists."
 }
+
 psql -U postgres -c "SELECT pg_create_physical_replication_slot('slave2_slot');" || {
   echo "Replication slot slave2_slot already exists."
 }

@@ -3,9 +3,6 @@ networks:
     name: care
     driver: overlay
     attachable: true
-    # ipam:
-    #   config:
-    #     - subnet: 10.20.0.0/24
 
 volumes:
   postgres-master-data:
@@ -85,13 +82,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 128M
-      #     cpus: "0.2"
-      #   reservations:
-      #     memory: 64M
-      #     cpus: "0.1"
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.2"
+        reservations:
+          memory: 64M
+          cpus: "0.1"
 
   db-master:
     image: postgres:alpine
@@ -125,13 +122,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 512M
-      #     cpus: "0.5"
-      #   reservations:
-      #     memory: 256M
-      #     cpus: "0.25"
+      resources:
+        limits:
+          memory: 1024M
+          cpus: "0.8"
+        reservations:
+          memory: 512M
+          cpus: "0.4"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
       interval: 30s
@@ -171,13 +168,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 512M
-      #     cpus: "0.5"
-      #   reservations:
-      #     memory: 256M
-      #     cpus: "0.25"
+      resources:
+        limits:
+          memory: 768M
+          cpus: "0.6"
+        reservations:
+          memory: 384M
+          cpus: "0.3"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
       interval: 30s
@@ -217,13 +214,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 512M
-      #     cpus: "0.5"
-      #   reservations:
-      #     memory: 256M
-      #     cpus: "0.25"
+      resources:
+        limits:
+          memory: 768M
+          cpus: "0.6"
+        reservations:
+          memory: 384M
+          cpus: "0.3"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
       interval: 30s
@@ -232,13 +229,13 @@ services:
 
   db-backup:
     image: prodrigestivill/postgres-backup-local:17-alpine
-    entrypoint: >
-      sh -c "
-        until pg_isready -h db-master -p 5432 -U postgres; do
-          sleep 2;
-        done;
-        /init.sh
-      "
+    # entrypoint: >
+    #   sh -c "
+    #     until pg_isready -h db-master -p 5432 -U postgres; do
+    #       sleep 2;
+    #     done;
+    #     exec /init.sh
+    #   "
     environment:
       POSTGRES_HOST: db-master
       POSTGRES_PORT: 5432
@@ -246,7 +243,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
       SCHEDULE: "@daily"
-      BACKUP_ON_START: "TRUE"
+      # BACKUP_ON_START: "TRUE"
       TZ: "Asia/Kolkata"
     volumes:
       - postgres-backup-data:/backups
@@ -261,17 +258,17 @@ services:
         order: stop-first
       restart_policy:
         condition: on-failure
-      # resources:
-      #   limits:
-      #     memory: 256M
-      #     cpus: "0.2"
-      #   reservations:
-      #     memory: 128M
-      #     cpus: "0.1"
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.2"
+        reservations:
+          memory: 128M
+          cpus: "0.1"
 
   redis:
     image: redis:7.4-alpine
-    command: redis-server --appendonly yes --save 60 1 --save 300 100 --dir /data --maxmemory 256mb --maxmemory-policy allkeys-lru
+    command: redis-server --appendonly yes --save 60 1 --maxmemory 256mb --maxmemory-policy allkeys-lru
     volumes:
       - redis-data:/data
     deploy:
@@ -291,13 +288,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 384M
-      #     cpus: "0.3"
-      #   reservations:
-      #     memory: 256M
-      #     cpus: "0.1"
+      resources:
+        limits:
+          memory: 384M
+          cpus: "0.3"
+        reservations:
+          memory: 256M
+          cpus: "0.1"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -332,13 +329,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 384M
-      #     cpus: "0.3"
-      #   reservations:
-      #     memory: 192M
-      #     cpus: "0.1"
+      resources:
+        limits:
+          memory: 384M
+          cpus: "0.3"
+        reservations:
+          memory: 192M
+          cpus: "0.1"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
       interval: 30s
@@ -383,13 +380,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 512M
-      #     cpus: "0.5"
-      #   reservations:
-      #     memory: 256M
-      #     cpus: "0.25"
+      resources:
+        limits:
+          memory: 768M
+          cpus: "0.6"
+        reservations:
+          memory: 384M
+          cpus: "0.3"
     healthcheck:
       test: ["CMD", "./healthcheck.sh"]
       interval: 30s
@@ -432,13 +429,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 512M
-      #     cpus: "0.5"
-      #   reservations:
-      #     memory: 256M
-      #     cpus: "0.25"
+      resources:
+        limits:
+          memory: 768M
+          cpus: "0.6"
+        reservations:
+          memory: 384M
+          cpus: "0.3"
 
   celery-beat:
     image: ghcr.io/ohcnetwork/care:production-latest
@@ -476,13 +473,13 @@ services:
         delay: 10s
         max_attempts: 3
         window: 60s
-      # resources:
-      #   limits:
-      #     memory: 384M
-      #     cpus: "0.5"
-      #   reservations:
-      #     memory: 192M
-      #     cpus: "0.25"
+      resources:
+        limits:
+          memory: 384M
+          cpus: "0.3"
+        reservations:
+          memory: 256M
+          cpus: "0.1"
 
   portainer-agent:
     image: portainer/agent:alpine
@@ -501,7 +498,6 @@ services:
       - "9443:9443"
     volumes:
       - portainer-data:/data
-      - /var/run/docker.sock:/var/run/docker.sock
     deploy:
       replicas: 1
       placement:
@@ -513,10 +509,10 @@ services:
         order: stop-first
       restart_policy:
         condition: on-failure
-      # resources:
-      #   limits:
-      #     memory: 128M
-      #     cpus: "0.3"
-      #   reservations:
-      #     memory: 64M
-      #     cpus: "0.1"
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.2"
+        reservations:
+          memory: 64M
+          cpus: "0.1"

@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -euo pipefail
 
 GLUSTER_SHARED_DIR="/care-storage/shared"
@@ -24,7 +23,7 @@ install_docker() {
 
     echo "Installing Docker..."
     curl -fsSL https://get.docker.com | sudo sh &> /dev/null
-    sudo usermod -aG docker "$USER" &> /dev/null
+    sudo usermod -aG docker ubuntu &> /dev/null
     echo "Docker installed"
 }
 

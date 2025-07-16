@@ -1,5 +1,4 @@
 #!/bin/bash
-
 set -e
 
 until pg_isready -h $POSTGRES_MASTER_HOST -p $POSTGRES_MASTER_PORT -U postgres; do
@@ -30,9 +29,6 @@ if [ -z "$(ls -A /var/lib/postgresql/data)" ]; then
 
   cat >> /var/lib/postgresql/data/postgresql.conf << EOF
 hot_standby = on
-max_standby_streaming_delay = 30s
-wal_receiver_status_interval = 10s
-hot_standby_feedback = on
 primary_conninfo = 'host=$POSTGRES_MASTER_HOST port=$POSTGRES_MASTER_PORT user=replicator password=replicator application_name=$HOSTNAME'
 primary_slot_name = '$REPLICATION_SLOT'
 EOF
