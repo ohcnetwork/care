@@ -10,14 +10,17 @@ psql -U postgres -c "CREATE USER replicator REPLICATION LOGIN PASSWORD 'replicat
   echo "Replication user already exists."
 }
 
-# Only modify postgresql.conf if not already modified
 CONF="/var/lib/postgresql/data/postgresql.conf"
-if ! grep -q "wal_level = replica" "$CONF"; then
+if [ -z "$(ls -A /var/lib/postgresql/data)" ]; then
+  echo "Data directory is empty. Modifying postgresql.conf for replication..."
+
   cat >> "$CONF" << EOF
 wal_level = replica
 max_wal_senders = 3
 max_replication_slots = 3
 EOF
+else
+  echo "Data directory is not empty. Skipping modification of postgresql.conf."
 fi
 
 # Configure pg_hba.conf for replication connections
