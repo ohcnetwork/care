@@ -11,7 +11,7 @@ from rest_framework.exceptions import ValidationError
 
 from care.emr.models.organization import FacilityOrganization, Organization
 from care.emr.models.tag_config import TagConfig
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, cacheable
 from care.facility.models.facility import Facility
 
 
@@ -134,6 +134,7 @@ class TagConfigWriteSpec(TagConfigBaseSpec):
                 )
 
 
+@cacheable
 class TagConfigReadSpec(TagConfigBaseSpec):
     level_cache: int = 0
     system_generated: bool

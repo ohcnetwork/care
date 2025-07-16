@@ -17,7 +17,6 @@ from care.emr.resources.patient_identifier.spec import PatientIdentifierListSpec
 from care.emr.resources.permissions import PatientPermissionsMixin
 from care.emr.tagging.base import PatientFacilityTagManager, PatientInstanceTagManager
 from care.emr.utils.datetime_type import StrictTZAwareDateTime
-from care.facility.models.facility import Facility
 from care.utils.time_util import care_now
 
 
@@ -270,11 +269,7 @@ class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
                 for x in obj.instance_identifiers
             ]
         if kwargs.get("facility"):
-            facility = (
-                Facility.objects.only("id")
-                .filter(external_id=kwargs["facility"])
-                .first()
-            )
+            facility = kwargs.get("facility")
             if facility:
                 mapping["facility_identifiers"] = [
                     {

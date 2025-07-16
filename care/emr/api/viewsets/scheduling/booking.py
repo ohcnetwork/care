@@ -1,6 +1,7 @@
 from typing import Literal
 
 from django.db import transaction
+from django.db.models.expressions import Subquery
 from django_filters import CharFilter, DateFromToRangeFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from pydantic import UUID4, BaseModel
@@ -31,6 +32,7 @@ from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+from care.users.models import User
 
 
 class CancelBookingSpec(BaseModel):
@@ -50,20 +52,36 @@ class TokenBookingFilters(FilterSet):
     status = CharFilter(field_name="status")
     date = DateFromToRangeFilter(field_name="token_slot__start_datetime__date")
     slot = UUIDFilter(field_name="token_slot__external_id")
-    user = UUIDFilter(method="filter_by_user")
+    user = CharFilter(method="filter_by_users")
     patient = UUIDFilter(field_name="patient__external_id")
 
-    def filter_by_user(self, queryset, name, value):
-        facility_external_id = self.request.parser_context.get("kwargs", {}).get(
-            "facility_external_id"
+    def filter_by_users(self, queryset, name, value):
+        user_external_ids = value.split(",") if value else []
+        if not user_external_ids:
+            return queryset
+        facility = get_object_or_404(
+            Facility.objects.only("id"),
+            external_id=self.request.parser_context.get("kwargs", {}).get(
+                "facility_external_id"
+            ),
         )
-        resource = SchedulableUserResource.objects.filter(
-            user__external_id=value,
-            facility__external_id=facility_external_id,
-        ).first()
-        if not resource:
+
+        token_slots = TokenSlot.objects.filter(
+            resource_id__in=Subquery(
+                SchedulableUserResource.objects.filter(
+                    user_id__in=Subquery(
+                        User.objects.filter(external_id__in=user_external_ids).values(
+                            "id"
+                        )
+                    ),
+                    facility_id=facility.id,
+                ).values("id")
+            )
+        ).values_list("id", flat=True)
+        if not token_slots:
             return queryset.none()
-        return queryset.filter(token_slot__resource=resource)
+
+        return queryset.filter(token_slot__in=token_slots)
 
 
 class TokenBookingViewSet(
@@ -94,6 +112,9 @@ class TokenBookingViewSet(
             Facility, external_id=self.kwargs["facility_external_id"]
         )
 
+    def get_facility_from_instance(self, instance):
+        return instance.token_slot.resource.facility
+
     def authorize_update(self, request_obj, model_instance):
         if not AuthorizationController.call(
             "can_write_user_booking",
@@ -116,8 +137,9 @@ class TokenBookingViewSet(
             .select_related(
                 "token_slot",
                 "patient",
+                "patient__geo_organization",
+                "token_slot__availability",
                 "token_slot__resource",
-                "token_slot__resource__facility",
             )
             .order_by("-modified_date")
         )

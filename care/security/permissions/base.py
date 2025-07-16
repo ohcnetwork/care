@@ -114,3 +114,8 @@ class PermissionController:
             cls.build_cache()
 
         return Enum("PermissionEnum", {name: name for name in cls.cache}, type=str)
+
+    @classmethod
+    def register_permission_handler(cls, handler):
+        if handler not in cls.override_permission_handlers:
+            cls.override_permission_handlers.append(handler)
