@@ -208,3 +208,161 @@ class ObservationDefinitionAPITest(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(observation_definition.external_id))
+
+    # Test cases for update observation definition
+
+    def test_update_observation_definition_as_superuser(self):
+        observation_definition = self.create_observation_definition(
+            facility=self.facility
+        )
+        self.client.force_authenticate(user=self.superuser)
+        update_data = self.observation_definition_data.copy()
+        update_data["title"] = "Updated Blood Pressure"
+        update_data["slug"] = "updated-blood-pressure"
+        update_data["category"] = ObservationCategoryChoices.vital_signs.value
+        update_data["status"] = ObservationStatusChoices.active.value
+
+        response = self.client.put(
+            self.get_detail_url(observation_definition.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(observation_definition.external_id),
+            format="json",
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["title"], update_data["title"])
+        self.assertEqual(get_response.data["slug"], update_data["slug"])
+        self.assertEqual(get_response.data["category"], update_data["category"])
+        self.assertEqual(get_response.data["status"], update_data["status"])
+
+    def test_update_observation_definition_as_user_with_permission(self):
+        observation_definition = self.create_observation_definition(
+            facility=self.facility
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        update_data = self.observation_definition_data.copy()
+        update_data["title"] = "Updated Blood Pressure"
+        update_data["slug"] = "updated-blood-pressure"
+        update_data["category"] = ObservationCategoryChoices.vital_signs.value
+        update_data["status"] = ObservationStatusChoices.active.value
+
+        response = self.client.put(
+            self.get_detail_url(observation_definition.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(observation_definition.external_id),
+            format="json",
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["title"], update_data["title"])
+        self.assertEqual(get_response.data["slug"], update_data["slug"])
+        self.assertEqual(get_response.data["category"], update_data["category"])
+        self.assertEqual(get_response.data["status"], update_data["status"])
+
+    def test_update_observation_definition_without_permission(self):
+        observation_definition = self.create_observation_definition(
+            facility=self.facility
+        )
+        self.client.force_authenticate(user=self.user)
+        update_data = self.observation_definition_data.copy()
+        update_data["title"] = "Updated Blood Pressure"
+        update_data["slug"] = "updated-blood-pressure"
+        update_data["category"] = ObservationCategoryChoices.vital_signs.value
+        update_data["status"] = ObservationStatusChoices.active.value
+
+        response = self.client.put(
+            self.get_detail_url(observation_definition.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Access Denied to Observation Definition", str(response.data))
+
+    def test_update_observation_definition_without_facility_as_superuser(self):
+        observation_definition = self.create_observation_definition()
+        self.client.force_authenticate(user=self.superuser)
+        update_data = self.observation_definition_data.copy()
+        update_data["title"] = "Updated Blood Pressure"
+        update_data["slug"] = "updated-blood-pressure"
+        update_data["category"] = ObservationCategoryChoices.vital_signs.value
+        update_data["status"] = ObservationStatusChoices.active.value
+
+        response = self.client.put(
+            self.get_detail_url(observation_definition.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(observation_definition.external_id),
+            format="json",
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["title"], update_data["title"])
+        self.assertEqual(get_response.data["slug"], update_data["slug"])
+        self.assertEqual(get_response.data["category"], update_data["category"])
+        self.assertEqual(get_response.data["status"], update_data["status"])
+
+    def test_update_observation_definition_without_facility_as_user(self):
+        observation_definition = self.create_observation_definition()
+        self.client.force_authenticate(user=self.user)
+        update_data = self.observation_definition_data.copy()
+        update_data["title"] = "Updated Blood Pressure"
+        update_data["slug"] = "updated-blood-pressure"
+        update_data["category"] = ObservationCategoryChoices.vital_signs.value
+        update_data["status"] = ObservationStatusChoices.active.value
+
+        response = self.client.put(
+            self.get_detail_url(observation_definition.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Access Denied to Observation Definition", str(response.data))
+
+    def test_update_observation_definition_with_duplicate_slug(self):
+        observation_definition = self.create_observation_definition(
+            facility=self.facility, slug="blood-pressure"
+        )
+        self.client.force_authenticate(user=self.superuser)
+        update_data = self.observation_definition_data.copy()
+        update_data["slug"] = "blood-pressure"
+        response = self.client.put(
+            self.get_detail_url(observation_definition.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Slug must be unique",
+            str(response.data),
+        )
+
+    def test_update_observation_definition_with_invalid_permitted_data_type(self):
+        observation_definition = self.create_observation_definition(
+            facility=self.facility
+        )
+        self.client.force_authenticate(user=self.superuser)
+        invalid_question_types = ["group", "display", "url"]
+        invalid_data = self.observation_definition_data.copy()
+        invalid_data["permitted_data_type"] = choice(invalid_question_types)
+        response = self.client.put(
+            self.get_detail_url(observation_definition.external_id),
+            invalid_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "permitted_data_type",
+            str(response.data),
+        )
+        self.assertIn("Cannot create a definition with this type", str(response.data))
