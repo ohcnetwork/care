@@ -22,18 +22,18 @@ FROM base AS builder
 
 # Install build tools and Python headers
 RUN apk add --no-cache \
-  build-base jpeg-dev zlib-dev postgresql-libs gmp-dev postgresql-dev git
+  build-base libjpeg-turbo-dev zlib-dev postgresql-libs gmp-dev postgresql-dev git
 
 # Install Typst
 COPY --chmod=0755 scripts/install_typst.sh $APP_HOME
 RUN TYPST_VERSION=${TYPST_VERSION} $APP_HOME/install_typst.sh
 
 # Install pipenv and dependencies
-RUN pip install pipenv==2024.4.0
+RUN python -m venv $APP_HOME/.venv \
++  && $APP_HOME/.venv/bin/pip install pipenv==2024.4.0 \
 
-RUN python -m venv $APP_HOME/.venv
 COPY Pipfile Pipfile.lock $APP_HOME/
-RUN pipenv install --deploy --categories "packages"
+RUN $APP_HOME/.venv/bin/pipenv install --deploy --system
 
 # Plugin support
 ARG ADDITIONAL_PLUGS=""
