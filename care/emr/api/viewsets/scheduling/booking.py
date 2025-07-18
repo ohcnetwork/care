@@ -46,6 +46,7 @@ class CancelBookingSpec(BaseModel):
 
 class RescheduleBookingSpec(BaseModel):
     new_slot: UUID4
+    reason: str | None = None
 
 
 class TokenBookingFilters(FilterSet):
@@ -190,16 +191,20 @@ class TokenBookingViewSet(
             raise ValidationError("Cannot reschedule to the same slot")
 
         with transaction.atomic():
+            existing_reason_for_visit = existing_booking.reason_for_visit
             self.cancel_appointment_handler(
                 existing_booking,
-                {"reason": BookingStatusChoices.rescheduled},
+                {
+                    "reason": BookingStatusChoices.rescheduled,
+                    "reason_for_visit": request_data.reason,
+                },
                 request.user,
             )
             appointment = lock_create_appointment(
                 new_slot,
                 existing_booking.patient,
                 request.user,
-                existing_booking.reason_for_visit,
+                existing_reason_for_visit,
             )
             return Response(
                 TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
