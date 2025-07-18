@@ -59,7 +59,7 @@ class QuestionnaireResponse(EMRBaseModel):
     subject_id = models.UUIDField()
     responses = models.JSONField(default=list)
     structured_responses = models.JSONField(default=dict)
-    structured_response_type = models.CharField(default=None, blank=True, null=True)
+    structured_response_type = models.CharField(max_length=50, default=None, blank=True, null=True)
     patient = models.ForeignKey("emr.Patient", on_delete=models.CASCADE)
     encounter = models.ForeignKey(
         "emr.Encounter", on_delete=models.CASCADE, null=True, blank=True

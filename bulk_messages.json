@@ -1,0 +1,20 @@
+[
+  {
+    "phone": "918767341918",
+    "title": "Appointment Reminder",
+    "message": "\ud83c\udfe5 Reminder: You have an appointment tomorrow at 10 AM with Dr. Smith. Please arrive 15 minutes early.",
+    "type": "appointment_reminder"
+  },
+  {
+    "phone": "9876543210",
+    "title": "Medication Reminder",
+    "message": "\ud83d\udc8a Don't forget to take your evening medication. Stay healthy!",
+    "type": "medication_reminder"
+  },
+  {
+    "phone": "1234567890",
+    "title": "Health Tip",
+    "message": "\ud83c\udf1f Health Tip: Drink at least 8 glasses of water daily to stay hydrated!",
+    "type": "system_alert"
+  }
+]

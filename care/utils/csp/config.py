@@ -11,7 +11,8 @@ class ClientConfig(TypedDict):
     endpoint_url: str
 
 
-type BucketName = str
+# Type alias for bucket names (compatible with Python < 3.12)
+BucketName = str
 
 
 class CSProvider(enum.Enum):

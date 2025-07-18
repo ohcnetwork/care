@@ -1,0 +1,7 @@
+tunnel: 187a184d-d8c6-4be9-ae4e-bda574fc2427
+credentials-file: /Users/ashu/.cloudflared/187a184d-d8c6-4be9-ae4e-bda574fc2427.json
+
+ingress:
+  - hostname: whatsapp-bot.botforcare.social
+    service: http://localhost:8000
+  - service: http_status:404

@@ -127,7 +127,7 @@ THIRD_PARTY_APPS = [
     "djangoql",
     "maintenance_mode",
     "django.contrib.postgres",
-    "django_rest_passwordreset",
+    # "django_rest_passwordreset",  # Temporarily disabled due to Django 5.1.4 compatibility issue
     "healthy_django",
 ]
 LOCAL_APPS = [
@@ -728,3 +728,20 @@ MAX_APPOINTMENTS_PER_PATIENT = env.int("MAX_APPOINTMENTS_PER_PATIENT", default=1
 MAX_ACTIVE_ENCOUNTERS_PER_PATIENT = env.int(
     "MAX_ACTIVE_ENCOUNTERS_PER_PATIENT", default=5
 )
+
+# WhatsApp Bot Configuration
+# ------------------------------------------------------------------------------
+WHATSAPP_ACCESS_TOKEN = env("WHATSAPP_ACCESS_TOKEN", default="")
+WHATSAPP_PHONE_NUMBER_ID = env("WHATSAPP_PHONE_NUMBER_ID", default="")
+WHATSAPP_WEBHOOK_VERIFY_TOKEN = env("WHATSAPP_WEBHOOK_VERIFY_TOKEN", default="")
+WHATSAPP_VERIFY_TOKEN = env("WHATSAPP_VERIFY_TOKEN", default="")
+WHATSAPP_APP_SECRET = env("WHATSAPP_APP_SECRET", default="")
+WHATSAPP_WEBHOOK_URL = env("WHATSAPP_WEBHOOK_URL", default="")
+
+# Apply plugin configurations to Django settings
+# ------------------------------------------------------------------------------
+for plugin_name, plugin_config in PLUGIN_CONFIGS.items():
+    for config_key, config_value in plugin_config.items():
+        # Only set if not already set by environment variables
+        if not globals().get(config_key):
+            globals()[config_key] = config_value

@@ -22,7 +22,8 @@ class RowObj(NamedTuple):
     ward_name: str
 
 
-type OrgDict = dict[
+# Type alias for organization dictionary (compatible with Python < 3.12)
+OrgDict = dict[
     str,  # state
     dict[
         str,  # district

@@ -1,0 +1,29 @@
+# WhatsApp Bot Plugin Dependencies
+
+# HTTP requests for WhatsApp API
+requests>=2.28.0
+
+# Async task processing
+celery>=5.2.0
+redis>=4.3.0
+
+# Phone number validation and formatting
+phonenumbers>=8.12.0
+
+# Image processing (for media handling)
+Pillow>=9.0.0
+
+# Additional utilities
+python-dateutil>=2.8.0
+pytz>=2022.1
+
+# Development and testing
+pytest>=7.0.0
+pytest-django>=4.5.0
+pytest-cov>=3.0.0
+factory-boy>=3.2.0
+freezer>=0.4.0
+
+# Optional: For enhanced media handling
+# ffmpeg-python>=0.2.0  # For video/audio processing
+# qrcode>=7.3.0  # For QR code generation

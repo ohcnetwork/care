@@ -15,8 +15,9 @@ class FlagType(enum.Enum):
     FACILITY = "FACILITY"
 
 
-type FlagName = str
-type FlagTypeRegistry = dict[FlagType, dict[FlagName, bool]]
+# Type aliases for feature flags (compatible with Python < 3.12)
+FlagName = str
+FlagTypeRegistry = dict[FlagType, dict[FlagName, bool]]
 
 
 class FlagRegistry:

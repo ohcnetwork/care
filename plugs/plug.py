@@ -1,7 +1,7 @@
 from dataclasses import _MISSING_TYPE, dataclass, field, fields
 
 
-@dataclass(slots=True)
+@dataclass
 class Plug:
     name: str
     package_name: str

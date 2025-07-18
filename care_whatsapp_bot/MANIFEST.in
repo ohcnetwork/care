@@ -1,0 +1,13 @@
+include README.md
+include requirements.txt
+include LICENSE
+recursive-include care_whatsapp_bot/migrations *.py
+recursive-include care_whatsapp_bot/management *.py
+recursive-include care_whatsapp_bot/templates *.html
+recursive-include care_whatsapp_bot/static *.css *.js *.png *.jpg *.gif *.svg
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]
+recursive-exclude * .DS_Store
+recursive-exclude * .git*
+recursive-exclude * *.log
+recursive-exclude * *.tmp

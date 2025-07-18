@@ -22,7 +22,7 @@ class Schedule(EMRBaseModel):
 class Availability(EMRBaseModel):
     schedule = models.ForeignKey(Schedule, on_delete=models.CASCADE)
     name = models.CharField(max_length=255)
-    slot_type = models.CharField()
+    slot_type = models.CharField(max_length=50)
     slot_size_in_minutes = models.IntegerField(null=True, blank=False)
     tokens_per_slot = models.IntegerField(null=True, blank=False)
     create_tokens = models.BooleanField(default=False)
