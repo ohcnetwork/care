@@ -31,8 +31,8 @@ RUN TYPST_VERSION=${TYPST_VERSION} $APP_HOME/install_typst.sh
 # Install pipenv and dependencies
 RUN python -m venv $APP_HOME/.venv \
 +  && $APP_HOME/.venv/bin/pip install pipenv==2024.4.0 \
-
 COPY Pipfile Pipfile.lock $APP_HOME/
+RUN $APP_HOME/.venv/bin/pip install --upgrade "setuptools>=78.1.1"
 RUN $APP_HOME/.venv/bin/pipenv install --deploy --system
 
 # Plugin support

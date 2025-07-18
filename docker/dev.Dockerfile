@@ -13,7 +13,7 @@ ENV PATH="/.venv/bin:$PATH"
 # Install system dependencies
 RUN apk add --no-cache \
     build-base \
-    jpeg-dev \
+    libjpeg-turbo-dev \
     zlib-dev \
     gmp-dev \
     postgresql-dev \
@@ -28,7 +28,7 @@ RUN apk add --no-cache \
 
 # Install Pipenv
 RUN --mount=type=cache,target=/root/.cache/pip pip install pipenv==2024.4.0
-
+RUN --mount=type=cache,target=/root/.cache/pip pip install --upgrade "setuptools>=78.1.1"
 # Install typst
 COPY --chmod=0755 scripts/install_typst.sh $APP_HOME
 RUN TYPST_VERSION=${TYPST_VERSION} $APP_HOME/install_typst.sh
