@@ -107,5 +107,6 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
             FacilityBareMinimumSpec, id=obj.token_slot.resource.facility_id
         )
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+        mapping["booked_by"] = model_from_cache(UserSpec, id=obj.booked_by_id)
 
         cls.serialize_audit_users(mapping, obj)
