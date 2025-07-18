@@ -22,7 +22,7 @@ FROM base AS builder
 
 # Install build tools and Python headers
 RUN apk add --no-cache \
-  build-base jpeg-dev zlib-dev gmp-dev postgresql-dev git
+  build-base jpeg-dev zlib-dev postgresql-libs gmp-dev postgresql-dev git
 
 # Install Typst
 COPY --chmod=0755 scripts/install_typst.sh $APP_HOME

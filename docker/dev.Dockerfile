@@ -23,6 +23,7 @@ RUN apk add --no-cache \
     git \
     bash \
     gnupg \
+    postgresql-libs \
     && python -m venv /.venv
 
 # Install Pipenv
