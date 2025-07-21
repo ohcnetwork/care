@@ -57,11 +57,11 @@ class ObservationDefinitionAPITest(CareAPITestBase):
     def create_observation_definition(self, **kwargs):
         return baker.make(
             "ObservationDefinition",
-            title=self.observation_definition_data["title"],
             category=self.observation_definition_data["category"],
             description=self.observation_definition_data["description"],
             code=self.observation_definition_data["code"],
             permitted_data_type=self.observation_definition_data["permitted_data_type"],
+            status=self.observation_definition_data["status"],
             **kwargs,
         )
 
@@ -333,9 +333,10 @@ class ObservationDefinitionAPITest(CareAPITestBase):
         observation_definition = self.create_observation_definition(
             facility=self.facility, slug="blood-pressure"
         )
+        self.create_observation_definition(facility=self.facility, slug="heart-rate")
         self.client.force_authenticate(user=self.superuser)
         update_data = self.observation_definition_data.copy()
-        update_data["slug"] = "blood-pressure"
+        update_data["slug"] = "heart-rate"
         response = self.client.put(
             self.get_detail_url(observation_definition.external_id),
             update_data,
@@ -366,3 +367,145 @@ class ObservationDefinitionAPITest(CareAPITestBase):
             str(response.data),
         )
         self.assertIn("Cannot create a definition with this type", str(response.data))
+
+    # Test cases for list observation definitions
+
+    def test_list_observation_definitions_with_facility_as_superuser(self):
+        self.create_observation_definition(
+            facility=self.facility, slug="blood-pressure"
+        )
+        self.create_observation_definition(facility=self.facility, slug="heart-rate")
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.url, {"facility": self.facility.external_id}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        for data in response.data["results"]:
+            self.assertEqual(data["facility"]["id"], str(self.facility.external_id))
+
+    def test_list_observation_definition_without_facility_as_superuser(self):
+        self.create_observation_definition(slug="blood-pressure")
+        self.create_observation_definition(slug="heart-rate")
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(self.url, format="json")
+        self.assertEqual(response.status_code, 200)
+        for data in response.data["results"]:
+            self.assertIsNone(data["facility"])
+
+    def test_list_observation_definitions_with_facility_as_user_with_permission(self):
+        self.create_observation_definition(
+            facility=self.facility, slug="blood-pressure"
+        )
+        self.create_observation_definition(facility=self.facility, slug="heart-rate")
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.url, {"facility": self.facility.external_id}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        for data in response.data["results"]:
+            self.assertEqual(data["facility"]["id"], str(self.facility.external_id))
+
+    def test_list_observation_definitions_without_facility_as_user_with_permission(
+        self,
+    ):
+        self.create_observation_definition(slug="blood-pressure")
+        self.create_observation_definition(slug="heart-rate")
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.url, format="json")
+        self.assertEqual(response.status_code, 200)
+        for data in response.data["results"]:
+            self.assertIsNone(data["facility"])
+
+    def test_list_observation_definitions_with_facility_without_permission(self):
+        self.create_observation_definition(
+            facility=self.facility, slug="blood-pressure"
+        )
+        self.create_observation_definition(facility=self.facility, slug="heart-rate")
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.url, {"facility": self.facility.external_id}, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Access Denied to Observation Definition", str(response.data))
+
+    def test_list_observation_definition_without_facility_without_permission(self):
+        self.create_observation_definition(slug="blood-pressure")
+        self.create_observation_definition(slug="heart-rate")
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.url, format="json")
+        self.assertEqual(response.status_code, 200)
+        for data in response.data["results"]:
+            self.assertIsNone(data["facility"])
+
+    def test_list_observation_definitions_with_invalid_facility(self):
+        self.create_observation_definition(
+            facility=self.facility, slug="blood-pressure"
+        )
+        self.create_observation_definition(facility=self.facility, slug="heart-rate")
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.url, {"facility": "invalid-facility"}, format="json"
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.data["errors"][0]["msg"], "Object not found")
+
+    def test_list_observation_definition_with_category_filter(self):
+        self.create_observation_definition(
+            facility=self.facility, slug="blood-pressure"
+        )
+        self.create_observation_definition(facility=self.facility, slug="heart-rate")
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.url,
+            {
+                "category": ObservationCategoryChoices.vital_signs.value,
+                "facility": self.facility.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        for data in response.data["results"]:
+            self.assertEqual(
+                data["category"], ObservationCategoryChoices.vital_signs.value
+            )
+
+    def test_list_observation_definition_with_status_filter(self):
+        self.create_observation_definition(
+            facility=self.facility, slug="blood-pressure"
+        )
+        self.create_observation_definition(facility=self.facility, slug="heart-rate")
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.url,
+            {
+                "status": ObservationStatusChoices.active.value,
+                "facility": self.facility.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        for data in response.data["results"]:
+            self.assertEqual(data["status"], ObservationStatusChoices.active.value)
+
+    def test_list_observation_definition_with_title_filter(self):
+        self.create_observation_definition(
+            facility=self.facility, slug="blood-pressure", title="Blood Pressure"
+        )
+        self.create_observation_definition(
+            facility=self.facility, slug="heart-rate", title="Heart Rate"
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.url,
+            {"title": "Blood Pressure", "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["title"], "Blood Pressure")
