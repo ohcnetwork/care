@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import get_object_or_404
 
@@ -37,6 +37,24 @@ class ObservationDefinitionViewSet(
     filterset_class = ObservationDefinitionFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date"]
+
+    def validate_slug_uniqueness(self, instance):
+        qs = ObservationDefinition.objects.filter(slug__exact=instance.slug)
+        if instance.facility:
+            qs = qs.filter(facility=instance.facility)
+        if instance.pk:
+            qs = qs.exclude(pk=instance.pk)
+        if qs.exists():
+            raise ValidationError("Slug must be unique")
+        return instance.slug
+
+    def perform_create(self, instance):
+        self.validate_slug_uniqueness(instance)
+        super().perform_create(instance)
+
+    def perform_update(self, instance):
+        self.validate_slug_uniqueness(instance)
+        super().perform_update(instance)
 
     def authorize_create(self, instance):
         """

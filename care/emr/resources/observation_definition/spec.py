@@ -1,6 +1,6 @@
 import enum
 
-from pydantic import UUID4, BaseModel, field_validator, model_validator
+from pydantic import UUID4, BaseModel, field_validator
 
 from care.emr.models.observation_definition import ObservationDefinition
 from care.emr.resources.base import EMRResource
@@ -82,15 +82,6 @@ class BaseObservationDefinitionSpec(EMRResource):
 
 class ObservationDefinitionCreateSpec(BaseObservationDefinitionSpec):
     facility: UUID4 | None = None
-
-    @model_validator(mode="after")
-    def validate_slug_uniqueness(self):
-        qs = ObservationDefinition.objects.filter(slug__exact=self.slug)
-        if self.facility:
-            qs = qs.filter(facility__external_id=self.facility)
-        if qs.exists():
-            raise ValueError("Slug must be unique")
-        return self
 
     @field_validator("facility")
     @classmethod
