@@ -117,7 +117,7 @@ class UserCreateSpec(UserUpdateSpec):
         obj.set_password(self.password)
 
 
-@cacheable
+@cacheable(use_base_manager=True)
 class UserSpec(UserBaseSpec):
     last_login: str
     profile_picture_url: str
