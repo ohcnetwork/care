@@ -72,25 +72,21 @@ join_swarm_worker() {
 
 ### GLUSTERFS SETUP ###
 
-add_manager_hosts() {
-    echo ">>> Adding manager hosts to /etc/hosts..."
-
-    for i in {1..3}; do
-        read -p "Manager $i private IP (Enter to skip): " manager_ip
-        if [[ -n "$manager_ip" ]]; then
-            add_host_entry "$manager_ip" "manager-$i"
+add_gluster_hosts() {
+    echo ">>> Adding GlusterFS nodes to /etc/hosts..."
+    for node in manager-1 worker-1 worker-2; do
+        read -p "${node^} private IP (Enter to skip): " node_ip
+        if [[ -n "$node_ip" ]]; then
+            add_host_entry "$node_ip" "$node"
         fi
     done
-
-    echo "Manager hosts added"
+    echo "GlusterFS nodes added"
 }
 
 mount_glusterfs() {
     echo ">>> Mounting GlusterFS volume..."
-
-    # Try to use manager-1 first, then fallback to others
-    local mount_hosts=("manager-1" "manager-2" "manager-3")
-
+    # Try to use manager-1 first, then fallback to workers
+    local mount_hosts=("manager-1" "worker-1" "worker-2")
     for host in "${mount_hosts[@]}"; do
         if ping -c 1 "$host" &>/dev/null; then
             if ! mountpoint -q "$GLUSTER_SHARED_DIR"; then
@@ -100,10 +96,9 @@ mount_glusterfs() {
                         echo "$fstab_entry" | sudo tee -a /etc/fstab
                     fi
                     echo "GlusterFS mounted via $host"
-
                     # Create data subdirectories AFTER mounting
                     echo ">>> Creating data subdirectories..."
-                    sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres-master,postgres-slave1,postgres-slave2,postgres-backups,redis,minio,portainer}
+                    sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres-master,postgres-slave1,postgres-slave2,redis,minio,portainer}
                     sudo chown -R "$USER":"$USER" "$GLUSTER_SHARED_DIR"
                     echo "Data directories created in mounted volume"
                     return
@@ -114,27 +109,18 @@ mount_glusterfs() {
             fi
         fi
     done
-
-    echo "Could not mount GlusterFS - no managers reachable"
+    echo "Could not mount GlusterFS - no GlusterFS nodes reachable"
 }
 
 ### ORCHESTRATION ###
 
-setup_worker() {
-    echo ">>> Starting Docker Swarm Worker Setup..."
+echo ">>> Starting Docker Swarm Worker Setup..."
 
-    system_update
-    install_docker
-    create_directories
-    add_manager_hosts
-    join_swarm_worker
-    mount_glusterfs
+system_update
+install_docker
+create_directories
+add_gluster_hosts
+join_swarm_worker
+mount_glusterfs
 
-    echo "Worker setup complete"
-}
-
-main() {
-    setup_worker
-}
-
-main
+Secho "Worker setup complete"

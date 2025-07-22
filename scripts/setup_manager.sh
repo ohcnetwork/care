@@ -126,34 +126,34 @@ setup_gluster_cluster() {
     local private_ip=$(get_private_ip)
 
     echo ">>> Setting up GlusterFS cluster config..."
-    read -p "Enter this node's manager number: " manager_num
+    read -p "Enter this node's manager number (should be 1): " manager_num
     local this_manager="manager-$manager_num"
     add_host_entry "$private_ip" "$this_manager"
 
     if [[ "$is_first_node" == "true" ]]; then
         echo ">>> Initializing GlusterFS cluster as first manager..."
 
-        managers=()
-        for i in {2..3}; do
-            read -p "Manager $i private IP (Enter to skip): " manager_ip
-            if [[ -n "$manager_ip" ]]; then
-                managers+=("$manager_ip")
-                add_host_entry "$manager_ip" "manager-$i"
+        workers=()
+        for i in 1 2; do
+            read -p "Worker $i private IP (Enter to skip): " worker_ip
+            if [[ -n "$worker_ip" ]]; then
+                workers+=("$worker_ip")
+                add_host_entry "$worker_ip" "worker-$i"
             fi
         done
 
-        if [[ ${#managers[@]} -gt 0 ]]; then
-            echo "Waiting for other nodes..."
+        if [[ ${#workers[@]} -gt 0 ]]; then
+            echo "Waiting for worker nodes..."
             sleep 15
 
-            for i in "${!managers[@]}"; do
-                sudo gluster peer probe "${managers[$i]}" || true
+            for i in "${!workers[@]}"; do
+                sudo gluster peer probe "${workers[$i]}" || true
             done
 
             local volume_bricks="$private_ip:$GLUSTER_BRICK_DIR"
-            for i in {2..3}; do
-                if [[ -n "${managers[$((i-2))]}" ]]; then
-                    volume_bricks+=" ${managers[$((i-2))]}:$GLUSTER_BRICK_DIR"
+            for i in 0 1; do
+                if [[ -n "${workers[$i]}" ]]; then
+                    volume_bricks+=" ${workers[$i]}:$GLUSTER_BRICK_DIR"
                 fi
             done
 
@@ -162,17 +162,8 @@ setup_gluster_cluster() {
             echo "GlusterFS volume created"
         fi
     else
-        echo ">>> Configuring GlusterFS brick as additional manager..."
-        for i in {1..3}; do
-            if [[ "$i" == "$manager_num" ]]; then
-                continue
-            fi
-            read -p "Manager $i private IP (Enter to skip): " manager_ip
-            if [[ -n "$manager_ip" ]]; then
-                add_host_entry "$manager_ip" "manager-$i"
-            fi
-        done
-        echo "GlusterFS brick ready"
+        echo ">>> Configuring GlusterFS brick as additional manager (should not be used in 1 manager setup)..."
+        echo "No additional manager setup required."
     fi
 }
 
@@ -197,7 +188,7 @@ mount_glusterfs() {
 
         # Create data subdirectories AFTER mounting
         echo ">>> Creating data subdirectories..."
-        sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres-master,postgres-slave1,postgres-slave2,postgres-backups,redis,minio,portainer}
+        sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres-master,postgres-slave1,postgres-slave2,redis,minio,portainer}
         sudo chown -R "$USER":"$USER" "$GLUSTER_SHARED_DIR"
         echo "Data directories created in mounted volume"
     else
@@ -207,41 +198,15 @@ mount_glusterfs() {
 
 ### ORCHESTRATION ###
 
-setup_manager() {
-    local node_type="$1"
+echo ">>> Starting Docker Swarm Manager Setup..."
 
-    echo ">>> Starting Docker Swarm Manager Setup..."
-    get_node_info
+get_node_info
+system_update
+install_docker
+create_directories
+setup_glusterfs
+init_swarm_leader
+setup_gluster_cluster
+mount_glusterfs
 
-    system_update
-    install_docker
-    create_directories
-    setup_glusterfs
-
-    if [[ "$node_type" == "first" ]]; then
-        init_swarm_leader
-        setup_gluster_cluster "true"
-    else
-        join_swarm_manager
-        setup_gluster_cluster "false"
-    fi
-
-    mount_glusterfs
-    echo "Manager setup complete"
-}
-
-main() {
-    case "${1:-}" in
-        "first")
-            setup_manager "first"
-            ;;
-        "additional")
-            setup_manager "additional"
-            ;;
-        *)
-            exit 1
-            ;;
-    esac
-}
-
-main "$@"
+echo "Manager setup complete"

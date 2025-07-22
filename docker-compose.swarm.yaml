@@ -3,10 +3,6 @@ networks:
     name: care
     driver: overlay
     attachable: true
-    # ipam:
-    #   config:
-    #     - subnet: 10.20.0.0/24
-    #     - gateway: 10.20.0.1
 
 volumes:
   postgres-master-data:
@@ -27,12 +23,6 @@ volumes:
       type: none
       o: bind
       device: /care-storage/shared/postgres-slave2
-  postgres-backup-data:
-    driver: local
-    driver_opts:
-      type: none
-      o: bind
-      device: /care-storage/shared/postgres-backups
   redis-data:
     driver: local
     driver_opts:
@@ -59,6 +49,30 @@ configs:
     file: ./scripts/postgres_slave.sh
   haproxy-config:
     file: ./haproxy.cfg
+  minio-cron:
+    file: ./scripts/minio_cron.sh
+
+x-postgres-env: &postgres-env
+  POSTGRES_DB: care
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+
+x-backend-env: &backend-env
+  DJANGO_SETTINGS_MODULE: config.settings.production
+  DATABASE_URL: postgres://postgres:postgres@db:5432/care
+  POSTGRES_DB: care
+  POSTGRES_USER: postgres
+  POSTGRES_PASSWORD: postgres
+  POSTGRES_HOST: db
+  POSTGRES_PORT: 5432
+  REDIS_URL: redis://redis:6379/0
+  CELERY_BROKER_URL: redis://redis:6379/0
+  BUCKET_ENDPOINT: http://minio:9000
+  BUCKET_EXTERNAL_ENDPOINT: http://minio.ohc.network:9100
+  BUCKET_KEY: minioadmin
+  BUCKET_SECRET: minioadmin
+  FILE_UPLOAD_BUCKET: patient-bucket
+  FACILITY_S3_BUCKET: facility-bucket
 
 services:
   db:
@@ -97,9 +111,7 @@ services:
   db-master:
     image: postgres:alpine
     environment:
-      POSTGRES_DB: care
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      <<: *postgres-env
       POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
       POSTGRES_REPLICATION_USER: replicator
       POSTGRES_REPLICATION_PASSWORD: replicator
@@ -142,9 +154,7 @@ services:
   db-slave1:
     image: postgres:alpine
     environment:
-      POSTGRES_DB: care
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      <<: *postgres-env
       POSTGRES_REPLICATION_USER: replicator
       POSTGRES_REPLICATION_PASSWORD: replicator
       POSTGRES_MASTER_HOST: db-master
@@ -188,9 +198,7 @@ services:
   db-slave2:
     image: postgres:alpine
     environment:
-      POSTGRES_DB: care
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+      <<: *postgres-env
       POSTGRES_REPLICATION_USER: replicator
       POSTGRES_REPLICATION_PASSWORD: replicator
       POSTGRES_MASTER_HOST: db-master
@@ -232,25 +240,19 @@ services:
       retries: 3
 
   db-backup:
-    image: prodrigestivill/postgres-backup-local:17-alpine
-    # entrypoint: >
-    #   sh -c "
-    #     until pg_isready -h db-master -p 5432 -U postgres; do
-    #       sleep 2;
-    #     done;
-    #     exec /init.sh
-    #   "
+    image: eeshugerman/postgres-backup-s3:16
     environment:
+      SCHEDULE: "@daily"
+      BACKUP_KEEP_DAYS: 14
+      S3_REGION: ap-south-1
+      S3_ACCESS_KEY_ID: key
+      S3_SECRET_ACCESS_KEY: secret
+      S3_BUCKET: care-postgres-backup
+      S3_PREFIX: postgres-backup
       POSTGRES_HOST: db-master
       POSTGRES_PORT: 5432
-      POSTGRES_DB: care
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      SCHEDULE: "@daily"
-      # BACKUP_ON_START: "TRUE"
-      TZ: "Asia/Kolkata"
-    volumes:
-      - postgres-backup-data:/backups
+      POSTGRES_DATABASE: care
+      <<: *postgres-env
     deploy:
       replicas: 1
       placement:
@@ -264,10 +266,10 @@ services:
         condition: on-failure
       resources:
         limits:
-          memory: 256M
+          memory: 128M
           cpus: "0.2"
         reservations:
-          memory: 128M
+          memory: 64M
           cpus: "0.1"
 
   redis:
@@ -346,29 +348,45 @@ services:
       timeout: 10s
       retries: 3
 
+  minio-backup:
+    image: minio/mc:latest
+    entrypoint: ["/bin/sh", "/minio_cron.sh"]
+    environment:
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin
+      S3_ACCESS_KEY_ID: key
+      S3_SECRET_ACCESS_KEY: secret
+      S3_BUCKET: care-minio-backup
+      PATIENT_MINIO_BUCKET: patient-bucket
+      PATIENT_S3_PREFIX: patient-backup
+      FACILITY_MINIO_BUCKET: facility-bucket
+      FACILITY_S3_PREFIX: facility-backup
+    configs:
+      - source: minio-cron
+        target: /minio_cron.sh
+        mode: 0555
+    deploy:
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.2"
+        reservations:
+          memory: 64M
+          cpus: "0.1"
+
   backend:
     image: ghcr.io/ohcnetwork/care:production-latest
     entrypoint: ["bash", "start.sh"]
     environment:
-      DJANGO_SETTINGS_MODULE: config.settings.production
-      DATABASE_URL: postgres://postgres:postgres@db:5432/care
-      POSTGRES_DB: care
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_HOST: db
-      POSTGRES_PORT: 5432
-      REDIS_URL: redis://redis:6379/0
-      CELERY_BROKER_URL: redis://redis:6379/0
-      BUCKET_ENDPOINT: http://minio:9000
-      BUCKET_EXTERNAL_ENDPOINT: http://EC2_PUBLIC_IP:9100
-      BUCKET_KEY: minioadmin
-      BUCKET_SECRET: minioadmin
-      FILE_UPLOAD_BUCKET: patient-bucket
-      FACILITY_S3_BUCKET: facility-bucket
+      <<: *backend-env
     ports:
       - "9000:9000"
     deploy:
-      replicas: 10
+      replicas: 6
       placement:
         # constraints:
         #   - node.role == worker
@@ -401,23 +419,9 @@ services:
     image: ghcr.io/ohcnetwork/care:production-latest
     entrypoint: ["bash", "celery_worker.sh"]
     environment:
-      DJANGO_SETTINGS_MODULE: config.settings.production
-      DATABASE_URL: postgres://postgres:postgres@db:5432/care
-      POSTGRES_DB: care
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_HOST: db
-      POSTGRES_PORT: 5432
-      REDIS_URL: redis://redis:6379/0
-      CELERY_BROKER_URL: redis://redis:6379/0
-      BUCKET_ENDPOINT: http://minio:9000
-      BUCKET_EXTERNAL_ENDPOINT: http://EC2_PUBLIC_IP:9100
-      BUCKET_KEY: minioadmin
-      BUCKET_SECRET: minioadmin
-      FILE_UPLOAD_BUCKET: patient-bucket
-      FACILITY_S3_BUCKET: facility-bucket
+      <<: *backend-env
     deploy:
-      replicas: 10
+      replicas: 6
       placement:
         # constraints:
         #   - node.role == worker
@@ -445,21 +449,7 @@ services:
     image: ghcr.io/ohcnetwork/care:production-latest
     entrypoint: ["bash", "celery_beat.sh"]
     environment:
-      DJANGO_SETTINGS_MODULE: config.settings.production
-      DATABASE_URL: postgres://postgres:postgres@db:5432/care
-      POSTGRES_DB: care
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_HOST: db
-      POSTGRES_PORT: 5432
-      REDIS_URL: redis://redis:6379/0
-      CELERY_BROKER_URL: redis://redis:6379/0
-      BUCKET_ENDPOINT: http://minio:9000
-      BUCKET_EXTERNAL_ENDPOINT: http://EC2_PUBLIC_IP:9100
-      BUCKET_KEY: minioadmin
-      BUCKET_SECRET: minioadmin
-      FILE_UPLOAD_BUCKET: patient-bucket
-      FACILITY_S3_BUCKET: facility-bucket
+      <<: *backend-env
     deploy:
       replicas: 1
       placement:
@@ -497,9 +487,9 @@ services:
 
   portainer:
     image: portainer/portainer-ce:alpine
-    command: -H tcp://tasks.portainer-agent:9001 --tlsskipverify
+    command: -H tcp://tasks.portainer-agent:9001 --tlsskipverify --http-enabled
     ports:
-      - "9443:9443"
+      - "9002:9000"
     volumes:
       - portainer-data:/data
     deploy:
