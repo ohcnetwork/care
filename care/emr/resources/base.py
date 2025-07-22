@@ -276,10 +276,10 @@ def cacheable(_model: EMRResource = None, use_base_manager=False) -> EMRResource
     Decorator to mark a model as cacheable.
     This will set up the necessary signals to clear the cache
     when the model is saved or deleted, and will also set the __cacheable__ attribute
-    to True on the model class.
+    to True on the model class
     """
 
-    def decorator(model: EMRResource) -> EMRResource:
+    def decorator(model: EMRResource, use_base_manager) -> EMRResource:
         if not hasattr(model, "__model__"):
             raise ValueError("Model must have a __model__ attribute")
 
