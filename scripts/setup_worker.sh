@@ -123,4 +123,4 @@ add_gluster_hosts
 join_swarm_worker
 mount_glusterfs
 
-Secho "Worker setup complete"
+echo "Worker setup complete"

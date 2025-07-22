@@ -122,7 +122,6 @@ setup_glusterfs() {
 }
 
 setup_gluster_cluster() {
-    local is_first_node="$1"
     local private_ip=$(get_private_ip)
 
     echo ">>> Setting up GlusterFS cluster config..."
@@ -130,40 +129,35 @@ setup_gluster_cluster() {
     local this_manager="manager-$manager_num"
     add_host_entry "$private_ip" "$this_manager"
 
-    if [[ "$is_first_node" == "true" ]]; then
-        echo ">>> Initializing GlusterFS cluster as first manager..."
+    echo ">>> Initializing GlusterFS cluster as first manager..."
 
-        workers=()
-        for i in 1 2; do
-            read -p "Worker $i private IP (Enter to skip): " worker_ip
-            if [[ -n "$worker_ip" ]]; then
-                workers+=("$worker_ip")
-                add_host_entry "$worker_ip" "worker-$i"
+    workers=()
+    for i in 1 2; do
+        read -p "Worker $i private IP (Enter to skip): " worker_ip
+        if [[ -n "$worker_ip" ]]; then
+            workers+=("$worker_ip")
+            add_host_entry "$worker_ip" "worker-$i"
+        fi
+    done
+
+    if [[ ${#workers[@]} -gt 0 ]]; then
+        echo "Waiting for worker nodes..."
+        sleep 15
+
+        for i in "${!workers[@]}"; do
+            sudo gluster peer probe "${workers[$i]}" || true
+        done
+
+        local volume_bricks="$private_ip:$GLUSTER_BRICK_DIR"
+        for i in 0 1; do
+            if [[ -n "${workers[$i]}" ]]; then
+                volume_bricks+=" ${workers[$i]}:$GLUSTER_BRICK_DIR"
             fi
         done
 
-        if [[ ${#workers[@]} -gt 0 ]]; then
-            echo "Waiting for worker nodes..."
-            sleep 15
-
-            for i in "${!workers[@]}"; do
-                sudo gluster peer probe "${workers[$i]}" || true
-            done
-
-            local volume_bricks="$private_ip:$GLUSTER_BRICK_DIR"
-            for i in 0 1; do
-                if [[ -n "${workers[$i]}" ]]; then
-                    volume_bricks+=" ${workers[$i]}:$GLUSTER_BRICK_DIR"
-                fi
-            done
-
-            sudo gluster volume create "$GLUSTER_VOLUME_NAME" replica 3 $volume_bricks force
-            sudo gluster volume start "$GLUSTER_VOLUME_NAME"
-            echo "GlusterFS volume created"
-        fi
-    else
-        echo ">>> Configuring GlusterFS brick as additional manager (should not be used in 1 manager setup)..."
-        echo "No additional manager setup required."
+        sudo gluster volume create "$GLUSTER_VOLUME_NAME" replica 3 $volume_bricks force
+        sudo gluster volume start "$GLUSTER_VOLUME_NAME"
+        echo "GlusterFS volume created"
     fi
 }
 
