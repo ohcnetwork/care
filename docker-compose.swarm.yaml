@@ -212,8 +212,8 @@ services:
     deploy:
       replicas: 1
       placement:
-        # constraints:
-        #   - node.role == worker
+        constraints:
+          - node.role == worker
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
@@ -280,8 +280,8 @@ services:
     deploy:
       replicas: 1
       placement:
-        # constraints:
-        #   - node.role == manager
+        constraints:
+          - node.role == manager
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
@@ -321,8 +321,8 @@ services:
     deploy:
       replicas: 1
       placement:
-        # constraints:
-        #   - node.role == manager
+        constraints:
+          - node.role == manager
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
@@ -386,8 +386,8 @@ services:
     deploy:
       replicas: 6
       placement:
-        # constraints:
-        #   - node.role == worker
+        constraints:
+          - node.role == worker
         max_replicas_per_node: 2
       update_config:
         failure_action: rollback
@@ -421,8 +421,8 @@ services:
     deploy:
       replicas: 6
       placement:
-        # constraints:
-        #   - node.role == worker
+        constraints:
+          - node.role == worker
         max_replicas_per_node: 2
       update_config:
         failure_action: rollback
