@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied
@@ -24,9 +25,17 @@ from care.utils.filters.null_filter import NullFilter
 class ProductKnowledgeFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     facility = filters.UUIDFilter(field_name="facility__external_id")
-    name = filters.CharFilter(lookup_expr="icontains")  # TODO : Need better searching
+    name = filters.CharFilter(lookup_expr="icontains")
+    code = filters.CharFilter(method="filter_code")
     product_type = filters.CharFilter(lookup_expr="iexact")
     facility_is_null = NullFilter(field_name="facility")
+
+    def filter_code(self, queryset, name, value):
+        if value:
+            return queryset.filter(
+                Q(code__code=value) | Q(code__display__icontains=value)
+            )
+        return queryset
 
 
 class ProductKnowledgeViewSet(
