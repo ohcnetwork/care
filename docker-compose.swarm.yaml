@@ -168,8 +168,8 @@ services:
     deploy:
       replicas: 1
       placement:
-        # constraints:
-        #   - node.role == worker
+        constraints:
+          - node.role == worker
         max_replicas_per_node: 1
       update_config:
         failure_action: rollback
@@ -248,7 +248,7 @@ services:
       S3_ACCESS_KEY_ID: key
       S3_SECRET_ACCESS_KEY: secret
       S3_BUCKET: care-postgres-backup
-      S3_PREFIX: postgres-backup
+      S3_PREFIX: backup
       POSTGRES_HOST: db-master
       POSTGRES_PORT: 5432
       POSTGRES_DATABASE: care
@@ -358,9 +358,7 @@ services:
       S3_SECRET_ACCESS_KEY: secret
       S3_BUCKET: care-minio-backup
       PATIENT_MINIO_BUCKET: patient-bucket
-      PATIENT_S3_PREFIX: patient-backup
       FACILITY_MINIO_BUCKET: facility-bucket
-      FACILITY_S3_PREFIX: facility-backup
     configs:
       - source: minio-cron
         target: /minio_cron.sh
