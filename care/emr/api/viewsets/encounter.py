@@ -94,6 +94,7 @@ class EncounterViewSet(
     filterset_class = EncounterFilters
     filter_backends = [filters.DjangoFilterBackend, SingleFacilityTagFilter]
     resource_type = TagResource.encounter
+    TAGS_ENABLED = True
 
     def validate_data(self, instance, model_obj=None):
         if model_obj is None:

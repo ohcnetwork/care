@@ -54,6 +54,7 @@ class EncounterSpecBase(EMRResource):
         "appointment",
         "current_location",
         "care_team",
+        "tags",
     ]
 
     id: UUID4 = None
@@ -71,6 +72,7 @@ class EncounterCreateSpec(EncounterSpecBase):
     facility: UUID4
     organizations: list[UUID4] = []
     appointment: UUID4 | None = None
+    tags: list[UUID4] = []
 
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
