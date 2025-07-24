@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from rest_framework import filters as drf_filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from care.emr.api.viewsets.base import (
@@ -25,7 +24,8 @@ from care.security.authorization.base import AuthorizationController
 
 class PatientIdentifierConfigFilters(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
-    status = filters.CharFilter(lookup_expr="iexact")
+    status = (filters.CharFilter(lookup_expr="iexact"),)
+    display = filters.CharFilter(field_name="config__display", lookup_expr="icontains")
 
 
 class PatientIdentifierConfigViewSet(
@@ -36,8 +36,7 @@ class PatientIdentifierConfigViewSet(
     pydantic_update_model = BasePatientIdentifierSpec
     pydantic_read_model = PatientIdentifierListSpec
     filterset_class = PatientIdentifierConfigFilters
-    filter_backends = [drf_filters.SearchFilter, filters.DjangoFilterBackend]
-    search_fields = ["config__display"]
+    filter_backends = [filters.DjangoFilterBackend]
 
     def authorize_create(self, instance):
         if instance.facility:
