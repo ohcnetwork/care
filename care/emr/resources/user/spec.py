@@ -49,7 +49,6 @@ class UserBaseSpec(EMRResource):
 
     first_name: str
     last_name: str
-    phone_number: str = Field(max_length=14)
 
     prefix: str | None = Field(None, max_length=10)
     suffix: str | None = Field(None, max_length=50)
@@ -72,6 +71,7 @@ class UserCreateSpec(UserUpdateSpec):
     password: str | None = None
     username: str
     email: str
+    phone_number: str = Field(max_length=14)
 
     @field_validator("username")
     @classmethod
@@ -139,6 +139,7 @@ class UserRetrieveSpec(UserSpec):
     geo_organization: dict
     created_by: UserSpec
     email: str
+    phone_number: str = Field(max_length=14)
     flags: list[str] = []
 
     @classmethod
