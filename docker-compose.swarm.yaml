@@ -227,8 +227,8 @@ services:
       SCHEDULE: "@daily"
       BACKUP_KEEP_DAYS: 14
       S3_REGION: ap-south-1
-      S3_ACCESS_KEY_ID: AKIATCKATB5D7NKUPW7I
-      S3_SECRET_ACCESS_KEY: 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
+      S3_ACCESS_KEY_ID: key
+      S3_SECRET_ACCESS_KEY: secret
       S3_BUCKET: care-postgres-backup
       S3_PREFIX: backup
       POSTGRES_HOST: db-master
@@ -319,8 +319,8 @@ services:
     environment:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
-      S3_ACCESS_KEY_ID: AKIATCKATB5D7NKUPW7I
-      S3_SECRET_ACCESS_KEY: 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
+      S3_ACCESS_KEY_ID: key
+      S3_SECRET_ACCESS_KEY: secret
       S3_BUCKET: care-minio-backup
       PATIENT_MINIO_BUCKET: patient-bucket
       FACILITY_MINIO_BUCKET: facility-bucket
