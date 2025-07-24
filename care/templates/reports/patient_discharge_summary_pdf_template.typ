@@ -220,7 +220,6 @@
 #line(length: 100%, stroke: mygray)
 #text("")
 {% if discharge_summary_advice %}
-
     = Discharge Summary Advice
-    {{ discharge_summary_advice }}
+    #text("{{ discharge_summary_advice }}")
 {% endif %}
