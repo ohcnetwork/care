@@ -1,4 +1,4 @@
-from django_filters import FilterSet, UUIDFilter
+from django_filters import DateFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import get_object_or_404
@@ -16,6 +16,8 @@ from care.users.models import User
 
 class AvailabilityExceptionFilters(FilterSet):
     user = UUIDFilter(field_name="resource__user__external_id")
+    valid_from = DateFilter(field_name="valid_to", lookup_expr="gte")
+    valid_to = DateFilter(field_name="valid_from", lookup_expr="lte")
 
 
 class AvailabilityExceptionsViewSet(EMRModelViewSet):

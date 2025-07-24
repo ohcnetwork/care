@@ -1,3 +1,4 @@
+import html
 import logging
 import subprocess
 import tempfile
@@ -159,8 +160,11 @@ def compile_typ(output_file, data):
         with tempfile.TemporaryDirectory() as tmpdir:
             template = Path(tmpdir) / "template.typ"
             template.write_text(
-                render_to_string(
-                    "reports/patient_discharge_summary_pdf_template.typ", context=data
+                html.unescape(
+                    render_to_string(
+                        "reports/patient_discharge_summary_pdf_template.typ",
+                        context=data,
+                    )
                 )
             )
 

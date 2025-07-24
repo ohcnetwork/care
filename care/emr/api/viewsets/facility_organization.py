@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.db import transaction
 from django.db.models import Q
 from django.db.models.expressions import Subquery
 from django_filters import rest_framework as filters
@@ -185,9 +186,17 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         )
 
     def perform_destroy(self, instance):
-        FacilityOrganizationUser.objects.filter(organization=instance).delete()
-        instance.deleted = True
-        instance.save(update_fields=["deleted"])
+        with transaction.atomic():
+            FacilityOrganizationUser.objects.filter(organization=instance).delete()
+            instance.deleted = True
+            instance.save(update_fields=["deleted"])
+
+            parent = instance.parent
+            if parent:
+                parent.has_children = FacilityOrganization.objects.filter(
+                    parent=parent
+                ).exists()
+                parent.save(update_fields=["has_children"])
 
     @action(detail=False, methods=["GET"])
     def mine(self, request, *args, **kwargs):
