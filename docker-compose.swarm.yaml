@@ -4,6 +4,7 @@ networks:
     driver: overlay
     attachable: true
 
+# GlusterFS volumes for persistent storage
 volumes:
   postgres-master-data:
     driver: local
@@ -35,6 +36,12 @@ volumes:
       type: none
       o: bind
       device: /care-storage/shared/minio
+  letsencrypt-data:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: /care-storage/shared/letsencrypt
   portainer-data:
     driver: local
     driver_opts:
@@ -42,6 +49,7 @@ volumes:
       o: bind
       device: /care-storage/shared/portainer
 
+# Since production-latest doesn't have new scripts, we're using config files for now
 configs:
   postgres-master:
     file: ./scripts/postgres_master.sh
@@ -52,6 +60,7 @@ configs:
   minio-cron:
     file: ./scripts/minio_cron.sh
 
+# Common environment variables for multiple services
 x-postgres-env: &postgres-env
   POSTGRES_DB: care
   POSTGRES_USER: postgres
@@ -74,6 +83,19 @@ x-backend-env: &backend-env
   FILE_UPLOAD_BUCKET: patient-bucket
   FACILITY_S3_BUCKET: facility-bucket
 
+x-policy-template: &policy-template
+  update_config:
+    failure_action: rollback
+    parallelism: 1
+    order: stop-first
+    delay: 10s
+    monitor: 30s
+  restart_policy:
+    condition: on-failure
+    delay: 10s
+    max_attempts: 3
+    window: 60s
+
 services:
   db:
     image: haproxy:alpine
@@ -84,29 +106,19 @@ services:
       - source: haproxy-config
         target: /usr/local/etc/haproxy/haproxy.cfg
     deploy:
+      <<: *policy-template
       replicas: 1
       placement:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      update_config:
-        failure_action: rollback
-        parallelism: 1
-        order: stop-first
-        delay: 10s
-        monitor: 30s
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 60s
-      resources:
-        limits:
-          memory: 128M
-          cpus: "0.2"
-        reservations:
-          memory: 64M
-          cpus: "0.1"
+      # resources:
+      #   limits:
+      #     memory: 128M
+      #     cpus: "0.2"
+      #   reservations:
+      #     memory: 64M
+      #     cpus: "0.1"
 
   db-master:
     image: postgres:alpine
@@ -122,29 +134,19 @@ services:
         target: /docker-entrypoint-initdb.d/init.sh
         mode: 0755
     deploy:
+      <<: *policy-template
       replicas: 1
       placement:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      update_config:
-        failure_action: rollback
-        parallelism: 1
-        order: stop-first
-        delay: 30s
-        monitor: 60s
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 60s
-      resources:
-        limits:
-          memory: 1024M
-          cpus: "0.8"
-        reservations:
-          memory: 512M
-          cpus: "0.4"
+      # resources:
+      #   limits:
+      #     memory: 1024M
+      #     cpus: "0.8"
+      #   reservations:
+      #     memory: 512M
+      #     cpus: "0.4"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
       interval: 30s
@@ -166,29 +168,19 @@ services:
         target: /docker-entrypoint-initdb.d/init.sh
         mode: 0755
     deploy:
+      <<: *policy-template
       replicas: 1
       placement:
         constraints:
           - node.role == worker
         max_replicas_per_node: 1
-      update_config:
-        failure_action: rollback
-        parallelism: 1
-        order: stop-first
-        delay: 30s
-        monitor: 60s
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 60s
-      resources:
-        limits:
-          memory: 768M
-          cpus: "0.6"
-        reservations:
-          memory: 384M
-          cpus: "0.3"
+      # resources:
+      #   limits:
+      #     memory: 768M
+      #     cpus: "0.6"
+      #   reservations:
+      #     memory: 384M
+      #     cpus: "0.3"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
       interval: 30s
@@ -210,29 +202,19 @@ services:
         target: /docker-entrypoint-initdb.d/init.sh
         mode: 0755
     deploy:
+      <<: *policy-template
       replicas: 1
       placement:
         constraints:
           - node.role == worker
         max_replicas_per_node: 1
-      update_config:
-        failure_action: rollback
-        parallelism: 1
-        order: stop-first
-        delay: 30s
-        monitor: 60s
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 60s
-      resources:
-        limits:
-          memory: 768M
-          cpus: "0.6"
-        reservations:
-          memory: 384M
-          cpus: "0.3"
+      # resources:
+      #   limits:
+      #     memory: 768M
+      #     cpus: "0.6"
+      #   reservations:
+      #     memory: 384M
+      #     cpus: "0.3"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
       interval: 30s
@@ -245,8 +227,8 @@ services:
       SCHEDULE: "@daily"
       BACKUP_KEEP_DAYS: 14
       S3_REGION: ap-south-1
-      S3_ACCESS_KEY_ID: key
-      S3_SECRET_ACCESS_KEY: secret
+      S3_ACCESS_KEY_ID: AKIATCKATB5D7NKUPW7I
+      S3_SECRET_ACCESS_KEY: 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
       S3_BUCKET: care-postgres-backup
       S3_PREFIX: backup
       POSTGRES_HOST: db-master
@@ -254,23 +236,19 @@ services:
       POSTGRES_DATABASE: care
       <<: *postgres-env
     deploy:
+      <<: *policy-template
       replicas: 1
       placement:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      update_config:
-        failure_action: rollback
-        order: stop-first
-      restart_policy:
-        condition: on-failure
-      resources:
-        limits:
-          memory: 128M
-          cpus: "0.2"
-        reservations:
-          memory: 64M
-          cpus: "0.1"
+      # resources:
+      #   limits:
+      #     memory: 128M
+      #     cpus: "0.2"
+      #   reservations:
+      #     memory: 64M
+      #     cpus: "0.1"
 
   redis:
     image: redis:7.4-alpine
@@ -278,29 +256,19 @@ services:
     volumes:
       - redis-data:/data
     deploy:
+      <<: *policy-template
       replicas: 1
       placement:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      update_config:
-        failure_action: rollback
-        parallelism: 1
-        order: stop-first
-        delay: 30s
-        monitor: 60s
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 60s
-      resources:
-        limits:
-          memory: 384M
-          cpus: "0.3"
-        reservations:
-          memory: 256M
-          cpus: "0.1"
+      # resources:
+      #   limits:
+      #     memory: 384M
+      #     cpus: "0.3"
+      #   reservations:
+      #     memory: 256M
+      #     cpus: "0.1"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -312,36 +280,33 @@ services:
     command: server /data --console-address ":9001"
     ports:
       - "9100:9000" # MinIO API
-      - "9101:9001" # MinIO Console
+      # - "9101:9001" # MinIO Console
     environment:
       MINIO_ROOT_USER: minioadmin
       MINIO_ROOT_PASSWORD: minioadmin
     volumes:
       - minio-data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.minio-console.rule=Host(`minio.ohc.network`)"
+      - "traefik.http.routers.minio-console.entrypoints=websecure"
+      - "traefik.http.routers.minio-console.service=minio"
+      - "traefik.http.routers.minio-console.tls.certresolver=letsencrypt"
+      - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
     deploy:
+      <<: *policy-template
       replicas: 1
       placement:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      update_config:
-        failure_action: rollback
-        parallelism: 1
-        order: stop-first
-        delay: 30s
-        monitor: 60s
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 60s
-      resources:
-        limits:
-          memory: 384M
-          cpus: "0.3"
-        reservations:
-          memory: 192M
-          cpus: "0.1"
+      # resources:
+      #   limits:
+      #     memory: 384M
+      #     cpus: "0.3"
+      #   reservations:
+      #     memory: 192M
+      #     cpus: "0.1"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
       interval: 30s
@@ -354,8 +319,8 @@ services:
     environment:
       MINIO_ACCESS_KEY: minioadmin
       MINIO_SECRET_KEY: minioadmin
-      S3_ACCESS_KEY_ID: key
-      S3_SECRET_ACCESS_KEY: secret
+      S3_ACCESS_KEY_ID: AKIATCKATB5D7NKUPW7I
+      S3_SECRET_ACCESS_KEY: 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
       S3_BUCKET: care-minio-backup
       PATIENT_MINIO_BUCKET: patient-bucket
       FACILITY_MINIO_BUCKET: facility-bucket
@@ -364,49 +329,51 @@ services:
         target: /minio_cron.sh
         mode: 0555
     deploy:
+      <<: *policy-template
       replicas: 1
       placement:
         constraints:
           - node.role == manager
-      resources:
-        limits:
-          memory: 128M
-          cpus: "0.2"
-        reservations:
-          memory: 64M
-          cpus: "0.1"
+        max_replicas_per_node: 1
+      # resources:
+      #   limits:
+      #     memory: 128M
+      #     cpus: "0.2"
+      #   reservations:
+      #     memory: 64M
+      #     cpus: "0.1"
 
   backend:
     image: ghcr.io/ohcnetwork/care:production-latest
     entrypoint: ["bash", "start.sh"]
     environment:
       <<: *backend-env
-    ports:
-      - "9000:9000"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.backend.rule=Host(`api.ohc.network`)"
+      - "traefik.http.routers.backend.entrypoints=websecure"
+      - "traefik.http.routers.backend.service=backend"
+      - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
+      - "traefik.http.services.backend.loadbalancer.server.port=9000"
+      # Load balancer health check
+      - "traefik.http.services.backend.loadbalancer.healthcheck.path=/health"
+      - "traefik.http.services.backend.loadbalancer.healthcheck.scheme=http"
+      - "traefik.http.services.backend.loadbalancer.healthcheck.interval=30s"
+      - "traefik.http.services.backend.loadbalancer.healthcheck.timeout=10s"
     deploy:
-      replicas: 6
+      <<: *policy-template
+      replicas: 2
       placement:
         constraints:
           - node.role == worker
-        max_replicas_per_node: 2
-      update_config:
-        failure_action: rollback
-        parallelism: 2
-        order: start-first
-        delay: 15s
-        monitor: 30s
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 60s
-      resources:
-        limits:
-          memory: 768M
-          cpus: "0.6"
-        reservations:
-          memory: 384M
-          cpus: "0.3"
+        max_replicas_per_node: 1
+      # resources:
+      #   limits:
+      #     memory: 768M
+      #     cpus: "0.6"
+      #   reservations:
+      #     memory: 384M
+      #     cpus: "0.3"
     healthcheck:
       test: ["CMD", "./healthcheck.sh"]
       interval: 30s
@@ -419,29 +386,19 @@ services:
     environment:
       <<: *backend-env
     deploy:
-      replicas: 6
+      <<: *policy-template
+      replicas: 2
       placement:
         constraints:
           - node.role == worker
-        max_replicas_per_node: 2
-      update_config:
-        failure_action: rollback
-        parallelism: 2
-        order: start-first
-        delay: 15s
-        monitor: 30s
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 60s
-      resources:
-        limits:
-          memory: 768M
-          cpus: "0.6"
-        reservations:
-          memory: 384M
-          cpus: "0.3"
+        max_replicas_per_node: 1
+      # resources:
+      #   limits:
+      #     memory: 768M
+      #     cpus: "0.6"
+      #   reservations:
+      #     memory: 384M
+      #     cpus: "0.3"
 
   celery-beat:
     image: ghcr.io/ohcnetwork/care:production-latest
@@ -449,29 +406,68 @@ services:
     environment:
       <<: *backend-env
     deploy:
+      <<: *policy-template
       replicas: 1
       placement:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      update_config:
-        failure_action: rollback
-        parallelism: 1
-        order: stop-first
-        delay: 10s
-        monitor: 30s
-      restart_policy:
-        condition: on-failure
-        delay: 10s
-        max_attempts: 3
-        window: 60s
-      resources:
-        limits:
-          memory: 384M
-          cpus: "0.3"
-        reservations:
-          memory: 256M
-          cpus: "0.1"
+      # resources:
+      #   limits:
+      #     memory: 384M
+      #     cpus: "0.3"
+      #   reservations:
+      #     memory: 256M
+      #     cpus: "0.1"
+
+  traefik:
+    image: traefik:v3.4
+    ports:
+      - "80:80" # HTTP
+      - "443:443" # HTTPS
+      - "8080:8080" # Traefik Dashboard
+    command:
+      - --api.dashboard=true
+      - --api.insecure=true
+      - --providers.swarm=true
+      - --providers.swarm.exposedbydefault=false
+      - --providers.swarm.network=care
+      - --entrypoints.web.address=:80
+      - --entrypoints.websecure.address=:443
+      # Redirect HTTP to HTTPS
+      - --entrypoints.web.http.redirections.entrypoint.to=websecure
+      - --entrypoints.web.http.redirections.entrypoint.scheme=https
+      - --entrypoints.web.http.redirections.entrypoint.permanent=true
+      # Let's Encrypt setup
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge=true
+      - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
+      - --certificatesresolvers.letsencrypt.acme.email=contact@ohc.network
+      - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
+      - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
+      - --log.level=INFO
+      - --ping=true
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - letsencrypt-data:/letsencrypt
+    deploy:
+      <<: *policy-template
+      replicas: 1
+      placement:
+        constraints:
+          - node.role == manager
+        max_replicas_per_node: 1
+      # resources:
+      #   limits:
+      #     memory: 128M
+      #     cpus: "0.2"
+      #   reservations:
+      #     memory: 64M
+      #     cpus: "0.1"
+    healthcheck:
+      test: ["CMD", "traefik", "healthcheck", "--ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
 
   portainer-agent:
     image: portainer/agent:alpine
@@ -486,25 +482,26 @@ services:
   portainer:
     image: portainer/portainer-ce:alpine
     command: -H tcp://tasks.portainer-agent:9001 --tlsskipverify --http-enabled
-    ports:
-      - "9002:9000"
     volumes:
       - portainer-data:/data
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portainer.rule=Host(`portainer.ohc.network`)"
+      - "traefik.http.routers.portainer.entrypoints=websecure"
+      - "traefik.http.routers.portainer.service=portainer"
+      - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
+      - "traefik.http.services.portainer.loadbalancer.server.port=9002"
     deploy:
+      <<: *policy-template
       replicas: 1
       placement:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      update_config:
-        failure_action: rollback
-        order: stop-first
-      restart_policy:
-        condition: on-failure
-      resources:
-        limits:
-          memory: 128M
-          cpus: "0.2"
-        reservations:
-          memory: 64M
-          cpus: "0.1"
+      # resources:
+      #   limits:
+      #     memory: 128M
+      #     cpus: "0.2"
+      #   reservations:
+      #     memory: 64M
+      #     cpus: "0.1"
