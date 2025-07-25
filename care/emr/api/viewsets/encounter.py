@@ -76,6 +76,8 @@ class EncounterFilters(filters.FilterSet):
     name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
     location = filters.UUIDFilter(field_name="current_location__external_id")
     live = LiveFilter()
+    period_start = filters.DateTimeFromToRangeFilter(field_name="period__start")
+    period_end = filters.DateTimeFromToRangeFilter(field_name="period__end")
 
 
 class EncounterViewSet(
