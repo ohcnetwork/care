@@ -634,3 +634,91 @@ class TestTagConfigAPI(CareAPITestBase):
         self.assertEqual(response.data["id"], get_response.data["id"])
         self.assertEqual(get_response.data["slug"], "test-tag-updated")
         self.assertEqual(get_response.data["status"], TagStatus.archived.value)
+
+    # Test cases for retrieve tagconfig
+
+    def test_retrieve_tag_config_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            priority=1,
+            category=TagCategoryChoices.clinical.value,
+        )
+        response = self.client.get(self.get_detail_url(tag_config.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["slug"], "test-tag")
+        self.assertEqual(response.data["priority"], 1)
+        self.assertEqual(response.data["category"], TagCategoryChoices.clinical.value)
+
+    def test_retrieve_tag_config_with_facility_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            facility=self.facility,
+        )
+        response = self.client.get(self.get_detail_url(tag_config.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["slug"], "test-tag")
+        self.assertEqual(response.data["id"], str(tag_config.external_id))
+
+    def test_retrieve_tag_config_with_organization_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            organization=self.organization,
+        )
+        response = self.client.get(self.get_detail_url(tag_config.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["slug"], "test-tag")
+        self.assertEqual(response.data["id"], str(tag_config.external_id))
+
+    def test_retrieve_tag_config_with_global_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+        )
+        response = self.client.get(self.get_detail_url(tag_config.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(tag_config.external_id))
+        self.assertEqual(response.data["slug"], "test-tag")
+        self.assertIsNone(response.data.get("facility"))
+        self.assertIsNone(response.data.get("organization"))
+
+    def test_retrieve_tag_config_with_facility_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            facility=self.facility,
+        )
+        response = self.client.get(self.get_detail_url(tag_config.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(tag_config.external_id))
+
+    def test_retrieve_tag_config_with_organization_as_user_without_permission(self):
+        self.client.force_authenticate(self.user)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            organization=self.organization,
+        )
+        response = self.client.get(self.get_detail_url(tag_config.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(tag_config.external_id))
+
+    def test_retrieve_tag_config_global_as_user_with_permission(self):
+        self.client.force_authenticate(self.user)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+        )
+        response = self.client.get(self.get_detail_url(tag_config.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(tag_config.external_id))
