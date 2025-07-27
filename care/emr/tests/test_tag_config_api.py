@@ -722,3 +722,1101 @@ class TestTagConfigAPI(CareAPITestBase):
         response = self.client.get(self.get_detail_url(tag_config.external_id))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(tag_config.external_id))
+
+    # Testcases for listing & filtering tag configs
+
+    def test_list_tag_configs_globalas_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        tag_config1 = self.create_tag_config(
+            slug="tag1", resource=TagResource.encounter, priority=1
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            facility=self.facility,
+        )
+
+        response = self.client.get(self.base_url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_facility_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            facility=self.facility,
+        )
+        self.create_tag_config(slug="tag2", resource=TagResource.encounter, priority=2)
+
+        response = self.client.get(
+            self.base_url, {"facility": self.facility.external_id}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_global_as_user(self):
+        self.client.force_authenticate(user=self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1", resource=TagResource.encounter, priority=1
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            facility=self.facility,
+        )
+
+        response = self.client.get(self.base_url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_facility_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            facility=self.facility,
+        )
+        self.create_tag_config(slug="tag2", resource=TagResource.encounter, priority=2)
+
+        response = self.client.get(
+            self.base_url, {"facility": self.facility.external_id}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_facility_as_user_without_permission(self):
+        self.client.force_authenticate(self.user)
+        self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            facility=self.facility,
+        )
+        self.create_tag_config(slug="tag2", resource=TagResource.encounter, priority=2)
+
+        response = self.client.get(
+            self.base_url, {"facility": self.facility.external_id}, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "You do not have permission to read tag configs", status_code=403
+        )
+
+    def test_list_tag_configs_with_organization_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            organization=self.organization,
+        )
+        self.create_tag_config(slug="tag2", resource=TagResource.encounter, priority=2)
+        response = self.client.get(
+            self.base_url,
+            {"organization": self.organization.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_organization_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            organization=self.organization,
+        )
+        tag_config2 = self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            organization=self.organization,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"organization": self.organization.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config2.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][1]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_organization_as_user_without_permission(self):
+        self.client.force_authenticate(self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            organization=self.organization,
+        )
+        self.create_tag_config(slug="tag2", resource=TagResource.encounter, priority=2)
+        response = self.client.get(
+            self.base_url,
+            {"organization": self.organization.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_resource_as_user_global(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+        )
+        self.create_tag_config(
+            slug="tag3",
+            resource=TagResource.patient,
+            priority=3,
+        )
+        response = self.client.get(
+            self.base_url, {"resource": TagResource.encounter}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        for tag in response.data["results"]:
+            self.assertEqual(tag["resource"], TagResource.encounter.value)
+
+    def test_list_tag_configs_with_resource_in_a_facility_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag3",
+            resource=TagResource.patient,
+            priority=3,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"resource": TagResource.encounter, "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        for tag in response.data["results"]:
+            self.assertEqual(tag["resource"], TagResource.encounter.value)
+
+    def test_list_tag_configs_with_resource_in_a_facility_as_user_without_permission(
+        self,
+    ):
+        self.client.force_authenticate(self.user)
+        self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"resource": TagResource.encounter, "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "You do not have permission to read tag configs", status_code=403
+        )
+
+    def test_list_tag_configs_with_status_global(self):
+        self.client.force_authenticate(self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            status=TagStatus.active,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            status=TagStatus.archived,
+        )
+        response = self.client.get(
+            self.base_url, {"status": TagStatus.active}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_status_in_a_facility_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            status=TagStatus.active,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            status=TagStatus.archived,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"status": TagStatus.active, "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_facility_organization_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            status=TagStatus.active,
+            facility=self.facility,
+            facility_organization=self.facility_organization,
+        )
+        tag_config2 = self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            status=TagStatus.archived,
+            facility=self.facility,
+            facility_organization=self.facility_organization,
+        )
+        self.create_tag_config(
+            slug="tag3",
+            resource=TagResource.encounter,
+            priority=3,
+            status=TagStatus.archived,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "facility_organization": self.facility_organization.external_id,
+                "facility": self.facility.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config2.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][1]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_facility_organization_as_user_without_permission(
+        self,
+    ):
+        self.client.force_authenticate(self.user)
+        self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            status=TagStatus.active,
+            facility=self.facility,
+            facility_organization=self.facility_organization,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            status=TagStatus.archived,
+            facility=self.facility,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "facility_organization": self.facility_organization.external_id,
+                "facility": self.facility.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "You do not have permission to read tag configs", status_code=403
+        )
+
+    def test_list_tag_configs_with_facility_organization_as_superuser(self):
+        self.client.force_authenticate(self.superuser)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            status=TagStatus.active,
+            facility=self.facility,
+            facility_organization=self.facility_organization,
+        )
+        tag_config2 = self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            status=TagStatus.archived,
+            facility=self.facility,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "facility_organization": self.facility_organization.external_id,
+                "facility": self.facility.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config2.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][1]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_category_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            category=TagCategoryChoices.clinical.value,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            category=TagCategoryChoices.lab.value,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"category": TagCategoryChoices.clinical.value},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_category_in_a_facility_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            category=TagCategoryChoices.clinical.value,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            category=TagCategoryChoices.lab.value,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "category": TagCategoryChoices.clinical.value,
+                "facility": self.facility.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_category_in_a_facility_as_user_without_permission(
+        self,
+    ):
+        self.client.force_authenticate(self.user)
+        self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            category=TagCategoryChoices.clinical.value,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            category=TagCategoryChoices.lab.value,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "category": TagCategoryChoices.clinical.value,
+                "facility": self.facility.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "You do not have permission to read tag configs", status_code=403
+        )
+
+    def test_list_tag_configs_with_category_in_a_facility_as_superuser(self):
+        self.client.force_authenticate(self.superuser)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            category=TagCategoryChoices.clinical.value,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            category=TagCategoryChoices.lab.value,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "category": TagCategoryChoices.clinical.value,
+                "facility": self.facility.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_parent_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        parent_tag = self.create_tag_config(
+            slug="parent-tag",
+            resource=TagResource.encounter,
+            priority=1,
+            category=TagCategoryChoices.clinical.value,
+        )
+        self.create_tag_config(
+            slug="child-tag",
+            resource=TagResource.encounter,
+            parent=parent_tag,
+        )
+        self.create_tag_config(
+            slug="child-tag2",
+            resource=TagResource.encounter,
+            parent=parent_tag,
+        )
+        response = self.client.get(
+            self.base_url, {"parent": parent_tag.external_id}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        for tag in response.data["results"]:
+            self.assertEqual(tag["parent"]["id"], str(parent_tag.external_id))
+
+    def test_list_tag_configs_with_parent_in_a_facility_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        parent_tag = self.create_tag_config(
+            slug="parent-tag",
+            resource=TagResource.encounter,
+            priority=1,
+            category=TagCategoryChoices.clinical.value,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="child-tag",
+            resource=TagResource.encounter,
+            parent=parent_tag,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="child-tag2",
+            resource=TagResource.encounter,
+            parent=parent_tag,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"parent": parent_tag.external_id, "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        for tag in response.data["results"]:
+            self.assertEqual(tag["parent"]["id"], str(parent_tag.external_id))
+
+    def test_list_tag_configs_with_parent_in_a_facility_as_user_without_permission(
+        self,
+    ):
+        self.client.force_authenticate(self.user)
+        parent_tag = self.create_tag_config(
+            slug="parent-tag",
+            resource=TagResource.encounter,
+            priority=1,
+            category=TagCategoryChoices.clinical.value,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="child-tag",
+            resource=TagResource.encounter,
+            parent=parent_tag,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="child-tag2",
+            resource=TagResource.encounter,
+            parent=parent_tag,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"parent": parent_tag.external_id, "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "You do not have permission to read tag configs", status_code=403
+        )
+
+    def test_list_tag_configs_with_parent_in_a_facility_as_superuser(self):
+        self.client.force_authenticate(self.superuser)
+        parent_tag = self.create_tag_config(
+            slug="parent-tag",
+            resource=TagResource.encounter,
+            priority=1,
+            category=TagCategoryChoices.clinical.value,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="child-tag",
+            resource=TagResource.encounter,
+            parent=parent_tag,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="child-tag2",
+            resource=TagResource.encounter,
+            parent=parent_tag,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"parent": parent_tag.external_id, "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        for tag in response.data["results"]:
+            self.assertEqual(tag["parent"]["id"], str(parent_tag.external_id))
+
+    def test_list_tag_configs_with_parent_null_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        tag_config1 = self.create_tag_config(
+            slug="tag1", resource=TagResource.encounter, priority=3
+        )
+        self.create_tag_config(
+            slug="tag2", resource=TagResource.encounter, priority=2, parent=tag_config1
+        )
+        tag_config3 = self.create_tag_config(
+            slug="tag3", resource=TagResource.encounter, priority=1
+        )
+        response = self.client.get(
+            self.base_url, {"parent_is_null": True}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config3.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][1]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_parent_null_in_a_facility_as_user_with_permission(
+        self,
+    ):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=3,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            parent=tag_config1,
+            facility=self.facility,
+        )
+        tag_config3 = self.create_tag_config(
+            slug="tag3",
+            resource=TagResource.encounter,
+            priority=1,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"parent_is_null": True, "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config3.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][1]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_parent_null_in_a_facility_as_user_without_permission(
+        self,
+    ):
+        self.client.force_authenticate(self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=3,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            parent=tag_config1,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag3",
+            resource=TagResource.encounter,
+            priority=1,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"parent_is_null": True, "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "You do not have permission to read tag configs", status_code=403
+        )
+
+    def test_list_tag_configs_with_parent_null_in_a_facility_as_superuser(self):
+        self.client.force_authenticate(self.superuser)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=3,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            parent=tag_config1,
+            facility=self.facility,
+        )
+        tag_config3 = self.create_tag_config(
+            slug="tag3",
+            resource=TagResource.encounter,
+            priority=1,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"parent_is_null": True, "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config3.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][1]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_slug_as_user(self):
+        self.client.force_authenticate(user=self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1", resource=TagResource.encounter, priority=1
+        )
+        self.create_tag_config(slug="tag2", resource=TagResource.encounter, priority=2)
+        response = self.client.get(self.base_url, {"slug": "tag1"}, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_slug_in_a_facility_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"slug": "tag1", "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_slug_in_a_facility_as_user_without_permission(self):
+        self.client.force_authenticate(self.user)
+        self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"slug": "tag1", "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "You do not have permission to read tag configs", status_code=403
+        )
+
+    def test_list_tag_configs_with_slug_in_a_facility_as_superuser(self):
+        self.client.force_authenticate(self.superuser)
+        tag_config1 = self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"slug": "tag1", "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_display_as_user(self):
+        self.client.force_authenticate(user=self.user)
+        self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            display="Test Tag 1",
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            display="Test Tag 2",
+        )
+        response = self.client.get(
+            self.base_url, {"display": "Test Tag"}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        for tag in response.data["results"]:
+            self.assertIn("Test Tag", tag["display"])
+
+    def test_list_tag_configs_with_display_in_a_facility_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            display="Test Tag 1",
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            display="Test Tag 2",
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"display": "Test Tag", "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        for tag in response.data["results"]:
+            self.assertIn("Test Tag", tag["display"])
+
+    def test_list_tag_configs_with_display_in_a_facility_as_user_without_permission(
+        self,
+    ):
+        self.client.force_authenticate(self.user)
+        self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            display="Test Tag 1",
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            display="Test Tag 2",
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"display": "Test Tag", "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "You do not have permission to read tag configs", status_code=403
+        )
+
+    def test_list_tag_configs_with_display_in_a_facility_as_superuser(self):
+        self.client.force_authenticate(self.superuser)
+        self.create_tag_config(
+            slug="tag1",
+            resource=TagResource.encounter,
+            priority=1,
+            display="Test Tag 1",
+            facility=self.facility,
+        )
+        self.create_tag_config(
+            slug="tag2",
+            resource=TagResource.encounter,
+            priority=2,
+            display="Test Tag 2",
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"display": "Test Tag", "facility": self.facility.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        for tag in response.data["results"]:
+            self.assertIn("Test Tag", tag["display"])
+
+    def test_list_tag_configs_with_ids_as_user(self):
+        self.client.force_authenticate(user=self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1", resource=TagResource.encounter
+        )
+        tag_config2 = self.create_tag_config(
+            slug="tag2", resource=TagResource.encounter
+        )
+        self.create_tag_config(slug="tag3", resource=TagResource.encounter)
+        response = self.client.get(
+            self.base_url,
+            {"ids": f"{tag_config1.external_id},{tag_config2.external_id}"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config2.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][1]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_ids_in_a_facility_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1", resource=TagResource.encounter, facility=self.facility
+        )
+        tag_config2 = self.create_tag_config(
+            slug="tag2", resource=TagResource.encounter, facility=self.facility
+        )
+        self.create_tag_config(
+            slug="tag3", resource=TagResource.encounter, facility=self.facility
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "ids": f"{tag_config1.external_id},{tag_config2.external_id}",
+                "facility": self.facility.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config2.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][1]["id"], str(tag_config1.external_id)
+        )
+
+    def test_list_tag_configs_with_ids_in_a_facility_as_user_without_permission(self):
+        self.client.force_authenticate(self.user)
+        tag_config1 = self.create_tag_config(
+            slug="tag1", resource=TagResource.encounter, facility=self.facility
+        )
+        tag_config2 = self.create_tag_config(
+            slug="tag2", resource=TagResource.encounter, facility=self.facility
+        )
+        self.create_tag_config(
+            slug="tag3", resource=TagResource.encounter, facility=self.facility
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "ids": f"{tag_config1.external_id},{tag_config2.external_id}",
+                "facility": self.facility.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "You do not have permission to read tag configs", status_code=403
+        )
+
+    def test_list_tag_configs_with_ids_in_a_facility_as_superuser(self):
+        self.client.force_authenticate(self.superuser)
+        tag_config1 = self.create_tag_config(
+            slug="tag1", resource=TagResource.encounter, facility=self.facility
+        )
+        tag_config2 = self.create_tag_config(
+            slug="tag2", resource=TagResource.encounter, facility=self.facility
+        )
+        self.create_tag_config(
+            slug="tag3", resource=TagResource.encounter, facility=self.facility
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "ids": f"{tag_config1.external_id},{tag_config2.external_id}",
+                "facility": self.facility.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(tag_config2.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][1]["id"], str(tag_config1.external_id)
+        )
