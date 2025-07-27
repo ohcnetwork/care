@@ -2,6 +2,7 @@
 set -euo pipefail
 
 GLUSTER_SHARED_DIR="/care-storage/shared"
+GLUSTER_BRICK_DIR="/care-storage/brick"
 GLUSTER_VOLUME_NAME="care-volume"
 
 ### SYSTEM SETUP ###
@@ -10,7 +11,7 @@ system_update() {
     echo ">>> Updating system packages..."
     sudo apt update -y >/dev/null 2>&1
     sudo apt upgrade -y >/dev/null 2>&1
-    sudo apt install -y net-tools build-essential git curl wget glusterfs-client >/dev/null 2>&1
+    sudo apt install -y net-tools build-essential git curl wget glusterfs-server glusterfs-client >/dev/null 2>&1
     echo "System packages updated"
 }
 
@@ -28,10 +29,12 @@ install_docker() {
 }
 
 create_directories() {
-    echo ">>> Creating base directory..."
+    echo ">>> Creating base directories..."
     sudo mkdir -p "$GLUSTER_SHARED_DIR"
+    sudo mkdir -p "$GLUSTER_BRICK_DIR"
     sudo chown -R "$USER":"$USER" "$GLUSTER_SHARED_DIR"
-    echo "Base directory created"
+    sudo chown -R "$USER":"$USER" "$GLUSTER_BRICK_DIR"
+    echo "Base directories created"
 }
 
 add_host_entry() {
@@ -72,6 +75,13 @@ join_swarm_worker() {
 
 ### GLUSTERFS SETUP ###
 
+setup_glusterfs() {
+    echo ">>> Setting up GlusterFS server..."
+    sudo systemctl start glusterd
+    sudo systemctl enable glusterd
+    echo "GlusterFS server setup complete"
+}
+
 add_gluster_hosts() {
     echo ">>> Adding GlusterFS nodes to /etc/hosts..."
     for node in manager-1 worker-1 worker-2; do
@@ -98,7 +108,7 @@ mount_glusterfs() {
                     echo "GlusterFS mounted via $host"
                     # Create data subdirectories AFTER mounting
                     echo ">>> Creating data subdirectories..."
-                    sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres-master,postgres-slave1,postgres-slave2,redis,minio,portainer}
+                    sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres-master,postgres-slave1,postgres-slave2,redis,minio,letsencrypt,portainer}
                     sudo chown -R "$USER":"$USER" "$GLUSTER_SHARED_DIR"
                     echo "Data directories created in mounted volume"
                     return
@@ -119,6 +129,7 @@ echo ">>> Starting Docker Swarm Worker Setup..."
 system_update
 install_docker
 create_directories
+setup_glusterfs
 add_gluster_hosts
 join_swarm_worker
 mount_glusterfs

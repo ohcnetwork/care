@@ -112,13 +112,13 @@ services:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      # resources:
-      #   limits:
-      #     memory: 128M
-      #     cpus: "0.2"
-      #   reservations:
-      #     memory: 64M
-      #     cpus: "0.1"
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.2"
+        reservations:
+          memory: 64M
+          cpus: "0.1"
 
   db-master:
     image: postgres:alpine
@@ -140,13 +140,13 @@ services:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      # resources:
-      #   limits:
-      #     memory: 1024M
-      #     cpus: "0.8"
-      #   reservations:
-      #     memory: 512M
-      #     cpus: "0.4"
+      resources:
+        limits:
+          memory: 768M
+          cpus: "0.4"
+        reservations:
+          memory: 512M
+          cpus: "0.2"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
       interval: 30s
@@ -174,13 +174,13 @@ services:
         constraints:
           - node.role == worker
         max_replicas_per_node: 1
-      # resources:
-      #   limits:
-      #     memory: 768M
-      #     cpus: "0.6"
-      #   reservations:
-      #     memory: 384M
-      #     cpus: "0.3"
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.2"
+        reservations:
+          memory: 128M
+          cpus: "0.1"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
       interval: 30s
@@ -208,13 +208,13 @@ services:
         constraints:
           - node.role == worker
         max_replicas_per_node: 1
-      # resources:
-      #   limits:
-      #     memory: 768M
-      #     cpus: "0.6"
-      #   reservations:
-      #     memory: 384M
-      #     cpus: "0.3"
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.2"
+        reservations:
+          memory: 128M
+          cpus: "0.1"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
       interval: 30s
@@ -242,17 +242,17 @@ services:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      # resources:
-      #   limits:
-      #     memory: 128M
-      #     cpus: "0.2"
-      #   reservations:
-      #     memory: 64M
-      #     cpus: "0.1"
+      resources:
+        limits:
+          memory: 64M
+          cpus: "0.2"
+        reservations:
+          memory: 32M
+          cpus: "0.1"
 
   redis:
     image: redis:7.4-alpine
-    command: redis-server --appendonly yes --save 60 1 --maxmemory 256mb --maxmemory-policy allkeys-lru
+    command: redis-server --appendonly yes --save 60 1 --maxmemory 128mb --maxmemory-policy allkeys-lru
     volumes:
       - redis-data:/data
     deploy:
@@ -262,13 +262,13 @@ services:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      # resources:
-      #   limits:
-      #     memory: 384M
-      #     cpus: "0.3"
-      #   reservations:
-      #     memory: 256M
-      #     cpus: "0.1"
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.2"
+        reservations:
+          memory: 64M
+          cpus: "0.1"
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -286,13 +286,6 @@ services:
       MINIO_ROOT_PASSWORD: minioadmin
     volumes:
       - minio-data:/data
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.minio-console.rule=Host(`minio.ohc.network`)"
-      - "traefik.http.routers.minio-console.entrypoints=websecure"
-      - "traefik.http.routers.minio-console.service=minio"
-      - "traefik.http.routers.minio-console.tls.certresolver=letsencrypt"
-      - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
     deploy:
       <<: *policy-template
       replicas: 1
@@ -300,13 +293,19 @@ services:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      # resources:
-      #   limits:
-      #     memory: 384M
-      #     cpus: "0.3"
-      #   reservations:
-      #     memory: 192M
-      #     cpus: "0.1"
+      resources:
+        limits:
+          memory: 256M
+          cpus: "0.3"
+        reservations:
+          memory: 128M
+          cpus: "0.1"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.minio-console.rule=Host(`minio.ohc.network`)"
+        - "traefik.http.routers.minio-console.entrypoints=websecure"
+        - "traefik.http.routers.minio-console.tls.certresolver=letsencrypt"
+        - "traefik.http.services.minio-console.loadbalancer.server.port=9001"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
       interval: 30s
@@ -327,7 +326,7 @@ services:
     configs:
       - source: minio-cron
         target: /minio_cron.sh
-        mode: 0555
+        mode: 0755
     deploy:
       <<: *policy-template
       replicas: 1
@@ -335,31 +334,19 @@ services:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      # resources:
-      #   limits:
-      #     memory: 128M
-      #     cpus: "0.2"
-      #   reservations:
-      #     memory: 64M
-      #     cpus: "0.1"
+      resources:
+        limits:
+          memory: 64M
+          cpus: "0.2"
+        reservations:
+          memory: 32M
+          cpus: "0.1"
 
   backend:
     image: ghcr.io/ohcnetwork/care:production-latest
     entrypoint: ["bash", "start.sh"]
     environment:
       <<: *backend-env
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.backend.rule=Host(`api.ohc.network`)"
-      - "traefik.http.routers.backend.entrypoints=websecure"
-      - "traefik.http.routers.backend.service=backend"
-      - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
-      - "traefik.http.services.backend.loadbalancer.server.port=9000"
-      # Load balancer health check
-      - "traefik.http.services.backend.loadbalancer.healthcheck.path=/health"
-      - "traefik.http.services.backend.loadbalancer.healthcheck.scheme=http"
-      - "traefik.http.services.backend.loadbalancer.healthcheck.interval=30s"
-      - "traefik.http.services.backend.loadbalancer.healthcheck.timeout=10s"
     deploy:
       <<: *policy-template
       replicas: 2
@@ -367,13 +354,19 @@ services:
         constraints:
           - node.role == worker
         max_replicas_per_node: 1
-      # resources:
-      #   limits:
-      #     memory: 768M
-      #     cpus: "0.6"
-      #   reservations:
-      #     memory: 384M
-      #     cpus: "0.3"
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.4"
+        reservations:
+          memory: 256M
+          cpus: "0.2"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.backend.rule=Host(`api.ohc.network`)"
+        - "traefik.http.routers.backend.entrypoints=websecure"
+        - "traefik.http.routers.backend.tls.certresolver=letsencrypt"
+        - "traefik.http.services.backend.loadbalancer.server.port=9000"
     healthcheck:
       test: ["CMD", "./healthcheck.sh"]
       interval: 30s
@@ -392,13 +385,13 @@ services:
         constraints:
           - node.role == worker
         max_replicas_per_node: 1
-      # resources:
-      #   limits:
-      #     memory: 768M
-      #     cpus: "0.6"
-      #   reservations:
-      #     memory: 384M
-      #     cpus: "0.3"
+      resources:
+        limits:
+          memory: 512M
+          cpus: "0.4"
+        reservations:
+          memory: 256M
+          cpus: "0.2"
 
   celery-beat:
     image: ghcr.io/ohcnetwork/care:production-latest
@@ -412,13 +405,13 @@ services:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      # resources:
-      #   limits:
-      #     memory: 384M
-      #     cpus: "0.3"
-      #   reservations:
-      #     memory: 256M
-      #     cpus: "0.1"
+      resources:
+        limits:
+          memory: 384M
+          cpus: "0.3"
+        reservations:
+          memory: 256M
+          cpus: "0.1"
 
   traefik:
     image: traefik:v3.4
@@ -443,7 +436,6 @@ services:
       - --certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web
       - --certificatesresolvers.letsencrypt.acme.email=contact@ohc.network
       - --certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json
-      - --certificatesresolvers.letsencrypt.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
       - --log.level=INFO
       - --ping=true
     volumes:
@@ -456,13 +448,13 @@ services:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      # resources:
-      #   limits:
-      #     memory: 128M
-      #     cpus: "0.2"
-      #   reservations:
-      #     memory: 64M
-      #     cpus: "0.1"
+      resources:
+        limits:
+          memory: 128M
+          cpus: "0.2"
+        reservations:
+          memory: 64M
+          cpus: "0.1"
     healthcheck:
       test: ["CMD", "traefik", "healthcheck", "--ping"]
       interval: 30s
@@ -484,13 +476,6 @@ services:
     command: -H tcp://tasks.portainer-agent:9001 --tlsskipverify --http-enabled
     volumes:
       - portainer-data:/data
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.portainer.rule=Host(`portainer.ohc.network`)"
-      - "traefik.http.routers.portainer.entrypoints=websecure"
-      - "traefik.http.routers.portainer.service=portainer"
-      - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
-      - "traefik.http.services.portainer.loadbalancer.server.port=9002"
     deploy:
       <<: *policy-template
       replicas: 1
@@ -498,10 +483,16 @@ services:
         constraints:
           - node.role == manager
         max_replicas_per_node: 1
-      # resources:
-      #   limits:
-      #     memory: 128M
-      #     cpus: "0.2"
-      #   reservations:
-      #     memory: 64M
-      #     cpus: "0.1"
+      resources:
+        limits:
+          memory: 64M
+          cpus: "0.2"
+        reservations:
+          memory: 32M
+          cpus: "0.1"
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.portainer.rule=Host(`portainer.ohc.network`)"
+        - "traefik.http.routers.portainer.entrypoints=websecure"
+        - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
+        - "traefik.http.services.portainer.loadbalancer.server.port=9000"

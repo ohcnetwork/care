@@ -122,9 +122,9 @@ setup_glusterfs() {
 }
 
 setup_gluster_cluster() {
+    echo ">>> Setting up GlusterFS cluster config..."
     local private_ip=$(get_private_ip)
 
-    echo ">>> Setting up GlusterFS cluster config..."
     read -p "Enter this node's manager number (should be 1): " manager_num
     local this_manager="manager-$manager_num"
     add_host_entry "$private_ip" "$this_manager"
@@ -163,7 +163,6 @@ setup_gluster_cluster() {
 
 mount_glusterfs() {
     echo ">>> Mounting GlusterFS volume..."
-
     local private_ip=$(get_private_ip)
 
     if sudo gluster volume info "$GLUSTER_VOLUME_NAME" &>/dev/null; then
@@ -182,7 +181,7 @@ mount_glusterfs() {
 
         # Create data subdirectories AFTER mounting
         echo ">>> Creating data subdirectories..."
-        sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres-master,postgres-slave1,postgres-slave2,redis,minio,portainer}
+        sudo mkdir -p "$GLUSTER_SHARED_DIR"/{postgres-master,postgres-slave1,postgres-slave2,redis,minio,letsencrypt,portainer}
         sudo chown -R "$USER":"$USER" "$GLUSTER_SHARED_DIR"
         echo "Data directories created in mounted volume"
     else
