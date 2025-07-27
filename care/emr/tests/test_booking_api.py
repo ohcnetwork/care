@@ -343,9 +343,9 @@ class TestBookingViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         new_slot = self.create_slot()
-        reason_for_visit = "Reason for visit"
-        reschedule_reason = "Cancel reason"
-        booking = self.create_booking(reason_for_visit=reason_for_visit)
+        old_note = "old note"
+        new_note = "new note"
+        booking = self.create_booking(note=old_note)
         reschedule_url = reverse(
             "appointments-reschedule",
             kwargs={
@@ -353,13 +353,17 @@ class TestBookingViewSet(CareAPITestBase):
                 "external_id": booking.external_id,
             },
         )
-        data = {"new_slot": new_slot.external_id, "reason": reschedule_reason}
+        data = {
+            "new_slot": new_slot.external_id,
+            "new_booking_note": new_note,
+            "previous_booking_note": old_note,
+        }
         response = self.client.post(reschedule_url, data, format="json")
         self.assertEqual(response.status_code, 200)
 
         booking.refresh_from_db()
-        self.assertEqual(booking.reason_for_visit, reschedule_reason)
-        self.assertEqual(response.data["reason_for_visit"], reason_for_visit)
+        self.assertEqual(booking.note, old_note)
+        self.assertEqual(response.data["note"], new_note)
 
     def test_reschedule_booking_without_permission(self):
         """Users without proper permissions cannot reschedule bookings via the re-schedule endpoint."""
@@ -380,7 +384,10 @@ class TestBookingViewSet(CareAPITestBase):
                 "external_id": booking.external_id,
             },
         )
-        data = {"new_slot": new_slot.external_id}
+        data = {
+            "new_slot": new_slot.external_id,
+            "new_booking_note": "note",
+        }
         response = self.client.post(reschedule_url, data, format="json")
         self.assertContains(
             response,
@@ -410,7 +417,10 @@ class TestBookingViewSet(CareAPITestBase):
                 "external_id": booking.external_id,
             },
         )
-        data = {"new_slot": new_slot.external_id}
+        data = {
+            "new_slot": new_slot.external_id,
+            "new_booking_note": "note",
+        }
         response = self.client.post(reschedule_url, data, format="json")
         self.assertEqual(response.status_code, 200)
 
@@ -437,7 +447,10 @@ class TestBookingViewSet(CareAPITestBase):
                 "external_id": booking.external_id,
             },
         )
-        data = {"new_slot": new_slot.external_id}
+        data = {
+            "new_slot": new_slot.external_id,
+            "new_booking_note": "note",
+        }
         response = self.client.post(reschedule_url, data, format="json")
         self.assertEqual(response.status_code, 404)
 
@@ -464,7 +477,10 @@ class TestBookingViewSet(CareAPITestBase):
                 "external_id": booking.external_id,
             },
         )
-        data = {"new_slot": new_slot.external_id}
+        data = {
+            "new_slot": new_slot.external_id,
+            "new_booking_note": "note",
+        }
         response = self.client.post(reschedule_url, data, format="json")
         self.assertContains(
             response,
@@ -659,7 +675,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
     def get_appointment_data(self, **kwargs):
         data = {
             "patient": self.patient.external_id,
-            "reason_for_visit": "Testing",
+            "note": "Testing",
         }
         data.update(kwargs)
         return data
@@ -1285,7 +1301,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
         """OTP authenticated users can create appointments."""
         data = {
             "patient": self.patient.external_id,
-            "reason_for_visit": "Test Reason",
+            "note": "Test Reason",
         }
         url = reverse(
             "otp-slots-create-appointment",
@@ -1299,7 +1315,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
         other_patient = self.create_patient(phone_number="+917777777778")
         data = {
             "patient": other_patient.external_id,
-            "reason_for_visit": "Test Reason",
+            "note": "Test Reason",
         }
         url = reverse(
             "otp-slots-create-appointment",

@@ -19,6 +19,7 @@ from care.emr.resources.tag.config_spec import (
 )
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.filters.null_filter import NullFilter
 
 
@@ -39,6 +40,7 @@ class TagConfigFilters(filters.FilterSet):
     parent = filters.UUIDFilter(lookup_expr="exact", field_name="parent__external_id")
     resource = filters.CharFilter(lookup_expr="iexact")
     parent_is_null = NullFilter(field_name="parent")
+    ids = MultiSelectFilter(field_name="external_id")
 
 
 class TagConfigViewSet(

@@ -69,6 +69,7 @@ class TokenBookingBaseSpec(EMRResource):
 
 class TokenBookingWriteSpec(TokenBookingBaseSpec):
     status: BookingStatusChoices
+    note: str
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.status in CANCELLED_STATUS_CHOICES:
@@ -83,7 +84,7 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
     booked_on: datetime.datetime
     booked_by: UserSpec
     status: str
-    reason_for_visit: str
+    note: str
     user: dict = {}
     facility: dict = {}
     created_by: UserSpec | None = None

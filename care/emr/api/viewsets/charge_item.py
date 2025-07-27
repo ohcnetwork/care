@@ -2,7 +2,7 @@ from django.db import transaction
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
-from pydantic import UUID4, BaseModel
+from pydantic import UUID4, BaseModel, model_validator
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -57,6 +57,15 @@ class ApplyChargeItemDefinitionRequest(BaseModel):
     charge_item_definition: UUID4
     quantity: int
     encounter: UUID4
+
+    service_resource: ChargeItemResourceOptions | None = None
+    service_resource_id: str | None = None
+
+    @model_validator(mode="after")
+    def validate_service_resource(self):
+        if self.service_resource and not self.service_resource_id:
+            raise ValueError("Service resource id is required.")
+        return self
 
 
 class ApplyMultipleChargeItemDefinitionRequest(BaseModel):
@@ -188,6 +197,15 @@ class ChargeItemViewSet(
         request_params = ApplyMultipleChargeItemDefinitionRequest(**request.data)
         with transaction.atomic():
             for charge_item_request in request_params.requests:
+                if (
+                    charge_item_request.service_resource
+                    and not validate_service_resource(
+                        facility,
+                        charge_item_request.service_resource,
+                        charge_item_request.service_resource_id,
+                    )
+                ):
+                    raise ValidationError("Invalid service resource")
                 charge_item_definition = get_object_or_404(
                     ChargeItemDefinition,
                     external_id=charge_item_request.charge_item_definition,
@@ -209,6 +227,11 @@ class ChargeItemViewSet(
                 charge_item = apply_charge_item_definition(
                     charge_item_definition, encounter, quantity=quantity
                 )
+                if charge_item_request.service_resource:
+                    charge_item.service_resource = charge_item_request.service_resource
+                    charge_item.service_resource_id = (
+                        charge_item_request.service_resource_id
+                    )
                 charge_item.save()
         return Response({})
 
