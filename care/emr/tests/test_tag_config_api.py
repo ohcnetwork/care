@@ -262,7 +262,7 @@ class TestTagConfigAPI(CareAPITestBase):
         self.assertEqual(response.status_code, 400)
         self.assertContains(response, "Slug must be unique", status_code=400)
 
-    def test_create_tag_config_with_parent_slug_with_same_resource_globally(self):
+    def test_create_tag_config_with_parent_with_same_resource_globally(self):
         self.client.force_authenticate(user=self.superuser)
         parent_tag = self.create_tag_config(
             slug="parent-tag",
@@ -282,7 +282,7 @@ class TestTagConfigAPI(CareAPITestBase):
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(response.data["id"], get_response.data["id"])
 
-    def test_create_tag_config_with_parent_slug_with_different_resource_globally(self):
+    def test_create_tag_config_with_parent_with_different_resource_globally(self):
         self.client.force_authenticate(user=self.superuser)
         parent_tag = self.create_tag_config(
             slug="parent-tag",
@@ -300,7 +300,7 @@ class TestTagConfigAPI(CareAPITestBase):
         self.assertEqual(response.status_code, 400)
         self.assertContains(response, "Parent tag config not found", status_code=400)
 
-    def test_create_tag_config_with_parent_slug_with_same_resource_in_facility(self):
+    def test_create_tag_config_with_parent_with_same_resource_in_facility(self):
         self.client.force_authenticate(user=self.user)
         self.attach_role_facility_organization_user(
             self.facility_organization, self.user, self.role
@@ -325,7 +325,7 @@ class TestTagConfigAPI(CareAPITestBase):
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(response.data["id"], get_response.data["id"])
 
-    def test_create_tag_config_with_parent_slug_with_different_resource_in_facility(
+    def test_create_tag_config_with_parent_with_different_resource_in_facility(
         self,
     ):
         self.client.force_authenticate(user=self.user)
@@ -350,7 +350,7 @@ class TestTagConfigAPI(CareAPITestBase):
         self.assertEqual(response.status_code, 400)
         self.assertContains(response, "Parent tag config not found", status_code=400)
 
-    def test_create_tag_config_with_parent_slug_with_same_resource_in_different_facility(
+    def test_create_tag_config_with_parent_with_same_resource_in_different_facility(
         self,
     ):
         self.client.force_authenticate(user=self.user)
@@ -376,7 +376,7 @@ class TestTagConfigAPI(CareAPITestBase):
         self.assertEqual(response.status_code, 400)
         self.assertContains(response, "Parent tag config not found", status_code=400)
 
-    def test_create_tag_config_with_parent_slug_with_same_resource_in_organization(
+    def test_create_tag_config_with_parent_with_same_resource_in_organization(
         self,
     ):
         self.client.force_authenticate(user=self.superuser)
@@ -400,7 +400,7 @@ class TestTagConfigAPI(CareAPITestBase):
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(response.data["id"], get_response.data["id"])
 
-    def test_create_tag_config_with_parent_slug_with_different_resource_in_organization(
+    def test_create_tag_config_with_parent_with_different_resource_in_organization(
         self,
     ):
         self.client.force_authenticate(user=self.superuser)
@@ -435,3 +435,202 @@ class TestTagConfigAPI(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertContains(response, "Parent tag config not found", status_code=400)
+
+    # Test cases for update tagconfig
+
+    def test_update_tag_config_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            priority=1,
+            category=TagCategoryChoices.clinical.value,
+        )
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                slug="test-tag-updated",
+                resource=TagResource.encounter.value,
+                category=TagCategoryChoices.lab.value,
+                status=TagStatus.archived.value,
+                priority=5,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(response.data["id"], get_response.data["id"])
+        self.assertEqual(get_response.data["slug"], "test-tag-updated")
+        self.assertEqual(get_response.data["priority"], 5)
+        self.assertEqual(get_response.data["status"], TagStatus.archived.value)
+
+    def test_update_tag_config_as_with_facility_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            facility=self.facility,
+        )
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                slug="test-tag-updated",
+                resource=TagResource.encounter.value,
+                facility=self.facility.external_id,
+                status=TagStatus.archived.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(response.data["id"], get_response.data["id"])
+        self.assertEqual(get_response.data["slug"], "test-tag-updated")
+        self.assertEqual(get_response.data["status"], TagStatus.archived.value)
+
+    def test_update_tag_config_as_with_organization_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            organization=self.organization,
+        )
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                slug="test-tag-updated",
+                resource=TagResource.encounter.value,
+                organization=self.organization.external_id,
+                status=TagStatus.archived.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(response.data["id"], get_response.data["id"])
+        self.assertEqual(get_response.data["slug"], "test-tag-updated")
+        self.assertEqual(get_response.data["status"], TagStatus.archived.value)
+
+    def test_update_tag_config_as_with_global_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+        )
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                slug="test-tag-updated",
+                resource=TagResource.encounter.value,
+                status=TagStatus.archived.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(response.data["id"], get_response.data["id"])
+        self.assertEqual(get_response.data["slug"], "test-tag-updated")
+        self.assertEqual(get_response.data["status"], TagStatus.archived.value)
+
+    def test_update_tag_config_with_facility_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            facility=self.facility,
+        )
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                slug="test-tag-updated",
+                resource=TagResource.encounter.value,
+                facility=self.facility.external_id,
+                status=TagStatus.archived.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(response.data["id"], get_response.data["id"])
+        self.assertEqual(get_response.data["slug"], "test-tag-updated")
+        self.assertEqual(get_response.data["status"], TagStatus.archived.value)
+
+    def test_update_tag_config_with_organization_as_user_without_permission(self):
+        self.client.force_authenticate(self.user)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            organization=self.organization,
+        )
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                slug="test-tag-updated",
+                resource=TagResource.encounter.value,
+                organization=self.organization.external_id,
+                status=TagStatus.archived.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "You do not have permission to write tag configs", status_code=403
+        )
+
+    def test_update_tag_config_with_organization_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            organization=self.organization,
+        )
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                slug="test-tag-updated",
+                resource=TagResource.encounter.value,
+                status=TagStatus.archived.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "You do not have permission to write tag configs", status_code=403
+        )
+
+    def test_update_tag_config_with_facility_organization_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            facility=self.facility,
+            organization=self.organization,
+        )
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                slug="test-tag-updated",
+                resource=TagResource.encounter.value,
+                status=TagStatus.archived.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(response.data["id"], get_response.data["id"])
+        self.assertEqual(get_response.data["slug"], "test-tag-updated")
+        self.assertEqual(get_response.data["status"], TagStatus.archived.value)
