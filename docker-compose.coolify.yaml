@@ -48,7 +48,7 @@ services:
       - "5433:5432"
 
   redis:
-    image: redis/redis:7.4-alpine
+    image: redis/redis:8-alpine
     restart: unless-stopped
     volumes:
       - redis-data:/data
