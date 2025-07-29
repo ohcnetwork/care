@@ -1,29 +1,33 @@
 #!/bin/sh
 
-minio_backup() {
-    until mc alias set minio http://minio:9000 "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY" 2>/dev/null; do
-        echo "Waiting for MinIO..."
-        sleep 2
-    done
+echo "Installing packages..."
+apk update && apk add --no-cache dcron curl
+curl -o /usr/local/bin/mc https://dl.min.io/client/mc/release/linux-amd64/mc
+chmod +x /usr/local/bin/mc
 
-    mc mb --ignore-existing minio/"$PATIENT_MINIO_BUCKET"
-    mc mb --ignore-existing minio/"$FACILITY_MINIO_BUCKET"
+cat > /backup.sh << 'EOF'
+#!/bin/sh
+until /usr/local/bin/mc alias set minio http://minio:9000 "$MINIO_ACCESS_KEY" "$MINIO_SECRET_KEY" 2>/dev/null; do
+    echo "$(date): Waiting for MinIO..."
+    sleep 2
+done
 
-    mc alias set s3 https://s3.amazonaws.com "$S3_ACCESS_KEY_ID" "$S3_SECRET_ACCESS_KEY"
+/usr/local/bin/mc mb --ignore-existing minio/"$PATIENT_MINIO_BUCKET"
+/usr/local/bin/mc mb --ignore-existing minio/"$FACILITY_MINIO_BUCKET"
 
-    echo "Syncing patient bucket..."
-    mc mirror minio/"$PATIENT_MINIO_BUCKET" s3/"$S3_BUCKET/backup"
+/usr/local/bin/mc alias set s3 https://s3.amazonaws.com "$S3_ACCESS_KEY_ID" "$S3_SECRET_ACCESS_KEY"
 
-    echo "Syncing facility bucket..."
-    mc mirror minio/"$FACILITY_MINIO_BUCKET" s3/"$S3_BUCKET/backup"
+echo "$(date): Syncing patient bucket..."
+/usr/local/bin/mc mirror minio/"$PATIENT_MINIO_BUCKET" s3/"$S3_BUCKET/patient-backup"
 
-    echo "Backup completed successfully!"
-}
+echo "$(date): Syncing facility bucket..."
+/usr/local/bin/mc mirror minio/"$FACILITY_MINIO_BUCKET" s3/"$S3_BUCKET/facility-backup"
 
-if ! command -v crond >/dev/null 2>&1; then
-    echo "Installing cron..."
-    apt-get install -y cron
-fi
+echo "$(date): Backup completed successfully!"
+EOF
 
-echo "0 0 * * * /bin/sh -c '. /etc/environment && $(declare -f minio_backup); minio_backup' >> /var/log/backup.log 2>&1" | crontab -
-crond -f -d 8
+chmod +x /backup.sh
+
+echo "30 18 * * * /backup.sh >> /var/log/backup.log 2>&1" | crontab -
+echo "$(date): Cron job set up. Starting cron daemon..."
+crond -f -l 2

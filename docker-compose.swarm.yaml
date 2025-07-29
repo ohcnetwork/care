@@ -51,12 +51,12 @@ volumes:
 
 # Since production-latest doesn't have new scripts, we're using config files for now
 configs:
+  haproxy-config:
+    file: ./haproxy.cfg
   postgres-master:
     file: ./scripts/postgres_master.sh
   postgres-slave:
     file: ./scripts/postgres_slave.sh
-  haproxy-config:
-    file: ./haproxy.cfg
   minio-cron:
     file: ./scripts/minio_cron.sh
 
@@ -93,7 +93,7 @@ x-policy-template: &policy-template
   restart_policy:
     condition: on-failure
     delay: 10s
-    max_attempts: 3
+    max_attempts: 5
     window: 60s
 
 services:
@@ -124,7 +124,7 @@ services:
     image: postgres:alpine
     environment:
       <<: *postgres-env
-      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+      # POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
       POSTGRES_REPLICATION_USER: replicator
       POSTGRES_REPLICATION_PASSWORD: replicator
     volumes:
@@ -251,7 +251,7 @@ services:
           cpus: "0.1"
 
   redis:
-    image: redis:7.4-alpine
+    image: redis:8-alpine
     command: redis-server --appendonly yes --save 60 1 --maxmemory 128mb --maxmemory-policy allkeys-lru
     volumes:
       - redis-data:/data
@@ -264,8 +264,8 @@ services:
         max_replicas_per_node: 1
       resources:
         limits:
-          memory: 128M
-          cpus: "0.2"
+          memory: 192M
+          cpus: "0.3"
         reservations:
           memory: 64M
           cpus: "0.1"
@@ -291,11 +291,11 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.role == manager
+          - node.role == worker
         max_replicas_per_node: 1
       resources:
         limits:
-          memory: 256M
+          memory: 384M
           cpus: "0.3"
         reservations:
           memory: 128M
@@ -313,7 +313,7 @@ services:
       retries: 3
 
   minio-backup:
-    image: minio/mc:latest
+    image: alpine:latest
     entrypoint: ["/bin/sh", "/minio_cron.sh"]
     environment:
       MINIO_ACCESS_KEY: minioadmin
@@ -332,7 +332,7 @@ services:
       replicas: 1
       placement:
         constraints:
-          - node.role == manager
+          - node.role == worker
         max_replicas_per_node: 1
       resources:
         limits:
@@ -414,7 +414,7 @@ services:
           cpus: "0.1"
 
   traefik:
-    image: traefik:v3.4
+    image: traefik:v3.5
     ports:
       - "80:80" # HTTP
       - "443:443" # HTTPS
