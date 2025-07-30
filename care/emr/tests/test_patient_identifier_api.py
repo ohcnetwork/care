@@ -45,10 +45,12 @@ class TestPatientIdentifierConfigAPI(CareAPITestBase):
             "default_value": None,
         }
 
-    def generate_patient_identifier_config_data(self, status=None, **kwargs):
+    def generate_patient_identifier_config_data(
+        self, status=None, config=None, **kwargs
+    ):
         return {
             "status": status or PatientIdentifierStatus.active,
-            "config": self.generate_config(),
+            "config": config or self.generate_config(),
             **kwargs,
         }
 
@@ -320,3 +322,222 @@ class TestPatientIdentifierConfigAPI(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 404)
         self.assertContains(response, "Object not found", status_code=404)
+
+    # Test cases for patient identifier config update
+
+    def test_update_patient_identifier_config_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        config = self.generate_config(
+            use=PatientIdentifierUse.official,
+            system="http://example.com/official-identifier",
+        )
+        patient_identifier = self.create_patient_identifier_config()
+        data = self.generate_patient_identifier_config_data(
+            status=PatientIdentifierStatus.inactive, config=config
+        )
+        response = self.client.put(
+            self.get_detail_url(patient_identifier.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(response.data["id"]), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(
+            get_response.data["status"], PatientIdentifierStatus.inactive.value
+        )
+        self.assertEqual(
+            get_response.data["config"]["use"], PatientIdentifierUse.official.value
+        )
+        self.assertEqual(
+            get_response.data["config"]["system"],
+            "http://example.com/official-identifier",
+        )
+
+    def test_update_patient_identifier_config_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        patient_identifier = self.create_patient_identifier_config()
+        data = self.generate_patient_identifier_config_data(
+            status=PatientIdentifierStatus.inactive
+        )
+        response = self.client.put(
+            self.get_detail_url(patient_identifier.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.data["detail"],
+            "You are not authorized to update a patient identifier config",
+        )
+
+    def test_update_patient_identifier_config_with_facility_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        config = self.generate_config(
+            use=PatientIdentifierUse.official,
+            system="http://example.com/official-identifier",
+        )
+        patient_identifier = self.create_patient_identifier_config(
+            facility=self.facility
+        )
+        data = self.generate_patient_identifier_config_data(
+            status=PatientIdentifierStatus.inactive, config=config
+        )
+        response = self.client.put(
+            self.get_detail_url(patient_identifier.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(response.data["id"]), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(
+            get_response.data["status"], PatientIdentifierStatus.inactive.value
+        )
+        self.assertEqual(
+            get_response.data["config"]["use"], PatientIdentifierUse.official.value
+        )
+        self.assertEqual(
+            get_response.data["config"]["system"],
+            "http://example.com/official-identifier",
+        )
+
+    def test_update_patient_identifier_config_with_facility_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        patient_identifier = self.create_patient_identifier_config(
+            facility=self.facility
+        )
+        data = self.generate_patient_identifier_config_data(
+            status=PatientIdentifierStatus.inactive
+        )
+        response = self.client.put(
+            self.get_detail_url(patient_identifier.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(response.data["id"]), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(
+            get_response.data["status"], PatientIdentifierStatus.inactive.value
+        )
+        self.assertEqual(
+            get_response.data["config"]["use"], PatientIdentifierUse.usual.value
+        )
+        self.assertEqual(
+            get_response.data["config"]["system"], "http://example.com/identifier"
+        )
+
+    def test_update_patient_identifier_config_with_facility_user_without_permission(
+        self,
+    ):
+        self.client.force_authenticate(user=self.user)
+        patient_identifier = self.create_patient_identifier_config(
+            facility=self.facility
+        )
+        data = self.generate_patient_identifier_config_data(
+            status=PatientIdentifierStatus.inactive
+        )
+        response = self.client.put(
+            self.get_detail_url(patient_identifier.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "You do not have permission to write patient identifier configs",
+            status_code=403,
+        )
+
+    def test_update_patient_identifier_config_with_duplicate_system(self):
+        self.client.force_authenticate(user=self.superuser)
+        config = self.generate_config(system="http://example.com/official-identifier")
+        self.create_patient_identifier_config()
+        patient_identifier = self.create_patient_identifier_config(config=config)
+        data = self.generate_patient_identifier_config_data()
+        response = self.client.put(
+            self.get_detail_url(patient_identifier.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "A patient identifier config with this system already exists",
+            status_code=400,
+        )
+
+    def test_update_patient_identifier_config_with_duplicate_system_in_facility(self):
+        self.client.force_authenticate(user=self.superuser)
+        config = self.generate_config(system="http://example.com/official-identifier")
+        self.create_patient_identifier_config(facility=self.facility)
+        patient_identifier = self.create_patient_identifier_config(
+            facility=self.facility, config=config
+        )
+        data = self.generate_patient_identifier_config_data(
+            facility=self.facility.external_id
+        )
+        response = self.client.put(
+            self.get_detail_url(patient_identifier.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "A patient identifier config with this system already exists",
+            status_code=400,
+        )
+
+    def test_update_patient_identifier_config_with_duplicate_system_as_user_with_permission(
+        self,
+    ):
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        config = self.generate_config(system="http://example.com/official-identifier")
+        self.create_patient_identifier_config()
+        patient_identifier = self.create_patient_identifier_config(config=config)
+        data = self.generate_patient_identifier_config_data()
+        response = self.client.put(
+            self.get_detail_url(patient_identifier.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "A patient identifier config with this system already exists",
+            status_code=400,
+        )
+
+    def test_update_patient_identifier_config_with_duplicate_system_in_facility_as_user_with_permission(
+        self,
+    ):
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        config = self.generate_config(system="http://example.com/official-identifier")
+        self.create_patient_identifier_config(facility=self.facility)
+        patient_identifier = self.create_patient_identifier_config(
+            facility=self.facility, config=config
+        )
+        data = self.generate_patient_identifier_config_data(
+            facility=self.facility.external_id
+        )
+        response = self.client.put(
+            self.get_detail_url(patient_identifier.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "A patient identifier config with this system already exists",
+            status_code=400,
+        )
