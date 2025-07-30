@@ -238,3 +238,85 @@ class TestPatientIdentifierConfigAPI(CareAPITestBase):
             "A patient identifier config with this system already exists",
             status_code=400,
         )
+
+    # Test cases for patient identifier config retrieval
+
+    def test_retrieve_patient_identifier_config_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        config = self.create_patient_identifier_config()
+        response = self.client.get(
+            self.get_detail_url(config.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(config.external_id))
+
+    def test_retrieve_patient_identifier_config_as_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        config = self.create_patient_identifier_config()
+        response = self.client.get(
+            self.get_detail_url(config.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(config.external_id))
+
+    def test_retrieve_patient_identifier_config_as_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        config = self.create_patient_identifier_config()
+        response = self.client.get(
+            self.get_detail_url(config.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(config.external_id))
+
+    def test_retrieve_patient_identifier_config_with_facility_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        config = self.create_patient_identifier_config(facility=self.facility)
+        response = self.client.get(
+            self.get_detail_url(config.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(config.external_id))
+
+    def test_retrieve_patient_identifier_config_with_facility_user_with_permission(
+        self,
+    ):
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        config = self.create_patient_identifier_config(facility=self.facility)
+        response = self.client.get(
+            self.get_detail_url(config.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(config.external_id))
+
+    def test_retrieve_patient_identifier_config_with_facility_user_without_permission(
+        self,
+    ):
+        self.client.force_authenticate(user=self.user)
+        config = self.create_patient_identifier_config(facility=self.facility)
+        response = self.client.get(
+            self.get_detail_url(config.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "You do not have permission to read patient identifier configs",
+            status_code=403,
+        )
+
+    def test_retrieve_patient_identifier_config_with_non_existent_id(self):
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.get_detail_url("non-existent-id"), format="json"
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertContains(response, "Object not found", status_code=404)
