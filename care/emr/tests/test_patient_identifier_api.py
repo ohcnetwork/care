@@ -553,7 +553,7 @@ class TestPatientIdentifierConfigAPI(CareAPITestBase):
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(response.data["results"][0]["id"], str(config.external_id))
 
-    def test_list_patient_identifier_configs_as_user_with(self):
+    def test_list_patient_identifier_configs_as_user(self):
         self.client.force_authenticate(user=self.user)
         config = self.create_patient_identifier_config()
         self.create_patient_identifier_config(facility=self.facility)
