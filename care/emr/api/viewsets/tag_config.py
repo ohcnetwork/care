@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import (
@@ -54,6 +54,24 @@ class TagConfigViewSet(
     filterset_class = TagConfigFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["priority", "created_date", "modified_date"]
+
+    def validate_data(self, instance, model_obj=None):
+        filters = {"slug": instance.slug}
+        if model_obj:
+            if model_obj.organization:
+                filters["organization"] = model_obj.organization
+            elif model_obj.facility:
+                filters["facility"] = model_obj.facility
+            queryset = TagConfig.objects.filter(**filters).exclude(id=model_obj.id)
+        else:
+            if instance.organization:
+                filters["organization__external_id"] = instance.organization
+            elif instance.facility:
+                filters["facility__external_id"] = instance.facility
+            queryset = TagConfig.objects.filter(**filters)
+        if queryset.exists():
+            raise ValidationError("Slug must be unique")
+        return super().validate_data(instance, model_obj)
 
     def authorize_retrieve(self, model_instance):
         if model_instance.facility and not AuthorizationController.call(
