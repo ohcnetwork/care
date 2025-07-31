@@ -237,7 +237,7 @@ class TestTagConfigAPI(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["slug"], tag.slug)
 
-    def test_create_tag_config_with_duplicate_slug_in_same_organization(self):
+    def test_create_tag_config_with_duplicate_slug_in_different_organization(self):
         self.client.force_authenticate(user=self.superuser)
         self.create_tag_config(organization=self.organization, slug="duplicate-slug")
         another_organization = self.create_organization(user=self.superuser)
@@ -245,6 +245,19 @@ class TestTagConfigAPI(CareAPITestBase):
             self.base_url,
             self.generate_tag_config_data(
                 organization=another_organization.external_id, slug="duplicate-slug"
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["slug"], "duplicate-slug")
+
+    def test_create_tag_config_with_duplicate_slug_in_same_organization(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_tag_config(organization=self.organization, slug="duplicate-slug")
+        response = self.client.post(
+            self.base_url,
+            self.generate_tag_config_data(
+                organization=self.organization.external_id, slug="duplicate-slug"
             ),
             format="json",
         )
@@ -634,6 +647,97 @@ class TestTagConfigAPI(CareAPITestBase):
         self.assertEqual(response.data["id"], get_response.data["id"])
         self.assertEqual(get_response.data["slug"], "test-tag-updated")
         self.assertEqual(get_response.data["status"], TagStatus.archived.value)
+
+    def test_update_tag_config_with_facility_user_without_permission(self):
+        self.client.force_authenticate(self.user)
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            facility=self.facility,
+        )
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                slug="test-tag-updated",
+                resource=TagResource.encounter.value,
+                status=TagStatus.archived.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "You do not have permission to write tag configs", status_code=403
+        )
+
+    def test_update_tag_config_with_duplicate_slug_globally(self):
+        self.client.force_authenticate(self.superuser)
+        self.create_tag_config(
+            slug="test-duplicated-tag",
+            resource=TagResource.encounter,
+        )
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+        )
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                slug="test-duplicated-tag",
+                resource=TagResource.encounter.value,
+                status=TagStatus.archived.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "Slug must be unique", status_code=400)
+
+    def test_update_tag_config_with_duplicate_slug_in_facility(self):
+        self.client.force_authenticate(self.superuser)
+        self.create_tag_config(
+            slug="test-duplicated-tag",
+            resource=TagResource.encounter,
+            facility=self.facility,
+        )
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            facility=self.facility,
+        )
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                slug="test-duplicated-tag",
+                resource=TagResource.encounter.value,
+                status=TagStatus.archived.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "Slug must be unique", status_code=400)
+
+    def test_update_tag_config_with_duplicate_slug_in_organization(self):
+        self.client.force_authenticate(self.superuser)
+        self.create_tag_config(
+            slug="test-duplicated-tag",
+            resource=TagResource.encounter,
+            organization=self.organization,
+        )
+        tag_config = self.create_tag_config(
+            slug="test-tag",
+            resource=TagResource.encounter,
+            organization=self.organization,
+        )
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                slug="test-duplicated-tag",
+                resource=TagResource.encounter.value,
+                status=TagStatus.archived.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "Slug must be unique", status_code=400)
 
     # Test cases for retrieve tagconfig
 
