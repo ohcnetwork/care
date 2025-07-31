@@ -7,6 +7,7 @@ from care.security.roles.role import (
     DOCTOR_ROLE,
     FACILITY_ADMIN_ROLE,
     NURSE_ROLE,
+    PHARMACIST_ROLE,
     STAFF_ROLE,
     VOLUNTEER_ROLE,
 )
@@ -25,6 +26,7 @@ class OrganizationPermissions(enum.Enum):
             ADMINISTRATOR,
             NURSE_ROLE,
             VOLUNTEER_ROLE,
+            PHARMACIST_ROLE,
         ],
     )
     can_create_organization = Permission(
@@ -63,5 +65,6 @@ class OrganizationPermissions(enum.Enum):
             ADMINISTRATOR,
             NURSE_ROLE,
             VOLUNTEER_ROLE,
+            PHARMACIST_ROLE,
         ],
     )

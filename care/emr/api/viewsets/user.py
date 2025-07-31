@@ -32,7 +32,7 @@ class UserFilter(filters.FilterSet):
         field_name="phone_number", lookup_expr="icontains"
     )
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
-    user_type = filters.CharFilter(field_name="username", lookup_expr="iexact")
+    user_type = filters.CharFilter(field_name="user_type", lookup_expr="iexact")
 
 
 class UserViewSet(EMRModelViewSet):
@@ -47,7 +47,7 @@ class UserViewSet(EMRModelViewSet):
     search_fields = ["first_name", "last_name", "username"]
 
     def get_queryset(self):
-        return User.objects.filter(deleted=False)
+        return super().get_queryset().filter(deleted=False)
 
     def perform_create(self, instance):
         with transaction.atomic():

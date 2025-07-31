@@ -12,6 +12,7 @@ class OrganizationTypeChoices(str, Enum):
     team = "team"
     govt = "govt"
     role = "role"
+    product_supplier = "product_supplier"
 
 
 class OrganizationBaseSpec(EMRResource):

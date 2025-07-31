@@ -1,3 +1,4 @@
+from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
@@ -18,6 +19,10 @@ from care.emr.resources.consent.spec import (
 from care.utils.time_util import care_now
 
 
+class ConsentFilters(filters.FilterSet):
+    encounter = filters.UUIDFilter(field_name="encounter__external_id")
+
+
 class ConsentViewSet(
     ValidateEncounterMixin,
     EncounterBasedAuthorizationBase,
@@ -28,6 +33,8 @@ class ConsentViewSet(
     pydantic_read_model = ConsentListSpec
     pydantic_update_model = ConsentUpdateSpec
     pydantic_retrieve_model = ConsentRetrieveSpec
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = ConsentFilters
 
     def get_queryset(self):
         self.authorize_read_encounter()

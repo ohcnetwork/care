@@ -45,8 +45,8 @@ class FacilityLocationFormChoices(str, Enum):
     lvl = "lvl"
     co = "co"
     ro = "ro"
-    bd = "bd"
-    ve = "ve"
+    bd = "bd"  # Bed
+    ve = "ve"  # Vehicle
     ho = "ho"
     ca = "ca"
     rd = "rd"

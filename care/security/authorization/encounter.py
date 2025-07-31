@@ -6,7 +6,10 @@ from care.security.authorization.base import (
     AuthorizationController,
     AuthorizationHandler,
 )
+from care.security.permissions.diagnostic_report import DiagnosticReportPermissions
 from care.security.permissions.encounter import EncounterPermissions
+from care.security.permissions.medication import MedicationPermissions
+from care.security.permissions.service_request import ServiceRequestPermissions
 
 
 class EncounterAccess(AuthorizationHandler):
@@ -43,6 +46,11 @@ class EncounterAccess(AuthorizationHandler):
             orgs=orgs,
         )
 
+    def can_view_as_pharmacist(self, user, facility):
+        return self.check_permission_in_facility_organization(
+            [MedicationPermissions.is_pharmacist.name], user, facility=facility
+        )
+
     def can_submit_encounter_questionnaire_obj(self, user, encounter):
         """
         Check if the user has permission to read encounter under this facility
@@ -61,6 +69,16 @@ class EncounterAccess(AuthorizationHandler):
             orgs=orgs,
         )
 
+    def check_permission_in_encounter(self, user, encounter, permission):
+        orgs = [*encounter.facility_organization_cache]
+        if encounter.current_location:
+            orgs.extend(encounter.current_location.facility_organization_cache)
+        return self.check_permission_in_facility_organization(
+            [permission],
+            user,
+            orgs=orgs,
+        )
+
     def can_update_encounter_obj(self, user, encounter):
         """
         Check if the user has permission to create encounter under this facility
@@ -68,16 +86,47 @@ class EncounterAccess(AuthorizationHandler):
         if encounter.status in COMPLETED_CHOICES:
             # Cannot write to a closed encounter
             return False
-        orgs = [*encounter.facility_organization_cache]
-        if encounter.current_location:
-            orgs.extend(encounter.current_location.facility_organization_cache)
-        return self.check_permission_in_facility_organization(
-            [EncounterPermissions.can_write_encounter.name],
-            user,
-            orgs=orgs,
+        return self.check_permission_in_encounter(
+            user, encounter, EncounterPermissions.can_write_encounter.name
+        )
+
+    def can_view_service_request_for_encounter(self, user, encounter):
+        """
+        Check if the user has permission to read service request under this encounter
+        """
+        return self.check_permission_in_encounter(
+            user, encounter, ServiceRequestPermissions.can_read_service_request.name
+        )
+
+    def can_view_medication_dispense_for_encounter(self, user, encounter):
+        """
+        Check if the user has permission to read service request under this encounter
+        """
+        return self.check_permission_in_encounter(
+            user, encounter, MedicationPermissions.read_medication_dispense.name
+        )
+
+    def can_read_diagnostic_report_in_encounter(self, user, encounter):
+        """
+        Check if the user has permission to read diagnostic report under this encounter
+        """
+        return self.check_permission_in_encounter(
+            user, encounter, DiagnosticReportPermissions.can_read_diagnostic_report.name
+        )
+
+    def can_write_service_request_in_encounter(self, user, encounter):
+        """
+        Check if the user has permission to create service request under this encounter
+        """
+        if encounter.status in COMPLETED_CHOICES:
+            # Cannot write to a closed encounter
+            return False
+        return self.check_permission_in_encounter(
+            user, encounter, ServiceRequestPermissions.can_write_service_request.name
         )
 
     def get_filtered_encounters(self, qs, user, facility):
+        qs = qs.filter(facility=facility)
         if user.is_superuser:
             return qs
         roles = self.get_role_from_permissions(

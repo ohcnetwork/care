@@ -77,8 +77,8 @@ class MedicationStatementSpec(BaseMedicationStatementSpec):
 
 
 class MedicationStatementReadSpec(BaseMedicationStatementSpec):
-    created_by: UserSpec = dict
-    updated_by: UserSpec = dict
+    created_by: UserSpec = {}
+    updated_by: UserSpec = {}
     created_date: datetime
     modified_date: datetime
 
