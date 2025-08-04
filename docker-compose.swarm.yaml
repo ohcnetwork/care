@@ -48,6 +48,12 @@ volumes:
       type: none
       o: bind
       device: /care-storage/shared/portainer
+  # pgadmin-data:
+  #   driver: local
+  #   driver_opts:
+  #     type: none
+  #     o: bind
+  #     device: /care-storage/shared/pgadmin
 
 # Since production-latest doesn't have new scripts, we're using config files for now
 configs:
@@ -59,6 +65,8 @@ configs:
     file: ./scripts/postgres_slave.sh
   minio-cron:
     file: ./scripts/minio_cron.sh
+  # pgadmin-servers:
+  #   file: ./pgadmin_servers.json
 
 # Common environment variables for multiple services
 x-postgres-env: &postgres-env
@@ -82,6 +90,9 @@ x-backend-env: &backend-env
   BUCKET_SECRET: minioadmin
   FILE_UPLOAD_BUCKET: patient-bucket
   FACILITY_S3_BUCKET: facility-bucket
+  CORS_ALLOWED_ORIGINS: '["*"]'
+  SENTRY_DSN: https://0ef536cb49d03d3c2247fb0eac7f95ab@o4509054753964032.ingest.de.sentry.io/4509054759796816
+  SENTRY_ENVIRONMENT: aws-ec2
 
 x-policy-template: &policy-template
   update_config:
@@ -142,10 +153,10 @@ services:
         max_replicas_per_node: 1
       resources:
         limits:
-          memory: 768M
+          memory: 512M
           cpus: "0.4"
         reservations:
-          memory: 512M
+          memory: 256M
           cpus: "0.2"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
@@ -467,9 +478,15 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - /var/lib/docker/volumes:/var/lib/docker/volumes
     deploy:
+      <<: *policy-template
       mode: global
-      restart_policy:
-        condition: on-failure
+      resources:
+        limits:
+          memory: 64M
+          cpus: "0.2"
+        reservations:
+          memory: 32M
+          cpus: "0.1"
 
   portainer:
     image: portainer/portainer-ce:alpine
@@ -496,3 +513,41 @@ services:
         - "traefik.http.routers.portainer.entrypoints=websecure"
         - "traefik.http.routers.portainer.tls.certresolver=letsencrypt"
         - "traefik.http.services.portainer.loadbalancer.server.port=9000"
+
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@ohc.network
+  #     PGADMIN_DEFAULT_PASSWORD: pgadmin
+  #     PGADMIN_CONFIG_SERVER_MODE: "False"
+  #     PGADMIN_CONFIG_CONSOLE_LOG_LEVEL: 30
+  #   volumes:
+  #     - pgadmin-data:/var/lib/pgadmin
+  #   configs:
+  #     - source: pgadmin-servers
+  #       target: /pgadmin4/servers.json
+  #   deploy:
+  #     <<: *policy-template
+  #     replicas: 1
+  #     placement:
+  #       constraints:
+  #         - node.role == manager
+  #       max_replicas_per_node: 1
+  #     resources:
+  #       limits:
+  #         memory: 128M
+  #         cpus: "0.2"
+  #       reservations:
+  #         memory: 64M
+  #         cpus: "0.1"
+  #     labels:
+  #       - "traefik.enable=true"
+  #       - "traefik.http.routers.pgadmin.rule=Host(`pgadmin.ohc.network`)"
+  #       - "traefik.http.routers.pgadmin.entrypoints=websecure"
+  #       - "traefik.http.routers.pgadmin.tls.certresolver=letsencrypt"
+  #       - "traefik.http.services.pgadmin.loadbalancer.server.port=80"
+  #   healthcheck:
+  #     test: ["CMD", "wget", "-O", "-", "http://localhost:80/misc/ping"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3

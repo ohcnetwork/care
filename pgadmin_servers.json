@@ -1,0 +1,37 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "DB Master",
+      "Group": "Production",
+      "Host": "db-master",
+      "Port": 5432,
+      "MaintenanceDB": "care",
+      "Username": "postgres",
+      "ConnectionParameters": {
+        "sslmode": "prefer"
+      }
+    },
+    "2": {
+      "Name": "DB Slave 1",
+      "Group": "Production",
+      "Host": "db-slave1",
+      "Port": 5432,
+      "MaintenanceDB": "care",
+      "Username": "postgres",
+      "ConnectionParameters": {
+        "sslmode": "prefer"
+      }
+    },
+    "3": {
+      "Name": "DB Slave 2",
+      "Group": "Production",
+      "Host": "db-slave2",
+      "Port": 5432,
+      "MaintenanceDB": "care",
+      "Username": "postgres",
+      "ConnectionParameters": {
+        "sslmode": "prefer"
+      }
+    }
+  }
+}
