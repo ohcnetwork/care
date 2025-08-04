@@ -124,7 +124,6 @@ class ObservationReadSpec(BaseObservationSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        # Avoiding extra queries
         mapping["encounter"] = None
         mapping["patient"] = None
         mapping["questionnaire_response"] = None

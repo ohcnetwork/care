@@ -1,4 +1,5 @@
 import enum
+from typing import Any
 
 from pydantic import UUID4, BaseModel, field_validator, model_validator
 
@@ -45,15 +46,54 @@ def validate_question_type(question_type):
     return question_type
 
 
+class RangeSpec(BaseModel):
+    interpretation: str
+    min: float | None = None
+    max: float | None = None
+    unit: str | None = None
+    text: str | None = None
+    values: list[str | float | int] | None = None
+
+    @model_validator(mode="after")
+    def validate_range(self):
+        if self.values is not None:
+            if self.min is not None or self.max is not None:
+                raise ValueError(
+                    "Cannot mix 'values' (for categorical data like positive/negative) with 'min' or 'max' (for numeric ranges). Choose one type."
+                )
+        elif self.min is None and self.max is None:
+            raise ValueError(
+                "For numeric ranges, provide at least a 'min' or 'max' value (e.g., min=10 or max=20)."
+            )
+        return self
+
+
+class QualifiedRangeSpec(BaseModel):
+    conditions: dict[str, Any]
+    ranges: list[RangeSpec]
+    data_type: str
+
+
 class ObservationDefinitionComponentSpec(BaseModel):
     code: ValueSetBoundCoding[CARE_OBSERVATION_VALUSET.slug]
     permitted_data_type: QuestionType
     permitted_unit: ValueSetBoundCoding[CARE_UCUM_UNITS.slug] | None = None
+    qualified_ranges: list[QualifiedRangeSpec] = []
 
     @field_validator("permitted_data_type")
     @classmethod
     def validate_data_type(cls, permitted_data_type):
         return validate_question_type(permitted_data_type)
+
+    @model_validator(mode="after")
+    def validate_ranges_consistency(self):
+        if self.qualified_ranges:
+            for qr in self.qualified_ranges:
+                if qr.data_type != self.permitted_data_type:
+                    raise ValueError(
+                        "Qualified ranges data_type must match component's permitted_data_type"
+                    )
+        return self
 
 
 class BaseObservationDefinitionSpec(EMRResource):
@@ -73,11 +113,17 @@ class BaseObservationDefinitionSpec(EMRResource):
     method: ValueSetBoundCoding[CARE_OBSERVATION_COLLECTION_METHOD.slug] | None = None
     permitted_unit: ValueSetBoundCoding[CARE_UCUM_UNITS.slug] | None = None
     derived_from_uri: str | None = None
+    qualified_ranges: list[QualifiedRangeSpec] = []
 
     @field_validator("permitted_data_type")
     @classmethod
     def validate_data_type(cls, permitted_data_type):
         return validate_question_type(permitted_data_type)
+
+    @model_validator(mode="after")
+    def validate_qualified_ranges(self):
+        # TODO: find a optimise way to validate qualified ranges
+        pass
 
 
 class ObservationDefinitionCreateSpec(BaseObservationDefinitionSpec):
