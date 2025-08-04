@@ -54,7 +54,7 @@ evalidate = "2.0.5"
 
 [dev-packages]
 boto3-stubs = { extras = ["s3", "boto3"], version = "*" }
-coverage = "==7.6.10"
+coverage = "==7.10.2"
 debugpy = "==1.8.14"
 django-coverage-plugin = "==3.1.0"
 django-extensions = "==3.2.3"
