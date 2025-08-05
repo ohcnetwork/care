@@ -98,13 +98,6 @@ class TagConfigWriteSpec(TagConfigBaseSpec):
             if not config.exists():
                 err = "Parent tag config not found"
                 raise ValueError(err)
-        # Validate slug uniqueness
-        configs = TagConfig.objects.filter(slug=self.slug)
-        if facility:
-            configs = configs.filter(facility=facility)
-        if configs.exists():
-            err = "Slug must be unique"
-            raise ValidationError(err)
         return self
 
     @model_validator(mode="after")
