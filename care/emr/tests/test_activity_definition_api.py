@@ -836,3 +836,165 @@ class ActivityDefinitionAPITestBase(CareAPITestBase):
             "Activity Definition with this slug already exists.",
             status_code=400,
         )
+
+    # Test cases for list activity definitions
+
+    def test_list_activity_definitions_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_activity_definition(
+            facility=self.facility, slug="test-activity-definition"
+        )
+        self.create_activity_definition(
+            facility=self.facility, slug="test-activity-definition-2"
+        )
+        response = self.client.get(self.base_url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][1]["slug"], "test-activity-definition"
+        )
+        self.assertEqual(
+            response.data["results"][0]["slug"], "test-activity-definition-2"
+        )
+
+    def test_list_activity_definitions_as_user_with_permissions(self):
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            facility_organization=self.facility_organization,
+            role=self.role,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.create_activity_definition(
+            facility=self.facility, slug="test-activity-definition"
+        )
+        self.create_activity_definition(
+            facility=self.facility, slug="test-activity-definition-2"
+        )
+        response = self.client.get(self.base_url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][1]["slug"], "test-activity-definition"
+        )
+        self.assertEqual(
+            response.data["results"][0]["slug"], "test-activity-definition-2"
+        )
+
+    def test_list_activity_definitions_as_user_without_permissions(self):
+        self.client.force_authenticate(user=self.user)
+        self.create_activity_definition(
+            facility=self.facility, slug="test-activity-definition"
+        )
+        self.create_activity_definition(
+            facility=self.facility, slug="test-activity-definition-2"
+        )
+        response = self.client.get(self.base_url, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "Access Denied to Activity Definition",
+            status_code=403,
+        )
+
+    def test_list_activity_definition_with_status_filter(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_activity_definition(
+            facility=self.facility,
+            slug="test-activity-definition",
+            status=ActivityDefinitionStatusOptions.active.value,
+        )
+        self.create_activity_definition(
+            facility=self.facility,
+            slug="test-activity-definition-2",
+            status=ActivityDefinitionStatusOptions.retired.value,
+        )
+        response = self.client.get(
+            self.base_url,
+            {"status": ActivityDefinitionStatusOptions.active.value},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["slug"], "test-activity-definition"
+        )
+        self.assertEqual(
+            response.data["results"][0]["status"],
+            ActivityDefinitionStatusOptions.active.value,
+        )
+
+    def test_list_activity_definition_with_title_filter(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_activity_definition(
+            facility=self.facility,
+            slug="test-activity-definition",
+            title="Test Activity Definition",
+        )
+        self.create_activity_definition(
+            facility=self.facility,
+            slug="test-activity-definition-2",
+            title="Another Activity Definition",
+        )
+        response = self.client.get(
+            self.base_url, {"title": "Test Activity Definition"}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["slug"], "test-activity-definition"
+        )
+        self.assertEqual(
+            response.data["results"][0]["title"], "Test Activity Definition"
+        )
+
+    def test_list_activity_definition_with_category_filter(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_activity_definition(
+            facility=self.facility,
+            slug="test-activity-definition",
+            category="Test Category",
+        )
+        self.create_activity_definition(
+            facility=self.facility,
+            slug="test-activity-definition-2",
+            category="Another Category",
+        )
+        response = self.client.get(
+            self.base_url, {"category": "Test Category"}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["slug"], "test-activity-definition"
+        )
+        self.assertEqual(response.data["results"][0]["category"], "Test Category")
+
+    def test_list_activity_definition_with_kind_filter(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_activity_definition(
+            facility=self.facility, slug="test-activity-definition", kind="Test Kind"
+        )
+        self.create_activity_definition(
+            facility=self.facility,
+            slug="test-activity-definition-2",
+            kind="Another Kind",
+        )
+        response = self.client.get(self.base_url, {"kind": "Test Kind"}, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["slug"], "test-activity-definition"
+        )
+        self.assertEqual(response.data["results"][0]["kind"], "Test Kind")
+
+    def test_list_activity_definition_with_invalid_facility(self):
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.get_base_url(facility="invalid-facility-id"), format="json"
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertContains(
+            response,
+            "Object not found",
+            status_code=404,
+        )
