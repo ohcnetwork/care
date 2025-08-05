@@ -33,7 +33,7 @@ jobs:
             ${{ runner.os }}-${{ runner.arch }}-buildx-dev-
 
       - name: inject cache into docker
-        uses: reproducible-containers/buildkit-cache-dance@v3.1.2
+        uses: reproducible-containers/buildkit-cache-dance@v3.3.0
         with:
           cache-map: |
             {
