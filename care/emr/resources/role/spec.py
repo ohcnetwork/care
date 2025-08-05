@@ -25,7 +25,7 @@ class RoleBaseSpec(EMRResource):
 
 
 class RoleCreateSpec(RoleBaseSpec):
-    permissions: list[PermissionController.get_enum()] | None = []
+    permissions: list[PermissionController.get_enum()] = []
 
     @model_validator(mode="after")
     def validate_role(self, info: ValidationInfo):
@@ -57,7 +57,7 @@ class RoleCreateSpec(RoleBaseSpec):
         if self.permissions:
             obj.permissions = self.permissions
         else:
-            obj.permissions = None
+            obj.permissions = []
 
 
 class RoleReadSpec(RoleBaseSpec):
