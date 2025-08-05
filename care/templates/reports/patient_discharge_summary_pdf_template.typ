@@ -157,7 +157,7 @@
                     columns: (1fr, 3fr),
                     row-gutter: 1.2em,
                     align: (left),
-                    [Name:], "{{ observation.main_code.display }} ({{ observation.main_code.system }} {{ observation.main_code.code }})",
+                    [Name:], "{{ observation.main_code.display }}",
                     [Value:], "{{ observation|observation_value_display|field_name_to_label|format_empty_data }}",
                     {% if observation.body_site %}
                         [Body Site:], "{{ observation.body_site.display }}",
@@ -197,24 +197,6 @@
 {% else %}
     -
 {% endif %}]]
-
-
-{% if files %}
-    #align(left, text(18pt,)[== Annexes])
-    #align(left, text(14pt,weight: "bold",)[=== Uploaded Files:])
-
-    #table(
-        columns: (1fr, 1fr,),
-        inset: 10pt,
-        align: horizon,
-        table.header(
-            [*UPLOADED AT*], [*NAME*],
-        ),
-        {% for file in files %}
-            "{{file.modified_date }}", "{{file.name }}",
-        {% endfor %}
-    )
-{% endif %}
 
 #text("")
 #line(length: 100%, stroke: mygray)
