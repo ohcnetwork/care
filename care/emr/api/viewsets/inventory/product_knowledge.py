@@ -9,6 +9,7 @@ from care.emr.api.viewsets.base import (
     EMRListMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
+    EMRUpsertMixin,
 )
 from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.resources.inventory.product_knowledge.spec import (
@@ -30,7 +31,12 @@ class ProductKnowledgeFilters(filters.FilterSet):
 
 
 class ProductKnowledgeViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRUpsertMixin,
 ):
     database_model = ProductKnowledge
     pydantic_model = ProductKnowledgeWriteSpec
