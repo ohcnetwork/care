@@ -15,7 +15,7 @@
         }
       ],
       "port": 9876,
-      "host": "127.0.0.1",
+      "host": "127.0.0.1"
     },
     {
       "name": "Python: Django",
@@ -76,5 +76,21 @@
       "django": true,
       "justMyCode": false
     },
+    {
+        "name": "Attach to Django Container",
+        "type": "python",
+        "request": "attach",
+        "connect": {
+            "host": "localhost",
+            "port": 9876
+        },
+        "pathMappings": [
+            {
+                "localRoot": "${workspaceFolder}",
+                "remoteRoot": "/app"
+            }
+        ],
+        "justMyCode": false
+    }
   ]
 }

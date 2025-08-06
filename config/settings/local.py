@@ -44,6 +44,23 @@ RUNSERVER_PLUS_PRINT_SQL_TRUNCATE = None
 
 RUNSERVERPLUS_POLLER_RELOADER_TYPE = "watchdog"
 
+# SQL Logging for uvicorn (replaces runserver_plus --print-sql)
+# This provides the same SQL query debugging when using ASGI/uvicorn
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': 'DEBUG',
+            'handlers': ['console'],
+        },
+    },
+}
 
 DISABLE_RATELIMIT = True
 

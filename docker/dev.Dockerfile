@@ -26,8 +26,6 @@ RUN --mount=type=cache,target=/root/.cache/pip pipenv  install --system --catego
 
 COPY . $APP_HOME/
 
-RUN --mount=type=cache,target=/root/.cache/pip python3 $APP_HOME/install_plugins.py
-
 HEALTHCHECK \
   --interval=10s \
   --timeout=5s \

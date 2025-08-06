@@ -132,6 +132,7 @@ THIRD_PARTY_APPS = [
     "django.contrib.postgres",
     "django_rest_passwordreset",
     "healthy_django",
+    "django_mcp",  # MCP server integration
 ]
 LOCAL_APPS = [
     "care.security",

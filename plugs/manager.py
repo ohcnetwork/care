@@ -29,7 +29,7 @@ class PlugManager:
     def install(self) -> None:
         packages = {f"{x.package_name}{x.version}" for x in self.plugs}
         if packages:
-            subprocess.check_call([sys.executable, "-m", "pip", "install", *packages])  # noqa: S603
+            subprocess.check_call([sys.executable, "-m", "pip", "install", "-e", *packages])  # noqa: S603
 
     def add_plug(self, plug: Plug) -> None:
         if not isinstance(plug, Plug):

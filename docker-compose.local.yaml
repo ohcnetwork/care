@@ -9,9 +9,11 @@ services:
       - ./docker/.local.env
     volumes:
       - .:/app
+      - ../care_copilot:/app/care_copilot
     entrypoint: [ "bash", "scripts/start-dev.sh" ]
     ports:
-      - "9000:9000"
+      - "9000:9000"  # Django + MCP server (integrated)
+      - "8000:8000"  # ADK web interface
       - "9876:9876" #debugpy
     restart: unless-stopped
     depends_on:
@@ -33,3 +35,4 @@ services:
       - redis
     volumes:
       - .:/app
+      - ../care_copilot:/app/care_copilot
