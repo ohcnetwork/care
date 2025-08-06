@@ -360,3 +360,44 @@ jwks.b64.txt
 care_db.dump
 
 typst*
+
+# Environment and configuration files with sensitive data
+.env
+.envs/*
+!.envs/.local/
+docker/.local.env
+docker/.env
+docker/*.env
+*.env
+.env.local
+.env.production
+.env.staging
+
+# API Keys and Secrets
+*api_key*
+*secret*
+*password*
+*token*
+*credential*
+
+# Local development files
+local.py
+local_settings.py
+settings_local.py
+
+# Database files
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+*.backup
+
+# Log files
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.temp
