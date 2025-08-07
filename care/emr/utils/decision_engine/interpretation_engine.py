@@ -1,3 +1,4 @@
+import logging
 from typing import Any
 
 from care.emr.utils.decision_engine.base import AbstractRuleEngine
@@ -60,8 +61,13 @@ class InterpretationEngine(AbstractRuleEngine):
 
     def evaluate(self, context: dict, value: Any, **kwargs) -> Any:
         """Evaluate the context and value to find the first matching rule and apply it for interpretation."""
+        logging.error("\n\n\n\n\n\n\n\n\n\n\n")
         rules_to_check = self.rules
+        logging.error(rules_to_check)
+        logging.error("\n\n\n\n\n\n\n\n\n\n\n")
+        logging.error(value)
         for rule in rules_to_check:
             if self.matches_conditions(rule.get("conditions", {}), context):
                 return self.apply_rule(rule, value, **kwargs)
+        logging.error("\n\n\n\n\n\n\n\n\n\n\n")
         return self.handle_no_match()

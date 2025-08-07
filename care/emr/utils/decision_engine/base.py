@@ -7,14 +7,6 @@ class AbstractRuleEngine:
     An abstract base class for rule engines that evaluate conditions using registered handlers and validators.
     """
 
-    _handler_registry: dict[
-        str, Callable[[Any, Any], bool]
-    ] = {}  # handler_name -> evaluation func
-    _validator_registry: dict[
-        str, Callable[[Any], bool]
-    ] = {}  # handler_name -> validation func
-    _condition_registry: dict[str, str] = {}  # condition_key -> handler_name
-
     def _register_internal_handlers(self):
         """
         Register default handler functions for condition evaluation.
@@ -70,8 +62,7 @@ class AbstractRuleEngine:
             "Subclasses must implement register_internal_conditions"
         )
 
-    @classmethod
-    def register_external_handler(cls, name: str, handler: Callable[[Any, Any], bool]):
+    def register_external_handler(self, name: str, handler: Callable[[Any, Any], bool]):
         """
         Register an external handler function (e.g., from plugin). Verify before adding.
 
@@ -86,13 +77,12 @@ class AbstractRuleEngine:
             raise ValueError("Handler name must be a non-empty string.")
         if not callable(handler):
             raise ValueError("Handler must be a callable function.")
-        if name in cls._handler_registry:
+        if name in self._handler_registry:
             err = f"Handler '{name}' already registered."
             raise ValueError(err)
-        cls._handler_registry[name] = handler
+        self._handler_registry[name] = handler
 
-    @classmethod
-    def register_external_validator(cls, name: str, validator: Callable[[Any], bool]):
+    def register_external_validator(self, name: str, validator: Callable[[Any], bool]):
         """
         Register an external validator function (e.g., from plugin). Verify before adding.
 
@@ -107,13 +97,12 @@ class AbstractRuleEngine:
             raise ValueError("Validator name must be a non-empty string.")
         if not callable(validator):
             raise ValueError("Validator must be a callable function.")
-        if name in cls._validator_registry:
+        if name in self._validator_registry:
             err = f"Validator '{name}' already registered."
             raise ValueError(err)
-        cls._validator_registry[name] = validator
+        self._validator_registry[name] = validator
 
-    @classmethod
-    def register_external_condition(cls, name: str, handler_name: str):
+    def register_external_condition(self, name: str, handler_name: str):
         """
         Register an external condition mapping to a handler (e.g., from plugin). Verify before adding.
 
@@ -127,13 +116,13 @@ class AbstractRuleEngine:
         if not isinstance(name, str) or not name:
             err = f"Condition name '{name}' must be a non-empty string."
             raise ValueError(err)
-        if name in cls._condition_registry:
+        if name in self._condition_registry:
             err = f"Condition '{name}' already registered."
             raise ValueError(err)
-        if handler_name not in cls._handler_registry:
+        if handler_name not in self._handler_registry:
             err = f"Handler '{handler_name}' not found in registry."
             raise ValueError(err)
-        cls._condition_registry[name] = handler_name
+        self._condition_registry[name] = handler_name
 
     def __init__(self, rules: list[dict]):
         """
@@ -144,6 +133,9 @@ class AbstractRuleEngine:
         Args:
             rules (list[dict]): The list of rules to be used for evaluation.
         """
+        self._handler_registry: dict[str, Callable[[Any, Any], bool]] = {}
+        self._validator_registry: dict[str, Callable[[Any], bool]] = {}
+        self._condition_registry: dict[str, str] = {}
         self._register_internal_handlers()
         self._register_internal_validators()
         self.register_internal_conditions()

@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -206,8 +208,6 @@ class DiagnosticReportViewSet(
                 age = None
                 if patient.date_of_birth and model_instance.effective_datetime:
                     if isinstance(model_instance.effective_datetime, str):
-                        from datetime import datetime
-
                         model_instance.effective_datetime = datetime.fromisoformat(
                             model_instance.effective_datetime
                         )
