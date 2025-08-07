@@ -51,12 +51,11 @@ pydantic-extra-types = "2.10.2"
 phonenumberslite = "==8.13.54"
 python-magic = {version = "==0.4.28", index = "python-magic-bin"}
 evalidate = "2.0.5"
-# Care Copilot dependencies
-google-adk = ">=1.0.0"
-python-dotenv = ">=1.0.0"
-python-multipart = ">=0.0.20"
 django-mcp = "*"
-uvicorn = ">=0.24.0"  # ASGI server for django-mcp SSE support
+google-adk = "*"
+python-dotenv = "*"
+python-multipart = "*"
+uvicorn = "*"
 
 [dev-packages]
 boto3-stubs = { extras = ["s3", "boto3"], version = "*" }
