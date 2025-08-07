@@ -38,23 +38,28 @@ class ObservationDefinitionViewSet(
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date"]
 
-    def validate_slug_uniqueness(self, instance):
-        qs = ObservationDefinition.objects.filter(slug__exact=instance.slug)
-        if instance.facility:
-            qs = qs.filter(facility=instance.facility)
-        if instance.pk:
-            qs = qs.exclude(pk=instance.pk)
-        if qs.exists():
+    def validate_data(self, instance, model_obj=None):
+        filters_dict = {"slug": instance.slug}
+        if model_obj:
+            if model_obj.facility:
+                filters_dict["facility"] = model_obj.facility
+                queryset = ObservationDefinition.objects.filter(**filters_dict).exclude(
+                    id=model_obj.id
+                )
+            else:
+                filters_dict["facility__isnull"] = True
+                queryset = ObservationDefinition.objects.filter(**filters_dict).exclude(
+                    id=model_obj.id
+                )
+        elif instance.facility:
+            filters_dict["facility__external_id"] = instance.facility
+            queryset = ObservationDefinition.objects.filter(**filters_dict)
+        else:
+            filters_dict["facility__isnull"] = True
+            queryset = ObservationDefinition.objects.filter(**filters_dict)
+        if queryset.exists():
             raise ValidationError("Slug must be unique")
-        return instance.slug
-
-    def perform_create(self, instance):
-        self.validate_slug_uniqueness(instance)
-        super().perform_create(instance)
-
-    def perform_update(self, instance):
-        self.validate_slug_uniqueness(instance)
-        super().perform_update(instance)
+        return super().validate_data(instance, model_obj)
 
     def authorize_create(self, instance):
         """
