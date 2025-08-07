@@ -139,6 +139,8 @@ class PatientCreateSpec(PatientBaseSpec):
             obj.year_of_birth = self.date_of_birth.year
         obj._identifiers = self.identifiers  # noqa: SLF001
         obj._tags = self.tags  # noqa: SLF001
+        if not self.pincode:
+            obj.pincode = None
 
 
 class PatientUpdateSpec(PatientBaseSpec):
@@ -179,6 +181,8 @@ class PatientUpdateSpec(PatientBaseSpec):
                 obj.year_of_birth = timezone.now().year - self.age
             elif self.date_of_birth:
                 obj.year_of_birth = self.date_of_birth.year
+        if not self.pincode:
+            obj.pincode = None
 
     @field_validator("identifiers")
     @classmethod

@@ -36,6 +36,7 @@ def sync_inventory_item(location, product):
                 location=location,
                 net_content=0,
             )
+            inventory_item.save()
 
         delivery_requests_incoming = SupplyDelivery.objects.filter(
             destination=current_location,

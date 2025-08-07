@@ -252,7 +252,12 @@ def model_from_cache(model: EMRResource, quiet=True, **kwargs) -> dict[str, Any]
     )
 
     if not data:
-        obj = db_model.objects.filter(**kwargs).first()
+        db_model_manager = db_model.objects
+        if getattr(model, "__cacheable_use_base_manager__", False):
+            # bypass the custom manager to allow fetching deleted objects
+            db_model_manager = db_model._base_manager  # noqa: SLF001
+
+        obj = db_model_manager.filter(**kwargs).first()
         if not obj:
             if not quiet:
                 msg = f"Model {model.__name__} with {kwargs} not found in database."
@@ -266,15 +271,15 @@ def model_from_cache(model: EMRResource, quiet=True, **kwargs) -> dict[str, Any]
 
 
 # TODO: add param for manually adding dependencies for cache invalidation
-def cacheable(_model: EMRResource) -> EMRResource:
+def cacheable(_model: EMRResource = None, use_base_manager=False) -> EMRResource:
     """
     Decorator to mark a model as cacheable.
     This will set up the necessary signals to clear the cache
     when the model is saved or deleted, and will also set the __cacheable__ attribute
-    to True on the model class.
+    to True on the model class
     """
 
-    def decorator(model: EMRResource) -> EMRResource:
+    def decorator(model: EMRResource, use_base_manager) -> EMRResource:
         if not hasattr(model, "__model__"):
             raise ValueError("Model must have a __model__ attribute")
 
@@ -287,11 +292,12 @@ def cacheable(_model: EMRResource) -> EMRResource:
         )
 
         model.__cacheable__ = True
+        model.__cacheable_use_base_manager__ = use_base_manager
         return model
 
     if _model is None:
-        return decorator
-    return decorator(_model)
+        return lambda model: decorator(model, use_base_manager)
+    return decorator(_model, use_base_manager)
 
 
 def delete_model_cache(sender, instance, **kwargs) -> None:
