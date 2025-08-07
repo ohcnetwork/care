@@ -117,10 +117,10 @@ class ConditionReadSpec(BaseConditionSpec):
     severity: str
     code: Coding
     encounter: UUID4
-    onset: ConditionOnSetSpec = dict
-    abatement: ConditionAbatementSpec = dict
-    created_by: UserSpec = dict
-    updated_by: UserSpec = dict
+    onset: ConditionOnSetSpec = {}
+    abatement: ConditionAbatementSpec = {}
+    created_by: UserSpec = {}
+    updated_by: UserSpec = {}
     note: str | None = None
     created_date: datetime.datetime
     modified_date: datetime.datetime

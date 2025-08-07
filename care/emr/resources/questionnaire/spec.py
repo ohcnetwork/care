@@ -265,8 +265,8 @@ class QuestionnaireReadSpec(QuestionnaireBaseSpec):
     subject_type: SubjectType
     styling_metadata: dict
     questions: list
-    created_by: UserSpec = dict
-    updated_by: UserSpec = dict
+    created_by: UserSpec = {}
+    updated_by: UserSpec = {}
     tags: list[dict] = []
 
     @classmethod

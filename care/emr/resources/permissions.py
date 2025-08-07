@@ -9,8 +9,8 @@ class PermissionsMixin(EMRResource):
     permissions: list[str] = []
 
     @classmethod
-    def perform_extra_user_serialization(cls, mapping, obj, user=None):
-        super().perform_extra_user_serialization(mapping, obj, user)
+    def perform_extra_user_serialization(cls, mapping, obj, user=None, *args, **kwargs):
+        super().perform_extra_user_serialization(mapping, obj, user, *args, **kwargs)
         if user and user.is_authenticated:
             cls.add_permissions(mapping, user, obj)
 

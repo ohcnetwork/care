@@ -25,7 +25,9 @@ class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet):
 
     def get_queryset(self):
         queryset = (
-            QuestionnaireResponse.objects.filter(
+            super()
+            .get_queryset()
+            .filter(
                 patient__external_id=self.kwargs["patient_external_id"],
             )
             .order_by("-created_date")
