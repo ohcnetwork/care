@@ -127,12 +127,27 @@ class ObservationDefinitionAPITest(CareAPITestBase):
             status_code=403,
         )
 
-    def test_create_observation_definition_with_duplicate_slug(self):
+    def test_create_observation_definition_with_duplicate_slug_in_facility(self):
         self.client.force_authenticate(user=self.superuser)
         self.create_observation_definition(
             facility=self.facility,
             slug="blood-pressure",
         )
+        response = self.client.post(
+            self.url,
+            self.observation_definition_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Slug must be unique",
+            str(response.data),
+        )
+
+    def test_create_observation_definition_with_duplicate_slug_in_instance(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_observation_definition(slug="blood-pressure")
+        self.observation_definition_data["facility"] = None
         response = self.client.post(
             self.url,
             self.observation_definition_data,
@@ -329,11 +344,30 @@ class ObservationDefinitionAPITest(CareAPITestBase):
         self.assertEqual(response.status_code, 403)
         self.assertIn("Access Denied to Observation Definition", str(response.data))
 
-    def test_update_observation_definition_with_duplicate_slug(self):
+    def test_update_observation_definition_with_duplicate_slug_in_facility(self):
         observation_definition = self.create_observation_definition(
             facility=self.facility, slug="blood-pressure"
         )
         self.create_observation_definition(facility=self.facility, slug="heart-rate")
+        self.client.force_authenticate(user=self.superuser)
+        update_data = self.observation_definition_data.copy()
+        update_data["slug"] = "heart-rate"
+        response = self.client.put(
+            self.get_detail_url(observation_definition.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Slug must be unique",
+            str(response.data),
+        )
+
+    def test_update_observation_definition_with_duplicate_slug_in_instance(self):
+        observation_definition = self.create_observation_definition(
+            slug="blood-pressure"
+        )
+        self.create_observation_definition(slug="heart-rate")
         self.client.force_authenticate(user=self.superuser)
         update_data = self.observation_definition_data.copy()
         update_data["slug"] = "heart-rate"
