@@ -14,6 +14,7 @@ from pathlib import Path
 import django
 from django.core.asgi import get_asgi_application
 from django_mcp import mount_mcp_server
+from starlette.middleware.cors import CORSMiddleware
 
 # Setup Django environment first
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
@@ -36,4 +37,20 @@ django_asgi_app = get_asgi_application()
 application = mount_mcp_server(
     django_http_app=django_asgi_app, 
     mcp_base_path='/mcp'
+)
+
+# Wrap the ASGI application with CORS so SSE endpoints also include CORS headers
+# This is especially important because the MCP SSE endpoint may bypass Django's
+# standard middleware chain where django-cors-headers is installed.
+allowed_origins = os.getenv(
+    "ASGI_CORS_ALLOWED_ORIGINS",
+    "http://localhost:5173,http://localhost:4174,http://localhost:4000",
+).split(",")
+
+application = CORSMiddleware(
+    application,
+    allow_origins=[origin.strip() for origin in allowed_origins if origin.strip()],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
