@@ -36,8 +36,8 @@ from care.emr.resources.observation_definition.observation import (
 )
 from care.emr.resources.questionnaire.spec import SubjectType
 from care.emr.tagging.base import PatientInstanceTagManager
-from care.emr.utils.decision_engine.interpretation_engine import InterpretationEvaluator
 from care.security.authorization.base import AuthorizationController
+from care.utils.evaluators.interpretation_engine import InterpretationEvaluator
 
 
 class ApplyObservationDefinitionRequest(BaseModel):

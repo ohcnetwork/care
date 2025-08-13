@@ -1,9 +1,9 @@
 from typing import Any
 
-from care.emr.utils.decision_engine.base import AbstractConditionEvaluator
+from care.utils.evaluators.base import AbstractEvaluator
 
 
-class InterpretationEvaluator(AbstractConditionEvaluator):
+class InterpretationEvaluator(AbstractEvaluator):
     """An evaluator that determines interpretations based on rules and values."""
 
     @property

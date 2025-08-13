@@ -3,7 +3,7 @@ from collections.abc import Callable
 from typing import Any
 
 
-class AbstractConditionEvaluator(ABC):
+class AbstractEvaluator(ABC):
     """
     An abstract base class for evaluating conditions and applying rules.
     """

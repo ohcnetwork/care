@@ -1,10 +1,10 @@
 from collections.abc import Callable
 from typing import Any
 
-from care.emr.utils.decision_engine.base import AbstractConditionEvaluator
+from care.utils.evaluators.base import AbstractEvaluator
 
 
-class DummyExtendedEvaluator(AbstractConditionEvaluator):
+class DummyExtendedEvaluator(AbstractEvaluator):
     """
     A dummy subclass of AbstractConditionEvaluator that demonstrates how to extend
     the maps by adding a new condition, a new handler, and a new validator.
