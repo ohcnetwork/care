@@ -37,10 +37,11 @@ class Performer(BaseModel):
 
 
 class ReferenceRange(BaseModel):
-    low: float | None = None
-    high: float | None = None
+    min: float | None = None
+    max: float | None = None
     unit: str | None = None
-    text: str | None = None
+    interpretation: str
+    value: str | None = None
 
 
 class Component(BaseModel):
@@ -124,6 +125,7 @@ class ObservationReadSpec(BaseObservationSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+        # Avoiding extra queries
         mapping["encounter"] = None
         mapping["patient"] = None
         mapping["questionnaire_response"] = None

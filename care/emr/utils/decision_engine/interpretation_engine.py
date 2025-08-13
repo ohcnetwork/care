@@ -1,22 +1,21 @@
-import logging
 from typing import Any
 
-from care.emr.utils.decision_engine.base import AbstractRuleEngine
+from care.emr.utils.decision_engine.base import AbstractConditionEvaluator
 
 
-class InterpretationEngine(AbstractRuleEngine):
-    """An interpretation engine that evaluates values against rules to determine interpretations."""
+class InterpretationEvaluator(AbstractConditionEvaluator):
+    """An evaluator that determines interpretations based on rules and values."""
 
-    def register_internal_conditions(self):
-        """Register internal condition mappings for interpretation."""
-        conditions = {
+    @property
+    def condition_map(self) -> dict[str, str]:
+        """
+        Mapping of condition keys to handler names specific to interpretation.
+        """
+        return {
             "gender": "equality",
             "age": "range",
-            "applies_to": "in_or_equality",
+            "applies_to": "intersects_any",
         }
-        for key, handler_name in conditions.items():
-            if key not in self._condition_registry:
-                self._condition_registry[key] = handler_name
 
     def handle_no_match(self) -> str:
         """Return the fallback interpretation if no rule matches."""
@@ -41,8 +40,8 @@ class InterpretationEngine(AbstractRuleEngine):
             else:
                 return False
 
-        if range_spec.get("values") is not None:
-            return value in range_spec["values"]
+        if range_spec.get("value") is not None:
+            return value == range_spec["value"]
 
         if isinstance(value, str):
             try:
@@ -53,21 +52,25 @@ class InterpretationEngine(AbstractRuleEngine):
         min_val = range_spec.get("min")
         max_val = range_spec.get("max")
 
-        if max_val is None:
-            return value > (min_val or 0)
         if min_val is None:
-            return value < (max_val or float("inf"))
+            min_val = float("-inf")
+        if max_val is None:
+            max_val = float("inf")
+
         return min_val <= value <= max_val
 
     def evaluate(self, context: dict, value: Any, **kwargs) -> Any:
         """Evaluate the context and value to find the first matching rule and apply it for interpretation."""
-        logging.error("\n\n\n\n\n\n\n\n\n\n\n")
-        rules_to_check = self.rules
-        logging.error(rules_to_check)
-        logging.error("\n\n\n\n\n\n\n\n\n\n\n")
-        logging.error(value)
-        for rule in rules_to_check:
+        for rule in self.rules:
             if self.matches_conditions(rule.get("conditions", {}), context):
                 return self.apply_rule(rule, value, **kwargs)
-        logging.error("\n\n\n\n\n\n\n\n\n\n\n")
         return self.handle_no_match()
+
+    def get_matching_condition(self, context: dict) -> dict | None:
+        """
+        Find the first rule that matches the given context conditions.
+        """
+        for rule in self.rules:
+            if self.matches_conditions(rule.get("conditions", {}), context):
+                return rule
+        return None

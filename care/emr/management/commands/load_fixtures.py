@@ -918,7 +918,7 @@ class Command(BaseCommand):
                     {
                         "conditions": {
                             "age": {"min": 18, "max": 65},
-                            "applies_to": "non-diabetic",
+                            "applies_to": ["non-diabetic"],
                         },
                         "ranges": [
                             {"interpretation": "low", "max": 70, "unit": "mg/dL"},
@@ -1155,11 +1155,11 @@ class Command(BaseCommand):
                         "ranges": [
                             {
                                 "interpretation": "normal",
-                                "values": ["negative", "NEG", "-"],
+                                "value": "negative",
                             },
                             {
                                 "interpretation": "abnormal",
-                                "values": ["positive", "POS", "+"],
+                                "value": "positive",
                             },
                         ],
                         "data_type": "coded",

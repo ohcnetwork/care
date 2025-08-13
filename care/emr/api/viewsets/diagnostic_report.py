@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Any
 
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
@@ -34,7 +35,8 @@ from care.emr.resources.observation_definition.observation import (
     convert_od_to_observation,
 )
 from care.emr.resources.questionnaire.spec import SubjectType
-from care.emr.utils.decision_engine.interpretation_engine import InterpretationEngine
+from care.emr.tagging.base import PatientInstanceTagManager
+from care.emr.utils.decision_engine.interpretation_engine import InterpretationEvaluator
 from care.security.authorization.base import AuthorizationController
 
 
@@ -149,7 +151,7 @@ class DiagnosticReportViewSet(
         request=BatchUpdateObservationRequest,
     )
     @action(detail=True, methods=["POST"])
-    def upsert_observations(self, request, *args, **kwargs):  # noqa: PLR0912, PLR0915
+    def upsert_observations(self, request, *args, **kwargs):  # noqa: PLR0915
         """
         Create observation from observation definition, from scratch or update existing observation
         """
@@ -205,68 +207,69 @@ class DiagnosticReportViewSet(
             # Compute interpretation if observation_definition is linked
             if model_instance.observation_definition:
                 patient = model_instance.patient
-                age = None
-                if patient.date_of_birth and model_instance.effective_datetime:
-                    if isinstance(model_instance.effective_datetime, str):
-                        model_instance.effective_datetime = datetime.fromisoformat(
-                            model_instance.effective_datetime
-                        )
-                    date_delta = (
-                        model_instance.effective_datetime.date() - patient.date_of_birth
-                    )
-                    age = date_delta.days / 365.25
+
+                date_delta = (
+                    datetime.fromisoformat(model_instance.effective_datetime).date()
+                    - patient.date_of_birth
+                )
+                age = date_delta.days / 365.25
 
                 context = {
                     "gender": patient.gender,
                     "age": age,
-                    "applies_to": None,
+                    "applies_to": [
+                        tag.get("slug")
+                        for tag in PatientInstanceTagManager().render_tags(patient)
+                    ],
                 }
 
-                if not model_instance.component:
-                    engine = InterpretationEngine(
-                        model_instance.observation_definition.qualified_ranges
-                    )
-                    value_to_evaluate = (
-                        model_instance.value.get("quantity")
-                        if isinstance(model_instance.value, dict)
-                        and "quantity" in model_instance.value
-                        else model_instance.value
-                    )
-                    model_instance.interpretation = engine.evaluate(
-                        context, value_to_evaluate
-                    )
-                else:
-                    component_definition_dict = {
-                        component_def["code"]["code"]: component_def["qualified_ranges"]
-                        for component_def in model_instance.observation_definition.component
-                    }
-                    for component in model_instance.component:
-                        component_code = (
-                            component.get("code", {}).get("code")
-                            if isinstance(component.get("code"), dict)
-                            else None
+                def extract_value(val: Any) -> Any:
+                    """Unified value extraction matching value_fits logic."""
+                    if isinstance(val, dict):
+                        if "coding" in val and val["coding"] is not None:
+                            return val["coding"].get("code")
+                        if "quantity" in val:
+                            return val["quantity"]
+                        if "value" in val:
+                            return val["value"]
+                    return val
+
+                try:
+                    if not model_instance.component:
+                        engine = InterpretationEvaluator(
+                            model_instance.observation_definition.qualified_ranges
                         )
-                        if isinstance(component, dict):
-                            component_value_object = component.get("value")
-                            component_value = (
-                                component_value_object.get("value")
-                                if isinstance(component_value_object, dict)
-                                else component_value_object
+                        value_to_evaluate = extract_value(model_instance.value)
+                        model_instance.interpretation = engine.evaluate(
+                            context, value_to_evaluate
+                        )
+                        model_instance.reference_range = engine.get_matching_condition(
+                            context=context
+                        ).get("ranges", {})
+                    else:
+                        component_definition_dict = {
+                            component_def["code"]["code"]: component_def[
+                                "qualified_ranges"
+                            ]
+                            for component_def in model_instance.observation_definition.component
+                        }
+                        for component in model_instance.component:
+                            component_code = component.get("code", {}).get("code")
+                            component_value = extract_value(component.get("value"))
+                            engine = InterpretationEvaluator(
+                                component_definition_dict.get(component_code, [])
                             )
-                        else:
-                            component_value_object = getattr(component, "value", None)
-                            component_value = (
-                                getattr(component_value_object, "value", None)
-                                if component_value_object is not None
-                                else None
+                            component["interpretation"] = engine.evaluate(
+                                context, component_value
                             )
 
-                        engine = InterpretationEngine(
-                            component_definition_dict.get(component_code, [])
-                        )
-                        component["interpretation"] = engine.evaluate(
-                            context, component_value
-                        )
+                            model_instance.reference_range = (
+                                engine.get_matching_condition(context=context).get(
+                                    "ranges", []
+                                )
+                            )
+                except Exception as e:
+                    raise ValidationError("Error computing interpretation") from e
 
                 model_instance.save()
         return Response({"message": "Observations updated successfully"})

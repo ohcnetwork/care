@@ -1,37 +1,65 @@
+from abc import ABC, abstractmethod
 from collections.abc import Callable
 from typing import Any
 
 
-class AbstractRuleEngine:
+class AbstractConditionEvaluator(ABC):
     """
-    An abstract base class for rule engines that evaluate conditions using registered handlers and validators.
+    An abstract base class for evaluating conditions and applying rules.
     """
 
-    def _register_internal_handlers(self):
+    def __init__(self, rules: list[dict]):
         """
-        Register default handler functions for condition evaluation.
+        Initialize with a list of rules.
 
-        This method registers built-in handlers like equality, range, in_or_equality, and in.
-        It ensures handlers are only added if not already present.
+        Args:
+            rules (list[dict]): The list of rules to be used for evaluation.
         """
-        handlers = {
+        self.rules = rules
+        self._validate_maps()
+
+    def _validate_maps(self):
+        handlers = set(self.handler_map.keys())
+        validators = set(self.validator_map.keys())
+        used_handlers = set(self.condition_map.values())
+
+        missing_validators = handlers - validators
+        if missing_validators:
+            err = f"Missing validators for handlers: {missing_validators}"
+            raise ValueError(err)
+
+        missing_handlers = used_handlers - handlers
+        if missing_handlers:
+            err = f"Missing handlers for handlers: {missing_handlers}"
+            raise ValueError(err)
+
+        missing_condition_validators = used_handlers - validators
+        if missing_condition_validators:
+            err = f"Missing validators for conditions: {missing_condition_validators}"
+            raise ValueError(err)
+
+    @property
+    def handler_map(self) -> dict[str, Callable[[Any, Any], bool]]:
+        """
+        Mapping of handler names to their functions.
+        Subclasses can override to add or modify handlers.
+        """
+        return {
             "equality": self._handle_equality,
             "range": self._handle_range,
             "in_or_equality": self._handle_in_or_equality,
             "in": self._handle_in,
+            "intersects_any": self._handle_intersects_any,
+            "intersects_all": self._handle_intersects_all,
         }
-        for name, func in handlers.items():
-            if name not in self._handler_registry:
-                self._handler_registry[name] = func
 
-    def _register_internal_validators(self):
+    @property
+    def validator_map(self) -> dict[str, Callable[[Any], bool]]:
         """
-        Register default validator functions for condition specs.
-
-        This method registers built-in validators corresponding to the internal handlers.
-        It ensures validators are only added if not already present.
+        Mapping of validator names to their functions.
+        Subclasses can override to add or modify validators.
         """
-        validators = {
+        return {
             "equality": lambda expected_value: isinstance(
                 expected_value, (str, int, float)
             ),
@@ -46,103 +74,21 @@ class AbstractRuleEngine:
                 expected_value, (str, list)
             ),
             "in": lambda expected_value: isinstance(expected_value, list),
+            "intersects_any": lambda expected_value: isinstance(
+                expected_value, (str, list)
+            ),
+            "intersects_all": lambda expected_value: isinstance(
+                expected_value, (str, list)
+            ),
         }
-        for name, func in validators.items():
-            if name not in self._validator_registry:
-                self._validator_registry[name] = func
 
-    def register_internal_conditions(self):
+    @property
+    def condition_map(self) -> dict[str, str]:
         """
-        Register internal condition mappings (e.g., gender to equality).
-
-        Raises:
-            NotImplementedError: Subclasses must implement this method to define internal condition mappings.
+        Mapping of condition keys to handler names.
+        Subclasses should override to define their specific conditions.
         """
-        raise NotImplementedError(
-            "Subclasses must implement register_internal_conditions"
-        )
-
-    def register_external_handler(self, name: str, handler: Callable[[Any, Any], bool]):
-        """
-        Register an external handler function (e.g., from plugin). Verify before adding.
-
-        Args:
-            name (str): The name of the handler.
-            handler (Callable[[Any, Any], bool]): The handler function to register.
-
-        Raises:
-            ValueError: If the name is invalid, handler is not callable, or name is already registered.
-        """
-        if not isinstance(name, str) or not name:
-            raise ValueError("Handler name must be a non-empty string.")
-        if not callable(handler):
-            raise ValueError("Handler must be a callable function.")
-        if name in self._handler_registry:
-            err = f"Handler '{name}' already registered."
-            raise ValueError(err)
-        self._handler_registry[name] = handler
-
-    def register_external_validator(self, name: str, validator: Callable[[Any], bool]):
-        """
-        Register an external validator function (e.g., from plugin). Verify before adding.
-
-        Args:
-            name (str): The name of the validator.
-            validator (Callable[[Any], bool]): The validator function to register.
-
-        Raises:
-            ValueError: If the name is invalid, validator is not callable, or name is already registered.
-        """
-        if not isinstance(name, str) or not name:
-            raise ValueError("Validator name must be a non-empty string.")
-        if not callable(validator):
-            raise ValueError("Validator must be a callable function.")
-        if name in self._validator_registry:
-            err = f"Validator '{name}' already registered."
-            raise ValueError(err)
-        self._validator_registry[name] = validator
-
-    def register_external_condition(self, name: str, handler_name: str):
-        """
-        Register an external condition mapping to a handler (e.g., from plugin). Verify before adding.
-
-        Args:
-            name (str): The name of the condition.
-            handler_name (str): The name of the associated handler.
-
-        Raises:
-            ValueError: If the name is invalid, condition is already registered, or handler is not found.
-        """
-        if not isinstance(name, str) or not name:
-            err = f"Condition name '{name}' must be a non-empty string."
-            raise ValueError(err)
-        if name in self._condition_registry:
-            err = f"Condition '{name}' already registered."
-            raise ValueError(err)
-        if handler_name not in self._handler_registry:
-            err = f"Handler '{handler_name}' not found in registry."
-            raise ValueError(err)
-        self._condition_registry[name] = handler_name
-
-    def __init__(self, rules: list[dict]):
-        """
-        Initialize with a list of rules (e.g., qualified_ranges).
-
-        This constructor registers internal handlers, validators, and conditions.
-
-        Args:
-            rules (list[dict]): The list of rules to be used for evaluation.
-        """
-        self._handler_registry: dict[str, Callable[[Any, Any], bool]] = {}
-        self._validator_registry: dict[str, Callable[[Any], bool]] = {}
-        self._condition_registry: dict[str, str] = {}
-        self._register_internal_handlers()
-        self._register_internal_validators()
-        self.register_internal_conditions()
-        self.handler_registry = self._handler_registry
-        self.validator_registry = self._validator_registry
-        self.condition_registry = self._condition_registry
-        self.rules = rules
+        return {}
 
     def _handle_equality(self, actual_value: Any, expected_value: Any) -> bool:
         """
@@ -202,9 +148,45 @@ class AbstractRuleEngine:
             return actual_value in expected_value
         return False
 
+    def _handle_intersects_any(self, actual_value: Any, expected_value: Any) -> bool:
+        """
+        Check if there is at least one overlap between actual_value and expected_value (OR semantics).
+        Treat scalars as single-element lists for flexibility.
+
+        Args:
+            actual_value (Any): The value from the context (e.g., list of patient tags).
+            expected_value (Any): The expected value from conditions (e.g., list of required tags).
+
+        Returns:
+            bool: True if there is at least one common element, False otherwise.
+        """
+        if not isinstance(actual_value, list):
+            actual_value = [actual_value]
+        if not isinstance(expected_value, list):
+            expected_value = [expected_value]
+        return bool(set(actual_value) & set(expected_value))
+
+    def _handle_intersects_all(self, actual_value: Any, expected_value: Any) -> bool:
+        """
+        Check if all elements in expected_value are present in actual_value (AND semantics).
+        Treat scalars as single-element lists for flexibility.
+
+        Args:
+            actual_value (Any): The value from the context (e.g., list of patient tags).
+            expected_value (Any): The expected value from conditions (e.g., list of required tags).
+
+        Returns:
+            bool: True if all expected elements are in actual_value, False otherwise.
+        """
+        if not isinstance(actual_value, list):
+            actual_value = [actual_value]
+        if not isinstance(expected_value, list):
+            expected_value = [expected_value]
+        return set(expected_value).issubset(set(actual_value))
+
     def matches_conditions(self, conditions: dict, context: dict) -> bool:
         """
-        Check if all conditions match the context using registered handlers.
+        Check if all conditions match the context using mapped handlers.
 
         Args:
             conditions (dict): Dictionary of conditions (key: condition_key, value: expected_value).
@@ -214,15 +196,18 @@ class AbstractRuleEngine:
             bool: True if all conditions match, False otherwise.
         """
         for key, expected_value in conditions.items():
-            handler_name = self.condition_registry.get(key)
+            handler_name = self.condition_map.get(key)
             if not handler_name:
                 return False
-            handler = self.handler_registry.get(handler_name)
+
+            handler = self.handler_map.get(handler_name)
             if not handler:
                 return False
+
             actual_value = context.get(key)
             if actual_value is None:
                 return False
+
             try:
                 if not handler(actual_value, expected_value):
                     return False
@@ -232,7 +217,7 @@ class AbstractRuleEngine:
 
     def validate_conditions(self, conditions: dict) -> bool:
         """
-        Validate condition specs using registered validators.
+        Validate condition specs using mapped validators.
 
         Args:
             conditions (dict): Dictionary of conditions to validate.
@@ -241,10 +226,10 @@ class AbstractRuleEngine:
             bool: True if all conditions are valid, False otherwise.
         """
         for key, expected_value in conditions.items():
-            handler_name = self.condition_registry.get(key)
+            handler_name = self.condition_map.get(key)
             if not handler_name:
                 return False
-            validator = self.validator_registry.get(handler_name)
+            validator = self.validator_map.get(handler_name)
             if not validator:
                 return False
             try:
@@ -254,6 +239,7 @@ class AbstractRuleEngine:
                 return False
         return True
 
+    @abstractmethod
     def evaluate(self, context: dict, value: Any, **kwargs) -> Any:
         """
         Evaluate the rules against the provided context and value.
@@ -263,26 +249,20 @@ class AbstractRuleEngine:
             value (Any): The value to apply rules to.
             **kwargs: Additional keyword arguments for evaluation.
 
-        Raises:
-            NotImplementedError: Subclasses must implement this method.
-
         Returns:
             Any: The result of the evaluation.
         """
-        raise NotImplementedError("Subclasses must implement evaluate")
 
+    @abstractmethod
     def handle_no_match(self) -> Any:
         """
         Return fallback result if no rule matches.
 
-        Raises:
-            NotImplementedError: Subclasses must implement this method.
-
         Returns:
             Any: The fallback result.
         """
-        raise NotImplementedError("Subclasses must implement handle_no_match")
 
+    @abstractmethod
     def apply_rule(self, rule: dict, value: Any, **kwargs) -> Any:
         """
         Apply the matched rule to produce a result.
@@ -292,10 +272,6 @@ class AbstractRuleEngine:
             value (Any): The value to process.
             **kwargs: Additional keyword arguments for rule application.
 
-        Raises:
-            NotImplementedError: Subclasses must implement this method.
-
         Returns:
             Any: The result after applying the rule.
         """
-        raise NotImplementedError("Subclasses must implement apply_rule")

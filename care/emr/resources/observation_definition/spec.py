@@ -46,31 +46,36 @@ def validate_question_type(question_type):
     return question_type
 
 
-class RangeSpec(BaseModel):
+class NumericRangeSpec(BaseModel):
     interpretation: str
     min: float | None = None
     max: float | None = None
-    unit: str | None = None
-    text: str | None = None
-    values: list[str | float | int] | None = None
+    unit: str
 
     @model_validator(mode="after")
     def validate_range(self):
-        if self.values is not None:
-            if self.min is not None or self.max is not None:
-                raise ValueError(
-                    "Cannot mix 'values' (for categorical data like positive/negative) with 'min' or 'max' (for numeric ranges). Choose one type."
-                )
-        elif self.min is None and self.max is None:
+        if self.min is None and self.max is None:
             raise ValueError(
                 "For numeric ranges, provide at least a 'min' or 'max' value (e.g., min=10 or max=20)."
             )
         return self
 
 
+class CategoricalRangeSpec(BaseModel):
+    interpretation: str
+    value: str | float | int
+    text: str | None = None
+
+    @model_validator(mode="after")
+    def validate_values(self):
+        if not self.value:
+            raise ValueError("Categorical 'value' cannot be empty.")
+        return self
+
+
 class QualifiedRangeSpec(BaseModel):
     conditions: dict[str, Any]
-    ranges: list[RangeSpec]
+    ranges: list[NumericRangeSpec | CategoricalRangeSpec]
     data_type: str
 
 
