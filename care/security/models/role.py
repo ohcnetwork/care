@@ -64,7 +64,7 @@ class RoleModel(BaseModel):
 
         # Try to get permissions from cache
         cached_permissions = cache.get(cache_key)
-        if cached_permissions is not None:
+        if cached_permissions not in (None, []):
             return cached_permissions
 
         # If not in cache, fetch from database
