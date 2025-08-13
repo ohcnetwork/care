@@ -13,17 +13,19 @@ echo "running collectstatic..."
 python manage.py collectstatic --noinput
 python manage.py compilemessages -v 0
 
-# Start ADK web server for Care Copilot (connects to django-mcp)
+# Start ADK API server for Care Copilot (connects to django-mcp)
 if [[ "${ENABLE_COPILOT_ADK}" == "true" ]]; then
-  echo "starting Care Copilot ADK web server on port 8000..."
+  echo "starting Care Copilot ADK API server on port 8000..."
   echo "🔗 ADK agent will connect to MCP server at: http://localhost:9000/mcp/sse"
-  cd /app/care_copilot && adk web . --host 0.0.0.0 --port 8000 &
+  # Run ADK API server from the care_copilot package so it discovers the agent
+  # Allow localhost dev frontends via CORS (add more origins as needed)
+  cd /app/care_copilot && adk api_server --host 0.0.0.0 --port 8000 --allow_origins=http://localhost:4174,http://localhost:4200 &
   cd /app
 fi
 
 echo "starting Django server with ASGI (includes MCP server)..."
 echo "🏥 MCP server will be available at: http://localhost:9000/mcp/sse"
-echo "🌐 ADK web interface will be available at: http://localhost:8000"
+echo "🌐 ADK API server will be available at: http://localhost:8000"
 
 if [[ "${ATTACH_DEBUGGER}" == "true" ]]; then
   echo "debugger enabled - attach to port 9876..."
