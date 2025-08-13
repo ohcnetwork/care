@@ -19,7 +19,7 @@ if [[ "${ENABLE_COPILOT_ADK}" == "true" ]]; then
   echo "🔗 ADK agent will connect to MCP server at: http://localhost:9000/mcp/sse"
   # Run ADK API server from the care_copilot package so it discovers the agent
   # Allow localhost dev frontends via CORS (add more origins as needed)
-  cd /app/care_copilot && adk api_server --host 0.0.0.0 --port 8000 --allow_origins=http://localhost:4174,http://localhost:4200 &
+  cd /app/care_copilot && adk api_server --host 0.0.0.0 --port 8000 --allow_origins=http://localhost:4174 --allow_origins=http://localhost:4000 &
   cd /app
 fi
 
