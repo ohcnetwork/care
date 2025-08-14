@@ -59,6 +59,18 @@ class DiagnosticReportFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
 
 
+def extract_value(val: Any) -> Any:
+    """Unified value extraction matching value_fits logic."""
+    if isinstance(val, dict):
+        if coding := val.get("coding"):
+            return coding.get("code")
+        if "quantity" in val:
+            return val["quantity"]
+        if "value" in val:
+            return val["value"]
+    return val
+
+
 class DiagnosticReportViewSet(
     EMRCreateMixin,
     EMRRetrieveMixin,
@@ -222,18 +234,6 @@ class DiagnosticReportViewSet(
                         for tag in PatientInstanceTagManager().render_tags(patient)
                     ],
                 }
-
-                def extract_value(val: Any) -> Any:
-                    """Unified value extraction matching value_fits logic."""
-                    if isinstance(val, dict):
-                        if "coding" in val and val["coding"] is not None:
-                            return val["coding"].get("code")
-                        if "quantity" in val:
-                            return val["quantity"]
-                        if "value" in val:
-                            return val["value"]
-                    return val
-
                 try:
                     if not model_instance.component:
                         engine = InterpretationEvaluator(
@@ -266,12 +266,11 @@ class DiagnosticReportViewSet(
                             component["interpretation"] = engine.evaluate(
                                 context, component_value
                             )
-
                             matched_condition = engine.get_matching_condition(
                                 context=context
                             )
                             if matched_condition:
-                                model_instance.reference_range = matched_condition.get(
+                                component["reference_range"] = matched_condition.get(
                                     "ranges", []
                                 )
                 except Exception as e:

@@ -114,11 +114,22 @@ class AbstractEvaluator(ABC):
         Returns:
             bool: True if value is within the range, False otherwise.
         """
-        min_v = expected_value.get("min", float("-inf"))
-        max_v = expected_value.get("max", float("inf"))
+        if not isinstance(actual_value, (int, float)):
+            return False
+
+        min_v = expected_value.get("min")
+        max_v = expected_value.get("max")
+
+        if min_v is None:
+            min_v = float("-inf")
+        if max_v is None:
+            max_v = float("inf")
+
         return min_v <= actual_value <= max_v
 
-    def _handle_in_or_equality(self, actual_value: Any, expected_value: Any) -> bool:
+    def _handle_in_or_equality(
+        self, actual_value: str | int, expected_value: list[str | int] | str | int
+    ) -> bool:
         """
         Check if actual_value is in expected_value (list) or equals it.
 
