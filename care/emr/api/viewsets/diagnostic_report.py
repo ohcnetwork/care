@@ -243,9 +243,13 @@ class DiagnosticReportViewSet(
                         model_instance.interpretation = engine.evaluate(
                             context, value_to_evaluate
                         )
-                        model_instance.reference_range = engine.get_matching_condition(
+                        matched_condition = engine.get_matching_condition(
                             context=context
-                        ).get("ranges", {})
+                        )
+                        if matched_condition:
+                            model_instance.reference_range = matched_condition.get(
+                                "ranges", []
+                            )
                     else:
                         component_definition_dict = {
                             component_def["code"]["code"]: component_def[
@@ -263,11 +267,13 @@ class DiagnosticReportViewSet(
                                 context, component_value
                             )
 
-                            model_instance.reference_range = (
-                                engine.get_matching_condition(context=context).get(
+                            matched_condition = engine.get_matching_condition(
+                                context=context
+                            )
+                            if matched_condition:
+                                model_instance.reference_range = matched_condition.get(
                                     "ranges", []
                                 )
-                            )
                 except Exception as e:
                     raise ValidationError("Error computing interpretation") from e
 

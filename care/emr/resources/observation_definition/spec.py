@@ -68,7 +68,7 @@ class CategoricalRangeSpec(BaseModel):
 
     @model_validator(mode="after")
     def validate_values(self):
-        if not self.value:
+        if self.value is None:
             raise ValueError("Categorical 'value' cannot be empty.")
         return self
 

@@ -30,7 +30,7 @@ class AbstractEvaluator(ABC):
 
         missing_handlers = used_handlers - handlers
         if missing_handlers:
-            err = f"Missing handlers for handlers: {missing_handlers}"
+            err = f"Missing handlers which are used to handle conditions: {missing_handlers}"
             raise ValueError(err)
 
         missing_condition_validators = used_handlers - validators

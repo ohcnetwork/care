@@ -6,7 +6,7 @@ from care.utils.evaluators.base import AbstractEvaluator
 
 class DummyExtendedEvaluator(AbstractEvaluator):
     """
-    A dummy subclass of AbstractConditionEvaluator that demonstrates how to extend
+    A dummy subclass of AbstractEvaluator that demonstrates how to extend
     the maps by adding a new condition, a new handler, and a new validator.
     This follows the patterns explained:
     - Adding a new condition ("dummy_status") mapped to an existing handler ("equality").
