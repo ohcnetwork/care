@@ -28,6 +28,7 @@ EOF
 
 chmod +x /backup.sh
 
+# Run cron job every day at 12:00 AM IST
 echo "30 18 * * * /backup.sh >> /var/log/backup.log 2>&1" | crontab -
 echo "$(date): Cron job set up. Starting cron daemon..."
 crond -f -l 2

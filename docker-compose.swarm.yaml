@@ -90,8 +90,8 @@ x-backend-env: &backend-env
   BUCKET_SECRET: minioadmin
   FILE_UPLOAD_BUCKET: patient-bucket
   FACILITY_S3_BUCKET: facility-bucket
-  CORS_ALLOWED_ORIGINS: '["https://care.ohc.network", "https://api.ohc.network", "https://minio.ohc.network", "https://portainer.ohc.network", "https://pgadmin.ohc.network"]'
-  SENTRY_DSN: https://0ef536cb49d03d3c2247fb0eac7f95ab@o4509054753964032.ingest.de.sentry.io/4509054759796816
+  CORS_ALLOWED_ORIGINS: '["https://care.ohc.network", "https://careapi.ohc.network", "https://minio.ohc.network", "https://portainer.ohc.network", "https://pgadmin.ohc.network"]'
+  SENTRY_DSN: dsn
   SENTRY_ENVIRONMENT: aws-ec2
 
 x-policy-template: &policy-template
