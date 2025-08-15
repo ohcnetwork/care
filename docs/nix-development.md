@@ -1,6 +1,6 @@
-# Nix Development Environment for Care
+# Nix Development Environment for CARE 
 
-This document describes how to set up and use the Nix-based development environment for the Care healthcare management system.
+This document describes how to set up and use the Nix-based development environment for the CARE
 
 ## Prerequisites
 
@@ -8,6 +8,8 @@ This document describes how to set up and use the Nix-based development environm
    ```bash
    curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install
    ```
+
+   > **Note**: The Determinate Systems installer is preferred as it provides a cleaner installation process and hassle-free uninstallation from user machines.
 
 2. **Enable Flakes**: Nix flakes should be enabled automatically with modern installers. If not, add to `~/.config/nix/nix.conf`:
    ```

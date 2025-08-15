@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
-# Nix Development Environment Quick Setup Script for Care
-# This script helps new developers get started quickly with the Care project using Nix
+# Nix Development Environment Quick Setup Script for CARE
+# This script helps new developers get started quickly with the CARE project using Nix
 
 set -euo pipefail
 
@@ -15,6 +15,7 @@ if ! command -v nix >/dev/null 2>&1; then
     echo "❌ Nix is not installed. Please install Nix first:"
     echo "   curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install"
     echo "   or visit: https://nixos.org/download.html"
+    echo "determinate systems nix is preffered as it offers easier installtion 1 click uninstallation support"
     exit 1
 fi
 
@@ -98,6 +99,5 @@ echo ""
 echo "If you encounter any issues:"
 echo "  - Check that all services are running: ps aux | grep -E 'postgres|redis|minio'"
 echo "  - Restart services: stop-services && start-services"
-echo "  - Reset database: reset-db && migrate"
 echo ""
-echo "Happy coding! 🚀"
+echo "Happy Developing! 🚀"
