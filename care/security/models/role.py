@@ -25,6 +25,7 @@ class RoleModel(BaseModel):
         default=False
     )  # Denotes if role was created by the system or a user
     temp_deleted = models.BooleanField(default=False)
+    is_archived = models.BooleanField(default=False)
 
     class Meta:
         constraints = [
