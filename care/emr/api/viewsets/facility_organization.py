@@ -57,7 +57,7 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
 
     def validate_data(self, instance, model_obj=None):
         if model_obj is not None and model_obj.org_type == "root":
-            raise PermissionDenied("Cannot update organization to root type")
+            raise PermissionDenied("Cannot update root organization")
 
         if instance.org_type == "root":
             raise PermissionDenied("Cannot create root organization")
