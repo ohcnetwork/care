@@ -1,0 +1,814 @@
+<!doctype html>
+<html class="no-js" lang="en" data-content_root="./">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><meta name="viewport" content="width=device-width, initial-scale=1" />
+<link rel="index" title="Index" href="genindex.html" /><link rel="search" title="Search" href="search.html" />
+
+    <!-- Generated with Sphinx 8.1.3 and Furo 2024.08.06 -->
+        <title>Nix Development Environment for CARE - Care documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=8f2a1f02" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo.css?v=354aac6f" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/furo-extensions.css?v=302659d7" />
+    
+    
+
+
+<style>
+  body {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media not print {
+    body[data-theme="dark"] {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+    @media (prefers-color-scheme: dark) {
+      body:not([data-theme="light"]) {
+        --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+      }
+    }
+  }
+</style></head>
+  <body>
+    
+    <script>
+      document.body.dataset.theme = localStorage.getItem("theme") || "auto";
+    </script>
+    
+
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 1024 1024">
+      <path d="M408 442h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8zm-8 204c0 4.4 3.6 8 8 8h480c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8H408c-4.4 0-8 3.6-8 8v56zm504-486H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zm0 632H120c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h784c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8zM115.4 518.9L271.7 642c5.8 4.6 14.4.5 14.4-6.9V388.9c0-7.4-8.5-11.5-14.4-6.9L115.4 505.1a8.74 8.74 0 0 0 0 13.8z"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+  <symbol id="svg-sun" viewBox="0 0 24 24">
+    <title>Light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="feather-sun">
+      <circle cx="12" cy="12" r="5"></circle>
+      <line x1="12" y1="1" x2="12" y2="3"></line>
+      <line x1="12" y1="21" x2="12" y2="23"></line>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+      <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+      <line x1="1" y1="12" x2="3" y2="12"></line>
+      <line x1="21" y1="12" x2="23" y2="12"></line>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+      <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon" viewBox="0 0 24 24">
+    <title>Dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-moon">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M12 3c.132 0 .263 0 .393 0a7.5 7.5 0 0 0 7.92 12.446a9 9 0 1 1 -8.313 -12.454z" />
+    </svg>
+  </symbol>
+  <symbol id="svg-sun-with-moon" viewBox="0 0 24 24">
+    <title>Auto light/dark, in light mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path style="opacity: 50%" d="M 5.411 14.504 C 5.471 14.504 5.532 14.504 5.591 14.504 C 3.639 16.319 4.383 19.569 6.931 20.352 C 7.693 20.586 8.512 20.551 9.25 20.252 C 8.023 23.207 4.056 23.725 2.11 21.184 C 0.166 18.642 1.702 14.949 4.874 14.536 C 5.051 14.512 5.231 14.5 5.411 14.5 L 5.411 14.504 Z"/>
+      <line x1="14.5" y1="3.25" x2="14.5" y2="1.25"/>
+      <line x1="14.5" y1="15.85" x2="14.5" y2="17.85"/>
+      <line x1="10.044" y1="5.094" x2="8.63" y2="3.68"/>
+      <line x1="19" y1="14.05" x2="20.414" y2="15.464"/>
+      <line x1="8.2" y1="9.55" x2="6.2" y2="9.55"/>
+      <line x1="20.8" y1="9.55" x2="22.8" y2="9.55"/>
+      <line x1="10.044" y1="14.006" x2="8.63" y2="15.42"/>
+      <line x1="19" y1="5.05" x2="20.414" y2="3.636"/>
+      <circle cx="14.5" cy="9.55" r="3.6"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-moon-with-sun" viewBox="0 0 24 24">
+    <title>Auto light/dark, in dark mode</title>
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round"
+      class="icon-custom-derived-from-feather-sun-and-tabler-moon">
+      <path d="M 8.282 7.007 C 8.385 7.007 8.494 7.007 8.595 7.007 C 5.18 10.184 6.481 15.869 10.942 17.24 C 12.275 17.648 13.706 17.589 15 17.066 C 12.851 22.236 5.91 23.143 2.505 18.696 C -0.897 14.249 1.791 7.786 7.342 7.063 C 7.652 7.021 7.965 7 8.282 7 L 8.282 7.007 Z"/>
+      <line style="opacity: 50%" x1="18" y1="3.705" x2="18" y2="2.5"/>
+      <line style="opacity: 50%" x1="18" y1="11.295" x2="18" y2="12.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="4.816" x2="14.464" y2="3.964"/>
+      <line style="opacity: 50%" x1="20.711" y1="10.212" x2="21.563" y2="11.063"/>
+      <line style="opacity: 50%" x1="14.205" y1="7.5" x2="13.001" y2="7.5"/>
+      <line style="opacity: 50%" x1="21.795" y1="7.5" x2="23" y2="7.5"/>
+      <line style="opacity: 50%" x1="15.316" y1="10.184" x2="14.464" y2="11.036"/>
+      <line style="opacity: 50%" x1="20.711" y1="4.789" x2="21.563" y2="3.937"/>
+      <circle style="opacity: 50%" cx="18" cy="7.5" r="2.169"/>
+    </svg>
+  </symbol>
+  <symbol id="svg-pencil" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-pencil-code">
+      <path d="M4 20h4l10.5 -10.5a2.828 2.828 0 1 0 -4 -4l-10.5 10.5v4" />
+      <path d="M13.5 6.5l4 4" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+  <symbol id="svg-eye" viewBox="0 0 24 24">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+      stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="icon-tabler-eye-code">
+      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+      <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+      <path
+        d="M11.11 17.958c-3.209 -.307 -5.91 -2.293 -8.11 -5.958c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6c-.21 .352 -.427 .688 -.647 1.008" />
+      <path d="M20 21l2 -2l-2 -2" />
+      <path d="M17 17l-2 2l2 2" />
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation">
+  <div class="visually-hidden">Hide navigation sidebar</div>
+</label>
+<label class="overlay toc-overlay" for="__toc">
+  <div class="visually-hidden">Hide table of contents sidebar</div>
+</label>
+
+<a class="skip-to-content muted-link" href="#furo-main-content">Skip to content</a>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <div class="visually-hidden">Toggle site navigation sidebar</div>
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="index.html"><div class="brand">Care  documentation</div></a>
+    </div>
+    <div class="header-right">
+      <div class="theme-toggle-container theme-toggle-header">
+        <button class="theme-toggle">
+          <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+          <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+          <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+          <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+          <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+        </button>
+      </div>
+      <label class="toc-overlay-icon toc-header-icon" for="__toc">
+        <div class="visually-hidden">Toggle table of contents sidebar</div>
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="index.html">
+  
+  
+  <span class="sidebar-brand-text">Care  documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="search.html" role="search">
+  <input class="sidebar-search" placeholder="Search" name="q" aria-label="Search">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form>
+<div id="searchbox"></div><div class="sidebar-scroll"><div class="sidebar-tree">
+  <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="local-setup/configuration.html">Setting up development environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pycharm/configuration.html">Debugging with Pycharm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="working-components/configuration.html">Working Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="django-configuration/configuration.html">Environment Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pluggable-apps/configuration.html">Pluggable Apps</a></li>
+<li class="toctree-l1"><a class="reference internal" href="django-commands/configuration.html">Django Commands</a></li>
+<li class="toctree-l1"><a class="reference internal" href="github-repo/configuration.html">GitHub Repository</a></li>
+<li class="toctree-l1"><a class="reference internal" href="others/configuration.html">Other Details</a></li>
+<li class="toctree-l1"><a class="reference internal" href="glossary/configuration.html">Glossary</a></li>
+<li class="toctree-l1"><a class="reference internal" href="middleware/configuration.html">Connecting with Middleware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="databases/backup.html">Docker database backup</a></li>
+<li class="toctree-l1"><a class="reference internal" href="databases/backup.html#restoration-of-the-database">Restoration of the Database</a></li>
+</ul>
+
+</div>
+</div>
+
+      </div>
+      
+    </div>
+  </aside>
+  <div class="main">
+    <div class="content">
+      <div class="article-container">
+        <a href="#" class="back-to-top muted-link">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8v12z"></path>
+          </svg>
+          <span>Back to top</span>
+        </a>
+        <div class="content-icon-container">
+          <div class="view-this-page">
+  <a class="muted-link" href="_sources/nix-development.md.txt" title="View this page">
+    <svg><use href="#svg-eye"></use></svg>
+    <span class="visually-hidden">View this page</span>
+  </a>
+</div>
+<div class="theme-toggle-container theme-toggle-content">
+            <button class="theme-toggle">
+              <div class="visually-hidden">Toggle Light / Dark / Auto color theme</div>
+              <svg class="theme-icon-when-auto-light"><use href="#svg-sun-with-moon"></use></svg>
+              <svg class="theme-icon-when-auto-dark"><use href="#svg-moon-with-sun"></use></svg>
+              <svg class="theme-icon-when-dark"><use href="#svg-moon"></use></svg>
+              <svg class="theme-icon-when-light"><use href="#svg-sun"></use></svg>
+            </button>
+          </div>
+          <label class="toc-overlay-icon toc-content-icon" for="__toc">
+            <div class="visually-hidden">Toggle table of contents sidebar</div>
+            <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+          </label>
+        </div>
+        <article role="main" id="furo-main-content">
+          <section id="nix-development-environment-for-care">
+<h1>Nix Development Environment for CARE<a class="headerlink" href="#nix-development-environment-for-care" title="Link to this heading">¶</a></h1>
+<p>This document describes how to set up and use the Nix-based development environment for the CARE</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading">¶</a></h2>
+<ol class="arabic">
+<li><p><strong>Install Nix</strong>: Follow the installation instructions at <a class="reference external" href="https://nixos.org/download.html">nixos.org</a> or use the Determinate Systems installer:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>--proto<span class="w"> </span><span class="s1">&#39;=https&#39;</span><span class="w"> </span>--tlsv1.2<span class="w"> </span>-sSf<span class="w"> </span>-L<span class="w"> </span>https://install.determinate.systems/nix<span class="w"> </span><span class="p">|</span><span class="w"> </span>sh<span class="w"> </span>-s<span class="w"> </span>--<span class="w"> </span>install
+</pre></div>
+</div>
+<blockquote>
+<div><p><strong>Note</strong>: The Determinate Systems installer is preferred as it provides a cleaner installation process and hassle-free uninstallation from user machines.</p>
+</div></blockquote>
+</li>
+<li><p><strong>Enable Flakes</strong>: Nix flakes should be enabled automatically with modern installers. If not, add to <code class="docutils literal notranslate"><span class="pre">~/.config/nix/nix.conf</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">experimental</span><span class="o">-</span><span class="n">features</span> <span class="o">=</span> <span class="n">nix</span><span class="o">-</span><span class="n">command</span> <span class="n">flakes</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Optional - Install direnv</strong>: For automatic environment activation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># On macOS with Homebrew</span>
+brew<span class="w"> </span>install<span class="w"> </span>direnv
+
+<span class="c1"># On Linux (varies by distribution)</span>
+sudo<span class="w"> </span>apt<span class="w"> </span>install<span class="w"> </span>direnv<span class="w">  </span><span class="c1"># Ubuntu/Debian</span>
+sudo<span class="w"> </span>dnf<span class="w"> </span>install<span class="w"> </span>direnv<span class="w">  </span><span class="c1"># Fedora</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="quick-setup">
+<h2>Quick Setup<a class="headerlink" href="#quick-setup" title="Link to this heading">¶</a></h2>
+<p>For first-time setup, run the automated setup script:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./scripts/nix-dev-setup.sh
+</pre></div>
+</div>
+<p>This script will:</p>
+<ul class="simple">
+<li><p>Verify Nix installation</p></li>
+<li><p>Set up the development environment</p></li>
+<li><p>Install all Python dependencies</p></li>
+<li><p>Start required services (PostgreSQL, Redis, MinIO)</p></li>
+<li><p>Run database migrations</p></li>
+<li><p>Optionally load sample data</p></li>
+</ul>
+</section>
+<section id="manual-setup">
+<h2>Manual Setup<a class="headerlink" href="#manual-setup" title="Link to this heading">¶</a></h2>
+<p>If you prefer manual setup or need to troubleshoot:</p>
+<section id="enter-development-shell">
+<h3>1. Enter Development Shell<a class="headerlink" href="#enter-development-shell" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nix<span class="w"> </span>develop
+</pre></div>
+</div>
+<p>This will:</p>
+<ul class="simple">
+<li><p>Install all required system packages</p></li>
+<li><p>Set up environment variables</p></li>
+<li><p>Make development commands available</p></li>
+<li><p>Show a helpful welcome message</p></li>
+</ul>
+</section>
+<section id="install-python-dependencies">
+<h3>2. Install Python Dependencies<a class="headerlink" href="#install-python-dependencies" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>setup-dev
+</pre></div>
+</div>
+</section>
+<section id="start-services">
+<h3>3. Start Services<a class="headerlink" href="#start-services" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>start-services
+</pre></div>
+</div>
+<p>This starts:</p>
+<ul class="simple">
+<li><p>PostgreSQL on port 5432</p></li>
+<li><p>Redis on port 6379</p></li>
+<li><p>MinIO on port 9000 (console on 9001)</p></li>
+</ul>
+</section>
+<section id="set-up-database">
+<h3>4. Set Up Database<a class="headerlink" href="#set-up-database" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>migrate
+load-fixtures<span class="w">  </span><span class="c1"># Optional: load sample data</span>
+</pre></div>
+</div>
+</section>
+<section id="start-complete-development-environment">
+<h3>5. Start Complete Development Environment<a class="headerlink" href="#start-complete-development-environment" title="Link to this heading">¶</a></h3>
+<section id="option-a-unified-start-recommended">
+<h4>Option A: Unified Start (Recommended)<a class="headerlink" href="#option-a-unified-start-recommended" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rundev
+</pre></div>
+</div>
+<p>This single command starts both the Django server and Celery worker together with proper migrations and setup.</p>
+</section>
+<section id="option-b-separate-services">
+<h4>Option B: Separate Services<a class="headerlink" href="#option-b-separate-services" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Terminal 1: Django server</span>
+runserver
+
+<span class="c1"># Terminal 2: Celery worker  </span>
+nix<span class="w"> </span>develop<span class="w"> </span>--command<span class="w"> </span>celery
+</pre></div>
+</div>
+<p>The Django server will be available at http://localhost:9000</p>
+</section>
+</section>
+</section>
+<section id="available-commands">
+<h2>Available Commands<a class="headerlink" href="#available-commands" title="Link to this heading">¶</a></h2>
+<p>Once in the development shell (<code class="docutils literal notranslate"><span class="pre">nix</span> <span class="pre">develop</span></code>), you have access to these commands:</p>
+<section id="service-management">
+<h3>Service Management<a class="headerlink" href="#service-management" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">start-services</span></code> - Start PostgreSQL, Redis, and MinIO</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stop-services</span></code> - Stop background services only</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">kill-care</span></code> - <strong>🛑 Stop ALL development processes and services</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">healthcheck</span></code> - Check application health</p></li>
+</ul>
+</section>
+<section id="development-server">
+<h3>Development Server<a class="headerlink" href="#development-server" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rundev</span></code> - <strong>🚀 Start both API server and Celery worker (RECOMMENDED)</strong></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">runserver</span></code> - Start Django development server only</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">celery</span></code> - Start Celery worker with beat scheduler only</p></li>
+</ul>
+</section>
+<section id="database-operations">
+<h3>Database Operations<a class="headerlink" href="#database-operations" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">migrate</span></code> - Run database migrations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">makemigrations</span> <span class="pre">[app]</span></code> - Create new migrations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load-fixtures</span></code> - Load sample data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dump-db</span></code> - Backup database to <code class="docutils literal notranslate"><span class="pre">care_db.dump</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load-db</span></code> - Restore database from <code class="docutils literal notranslate"><span class="pre">care_db.dump</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">reset-db</span></code> - Drop and recreate database</p></li>
+</ul>
+</section>
+<section id="django-management">
+<h3>Django Management<a class="headerlink" href="#django-management" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">manage</span> <span class="pre">&lt;command&gt;</span></code> - Run any Django management command</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">manage</span> <span class="pre">shell</span></code> - Django shell</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">manage</span> <span class="pre">collectstatic</span></code> - Collect static files</p></li>
+</ul>
+</section>
+<section id="testing">
+<h3>Testing<a class="headerlink" href="#testing" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">test</span> <span class="pre">[path]</span></code> - Run tests (with database reuse)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test-no-keep</span> <span class="pre">[path]</span></code> - Run tests (fresh database)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">test-coverage</span></code> - Run tests with coverage report</p></li>
+</ul>
+</section>
+<section id="code-quality">
+<h3>Code Quality<a class="headerlink" href="#code-quality" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ruff</span></code> - Check and fix staged files</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ruff-all</span></code> - Check all Python files</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ruff-fix-all</span></code> - Fix all Python files</p></li>
+</ul>
+</section>
+<section id="initial-setup">
+<h3>Initial Setup<a class="headerlink" href="#initial-setup" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">setup-dev</span></code> - Install dependencies and set up environment</p></li>
+</ul>
+</section>
+</section>
+<section id="environment-variables">
+<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading">¶</a></h2>
+<p>The development environment sets these variables automatically:</p>
+<section id="database">
+<h3>Database<a class="headerlink" href="#database" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">POSTGRES_USER=postgres</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POSTGRES_PASSWORD=postgres</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POSTGRES_HOST=localhost</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">POSTGRES_DB=care</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DATABASE_URL=postgres://postgres:postgres&#64;localhost:5432/care</span></code></p></li>
+</ul>
+</section>
+<section id="redis">
+<h3>Redis<a class="headerlink" href="#redis" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">REDIS_URL=redis://localhost:6379</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CELERY_BROKER_URL=redis://localhost:6379/0</span></code></p></li>
+</ul>
+</section>
+<section id="django">
+<h3>Django<a class="headerlink" href="#django" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">DJANGO_DEBUG=true</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DJANGO_SETTINGS_MODULE=config.settings.local</span></code></p></li>
+</ul>
+</section>
+<section id="minio-s3">
+<h3>MinIO/S3<a class="headerlink" href="#minio-s3" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">BUCKET_ENDPOINT=http://localhost:9100</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BUCKET_KEY=minioadmin</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">BUCKET_SECRET=minioadmin</span></code></p></li>
+</ul>
+</section>
+</section>
+<section id="service-urls">
+<h2>Service URLs<a class="headerlink" href="#service-urls" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Django Application</strong>: http://localhost:9000</p></li>
+<li><p><strong>MinIO Console</strong>: http://localhost:9001 (admin: minioadmin/minioadmin)</p></li>
+<li><p><strong>PostgreSQL</strong>: localhost:5432 (postgres/postgres)</p></li>
+<li><p><strong>Redis</strong>: localhost:6379</p></li>
+</ul>
+</section>
+<section id="development-workflow">
+<h2>Development Workflow<a class="headerlink" href="#development-workflow" title="Link to this heading">¶</a></h2>
+<section id="daily-development">
+<h3>Daily Development<a class="headerlink" href="#daily-development" title="Link to this heading">¶</a></h3>
+<section id="quick-start-recommended">
+<h4>Quick Start (Recommended)<a class="headerlink" href="#quick-start-recommended" title="Link to this heading">¶</a></h4>
+<ol class="arabic">
+<li><p><strong>Start your session</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nix<span class="w"> </span>develop
+start-services<span class="w">  </span><span class="c1"># If not already running</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Start the complete application</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>rundev<span class="w">  </span><span class="c1"># Starts both Django server and Celery worker together</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="manual-start-advanced">
+<h4>Manual Start (Advanced)<a class="headerlink" href="#manual-start-advanced" title="Link to this heading">¶</a></h4>
+<ol class="arabic">
+<li><p><strong>Start your session</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>nix<span class="w"> </span>develop
+start-services<span class="w">  </span><span class="c1"># If not already running</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Start services separately</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Terminal 1: Django server</span>
+runserver
+
+<span class="c1"># Terminal 2: Celery worker</span>
+nix<span class="w"> </span>develop<span class="w"> </span>--command<span class="w"> </span>celery
+</pre></div>
+</div>
+</li>
+<li><p><strong>Make changes and test</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>ruff-all<span class="w">          </span><span class="c1"># Check code style</span>
+<span class="nb">test</span><span class="w">              </span><span class="c1"># Run tests</span>
+manage<span class="w"> </span>shell<span class="w">      </span><span class="c1"># Interactive Django shell</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Stop when done</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kill-care<span class="w">         </span><span class="c1"># Stop all development processes</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+</section>
+<section id="working-with-database">
+<h3>Working with Database<a class="headerlink" href="#working-with-database" title="Link to this heading">¶</a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Create and apply migrations</span>
+makemigrations
+migrate
+
+<span class="c1"># Reset database if needed</span>
+stop-services
+reset-db
+start-services
+migrate
+load-fixtures
+</pre></div>
+</div>
+</section>
+<section id="debugging">
+<h3>Debugging<a class="headerlink" href="#debugging" title="Link to this heading">¶</a></h3>
+<section id="enable-django-debug-mode">
+<h4>Enable Django Debug Mode<a class="headerlink" href="#enable-django-debug-mode" title="Link to this heading">¶</a></h4>
+<p>Set <code class="docutils literal notranslate"><span class="pre">ATTACH_DEBUGGER=true</span></code> and use <code class="docutils literal notranslate"><span class="pre">runserver</span></code> to start with debugpy on port 9876.</p>
+</section>
+<section id="check-services">
+<h4>Check Services<a class="headerlink" href="#check-services" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if services are running</span>
+ps<span class="w"> </span>aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s1">&#39;postgres|redis|minio&#39;</span>
+
+<span class="c1"># View service logs</span>
+journalctl<span class="w"> </span>--user<span class="w"> </span>-f<span class="w">  </span><span class="c1"># On systemd systems</span>
+</pre></div>
+</div>
+</section>
+<section id="database-connection-issues">
+<h4>Database Connection Issues<a class="headerlink" href="#database-connection-issues" title="Link to this heading">¶</a></h4>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check PostgreSQL status</span>
+pg_ctl<span class="w"> </span>status<span class="w"> </span>-D<span class="w"> </span>~/.local/share/postgres
+
+<span class="c1"># Restart PostgreSQL</span>
+stop-services
+start-services
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading">¶</a></h2>
+<section id="common-issues">
+<h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading">¶</a></h3>
+<ol class="arabic">
+<li><p><strong>“Permission denied” errors</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ensure directories are writable</span>
+mkdir<span class="w"> </span>-p<span class="w"> </span>~/.local/bin<span class="w"> </span>~/.local/share/postgres<span class="w"> </span>~/.local/share/minio
+</pre></div>
+</div>
+</li>
+<li><p><strong>Services won’t start</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stop any conflicting processes</span>
+stop-services
+<span class="c1"># Check for processes using ports</span>
+lsof<span class="w"> </span>-i<span class="w"> </span>:5432<span class="w">  </span><span class="c1"># PostgreSQL</span>
+lsof<span class="w"> </span>-i<span class="w"> </span>:6379<span class="w">  </span><span class="c1"># Redis</span>
+lsof<span class="w"> </span>-i<span class="w"> </span>:9000<span class="w">  </span><span class="c1"># MinIO</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Python dependencies issues</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stop everything first</span>
+kill-care
+<span class="c1"># Reinstall in clean environment</span>
+rm<span class="w"> </span>-rf<span class="w"> </span>.venv
+setup-dev
+</pre></div>
+</div>
+</li>
+<li><p><strong>Database connection refused</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Wait for PostgreSQL to fully start</span>
+sleep<span class="w"> </span><span class="m">5</span>
+<span class="c1"># Or check if initialization is complete</span>
+pg_ctl<span class="w"> </span>status<span class="w"> </span>-D<span class="w"> </span>~/.local/share/postgres
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="clean-reset">
+<h3>Clean Reset<a class="headerlink" href="#clean-reset" title="Link to this heading">¶</a></h3>
+<p>If you encounter persistent issues:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Stop all processes and services</span>
+kill-care
+
+<span class="c1"># Clean up data directories</span>
+rm<span class="w"> </span>-rf<span class="w"> </span>~/.local/share/postgres<span class="w"> </span>~/.local/share/minio
+
+<span class="c1"># Exit and re-enter development shell</span>
+<span class="nb">exit</span>
+nix<span class="w"> </span>develop
+
+<span class="c1"># Restart setup</span>
+setup-dev
+start-services
+migrate
+</pre></div>
+</div>
+</section>
+</section>
+<section id="differences-from-docker-setup">
+<h2>Differences from Docker Setup<a class="headerlink" href="#differences-from-docker-setup" title="Link to this heading">¶</a></h2>
+<section id="advantages-of-nix">
+<h3>Advantages of Nix<a class="headerlink" href="#advantages-of-nix" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p><strong>Faster startup</strong>: No container overhead</p></li>
+<li><p><strong>Native performance</strong>: Direct system execution</p></li>
+<li><p><strong>Reproducible</strong>: Same environment across different machines</p></li>
+<li><p><strong>Integrated tooling</strong>: All tools available in single shell</p></li>
+<li><p><strong>Easier debugging</strong>: Direct access to processes and files</p></li>
+</ul>
+</section>
+<section id="key-differences">
+<h3>Key Differences<a class="headerlink" href="#key-differences" title="Link to this heading">¶</a></h3>
+<ul class="simple">
+<li><p>Services run directly on host (not in containers)</p></li>
+<li><p>Data stored in <code class="docutils literal notranslate"><span class="pre">~/.local/share/</span></code> instead of Docker volumes</p></li>
+<li><p>Environment variables set in shell instead of env files</p></li>
+<li><p>All commands available directly (no <code class="docutils literal notranslate"><span class="pre">docker</span> <span class="pre">compose</span> <span class="pre">exec</span></code>)</p></li>
+</ul>
+</section>
+</section>
+<section id="integration-with-existing-workflow">
+<h2>Integration with Existing Workflow<a class="headerlink" href="#integration-with-existing-workflow" title="Link to this heading">¶</a></h2>
+<p>The Nix setup coexists with Docker setup:</p>
+<ul class="simple">
+<li><p>Makefile commands still work when using Docker</p></li>
+<li><p>Same Python dependencies and versions</p></li>
+<li><p>Same database schema and migrations</p></li>
+<li><p>Compatible with existing CI/CD pipelines</p></li>
+</ul>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Link to this heading">¶</a></h2>
+<p>When adding new dependencies:</p>
+<ol class="arabic simple">
+<li><p><strong>Python packages</strong>: Add to <code class="docutils literal notranslate"><span class="pre">Pipfile</span></code> and run <code class="docutils literal notranslate"><span class="pre">setup-dev</span></code></p></li>
+<li><p><strong>System packages</strong>: Add to <code class="docutils literal notranslate"><span class="pre">flake.nix</span></code> buildInputs</p></li>
+<li><p><strong>Services</strong>: Update service management scripts in <code class="docutils literal notranslate"><span class="pre">flake.nix</span></code></p></li>
+<li><p><strong>Environment variables</strong>: Add to envVars in <code class="docutils literal notranslate"><span class="pre">flake.nix</span></code></p></li>
+</ol>
+</section>
+<section id="performance-tips">
+<h2>Performance Tips<a class="headerlink" href="#performance-tips" title="Link to this heading">¶</a></h2>
+<ol class="arabic">
+<li><p><strong>Use direnv</strong>: Automatically enter/exit development shell:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;use flake&quot;</span><span class="w"> </span>&gt;<span class="w"> </span>.envrc
+direnv<span class="w"> </span>allow
+</pre></div>
+</div>
+</li>
+<li><p><strong>Keep services running</strong>: Services persist between shell sessions</p></li>
+<li><p><strong>Use test database reuse</strong>: Default <code class="docutils literal notranslate"><span class="pre">test</span></code> command reuses database for speed</p></li>
+<li><p><strong>Parallel testing</strong>: Tests run in parallel by default</p></li>
+<li><p><strong>Clean shutdown</strong>: Use <code class="docutils literal notranslate"><span class="pre">kill-care</span></code> command to properly stop all processes</p></li>
+</ol>
+</section>
+<section id="security-notes">
+<h2>Security Notes<a class="headerlink" href="#security-notes" title="Link to this heading">¶</a></h2>
+<ul class="simple">
+<li><p>Services bind to localhost only (not accessible externally)</p></li>
+<li><p>Default credentials are for development only</p></li>
+<li><p>MinIO uses development keys (minioadmin/minioadmin)</p></li>
+<li><p>Database has no password (local development only)</p></li>
+</ul>
+<p>For production deployment, use the Docker setup with proper security configurations.</p>
+</section>
+</section>
+
+        </article>
+      </div>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+        <div class="bottom-of-page">
+          <div class="left-details">
+            <div class="copyright">
+                Copyright &#169; 2023, Open Healthcare Network
+            </div>
+            Made with <a href="https://www.sphinx-doc.org/">Sphinx</a> and <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+            
+            <a href="https://github.com/pradyunsg/furo">Furo</a>
+            
+          </div>
+          <div class="right-details">
+            
+          </div>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer">
+      
+      
+      <div class="toc-sticky toc-scroll">
+        <div class="toc-title-container">
+          <span class="toc-title">
+            On this page
+          </span>
+        </div>
+        <div class="toc-tree-container">
+          <div class="toc-tree">
+            <ul>
+<li><a class="reference internal" href="#">Nix Development Environment for CARE</a><ul>
+<li><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li><a class="reference internal" href="#quick-setup">Quick Setup</a></li>
+<li><a class="reference internal" href="#manual-setup">Manual Setup</a><ul>
+<li><a class="reference internal" href="#enter-development-shell">1. Enter Development Shell</a></li>
+<li><a class="reference internal" href="#install-python-dependencies">2. Install Python Dependencies</a></li>
+<li><a class="reference internal" href="#start-services">3. Start Services</a></li>
+<li><a class="reference internal" href="#set-up-database">4. Set Up Database</a></li>
+<li><a class="reference internal" href="#start-complete-development-environment">5. Start Complete Development Environment</a><ul>
+<li><a class="reference internal" href="#option-a-unified-start-recommended">Option A: Unified Start (Recommended)</a></li>
+<li><a class="reference internal" href="#option-b-separate-services">Option B: Separate Services</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#available-commands">Available Commands</a><ul>
+<li><a class="reference internal" href="#service-management">Service Management</a></li>
+<li><a class="reference internal" href="#development-server">Development Server</a></li>
+<li><a class="reference internal" href="#database-operations">Database Operations</a></li>
+<li><a class="reference internal" href="#django-management">Django Management</a></li>
+<li><a class="reference internal" href="#testing">Testing</a></li>
+<li><a class="reference internal" href="#code-quality">Code Quality</a></li>
+<li><a class="reference internal" href="#initial-setup">Initial Setup</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#environment-variables">Environment Variables</a><ul>
+<li><a class="reference internal" href="#database">Database</a></li>
+<li><a class="reference internal" href="#redis">Redis</a></li>
+<li><a class="reference internal" href="#django">Django</a></li>
+<li><a class="reference internal" href="#minio-s3">MinIO/S3</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#service-urls">Service URLs</a></li>
+<li><a class="reference internal" href="#development-workflow">Development Workflow</a><ul>
+<li><a class="reference internal" href="#daily-development">Daily Development</a><ul>
+<li><a class="reference internal" href="#quick-start-recommended">Quick Start (Recommended)</a></li>
+<li><a class="reference internal" href="#manual-start-advanced">Manual Start (Advanced)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#working-with-database">Working with Database</a></li>
+<li><a class="reference internal" href="#debugging">Debugging</a><ul>
+<li><a class="reference internal" href="#enable-django-debug-mode">Enable Django Debug Mode</a></li>
+<li><a class="reference internal" href="#check-services">Check Services</a></li>
+<li><a class="reference internal" href="#database-connection-issues">Database Connection Issues</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li><a class="reference internal" href="#common-issues">Common Issues</a></li>
+<li><a class="reference internal" href="#clean-reset">Clean Reset</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#differences-from-docker-setup">Differences from Docker Setup</a><ul>
+<li><a class="reference internal" href="#advantages-of-nix">Advantages of Nix</a></li>
+<li><a class="reference internal" href="#key-differences">Key Differences</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#integration-with-existing-workflow">Integration with Existing Workflow</a></li>
+<li><a class="reference internal" href="#contributing">Contributing</a></li>
+<li><a class="reference internal" href="#performance-tips">Performance Tips</a></li>
+<li><a class="reference internal" href="#security-notes">Security Notes</a></li>
+</ul>
+</li>
+</ul>
+
+          </div>
+        </div>
+      </div>
+      
+      
+    </aside>
+  </div>
+</div><script src="_static/documentation_options.js?v=5929fcd5"></script>
+    <script src="_static/doctools.js?v=9bcbadda"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/furo.js?v=5fa4622c"></script>
+    </body>
+</html>
