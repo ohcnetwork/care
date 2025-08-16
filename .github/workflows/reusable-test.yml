@@ -67,7 +67,7 @@ jobs:
         run: make checkmigration
 
       - name: Validate integrity of fixtures
-        run: make load-dummy-data
+        run: make load-fixtures
 
       - name: Dump db
         if: ${{ inputs.event_name == 'push' || github.event_name == 'push' }}

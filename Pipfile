@@ -11,7 +11,7 @@ name = "python-magic-bin"
 [packages]
 argon2-cffi = "==23.1.0"
 authlib = "==1.4.0"
-boto3 = "==1.36.12"
+boto3 = "==1.39.15"
 celery = "==5.4.0"
 django = "==5.1.4"
 django-environ = "==0.12.0"
@@ -50,6 +50,7 @@ django-anymail = {extras = ["amazon-ses"], version = "*"}
 pydantic-extra-types = "2.10.2"
 phonenumberslite = "==8.13.54"
 python-magic = {version = "==0.4.28", index = "python-magic-bin"}
+evalidate = "2.0.5"
 django-prometheus = "==2.4.1"
 
 [dev-packages]
@@ -61,7 +62,7 @@ django-extensions = "==3.2.3"
 django-silk = "==5.3.2"
 djangorestframework-stubs = "==3.15.2"
 factory-boy = "==3.3.3"
-freezegun = "==1.5.1"
+freezegun = "==1.5.2"
 ipython = "==9.2.0"
 mypy = "==1.14.1"
 pre-commit = "==4.0.1"
