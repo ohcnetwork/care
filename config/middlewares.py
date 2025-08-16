@@ -6,7 +6,7 @@ from django.conf import settings
 from prometheus_client import Counter, Gauge, Histogram
 
 ENVIRONMENT = getattr(settings, "CARE_ENVIRONMENT", None) or os.environ.get(
-    "CARE_ENVIRONMENT", "local"
+    "CARE_ENVIRONMENT", "develop"
 )
 
 REQUEST_COUNT = Counter(
