@@ -1,4 +1,4 @@
-# Nix Development Environment for CARE 
+# Nix Development Environment for CARE
 
 This document describes how to set up and use the Nix-based development environment for the CARE
 
@@ -20,7 +20,7 @@ This document describes how to set up and use the Nix-based development environm
    ```bash
    # On macOS with Homebrew
    brew install direnv
-   
+
    # On Linux (varies by distribution)
    sudo apt install direnv  # Ubuntu/Debian
    sudo dnf install direnv  # Fedora
@@ -203,7 +203,7 @@ The development environment sets these variables automatically:
    ```bash
    # Terminal 1: Django server
    runserver
-   
+
    # Terminal 2: Celery worker
    nix develop --command celery
    ```
