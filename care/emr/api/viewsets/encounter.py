@@ -72,8 +72,10 @@ class EncounterFilters(filters.FilterSet):
     phone_number = filters.CharFilter(
         field_name="patient__phone_number", lookup_expr="icontains"
     )
+    patient_filter = filters.UUIDFilter(field_name="patient__external_id")
     name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
     location = filters.UUIDFilter(field_name="current_location__external_id")
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     live = LiveFilter()
 
 

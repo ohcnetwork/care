@@ -70,6 +70,7 @@ class TokenBookingBaseSpec(EMRResource):
 
 class TokenBookingWriteSpec(TokenBookingBaseSpec):
     status: BookingStatusChoices
+    note: str
 
     @model_validator(mode="after")
     def validate_status(self, info: ValidationInfo):
@@ -98,7 +99,7 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
     booked_on: datetime.datetime
     booked_by: UserSpec
     status: str
-    reason_for_visit: str
+    note: str
     user: dict = {}
     facility: dict = {}
     created_by: UserSpec | None = None
@@ -122,5 +123,7 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
             FacilityBareMinimumSpec, id=obj.token_slot.resource.facility_id
         )
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+        if obj.booked_by_id:
+            mapping["booked_by"] = model_from_cache(UserSpec, id=obj.booked_by_id)
 
         cls.serialize_audit_users(mapping, obj)

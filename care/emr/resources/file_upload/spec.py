@@ -94,6 +94,8 @@ class FileUploadListSpec(FileUploadBaseSpec):
         mapping["mime_type"] = obj.meta.get("mime_type")
         if obj.created_by:
             mapping["uploaded_by"] = UserSpec.serialize(obj.created_by)
+        if obj.archived_by:
+            mapping["archived_by"] = UserSpec.serialize(obj.archived_by)
 
 
 class FileUploadRetrieveSpec(FileUploadListSpec):

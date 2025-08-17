@@ -1,7 +1,9 @@
 from django.db import IntegrityError, transaction
 from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters
+from rest_framework import serializers
 from rest_framework.decorators import action, parser_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser
@@ -12,6 +14,7 @@ from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models import Organization
 from care.emr.models.organization import OrganizationUser
 from care.emr.resources.user.spec import (
+    CurrentUserRetrieveSpec,
     UserCreateSpec,
     UserRetrieveSpec,
     UserSpec,
@@ -21,9 +24,37 @@ from care.emr.resources.user.spec import (
 from care.emr.utils.send_password_reset_mail import send_password_creation_email
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
-from care.users.api.serializers.user import UserImageUploadSerializer, UserSerializer
 from care.users.models import User
-from care.utils.file_uploads.cover_image import delete_cover_image
+from care.utils.file_uploads.cover_image import delete_cover_image, upload_cover_image
+from care.utils.models.validators import (
+    cover_image_validator,
+    custom_image_extension_validator,
+)
+
+
+class UserImageUploadSerializer(serializers.ModelSerializer):
+    profile_picture = serializers.ImageField(
+        required=True,
+        write_only=True,
+        validators=[custom_image_extension_validator, cover_image_validator],
+    )
+    read_profile_picture_url = serializers.URLField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ("profile_picture", "read_profile_picture_url")
+
+    def save(self, **kwargs):
+        user: User = self.instance
+        image = self.validated_data["profile_picture"]
+        user.profile_picture_url = upload_cover_image(
+            image,
+            str(user.external_id),
+            "avatars",
+            user.profile_picture_url,
+        )
+        user.save(update_fields=["profile_picture_url"])
+        return user
 
 
 class UserFilter(filters.FilterSet):
@@ -102,11 +133,10 @@ class UserViewSet(EMRModelViewSet):
         if not self.request.user.is_superuser:
             raise PermissionDenied("You do not have permission to delete this user")
 
+    @extend_schema(responses={200: CurrentUserRetrieveSpec})
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):
-        return Response(
-            data=UserSerializer(request.user, context={"request": request}).data,
-        )
+        return Response(data=CurrentUserRetrieveSpec.serialize(request.user).to_json())
 
     @action(methods=["GET"], detail=True)
     def check_availability(self, request, username):

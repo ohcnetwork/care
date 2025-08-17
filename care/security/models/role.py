@@ -25,6 +25,7 @@ class RoleModel(BaseModel):
         default=False
     )  # Denotes if role was created by the system or a user
     temp_deleted = models.BooleanField(default=False)
+    is_archived = models.BooleanField(default=False)
 
     class Meta:
         constraints = [
@@ -64,7 +65,7 @@ class RoleModel(BaseModel):
 
         # Try to get permissions from cache
         cached_permissions = cache.get(cache_key)
-        if cached_permissions is not None:
+        if cached_permissions not in (None, []):
             return cached_permissions
 
         # If not in cache, fetch from database
