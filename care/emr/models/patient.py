@@ -121,6 +121,9 @@ class Patient(EMRBaseModel):
         self.rebuild_users_cache()
         super().save(update_fields=["organization_cache", "users_cache"])
 
+    def __str__(self):
+        return self.name
+
 
 class PatientOrganization(EMRBaseModel):
     patient = models.ForeignKey(Patient, on_delete=models.CASCADE)

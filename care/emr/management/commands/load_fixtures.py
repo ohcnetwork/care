@@ -2,12 +2,14 @@ import json
 import secrets
 import sys
 import uuid
+from decimal import Decimal, localcontext
 from pathlib import Path
 
 from django.conf import settings
 from django.core.management import BaseCommand, call_command
 from django.db import transaction
 from faker import Faker
+from faker.providers.geo import Provider as GeoProvider
 
 from care.emr.models import FacilityOrganization, Organization, Patient, Questionnaire
 from care.emr.models.encounter import EncounterOrganization
@@ -52,6 +54,24 @@ import care.emr.utils.valueset_coding_type  # noqa  # isort:skip
 sys.modules["care.emr.utils.valueset_coding_type"].validate_valueset = (
     lambda _, __, code: code
 )
+
+
+def safe_coordinate(self, center=None, radius=0.001):
+    with localcontext() as ctx:
+        ctx.prec = 10
+        if center is None:
+            return Decimal(
+                str(self.generator.random.randint(-180000000, 180000000) / 1000000)
+            ).quantize(Decimal(".000001"))
+        center = float(center)
+        radius = float(radius)
+        geo = self.generator.random.uniform(center - radius, center + radius)
+        return Decimal(str(geo)).quantize(Decimal(".000001"))
+
+
+# Monkey patching the coordinate method of Faker's GeoProvider as it conflicts with our Decimal precision settings
+GeoProvider.coordinate = safe_coordinate
+
 
 # Roles with their user types
 ROLES_OPTIONS = {

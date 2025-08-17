@@ -23,7 +23,7 @@ from care.emr.resources.facility.spec import (
     FacilityReadSpec,
     FacilityRetrieveSpec,
 )
-from care.emr.resources.user.spec import PublicUserReadSpec, UserSpec
+from care.emr.resources.user.spec import PublicUserReadSpec, UserRetrieveSpec, UserSpec
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
@@ -192,6 +192,7 @@ class FacilityUserFilter(FilterSet):
 class FacilityUsersViewSet(EMRModelReadOnlyViewSet):
     database_model = User
     pydantic_read_model = UserSpec
+    pydantic_retrieve_model = UserRetrieveSpec
     filterset_class = FacilityUserFilter
     filter_backends = [DjangoFilterBackend, drf_filters.SearchFilter]
     search_fields = ["first_name", "last_name", "username"]

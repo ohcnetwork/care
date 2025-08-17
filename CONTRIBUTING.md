@@ -85,7 +85,7 @@ brew install libjpeg libtiff little-cms2 openjpeg webp freetype harfbuzz fribidi
 - Seed the database with the following command:
 
 ```bash
-python manage.py load_dummy_data
+python manage.py load_fixtures
 ```
 
 - Create a superuser
