@@ -135,7 +135,7 @@ class MedicationRequestSummaryViewSet(EMRBaseViewSet):
             )
             .values("encounter_id", "priority")
             .annotate(dcount=Count("priority"))
-        )
+        ).order_by("encounter_id")
         queryset = self.filter_queryset(queryset)
         paginator = self.pagination_class()
         page = paginator.paginate_queryset(queryset, request)
