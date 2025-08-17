@@ -74,7 +74,7 @@ class EMRResource(BaseModel):
     def perform_extra_deserialization(self, is_update, obj):
         pass
 
-    def de_serialize(self, obj=None):
+    def de_serialize(self, obj=None, partial=False):
         """
         Creates a database object from a pydantic object
         """
@@ -84,7 +84,10 @@ class EMRResource(BaseModel):
             obj = self.__model__()
         database_fields = self.get_database_mapping()
         meta = getattr(obj, "meta", {})
-        dump = self.model_dump(mode="json", exclude_defaults=True)
+        if is_update:
+            dump = self.model_dump(mode="json", exclude_unset=partial)
+        else:
+            dump = self.model_dump(mode="json", exclude_defaults=True)
         for field in dump:
             if (
                 field in database_fields

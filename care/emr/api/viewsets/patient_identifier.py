@@ -24,6 +24,8 @@ from care.security.authorization.base import AuthorizationController
 
 class PatientIdentifierConfigFilters(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
+    status = filters.CharFilter(lookup_expr="iexact")
+    display = filters.CharFilter(field_name="config__display", lookup_expr="icontains")
 
 
 class PatientIdentifierConfigViewSet(
