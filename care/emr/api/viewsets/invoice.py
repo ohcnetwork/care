@@ -122,6 +122,12 @@ class InvoiceViewSet(
         ):
             raise PermissionDenied("Cannot write invoice")
 
+    def authorize_update(self, request_obj, model_instance):
+        if not AuthorizationController.call(
+            "can_write_invoice_in_facility", self.request.user, model_instance.facility
+        ):
+            raise PermissionDenied("Cannot write invoice")
+
     def perform_update(self, instance):
         with InvoiceLock(instance):
             old_invoice = Invoice.objects.get(id=instance.id)
@@ -174,7 +180,7 @@ class InvoiceViewSet(
     def attach_items_to_invoice(self, request, *args, **kwargs):
         invoice = self.get_object()
         with InvoiceLock(invoice):
-            self.authorize_create(invoice)
+            self.authorize_update({}, invoice)
             self.check_invoice_in_draft(invoice)
             request_params = AttachChargeItemToInvoiceRequest(**request.data)
             with transaction.atomic():
@@ -200,7 +206,7 @@ class InvoiceViewSet(
     def remove_item_from_invoice(self, request, *args, **kwargs):
         invoice = self.get_object()
         with InvoiceLock(invoice):
-            self.authorize_create(invoice)
+            self.authorize_update({}, invoice)
             self.check_invoice_in_draft(invoice)
             request_params = RemoveChargeItemFromInvoiceRequest(**request.data)
             charge_item = get_object_or_404(
@@ -225,7 +231,7 @@ class InvoiceViewSet(
     def attach_account_to_invoice(self, request, *args, **kwargs):
         invoice = self.get_object()
         with InvoiceLock(invoice):
-            self.authorize_create(invoice)
+            self.authorize_update({}, invoice)
             self.check_invoice_in_draft(invoice)
             with transaction.atomic():
                 charge_items = ChargeItem.objects.filter(

@@ -163,12 +163,17 @@ class Question(QuestionnaireBaseSpec):
         return ids
 
     @model_validator(mode="after")
-    def validate_value_set_or_options(self):
+    def validate_choice_and_group_questions(self):
         if self.type in [QuestionType.choice, QuestionType.quantity] and not (
             self.answer_option or self.answer_value_set
         ):
-            err = "Either answer options or a value set must be provided for choice type questions"
-            raise ValueError(err)
+            raise ValueError(
+                "Either answer options or a value set must be provided for choice type questions"
+            )
+
+        if self.type == QuestionType.group and not self.questions:
+            raise ValueError("Group type questions must have at least one sub-question")
+
         return self
 
 
