@@ -9,9 +9,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import (
-    EMRModelViewSet,
-)
+from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models import (
     Encounter,
     FacilityLocation,
@@ -152,7 +150,7 @@ class FacilityLocationViewSet(EMRModelViewSet):
 
     def get_queryset(self):
         facility = self.get_facility_obj()
-        base_qs = FacilityLocation.objects.filter(facility=facility)
+        base_qs = super().get_queryset().filter(facility=facility)
 
         if "parent" in self.request.GET and not self.request.GET.get("parent"):
             # Filter for root location, For some reason its not working as intended in Django Filters

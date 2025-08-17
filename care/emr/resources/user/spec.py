@@ -8,7 +8,7 @@ from pydantic import UUID4, Field, field_validator
 from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Organization
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, cacheable, model_from_cache
 from care.emr.resources.patient.spec import GenderChoices
 from care.security.roles.role import (
     ADMINISTRATOR,
@@ -51,8 +51,8 @@ class UserBaseSpec(EMRResource):
     last_name: str
     phone_number: str = Field(max_length=14)
 
-    prefix: str | None = None
-    suffix: str | None = None
+    prefix: str | None = Field(None, max_length=10)
+    suffix: str | None = Field(None, max_length=50)
 
 
 class UserUpdateSpec(UserBaseSpec):
@@ -117,6 +117,7 @@ class UserCreateSpec(UserUpdateSpec):
         obj.set_password(self.password)
 
 
+@cacheable(use_base_manager=True)
 class UserSpec(UserBaseSpec):
     last_login: str
     profile_picture_url: str
@@ -136,7 +137,7 @@ class UserSpec(UserBaseSpec):
 
 class UserRetrieveSpec(UserSpec):
     geo_organization: dict
-    created_by: dict
+    created_by: UserSpec
     email: str
     flags: list[str] = []
 
@@ -145,8 +146,8 @@ class UserRetrieveSpec(UserSpec):
         from care.emr.resources.organization.spec import OrganizationReadSpec
 
         super().perform_extra_serialization(mapping, obj)
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
+        if obj.created_by_id:
+            mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization

@@ -117,7 +117,7 @@ class FileUploadTestCase(CareAPITestBase):
         # NOTE: azure does not support content-disposition
         self.assertEqual(
             file_response.headers["Content-Disposition"],
-            f"attachment; filename={self.file.name}",
+            f"inline; filename={self.file.name}",
             file_response.headers,
         )
 

@@ -1,4 +1,5 @@
 from django.db import transaction
+from django_filters import rest_framework as filters
 from rest_framework.exceptions import ValidationError
 
 from care.emr.api.viewsets.base import EMRModelViewSet
@@ -9,10 +10,16 @@ from care.emr.resources.role.spec import (
 from care.security.models import PermissionModel, RoleModel, RolePermission
 
 
+class RoleFilter(filters.FilterSet):
+    name = filters.CharFilter(lookup_expr="icontains")
+
+
 class RoleViewSet(EMRModelViewSet):
     database_model = RoleModel
     pydantic_model = RoleCreateSpec
     pydantic_read_model = RoleReadSpec
+    filterset_class = RoleFilter
+    filter_backends = [filters.DjangoFilterBackend]
 
     def permissions_controller(self, request):
         if self.action in ["list", "retrieve"]:

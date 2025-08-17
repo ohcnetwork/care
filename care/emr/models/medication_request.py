@@ -21,3 +21,13 @@ class MedicationRequest(EMRBaseModel):
     requester = models.ForeignKey(
         "users.User", on_delete=models.SET_NULL, null=True, blank=True
     )
+    requested_product = models.ForeignKey(
+        "emr.ProductKnowledge",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        default=None,
+    )
+    dispense_status = models.CharField(
+        max_length=100, null=True, blank=True, default=None
+    )

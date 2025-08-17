@@ -8,6 +8,18 @@ from care.utils.csp.config import get_client_config
 logger = logging.getLogger(__name__)
 
 
+SAFE_INLINE_FORMATS = {
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "image/tiff",
+    "image/bmp",
+    "image/x-icon",
+    "application/pdf",
+}
+
+
 class FileManager:
     """
     A utility class to manage all file management related operations
@@ -40,12 +52,18 @@ class S3FilesManager(FileManager):
     def read_signed_url(self, file_obj, duration=60 * 60):
         config, bucket_name = get_client_config(self.bucket_type, external=True)
         s3 = boto3.client("s3", **config)
+
+        mime_type = file_obj.meta.get("mime_type")
+        content_disposition = (
+            "inline" if mime_type in SAFE_INLINE_FORMATS else "attachment"
+        )
+
         return s3.generate_presigned_url(
             "get_object",
             Params={
                 "Bucket": bucket_name,
                 "Key": f"{file_obj.file_type}/{file_obj.internal_name}",
-                "ResponseContentDisposition": f"attachment; filename={file_obj.name}{file_obj.get_extension()}",
+                "ResponseContentDisposition": f"{content_disposition}; filename={file_obj.name}{file_obj.get_extension()}",
             },
             ExpiresIn=duration,  # seconds
         )

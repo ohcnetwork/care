@@ -6,12 +6,11 @@ from rest_framework.exceptions import ValidationError
 
 from care.emr.models import TokenBooking
 from care.emr.models.scheduling.booking import TokenSlot
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.patient.otp_based_flow import PatientOTPReadSpec
 from care.emr.resources.user.spec import UserSpec
-from care.facility.models import Facility
-from care.users.models import User
+from care.emr.tagging.base import SingleFacilityTagManager
 
 
 class TokenSlotBaseSpec(EMRResource):
@@ -70,6 +69,7 @@ class TokenBookingBaseSpec(EMRResource):
 
 class TokenBookingWriteSpec(TokenBookingBaseSpec):
     status: BookingStatusChoices
+    note: str
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.status in CANCELLED_STATUS_CHOICES:
@@ -84,9 +84,15 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
     booked_on: datetime.datetime
     booked_by: UserSpec
     status: str
-    reason_for_visit: str
+    note: str
     user: dict = {}
     facility: dict = {}
+    created_by: UserSpec | None = None
+    updated_by: UserSpec | None = None
+    created_date: datetime.datetime
+    modified_date: datetime.datetime
+
+    tags: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -97,9 +103,12 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
         mapping["patient"] = PatientOTPReadSpec.serialize(obj.patient).model_dump(
             exclude=["meta"]
         )
-        mapping["user"] = UserSpec.serialize(
-            User.objects.get(id=obj.token_slot.resource.user_id)
-        ).model_dump(exclude=["meta"])
-        mapping["facility"] = FacilityBareMinimumSpec.serialize(
-            Facility.objects.get(id=obj.token_slot.resource.facility_id)
-        ).model_dump(exclude=["meta"])
+        mapping["user"] = model_from_cache(UserSpec, id=obj.token_slot.resource.user_id)
+        mapping["facility"] = model_from_cache(
+            FacilityBareMinimumSpec, id=obj.token_slot.resource.facility_id
+        )
+        mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+        if obj.booked_by_id:
+            mapping["booked_by"] = model_from_cache(UserSpec, id=obj.booked_by_id)
+
+        cls.serialize_audit_users(mapping, obj)
