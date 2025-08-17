@@ -28,6 +28,7 @@ class ProductKnowledgeFilters(filters.FilterSet):
     name = filters.CharFilter(lookup_expr="icontains")  # TODO : Need better searching
     product_type = filters.CharFilter(lookup_expr="iexact")
     facility_is_null = NullFilter(field_name="facility")
+    alternate_identifier = filters.CharFilter(lookup_expr="iexact")
 
 
 class ProductKnowledgeViewSet(

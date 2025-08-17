@@ -209,7 +209,7 @@ def validate_question_result(  # noqa : PLR0912
     if questionnaire["type"] == QuestionType.group.value:
         # Iterate and call all child questions
         questionnaire_mapping[questionnaire["id"]] = questionnaire
-        if questionnaire["questions"]:
+        if questionnaire.get("questions"):
             if questionnaire.get("repeats", False):
                 # Handle repeating groups
                 response = responses.get(questionnaire["id"])
@@ -485,7 +485,9 @@ def collect_and_validate_enable_when_questions(
             continue  # skip this question/group
 
         # Recurse into groups
-        if q["type"] == QuestionType.group.value:
+        if q["type"] == QuestionType.group.value and q.get(
+            "questions"
+        ):  # this ignores the case where a group has no questions
             grp = q.copy()
             grp["questions"] = collect_and_validate_enable_when_questions(
                 q["questions"], responses, questionnaire_obj, errors, parent=q["id"]

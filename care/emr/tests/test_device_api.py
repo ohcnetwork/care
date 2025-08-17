@@ -192,6 +192,15 @@ class TestDeviceViewSet(DeviceBaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["registered_name"], data["registered_name"])
 
+    def test_update_device_default_fields(self):
+        device = self.create_device(care_type="camera", lot_number="test")
+        self.add_permissions([DevicePermissions.can_manage_devices.name])
+        url = self.get_device_detail_url(device)
+        data = self.generate_device_data(lot_number=None)
+        response = self.client.put(url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["lot_number"], data["lot_number"])
+
     def test_delete_device_without_permissions(self):
         device = self.create_device()
         url = self.get_device_detail_url(device)
