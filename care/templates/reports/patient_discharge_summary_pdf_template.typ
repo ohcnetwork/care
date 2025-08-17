@@ -211,7 +211,7 @@
             [*UPLOADED AT*], [*NAME*],
         ),
         {% for file in files %}
-            "{{file.modified_date }}", text(hyphenate: true)["{{file.name }}"],
+            "{{file.modified_date }}", "{{file.name }}",
         {% endfor %}
     )
 {% endif %}
@@ -220,7 +220,6 @@
 #line(length: 100%, stroke: mygray)
 #text("")
 {% if discharge_summary_advice %}
-
     = Discharge Summary Advice
-    #text()[```{{ discharge_summary_advice }}```]
+    #text("{{ discharge_summary_advice }}")
 {% endif %}
