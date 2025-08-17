@@ -2,7 +2,7 @@ import uuid
 from enum import Enum
 from typing import Any
 
-from pydantic import UUID4, ConfigDict, Field, field_validator, model_validator
+from pydantic import UUID4, UUID5, ConfigDict, Field, field_validator, model_validator
 from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
@@ -110,7 +110,7 @@ class Question(QuestionnaireBaseSpec):
     model_config = ConfigDict(populate_by_name=True)
 
     link_id: str = Field(description="Unique human readable ID for linking")
-    id: UUID4 = Field(
+    id: UUID4 | UUID5 = Field(
         description="Unique machine provided UUID", default_factory=uuid.uuid4
     )
     code: ValueSetBoundCoding[CARE_OBSERVATION_VALUSET.slug] | None = None
@@ -163,19 +163,17 @@ class Question(QuestionnaireBaseSpec):
         return ids
 
     @model_validator(mode="after")
-    def validate_value_set_or_options(self):
+    def validate_choice_and_group_questions(self):
         if self.type in [QuestionType.choice, QuestionType.quantity] and not (
             self.answer_option or self.answer_value_set
         ):
-            err = "Either answer options or a value set must be provided for choice type questions"
-            raise ValueError(err)
-        return self
+            raise ValueError(
+                "Either answer options or a value set must be provided for choice type questions"
+            )
 
-    @model_validator(mode="after")
-    def validate_group_does_not_repeat(self):
-        if self.type == QuestionType.group and self.repeats:
-            err = "Group type questions cannot be repeated"
-            raise ValueError(err)
+        if self.type == QuestionType.group and not self.questions:
+            raise ValueError("Group type questions must have at least one sub-question")
+
         return self
 
 
@@ -272,8 +270,8 @@ class QuestionnaireReadSpec(QuestionnaireBaseSpec):
     subject_type: SubjectType
     styling_metadata: dict
     questions: list
-    created_by: UserSpec = dict
-    updated_by: UserSpec = dict
+    created_by: UserSpec = {}
+    updated_by: UserSpec = {}
     tags: list[dict] = []
 
     @classmethod

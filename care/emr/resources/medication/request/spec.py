@@ -2,12 +2,14 @@ from datetime import datetime
 from enum import Enum
 
 from django.shortcuts import get_object_or_404
-from pydantic import UUID4, BaseModel, Field, field_validator
+from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 
 from care.emr.models.encounter import Encounter
 from care.emr.models.medication_request import MedicationRequest
+from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.coding import Coding
+from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledgeReadSpec
 from care.emr.resources.medication.valueset.additional_instruction import (
     CARE_ADDITIONAL_INSTRUCTION_VALUESET,
 )
@@ -75,6 +77,13 @@ class MedicationRequestCategory(str, Enum):
     outpatient = "outpatient"
     community = "community"
     discharge = "discharge"
+
+
+class MedicationRequestDispenseStatus(str, Enum):
+    complete = "complete"
+    partial = "partial"
+    incomplete = "incomplete"
+    declined = "declined"
 
 
 class TimingUnit(str, Enum):
@@ -146,7 +155,7 @@ class DosageInstruction(BaseModel):
 
 class MedicationRequestResource(EMRResource):
     __model__ = MedicationRequest
-    __exclude__ = ["patient", "encounter", "requester"]
+    __exclude__ = ["patient", "encounter", "requester", "requested_product"]
 
 
 class BaseMedicationRequestSpec(MedicationRequestResource):
@@ -163,18 +172,29 @@ class BaseMedicationRequestSpec(MedicationRequestResource):
 
     do_not_perform: bool
 
-    medication: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug]
+    medication: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug] | None = None
 
     encounter: UUID4
 
-    dosage_instruction: list[DosageInstruction] = Field()
+    dosage_instruction: list[DosageInstruction]
     authored_on: datetime
 
     note: str | None = Field(None)
 
+    dispense_status: MedicationRequestDispenseStatus | None = None
+
 
 class MedicationRequestSpec(BaseMedicationRequestSpec):
     requester: UUID4 | None = None
+    requested_product: UUID4 | None = None
+
+    @model_validator(mode="after")
+    def validate_request_code(self):
+        if self.requested_product and self.medication:
+            raise ValueError("Cannot have both medication and requested product")
+        if not self.requested_product and not self.medication:
+            raise ValueError("Either medication or requested product is required")
+        return self
 
     @field_validator("encounter")
     @classmethod
@@ -189,25 +209,37 @@ class MedicationRequestSpec(BaseMedicationRequestSpec):
         obj.patient = obj.encounter.patient
         if self.requester:
             obj.requester = get_object_or_404(User, external_id=self.requester)
+        if self.requested_product:
+            obj.requested_product = get_object_or_404(
+                ProductKnowledge,
+                external_id=self.requested_product,
+            )
+            if (
+                obj.requested_product.facility
+                and obj.requested_product.facility != obj.encounter.facility
+            ):
+                raise ValueError("Product not found in facility")
 
 
 class MedicationRequestUpdateSpec(MedicationRequestResource):
     status: MedicationRequestStatus
     note: str | None = None
+    dispense_status: MedicationRequestDispenseStatus | None = None
 
 
 class MedicationRequestReadSpec(BaseMedicationRequestSpec):
-    created_by: UserSpec = dict
-    updated_by: UserSpec = dict
+    created_by: UserSpec = {}
+    updated_by: UserSpec = {}
     created_date: datetime
     modified_date: datetime
+    requested_product: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["encounter"] = obj.encounter.external_id
-
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        if obj.requested_product:
+            mapping["requested_product"] = ProductKnowledgeReadSpec.serialize(
+                obj.requested_product
+            ).to_json()
+        cls.serialize_audit_users(mapping, obj)

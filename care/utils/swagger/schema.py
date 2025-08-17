@@ -10,13 +10,8 @@ from drf_spectacular.plumbing import (
     resolve_regex_path_parameter,
 )
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import (
-    OpenApiParameter,
-)
-from rest_framework.mixins import ListModelMixin
+from drf_spectacular.utils import OpenApiParameter
 from rest_framework.schemas.utils import get_pk_description
-
-from care.emr.api.viewsets.base import EMRListMixin
 
 
 class AutoSchema(SpectacularAutoSchema):
@@ -69,10 +64,7 @@ class AutoSchema(SpectacularAutoSchema):
             return {"204": {"description": "No response body"}}
 
         if self.method == "GET":
-            if (
-                isinstance(self.view, (ListModelMixin, EMRListMixin))
-                or self.view.action == "list"
-            ):
+            if self.view.action == "list":
                 model = getattr(view, "pydantic_read_model", None) or getattr(
                     view, "pydantic_model", None
                 )

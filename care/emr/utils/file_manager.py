@@ -1,6 +1,23 @@
+import logging
+
 import boto3
+from botocore.exceptions import ClientError
 
 from care.utils.csp.config import get_client_config
+
+logger = logging.getLogger(__name__)
+
+
+SAFE_INLINE_FORMATS = {
+    "image/jpeg",
+    "image/png",
+    "image/gif",
+    "image/webp",
+    "image/tiff",
+    "image/bmp",
+    "image/x-icon",
+    "application/pdf",
+}
 
 
 class FileManager:
@@ -35,12 +52,18 @@ class S3FilesManager(FileManager):
     def read_signed_url(self, file_obj, duration=60 * 60):
         config, bucket_name = get_client_config(self.bucket_type, external=True)
         s3 = boto3.client("s3", **config)
+
+        mime_type = file_obj.meta.get("mime_type")
+        content_disposition = (
+            "inline" if mime_type in SAFE_INLINE_FORMATS else "attachment"
+        )
+
         return s3.generate_presigned_url(
             "get_object",
             Params={
                 "Bucket": bucket_name,
                 "Key": f"{file_obj.file_type}/{file_obj.internal_name}",
-                "ResponseContentDisposition": f"attachment; filename={file_obj.name}{file_obj.get_extension()}",
+                "ResponseContentDisposition": f"{content_disposition}; filename={file_obj.name}{file_obj.get_extension()}",
             },
             ExpiresIn=duration,  # seconds
         )
@@ -69,3 +92,42 @@ class S3FilesManager(FileManager):
         content_type = response["ContentType"]
         content = response["Body"].read()
         return content_type, content
+
+    def delete_object(self, file_obj, quiet=False, **kwargs):
+        config, bucket_name = get_client_config(self.bucket_type)
+        s3 = boto3.client("s3", **config)
+
+        try:
+            return s3.delete_object(
+                Bucket=bucket_name,
+                Key=f"{file_obj.file_type}/{file_obj.internal_name}",
+                **kwargs,
+            )
+        except s3.exceptions.NoSuchKey as e:
+            if not quiet:
+                raise e
+            msg = f"Object not found: {file_obj.file_type}/{file_obj.internal_name}"
+            logger.debug(msg)
+
+    def delete_objects(self, file_obj_list, quiet=False, **kwargs):
+        config, bucket_name = get_client_config(self.bucket_type)
+        s3 = boto3.client("s3", **config)
+
+        keys = [
+            f"{file_obj.file_type}/{file_obj.internal_name}"
+            for file_obj in file_obj_list
+        ]
+        objects = [{"Key": key} for key in keys]
+
+        try:
+            return s3.delete_objects(
+                Bucket=bucket_name,
+                Delete={"Objects": objects, "Quiet": quiet},
+                **kwargs,
+            )
+        except ClientError as e:
+            if e.response["Error"]["Code"] == "NotImplemented":
+                # bulk delete is not supported by some providers: GCP
+                msg = f"Batch delete objects not implemented for {self.bucket_type.value} bucket"
+                raise NotImplementedError(msg) from e
+            raise

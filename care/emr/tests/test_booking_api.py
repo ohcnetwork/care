@@ -2,6 +2,7 @@ from datetime import UTC, datetime, timedelta
 
 from django.test.utils import ignore_warnings, override_settings
 from django.urls import reverse
+from django.utils import timezone
 
 from care.emr.models import (
     Availability,
@@ -184,6 +185,7 @@ class TestBookingViewSet(CareAPITestBase):
         booking = self.create_booking()
         update_data = {
             "status": BookingStatusChoices.checked_in.value,
+            "note": "Booking updated to checked-in",
         }
         response = self.client.put(
             self._get_booking_url(booking.external_id), update_data, format="json"
@@ -211,6 +213,7 @@ class TestBookingViewSet(CareAPITestBase):
         booking = self.create_booking()
         update_data = {
             "status": BookingStatusChoices.cancelled.value,
+            "note": "Cancelled via update",
         }
         response = self.client.put(
             self._get_booking_url(booking.external_id), update_data, format="json"
@@ -272,6 +275,31 @@ class TestBookingViewSet(CareAPITestBase):
             text="You do not have permission to update bookings",
         )
 
+    def test_cancel_booking_in_consultation_status(self):
+        """Users cannot cancel a appointment which is in In-consultation status"""
+        permissions = [
+            UserSchedulePermissions.can_write_user_booking.name,
+            UserSchedulePermissions.can_list_user_booking.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        booking = self.create_booking(status=BookingStatusChoices.in_consultation.value)
+        cancel_url = reverse(
+            "appointments-cancel",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": booking.external_id,
+            },
+        )
+        data = {"reason": BookingStatusChoices.cancelled.value}
+        response = self.client.post(cancel_url, data, format="json")
+        self.assertContains(
+            response,
+            status_code=400,
+            text="You cannot cancel an appointment In-Consultation",
+        )
+
     def test_cancel_cancelled_booking(self):
         """Users can cancel bookings to another cancelled status even if already cancelled. However, tokens allocated on slot won't be changed."""
         permissions = [
@@ -311,12 +339,15 @@ class TestBookingViewSet(CareAPITestBase):
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
             UserSchedulePermissions.can_create_appointment.name,
+            UserSchedulePermissions.can_reschedule_appointment.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         new_slot = self.create_slot()
-        booking = self.create_booking()
+        old_note = "old note"
+        new_note = "new note"
+        booking = self.create_booking(note=old_note)
         reschedule_url = reverse(
             "appointments-reschedule",
             kwargs={
@@ -324,15 +355,24 @@ class TestBookingViewSet(CareAPITestBase):
                 "external_id": booking.external_id,
             },
         )
-        data = {"new_slot": new_slot.external_id}
+        data = {
+            "new_slot": new_slot.external_id,
+            "new_booking_note": new_note,
+            "previous_booking_note": old_note,
+        }
         response = self.client.post(reschedule_url, data, format="json")
         self.assertEqual(response.status_code, 200)
+
+        booking.refresh_from_db()
+        self.assertEqual(booking.note, old_note)
+        self.assertEqual(response.data["note"], new_note)
 
     def test_reschedule_booking_without_permission(self):
         """Users without proper permissions cannot reschedule bookings via the re-schedule endpoint."""
         permissions = [
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
+            UserSchedulePermissions.can_create_appointment.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -346,13 +386,75 @@ class TestBookingViewSet(CareAPITestBase):
                 "external_id": booking.external_id,
             },
         )
-        data = {"new_slot": new_slot.external_id}
+        data = {
+            "new_slot": new_slot.external_id,
+            "new_booking_note": "note",
+        }
         response = self.client.post(reschedule_url, data, format="json")
         self.assertContains(
             response,
             status_code=403,
-            text="You do not have permission to create appointments",
+            text="You do not have permission to reschedule appointments",
         )
+
+    def test_reschedule_booking_to_another_user_resource_of_same_facility(self):
+        """Users can reschedule bookings via the re-schedule endpoint with another user resource of same facility."""
+        permissions = [
+            UserSchedulePermissions.can_write_user_booking.name,
+            UserSchedulePermissions.can_list_user_booking.name,
+            UserSchedulePermissions.can_create_appointment.name,
+            UserSchedulePermissions.can_reschedule_appointment.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        new_user = self.create_user()
+        new_resource = self.create_resource(user=new_user, facility=self.facility)
+        new_slot = self.create_slot(resource=new_resource)
+        booking = self.create_booking()
+        reschedule_url = reverse(
+            "appointments-reschedule",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": booking.external_id,
+            },
+        )
+        data = {
+            "new_slot": new_slot.external_id,
+            "new_booking_note": "note",
+        }
+        response = self.client.post(reschedule_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_reschedule_booking_to_another_user_resource_of_another_facility(self):
+        """Users cannot reschedule bookings via the re-schedule endpoint with another user resource of different facility."""
+        permissions = [
+            UserSchedulePermissions.can_write_user_booking.name,
+            UserSchedulePermissions.can_list_user_booking.name,
+            UserSchedulePermissions.can_create_appointment.name,
+            UserSchedulePermissions.can_reschedule_appointment.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        new_user = self.create_user()
+        new_facility = self.create_facility(user=self.user)
+        new_resource = self.create_resource(user=new_user, facility=new_facility)
+        new_slot = self.create_slot(resource=new_resource)
+        booking = self.create_booking()
+        reschedule_url = reverse(
+            "appointments-reschedule",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": booking.external_id,
+            },
+        )
+        data = {
+            "new_slot": new_slot.external_id,
+            "new_booking_note": "note",
+        }
+        response = self.client.post(reschedule_url, data, format="json")
+        self.assertEqual(response.status_code, 404)
 
     def test_reschedule_booking_with_slot_in_past(self):
         """Users cannot reschedule bookings to slots that are in the past."""
@@ -360,6 +462,7 @@ class TestBookingViewSet(CareAPITestBase):
             UserSchedulePermissions.can_write_user_booking.name,
             UserSchedulePermissions.can_list_user_booking.name,
             UserSchedulePermissions.can_create_appointment.name,
+            UserSchedulePermissions.can_reschedule_appointment.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -376,7 +479,10 @@ class TestBookingViewSet(CareAPITestBase):
                 "external_id": booking.external_id,
             },
         )
-        data = {"new_slot": new_slot.external_id}
+        data = {
+            "new_slot": new_slot.external_id,
+            "new_booking_note": "note",
+        }
         response = self.client.post(reschedule_url, data, format="json")
         self.assertContains(
             response,
@@ -571,7 +677,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
     def get_appointment_data(self, **kwargs):
         data = {
             "patient": self.patient.external_id,
-            "reason_for_visit": "Testing",
+            "note": "Testing",
         }
         data.update(kwargs)
         return data
@@ -1046,8 +1152,10 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         )
         data = {
             "user": self.user.external_id,
-            "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
-            "to_date": (datetime.now(UTC) + timedelta(days=7)).strftime("%Y-%m-%d"),
+            "from_date": timezone.make_naive(timezone.now()).strftime("%Y-%m-%d"),
+            "to_date": (
+                timezone.make_naive(timezone.now()) + timedelta(days=7)
+            ).strftime("%Y-%m-%d"),
         }
         availability_stats_url = reverse(
             "slot-availability-stats",
@@ -1195,7 +1303,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
         """OTP authenticated users can create appointments."""
         data = {
             "patient": self.patient.external_id,
-            "reason_for_visit": "Test Reason",
+            "note": "Test Reason",
         }
         url = reverse(
             "otp-slots-create-appointment",
@@ -1209,7 +1317,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
         other_patient = self.create_patient(phone_number="+917777777778")
         data = {
             "patient": other_patient.external_id,
-            "reason_for_visit": "Test Reason",
+            "note": "Test Reason",
         }
         url = reverse(
             "otp-slots-create-appointment",
@@ -1228,6 +1336,20 @@ class TestOtpSlotViewSet(CareAPITestBase):
         }
         response = self.client.post(url, data, format="json")
         self.assertContains(response, BookingStatusChoices.cancelled.value)
+
+    def test_cancel_appointment_patient_in_consultation_status(self):
+        booking = self.create_appointment(status=BookingStatusChoices.in_consultation)
+        url = reverse("otp-slots-cancel-appointment")
+        data = {
+            "patient": booking.patient.external_id,
+            "appointment": booking.external_id,
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertContains(
+            response,
+            "You cannot cancel an appointment In-Consultation",
+            status_code=400,
+        )
 
     def test_cancel_appointment_of_another_patient(self):
         """OTP authenticated users cannot cancel appointments of other patients."""

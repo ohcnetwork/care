@@ -139,7 +139,8 @@ FACILITY_TYPES = [
     (1510, "Request Fulfilment Center"),
     # Use 16xx for War Rooms.
     (1600, "District War Room"),
-    (3000, "Non Governmental Organization"),
+    (3000, "Clinical Non Governmental Organization"),
+    (3001, "Non Clinical Non Governmental Organization"),
     (4000, "Community Based Organization"),
 ]
 
@@ -304,6 +305,13 @@ class Facility(FacilityBaseModel, FacilityPermissionMixin):
     middleware_address = models.CharField(null=True, default=None, max_length=200)
 
     is_public = models.BooleanField(default=False)
+
+    discount_codes = models.JSONField(default=list)
+    discount_monetary_components = models.JSONField(default=list)
+
+    invoice_number_expression = models.CharField(
+        max_length=1000, blank=True, null=True, default=None
+    )
 
     class Meta:
         verbose_name_plural = "Facilities"

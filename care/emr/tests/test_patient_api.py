@@ -189,10 +189,13 @@ class TestPatientViewSet(CareAPITestBase):
         )
         self.attach_role_organization_user(geo_organization, user, role)
         self.client.force_authenticate(user=user)
+        current_date = care_now()
+        old_date = current_date - datetime.timedelta(days=365)
+        older_date = current_date - datetime.timedelta(days=730)
         patient_data = self.generate_patient_data(
             geo_organization=geo_organization.external_id,
-            date_of_birth=datetime.date(1993, 1, 10),
-            deceased_datetime=datetime.datetime(1992, 5, 15, 14, 30, 0),
+            date_of_birth=old_date.date(),
+            deceased_datetime=older_date,
         )
         response = self.client.post(self.base_url, patient_data, format="json")
         data = response.json()

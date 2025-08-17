@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from pydantic import UUID4, BaseModel
+from pydantic import UUID4, UUID5, BaseModel
 
 from care.emr.models.questionnaire import QuestionnaireResponse
 from care.emr.resources.base import EMRResource
@@ -18,12 +18,13 @@ class QuestionnaireSubmitResultValue(BaseModel):
 
 
 class QuestionnaireSubmitResult(BaseModel):
-    question_id: UUID4
+    question_id: UUID4 | UUID5
     body_site: Coding | None = None
     method: Coding | None = None
     taken_at: datetime | None = None
     values: list[QuestionnaireSubmitResultValue] = []
     note: str | None = None
+    sub_results: list[list["QuestionnaireSubmitResult"]] = []
 
 
 class QuestionnaireSubmitRequest(BaseModel):

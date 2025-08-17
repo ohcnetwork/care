@@ -54,10 +54,10 @@ put the required environment variables in a `.env` file and run:
 make up
 ```
 
-to load seed data for testing run:
+to load fixtures for testing run:
 
 ```bash
-make load-seed-data
+make load-fixtures
 ```
 
 Stops and removes the containers without affecting the volumes:

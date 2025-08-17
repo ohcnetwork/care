@@ -74,10 +74,11 @@ class ConsentBaseSpec(EMRResource):
 class ConsentCreateSpec(ConsentBaseSpec):
     @model_validator(mode="after")
     def validate_period_and_date(self):
-        if self.period.end and self.period.end <= self.date:
+        if self.period.start and self.period.start < self.date:
             raise ValidationError(
-                "Consent date cannot be greater than the end of the period"
+                "Start of the period cannot be before than the Consent date"
             )
+        return self
 
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:

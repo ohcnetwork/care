@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
@@ -23,10 +23,12 @@ from care.emr.resources.notes.thread_spec import (
     NoteThreadUpdateSpec,
 )
 from care.security.authorization import AuthorizationController
+from care.utils.filters.null_filter import NullFilter
 
 
 class NoteThreadFilters(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
+    encounter_isnull = NullFilter(field_name="encounter")
 
 
 class NoteThreadViewSet(
@@ -78,7 +80,7 @@ class NoteThreadViewSet(
     def perform_create(self, instance):
         instance.patient = self.get_patient()
         if instance.encounter and instance.encounter.patient != instance.patient:
-            raise ValueError("Patient Mismatch")
+            raise ValidationError("Patient Mismatch")
         super().perform_create(instance)
 
     def get_object(self):
@@ -120,6 +122,12 @@ class NoteMessageViewSet(
         instance.thread = get_object_or_404(
             NoteThread, external_id=self.kwargs["thread_external_id"]
         )
+        if encounter_id := self.request.data.get("encounter"):
+            encounter = get_object_or_404(Encounter, external_id=encounter_id)
+            if encounter.patient != instance.thread.patient:
+                raise ValidationError("Patient Mismatch")
+            instance.encounter = encounter
+        instance.patient = instance.thread.patient
         super().perform_create(instance)
 
     def authorize_update(self, request_obj, model_instance):
