@@ -94,6 +94,7 @@ class AllergyIntoleranceWriteSpec(BaseAllergyIntoleranceSpec):
     allergy_intolerance_type: AllergyIntoleranceTypeOptions = (
         AllergyIntoleranceTypeOptions.allergy
     )
+    note: str | None = None
 
     @field_validator("encounter")
     @classmethod

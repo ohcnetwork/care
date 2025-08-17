@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -18,6 +19,7 @@ from care.emr.resources.tag.config_spec import (
 )
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.filters.null_filter import NullFilter
 
 
@@ -38,6 +40,7 @@ class TagConfigFilters(filters.FilterSet):
     parent = filters.UUIDFilter(lookup_expr="exact", field_name="parent__external_id")
     resource = filters.CharFilter(lookup_expr="iexact")
     parent_is_null = NullFilter(field_name="parent")
+    ids = MultiSelectFilter(field_name="external_id")
 
 
 class TagConfigViewSet(
@@ -49,7 +52,8 @@ class TagConfigViewSet(
     pydantic_read_model = TagConfigReadSpec
     pydantic_retrieve_model = TagConfigRetrieveSpec
     filterset_class = TagConfigFilters
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    ordering_fields = ["priority", "created_date", "modified_date"]
 
     def authorize_retrieve(self, model_instance):
         if model_instance.facility and not AuthorizationController.call(

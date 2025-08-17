@@ -56,8 +56,12 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         )
 
     def validate_data(self, instance, model_obj=None):
+        if model_obj is not None and model_obj.org_type == "root":
+            raise PermissionDenied("Cannot update root organization")
+
         if instance.org_type == "root":
             raise PermissionDenied("Cannot create root organization")
+
         if instance.parent:
             parent = get_object_or_404(
                 FacilityOrganization, external_id=instance.parent
@@ -164,6 +168,10 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         return True
 
     def clean_create_data(self, request_data):
+        request_data["facility"] = self.kwargs["facility_external_id"]
+        return request_data
+
+    def clean_update_data(self, request_data, keep_fields: set | None = None):
         request_data["facility"] = self.kwargs["facility_external_id"]
         return request_data
 
