@@ -231,10 +231,6 @@ class PatientViewSet(EMRModelViewSet):
                 return Response(PatientRetrieveSpec.serialize(patient).to_json())
         raise PermissionDenied("No valid patients found")
 
-    @action(detail=False, methods=["POST"])
-    def search_by_identifier(self, request, *args, **kwargs):
-        pass
-
     @action(detail=True, methods=["GET"])
     def get_users(self, request, *args, **kwargs):
         patient = self.get_object()
@@ -400,5 +396,8 @@ class PatientViewSet(EMRModelViewSet):
         facility = self.request.GET.get("facility", None)
         if facility:
             facility = get_object_or_404(Facility, external_id=facility)
-            # TODO: Check Facility Authz
-        return {"facility": self.request.GET.get("facility", None)}
+            if not AuthorizationController.call(
+                "can_list_facility_tag_config", self.request.user, facility
+            ):
+                raise PermissionDenied("Cannot view facility tags")
+        return {"facility": facility}

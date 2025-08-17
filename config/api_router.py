@@ -349,7 +349,7 @@ facility_location_nested_router.register(
 facility_location_nested_router.register(
     r"product",
     InventoryItemViewSet,
-    basename="product",
+    basename="inventory-item",
 )
 
 router.register("patient", PatientViewSet, basename="patient")

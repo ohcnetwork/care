@@ -1,6 +1,7 @@
 import datetime
 
 from django.contrib.auth import get_user_model
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from pydantic import UUID4, BaseModel
 
@@ -27,7 +28,7 @@ from care.emr.resources.location.spec import (
     FacilityLocationEncounterListSpecWithLocation,
     FacilityLocationListSpec,
 )
-from care.emr.resources.patient.spec import PatientListSpec
+from care.emr.resources.patient.spec import PatientListSpec, PatientRetrieveSpec
 from care.emr.resources.permissions import EncounterPermissionsMixin
 from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
 from care.emr.resources.user.spec import UserSpec
@@ -74,10 +75,19 @@ class EncounterCreateSpec(EncounterSpecBase):
 
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
-            obj.patient = Patient.objects.get(external_id=self.patient)
-            obj.facility = Facility.objects.get(external_id=self.facility)
+            obj.patient = get_object_or_404(
+                Patient.objects.all().only("id"), external_id=self.patient
+            )
+            obj.facility = get_object_or_404(
+                Facility.objects.all().only("id"), external_id=self.facility
+            )
             if self.appointment:
-                obj.appointment = TokenBooking.objects.get(external_id=self.appointment)
+                obj.appointment = get_object_or_404(
+                    TokenBooking.objects.all().only("id"),
+                    patient=obj.patient,
+                    external_id=self.appointment,
+                    token_slot__resource__facility=obj.facility,
+                )
             obj._organizations = list(set(self.organizations))  # noqa SLF001
             obj.status_history = {
                 "history": [{"status": obj.status, "moved_at": str(timezone.now())}]
@@ -132,7 +142,12 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
-        super().perform_extra_serialization(mapping, obj)
+        mapping["id"] = obj.external_id
+        mapping["patient"] = PatientRetrieveSpec.serialize(
+            obj.patient, facility=obj.facility
+        ).to_json()
+        mapping["facility"] = FacilityBareMinimumSpec.serialize(obj.facility).to_json()
+        mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
         if obj.appointment:
             mapping["appointment"] = TokenBookingReadSpec.serialize(
                 obj.appointment
@@ -155,13 +170,12 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
         ]
 
         care_team = []
-        for member in obj.care_team:
+        user_mapping = {x["user_id"]: x for x in obj.care_team}
+        for member in User.objects.filter(id__in=user_mapping.keys()):
             care_team.append(
                 {
-                    "member": UserSpec.serialize(
-                        User.objects.get(id=member["user_id"])
-                    ).to_json(),
-                    "role": member["role"],
+                    "member": UserSpec.serialize(member).to_json(),
+                    "role": user_mapping[member.id]["role"],
                 }
             )
 

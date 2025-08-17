@@ -106,18 +106,20 @@ class SupplyDeliveryWriteSpec(BaseSupplyDeliverySpec):
                     external_id=self.supplied_item, facility=obj.destination.facility
                 )
             )
-        if self.supplied_inventory_item:
-            obj.supplied_inventory_item = get_object_or_404(
-                InventoryItem.objects.only("id").filter(
-                    external_id=self.supplied_inventory_item,
-                    location__facility=obj.destination.facility,
-                )
-            )
 
         if self.origin:
             obj.origin = get_object_or_404(
                 FacilityLocation.objects.only("id").filter(external_id=self.origin)
             )
+
+            obj.supplied_inventory_item = get_object_or_404(
+                InventoryItem.objects.only("id").filter(
+                    external_id=self.supplied_inventory_item,
+                    location__facility=obj.destination.facility,
+                    location=obj.origin,
+                )
+            )
+
         if self.supply_request:
             obj.supply_request = get_object_or_404(
                 SupplyRequest.objects.only("id").filter(external_id=self.supply_request)

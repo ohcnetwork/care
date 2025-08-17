@@ -14,6 +14,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.location import FacilityLocation
 from care.emr.models.supply_delivery import SupplyDelivery
 from care.emr.resources.inventory.inventory_item.create_inventory_item import (
@@ -68,9 +69,34 @@ class SupplyDeliveryViewSet(
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date"]
 
+    def validate_data(self, instance, model_obj=None):
+        if not model_obj and instance.origin:
+            origin = get_object_or_404(FacilityLocation, external_id=instance.origin)
+            if instance.supplied_inventory_item:
+                inventory_item = get_object_or_404(
+                    InventoryItem, external_id=instance.supplied_inventory_item
+                )
+                self.validate_stock(
+                    origin, inventory_item.product, instance.supplied_item_quantity
+                )
+
+        return super().validate_data(instance, model_obj)
+
+    def validate_stock(self, location, product, quantity):
+        inventory_item = InventoryItem.objects.filter(
+            location=location, product=product
+        ).first()
+        if not inventory_item or inventory_item.net_content < quantity:
+            raise ValidationError("Insufficient stock")
+
     def perform_create(self, instance):
         instance.status = SupplyDeliveryStatusOptions.in_progress.value
-        return super().perform_create(instance)
+        if instance.supplied_item:
+            instance.supplied_inventory_item = create_inventory_item(
+                instance.supplied_item, instance.destination
+            )
+        super().perform_create(instance)
+        self.sync_inventory_item(instance)
 
     def get_update_pydantic_model(self):
         if self.action == "update_as_receiver":
@@ -80,6 +106,16 @@ class SupplyDeliveryViewSet(
     @action(detail=True, methods=["PUT"])
     def update_as_receiver(self, request, *args, **kwargs):
         return super().update(request, *args, **kwargs)
+
+    def sync_inventory_item(self, instance):
+        if instance.supplied_inventory_item:
+            sync_inventory_item(
+                instance.destination, instance.supplied_inventory_item.product
+            )
+            if instance.origin:
+                sync_inventory_item(
+                    instance.origin, instance.supplied_inventory_item.product
+                )
 
     def perform_update(self, instance):
         with transaction.atomic():
@@ -96,8 +132,7 @@ class SupplyDeliveryViewSet(
                         instance.supplied_item, instance.destination
                     )
             super().perform_update(instance)
-            if instance.supplied_inventory_item:
-                sync_inventory_item(instance.supplied_inventory_item)
+            self.sync_inventory_item(instance)
             return instance
 
     def authorize_location_read(self, location):
