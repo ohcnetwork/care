@@ -75,6 +75,7 @@ class EncounterFilters(filters.FilterSet):
     patient_filter = filters.UUIDFilter(field_name="patient__external_id")
     name = filters.CharFilter(field_name="patient__name", lookup_expr="icontains")
     location = filters.UUIDFilter(field_name="current_location__external_id")
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     live = LiveFilter()
 
 
@@ -142,6 +143,13 @@ class EncounterViewSet(
                 )
             if not organizations:
                 instance.sync_organization_cache()
+            if instance.appointment:
+                if instance.appointment.associated_encounter_id:
+                    raise ValidationError("Encounter already has an associated booking")
+                instance.appointment.associated_encounter = instance
+                instance.appointment.save(update_fields=["associated_encounter"])
+            else:
+                raise ValidationError("Encounter has no associated appointment")
 
     def perform_update(self, instance):
         with transaction.atomic():
