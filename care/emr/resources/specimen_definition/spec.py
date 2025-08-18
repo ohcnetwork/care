@@ -9,7 +9,6 @@ from care.emr.resources.specimen_definition.valueset import (
     CONTAINER_CAP_VALUESET,
     PREPARE_PATIENT_PRIOR_SPECIMEN_CODE_VALUESET,
     SPECIMEN_COLLECTION_CODE_VALUESET,
-    SPECIMEN_HANDLING_CONDITION_VALUESET,
     SPECIMEN_TYPE_CODE_VALUESET,
 )
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
@@ -28,6 +27,14 @@ class PreferenceOptions(str, Enum):
 
     preferred = "preferred"
     alternate = "alternate"
+
+
+class HandlingConditionOptions(str, Enum):
+    """Handling condition options for specimen testing"""
+
+    room = "room"
+    refrigerated = "refrigerated"
+    frozen = "frozen"
 
 
 class QuantitySpec(BaseModel):
@@ -78,9 +85,7 @@ class RangeSpec(BaseModel):
 class HandlingSpec(BaseModel):
     """Specification for specimen handling"""
 
-    temperature_qualifier: (
-        ValueSetBoundCoding[SPECIMEN_HANDLING_CONDITION_VALUESET.slug] | None
-    ) = None
+    temperature_qualifier: HandlingConditionOptions | None = None
     temperature_range: RangeSpec | None = None
     max_duration: DurationSpec | None = None
     instruction: str | None = None

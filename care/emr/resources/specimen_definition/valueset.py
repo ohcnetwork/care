@@ -105,21 +105,3 @@ CONTAINER_CAP_VALUESET.register_valueset(
 )
 
 CONTAINER_CAP_VALUESET.register_as_system()
-
-SPECIMEN_HANDLING_CONDITION_VALUESET = CareValueset(
-    "Handling Condition",
-    "system-handling_condition_code",
-    ValueSetStatusOptions.active.value,
-)
-
-SPECIMEN_HANDLING_CONDITION_VALUESET.register_valueset(
-    ValueSetCompose(
-        include=[
-            ValueSetInclude(
-                system="http://terminology.hl7.org/CodeSystem/handling-condition"
-            )
-        ]
-    )
-)
-
-SPECIMEN_HANDLING_CONDITION_VALUESET.register_as_system()
