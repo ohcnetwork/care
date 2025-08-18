@@ -47,10 +47,11 @@ simplejson = "==3.19.3"
 sentry-sdk = "==2.18.0"
 whitenoise = "==6.8.2"
 django-anymail = {extras = ["amazon-ses"], version = "*"}
-pydantic-extra-types = "2.10.2"
+pydantic-extra-types = "==2.10.2"
 phonenumberslite = "==8.13.54"
 python-magic = {version = "==0.4.28", index = "python-magic-bin"}
-evalidate = "2.0.5"
+django-import-export = "==4.3.7"
+evalidate = "==2.0.5"
 
 [dev-packages]
 boto3-stubs = { extras = ["s3", "boto3"], version = "*" }
