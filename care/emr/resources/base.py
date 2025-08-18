@@ -74,7 +74,7 @@ class EMRResource(BaseModel):
     def perform_extra_deserialization(self, is_update, obj):
         pass
 
-    def de_serialize(self, obj=None):
+    def de_serialize(self, obj=None, partial=False):
         """
         Creates a database object from a pydantic object
         """

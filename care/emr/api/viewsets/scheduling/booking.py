@@ -25,6 +25,7 @@ from care.emr.resources.scheduling.slot.spec import (
     CANCELLED_STATUS_CHOICES,
     BookingStatusChoices,
     TokenBookingReadSpec,
+    TokenBookingRetrieveSpec,
     TokenBookingWriteSpec,
 )
 from care.emr.resources.tag.config_spec import TagResource
@@ -100,6 +101,7 @@ class TokenBookingViewSet(
     database_model = TokenBooking
     pydantic_model = TokenBookingWriteSpec
     pydantic_read_model = TokenBookingReadSpec
+    pydantic_retrieve_model = TokenBookingRetrieveSpec
     pydantic_update_model = TokenBookingWriteSpec
 
     filterset_class = TokenBookingFilters
