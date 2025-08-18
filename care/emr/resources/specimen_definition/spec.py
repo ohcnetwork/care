@@ -9,6 +9,7 @@ from care.emr.resources.specimen_definition.valueset import (
     CONTAINER_CAP_VALUESET,
     PREPARE_PATIENT_PRIOR_SPECIMEN_CODE_VALUESET,
     SPECIMEN_COLLECTION_CODE_VALUESET,
+    SPECIMEN_HANDLING_CONDITION_VALUESET,
     SPECIMEN_TYPE_CODE_VALUESET,
 )
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
@@ -67,6 +68,24 @@ class DurationSpec(BaseModel):
     unit: Coding  # Nees to be restricted to Datetime Units
 
 
+class RangeSpec(BaseModel):
+    """Specification for a range with low and high values"""
+
+    low: QuantitySpec | None = None
+    high: QuantitySpec | None = None
+
+
+class HandlingSpec(BaseModel):
+    """Specification for specimen handling"""
+
+    temperature_qualifier: (
+        ValueSetBoundCoding[SPECIMEN_HANDLING_CONDITION_VALUESET.slug] | None
+    ) = None
+    temperature_range: RangeSpec | None = None
+    max_duration: DurationSpec | None = None
+    instruction: str | None = None
+
+
 class TypeTestedSpec(BaseModel):
     """Specification for tested specimen types"""
 
@@ -76,6 +95,7 @@ class TypeTestedSpec(BaseModel):
     requirement: str | None = None
     retention_time: DurationSpec | None = None
     single_use: bool | None = None
+    handling: HandlingSpec | None = None
 
 
 class BaseSpecimenDefinitionSpec(EMRResource):
