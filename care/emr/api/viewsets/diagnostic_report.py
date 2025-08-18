@@ -37,7 +37,7 @@ from care.emr.resources.observation_definition.observation import (
 from care.emr.resources.questionnaire.spec import SubjectType
 from care.emr.tagging.base import PatientInstanceTagManager
 from care.security.authorization.base import AuthorizationController
-from care.utils.evaluators.interpretation_engine import InterpretationEvaluator
+from care.utils.evaluators.interpretation_evaluator import InterpretationEvaluator
 
 
 class ApplyObservationDefinitionRequest(BaseModel):
@@ -232,6 +232,7 @@ class DiagnosticReportViewSet(
                     "applies_to": [
                         tag.get("slug")
                         for tag in PatientInstanceTagManager().render_tags(patient)
+                        if tag.get("slug") is not None
                     ],
                 }
                 try:

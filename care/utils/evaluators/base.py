@@ -1,6 +1,4 @@
 from abc import ABC, abstractmethod
-from collections.abc import Callable
-from typing import Any
 
 
 class AbstractEvaluator(ABC):
@@ -39,7 +37,7 @@ class AbstractEvaluator(ABC):
             raise ValueError(err)
 
     @property
-    def handler_map(self) -> dict[str, Callable[[Any, Any], bool]]:
+    def handler_map(self) -> dict:
         """
         Mapping of handler names to their functions.
         Subclasses can override to add or modify handlers.
@@ -54,7 +52,7 @@ class AbstractEvaluator(ABC):
         }
 
     @property
-    def validator_map(self) -> dict[str, Callable[[Any], bool]]:
+    def validator_map(self) -> dict:
         """
         Mapping of validator names to their functions.
         Subclasses can override to add or modify validators.
@@ -90,25 +88,25 @@ class AbstractEvaluator(ABC):
         """
         return {}
 
-    def _handle_equality(self, actual_value: Any, expected_value: Any) -> bool:
+    def _handle_equality(self, actual_value, expected_value) -> bool:
         """
         Check if actual_value equals expected_value.
 
         Args:
-            actual_value (Any): The value from the context.
-            expected_value (Any): The expected value for comparison.
+            actual_value : The value from the context.
+            expected_value : The expected value for comparison.
 
         Returns:
             bool: True if values are equal, False otherwise.
         """
         return actual_value == expected_value
 
-    def _handle_range(self, actual_value: Any, expected_value: dict) -> bool:
+    def _handle_range(self, actual_value: int | float, expected_value: dict) -> bool:
         """
         Check if actual_value falls within min-max range.
 
         Args:
-            actual_value (Any): The value from the context (expected to be numeric).
+            actual_value (int | float): The value from the context (expected to be numeric).
             expected_value (dict): Dictionary with 'min' and/or 'max' keys for range bounds.
 
         Returns:
@@ -128,14 +126,16 @@ class AbstractEvaluator(ABC):
         return min_v <= actual_value <= max_v
 
     def _handle_in_or_equality(
-        self, actual_value: str | int, expected_value: list[str | int] | str | int
+        self,
+        actual_value: str | int | float,
+        expected_value: list[str | int | float] | str | int | float,
     ) -> bool:
         """
         Check if actual_value is in expected_value (list) or equals it.
 
         Args:
-            actual_value (Any): The value from the context.
-            expected_value (Any): The expected value (str or list).
+            actual_value (str | int | float): The value from the context.
+            expected_value (list[str | int | float] | str | int | float): The expected value (str or list).
 
         Returns:
             bool: True if value matches or is in the list, False otherwise.
@@ -144,13 +144,15 @@ class AbstractEvaluator(ABC):
             return actual_value in expected_value
         return actual_value == expected_value
 
-    def _handle_in(self, actual_value: Any, expected_value: Any) -> bool:
+    def _handle_in(
+        self, actual_value: str | int | float, expected_value: list[str | int | float]
+    ) -> bool:
         """
         Check if actual_value is in expected_value (must be list).
 
         Args:
-            actual_value (Any): The value from the context.
-            expected_value (Any): The expected list of values.
+            actual_value (str | int | float): The value from the context.
+            expected_value (list[str | int | float]): The expected list of values.
 
         Returns:
             bool: True if value is in the list, False otherwise.
@@ -159,14 +161,14 @@ class AbstractEvaluator(ABC):
             return actual_value in expected_value
         return False
 
-    def _handle_intersects_any(self, actual_value: Any, expected_value: Any) -> bool:
+    def _handle_intersects_any(self, actual_value: list, expected_value: list) -> bool:
         """
         Check if there is at least one overlap between actual_value and expected_value (OR semantics).
         Treat scalars as single-element lists for flexibility.
 
         Args:
-            actual_value (Any): The value from the context (e.g., list of patient tags).
-            expected_value (Any): The expected value from conditions (e.g., list of required tags).
+            actual_value (list): The value from the context (e.g., list of patient tags).
+            expected_value (list): The expected value from conditions (e.g., list of required tags).
 
         Returns:
             bool: True if there is at least one common element, False otherwise.
@@ -177,14 +179,14 @@ class AbstractEvaluator(ABC):
             expected_value = [expected_value]
         return bool(set(actual_value) & set(expected_value))
 
-    def _handle_intersects_all(self, actual_value: Any, expected_value: Any) -> bool:
+    def _handle_intersects_all(self, actual_value: list, expected_value: list) -> bool:
         """
         Check if all elements in expected_value are present in actual_value (AND semantics).
         Treat scalars as single-element lists for flexibility.
 
         Args:
-            actual_value (Any): The value from the context (e.g., list of patient tags).
-            expected_value (Any): The expected value from conditions (e.g., list of required tags).
+            actual_value (list): The value from the context (e.g., list of patient tags).
+            expected_value (list): The expected value from conditions (e.g., list of required tags).
 
         Returns:
             bool: True if all expected elements are in actual_value, False otherwise.
@@ -251,38 +253,38 @@ class AbstractEvaluator(ABC):
         return True
 
     @abstractmethod
-    def evaluate(self, context: dict, value: Any, **kwargs) -> Any:
+    def evaluate(self, context: dict, value, **kwargs):
         """
         Evaluate the rules against the provided context and value.
 
         Args:
             context (dict): Context for condition matching.
-            value (Any): The value to apply rules to.
+            value : The value to apply rules to.
             **kwargs: Additional keyword arguments for evaluation.
 
         Returns:
-            Any: The result of the evaluation.
+            The result of the evaluation.
         """
 
     @abstractmethod
-    def handle_no_match(self) -> Any:
+    def handle_no_match(self):
         """
         Return fallback result if no rule matches.
 
         Returns:
-            Any: The fallback result.
+            The fallback result.
         """
 
     @abstractmethod
-    def apply_rule(self, rule: dict, value: Any, **kwargs) -> Any:
+    def apply_rule(self, rule: dict, value, **kwargs):
         """
         Apply the matched rule to produce a result.
 
         Args:
             rule (dict): The matched rule to apply.
-            value (Any): The value to process.
+            value : The value to process.
             **kwargs: Additional keyword arguments for rule application.
 
         Returns:
-            Any: The result after applying the rule.
+            The result after applying the rule.
         """
