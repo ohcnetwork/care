@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import Any
 
+import sentry_sdk
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -275,6 +276,7 @@ class DiagnosticReportViewSet(
                                     "ranges", []
                                 )
                 except Exception as e:
+                    sentry_sdk.capture_exception(e)
                     raise ValidationError("Error computing interpretation") from e
 
                 model_instance.save()

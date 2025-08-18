@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('emr', '0031_rename_reason_for_visit_tokenbooking_note'),
+        ('emr', '0032_tokenbooking_associated_encounter'),
     ]
 
     operations = [

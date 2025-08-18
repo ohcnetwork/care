@@ -69,7 +69,7 @@ class AbstractEvaluator(ABC):
                 if key in expected_value
             ),
             "in_or_equality": lambda expected_value: isinstance(
-                expected_value, (str, list)
+                expected_value, (str, list, int, float)
             ),
             "in": lambda expected_value: isinstance(expected_value, list),
             "intersects_any": lambda expected_value: isinstance(
