@@ -176,6 +176,7 @@ class RoleApiTestCase(CareAPITestBase):
         update_data = {
             "name": "Updated Role Name",
             "description": "Updated description",
+            "permissions": [p.slug for p in self.permissions],
         }
         response = self.client.put(
             self._get_role_detail_url(role.external_id), update_data, format="json"
@@ -216,14 +217,16 @@ class RoleApiTestCase(CareAPITestBase):
         """Superusers can update role without changing permissions"""
         role = self._create_role()
         self.client.force_authenticate(user=self.superuser)
-        initial_count = RolePermission.objects.filter(role=role).count()
         update_data = {"name": "Updated Name Only"}
         response = self.client.put(
             self._get_role_detail_url(role.external_id), update_data, format="json"
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        permissions = RolePermission.objects.filter(role=role)
-        self.assertEqual(permissions.count(), initial_count)
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "At least one permission must be assigned to the role",
+            status_code=400,
+        )
 
     def test_delete_role_as_user(self):
         """Regular users cannot delete roles"""
