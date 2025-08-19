@@ -40,7 +40,7 @@ class DeviceSpecBase(EMRResource):
     identifier: str | None = None
     status: DeviceStatusChoices
     availability_status: DeviceAvailabilityStatusChoices
-    manufacturer: str | None = ""
+    manufacturer: str | None = None
     manufacture_date: datetime | None = None
     expiration_date: datetime | None = None
     lot_number: str | None = None
