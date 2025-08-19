@@ -148,8 +148,6 @@ class EncounterViewSet(
                     raise ValidationError("Encounter already has an associated booking")
                 instance.appointment.associated_encounter = instance
                 instance.appointment.save(update_fields=["associated_encounter"])
-            else:
-                raise ValidationError("Encounter has no associated appointment")
 
     def perform_update(self, instance):
         with transaction.atomic():
