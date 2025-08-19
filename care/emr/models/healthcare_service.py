@@ -20,3 +20,10 @@ class HealthcareService(EMRBaseModel):
     )
     locations = ArrayField(models.IntegerField(), default=list)
     extra_details = models.TextField()
+    managing_organization = models.ForeignKey(
+        "emr.FacilityOrganization",
+        on_delete=models.PROTECT,
+        default=None,
+        null=True,
+        blank=True,
+    )

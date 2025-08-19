@@ -69,6 +69,7 @@ class TokenBookingBaseSpec(EMRResource):
 
 class TokenBookingWriteSpec(TokenBookingBaseSpec):
     status: BookingStatusChoices
+    note: str
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.status in CANCELLED_STATUS_CHOICES:
@@ -83,7 +84,7 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
     booked_on: datetime.datetime
     booked_by: UserSpec
     status: str
-    reason_for_visit: str
+    note: str
     user: dict = {}
     facility: dict = {}
     created_by: UserSpec | None = None
@@ -109,5 +110,18 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
         if obj.booked_by_id:
             mapping["booked_by"] = model_from_cache(UserSpec, id=obj.booked_by_id)
-
         cls.serialize_audit_users(mapping, obj)
+
+
+class TokenBookingRetrieveSpec(TokenBookingReadSpec):
+    associated_encounter: dict = {}
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.encounter.spec import EncounterListSpec
+
+        super().perform_extra_serialization(mapping, obj)
+        if obj.associated_encounter_id:
+            mapping["associated_encounter"] = EncounterListSpec.serialize(
+                obj.associated_encounter
+            ).to_json()

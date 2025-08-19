@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.conf import settings
 from pydantic import UUID4, BaseModel, field_validator, model_validator
 
@@ -29,8 +31,8 @@ class FacilityBareMinimumSpec(EMRResource):
 
 class FacilityBaseSpec(FacilityBareMinimumSpec):
     description: str
-    longitude: float | None = None
-    latitude: float | None = None
+    longitude: Decimal | None = None
+    latitude: Decimal | None = None
     pincode: int
     address: str
     phone_number: str
