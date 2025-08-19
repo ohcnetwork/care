@@ -59,6 +59,11 @@ class HealthcareServiceViewSet(
 
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
+        if (
+            instance.managing_organization
+            and instance.managing_organization.facility != instance.facility
+        ):
+            raise ValidationError("Invalid Organization")
         self.convert_external_id_to_internal_id(instance)
         super().perform_create(instance)
 
