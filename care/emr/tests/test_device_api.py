@@ -196,7 +196,7 @@ class TestDeviceViewSet(DeviceBaseTest):
         device = self.create_device(care_type="camera", lot_number="test")
         self.add_permissions([DevicePermissions.can_manage_devices.name])
         url = self.get_device_detail_url(device)
-        data = self.generate_device_data(lot_number=None)
+        data = self.generate_device_data(lot_number="")
         response = self.client.put(url, data=data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["lot_number"], data["lot_number"])
