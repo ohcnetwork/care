@@ -22,7 +22,7 @@ class RoleBaseSpec(EMRResource):
     name: str | None = None
     description: str | None = None
     is_system: bool | None = False
-    is_archived: bool | None
+    is_archived: bool | None = None
 
 
 class RoleCreateSpec(RoleBaseSpec):
