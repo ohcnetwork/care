@@ -367,7 +367,7 @@ class ActivityDefinitionAPITestBase(CareAPITestBase):
         self.assertEqual(response.status_code, 400)
         self.assertContains(
             response,
-            "Activity Definition with this slug already exists.",
+            "Slug already exists in this facility.",
             status_code=400,
         )
 
@@ -833,7 +833,7 @@ class ActivityDefinitionAPITestBase(CareAPITestBase):
         self.assertEqual(response.status_code, 400)
         self.assertContains(
             response,
-            "Activity Definition with this slug already exists.",
+            "Slug already exists in this facility.",
             status_code=400,
         )
 
