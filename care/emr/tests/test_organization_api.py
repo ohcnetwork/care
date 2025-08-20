@@ -33,7 +33,7 @@ class OrganizationAPITestCase(CareAPITestBase):
             kwargs={"external_id": org_external_id},
         )
 
-    # Organaization List API Tests
+    # Organization List API Tests
 
     def test_list_organizations_as_super_user(self):
         """Test that a super user can list organizations."""
@@ -50,10 +50,12 @@ class OrganizationAPITestCase(CareAPITestBase):
         )
 
     def test_list_organizations_as_user(self):
-        """Test that a regular user cannot list organizations."""
+        """Test that a regular user can list organizations."""
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["results"][0]["id"], str(self.root_organization.external_id))
+
 
     # Organization Create API Tests
 
@@ -361,22 +363,24 @@ class OrganizationAPITestCase(CareAPITestBase):
         self.assertTrue(all(org_type == "govt" for org_type in org_types))
         self.assertNotIn("team", org_types)
 
-    def test_get_only_parent_organizations(self):
-        """Test that only parent organizations are returned."""
+    def test_filter_organizations_by_parent(self):
+        """Test that organizations can be filtered by parent."""
         self.client.force_authenticate(user=self.super_user)
-        self.create_organization(
+        parent_org = self.create_organization(
             user=self.super_user, name="Parent Org 1", org_type="govt"
         )
-        self.create_organization(
-            user=self.super_user,
-            name="Child Org 1",
-            org_type="team",
-            parent=self.root_organization,
-        )
+        child_org = self.create_organization(
+                user=self.super_user,
+             name="Child Org 1",
+             org_type="team",
+             parent=self.root_organization,
+         )
         response = self.client.get(
-            f"{self.url}?parent={self.root_organization.external_id}"
-        )
+             f"{self.url}?parent={self.root_organization.external_id}"
+         )
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(child_org.external_id))
 
     def test_list_organizations_filtered_by_permission(self):
         """Test that organizations can be filtered by user permissions."""
