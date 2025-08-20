@@ -125,17 +125,12 @@ class ActivityDefinitionViewSet(
             raise ValidationError("Healthcare Service must be from the same facility")
 
     def validate_data(self, instance, model_obj=None):
-        facility = self.get_facility_obj()
         if model_obj:
             queryset = ActivityDefinition.objects.filter(
-                slug__iexact=instance.slug,
-                facility=facility,
+                slug__iexact=instance.slug
             ).exclude(id=model_obj.id)
         else:
-            queryset = ActivityDefinition.objects.filter(
-                slug__iexact=instance.slug,
-                facility=facility,
-            )
+            queryset = ActivityDefinition.objects.filter(slug__iexact=instance.slug)
         if queryset.exists():
             raise ValidationError("Activity Definition with this slug already exists.")
         return super().validate_data(instance, model_obj)
