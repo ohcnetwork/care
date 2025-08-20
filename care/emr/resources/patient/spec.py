@@ -274,7 +274,7 @@ class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
             ]
         if kwargs.get("facility"):
             facility = kwargs.get("facility")
-            if facility:
+            if facility and obj.facility_identifiers:
                 mapping["facility_identifiers"] = [
                     {
                         "config": PatientIdentifierConfigCache.get_config(x["config"]),
