@@ -99,6 +99,54 @@ class HealthcareServiceAPITest(CareAPITestBase):
             response, "Access Denied to Healthcare Service", status_code=403
         )
 
+    def test_create_healthcare_service_with_location_in_same_facility(self):
+        self.client.force_authenticate(user=self.super_user)
+        self.healthcare_service_data["locations"] = [self.facility_location.external_id]
+        response = self.client.post(
+            self.base_url, self.healthcare_service_data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(get_response.data["locations"], response.data["locations"])
+
+    def test_create_healthcare_service_with_location_in_different_facility(self):
+        self.client.force_authenticate(user=self.super_user)
+        other_facility = self.create_facility(
+            user=self.super_user, name="Other Facility"
+        )
+        other_location = self.create_facility_location(other_facility)
+        self.healthcare_service_data["locations"] = [other_location.external_id]
+        response = self.client.post(
+            self.base_url, self.healthcare_service_data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            f"Location with id {other_location.external_id} not found",
+            status_code=400,
+        )
+
+    def test_create_healthcare_service_with_mix_location_in_same_facility(self):
+        self.client.force_authenticate(user=self.super_user)
+        other_facility = self.create_facility(
+            user=self.super_user, name="Other Facility"
+        )
+        other_location = self.create_facility_location(other_facility)
+        self.healthcare_service_data["locations"] = [
+            self.facility_location.external_id,
+            other_location.external_id,
+        ]
+        response = self.client.post(
+            self.base_url, self.healthcare_service_data, format="json"
+        )
+        self.assertContains(
+            response,
+            f"Location with id {other_location.external_id} not found",
+            status_code=400,
+        )
+
     # Test for retrieving a healthcare service
 
     def test_retrieve_healthcare_service_as_super_user(self):
