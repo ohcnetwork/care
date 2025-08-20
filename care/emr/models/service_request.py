@@ -36,4 +36,11 @@ class ServiceRequest(EMRBaseModel):
         null=True,
         blank=True,
     )
+    requestor = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        default=None,
+        null=True,
+        blank=True,
+    )
     tags = ArrayField(models.IntegerField(), default=list)
