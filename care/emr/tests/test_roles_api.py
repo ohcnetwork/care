@@ -128,30 +128,40 @@ class RoleApiTestCase(CareAPITestBase):
         self.assertEqual(permissions[0].permission, self.permissions[0])
 
     def test_create_role_without_permissions_as_superuser(self):
-        """Superusers can create roles without specifying permissions"""
+        """Superusers cannot create roles without specifying permissions"""
         self.client.force_authenticate(user=self.superuser)
-
-        # Role data without permissions
         role_data_no_perms = {
             "name": "Role without permissions",
             "description": "Test role without permissions",
         }
-
         response = self.client.post(
             self.role_list_url, role_data_no_perms, format="json"
         )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "At least one permission must be assigned to the role",
+            status_code=400,
+        )
 
-        # Handle potential validation errors gracefully
-        if response.status_code == status.HTTP_400_BAD_REQUEST:
-            self.assertFalse(
-                RoleModel.objects.filter(name=role_data_no_perms["name"]).exists()
-            )
-        else:
-            self.assertEqual(response.status_code, status.HTTP_200_OK)
-            created_role = RoleModel.objects.get(name=role_data_no_perms["name"])
-            # Verify no permissions were assigned
-            permissions = RolePermission.objects.filter(role=created_role)
-            self.assertEqual(permissions.count(), 0)
+    def test_create_duplicate_role_as_superuser(self):
+        """Superusers cannot create duplicate roles"""
+        self.client.force_authenticate(user=self.superuser)
+        role_data = {
+            "name": "Duplicate Role",
+            "description": "Test role for duplication",
+            "permissions": [self.permissions[0].slug],
+        }
+        # Create the role for the first time
+        response = self.client.post(self.role_list_url, role_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # Attempt to create the same role again
+        response = self.client.post(self.role_list_url, role_data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response, "Role with this name already exists", status_code=400
+        )
 
     def test_update_role_as_user(self):
         """Regular users cannot update roles"""
