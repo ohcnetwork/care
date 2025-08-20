@@ -19,6 +19,7 @@ from care.emr.api.viewsets.base import (
 from care.emr.models.activity_definition import ActivityDefinition
 from care.emr.models.encounter import Encounter
 from care.emr.models.location import FacilityLocation
+from care.emr.models.organization import FacilityOrganizationUser
 from care.emr.models.service_request import ServiceRequest
 from care.emr.models.specimen_definition import SpecimenDefinition
 from care.emr.registries.system_questionnaire.system_questionnaire import (
@@ -55,6 +56,7 @@ class ServiceRequestFilters(filters.FilterSet):
     do_not_perform = filters.BooleanFilter()
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
+    requestor = filters.UUIDFilter(field_name="requestor__external_id")
 
 
 class ApplyActivityDefinitionRequest(BaseModel):
@@ -116,10 +118,17 @@ class ServiceRequestViewSet(
         ):
             raise ValidationError("Healthcare Service must be from the same facility")
 
+    def validate_requestor(self, instance, facility):
+        if not FacilityOrganizationUser.objects.filter(
+            organization__facility=facility, user=instance.requestor
+        ).exists():
+            raise ValidationError("Requestor must be a member of the facility")
+
     def perform_create(self, instance):
         self.convert_external_id_to_internal_id(instance)
         instance.facility = self.get_facility_obj()
         self.validate_health_care_service(instance)
+        self.validate_requestor(instance, instance.facility)
         return super().perform_create(instance)
 
     def perform_update(self, instance):

@@ -185,6 +185,7 @@ class TestBookingViewSet(CareAPITestBase):
         booking = self.create_booking()
         update_data = {
             "status": BookingStatusChoices.checked_in.value,
+            "note": "Booking updated to checked-in",
         }
         response = self.client.put(
             self._get_booking_url(booking.external_id), update_data, format="json"
@@ -212,6 +213,7 @@ class TestBookingViewSet(CareAPITestBase):
         booking = self.create_booking()
         update_data = {
             "status": BookingStatusChoices.cancelled.value,
+            "note": "Cancelled via update",
         }
         response = self.client.put(
             self._get_booking_url(booking.external_id), update_data, format="json"

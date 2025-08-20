@@ -132,6 +132,7 @@ THIRD_PARTY_APPS = [
     "django.contrib.postgres",
     "django_rest_passwordreset",
     "healthy_django",
+    "import_export",
 ]
 LOCAL_APPS = [
     "care.security",
