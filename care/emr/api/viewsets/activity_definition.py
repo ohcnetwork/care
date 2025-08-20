@@ -132,7 +132,7 @@ class ActivityDefinitionViewSet(
         else:
             queryset = ActivityDefinition.objects.filter(slug__iexact=instance.slug)
         if queryset.exists():
-            raise ValidationError("Activity Definition with this slug already exists.")
+            raise ValidationError("Slug already exists in this facility.")
         return super().validate_data(instance, model_obj)
 
     def perform_create(self, instance):
