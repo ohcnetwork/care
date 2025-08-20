@@ -400,7 +400,7 @@ class TestSpecimenViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data["results"]), 2)
 
     def test_list_service_as_user_with_encounter_permission(self):
         self.attach_role_facility_organization_user(
@@ -417,7 +417,7 @@ class TestSpecimenViewSet(CareAPITestBase):
             self.url + "?encounter=" + str(self.encounter.external_id)
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data["results"]), 2)
 
     def test_list_service_as_user_without_encounter_permission(self):
         self.client.force_authenticate(user=self.user)
@@ -671,10 +671,17 @@ class TestSpecimenViewSet(CareAPITestBase):
             facility=self.facility,
             encounter=self.encounter,
         )
-        response = self.client.get(self.url + "?category=" + "laboratory")
+        response = self.client.get(
+            self.url + "?category=" + ActivityDefinitionCategoryOptions.laboratory.value
+        )
         self.assertEqual(response.status_code, 200)
         response_ids = [item["category"] for item in response.data["results"]]
-        self.assertTrue(all(id == "laboratory" for id in response_ids))
+        self.assertTrue(
+            all(
+                id == ActivityDefinitionCategoryOptions.laboratory.value
+                for id in response_ids
+            )
+        )
 
     def test_filter_service_request_by_status(self):
         self.client.force_authenticate(user=self.superuser)
