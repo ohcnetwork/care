@@ -54,8 +54,9 @@ class OrganizationAPITestCase(CareAPITestBase):
         self.client.force_authenticate(user=self.user)
         response = self.client.get(self.url)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["results"][0]["id"], str(self.root_organization.external_id))
-
+        self.assertEqual(
+            response.data["results"][0]["id"], str(self.root_organization.external_id)
+        )
 
     # Organization Create API Tests
 
@@ -198,7 +199,11 @@ class OrganizationAPITestCase(CareAPITestBase):
             format="json",
         )
         self.assertEqual(response.status_code, 400)
-        self.assertContains(response, "Max depth reached (10)", status_code=400)
+        self.assertContains(
+            response,
+            f"Max depth reached ({settings.ORGANIZATION_MAX_DEPTH})",
+            status_code=400,
+        )
 
     # Organization Update API Tests
 
@@ -366,18 +371,18 @@ class OrganizationAPITestCase(CareAPITestBase):
     def test_filter_organizations_by_parent(self):
         """Test that organizations can be filtered by parent."""
         self.client.force_authenticate(user=self.super_user)
-        parent_org = self.create_organization(
+        self.create_organization(
             user=self.super_user, name="Parent Org 1", org_type="govt"
         )
         child_org = self.create_organization(
-                user=self.super_user,
-             name="Child Org 1",
-             org_type="team",
-             parent=self.root_organization,
-         )
+            user=self.super_user,
+            name="Child Org 1",
+            org_type="team",
+            parent=self.root_organization,
+        )
         response = self.client.get(
-             f"{self.url}?parent={self.root_organization.external_id}"
-         )
+            f"{self.url}?parent={self.root_organization.external_id}"
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(response.data["results"][0]["id"], str(child_org.external_id))
