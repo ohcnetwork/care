@@ -22,7 +22,7 @@ class RoleBaseSpec(EMRResource):
     name: str | None = None
     description: str | None = None
     is_system: bool | None = False
-    is_archived: bool | None = False
+    is_archived: bool | None
 
 
 class RoleCreateSpec(RoleBaseSpec):
@@ -61,6 +61,9 @@ class RoleCreateSpec(RoleBaseSpec):
             obj.permissions = self.permissions
         else:
             obj.permissions = []
+
+        if self.is_archived is None and not is_update:
+            obj.is_archived = True
 
 
 class RoleReadSpec(RoleBaseSpec):
