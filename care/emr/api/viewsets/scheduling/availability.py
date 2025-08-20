@@ -38,7 +38,7 @@ class SlotsForDayRequestSpec(BaseModel):
 
 class AppointmentBookingSpec(BaseModel):
     patient: UUID4
-    reason_for_visit: str
+    note: str
 
     tags: list[UUID4] = []
 
@@ -110,7 +110,7 @@ def convert_availability_and_exceptions_to_slots(availabilities, exceptions, day
     return slots
 
 
-def lock_create_appointment(token_slot, patient, created_by, reason_for_visit):
+def lock_create_appointment(token_slot, patient, created_by, note):
     with Lock(f"booking:resource:{token_slot.resource.id}"), transaction.atomic():
         if token_slot.end_datetime < timezone.now():
             raise ValidationError("Slot is already past")
@@ -130,7 +130,7 @@ def lock_create_appointment(token_slot, patient, created_by, reason_for_visit):
             booked_by=created_by,
             created_by=created_by,
             updated_by=created_by,
-            reason_for_visit=reason_for_visit,
+            note=note,
             status="booked",
         )
 
@@ -250,9 +250,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
 
             if not patient:
                 raise ValidationError("Patient not found")
-            appointment = lock_create_appointment(
-                obj, patient, user, request_data.reason_for_visit
-            )
+            appointment = lock_create_appointment(obj, patient, user, request_data.note)
             if request_data.tags:
                 tag_manager = SingleFacilityTagManager()
                 tag_manager.set_tags(
@@ -352,8 +350,8 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
 
         booked_slots = (
             TokenSlot.objects.filter(
-                start_datetime__lte=request_data.to_date,
-                end_datetime__gt=request_data.from_date,
+                start_datetime__date__lte=request_data.to_date,
+                end_datetime__date__gt=request_data.from_date,
                 resource=resource,
             )
             .values("start_datetime__date")
