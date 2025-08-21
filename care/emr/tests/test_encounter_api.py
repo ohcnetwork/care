@@ -1,5 +1,5 @@
 import uuid
-from secrets import choice
+from datetime import timedelta
 from unittest.mock import patch
 
 from django.conf import settings
@@ -9,6 +9,12 @@ from model_bakery import baker
 from rest_framework import status
 
 from care.emr.models.location import FacilityLocation, FacilityLocationEncounter
+from care.emr.models.scheduling.booking import TokenBooking, TokenSlot
+from care.emr.models.scheduling.schedule import (
+    Availability,
+    SchedulableUserResource,
+    Schedule,
+)
 from care.emr.resources.encounter.constants import (
     ClassChoices,
     EncounterPriorityChoices,
@@ -44,8 +50,8 @@ class EncounterAPITests(CareAPITestBase):
             "patient": str(self.patient.external_id),
             "facility": str(self.facility.external_id),
             "status": StatusChoices.in_progress.value,
-            "encounter_class": choice(list(ClassChoices)).value,
-            "priority": choice(list(EncounterPriorityChoices)).value,
+            "encounter_class": ClassChoices.imp.value,
+            "priority": EncounterPriorityChoices.elective.value,
             "discharge_summary_advice": "",
             "external_identifier": "12345",
         }
@@ -221,6 +227,20 @@ class EncounterAPITests(CareAPITestBase):
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["id"], str(self.encounter.external_id))
 
+    def test_filter_by_patient(self):
+        self.get_list_view_permission()
+        response = self.client.get(
+            self.url,
+            {
+                "patient_filter": self.patient.external_id,
+                "facility": self.facility.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        results = response.data.get("results", [])
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], str(self.encounter.external_id))
+
     # TESTS FOR VALIDATION
     def test_validate_data_max_encounters(self):
         self.get_list_view_permission()
@@ -353,7 +373,7 @@ class EncounterAPITests(CareAPITestBase):
             self._get_detail_url(self.facility.external_id, self.patient.external_id),
             format="json",
         )
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["status"], StatusChoices.completed.value)
 
 
@@ -656,4 +676,137 @@ class EncounterOrganizationAPITests(CareAPITestBase):
         self.assertIn(
             "Treating doctor does not have permission on encounter",
             response.data["detail"],
+        )
+
+
+class EncounterAppointmentAPITests(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.user)
+        self.patient = self.create_patient()
+        self.facility_organization = self.create_facility_organization(
+            facility=self.facility
+        )
+        self.encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+            status_history={"history": []},
+            encounter_class_history={"history": []},
+        )
+        self.client.force_authenticate(user=self.user)
+        self.url = reverse("encounter-list")
+        self.encounter_data = {
+            "patient": str(self.patient.external_id),
+            "facility": str(self.facility.external_id),
+            "status": StatusChoices.in_progress.value,
+            "encounter_class": ClassChoices.imp.value,
+            "priority": EncounterPriorityChoices.elective.value,
+            "discharge_summary_advice": "",
+            "external_identifier": "12345",
+        }
+
+    def get_detail_url(self, facility_external_id, patient_external_id):
+        url = reverse(
+            "encounter-detail", kwargs={"external_id": self.encounter.external_id}
+        )
+        url += f"?facility={facility_external_id}&patient={patient_external_id}"
+        return url
+
+    def get_list_view_permission(self):
+        permissions = [
+            EncounterPermissions.can_list_encounter.name,
+            PatientPermissions.can_view_clinical_data.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+
+    def create_appointment(self, **kwargs):
+        schedule_user = baker.make(
+            SchedulableUserResource, user=self.user, facility=self.facility
+        )
+        schedule = baker.make(
+            Schedule,
+            resource=schedule_user,
+            valid_from=timezone.now(),
+            valid_to=timezone.now() + timedelta(hours=1),
+        )
+        availability = baker.make(
+            Availability,
+            schedule=schedule,
+        )
+        slot = baker.make(
+            TokenSlot,
+            resource=schedule_user,
+            availability=availability,
+            start_datetime=timezone.now(),
+            end_datetime=timezone.now() + timedelta(hours=1),
+        )
+
+        return baker.make(
+            TokenBooking,
+            patient=self.patient,
+            booked_by=self.user,
+            token_slot=slot,
+            **kwargs,
+        )
+
+    def test_create_encounter_with_appointment_associated_encounter(self):
+        role = self.create_role_with_permissions(
+            permissions=[
+                EncounterPermissions.can_create_encounter.name,
+                EncounterPermissions.can_read_encounter.name,
+                PatientPermissions.can_list_patients.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        appointment = self.create_appointment()
+        encounter_data = self.encounter_data.copy()
+        encounter_data["appointment"] = str(appointment.external_id)
+        response = self.client.post(self.url, encounter_data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("appointment", response.data)
+        self.assertEqual(
+            response.data["appointment"]["id"], str(appointment.external_id)
+        )
+
+    def test_create_encounter_without_appointment(self):
+        role = self.create_role_with_permissions(
+            permissions=[
+                EncounterPermissions.can_create_encounter.name,
+                EncounterPermissions.can_read_encounter.name,
+                PatientPermissions.can_list_patients.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        encounter_data = self.encounter_data.copy()
+        response = self.client.post(self.url, encounter_data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.data.get("appointment"))
+
+    def test_create_encounter_with_appointment_with_already_associated_encounter(self):
+        role = self.create_role_with_permissions(
+            permissions=[
+                EncounterPermissions.can_create_encounter.name,
+                EncounterPermissions.can_read_encounter.name,
+                PatientPermissions.can_list_patients.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        appointment = self.create_appointment(associated_encounter=self.encounter)
+        encounter_data = self.encounter_data.copy()
+        encounter_data["appointment"] = str(appointment.external_id)
+        response = self.client.post(self.url, encounter_data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response, "Encounter already has an associated booking", status_code=400
         )
