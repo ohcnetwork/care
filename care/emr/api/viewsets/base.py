@@ -249,11 +249,12 @@ class EMRUpsertMixin:
         unhandled = False
         try:
             with transaction.atomic():
+                queryset = self.get_queryset()
                 for datapoint in datapoints:
                     try:
                         if "id" in datapoint:
                             instance = get_object_or_404(
-                                self.database_model, external_id=datapoint["id"]
+                                queryset, external_id=datapoint["id"]
                             )
                             result = self.handle_update(instance, datapoint)
                         else:
