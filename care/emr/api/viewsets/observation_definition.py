@@ -9,6 +9,7 @@ from care.emr.api.viewsets.base import (
     EMRListMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
+    EMRUpsertMixin,
 )
 from care.emr.models.observation_definition import ObservationDefinition
 from care.emr.resources.observation_definition.spec import (
@@ -28,7 +29,12 @@ class ObservationDefinitionFilters(filters.FilterSet):
 
 
 class ObservationDefinitionViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRUpsertMixin,
 ):
     database_model = ObservationDefinition
     pydantic_model = ObservationDefinitionCreateSpec
