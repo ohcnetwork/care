@@ -56,13 +56,10 @@ class PatientIdentifierConfigViewSet(
 
     def authorize_update(self, request_obj, model_instance):
         if model_instance.facility:
-            facility = get_object_or_404(
-                Facility, external_id=model_instance.facility.external_id
-            )
             if not AuthorizationController.call(
                 "can_write_facility_patient_identifier_config",
                 self.request.user,
-                facility,
+                model_instance.facility,
             ):
                 raise PermissionDenied(
                     "You do not have permission to write patient identifier configs"
@@ -107,13 +104,10 @@ class PatientIdentifierConfigViewSet(
 
     def authorize_retrieve(self, model_instance):
         if model_instance.facility:
-            facility = get_object_or_404(
-                Facility, external_id=model_instance.facility.external_id
-            )
             if not AuthorizationController.call(
                 "can_list_facility_patient_identifier_config",
                 self.request.user,
-                facility,
+                model_instance.facility,
             ):
                 raise PermissionDenied(
                     "You do not have permission to read patient identifier configs"
