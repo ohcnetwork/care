@@ -62,6 +62,16 @@ class ProductKnowledgeAPITest(CareAPITestBase):
     def get_base_url(self):
         return reverse("product_knowledge-list")
 
+    def create_update_product_knowledge_data(self):
+        return {
+            "slug": "updated-product-knowledge",
+            "name": "Updated Product Knowledge",
+            "status": ProductKnowledgeStatusOptions.retired.value,
+            "product_type": ProductTypeOptions.medication.value,
+            "code": None,
+            "base_unit": None,
+        }
+
     # Testcases for Create Product Knowledge
 
     def test_create_product_knowledge_as_superuser(self):
@@ -184,3 +194,84 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         response = self.client.get(self.get_details_url(product_knowledge.external_id))
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(product_knowledge.external_id))
+
+    # Testcases for Update Product Knowledge
+
+    def test_update_product_knowledge_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        product_knowledge = self.create_product_knowledge(facility=self.facility)
+        updated_data = self.create_update_product_knowledge_data()
+        response = self.client.patch(
+            self.get_details_url(product_knowledge.external_id),
+            updated_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_details_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["name"], updated_data["name"])
+        self.assertEqual(get_response.data["slug"], updated_data["slug"])
+
+    def test_update_product_knowledge_as_user(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        product_knowledge = self.create_product_knowledge(facility=self.facility)
+        updated_data = self.create_update_product_knowledge_data()
+        response = self.client.patch(
+            self.get_details_url(product_knowledge.external_id),
+            updated_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_details_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["name"], updated_data["name"])
+        self.assertEqual(get_response.data["slug"], updated_data["slug"])
+
+    def test_update_product_knowledge_as_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        product_knowledge = self.create_product_knowledge(facility=self.facility)
+        updated_data = self.create_update_product_knowledge_data()
+        response = self.client.patch(
+            self.get_details_url(product_knowledge.external_id),
+            updated_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "Cannot update product knowledge", status_code=403
+        )
+
+    def test_update_product_knowledge_as_user_in_instance_level(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        product_knowledge = self.create_product_knowledge(facility=None)
+        updated_data = self.create_update_product_knowledge_data()
+        response = self.client.patch(
+            self.get_details_url(product_knowledge.external_id),
+            updated_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response, "Cannot update product knowledge", status_code=403
+        )
+
+    def test_update_product_knowledge_as_superuser_in_instance_level(self):
+        self.client.force_authenticate(user=self.superuser)
+        product_knowledge = self.create_product_knowledge(facility=None)
+        updated_data = self.create_update_product_knowledge_data()
+        response = self.client.patch(
+            self.get_details_url(product_knowledge.external_id),
+            updated_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_details_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["name"], updated_data["name"])
+        self.assertEqual(get_response.data["slug"], updated_data["slug"])
