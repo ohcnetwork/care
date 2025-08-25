@@ -55,15 +55,14 @@ class PatientIdentifierConfigViewSet(
             )
 
     def authorize_update(self, request_obj, model_instance):
-        if model_instance.facility:
-            if not AuthorizationController.call(
-                "can_write_facility_patient_identifier_config",
-                self.request.user,
-                model_instance.facility,
-            ):
-                raise PermissionDenied(
-                    "You do not have permission to write patient identifier configs"
-                )
+        if model_instance.facility and not AuthorizationController.call(
+            "can_write_facility_patient_identifier_config",
+            self.request.user,
+            model_instance.facility,
+        ):
+            raise PermissionDenied(
+                "You do not have permission to write patient identifier configs"
+            )
         if not model_instance.facility and not self.request.user.is_superuser:
             raise PermissionDenied(
                 "You are not authorized to update a patient identifier config"
@@ -103,15 +102,14 @@ class PatientIdentifierConfigViewSet(
             )
 
     def authorize_retrieve(self, model_instance):
-        if model_instance.facility:
-            if not AuthorizationController.call(
-                "can_list_facility_patient_identifier_config",
-                self.request.user,
-                model_instance.facility,
-            ):
-                raise PermissionDenied(
-                    "You do not have permission to read patient identifier configs"
-                )
+        if model_instance.facility and not AuthorizationController.call(
+            "can_list_facility_patient_identifier_config",
+            self.request.user,
+            model_instance.facility,
+        ):
+            raise PermissionDenied(
+                "You do not have permission to read patient identifier configs"
+            )
 
     def get_queryset(self):
         queryset = super().get_queryset()

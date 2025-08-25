@@ -10,6 +10,7 @@ from care.emr.api.viewsets.base import (
     EMRRetrieveMixin,
     EMRTagMixin,
     EMRUpdateMixin,
+    EMRUpsertMixin,
 )
 from care.emr.models import ActivityDefinition
 from care.emr.models.charge_item_definition import ChargeItemDefinition
@@ -40,6 +41,7 @@ class ActivityDefinitionViewSet(
     EMRListMixin,
     EMRTagMixin,
     EMRBaseViewSet,
+    EMRUpsertMixin,
 ):
     database_model = ActivityDefinition
     pydantic_model = ActivityDefinitionWriteSpec
