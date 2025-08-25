@@ -37,7 +37,6 @@ class ProductKnowledgeAPITest(CareAPITestBase):
             "slug": slug or "test-product-knowledge",
             "alternate_identifier": alternate_identifier or "test-alternate-identifier",
             "name": name or "Test Product Knowledge",
-            "derived_from_uri": None,
             "status": status or ProductKnowledgeStatusOptions.active.value,
             "product_type": ProductTypeOptions.medication.value,
             "code": None,
@@ -45,10 +44,10 @@ class ProductKnowledgeAPITest(CareAPITestBase):
             "facility": facility,
         }
 
-    def create_product_definition(self, facility):
-        data = self.generate_product_definition_data(facility=facility)
+    def create_product_knowledge(self, facility):
+        data = self.generate_product_knowledge_data(facility=facility)
         return baker.make(
-            "emr.ProductDefinition",
+            "emr.ProductKnowledge",
             **data,
         )
 
@@ -129,3 +128,59 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         get_response = self.client.get(self.get_details_url(response.data["id"]))
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["id"], response.data["id"])
+
+    # Testcases for Retrieve Product Knowledge
+
+    def test_retrieve_product_knowledge_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        product_knowledge = self.create_product_knowledge(facility=self.facility)
+        response = self.client.get(self.get_details_url(product_knowledge.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(product_knowledge.external_id))
+
+    def test_retrieve_product_knowledge_as_user(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        product_knowledge = self.create_product_knowledge(facility=self.facility)
+        response = self.client.get(self.get_details_url(product_knowledge.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(product_knowledge.external_id))
+
+    def test_retrieve_product_knowledge_as_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        product_knowledge = self.create_product_knowledge(facility=self.facility)
+        response = self.client.get(self.get_details_url(product_knowledge.external_id))
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(response, "Cannot read product knowledge", status_code=403)
+
+    def test_retrieve_product_knowledge_as_user_with_invalid_facility(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        another_facility = self.create_facility(
+            name="Another Facility", user=self.superuser
+        )
+        product_knowledge = self.create_product_knowledge(facility=another_facility)
+        response = self.client.get(self.get_details_url(product_knowledge.external_id))
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(response, "Cannot read product knowledge", status_code=403)
+
+    def test_retrieve_product_knowledge_as_user_in_instance_level(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        product_knowledge = self.create_product_knowledge(facility=None)
+        response = self.client.get(self.get_details_url(product_knowledge.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(product_knowledge.external_id))
+
+    def test_retrieve_product_knowledge_as_superuser_in_instance_level(self):
+        self.client.force_authenticate(user=self.superuser)
+        product_knowledge = self.create_product_knowledge(facility=None)
+        response = self.client.get(self.get_details_url(product_knowledge.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(product_knowledge.external_id))
