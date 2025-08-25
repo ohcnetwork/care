@@ -1,5 +1,4 @@
 from django_filters import rest_framework as filters
-from django_filters.rest_framework import DjangoFilterBackend
 
 from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet
 from care.emr.resources.role.spec import PermissionSpec
@@ -14,5 +13,5 @@ class PermissionViewSet(EMRModelReadOnlyViewSet):
     database_model = PermissionModel
     pydantic_model = PermissionSpec
     filterset_class = PermissionFilter
-    filter_backends = [DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend]
     lookup_field = "slug"
