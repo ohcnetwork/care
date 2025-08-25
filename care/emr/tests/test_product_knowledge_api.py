@@ -275,3 +275,46 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["name"], updated_data["name"])
         self.assertEqual(get_response.data["slug"], updated_data["slug"])
+
+    # Testcases for List Product Knowledge
+
+    def test_list_product_knowledge_with_facility(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product_knowledge(facility=self.facility)
+        self.create_product_knowledge(facility=None)
+        response = self.client.get(
+            self.get_base_url(), {"facility": self.facility.external_id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    def test_list_product_knowledge_without_facility(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product_knowledge(facility=None)
+        response = self.client.get(self.get_base_url())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    def test_list_product_knowledge_as_user_with_facility(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        product = self.create_product_knowledge(facility=self.facility)
+        self.create_product_knowledge(facility=None)
+        response = self.client.get(
+            self.get_base_url(), {"facility": self.facility.external_id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    def test_list_product_knowledge_as_user_without_facility(self):
+        self.client.force_authenticate(user=self.user)
+        product = self.create_product_knowledge(facility=None)
+        response = self.client.get(self.get_base_url())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
