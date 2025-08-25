@@ -7,7 +7,7 @@ from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 from care.emr.models.encounter import Encounter
 from care.emr.models.medication_request import MedicationRequest
 from care.emr.models.product_knowledge import ProductKnowledge
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledgeReadSpec
 from care.emr.resources.medication.valueset.additional_instruction import (
@@ -233,6 +233,7 @@ class MedicationRequestReadSpec(BaseMedicationRequestSpec):
     created_date: datetime
     modified_date: datetime
     requested_product: dict | None = None
+    requester: UserSpec | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -242,4 +243,6 @@ class MedicationRequestReadSpec(BaseMedicationRequestSpec):
             mapping["requested_product"] = ProductKnowledgeReadSpec.serialize(
                 obj.requested_product
             ).to_json()
+        if obj.requester_id:
+            mapping["requester"] = model_from_cache(UserSpec, id=obj.requester_id)
         cls.serialize_audit_users(mapping, obj)
