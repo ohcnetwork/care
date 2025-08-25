@@ -50,8 +50,8 @@ class ResourceRequestBaseSpec(EMRResource):
     reason: str
     referring_facility_contact_name: str
     referring_facility_contact_number: str
-    status: str
-    category: str
+    status: StatusChoices
+    category: CategoryChoices
     priority: int
 
 
