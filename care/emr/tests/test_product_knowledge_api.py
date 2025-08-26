@@ -32,20 +32,21 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         status=None,
         alternate_identifier=None,
         facility=None,
+        product_type=None,
     ):
         return {
             "slug": slug or "test-product-knowledge",
             "alternate_identifier": alternate_identifier or "test-alternate-identifier",
             "name": name or "Test Product Knowledge",
             "status": status or ProductKnowledgeStatusOptions.active.value,
-            "product_type": ProductTypeOptions.medication.value,
+            "product_type": product_type or ProductTypeOptions.medication.value,
             "code": None,
             "base_unit": None,
             "facility": facility,
         }
 
-    def create_product_knowledge(self, facility):
-        data = self.generate_product_knowledge_data(facility=facility)
+    def create_product_knowledge(self, facility, **kwargs):
+        data = self.generate_product_knowledge_data(facility=facility, **kwargs)
         return baker.make(
             "emr.ProductKnowledge",
             **data,
@@ -315,6 +316,92 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         self.client.force_authenticate(user=self.user)
         product = self.create_product_knowledge(facility=None)
         response = self.client.get(self.get_base_url())
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    # Testcases for filtering product knowledge
+
+    def test_filter_product_knowledge_by_name(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product_knowledge(
+            facility=self.facility, name="Test Product"
+        )
+        self.create_product_knowledge(facility=self.facility, name="Another Product")
+        response = self.client.get(self.get_base_url(), {"name": "Test"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    def test_filter_product_knowledge_by_facility(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product_knowledge(
+            facility=self.facility, name="Test Product"
+        )
+        self.create_product_knowledge(facility=self.facility, name="Another Product")
+        response = self.client.get(
+            self.get_base_url(), {"facility": self.facility.external_id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    def test_filter_product_knowledge_by_status(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product_knowledge(
+            facility=self.facility, name="Test Product", status="active"
+        )
+        self.create_product_knowledge(
+            facility=self.facility, name="Another Product", status="inactive"
+        )
+        response = self.client.get(self.get_base_url(), {"status": "active"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    def test_filter_product_knowledge_by_product_type(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product_knowledge(
+            facility=self.facility, name="Test Product", product_type="medication"
+        )
+        self.create_product_knowledge(
+            facility=self.facility, name="Another Product", product_type="consumable"
+        )
+        response = self.client.get(self.get_base_url(), {"product_type": "medication"})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    def test_filter_product_knowledge_by_facility_by_null(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product_knowledge(
+            facility=None, name="Test Product", product_type="medication"
+        )
+        self.create_product_knowledge(
+            facility=self.facility, name="Another Product", product_type="consumable"
+        )
+        response = self.client.get(self.get_base_url(), {"facility_is_null": True})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    def test_filter_product_knowledge_by_alternate_identifier(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product_knowledge(
+            facility=self.facility,
+            name="Test Product",
+            product_type="medication",
+            alternate_identifier="12345",
+        )
+        self.create_product_knowledge(
+            facility=self.facility,
+            name="Another Product",
+            product_type="consumable",
+            alternate_identifier="67890",
+        )
+        response = self.client.get(
+            self.get_base_url(), {"alternate_identifier": "12345"}
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
