@@ -63,9 +63,9 @@ class ProductKnowledgeAPITest(CareAPITestBase):
     def get_base_url(self):
         return reverse("product_knowledge-list")
 
-    def create_update_product_knowledge_data(self):
+    def create_update_product_knowledge_data(self, slug=None):
         return {
-            "slug": "updated-product-knowledge",
+            "slug": slug or "updated-product-knowledge",
             "name": "Updated Product Knowledge",
             "status": ProductKnowledgeStatusOptions.retired.value,
             "product_type": ProductTypeOptions.medication.value,
@@ -405,3 +405,175 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    # Testcases for Validation
+
+    def test_create_product_knowledge_with_duplicate_slug(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_product_knowledge(
+            facility=self.facility,
+            name="Test Product",
+            slug="test-duplicate-product-knowledge",
+        )
+        response = self.client.post(
+            self.get_base_url(),
+            self.generate_product_knowledge_data(
+                facility=self.facility.external_id,
+                name="Test Product",
+                product_type="medication",
+                alternate_identifier="12345",
+                slug="test-duplicate-product-knowledge",
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "Slug already exists.", status_code=400)
+
+    def test_create_product_knowledge_with_duplicate_slug_in_different_facility(self):
+        self.client.force_authenticate(user=self.superuser)
+        another_facility = self.create_facility(
+            name="Another Facility", user=self.superuser
+        )
+        self.create_product_knowledge(
+            facility=self.facility,
+            name="Test Product",
+            slug="test-duplicate-product-knowledge",
+        )
+        response = self.client.post(
+            self.get_base_url(),
+            self.generate_product_knowledge_data(
+                facility=another_facility.external_id,
+                name="Test Product",
+                product_type="medication",
+                alternate_identifier="12345",
+                slug="test-duplicate-product-knowledge",
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_details_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+
+    def test_create_product_knowledge_with_duplicate_slug_in_instance_level(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_product_knowledge(
+            facility=None,
+            name="Test Product",
+            slug="test-duplicate-product-knowledge",
+        )
+        response = self.client.post(
+            self.get_base_url(),
+            self.generate_product_knowledge_data(
+                facility=None,
+                name="Test Product",
+                product_type="medication",
+                alternate_identifier="12345",
+                slug="test-duplicate-product-knowledge",
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "Slug already exists.", status_code=400)
+
+    def test_create_product_knowledge_with_duplicate_slug_in_instance_and_facility_level(
+        self,
+    ):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_product_knowledge(
+            facility=None,
+            name="Test Product",
+            slug="test-duplicate-product-knowledge",
+        )
+        self.create_product_knowledge(
+            facility=self.facility,
+            name="Test Product",
+            slug="test-duplicate-product-knowledge",
+        )
+        another_facility = self.create_facility(
+            name="Another Facility", user=self.superuser
+        )
+        response = self.client.post(
+            self.get_base_url(),
+            self.generate_product_knowledge_data(
+                facility=another_facility.external_id,
+                name="Test Product",
+                product_type="medication",
+                alternate_identifier="12345",
+                slug="test-duplicate-product-knowledge",
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_details_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+
+    def test_update_product_knowledge_with_duplicate_slug_in_facility_level(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_product_knowledge(
+            facility=self.facility,
+            name="Test Product",
+            slug="test-duplicate-product-knowledge",
+        )
+        product2 = self.create_product_knowledge(
+            facility=self.facility,
+            name="Test Product",
+            slug="test-product-knowledge",
+        )
+        response = self.client.put(
+            self.get_details_url(product2.external_id),
+            self.create_update_product_knowledge_data(
+                slug="test-duplicate-product-knowledge"
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "Slug already exists.", status_code=400)
+
+    def test_update_product_knowledge_with_duplicate_slug_in_instance_level(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_product_knowledge(
+            facility=None,
+            name="Test Product",
+            slug="test-duplicate-product-knowledge",
+        )
+        product2 = self.create_product_knowledge(
+            facility=None,
+            name="Test Product",
+            slug="test-product-knowledge",
+        )
+        response = self.client.put(
+            self.get_details_url(product2.external_id),
+            self.create_update_product_knowledge_data(
+                slug="test-duplicate-product-knowledge"
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_product_knowledge_with_duplicate_slug_in_instance_and_facility_level(
+        self,
+    ):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_product_knowledge(
+            facility=self.facility,
+            name="Test Product",
+            slug="test-duplicate-product-knowledge",
+        )
+        product2 = self.create_product_knowledge(
+            facility=None,
+            name="Test Product",
+            slug="test-product-knowledge",
+        )
+        response = self.client.put(
+            self.get_details_url(product2.external_id),
+            self.create_update_product_knowledge_data(
+                slug="test-duplicate-product-knowledge"
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_details_url(product2.external_id))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], str(product2.external_id))
