@@ -56,7 +56,7 @@ class ServiceRequestFilters(filters.FilterSet):
     do_not_perform = filters.BooleanFilter()
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
-    requestor = filters.UUIDFilter(field_name="requestor__external_id")
+    requester = filters.UUIDFilter(field_name="requester__external_id")
 
 
 class ApplyActivityDefinitionRequest(BaseModel):
@@ -118,17 +118,17 @@ class ServiceRequestViewSet(
         ):
             raise ValidationError("Healthcare Service must be from the same facility")
 
-    def validate_requestor(self, instance, facility):
+    def validate_requester(self, instance, facility):
         if not FacilityOrganizationUser.objects.filter(
-            organization__facility=facility, user=instance.requestor
+            organization__facility=facility, user=instance.requester
         ).exists():
-            raise ValidationError("Requestor must be a member of the facility")
+            raise ValidationError("requester must be a member of the facility")
 
     def perform_create(self, instance):
         self.convert_external_id_to_internal_id(instance)
         instance.facility = self.get_facility_obj()
         self.validate_health_care_service(instance)
-        self.validate_requestor(instance, instance.facility)
+        self.validate_requester(instance, instance.facility)
         return super().perform_create(instance)
 
     def perform_update(self, instance):
