@@ -9,6 +9,9 @@ from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.observation.valueset import (
     CARE_BODY_SITE_VALUESET,
     CARE_OBSERVATION_COLLECTION_METHOD,
+    CARE_OBSERVATION_INTERPRETATION_ABNORMAL,
+    CARE_OBSERVATION_INTERPRETATION_CRITICAL,
+    CARE_OBSERVATION_INTERPRETATION_NORMAL,
     CARE_OBSERVATION_VALUSET,
     CARE_UCUM_UNITS,
 )
@@ -50,7 +53,6 @@ class NumericRangeSpec(BaseModel):
     interpretation: str
     min: float | None = None
     max: float | None = None
-    unit: str
 
     @model_validator(mode="after")
     def validate_range(self):
@@ -61,22 +63,54 @@ class NumericRangeSpec(BaseModel):
         return self
 
 
-class CategoricalRangeSpec(BaseModel):
-    interpretation: str
-    value: str | float | int
-    text: str | None = None
-
-    @model_validator(mode="after")
-    def validate_values(self):
-        if self.value is None:
-            raise ValueError("Categorical 'value' cannot be empty.")
-        return self
-
-
 class QualifiedRangeSpec(BaseModel):
     conditions: dict[str, Any]
-    ranges: list[NumericRangeSpec | CategoricalRangeSpec]
-    data_type: str
+    ranges: list[NumericRangeSpec] = []
+    normal_coded_value_set: list[
+        ValueSetBoundCoding[CARE_OBSERVATION_INTERPRETATION_NORMAL.slug]
+    ] = []
+    critical_coded_value_set: list[
+        ValueSetBoundCoding[CARE_OBSERVATION_INTERPRETATION_CRITICAL.slug]
+    ] = []
+    abnormal_coded_value_set: list[
+        ValueSetBoundCoding[CARE_OBSERVATION_INTERPRETATION_ABNORMAL.slug]
+    ] = []
+
+    @model_validator(mode="after")
+    def validate_categorical_or_numeric(self):
+        has_ranges = bool(self.ranges)
+        has_coded_values = bool(
+            self.normal_coded_value_set
+            or self.critical_coded_value_set
+            or self.abnormal_coded_value_set
+        )
+
+        if not has_ranges and not has_coded_values:
+            raise ValueError(
+                "Either 'ranges' for numeric data or coded value sets for categorical data must be provided."
+            )
+
+        if has_ranges and has_coded_values:
+            raise ValueError(
+                "Cannot specify both 'ranges' and coded value sets. Use ranges for numeric data or coded value sets for categorical data."
+            )
+
+        if has_ranges:
+            sorted_ranges = sorted(
+                self.ranges,
+                key=lambda r: (r.min if r.min is not None else float("-inf")),
+            )
+            for i in range(1, len(sorted_ranges)):
+                prev = sorted_ranges[i - 1]
+                curr = sorted_ranges[i]
+                prev_max = prev.max if prev.max is not None else float("inf")
+                curr_min = curr.min if curr.min is not None else float("-inf")
+                if curr_min < prev_max:
+                    raise ValueError(
+                        "Overlapping ranges detected between min-max values in the ranges array."
+                    )
+
+        return self
 
 
 class ObservationDefinitionComponentSpec(BaseModel):
@@ -89,16 +123,6 @@ class ObservationDefinitionComponentSpec(BaseModel):
     @classmethod
     def validate_data_type(cls, permitted_data_type):
         return validate_question_type(permitted_data_type)
-
-    @model_validator(mode="after")
-    def validate_ranges_consistency(self):
-        if self.qualified_ranges:
-            for qr in self.qualified_ranges:
-                if qr.data_type != self.permitted_data_type:
-                    raise ValueError(
-                        "Qualified ranges data_type must match component's permitted_data_type"
-                    )
-        return self
 
 
 class BaseObservationDefinitionSpec(EMRResource):
@@ -124,11 +148,6 @@ class BaseObservationDefinitionSpec(EMRResource):
     @classmethod
     def validate_data_type(cls, permitted_data_type):
         return validate_question_type(permitted_data_type)
-
-    @model_validator(mode="after")
-    def validate_qualified_ranges(self):
-        # TODO: find a optimise way to validate qualified ranges
-        pass
 
 
 class ObservationDefinitionCreateSpec(BaseObservationDefinitionSpec):

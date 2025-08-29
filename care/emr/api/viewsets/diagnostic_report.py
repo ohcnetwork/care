@@ -1,7 +1,3 @@
-from datetime import datetime
-from typing import Any
-
-import sentry_sdk
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -36,9 +32,10 @@ from care.emr.resources.observation_definition.observation import (
     convert_od_to_observation,
 )
 from care.emr.resources.questionnaire.spec import SubjectType
-from care.emr.tagging.base import PatientInstanceTagManager
+from care.emr.utils.compute_observation_interpretation import (
+    compute_observation_interpretation,
+)
 from care.security.authorization.base import AuthorizationController
-from care.utils.evaluators.interpretation_evaluator import InterpretationEvaluator
 
 
 class ApplyObservationDefinitionRequest(BaseModel):
@@ -58,18 +55,6 @@ class BatchUpdateObservationRequest(BaseModel):
 
 class DiagnosticReportFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
-
-
-def extract_value(val: Any) -> Any:
-    """Unified value extraction matching value_fits logic."""
-    if isinstance(val, dict):
-        if coding := val.get("coding"):
-            return coding.get("code")
-        if "quantity" in val:
-            return val["quantity"]
-        if "value" in val:
-            return val["value"]
-    return val
 
 
 class DiagnosticReportViewSet(
@@ -164,7 +149,7 @@ class DiagnosticReportViewSet(
         request=BatchUpdateObservationRequest,
     )
     @action(detail=True, methods=["POST"])
-    def upsert_observations(self, request, *args, **kwargs):  # noqa: PLR0915
+    def upsert_observations(self, request, *args, **kwargs):
         """
         Create observation from observation definition, from scratch or update existing observation
         """
@@ -219,65 +204,6 @@ class DiagnosticReportViewSet(
 
             # Compute interpretation if observation_definition is linked
             if model_instance.observation_definition:
-                patient = model_instance.patient
-
-                date_delta = (
-                    datetime.fromisoformat(model_instance.effective_datetime).date()
-                    - patient.date_of_birth
-                )
-                age = date_delta.days / 365.25
-
-                context = {
-                    "gender": patient.gender,
-                    "age": age,
-                    "applies_to": [
-                        tag.get("slug")
-                        for tag in PatientInstanceTagManager().render_tags(patient)
-                        if tag.get("slug") is not None
-                    ],
-                }
-                try:
-                    if not model_instance.component:
-                        engine = InterpretationEvaluator(
-                            model_instance.observation_definition.qualified_ranges
-                        )
-                        value_to_evaluate = extract_value(model_instance.value)
-                        model_instance.interpretation = engine.evaluate(
-                            context, value_to_evaluate
-                        )
-                        matched_condition = engine.get_matching_condition(
-                            context=context
-                        )
-                        if matched_condition:
-                            model_instance.reference_range = matched_condition.get(
-                                "ranges", []
-                            )
-                    else:
-                        component_definition_dict = {
-                            component_def["code"]["code"]: component_def[
-                                "qualified_ranges"
-                            ]
-                            for component_def in model_instance.observation_definition.component
-                        }
-                        for component in model_instance.component:
-                            component_code = component.get("code", {}).get("code")
-                            component_value = extract_value(component.get("value"))
-                            engine = InterpretationEvaluator(
-                                component_definition_dict.get(component_code, [])
-                            )
-                            component["interpretation"] = engine.evaluate(
-                                context, component_value
-                            )
-                            matched_condition = engine.get_matching_condition(
-                                context=context
-                            )
-                            if matched_condition:
-                                component["reference_range"] = matched_condition.get(
-                                    "ranges", []
-                                )
-                except Exception as e:
-                    sentry_sdk.capture_exception(e)
-                    raise ValidationError("Error computing interpretation") from e
-
+                compute_observation_interpretation(model_instance)
                 model_instance.save()
         return Response({"message": "Observations updated successfully"})

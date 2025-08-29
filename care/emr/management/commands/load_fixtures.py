@@ -921,16 +921,14 @@ class Command(BaseCommand):
                             "applies_to": ["non-diabetic"],
                         },
                         "ranges": [
-                            {"interpretation": "low", "max": 70, "unit": "mg/dL"},
+                            {"interpretation": "low", "max": 70},
                             {
                                 "interpretation": "normal",
                                 "min": 70,
                                 "max": 99,
-                                "unit": "mg/dL",
                             },
-                            {"interpretation": "high", "min": 100, "unit": "mg/dL"},
+                            {"interpretation": "high", "min": 100},
                         ],
-                        "data_type": "quantity",
                     }
                 ],
             )
@@ -959,21 +957,17 @@ class Command(BaseCommand):
                                     {
                                         "interpretation": "low",
                                         "max": 12,
-                                        "unit": "g/dL",
                                     },
                                     {
                                         "interpretation": "normal",
                                         "min": 12,
                                         "max": 16,
-                                        "unit": "g/dL",
                                     },
                                     {
                                         "interpretation": "high",
                                         "min": 16,
-                                        "unit": "g/dL",
                                     },
                                 ],
-                                "data_type": "quantity",
                             },
                             {
                                 "conditions": {
@@ -984,21 +978,17 @@ class Command(BaseCommand):
                                     {
                                         "interpretation": "low",
                                         "max": 14,
-                                        "unit": "g/dL",
                                     },
                                     {
                                         "interpretation": "normal",
                                         "min": 14,
                                         "max": 18,
-                                        "unit": "g/dL",
                                     },
                                     {
                                         "interpretation": "high",
                                         "min": 18,
-                                        "unit": "g/dL",
                                     },
                                 ],
-                                "data_type": "quantity",
                             },
                         ],
                     },
@@ -1013,16 +1003,14 @@ class Command(BaseCommand):
                                     "age": {"min": 18, "max": 60},
                                 },
                                 "ranges": [
-                                    {"interpretation": "low", "max": 36, "unit": "%"},
+                                    {"interpretation": "low", "max": 36},
                                     {
                                         "interpretation": "normal",
                                         "min": 36,
                                         "max": 48,
-                                        "unit": "%",
                                     },
-                                    {"interpretation": "high", "min": 48, "unit": "%"},
+                                    {"interpretation": "high", "min": 48},
                                 ],
-                                "data_type": "quantity",
                             },
                             {
                                 "conditions": {
@@ -1030,16 +1018,14 @@ class Command(BaseCommand):
                                     "age": {"min": 18, "max": 60},
                                 },
                                 "ranges": [
-                                    {"interpretation": "low", "max": 40, "unit": "%"},
+                                    {"interpretation": "low", "max": 40},
                                     {
                                         "interpretation": "normal",
                                         "min": 40,
                                         "max": 52,
-                                        "unit": "%",
                                     },
-                                    {"interpretation": "high", "min": 52, "unit": "%"},
+                                    {"interpretation": "high", "min": 52},
                                 ],
-                                "data_type": "quantity",
                             },
                         ],
                     },
@@ -1054,21 +1040,17 @@ class Command(BaseCommand):
                                     {
                                         "interpretation": "low",
                                         "max": 4.0,
-                                        "unit": "10^6/uL",
                                     },
                                     {
                                         "interpretation": "normal",
                                         "min": 4.0,
                                         "max": 6.0,
-                                        "unit": "10^6/uL",
                                     },
                                     {
                                         "interpretation": "high",
                                         "min": 6.0,
-                                        "unit": "10^6/uL",
                                     },
                                 ],
-                                "data_type": "quantity",
                             }
                         ],
                     },
@@ -1083,21 +1065,17 @@ class Command(BaseCommand):
                                     {
                                         "interpretation": "low",
                                         "max": 150,
-                                        "unit": "10^3/uL",
                                     },
                                     {
                                         "interpretation": "normal",
                                         "min": 150,
                                         "max": 450,
-                                        "unit": "10^3/uL",
                                     },
                                     {
                                         "interpretation": "high",
                                         "min": 450,
-                                        "unit": "10^3/uL",
                                     },
                                 ],
-                                "data_type": "quantity",
                             }
                         ],
                     },
@@ -1123,17 +1101,14 @@ class Command(BaseCommand):
                             {
                                 "interpretation": "desirable",
                                 "max": 200,
-                                "unit": "mg/dL",
                             },
                             {
                                 "interpretation": "borderline high",
                                 "min": 200,
                                 "max": 239,
-                                "unit": "mg/dL",
                             },
-                            {"interpretation": "high", "min": 239, "unit": "mg/dL"},
+                            {"interpretation": "high", "min": 239},
                         ],
-                        "data_type": "quantity",
                     }
                 ],
             )
@@ -1147,22 +1122,28 @@ class Command(BaseCommand):
                 description="A diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
                 category="laboratory",
                 code=code_loinc_urine,
-                permitted_data_type="quantity",
+                permitted_data_type="coded",
                 method=code_snomed_urine_dipstick,
                 qualified_ranges=[
                     {
                         "conditions": {"age": {"min": 18, "max": 65}},
-                        "ranges": [
-                            {
-                                "interpretation": "normal",
-                                "value": "negative",
-                            },
-                            {
-                                "interpretation": "abnormal",
-                                "value": "positive",
-                            },
-                        ],
+                        "ranges": [],
                         "data_type": "coded",
+                        "normal_coded_value_set": [
+                            {
+                                "code": "NEG",
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "display": "Negative",
+                            }
+                        ],
+                        "abnormal_coded_value_set": [
+                            {
+                                "code": "POS",
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "display": "Positive",
+                            }
+                        ],
+                        "critical_coded_value_set": [],
                     }
                 ],
             )
