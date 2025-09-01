@@ -196,7 +196,7 @@ class EncounterViewSet(
                 "can_view_patient_obj", self.request.user, patient
             ):
                 return qs.filter(patient=patient)
-            raise PermissionDenied("User Cannot access patient")
+            raise PermissionDenied("User cannot access patient")
 
         if (
             self.action in ["list"]
@@ -207,9 +207,12 @@ class EncounterViewSet(
                 Facility, external_id=self.request.GET["facility"]
             )
 
-            return AuthorizationController.call(
+            if AuthorizationController.call(
                 "get_filtered_encounters", qs, self.request.user, facility
-            )
+            ):
+                return qs.filter(facility=facility)
+            raise PermissionDenied("User cannot access facility")
+
         if self.action in ["list"]:
             raise PermissionDenied("Cannot access encounters")
         return qs  # Authz Exists separately for update and deletes
