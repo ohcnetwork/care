@@ -143,6 +143,11 @@ class EncounterViewSet(
                 )
             if not organizations:
                 instance.sync_organization_cache()
+            if instance.appointment:
+                if instance.appointment.associated_encounter_id:
+                    raise ValidationError("Encounter already has an associated booking")
+                instance.appointment.associated_encounter = instance
+                instance.appointment.save(update_fields=["associated_encounter"])
 
     def perform_update(self, instance):
         with transaction.atomic():

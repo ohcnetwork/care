@@ -202,7 +202,7 @@ class CurrentUserRetrieveSpec(UserRetrieveSpec):
             FacilityBareMinimumSpec.serialize(obj).to_json() for obj in user_facilities
         ]
 
-        mapping["permissions"] = (
+        mapping["permissions"] = list(
             RolePermission.objects.filter(
                 role_id__in=OrganizationUser.objects.filter(user=obj).values_list(
                     "role_id", flat=True

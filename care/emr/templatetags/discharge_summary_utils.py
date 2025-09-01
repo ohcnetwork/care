@@ -55,6 +55,35 @@ def observation_value_display(observation: Observation) -> str | None:
 @register.filter
 def medication_dosage_display(medication: MedicationRequest) -> str:
     try:
-        return medication.dosage_instruction[0]["text"]
-    except (IndexError, KeyError, TypeError):
+        dosage = medication.dosage_instruction[0]
+        # Prefer text if available
+        if dosage.get("text"):
+            return dosage["text"]
+        dose_val = dosage.get("dose_and_rate", {}).get("dose_quantity", {}).get("value")
+        dose_unit = (
+            dosage.get("dose_and_rate", {})
+            .get("dose_quantity", {})
+            .get("unit", {})
+            .get("display", "")
+        )
+        timing = dosage.get("timing", {})
+        timing_display = timing.get("code", {}).get("display")
+        repeat = timing.get("repeat", {})
+        freq = repeat.get("frequency")
+        period = repeat.get("period")
+        period_unit = repeat.get("period_unit")
+        duration = repeat.get("bounds_duration", {}).get("value")
+        duration_unit = repeat.get("bounds_duration", {}).get("unit")
+        # Build readable string
+        parts = []
+        if dose_val and dose_unit:
+            parts.append(f"Take {dose_val} {dose_unit}")
+        if timing_display:
+            parts.append(f"{timing_display}")
+        elif freq and period and period_unit:
+            parts.append(f"every {period} {period_unit}")
+        if duration and duration_unit:
+            parts.append(f"for {duration} {duration_unit}")
+        return " ".join(parts) if parts else None
+    except Exception:
         return None

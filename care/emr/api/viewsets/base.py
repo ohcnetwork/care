@@ -193,7 +193,7 @@ class EMRUpdateMixin:
     def partial_update(self, request, *args, **kwargs):
         kwargs["partial"] = True
         return self.update(request, *args, **kwargs)
-      
+
     def get_serializer_update_context(self):
         return {}
 

@@ -136,7 +136,7 @@ class UserViewSet(EMRModelViewSet):
     @extend_schema(responses={200: CurrentUserRetrieveSpec})
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):
-        return Response(data=CurrentUserRetrieveSpec.serialize(request.user).to_json())
+        return Response(CurrentUserRetrieveSpec.serialize(request.user).to_json())
 
     @action(methods=["GET"], detail=True)
     def check_availability(self, request, username):
