@@ -105,11 +105,11 @@ class AnswerOption(QuestionnaireBaseSpec):
     def validate_value_field(cls, value: str | int | Coding, info):
         if isinstance(value, str):
             value = value.strip()
-        if not value:
+        if value is None:
             raise ValueError(
                 "All the answer option values must be provided for custom choices"
             )
-        return value.strip()
+        return value
 
 
 class Question(QuestionnaireBaseSpec):
@@ -179,6 +179,18 @@ class Question(QuestionnaireBaseSpec):
 
         if self.type == QuestionType.group and not self.questions:
             raise ValueError("Group type questions must have at least one sub-question")
+
+        if self.answer_option and len(self.answer_option) > 1:
+            value_types = set()
+            for answer in self.answer_option:
+                value_type = type(answer.value)
+                value_types.add(value_type)
+
+            if len(value_types) > 1:
+                type_names = [t.__name__ for t in value_types]
+                error = f"All answer option values must have the same type. Found types: {', '.join(type_names)}"
+
+                raise ValueError(error)
 
         return self
 
