@@ -3,7 +3,7 @@ import datetime
 from django.urls import reverse
 from model_bakery import baker
 
-from care.emr.resources.inventory.product.spec import ProductBatch, ProductStatusOptions
+from care.emr.resources.inventory.product.spec import ProductStatusOptions
 from care.emr.resources.inventory.product_knowledge.spec import (
     ProductKnowledgeStatusOptions,
     ProductTypeOptions,
@@ -27,6 +27,10 @@ class ProductAPITest(CareAPITestBase):
                 ProductPermissions.can_write_product.name,
             ]
         )
+        self.charge_item_definition = self.create_charge_item_definition(
+            facility=self.facility
+        )
+        self.product_knowledge = self.create_product_knowledge(facility=self.facility)
 
     def generate_product_knowledge_data(
         self,
@@ -56,23 +60,134 @@ class ProductAPITest(CareAPITestBase):
         )
 
     def create_charge_item_definition(self, facility, **kwargs):
-        return baker.make("emr.ChargeItemDefinition", **kwargs)
+        return baker.make("emr.ChargeItemDefinition", facility=facility, **kwargs)
 
-    def get_details_url(self, product=None):
+    def get_details_url(self, product=None, facility=None):
         return reverse(
             "product-detail",
             kwargs={
                 "external_id": product,
+                "facility_external_id": facility,
             },
         )
 
-    def get_base_url(self):
-        return reverse("product-list")
+    def get_base_url(self, facility):
+        return reverse(
+            "product-list",
+            kwargs={
+                "facility_external_id": facility,
+            },
+        )
 
-    def product_data(self):
+    def product_data(self, product_knowledge=None, charge_item_definition=None):
         return {
             "status": ProductStatusOptions.active.value,
-            "batch": ProductBatch.lot_number.value,
+            "batch": {"lot_number": "12345"},
             "expiration_date": datetime.datetime.now(datetime.UTC)
             + datetime.timedelta(days=30),
+            "product_knowledge": product_knowledge,
+            "charge_item_definition": charge_item_definition,
         }
+
+    # Testcase for product creation
+
+    def test_create_product_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+
+        response = self.client.post(
+            self.get_base_url(facility=self.facility.external_id),
+            self.product_data(
+                product_knowledge=self.product_knowledge.external_id,
+                charge_item_definition=self.charge_item_definition.external_id,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_details_url(
+                product=response.data["id"], facility=self.facility.external_id
+            )
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+
+    def test_create_product_as_user_with_permissions(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            facility_organization=self.facility_organization,
+            role=self.role,
+        )
+
+        response = self.client.post(
+            self.get_base_url(facility=self.facility.external_id),
+            self.product_data(
+                product_knowledge=self.product_knowledge.external_id,
+                charge_item_definition=self.charge_item_definition.external_id,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_details_url(
+                product=response.data["id"], facility=self.facility.external_id
+            )
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+
+    def test_create_product_as_user_without_permissions(self):
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.post(
+            self.get_base_url(facility=self.facility.external_id),
+            self.product_data(
+                product_knowledge=self.product_knowledge.external_id,
+                charge_item_definition=self.charge_item_definition.external_id,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(response, "Cannot write product", status_code=403)
+
+    def test_create_product_with_invalid_charge_item(self):
+        different_charge_item = self.create_charge_item_definition(
+            facility=self.create_facility(name="Invalid Facility", user=self.user)
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            facility_organization=self.facility_organization,
+            role=self.role,
+        )
+        response = self.client.post(
+            self.get_base_url(facility=self.facility.external_id),
+            self.product_data(
+                product_knowledge=self.product_knowledge.external_id,
+                charge_item_definition=different_charge_item.external_id,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "Invalid Charge Item", status_code=400)
+
+    def test_create_product_with_invalid_product_knowledge(self):
+        different_product_knowledge = self.create_product_knowledge(
+            facility=self.create_facility(name="Invalid Facility", user=self.user)
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            facility_organization=self.facility_organization,
+            role=self.role,
+        )
+        response = self.client.post(
+            self.get_base_url(facility=self.facility.external_id),
+            self.product_data(
+                product_knowledge=different_product_knowledge.external_id,
+                charge_item_definition=self.charge_item_definition.external_id,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "Invalid Product Knowledge", status_code=400)
