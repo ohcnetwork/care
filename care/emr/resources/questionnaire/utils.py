@@ -269,7 +269,7 @@ def _validate_individual_question(
     """Validate individual questions."""
     # Check if question is required but not answered
     if questionnaire["id"] not in responses:
-        if questionnaire.get("required", False):
+        if check_required(questionnaire, questionnaire_mapping):
             errors.append(
                 {
                     "question_id": questionnaire["id"],
@@ -331,13 +331,23 @@ def _validate_choice_question(questionnaire, values, errors):
                 }
             )
             continue
-        # Validate code against valueset
-        if "answer_value_set" in questionnaire:
+        # Require code and validate against valueset
+        code = getattr(value.coding, "code", None)
+        if not code:
+            errors.append(
+                {
+                    "type": "type_error",
+                    "question_id": questionnaire["id"],
+                    "msg": "Coding code is required",
+                }
+            )
+            continue
+        if questionnaire.get("answer_value_set"):
             try:
                 validate_valueset(
                     "",
                     questionnaire["answer_value_set"],
-                    getattr(value.coding, "code", None),
+                    code,
                 )
             except ValueError:
                 errors.append(
@@ -362,13 +372,19 @@ def _validate_quantity_question(questionnaire, values, errors):
             )
             continue
         # Validate code against valueset
-        if "answer_value_set" in questionnaire:
-            try:
-                validate_valueset(
-                    "",
-                    questionnaire["answer_value_set"],
-                    getattr(value.coding, "code", None),
+        if questionnaire.get("answer_value_set"):
+            code = getattr(getattr(value, "coding", None), "code", None)
+            if not code:
+                errors.append(
+                    {
+                        "type": "type_error",
+                        "question_id": questionnaire["id"],
+                        "msg": "Coding code is required for quantity",
+                    }
                 )
+                continue
+            try:
+                validate_valueset("", questionnaire["answer_value_set"], code)
             except ValueError:
                 errors.append(
                     {
