@@ -227,6 +227,12 @@ def _validate_group_question(questionnaire, responses, errors, parent, questionn
         # Handle repeating groups
         response = responses.get(questionnaire["id"])
         if not response or not response.sub_results:
+            if questionnaire.get("required"):
+                errors.append({
+                    "question_id": questionnaire["id"],
+                    "type": "values_missing",
+                    "msg": "Required repeating group not answered",
+                })
             return
         for sub_responses in response.sub_results:
             question = questionnaire.copy()
