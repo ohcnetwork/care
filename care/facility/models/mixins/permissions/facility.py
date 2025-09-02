@@ -1,5 +1,9 @@
+import logging
+
 from care.facility.models.mixins.permissions.base import BasePermissionMixin
 from care.users.models import User
+
+logger = logging.getLogger(__name__)
 
 
 class FacilityPermissionMixin(BasePermissionMixin):
@@ -36,9 +40,7 @@ class FacilityPermissionMixin(BasePermissionMixin):
                 )
             )
         except Exception as e:
-            import logging
-
-            logging.info(e)
+            logger.info("Error in has_write_permission: %s", e)
             return False
 
     @staticmethod

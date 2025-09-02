@@ -184,12 +184,12 @@ def compile_typ(output_file, data):
                 cwd=tmpdir,
             )
 
-        logging.info(
+        logger.info(
             "Successfully Compiled Summary pdf for %s", data["encounter"].external_id
         )
 
     except subprocess.CalledProcessError as e:
-        logging.error(
+        logger.error(
             "Error compiling summary pdf for %s: %s",
             data["encounter"].external_id,
             e.stderr.decode("utf-8"),

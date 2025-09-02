@@ -324,7 +324,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             response_days[str(day)] = {"total_slots": 0, "booked_slots": 0}
             day += timedelta(days=1)
 
-        for day in days:
+        for day, day_data in days.items():
             # Calculate all matching schedules
             current_schedules = []
             for schedule in schedules:
@@ -344,7 +344,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             slots_count = calculate_slots(
                 day, availabilities, current_schedules, exceptions
             )
-            days[day]["total_slots"] = slots_count
+            day_data["total_slots"] = slots_count
             response_days[str(day)]["total_slots"] = slots_count
         # Query slots data for these dates, group by date and sum up count
 

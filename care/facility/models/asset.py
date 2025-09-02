@@ -185,8 +185,8 @@ class Asset(BaseModel):
             return False
         return (
             request.user.is_superuser
-            or request.user.verified
-            and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"]
+            or (request.user.verified
+                and request.user.user_type >= User.TYPE_VALUE_MAP["Staff"])
         )
 
     def has_object_write_permission(self, request):

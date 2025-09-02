@@ -199,140 +199,154 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
     return all(results) if behavior == "all" else any(results)
 
 
-def validate_question_result(  # noqa : PLR0912
+def validate_question_result(
     questionnaire, responses, errors, parent, questionnaire_mapping
 ):
     questionnaire["parent"] = parent
-    # Validate question responses
+
+    # Early return for structured questions
     if questionnaire["type"] == QuestionType.structured.value:
         return
+
+    # Handle group questions
     if questionnaire["type"] == QuestionType.group.value:
-        # Iterate and call all child questions
-        questionnaire_mapping[questionnaire["id"]] = questionnaire
-        if questionnaire.get("questions"):
-            if questionnaire.get("repeats", False):
-                # Handle repeating groups
-                response = responses.get(questionnaire["id"])
-                if not response or not response.sub_results:
-                    return
-                for sub_responses in response.sub_results:
-                    question = questionnaire.copy()
-                    question["repeats"] = False  # Set to false to avoid infinite loop
-                    validate_question_result(
-                        question,
-                        create_responses_mapping(sub_responses),
-                        errors,
-                        questionnaire["id"],
-                        questionnaire_mapping,
-                    )
-            else:
-                for question in questionnaire["questions"]:
-                    validate_question_result(
-                        question,
-                        responses,
-                        errors,
-                        questionnaire["id"],
-                        questionnaire_mapping,
-                    )
+        _validate_group_question(questionnaire, responses, errors, parent, questionnaire_mapping)
+        return
+
+    # Handle individual questions
+    _validate_individual_question(questionnaire, responses, errors, questionnaire_mapping)
+
+
+def _validate_group_question(questionnaire, responses, errors, parent, questionnaire_mapping):
+    """Validate group type questions."""
+    questionnaire_mapping[questionnaire["id"]] = questionnaire
+    if not questionnaire.get("questions"):
+        return
+
+    if questionnaire.get("repeats", False):
+        # Handle repeating groups
+        response = responses.get(questionnaire["id"])
+        if not response or not response.sub_results:
+            return
+        for sub_responses in response.sub_results:
+            question = questionnaire.copy()
+            question["repeats"] = False  # Set to false to avoid infinite loop
+            validate_question_result(
+                question,
+                create_responses_mapping(sub_responses),
+                errors,
+                questionnaire["id"],
+                questionnaire_mapping,
+            )
     else:
-        # Case when question is not answered ( Not in response )
-        if questionnaire["id"] not in responses and questionnaire.get(
-            "required", False
-        ):
+        for question in questionnaire["questions"]:
+            validate_question_result(
+                question,
+                responses,
+                errors,
+                questionnaire["id"],
+                questionnaire_mapping,
+            )
+
+
+def _validate_individual_question(questionnaire, responses, errors, questionnaire_mapping):
+    """Validate individual questions."""
+    # Check if question is required but not answered
+    if questionnaire["id"] not in responses:
+        if questionnaire.get("required", False):
             errors.append(
                 {"question_id": questionnaire["id"], "error": "Question not answered"}
             )
+        return
+
+    values = responses[questionnaire["id"]].values
+
+    # Check if question is answered but empty
+    if not values and check_required(questionnaire, questionnaire_mapping):
+        errors.append({
+            "question_id": questionnaire["id"],
+            "type": "values_missing",
+            "msg": "No value provided for question",
+        })
+        return
+
+    # Check for type errors
+    value_type = questionnaire["type"]
+    if questionnaire.get("repeats", False):
+        values = responses[questionnaire["id"]].values[0:1]
+
+    type_errors = validate_data(values, value_type, questionnaire)
+    if type_errors:
+        errors.extend([
+            {
+                "type": "type_error",
+                "question_id": questionnaire["id"],
+                "msg": error,
+            }
+            for error in type_errors
+        ])
+
+    # Validate choice questions
+    if questionnaire["type"] == QuestionType.choice.value and questionnaire.get("answer_value_set"):
+        _validate_choice_question(questionnaire, values, errors)
+
+    # Validate quantity questions
+    if questionnaire["type"] == QuestionType.quantity.value:
+        _validate_quantity_question(questionnaire, values, errors)
+
+
+def _validate_choice_question(questionnaire, values, errors):
+    """Validate choice type questions."""
+    for value in values:
+        if not value.coding:
+            errors.append({
+                "type": "type_error",
+                "question_id": questionnaire["id"],
+                "msg": "Coding is required",
+            })
             return
-        if questionnaire["id"] not in responses:
-            return
-        values = responses[questionnaire["id"]].values
-        # Case when the question is answered but is empty
-        if not values and check_required(questionnaire, questionnaire_mapping):
-            err = "No value provided for question"
-            errors.append(
-                {
+
+        # Validate code against valueset
+        if "answer_value_set" in questionnaire:
+            try:
+                validate_valueset(
+                    "",
+                    questionnaire["answer_value_set"],
+                    value.coding,
+                )
+            except ValueError:
+                errors.append({
+                    "type": "valueset_error",
                     "question_id": questionnaire["id"],
-                    "type": "values_missing",
-                    "msg": err,
-                }
-            )
+                    "msg": "Coding does not belong to the valueset",
+                })
+
+
+def _validate_quantity_question(questionnaire, values, errors):
+    """Validate quantity type questions."""
+    for value in values:
+        if not value.unit:
+            errors.append({
+                "type": "type_error",
+                "question_id": questionnaire["id"],
+                "msg": "Quantity is required",
+            })
             return
-        # Check for type errors
-        value_type = questionnaire["type"]
-        if questionnaire.get("repeats", False):
-            values = responses[questionnaire["id"]].values[0:1]
-        type_errors = validate_data(values, value_type, questionnaire)
-        if type_errors:
-            errors.extend(
-                [
-                    {
-                        "type": "type_error",
-                        "question_id": questionnaire["id"],
-                        "msg": error,
-                    }
-                    for error in type_errors
-                ]
-            )
-        # Validate for code and quantity
-        if questionnaire["type"] == QuestionType.choice.value and questionnaire.get(
-            "answer_value_set"
-        ):
-            for value in values:
-                if not value.coding:
-                    errors.append(
-                        {
-                            "type": "type_error",
-                            "question_id": questionnaire["id"],
-                            "msg": "Coding is required",
-                        }
-                    )
-                    return
-                # Validate code
-                if "answer_value_set" in questionnaire:
-                    try:
-                        validate_valueset(
-                            "",
-                            questionnaire["answer_value_set"],
-                            value.coding,
-                        )
-                    except ValueError:
-                        errors.append(
-                            {
-                                "type": "valueset_error",
-                                "question_id": questionnaire["id"],
-                                "msg": "Coding does not belong to the valueset",
-                            }
-                        )
-        # TODO : Validate for options created by user as well
-        if questionnaire["type"] == QuestionType.quantity.value:
-            for value in values:
-                if not value.unit:
-                    errors.append(
-                        {
-                            "type": "type_error",
-                            "question_id": questionnaire["id"],
-                            "msg": "Quantity is required",
-                        }
-                    )
-                    return
-                # Validate code
-                # TODO : Validate for options created by user as well
-                if "answer_value_set" in questionnaire:
-                    try:
-                        validate_valueset(
-                            "",
-                            questionnaire["answer_value_set"],
-                            value.coding,
-                        )
-                    except ValueError:
-                        errors.append(
-                            {
-                                "type": "valueset_error",
-                                "question_id": questionnaire["id"],
-                                "msg": "Coding does not belong to the valueset",
-                            }
-                        )
-        # ( check if the code belongs to the valueset or options list)
+
+        # Validate code against valueset
+        if "answer_value_set" in questionnaire:
+            try:
+                validate_valueset(
+                    "",
+                    questionnaire["answer_value_set"],
+                    value.coding,
+                )
+            except ValueError:
+                errors.append({
+                    "type": "valueset_error",
+                    "question_id": questionnaire["id"],
+                    "msg": "Coding does not belong to the valueset",
+                })
 
 
 def create_observation_spec(questionnaire, response, parent_id=None):

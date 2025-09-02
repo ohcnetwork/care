@@ -9,8 +9,8 @@ class PatientPermissionMixin(BasePermissionMixin):
             return False
         return (
             request.user.is_superuser
-            or request.user.verified
-            and request.user.user_type >= User.TYPE_VALUE_MAP["Nurse"]
+            or (request.user.verified
+                and request.user.user_type >= User.TYPE_VALUE_MAP["Nurse"])
         )
 
     def has_object_read_permission(self, request):
