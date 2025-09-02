@@ -260,11 +260,12 @@ def _validate_individual_question(questionnaire, responses, errors, questionnair
     # Check if question is required but not answered
     if questionnaire["id"] not in responses:
         if questionnaire.get("required", False):
-            errors.append(
-                {"question_id": questionnaire["id"], "error": "Question not answered"}
-            )
+            errors.append({
+                "question_id": questionnaire["id"],
+                "type": "missing_answer",
+                "msg": "Question not answered",
+            })
         return
-
     values = responses[questionnaire["id"]].values
 
     # Check if question is answered but empty
