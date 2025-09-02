@@ -279,9 +279,8 @@ def _validate_individual_question(questionnaire, responses, errors, questionnair
 
     # Check for type errors
     value_type = questionnaire["type"]
-    if questionnaire.get("repeats", False):
-        values = responses[questionnaire["id"]].values[0:1]
-
+    # Always validate all provided values; callers can decide how many to accept.
+    # (If you truly need to limit, validate all but only persist the first.)
     type_errors = validate_data(values, value_type, questionnaire)
     if type_errors:
         errors.extend([
@@ -311,15 +310,14 @@ def _validate_choice_question(questionnaire, values, errors):
                 "question_id": questionnaire["id"],
                 "msg": "Coding is required",
             })
-            return
-
+            continue
         # Validate code against valueset
         if "answer_value_set" in questionnaire:
             try:
                 validate_valueset(
                     "",
                     questionnaire["answer_value_set"],
-                    value.coding,
+                    getattr(value.coding, "code", None),
                 )
             except ValueError:
                 errors.append({
@@ -336,17 +334,16 @@ def _validate_quantity_question(questionnaire, values, errors):
             errors.append({
                 "type": "type_error",
                 "question_id": questionnaire["id"],
-                "msg": "Quantity is required",
+                "msg": "Unit is required",
             })
-            return
-
+            continue
         # Validate code against valueset
         if "answer_value_set" in questionnaire:
             try:
                 validate_valueset(
                     "",
                     questionnaire["answer_value_set"],
-                    value.coding,
+                    getattr(value.coding, "code", None),
                 )
             except ValueError:
                 errors.append({
