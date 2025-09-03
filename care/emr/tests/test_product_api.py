@@ -79,15 +79,21 @@ class ProductAPITest(CareAPITestBase):
             },
         )
 
-    def product_data(self, product_knowledge=None, charge_item_definition=None):
+    def product_data(
+        self, product_knowledge=None, charge_item_definition=None, status=None
+    ):
         return {
-            "status": ProductStatusOptions.active.value,
+            "status": status or ProductStatusOptions.active.value,
             "batch": {"lot_number": "12345"},
             "expiration_date": datetime.datetime.now(datetime.UTC)
             + datetime.timedelta(days=30),
             "product_knowledge": product_knowledge,
             "charge_item_definition": charge_item_definition,
         }
+
+    def create_product(self, facility, **kwargs):
+        data = self.product_data(**kwargs)
+        return baker.make("emr.Product", facility=facility, **data)
 
     # Testcase for product creation
 
@@ -191,3 +197,122 @@ class ProductAPITest(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertContains(response, "Invalid Product Knowledge", status_code=400)
+
+    # Testcases for product updation
+
+    def test_update_product_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        charge_item_definition = self.create_charge_item_definition(
+            facility=self.facility,
+        )
+        response = self.client.put(
+            self.get_details_url(
+                product=product.external_id, facility=self.facility.external_id
+            ),
+            self.product_data(
+                charge_item_definition=str(charge_item_definition.external_id),
+                product_knowledge=str(self.product_knowledge.external_id),
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_details_url(
+                product=product.external_id, facility=self.facility.external_id
+            )
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], str(product.external_id))
+        self.assertEqual(
+            get_response.data["charge_item_definition"]["id"],
+            str(charge_item_definition.external_id),
+        )
+
+    def test_update_product_as_user_with_permissions(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            facility_organization=self.facility_organization,
+            role=self.role,
+        )
+        product = self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        charge_item_definition = self.create_charge_item_definition(
+            facility=self.facility,
+        )
+        response = self.client.put(
+            self.get_details_url(
+                product=product.external_id, facility=self.facility.external_id
+            ),
+            self.product_data(
+                charge_item_definition=str(charge_item_definition.external_id),
+                product_knowledge=str(self.product_knowledge.external_id),
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_details_url(
+                product=product.external_id, facility=self.facility.external_id
+            )
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], str(product.external_id))
+        self.assertEqual(
+            get_response.data["charge_item_definition"]["id"],
+            str(charge_item_definition.external_id),
+        )
+
+    def test_update_product_as_user_without_permissions(self):
+        self.client.force_authenticate(user=self.user)
+        product = self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        charge_item_definition = self.create_charge_item_definition(
+            facility=self.facility,
+        )
+        response = self.client.put(
+            self.get_details_url(
+                product=product.external_id, facility=self.facility.external_id
+            ),
+            self.product_data(
+                charge_item_definition=str(charge_item_definition.external_id),
+                product_knowledge=str(self.product_knowledge.external_id),
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(response, "Cannot write product", status_code=403)
+
+    def test_update_product_with_invalid_charge_item_definition(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        different_charge_item = self.create_charge_item_definition(
+            facility=self.create_facility(name="Invalid Facility", user=self.user)
+        )
+        response = self.client.put(
+            self.get_details_url(
+                product=product.external_id, facility=self.facility.external_id
+            ),
+            self.product_data(
+                charge_item_definition=str(different_charge_item.external_id),
+                product_knowledge=str(self.product_knowledge.external_id),
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "Invalid Charge Item", status_code=400)
