@@ -2,6 +2,7 @@ from datetime import datetime
 from enum import Enum
 
 from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
+from pydantic_core.core_schema import ValidationInfo
 
 from care.emr.models.encounter import Encounter
 from care.emr.models.medication_administration import MedicationAdministration
@@ -171,6 +172,23 @@ class MedicationAdministrationUpdateSpec(EMRResource):
     status: MedicationAdministrationStatus
     note: str | None = None
     occurrence_period_end: datetime | None = None
+
+    @model_validator(mode="after")
+    def validate_status(self, info: ValidationInfo):
+        context = info.context or {}
+        is_update = context.get("is_update", False)
+        model_obj = context.get("object")
+
+        if (
+            is_update
+            and model_obj
+            and (
+                model_obj.status
+                == MedicationAdministrationStatus.entered_in_error.value
+            )
+        ):
+            raise ValueError("Cannot update status that is entered in error")
+        return self
 
 
 class MedicationAdministrationReadSpec(BaseMedicationAdministrationSpec):

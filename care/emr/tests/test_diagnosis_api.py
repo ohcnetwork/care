@@ -501,7 +501,11 @@ class TestDiagnosisViewSet(CareAPITestBase):
             facility=self.facility,
             organization=self.organization,
         )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
+        diagnosis = self.create_diagnosis(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.provisional.value,
+        )
 
         url = self._get_diagnosis_url(diagnosis.external_id)
         diagnosis_data_updated = model_to_dict(diagnosis)
@@ -529,7 +533,11 @@ class TestDiagnosisViewSet(CareAPITestBase):
             facility=self.facility,
             organization=self.organization,
         )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
+        diagnosis = self.create_diagnosis(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.provisional.value,
+        )
 
         url = self._get_diagnosis_url(diagnosis.external_id)
         diagnosis_data_updated = model_to_dict(diagnosis)
@@ -558,7 +566,11 @@ class TestDiagnosisViewSet(CareAPITestBase):
             facility=self.facility,
             organization=self.organization,
         )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
+        diagnosis = self.create_diagnosis(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.provisional.value,
+        )
 
         url = self._get_diagnosis_url(diagnosis.external_id)
         diagnosis_data_updated = model_to_dict(diagnosis)
@@ -587,7 +599,11 @@ class TestDiagnosisViewSet(CareAPITestBase):
             facility=self.facility,
             organization=self.organization,
         )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
+        diagnosis = self.create_diagnosis(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.provisional.value,
+        )
 
         url = self._get_diagnosis_url(diagnosis.external_id)
         diagnosis_data_updated = model_to_dict(diagnosis)
@@ -614,7 +630,11 @@ class TestDiagnosisViewSet(CareAPITestBase):
             organization=self.organization,
             status=StatusChoices.completed.value,
         )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
+        diagnosis = self.create_diagnosis(
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.provisional.value,
+        )
 
         url = self._get_diagnosis_url(diagnosis.external_id)
         diagnosis_data_updated = model_to_dict(diagnosis)
@@ -622,87 +642,3 @@ class TestDiagnosisViewSet(CareAPITestBase):
 
         update_response = self.client.put(url, diagnosis_data_updated, format="json")
         self.assertEqual(update_response.status_code, 403)
-
-    # DELETE TESTS
-    def test_delete_diagnosis_with_permission(self):
-        """
-        Users with `can_write_encounter` + `can_view_clinical_data` => (HTTP 204).
-        """
-        permissions = [
-            EncounterPermissions.can_write_encounter.name,
-            PatientPermissions.can_view_clinical_data.name,
-        ]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        encounter = self.create_encounter(
-            patient=self.patient,
-            facility=self.facility,
-            organization=self.organization,
-        )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
-
-        url = self._get_diagnosis_url(diagnosis.external_id)
-        delete_response = self.client.delete(url, {}, format="json")
-        self.assertEqual(delete_response.status_code, 204)
-
-    def test_delete_diagnosis_for_single_encounter_with_permission(self):
-        """
-        Users with `can_write_encounter` + `can_read_encounter` => (HTTP 204).
-        """
-        permissions = [
-            EncounterPermissions.can_write_encounter.name,
-            EncounterPermissions.can_read_encounter.name,
-        ]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        encounter = self.create_encounter(
-            patient=self.patient,
-            facility=self.facility,
-            organization=self.organization,
-        )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
-
-        url = f"{self._get_diagnosis_url(diagnosis.external_id)}?encounter={encounter.external_id}"
-        delete_response = self.client.delete(url, {}, format="json")
-        self.assertEqual(delete_response.status_code, 204)
-
-    def test_delete_diagnosis_for_single_encounter_without_permission(self):
-        """
-        Lacking `can_read_encounter` => (HTTP 403) on delete.
-        """
-        permissions = [EncounterPermissions.can_write_encounter.name]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        encounter = self.create_encounter(
-            patient=self.patient,
-            facility=self.facility,
-            organization=self.organization,
-        )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
-
-        url = f"{self._get_diagnosis_url(diagnosis.external_id)}?encounter={encounter.external_id}"
-        delete_response = self.client.delete(url, {}, format="json")
-        self.assertEqual(delete_response.status_code, 403)
-
-    def test_delete_diagnosis_without_permission(self):
-        """
-        Users who only have `can_write_encounter` but not `can_view_clinical_data`
-        => (HTTP 403) on delete.
-        """
-        permissions = [EncounterPermissions.can_write_encounter.name]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        encounter = self.create_encounter(
-            patient=self.patient,
-            facility=self.facility,
-            organization=self.organization,
-        )
-        diagnosis = self.create_diagnosis(encounter=encounter, patient=self.patient)
-
-        url = self._get_diagnosis_url(diagnosis.external_id)
-        delete_response = self.client.delete(url, {}, format="json")
-        self.assertEqual(delete_response.status_code, 403)

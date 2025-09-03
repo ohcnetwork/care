@@ -220,7 +220,9 @@ class TestConsentViewSet(CareAPITestBase):
         encounter = self.create_encounter(
             patient=self.patient, facility=self.facility, organization=self.organization
         )
-        consent = self.create_consent(encounter=encounter)
+        consent = self.create_consent(
+            encounter=encounter, status=ConsentStatusChoices.active.value
+        )
 
         url = self._get_consent_url(consent.external_id)
         consent_data_updated = self.generate_data_for_consent(encounter)
@@ -232,40 +234,14 @@ class TestConsentViewSet(CareAPITestBase):
         encounter = self.create_encounter(
             patient=self.patient, facility=self.facility, organization=self.organization
         )
-        consent = self.create_consent(encounter=encounter)
+        consent = self.create_consent(
+            encounter=encounter, status=ConsentStatusChoices.active.value
+        )
 
         url = self._get_consent_url(consent.external_id)
         consent_data_updated = model_to_dict(consent)
         response = self.client.put(url, consent_data_updated, format="json")
         self.assertEqual(response.status_code, 403)
-
-    # DELETE TESTS
-    def test_delete_consent_with_permissions(self):
-        permissions = [
-            PatientPermissions.can_view_clinical_data.name,
-            EncounterPermissions.can_write_encounter.name,
-        ]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        encounter = self.create_encounter(
-            patient=self.patient, facility=self.facility, organization=self.organization
-        )
-        consent = self.create_consent(encounter=encounter)
-
-        url = self._get_consent_url(consent.external_id)
-        delete_response = self.client.delete(url, {}, format="json")
-        self.assertEqual(delete_response.status_code, 204)
-
-    def test_delete_consent_without_permissions(self):
-        encounter = self.create_encounter(
-            patient=self.patient, facility=self.facility, organization=self.organization
-        )
-        consent = self.create_consent(encounter=encounter)
-
-        url = self._get_consent_url(consent.external_id)
-        delete_response = self.client.delete(url, {}, format="json")
-        self.assertEqual(delete_response.status_code, 403)
 
     def test_add_verification(self):
         permissions = [

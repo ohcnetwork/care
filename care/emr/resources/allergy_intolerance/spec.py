@@ -1,7 +1,8 @@
 import datetime
 from enum import Enum
 
-from pydantic import UUID4, field_validator
+from pydantic import UUID4, field_validator, model_validator
+from pydantic_core.core_schema import ValidationInfo
 
 from care.emr.models.allergy_intolerance import AllergyIntolerance
 from care.emr.models.encounter import Encounter
@@ -75,6 +76,26 @@ class AllergyIntoleranceUpdateSpec(BaseAllergyIntoleranceSpec):
             err = "Encounter not found"
             raise ValueError(err)
         return encounter
+
+    @model_validator(mode="after")
+    def validate_verification_status(self, info: ValidationInfo):
+        context = info.context or {}
+        is_update = context.get("is_update", False)
+        model_obj = context.get("object")
+
+        if (
+            is_update
+            and model_obj
+            and (
+                model_obj.verification_status
+                == VerificationStatusChoices.entered_in_error.value
+            )
+        ):
+            raise ValueError(
+                "Cannot update verification status that is entered in error"
+            )
+
+        return self
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.encounter:

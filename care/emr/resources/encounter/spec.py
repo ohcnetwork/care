@@ -3,7 +3,8 @@ import datetime
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
-from pydantic import UUID4, BaseModel
+from pydantic import UUID4, BaseModel, model_validator
+from pydantic_core.core_schema import ValidationInfo
 
 from care.emr.models import (
     Encounter,
@@ -100,6 +101,20 @@ class EncounterCreateSpec(EncounterSpecBase):
 
 
 class EncounterUpdateSpec(EncounterSpecBase):
+    @model_validator(mode="after")
+    def validate_status(self, info: ValidationInfo):
+        context = info.context or {}
+        is_update = context.get("is_update", False)
+        model_obj = context.get("object")
+
+        if (
+            is_update
+            and model_obj
+            and model_obj.status == StatusChoices.entered_in_error.value
+        ):
+            raise ValueError("Cannot update status that is entered in error")
+        return self
+
     def perform_extra_deserialization(self, is_update, obj):
         old_instance = Encounter.objects.get(id=obj.id)
         if old_instance.status != self.status:

@@ -541,7 +541,9 @@ class TestAllergyIntoleranceViewSet(CareAPITestBase):
             organization=self.organization,
         )
         allergy_intolerance = self.create_allergy_intolerance(
-            encounter=encounter, patient=self.patient
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.confirmed.value,
         )
 
         url = self._get_allergy_intolerance_url(allergy_intolerance.external_id)
@@ -573,7 +575,9 @@ class TestAllergyIntoleranceViewSet(CareAPITestBase):
             organization=self.organization,
         )
         allergy_intolerance = self.create_allergy_intolerance(
-            encounter=encounter, patient=self.patient
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.confirmed.value,
         )
 
         url = self._get_allergy_intolerance_url(allergy_intolerance.external_id)
@@ -605,7 +609,9 @@ class TestAllergyIntoleranceViewSet(CareAPITestBase):
             organization=self.organization,
         )
         allergy_intolerance = self.create_allergy_intolerance(
-            encounter=encounter, patient=self.patient
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.confirmed.value,
         )
 
         url = self._get_allergy_intolerance_url(allergy_intolerance.external_id)
@@ -636,7 +642,9 @@ class TestAllergyIntoleranceViewSet(CareAPITestBase):
             organization=self.organization,
         )
         allergy_intolerance = self.create_allergy_intolerance(
-            encounter=encounter, patient=self.patient
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.confirmed.value,
         )
 
         url = self._get_allergy_intolerance_url(allergy_intolerance.external_id)
@@ -667,7 +675,9 @@ class TestAllergyIntoleranceViewSet(CareAPITestBase):
             status=StatusChoices.completed.value,
         )
         allergy_intolerance = self.create_allergy_intolerance(
-            encounter=encounter, patient=self.patient
+            encounter=encounter,
+            patient=self.patient,
+            verification_status=VerificationStatusChoices.confirmed.value,
         )
 
         url = self._get_allergy_intolerance_url(allergy_intolerance.external_id)
@@ -704,6 +714,7 @@ class TestAllergyIntoleranceViewSet(CareAPITestBase):
             encounter=encounter,
             patient=self.patient,
             code=self.valid_code,
+            verification_status=VerificationStatusChoices.confirmed.value,
         )
 
         new_encounter = self.create_encounter(
@@ -749,6 +760,7 @@ class TestAllergyIntoleranceViewSet(CareAPITestBase):
             encounter=encounter,
             patient=self.patient,
             code=self.valid_code,
+            verification_status=VerificationStatusChoices.confirmed.value,
         )
 
         new_encounter = self.create_encounter(

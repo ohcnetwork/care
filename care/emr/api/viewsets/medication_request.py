@@ -8,8 +8,12 @@ from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
-    EMRModelViewSet,
+    EMRCreateMixin,
+    EMRListMixin,
     EMRQuestionnaireResponseMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRUpsertMixin,
 )
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
 from care.emr.models.encounter import Encounter
@@ -49,7 +53,14 @@ class MedicationRequestFilter(filters.FilterSet):
 
 
 class MedicationRequestViewSet(
-    EncounterBasedAuthorizationBase, EMRQuestionnaireResponseMixin, EMRModelViewSet
+    EncounterBasedAuthorizationBase,
+    EMRQuestionnaireResponseMixin,
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRUpsertMixin,
 ):
     database_model = MedicationRequest
     pydantic_model = MedicationRequestSpec
