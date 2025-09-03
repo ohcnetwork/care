@@ -316,3 +316,209 @@ class ProductAPITest(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertContains(response, "Invalid Charge Item", status_code=400)
+
+    # Testcases for retrieving products
+
+    def test_retrieve_product_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        response = self.client.get(
+            self.get_details_url(
+                product=product.external_id, facility=self.facility.external_id
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(product.external_id))
+        self.assertEqual(
+            response.data["charge_item_definition"]["id"],
+            str(self.charge_item_definition.external_id),
+        )
+        self.assertEqual(
+            response.data["product_knowledge"]["id"],
+            str(self.product_knowledge.external_id),
+        )
+
+    def test_retrieve_product_as_user_with_permission(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            facility_organization=self.facility_organization,
+            role=self.role,
+        )
+        product = self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        response = self.client.get(
+            self.get_details_url(
+                product=product.external_id, facility=self.facility.external_id
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(product.external_id))
+        self.assertEqual(
+            response.data["charge_item_definition"]["id"],
+            str(self.charge_item_definition.external_id),
+        )
+        self.assertEqual(
+            response.data["product_knowledge"]["id"],
+            str(self.product_knowledge.external_id),
+        )
+
+    def test_retrieve_product_as_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        product = self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        response = self.client.get(
+            self.get_details_url(
+                product=product.external_id, facility=self.facility.external_id
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(response, "Cannot list products", status_code=403)
+
+    # Testcases for listing products
+
+    def test_list_products_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        another_facility = self.create_facility(
+            name="Another Facility", user=self.superuser
+        )
+        product = self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        self.create_product(
+            facility=another_facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        response = self.client.get(
+            self.get_base_url(facility=self.facility.external_id)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    def test_list_products_as_user_with_permission(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            facility_organization=self.facility_organization,
+            role=self.role,
+        )
+        another_facility = self.create_facility(name="Another Facility", user=self.user)
+        product = self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        self.create_product(
+            facility=another_facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        response = self.client.get(
+            self.get_base_url(facility=self.facility.external_id)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    def test_list_products_as_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        another_facility = self.create_facility(name="Another Facility", user=self.user)
+        self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        self.create_product(
+            facility=another_facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        response = self.client.get(
+            self.get_base_url(facility=self.facility.external_id)
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(response, "Cannot list products", status_code=403)
+
+    def test_filter_products_by_status(self):
+        self.client.force_authenticate(user=self.superuser)
+        product_1 = self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+            status=ProductStatusOptions.active.value,
+        )
+        self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+            status=ProductStatusOptions.inactive.value,
+        )
+        response = self.client.get(
+            self.get_base_url(facility=self.facility.external_id),
+            {"status": ProductStatusOptions.active.value},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product_1.external_id))
+
+    def test_filter_product_by_product_knowledge(self):
+        self.client.force_authenticate(user=self.superuser)
+        product_1 = self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+            status=ProductStatusOptions.active.value,
+        )
+        product_knowledge_2 = self.create_product_knowledge(
+            name="Another Product Knowledge", facility=self.facility
+        )
+        self.create_product(
+            facility=self.facility,
+            product_knowledge=product_knowledge_2,
+            charge_item_definition=self.charge_item_definition,
+            status=ProductStatusOptions.inactive.value,
+        )
+        response = self.client.get(
+            self.get_base_url(facility=self.facility.external_id),
+            {"product_knowledge": self.product_knowledge.external_id},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product_1.external_id))
+
+    def test_filter_product_by_facility(self):
+        self.client.force_authenticate(user=self.superuser)
+        product_1 = self.create_product(
+            facility=self.facility,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+            status=ProductStatusOptions.active.value,
+        )
+        facility_2 = self.create_facility(name="Another Facility", user=self.superuser)
+        self.create_product(
+            facility=facility_2,
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+            status=ProductStatusOptions.inactive.value,
+        )
+        response = self.client.get(
+            self.get_base_url(facility=self.facility.external_id),
+            {"facility": self.facility.external_id},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product_1.external_id))
