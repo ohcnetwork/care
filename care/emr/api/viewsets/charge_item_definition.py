@@ -9,6 +9,7 @@ from care.emr.api.viewsets.base import (
     EMRListMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
+    EMRUpsertMixin,
 )
 from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.resources.charge_item_definition.spec import (
@@ -25,7 +26,12 @@ class ChargeItemDefinitionFilters(filters.FilterSet):
 
 
 class ChargeItemDefinitionViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRUpsertMixin,
+    EMRBaseViewSet,
 ):
     database_model = ChargeItemDefinition
     pydantic_model = ChargeItemDefinitionSpec

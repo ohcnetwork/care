@@ -12,6 +12,7 @@ from care.emr.models.medication_request import MedicationRequest
 from care.emr.resources.base import EMRResource
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
 from care.emr.resources.inventory.inventory_item.spec import InventoryItemReadSpec
+from care.emr.resources.location.spec import FacilityLocationListSpec
 from care.emr.resources.medication.request.spec import DosageInstruction
 
 
@@ -138,6 +139,7 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
     charge_item: dict | None = None
     created_date: datetime
     modified_date: datetime
+    location: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -147,3 +149,4 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
             mapping["charge_item"] = ChargeItemReadSpec.serialize(
                 obj.charge_item
             ).to_json()
+        mapping["location"] = FacilityLocationListSpec.serialize(obj.location).to_json()

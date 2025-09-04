@@ -25,14 +25,17 @@ from care.emr.resources.scheduling.slot.spec import (
     CANCELLED_STATUS_CHOICES,
     BookingStatusChoices,
     TokenBookingReadSpec,
+    TokenBookingRetrieveSpec,
     TokenBookingWriteSpec,
 )
 from care.emr.resources.tag.config_spec import TagResource
 from care.emr.resources.user.spec import UserSpec
+from care.emr.tagging.base import SingleFacilityTagManager
 from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
+from care.utils.filters.multiselect import MultiSelectFilter
 
 
 class CancelBookingSpec(BaseModel):
@@ -41,16 +44,19 @@ class CancelBookingSpec(BaseModel):
         BookingStatusChoices.entered_in_error,
         BookingStatusChoices.rescheduled,
     ]
-    reason_for_visit: str | None = None
+    note: str | None = None
 
 
 class RescheduleBookingSpec(BaseModel):
     new_slot: UUID4
-    reason: str | None = None
+    new_booking_note: str
+    previous_booking_note: str | None = None
+
+    tags: list[UUID4] = []
 
 
 class TokenBookingFilters(FilterSet):
-    status = CharFilter(field_name="status")
+    status = MultiSelectFilter(field_name="status")
     date = DateFromToRangeFilter(field_name="token_slot__start_datetime__date")
     slot = UUIDFilter(field_name="token_slot__external_id")
     user = CharFilter(method="filter_by_users")
@@ -95,6 +101,7 @@ class TokenBookingViewSet(
     database_model = TokenBooking
     pydantic_model = TokenBookingWriteSpec
     pydantic_read_model = TokenBookingReadSpec
+    pydantic_retrieve_model = TokenBookingRetrieveSpec
     pydantic_update_model = TokenBookingWriteSpec
 
     filterset_class = TokenBookingFilters
@@ -155,8 +162,8 @@ class TokenBookingViewSet(
                 # Free up the slot if it is not cancelled already
                 instance.token_slot.allocated -= 1
                 instance.token_slot.save()
-            if request_data.reason_for_visit:
-                instance.reason_for_visit = request_data.reason_for_visit
+            if request_data.note:
+                instance.note = request_data.note
             instance.status = request_data.reason
             instance.updated_by = user
             instance.save()
@@ -191,12 +198,11 @@ class TokenBookingViewSet(
             raise ValidationError("Cannot reschedule to the same slot")
 
         with transaction.atomic():
-            existing_reason_for_visit = existing_booking.reason_for_visit
             self.cancel_appointment_handler(
                 existing_booking,
                 {
                     "reason": BookingStatusChoices.rescheduled,
-                    "reason_for_visit": request_data.reason,
+                    "note": request_data.previous_booking_note or existing_booking.note,
                 },
                 request.user,
             )
@@ -204,8 +210,17 @@ class TokenBookingViewSet(
                 new_slot,
                 existing_booking.patient,
                 request.user,
-                existing_reason_for_visit,
+                request_data.new_booking_note,
             )
+            if request_data.tags:
+                tag_manager = SingleFacilityTagManager()
+                tag_manager.set_tags(
+                    TagResource.token_booking,
+                    appointment,
+                    request_data.tags,
+                    request.user,
+                    facility,
+                )
             return Response(
                 TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
             )

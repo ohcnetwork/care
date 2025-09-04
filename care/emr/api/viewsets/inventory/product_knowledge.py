@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import (
@@ -9,6 +9,7 @@ from care.emr.api.viewsets.base import (
     EMRListMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
+    EMRUpsertMixin,
 )
 from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.resources.inventory.product_knowledge.spec import (
@@ -27,10 +28,16 @@ class ProductKnowledgeFilters(filters.FilterSet):
     name = filters.CharFilter(lookup_expr="icontains")  # TODO : Need better searching
     product_type = filters.CharFilter(lookup_expr="iexact")
     facility_is_null = NullFilter(field_name="facility")
+    alternate_identifier = filters.CharFilter(lookup_expr="iexact")
 
 
 class ProductKnowledgeViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRUpsertMixin,
 ):
     database_model = ProductKnowledge
     pydantic_model = ProductKnowledgeWriteSpec
@@ -39,6 +46,25 @@ class ProductKnowledgeViewSet(
     filterset_class = ProductKnowledgeFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date"]
+
+    def validate_data(self, instance, model_obj=None):
+        queryset = ProductKnowledge.objects.filter(slug__iexact=instance.slug)
+        if model_obj:
+            if getattr(model_obj, "facility", None):
+                queryset = queryset.filter(facility=model_obj.facility_id).exclude(
+                    id=model_obj.id
+                )
+            else:
+                queryset = queryset.filter(facility__isnull=True).exclude(
+                    id=model_obj.id
+                )
+        elif instance.facility:
+            queryset = queryset.filter(facility__external_id=instance.facility)
+        else:
+            queryset = queryset.filter(facility__isnull=True)
+        if queryset.exists():
+            raise ValidationError("Slug already exists.")
+        return super().validate_data(instance, model_obj)
 
     def authorize_create(self, instance):
         if instance.facility:
