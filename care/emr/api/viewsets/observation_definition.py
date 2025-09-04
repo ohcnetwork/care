@@ -39,26 +39,22 @@ class ObservationDefinitionViewSet(
     ordering_fields = ["created_date", "modified_date"]
 
     def validate_data(self, instance, model_obj=None):
-        filters_dict = {"slug": instance.slug}
+        queryset = ObservationDefinition.objects.filter(slug__iexact=instance.slug)
         if model_obj:
-            if model_obj.facility:
-                filters_dict["facility"] = model_obj.facility
-                queryset = ObservationDefinition.objects.filter(**filters_dict).exclude(
+            if getattr(model_obj, "facility", None):
+                queryset = queryset.filter(facility=model_obj.facility_id).exclude(
                     id=model_obj.id
                 )
             else:
-                filters_dict["facility__isnull"] = True
-                queryset = ObservationDefinition.objects.filter(**filters_dict).exclude(
+                queryset = queryset.filter(facility__isnull=True).exclude(
                     id=model_obj.id
                 )
         elif instance.facility:
-            filters_dict["facility__external_id"] = instance.facility
-            queryset = ObservationDefinition.objects.filter(**filters_dict)
+            queryset = queryset.filter(facility__external_id=instance.facility)
         else:
-            filters_dict["facility__isnull"] = True
-            queryset = ObservationDefinition.objects.filter(**filters_dict)
+            queryset = queryset.filter(facility__isnull=True)
         if queryset.exists():
-            raise ValidationError("Slug must be unique")
+            raise ValidationError("Slug already exists.")
         return super().validate_data(instance, model_obj)
 
     def authorize_create(self, instance):
