@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import get_object_or_404
 
@@ -43,6 +43,25 @@ class ObservationDefinitionViewSet(
     filterset_class = ObservationDefinitionFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date"]
+
+    def validate_data(self, instance, model_obj=None):
+        queryset = ObservationDefinition.objects.filter(slug__iexact=instance.slug)
+        if model_obj:
+            if getattr(model_obj, "facility", None):
+                queryset = queryset.filter(facility=model_obj.facility_id).exclude(
+                    id=model_obj.id
+                )
+            else:
+                queryset = queryset.filter(facility__isnull=True).exclude(
+                    id=model_obj.id
+                )
+        elif instance.facility:
+            queryset = queryset.filter(facility__external_id=instance.facility)
+        else:
+            queryset = queryset.filter(facility__isnull=True)
+        if queryset.exists():
+            raise ValidationError("Slug already exists.")
+        return super().validate_data(instance, model_obj)
 
     def authorize_create(self, instance):
         """
