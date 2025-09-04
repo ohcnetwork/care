@@ -30,25 +30,32 @@ class InterpretationEvaluator(AbstractEvaluator):
         """
         Apply a matched rule to determine the clinical interpretation of a value.
         """
-        # Handle numeric ranges
-        for r in rule.get("ranges", []):
-            if self.value_fits(value, r):
-                return r["interpretation"]
+        # Determine if we're dealing with numeric or coded data
+        has_ranges = bool(rule.get("ranges", []))
+        has_coded_values = bool(
+            rule.get("normal_coded_value_set", [])
+            or rule.get("critical_coded_value_set", [])
+            or rule.get("abnormal_coded_value_set", [])
+        )
 
-        # Handle categorical coded value sets
-        extracted_value = self.extract_value(value)
+        if has_ranges:
+            for r in rule.get("ranges", []):
+                if self.value_fits(value, r):
+                    return r["interpretation"]
+        elif has_coded_values:
+            extracted_value = self.extract_value(value)
 
-        for normal_code in rule.get("normal_coded_value_set", []):
-            if self._matches_coded_value(extracted_value, normal_code):
-                return "normal"
+            for normal_code in rule.get("normal_coded_value_set", []):
+                if self._matches_coded_value(extracted_value, normal_code):
+                    return "normal"
 
-        for critical_code in rule.get("critical_coded_value_set", []):
-            if self._matches_coded_value(extracted_value, critical_code):
-                return "critical"
+            for critical_code in rule.get("critical_coded_value_set", []):
+                if self._matches_coded_value(extracted_value, critical_code):
+                    return "critical"
 
-        for abnormal_code in rule.get("abnormal_coded_value_set", []):
-            if self._matches_coded_value(extracted_value, abnormal_code):
-                return "abnormal"
+            for abnormal_code in rule.get("abnormal_coded_value_set", []):
+                if self._matches_coded_value(extracted_value, abnormal_code):
+                    return "abnormal"
 
         return self.handle_no_match()
 
@@ -141,13 +148,30 @@ class InterpretationEvaluator(AbstractEvaluator):
             context["age"] = date_delta.days / 365.25
 
         if "applies_to" in required_keys:
-            from care.emr.tagging.base import PatientInstanceTagManager
+            from care.emr.tagging.base import (
+                PatientFacilityTagManager,
+                PatientInstanceTagManager,
+            )
 
-            context["applies_to"] = [
+            # Get patient instance tags
+            instance_tags = [
                 tag.get("slug")
                 for tag in PatientInstanceTagManager().render_tags(patient)
                 if tag.get("slug") is not None
             ]
+
+            # Get patient facility tags
+            facility_tags = []
+            if patient.facility:
+                facility_tags = [
+                    tag.get("slug")
+                    for tag in PatientFacilityTagManager(patient.facility).render_tags(
+                        patient
+                    )
+                    if tag.get("slug") is not None
+                ]
+
+            context["applies_to"] = instance_tags + facility_tags
 
         return context
 

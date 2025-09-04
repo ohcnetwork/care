@@ -149,6 +149,21 @@ class BaseObservationDefinitionSpec(EMRResource):
     def validate_data_type(cls, permitted_data_type):
         return validate_question_type(permitted_data_type)
 
+    @model_validator(mode="after")
+    def validate_qualified_ranges_consistency(self):
+        if not self.qualified_ranges:
+            return self
+
+        first_spec = self.qualified_ranges[0]
+        uses_ranges = bool(first_spec.ranges)
+
+        for spec in self.qualified_ranges:
+            if bool(spec.ranges) != uses_ranges:
+                raise ValueError(
+                    "All qualified ranges must use the same data type (either all numeric ranges or all coded value sets)"
+                )
+        return self
+
 
 class ObservationDefinitionCreateSpec(BaseObservationDefinitionSpec):
     facility: UUID4 | None = None

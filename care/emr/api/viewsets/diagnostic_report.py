@@ -200,10 +200,9 @@ class DiagnosticReportViewSet(
             model_instance.subject_id = diagnostic_report.encounter.external_id
             model_instance.diagnostic_report = diagnostic_report
             model_instance.subject_type = SubjectType.encounter.value
-            model_instance.save()
 
             # Compute interpretation if observation_definition is linked
             if model_instance.observation_definition:
                 compute_observation_interpretation(model_instance)
-                model_instance.save()
+            model_instance.save()
         return Response({"message": "Observations updated successfully"})
