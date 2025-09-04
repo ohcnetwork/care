@@ -12,11 +12,7 @@ from care.emr.api.viewsets.base import (
     EMRUpsertMixin,
 )
 from care.emr.models.product import Product
-from care.emr.resources.inventory.product.spec import (
-    ProductReadSpec,
-    ProductUpdateSpec,
-    ProductWriteSpec,
-)
+from care.emr.resources.inventory.product.spec import ProductReadSpec, ProductWriteSpec
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
 
@@ -37,7 +33,6 @@ class ProductViewSet(
 ):
     database_model = Product
     pydantic_model = ProductWriteSpec
-    pydantic_update_model = ProductUpdateSpec
     pydantic_read_model = ProductReadSpec
     filterset_class = ProductFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
@@ -48,16 +43,13 @@ class ProductViewSet(
             Facility, external_id=self.kwargs["facility_external_id"]
         )
 
-    def validate_charge_item_definition(self, instance):
+    def perform_create(self, instance):
+        instance.facility = self.get_facility_obj()
         if (
             instance.charge_item_definition
             and instance.charge_item_definition.facility != instance.facility
         ):
             raise ValidationError("Invalid Charge Item")
-
-    def perform_create(self, instance):
-        instance.facility = self.get_facility_obj()
-        self.validate_charge_item_definition(instance)
         if (
             instance.product_knowledge
             and instance.product_knowledge.facility
@@ -65,10 +57,6 @@ class ProductViewSet(
         ):
             raise ValidationError("Invalid Product Knowledge")
         super().perform_create(instance)
-
-    def perform_update(self, instance):
-        self.validate_charge_item_definition(instance)
-        return super().perform_update(instance)
 
     def authorize_create(self, instance):
         facility = self.get_facility_obj()
