@@ -140,7 +140,7 @@ class ObservationDefinitionAPITest(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn(
-            "Slug must be unique",
+            "Slug already exists.",
             str(response.data),
         )
 
@@ -155,7 +155,7 @@ class ObservationDefinitionAPITest(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn(
-            "Slug must be unique",
+            "Slug already exists.",
             str(response.data),
         )
 
@@ -359,7 +359,7 @@ class ObservationDefinitionAPITest(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn(
-            "Slug must be unique",
+            "Slug already exists.",
             str(response.data),
         )
 
@@ -378,7 +378,7 @@ class ObservationDefinitionAPITest(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn(
-            "Slug must be unique",
+            "Slug already exists.",
             str(response.data),
         )
 
