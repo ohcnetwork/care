@@ -17,15 +17,17 @@ from care.emr.resources.activity_definition.spec import (
 from care.emr.resources.activity_definition.valueset import (
     ACTIVITY_DEFINITION_PROCEDURE_CODE_VALUESET,
 )
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.diagnostic_report.spec import DiagnosticReportListSpec
 from care.emr.resources.encounter.spec import EncounterListSpec
 from care.emr.resources.healthcare_service.spec import HealthcareServiceReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
 from care.emr.resources.observation.valueset import CARE_BODY_SITE_VALUESET
 from care.emr.resources.specimen.spec import SpecimenReadSpec
+from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
+from care.users.models import User
 
 
 class ServiceRequestStatusChoices(str, Enum):
@@ -89,6 +91,7 @@ class BaseServiceRequestSpec(EMRResource):
 class ServiceRequestWriteSpec(BaseServiceRequestSpec):
     healthcare_service: UUID4 | None = None
     locations: list[UUID4] = []
+    requester: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.healthcare_service:
@@ -96,6 +99,8 @@ class ServiceRequestWriteSpec(BaseServiceRequestSpec):
                 external_id=self.healthcare_service
             )
         obj._locations = self.locations  # noqa SLF001
+        if self.requester:
+            obj.requester = get_object_or_404(User, external_id=self.requester)
 
 
 class ServiceRequestUpdateSpec(ServiceRequestWriteSpec):
@@ -129,12 +134,15 @@ class ServiceRequestReadSpec(BaseServiceRequestSpec):
     modified_date: datetime.datetime
     encounter: dict
     tags: list[dict] = []
+    requester: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["encounter"] = EncounterListSpec.serialize(obj.encounter).to_json()
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+        if obj.requester_id:
+            mapping["requester"] = model_from_cache(UserSpec, id=obj.requester_id)
 
 
 class ServiceRequestRetrieveSpec(ServiceRequestReadSpec):
