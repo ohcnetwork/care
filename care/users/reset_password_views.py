@@ -4,7 +4,6 @@ from django.contrib.auth.password_validation import (
     get_password_validators,
     validate_password,
 )
-from django.core.exceptions import ValidationError
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import exceptions, status
@@ -43,9 +42,9 @@ class ResetPasswordCheck(GenericAPIView):
         try:
             data = ResetPasswordCheckRequest(**request.data)
             token = data.token
-        except Exception as e:
+        except Exception:
             return Response(
-                {"status": "error", "detail": str(e)},
+                {"detail": "Reset password token is invalid or has expired."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -70,8 +69,7 @@ class ResetPasswordCheck(GenericAPIView):
             ).model_dump()
             return Response(response, status=status.HTTP_404_NOT_FOUND)
 
-        response = ResetPasswordResponse(status="OK").model_dump()
-        return Response(response)
+        return Response({"status": "OK"})
 
 
 class ResetPasswordConfirm(GenericAPIView):
@@ -88,6 +86,7 @@ class ResetPasswordConfirm(GenericAPIView):
         responses={
             200: ResetPasswordResponse,
             400: ResetPasswordResponse,
+            429: ResetPasswordResponse,
         },
     )
     def post(self, request, *args, **kwargs):
@@ -95,9 +94,10 @@ class ResetPasswordConfirm(GenericAPIView):
             data = ResetPasswordConfirmRequest(**request.data)
             password = data.password
             token = data.token
-        except Exception as e:
+
+        except Exception:
             return Response(
-                {"status": "error", "detail": str(e)},
+                {"detail": "Failed to confirm password reset token."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -123,14 +123,18 @@ class ResetPasswordConfirm(GenericAPIView):
                     settings.AUTH_PASSWORD_VALIDATORS
                 ),
             )
-        except ValidationError as e:
-            raise exceptions.ValidationError({"password": e.messages}) from e
+        except Exception:
+            return Response(
+                {
+                    "detail": "Password validation failed due to certain criteria not being met"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         user.set_password(password)
         user.save()
 
-        response = ResetPasswordResponse(status="OK").model_dump()
-        return Response(response)
+        return Response({"status": "OK"})
 
 
 class ResetPasswordRequestToken(GenericAPIView):
@@ -151,9 +155,9 @@ class ResetPasswordRequestToken(GenericAPIView):
         try:
             data = ResetPasswordRequestTokenRequest(**request.data)
             username = data.username
-        except Exception as e:
+        except Exception:
             return Response(
-                {"status": "error", "detail": str(e)},
+                {"detail": "Failed to send password reset email."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -182,11 +186,9 @@ class ResetPasswordRequestToken(GenericAPIView):
                     ]
                 }
             )
-
-        response = ResetPasswordResponse(status="OK").model_dump()
         if user and user.is_active:
             active_user_found = True
             mail_type = "reset_password"
             send_password_reset_email(user, mail_type)
 
-        return Response(response)
+        return Response({"status": "OK"})

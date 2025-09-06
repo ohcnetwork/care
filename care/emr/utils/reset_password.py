@@ -1,19 +1,20 @@
 import hashlib
+from datetime import timedelta
 
 import jwt
 from django.conf import settings
-from django.core.exceptions import ValidationError
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils import timezone
-from rest_framework import exceptions
+from rest_framework.exceptions import ValidationError
 
-from care.emr.models import User
+from care.emr.resources.common.mail_type import MailTypeChoices
+from care.users.models import User
 
 
 def generate_password_reset_token(user):
     """Generate a JWT token with HMAC-SHA256 signature"""
-    exp_time = timezone.now() + timezone.timedelta(hours=24)
+    exp_time = timezone.now() + timedelta(hours=24)
     secret_key = settings.SECRET_KEY
     password_hash = hashlib.sha256((user.password + secret_key).encode()).hexdigest()
     payload = {
@@ -73,7 +74,7 @@ def send_password_reset_email(user, mail_type):
             "email": user.email,
             "reset_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{token}",
         }
-        if mail_type == "create_password":
+        if mail_type == MailTypeChoices.create.value:
             email_html_message = render_to_string(
                 settings.USER_CREATE_PASSWORD_EMAIL_TEMPLATE_PATH, context
             )
@@ -92,12 +93,5 @@ def send_password_reset_email(user, mail_type):
         msg.content_subtype = "html"
         msg.send()
 
-    except ValidationError as e:
-        raise exceptions.ValidationError({"message": e.messages}) from e
-    except Exception as e:
-        # Custom message for email sending failure
-        raise exceptions.ValidationError(
-            {
-                "message": "Failed to send password reset email. Please contact the administrator."
-            }
-        ) from e
+    except Exception as err:
+        raise ValidationError("Failed to send password reset email.") from err

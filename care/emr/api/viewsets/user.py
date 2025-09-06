@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models import Organization
 from care.emr.models.organization import OrganizationUser
+from care.emr.resources.common.mail_type import MailTypeChoices
 from care.emr.resources.user.spec import (
     CurrentUserRetrieveSpec,
     UserCreateSpec,
@@ -106,7 +107,7 @@ class UserViewSet(EMRModelViewSet):
             )
             if not instance.has_usable_password():
                 try:
-                    mail_type = "create_password"
+                    mail_type = MailTypeChoices.create.value
                     send_password_reset_email(instance, mail_type)
                 except Exception as e:
                     raise IntegrityError(
