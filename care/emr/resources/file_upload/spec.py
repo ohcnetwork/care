@@ -15,6 +15,8 @@ class FileTypeChoices(str, Enum):
     patient = "patient"
     encounter = "encounter"
     consent = "consent"
+    diagnostic_report = "diagnostic_report"
+    service_request = "service_request"
 
 
 class FileCategoryChoices(str, Enum):
@@ -92,6 +94,8 @@ class FileUploadListSpec(FileUploadBaseSpec):
         mapping["mime_type"] = obj.meta.get("mime_type")
         if obj.created_by:
             mapping["uploaded_by"] = UserSpec.serialize(obj.created_by)
+        if obj.archived_by:
+            mapping["archived_by"] = UserSpec.serialize(obj.archived_by)
 
 
 class FileUploadRetrieveSpec(FileUploadListSpec):

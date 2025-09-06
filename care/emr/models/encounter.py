@@ -1,7 +1,9 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
-from care.emr.models import EMRBaseModel, FacilityOrganization, TokenBooking
+from care.emr.models.base import EMRBaseModel
+from care.emr.models.organization import FacilityOrganization
+from care.emr.models.scheduling.booking import TokenBooking
 
 
 class Encounter(EMRBaseModel):
@@ -29,6 +31,8 @@ class Encounter(EMRBaseModel):
     )  # Cached field, used for easier querying
 
     discharge_summary_advice = models.TextField(null=True, blank=True)
+
+    tags = ArrayField(models.IntegerField(), default=list)
 
     def sync_organization_cache(self):
         orgs = set()

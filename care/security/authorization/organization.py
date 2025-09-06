@@ -103,7 +103,12 @@ class OrganizationAccess(AuthorizationHandler):
         )
         return qs.filter(
             Q(parent_cache__overlap=organization_ids)
-            | Q(org_type=OrganizationTypeChoices.govt.value)
+            | Q(
+                org_type__in=[
+                    OrganizationTypeChoices.govt.value,
+                    OrganizationTypeChoices.product_supplier.value,
+                ]
+            )
             | Q(id__in=organization_ids)
         )
 

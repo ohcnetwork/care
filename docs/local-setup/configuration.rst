@@ -30,10 +30,10 @@ first time, it might take a while depending upon your internet speed and machine
 
             $ make up
 
-    2. To load dummy data for testing run:
+    2. To load fixtures for testing run:
         .. code-block:: bash
 
-            $ make load-dummy-data
+            $ make load-fixtures
 
     2. Open a browser and go to `http://localhost:9000`
 

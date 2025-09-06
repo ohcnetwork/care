@@ -75,8 +75,8 @@ class FacilityOrganizationReadSpec(FacilityOrganizationBaseSpec):
     org_type: FacilityOrganizationTypeChoices
     parent: UUID4 | None = None
 
-    created_by: UserSpec = dict
-    updated_by: UserSpec = dict
+    created_by: UserSpec = {}
+    updated_by: UserSpec = {}
     system_generated: bool
     level_cache: int = 0
     has_children: bool

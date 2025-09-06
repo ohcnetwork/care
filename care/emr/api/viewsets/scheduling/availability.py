@@ -22,6 +22,8 @@ from care.emr.resources.scheduling.slot.spec import (
     TokenBookingReadSpec,
     TokenSlotBaseSpec,
 )
+from care.emr.resources.tag.config_spec import TagResource
+from care.emr.tagging.base import SingleFacilityTagManager
 from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
@@ -36,7 +38,9 @@ class SlotsForDayRequestSpec(BaseModel):
 
 class AppointmentBookingSpec(BaseModel):
     patient: UUID4
-    reason_for_visit: str
+    note: str
+
+    tags: list[UUID4] = []
 
 
 class AvailabilityStatsRequestSpec(BaseModel):
@@ -106,7 +110,7 @@ def convert_availability_and_exceptions_to_slots(availabilities, exceptions, day
     return slots
 
 
-def lock_create_appointment(token_slot, patient, created_by, reason_for_visit):
+def lock_create_appointment(token_slot, patient, created_by, note):
     with Lock(f"booking:resource:{token_slot.resource.id}"), transaction.atomic():
         if token_slot.end_datetime < timezone.now():
             raise ValidationError("Slot is already past")
@@ -124,7 +128,9 @@ def lock_create_appointment(token_slot, patient, created_by, reason_for_visit):
             token_slot=token_slot,
             patient=patient,
             booked_by=created_by,
-            reason_for_visit=reason_for_visit,
+            created_by=created_by,
+            updated_by=created_by,
+            note=note,
             status="booked",
         )
 
@@ -229,24 +235,31 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     def create_appointment_handler(cls, obj, request_data, user):
         request_data = AppointmentBookingSpec(**request_data)
         patient = Patient.objects.filter(external_id=request_data.patient).first()
+        with transaction.atomic():
+            if (
+                TokenBooking.objects.filter(
+                    patient=patient,
+                    token_slot__start_datetime__gte=care_now(),
+                )
+                .exclude(status__in=COMPLETED_STATUS_CHOICES)
+                .count()
+                >= settings.MAX_APPOINTMENTS_PER_PATIENT
+            ):
+                error = f"Patient already has maximum number of appointments ({settings.MAX_APPOINTMENTS_PER_PATIENT})"
+                raise ValidationError(error)
 
-        if (
-            TokenBooking.objects.filter(
-                patient=patient,
-                token_slot__start_datetime__gte=care_now(),
-            )
-            .exclude(status__in=COMPLETED_STATUS_CHOICES)
-            .count()
-            >= settings.MAX_APPOINTMENTS_PER_PATIENT
-        ):
-            error = f"Patient already has maximum number of appointments ({settings.MAX_APPOINTMENTS_PER_PATIENT})"
-            raise ValidationError(error)
-
-        if not patient:
-            raise ValidationError("Patient not found")
-        appointment = lock_create_appointment(
-            obj, patient, user, request_data.reason_for_visit
-        )
+            if not patient:
+                raise ValidationError("Patient not found")
+            appointment = lock_create_appointment(obj, patient, user, request_data.note)
+            if request_data.tags:
+                tag_manager = SingleFacilityTagManager()
+                tag_manager.set_tags(
+                    TagResource.token_booking,
+                    appointment,
+                    request_data.tags,
+                    user,
+                    obj.resource.facility,
+                )
         return Response(
             TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
         )
@@ -337,8 +350,8 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
 
         booked_slots = (
             TokenSlot.objects.filter(
-                start_datetime__lte=request_data.to_date,
-                end_datetime__gt=request_data.from_date,
+                start_datetime__date__lte=request_data.to_date,
+                end_datetime__date__gt=request_data.from_date,
                 resource=resource,
             )
             .values("start_datetime__date")
