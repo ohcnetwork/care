@@ -9,9 +9,6 @@ from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.observation.valueset import (
     CARE_BODY_SITE_VALUESET,
     CARE_OBSERVATION_COLLECTION_METHOD,
-    CARE_OBSERVATION_INTERPRETATION_ABNORMAL,
-    CARE_OBSERVATION_INTERPRETATION_CRITICAL,
-    CARE_OBSERVATION_INTERPRETATION_NORMAL,
     CARE_OBSERVATION_VALUSET,
     CARE_UCUM_UNITS,
 )
@@ -49,8 +46,14 @@ def validate_question_type(question_type):
     return question_type
 
 
+class InterpretationSpec(BaseModel):
+    display: str
+    icon: str
+    color: str
+
+
 class NumericRangeSpec(BaseModel):
-    interpretation: str
+    interpretation: InterpretationSpec
     min: float | None = None
     max: float | None = None
 
@@ -63,18 +66,18 @@ class NumericRangeSpec(BaseModel):
         return self
 
 
+class ValueSetInterpretationSpec(BaseModel):
+    interpretation: InterpretationSpec
+    valuset: str
+
+
 class QualifiedRangeSpec(BaseModel):
     conditions: dict[str, Any]
     ranges: list[NumericRangeSpec] = []
-    normal_coded_value_set: list[
-        ValueSetBoundCoding[CARE_OBSERVATION_INTERPRETATION_NORMAL.slug]
-    ] = []
-    critical_coded_value_set: list[
-        ValueSetBoundCoding[CARE_OBSERVATION_INTERPRETATION_CRITICAL.slug]
-    ] = []
-    abnormal_coded_value_set: list[
-        ValueSetBoundCoding[CARE_OBSERVATION_INTERPRETATION_ABNORMAL.slug]
-    ] = []
+    normal_coded_value_set: str | None
+    critical_coded_value_set: str | None
+    abnormal_coded_value_set: str | None
+    valueset_interpretation: list[ValueSetInterpretationSpec] = []
 
     @model_validator(mode="after")
     def validate_categorical_or_numeric(self):
@@ -83,6 +86,7 @@ class QualifiedRangeSpec(BaseModel):
             self.normal_coded_value_set
             or self.critical_coded_value_set
             or self.abnormal_coded_value_set
+            or self.valueset_interpretation
         )
 
         if not has_ranges and not has_coded_values:
@@ -109,6 +113,20 @@ class QualifiedRangeSpec(BaseModel):
                     raise ValueError(
                         "Overlapping ranges detected between min-max values in the ranges array."
                     )
+
+        if has_coded_values:
+            slugs = [
+                interpretation.valuset
+                for interpretation in self.valueset_interpretation
+            ]
+            if self.abnormal_coded_value_set:
+                slugs.append(self.abnormal_coded_value_set)
+            if self.critical_coded_value_set:
+                slugs.append(self.critical_coded_value_set)
+            if self.normal_coded_value_set:
+                slugs.append(self.normal_coded_value_set)
+            if len(slugs) != len(set(slugs)):
+                raise ValueError("Duplicate valueset interpretations detected")
 
         return self
 
