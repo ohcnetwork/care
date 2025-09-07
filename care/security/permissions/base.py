@@ -42,7 +42,6 @@ from care.security.permissions.supply_request import SupplyRequestPermissions
 from care.security.permissions.tag_config import TagConfigPermissions
 from care.security.permissions.token import TokenPermissions
 from care.security.permissions.user import UserPermissions
-from care.security.permissions.user_schedule import UserSchedulePermissions
 
 
 class PermissionHandler:
@@ -66,7 +65,6 @@ class PermissionController:
         EncounterPermissions,
         PatientPermissions,
         UserPermissions,
-        UserSchedulePermissions,
         FacilityLocationPermissions,
         ObservationDefinitionPermissions,
         DevicePermissions,

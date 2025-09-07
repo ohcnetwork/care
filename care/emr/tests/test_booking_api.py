@@ -21,7 +21,6 @@ from care.emr.resources.scheduling.slot.spec import (
     BookingStatusChoices,
 )
 from care.security.permissions.schedule import SchedulePermissions
-from care.security.permissions.user_schedule import UserSchedulePermissions
 from care.utils.tests.base import CareAPITestBase
 from config.patient_otp_authentication import PatientOtpObject
 
@@ -348,7 +347,7 @@ class TestBookingViewSet(CareAPITestBase):
         permissions = [
             SchedulePermissions.can_write_booking.name,
             SchedulePermissions.can_list_booking.name,
-            UserSchedulePermissions.can_reschedule_appointment.name,
+            SchedulePermissions.can_reschedule_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -410,7 +409,7 @@ class TestBookingViewSet(CareAPITestBase):
         permissions = [
             SchedulePermissions.can_write_booking.name,
             SchedulePermissions.can_list_booking.name,
-            UserSchedulePermissions.can_reschedule_appointment.name,
+            SchedulePermissions.can_reschedule_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -438,7 +437,7 @@ class TestBookingViewSet(CareAPITestBase):
         permissions = [
             SchedulePermissions.can_write_booking.name,
             SchedulePermissions.can_list_booking.name,
-            UserSchedulePermissions.can_reschedule_appointment.name,
+            SchedulePermissions.can_reschedule_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -467,7 +466,7 @@ class TestBookingViewSet(CareAPITestBase):
         permissions = [
             SchedulePermissions.can_write_booking.name,
             SchedulePermissions.can_list_booking.name,
-            UserSchedulePermissions.can_reschedule_appointment.name,
+            SchedulePermissions.can_reschedule_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)

@@ -30,4 +30,3 @@ from .supply_request import *  # noqa
 from .tag_config import *  # noqa
 from .token import *  # noqa
 from .user import *  # noqa
-from .user_schedule import *  # noqa

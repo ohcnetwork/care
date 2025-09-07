@@ -144,5 +144,12 @@ class BookingAccess(AuthorizationHandler):
             orgs=obj.facility_organization_cache,
         )
 
+    def can_reschedule_booking(self, user, facility):
+        return self.check_permission_in_facility_organization(
+            [SchedulePermissions.can_reschedule_booking.name],
+            user,
+            facility=facility,
+        )
+
 
 AuthorizationController.register_internal_controller(BookingAccess)
