@@ -75,6 +75,8 @@ class TestSpecimenViewSet(CareAPITestBase):
                 "display": "Glucose measurement",
             },
             "healthcare_service": str(self.healthcare_service.external_id),
+            "requester": str(self.user.external_id),
+            "locations": [str(self.facility_location.external_id)],
         }
         self.specimen_data = {
             "title": "Test Specimen",
@@ -218,10 +220,10 @@ class TestSpecimenViewSet(CareAPITestBase):
         self.assertEqual(get_response.data["id"], response.data["id"])
 
     def test_create_service_request_as_user_with_permission(self):
+        self.client.force_authenticate(user=self.user)
         self.attach_role_facility_organization_user(
             self.facility_organization, self.user, self.role
         )
-        self.client.force_authenticate(user=self.user)
         response = self.client.post(
             self.url,
             self.service_request_data,
@@ -242,9 +244,10 @@ class TestSpecimenViewSet(CareAPITestBase):
             format="json",
         )
         self.assertEqual(response.status_code, 403)
-        self.assertIn(
-            "You do not have permission to create a service request",
-            response.data["detail"],
+        self.assertContains(
+            response,
+            "You do not have permission to create a service request for this encounter",
+            status_code=403,
         )
 
     def test_create_service_request_with_invalid_data(self):
@@ -321,6 +324,25 @@ class TestSpecimenViewSet(CareAPITestBase):
         self.assertContains(
             response,
             "Healthcare Service must be from the same facility",
+            status_code=400,
+        )
+
+    def test_create_service_request_without_requester(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        invalid_data = self.service_request_data.copy()
+        invalid_data["requester"] = None
+        response = self.client.post(
+            self.url,
+            invalid_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "requester must be a member of the facility",
             status_code=400,
         )
 
