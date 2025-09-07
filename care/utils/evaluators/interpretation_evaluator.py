@@ -20,7 +20,7 @@ class InterpretationEvaluator:
             return interpretation
         return False
 
-    def get_interpretation(self, rule: dict, value: Any):
+    def get_interpretation(self, rule: dict, value: Any):  # noqa PLR0911 PLR0912
         """
         Find the interpretation given the set of rules.
         """
