@@ -113,3 +113,16 @@ class CareAPITestBase(APITestCase):
         return FacilityOrganizationUser.objects.create(
             organization=facility_organization, user=user, role=role
         )
+
+    def create_service_request(self, patient, facility, encounter, **kwargs):
+        from care.emr.models import ServiceRequest
+        from care.emr.resources.specimen.spec import SpecimenStatusOptions
+
+        data = {
+            "patient": patient,
+            "facility": facility,
+            "encounter": encounter,
+            "status": SpecimenStatusOptions.available.value,
+        }
+        data.update(**kwargs)
+        return baker.make(ServiceRequest, **data)
