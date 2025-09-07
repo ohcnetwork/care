@@ -1,5 +1,5 @@
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import get_object_or_404
 
@@ -36,6 +36,7 @@ class ObservationDefinitionViewSet(
     EMRBaseViewSet,
     EMRUpsertMixin,
 ):
+    lookup_field = "slug"
     database_model = ObservationDefinition
     pydantic_model = ObservationDefinitionCreateSpec
     pydantic_update_model = BaseObservationDefinitionSpec
@@ -83,6 +84,26 @@ class ObservationDefinitionViewSet(
             model_instance.facility,
         ):
             raise PermissionDenied("Access Denied to Observation Definition")
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        try:
+            if "facility" not in self.request.GET:
+                return get_object_or_404(
+                    queryset,
+                    slug=self.kwargs["slug"],
+                    facility__isnull=True,
+                )
+            facility = get_object_or_404(
+                Facility.objects.only("id"), external_id=self.request.GET["facility"]
+            )
+            return get_object_or_404(
+                queryset,
+                slug=self.kwargs["slug"],
+                facility=facility,
+            )
+        except ObservationDefinition.MultipleObjectsReturned:
+            raise ValidationError("Multiple product knowledge with this slug found")
 
     def get_queryset(self):
         """

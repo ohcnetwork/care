@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.db import transaction
 from django.http.response import Http404
 from drf_spectacular.utils import extend_schema
@@ -242,8 +243,12 @@ class EMRUpsertMixin:
     @action(detail=False, methods=["POST"])
     def upsert(self, request, *args, **kwargs):
         if type(request.data) is not dict:
-            raise ValidationError("Invalid request data")
+            raise RestFrameworkValidationError("Invalid request data")
         datapoints = request.data.get("datapoints", [])
+        if len(datapoints) == 0:
+            raise RestFrameworkValidationError("No datapoints provided")
+        if len(datapoints) > settings.MAX_DATAPOINTS_PER_UPSERT:
+            raise RestFrameworkValidationError("Too many datapoints provided")
         results = []
         errored = False
         unhandled = False
@@ -253,7 +258,8 @@ class EMRUpsertMixin:
                     try:
                         if "id" in datapoint:
                             instance = get_object_or_404(
-                                self.database_model, external_id=datapoint["id"]
+                                self.database_model,
+                                **{self.lookup_field: datapoint["id"]},
                             )
                             result = self.handle_update(instance, datapoint)
                         else:

@@ -7,7 +7,7 @@ from rest_framework import status
 
 from care.emr.models import (
     Availability,
-    SchedulableUserResource,
+    SchedulableResource,
     Schedule,
     TokenBooking,
     TokenSlot,
@@ -28,7 +28,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.user = self.create_user()
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
-        self.resource = SchedulableUserResource.objects.create(
+        self.resource = SchedulableResource.objects.create(
             user=self.user,
             facility=self.facility,
         )
@@ -497,7 +497,7 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         self.user = self.create_user()
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
-        self.resource = SchedulableUserResource.objects.create(
+        self.resource = SchedulableResource.objects.create(
             user=self.user,
             facility=self.facility,
         )
@@ -840,10 +840,10 @@ class TestAvailabilityViewSet(CareAPITestBase):
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
         self.client.force_authenticate(user=self.user)
-        self.resource = SchedulableUserResource.objects.create(
+        self.resource = SchedulableResource.objects.create(
             user=self.user, facility=self.facility
         )
-        self.resource = SchedulableUserResource.objects.create(
+        self.resource = SchedulableResource.objects.create(
             user=self.user,
             facility=self.facility,
         )

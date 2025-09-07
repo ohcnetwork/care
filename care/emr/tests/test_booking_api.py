@@ -7,7 +7,7 @@ from django.utils import timezone
 from care.emr.models import (
     Availability,
     AvailabilityException,
-    SchedulableUserResource,
+    SchedulableResource,
     Schedule,
     TokenBooking,
     TokenSlot,
@@ -84,7 +84,7 @@ class TestBookingViewSet(CareAPITestBase):
             "facility": self.facility,
         }
         data.update(kwargs)
-        return SchedulableUserResource.objects.create(**data)
+        return SchedulableResource.objects.create(**data)
 
     def create_schedule(self, **kwargs):
         data = {
@@ -579,7 +579,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
         self.patient = self.create_patient()
-        self.resource = SchedulableUserResource.objects.create(
+        self.resource = SchedulableResource.objects.create(
             user=self.user, facility=self.facility
         )
         self.schedule = Schedule.objects.create(
@@ -817,7 +817,7 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
         self.patient = self.create_patient()
-        self.resource = SchedulableUserResource.objects.create(
+        self.resource = SchedulableResource.objects.create(
             user=self.user,
             facility=self.facility,
         )
@@ -1188,7 +1188,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
         self.patient = self.create_patient(phone_number="+917777777777")
-        self.resource = SchedulableUserResource.objects.create(
+        self.resource = SchedulableResource.objects.create(
             user=self.user, facility=self.facility
         )
         self.schedule = Schedule.objects.create(

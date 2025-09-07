@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models import Organization, PatientUser, TokenBooking
 from care.emr.models.patient import Patient, PatientIdentifier, PatientIdentifierConfig
+from care.emr.models.scheduling.token import Token
 from care.emr.resources.patient.spec import (
     PatientCreateSpec,
     PatientIdentifierConfigRequest,
@@ -26,6 +27,7 @@ from care.emr.resources.patient_identifier.default_expression_evaluator import (
     evaluate_patient_instance_default_values,
 )
 from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
+from care.emr.resources.scheduling.token.spec import TokenRetrieveSpec
 from care.emr.resources.tag.config_spec import TagResource
 from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import PatientFacilityTagManager, PatientInstanceTagManager
@@ -275,15 +277,53 @@ class PatientViewSet(EMRModelViewSet):
 
     @action(detail=True, methods=["GET"])
     def get_appointments(self, request, *args, **kwargs):
-        appointments = TokenBooking.objects.filter(patient=self.get_object())
-        return Response(
-            {
-                "results": [
-                    TokenBookingReadSpec.serialize(obj).to_json()
-                    for obj in appointments
-                ]
-            }
-        )
+        facility = self.request.GET.get("facility", None)
+        queryset = TokenBooking.objects.all()
+        if facility:
+            facility = get_object_or_404(Facility, external_id=facility)
+            if not AuthorizationController.call(
+                "can_list_booking_on_facility", self.request.user, facility
+            ):
+                raise PermissionDenied("Cannot list bookings")
+            patient = get_object_or_404(
+                Patient.objects.only("id"), external_id=self.kwargs[self.lookup_field]
+            )
+            queryset = queryset.filter(
+                token_slot__resource__facility=facility, patient=patient
+            )
+        else:
+            queryset = queryset.filter(patient=self.get_object())
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(queryset, request)
+        if page is not None:
+            data = [TokenBookingReadSpec.serialize(obj).to_json() for obj in page]
+            return paginator.get_paginated_response(data)
+        data = [TokenBookingReadSpec.serialize(obj).to_json() for obj in queryset]
+        return Response(data)
+
+    @action(detail=True, methods=["GET"])
+    def get_tokens(self, request, *args, **kwargs):
+        facility = self.request.GET.get("facility", None)
+        queryset = Token.objects.all()
+        if facility:
+            facility = get_object_or_404(Facility, external_id=facility)
+            if not AuthorizationController.call(
+                "can_list_token_on_facility", self.request.user, facility
+            ):
+                raise PermissionDenied("Cannot list tokens")
+            patient = get_object_or_404(
+                Patient.objects.only("id"), external_id=self.kwargs[self.lookup_field]
+            )
+            queryset = queryset.filter(facility=facility, patient=patient)
+        else:
+            queryset = queryset.filter(patient=self.get_object())
+        paginator = self.pagination_class()
+        page = paginator.paginate_queryset(queryset, request)
+        if page is not None:
+            data = [TokenRetrieveSpec.serialize(obj).to_json() for obj in page]
+            return paginator.get_paginated_response(data)
+        data = [TokenRetrieveSpec.serialize(obj).to_json() for obj in queryset]
+        return Response(data)
 
     @extend_schema(
         request=PatientIdentifierConfigRequest, responses={200: PatientRetrieveSpec}

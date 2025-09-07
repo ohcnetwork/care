@@ -5,17 +5,22 @@ from care.emr.resources.charge_item.sync_charge_item_costs import sync_charge_it
 
 
 def apply_charge_item_definition(
-    charge_item_definition, encounter, account=None, quantity=None
+    charge_item_definition,
+    patient,
+    facility,
+    encounter=None,
+    account=None,
+    quantity=None,
 ):
     if not account:
-        account = get_default_account(encounter.patient, encounter.facility)
+        account = get_default_account(patient, facility)
     if not quantity:
         quantity = 1.0
     charge_item = ChargeItem(
-        facility=encounter.facility,
+        facility=facility,
         title=charge_item_definition.title,
         description=charge_item_definition.description,
-        patient=encounter.patient,
+        patient=patient,
         encounter=encounter,
         charge_item_definition=charge_item_definition,
         account=account,

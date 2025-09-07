@@ -17,7 +17,16 @@ class TagFilter(BaseFilterBackend):
                     title="Tags Filter",
                     description="Filter by tags",
                 ),
-            )
+            ),
+            coreapi.Field(
+                name="tags_behavior",
+                required=False,
+                location="query",
+                schema=coreschema.String(
+                    title="Tags Filter Behavior",
+                    description="Either `all` or `any`",
+                ),
+            ),
         ]
 
     def get_schema_operation_parameters(self, view):
@@ -31,12 +40,22 @@ class TagFilter(BaseFilterBackend):
                     "type": "string",
                 },
             },
+            {
+                "name": "tags_behavior",
+                "required": False,
+                "in": "query",
+                "description": "Either `all` or `any`",
+                "schema": {
+                    "type": "string",
+                },
+            },
         ]
 
 
 class SingleFacilityTagFilter(TagFilter):
     def filter_queryset(self, request, queryset, view):
         tags = request.query_params.get("tags", "").strip()
+        tags_behavior = request.query_params.get("tags_behavior", "any")
         if not tags:
             return queryset
         tags = tags.split(",")
@@ -55,5 +74,8 @@ class SingleFacilityTagFilter(TagFilter):
         if not tag_ids:
             return queryset.none()
         if tag_ids:
-            return queryset.filter(tags__overlap=tag_ids)
+            if tags_behavior == "any":
+                return queryset.filter(tags__overlap=tag_ids)
+            if tags_behavior == "all":
+                return queryset.filter(tags__contains=tag_ids)
         return queryset.none()

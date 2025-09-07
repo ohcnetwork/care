@@ -37,7 +37,7 @@ class ProductWriteSpec(BaseProductSpec):
     """Payment reconciliation write specification"""
 
     product_knowledge: UUID4
-    charge_item_definition: UUID4 | None = None
+    charge_item_definition: str | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.product_knowledge = ProductKnowledge.objects.get(
@@ -45,19 +45,19 @@ class ProductWriteSpec(BaseProductSpec):
         )
         if self.charge_item_definition:
             obj.charge_item_definition = ChargeItemDefinition.objects.get(
-                external_id=self.charge_item_definition
+                slug=self.charge_item_definition
             )
 
 
 class ProductUpdateSpec(BaseProductSpec):
     """Payment reconciliation write specification"""
 
-    charge_item_definition: UUID4 | None = None
+    charge_item_definition: str | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.charge_item_definition:
             obj.charge_item_definition = ChargeItemDefinition.objects.get(
-                external_id=self.charge_item_definition
+                slug=self.charge_item_definition
             )
 
 

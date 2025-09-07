@@ -140,6 +140,7 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
     created_date: datetime
     modified_date: datetime
     location: dict
+    quantity: float
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

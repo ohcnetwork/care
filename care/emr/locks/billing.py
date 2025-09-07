@@ -13,3 +13,9 @@ class InvoiceLock(Lock):
     def __init__(self, invoice, timeout=settings.LOCK_TIMEOUT):
         self.key = f"lock:invoice:{invoice.id}"
         self.timeout = timeout
+
+
+class ChargeItemLock(Lock):
+    def __init__(self, charge_item, timeout=settings.LOCK_TIMEOUT):
+        self.key = f"lock:charge_item:{charge_item.id}"
+        self.timeout = timeout

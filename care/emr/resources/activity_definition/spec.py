@@ -72,7 +72,7 @@ class ActivityDefinitionWriteSpec(BaseActivityDefinitionSpec):
     specimen_requirements: list[UUID4]
     observation_result_requirements: list[UUID4]
     healthcare_service: UUID4 | None = None
-    charge_item_definitions: list[UUID4] = []
+    charge_item_definitions: list[str] = []
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.healthcare_service:

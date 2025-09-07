@@ -71,6 +71,8 @@ class SupplyDeliveryViewSet(
 
     def validate_data(self, instance, model_obj=None):
         if not model_obj and instance.origin:
+            # TODO : Check if origin is part of the facility
+            # TODO : Check if the supplied inventory item is part of the origin or its children
             origin = get_object_or_404(FacilityLocation, external_id=instance.origin)
             if instance.supplied_inventory_item:
                 inventory_item = get_object_or_404(
@@ -133,7 +135,7 @@ class SupplyDeliveryViewSet(
                     )
             super().perform_update(instance)
             self.sync_inventory_item(instance)
-            return instance
+        return instance
 
     def authorize_location_read(self, location):
         if not AuthorizationController.call(

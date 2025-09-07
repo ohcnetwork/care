@@ -108,13 +108,11 @@ class ActivityDefinitionViewSet(
         for charge_item_definition in instance.charge_item_definitions:
             obj = (
                 ChargeItemDefinition.objects.only("id")
-                .filter(external_id=charge_item_definition, facility=instance.facility)
+                .filter(slug=charge_item_definition, facility=instance.facility)
                 .first()
             )
             if not obj:
-                error_msg = (
-                    f"Charge Item Definition with id {charge_item_definition} not found"
-                )
+                error_msg = f"Charge Item Definition with slug {charge_item_definition} not found"
                 raise ValidationError(error_msg)
             ids.append(obj.id)
         instance.charge_item_definitions = ids

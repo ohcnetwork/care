@@ -32,12 +32,15 @@ from care.security.permissions.payment_reconciliation import (
 from care.security.permissions.product import ProductPermissions
 from care.security.permissions.product_knowledge import ProductKnowledgePermissions
 from care.security.permissions.questionnaire import QuestionnairePermissions
+from care.security.permissions.resource_category import ResourceCategoryPermissions
+from care.security.permissions.schedule import SchedulePermissions
 from care.security.permissions.service_request import ServiceRequestPermissions
 from care.security.permissions.specimen import SpecimenPermissions
 from care.security.permissions.specimen_definition import SpecimenDefinitionPermissions
 from care.security.permissions.supply_delivery import SupplyDeliveryPermissions
 from care.security.permissions.supply_request import SupplyRequestPermissions
 from care.security.permissions.tag_config import TagConfigPermissions
+from care.security.permissions.token import TokenPermissions
 from care.security.permissions.user import UserPermissions
 from care.security.permissions.user_schedule import UserSchedulePermissions
 
@@ -87,6 +90,9 @@ class PermissionController:
         TagConfigPermissions,
         PatientIdentifierConfigPermissions,
         MedicationPermissions,
+        TokenPermissions,
+        SchedulePermissions,
+        ResourceCategoryPermissions,
     ]
 
     cache = {}

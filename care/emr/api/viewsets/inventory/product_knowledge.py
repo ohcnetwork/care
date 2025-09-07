@@ -3,6 +3,7 @@ from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 
+
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
     EMRCreateMixin,
@@ -39,6 +40,7 @@ class ProductKnowledgeViewSet(
     EMRBaseViewSet,
     EMRUpsertMixin,
 ):
+    lookup_field = "slug"
     database_model = ProductKnowledge
     pydantic_model = ProductKnowledgeWriteSpec
     pydantic_update_model = BaseProductKnowledgeSpec
@@ -98,10 +100,28 @@ class ProductKnowledgeViewSet(
         ):
             raise PermissionDenied("Cannot read product knowledge")
 
+    def get_object(self):
+        queryset = self.get_queryset()
+        try:
+            if "facility" not in self.request.GET:
+                return get_object_or_404(
+                    queryset,
+                    slug=self.kwargs["slug"],
+                    facility__isnull=True,
+                )
+            facility = get_object_or_404(
+                Facility.objects.only("id"), external_id=self.request.GET["facility"]
+            )
+            return get_object_or_404(
+                queryset,
+                slug=self.kwargs["slug"],
+                facility=facility,
+            )
+        except ProductKnowledge.MultipleObjectsReturned:
+            raise ValidationError("Multiple product knowledge with this slug found")
+
     def get_queryset(self):
-        if self.action != "list":
-            return super().get_queryset()
-        if "facility" in self.request.GET:
+        if self.action == "list" and "facility" in self.request.GET:
             facility = get_object_or_404(
                 Facility, external_id=self.request.GET["facility"]
             )
