@@ -149,11 +149,10 @@ class TestBookingViewSet(CareAPITestBase):
         non_schedulable_user = self.create_user()
         response = self.client.get(
             self.base_url, {
-            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
-            "resource_ids": non_schedulable_user.external_id,
-        }
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_ids": non_schedulable_user.external_id,
+            }
         )
-        print(response.data)
         self.assertContains(response, "Schedule User is not part of the facility", status_code=400)
 
     def test_retrieve_booking_with_permissions(self):

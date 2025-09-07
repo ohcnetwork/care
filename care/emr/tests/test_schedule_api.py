@@ -163,8 +163,6 @@ class TestScheduleViewSet(CareAPITestBase):
             "resource_type": SchedulableResourceTypeOptions.practitioner.value,
             "resource_id": str(self.user.external_id),
         })
-        print("hjsldflj")
-        print(response.data)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_list_schedule_filtered_by_month_range(self):
