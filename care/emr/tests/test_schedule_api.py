@@ -12,7 +12,10 @@ from care.emr.models import (
     TokenBooking,
     TokenSlot,
 )
-from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions, SchedulableResourceTypeOptions
+from care.emr.resources.scheduling.schedule.spec import (
+    SlotTypeOptions,
+    SchedulableResourceTypeOptions,
+)
 from care.emr.resources.scheduling.slot.spec import (
     CANCELLED_STATUS_CHOICES,
     BookingStatusChoices,
@@ -151,18 +154,24 @@ class TestScheduleViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        response = self.client.get(self.base_url, {
-            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
-            "resource_id": str(self.user.external_id),
-        })
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_schedule_without_permissions(self):
         """Users without can_list_user_schedule permission cannot list schedules."""
-        response = self.client.get(self.base_url, {
-            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
-            "resource_id": str(self.user.external_id),
-        })
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_list_schedule_filtered_by_month_range(self):
@@ -567,18 +576,24 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        response = self.client.get(self.base_url, {
-            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
-            "resource_id": str(self.user.external_id),
-        })
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_exceptions_without_permissions(self):
         """Users without can_list_user_schedule permission cannot list exceptions."""
-        response = self.client.get(self.base_url, {
-            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
-            "resource_id": str(self.user.external_id),
-        })
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
     def test_list_exceptions_filtered_by_month_range(self):
@@ -655,7 +670,9 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
 
         exception_data = self.generate_exception_data(resource_id=user.external_id)
         response = self.client.post(self.base_url, exception_data, format="json")
-        self.assertContains(response, "Schedule User is not part of the facility", status_code=400)
+        self.assertContains(
+            response, "Schedule User is not part of the facility", status_code=400
+        )
 
     def test_create_exception_with_valid_from_date_less_than_current_date(self):
         """Users cannot create exception with valid_from date less than now date"""

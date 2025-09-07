@@ -12,7 +12,10 @@ from care.emr.models import (
     TokenBooking,
     TokenSlot,
 )
-from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions, SchedulableResourceTypeOptions
+from care.emr.resources.scheduling.schedule.spec import (
+    SlotTypeOptions,
+    SchedulableResourceTypeOptions,
+)
 from care.emr.resources.scheduling.slot.spec import (
     CANCELLED_STATUS_CHOICES,
     BookingStatusChoices,
@@ -126,18 +129,24 @@ class TestBookingViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        response = self.client.get(self.base_url, {
-            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
-            "resource_ids": self.user.external_id,
-        })
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_ids": self.user.external_id,
+            },
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_list_booking_without_permissions(self):
         """Users without can_list_user_booking permission cannot list bookings."""
-        response = self.client.get(self.base_url, {
-            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
-            "resource_ids": self.user.external_id,
-        })
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_ids": self.user.external_id,
+            },
+        )
         self.assertEqual(response.status_code, 403)
 
     def test_list_booking_filtered_by_non_schedulable_user(self):
@@ -148,12 +157,15 @@ class TestBookingViewSet(CareAPITestBase):
 
         non_schedulable_user = self.create_user()
         response = self.client.get(
-            self.base_url, {
+            self.base_url,
+            {
                 "resource_type": SchedulableResourceTypeOptions.practitioner.value,
                 "resource_ids": non_schedulable_user.external_id,
-            }
+            },
         )
-        self.assertContains(response, "Schedule User is not part of the facility", status_code=400)
+        self.assertContains(
+            response, "Schedule User is not part of the facility", status_code=400
+        )
 
     def test_retrieve_booking_with_permissions(self):
         """Users with can_list_user_booking permission can retrieve bookings."""
@@ -500,9 +512,7 @@ class TestBookingViewSet(CareAPITestBase):
 
     def test_list_booking_for_user_with_schedules_in_multiple_facilities(self):
         """Appointments for a user with schedules in multiple facilities are filtered correctly."""
-        permissions = [
-            SchedulePermissions.can_list_booking.name,
-        ]
+        permissions = [SchedulePermissions.can_list_booking.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -552,20 +562,26 @@ class TestBookingViewSet(CareAPITestBase):
             ),
         )
 
-        response = self.client.get(self.base_url, {
-            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
-            "resource_ids": self.user.external_id,
-        })
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_ids": self.user.external_id,
+            },
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
         url = reverse(
             "appointments-list",
             kwargs={"facility_external_id": facility_2.external_id},
         )
-        response = self.client.get(url, {
-            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
-            "resource_ids": self.user.external_id,
-        })
+        response = self.client.get(
+            url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_ids": self.user.external_id,
+            },
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
 
@@ -580,7 +596,8 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
         self.patient = self.create_patient()
         self.resource = SchedulableResource.objects.create(
             resource_type=SchedulableResourceTypeOptions.practitioner.value,
-            user=self.user, facility=self.facility
+            user=self.user,
+            facility=self.facility,
         )
         self.schedule = Schedule.objects.create(
             resource=self.resource,
@@ -1237,7 +1254,7 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             data = {
                 "resource_type": SchedulableResourceTypeOptions.practitioner.value,
                 "resource_id": self.user.external_id,
-                "day": day
+                "day": day,
             }
             response = self.client.post(slots_for_day_url, data, format="json")
             self.assertEqual(response.status_code, 200)
@@ -1259,7 +1276,8 @@ class TestOtpSlotViewSet(CareAPITestBase):
         self.patient = self.create_patient(phone_number="+917777777777")
         self.resource = SchedulableResource.objects.create(
             resource_type=SchedulableResourceTypeOptions.practitioner.value,
-            user=self.user, facility=self.facility
+            user=self.user,
+            facility=self.facility,
         )
         self.schedule = Schedule.objects.create(
             resource=self.resource,
