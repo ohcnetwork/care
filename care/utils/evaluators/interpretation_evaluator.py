@@ -1,204 +1,135 @@
-from datetime import datetime
 from typing import Any
 
-from care.utils.evaluators.base import AbstractEvaluator
+from care.emr.models.valueset import ValueSet
+from care.emr.resources.observation_definition.spec import (
+    ABNORMAL_INTERPRETATION,
+    CRITICAL_INTERPRETATION,
+    NORMAL_INTERPRETATION,
+)
+from care.utils.registries.evaluation_metric import EvaluatorMetricsRegistry
 
 
-class InterpretationEvaluator(AbstractEvaluator):
-    """
-    An evaluator that determines clinical interpretations for observation values.
-    """
+class InterpretationEvaluator:
+    def __init__(self, rules: list[dict]):
+        self.rules = rules
 
-    @property
-    def condition_map(self) -> dict[str, str]:
-        """
-        Mapping of condition keys to handler names for interpretation evaluation.
-        """
-        return {
-            "gender": "equality",
-            "age": "range",
-            "applies_to": "intersects_any",
-        }
-
-    def handle_no_match(self) -> str:
-        """
-        Return the fallback interpretation when no rules match the given context.
-        """
-        return "undetermined"
-
-    def apply_rule(self, rule: dict, value: Any, **kwargs) -> str:
-        """
-        Apply a matched rule to determine the clinical interpretation of a value.
-        """
-        # Determine if we're dealing with numeric or coded data
-        has_ranges = bool(rule.get("ranges", []))
-        has_coded_values = bool(
-            rule.get("normal_coded_value_set", [])
-            or rule.get("critical_coded_value_set", [])
-            or rule.get("abnormal_coded_value_set", [])
-        )
-
-        if has_ranges:
-            for r in rule.get("ranges", []):
-                if self.value_fits(value, r):
-                    return r["interpretation"]
-        elif has_coded_values:
-            extracted_value = self.extract_value(value)
-
-            for normal_code in rule.get("normal_coded_value_set", []):
-                if self._matches_coded_value(extracted_value, normal_code):
-                    return "normal"
-
-            for critical_code in rule.get("critical_coded_value_set", []):
-                if self._matches_coded_value(extracted_value, critical_code):
-                    return "critical"
-
-            for abnormal_code in rule.get("abnormal_coded_value_set", []):
-                if self._matches_coded_value(extracted_value, abnormal_code):
-                    return "abnormal"
-
-        return self.handle_no_match()
-
-    def _matches_coded_value(self, value: Any, coded_value: dict) -> bool:
-        """
-        Check if an extracted value matches a coded value from a valueset.
-        """
-        if isinstance(coded_value, dict):
-            code = coded_value.get("code")
-            if code and str(value) == str(code):
-                return True
+    def check_valueset(self, valueset, code, interpretation):
+        valueset = ValueSet.objects.get(slug=valueset)
+        lookup = valueset.lookup(code)
+        if lookup:
+            return interpretation
         return False
 
-    def value_fits(self, value: Any, range_spec: dict) -> bool:
+    def get_interpretation(self, rule: dict, value: Any):
         """
-        Check if an observation value fits within the given range specification.
+        Find the interpretation given the set of rules.
         """
-        if isinstance(value, dict):
-            if "coding" in value and value["coding"] is not None:
-                value = value["coding"].get("code")
-            elif "quantity" in value:
-                value = value["quantity"]
-            elif "value" in value:
-                value = value["value"]
-            else:
-                return False
+        if rule.get("ranges"):
+            if isinstance(value, dict):
+                if "coding" in value and value["coding"] is not None:
+                    raise ValueError("Coding not supported")
+                if "quantity" in value:
+                    value = value["quantity"]
+                elif "value" in value:
+                    value = value["value"]
+                else:
+                    return False, False
 
-        if range_spec.get("value") is not None:
-            return value == range_spec["value"]
+            if isinstance(value, str):
+                try:
+                    value = float(value)
+                except ValueError:
+                    return False, False
+            for value_range in rule.get("ranges", []):
+                min_val = value_range.get("min")
+                max_val = value_range.get("max")
 
-        if isinstance(value, str):
-            try:
-                value = float(value)
-            except ValueError:
-                return False
+                if min_val is None and max_val is None:
+                    raise ValueError("Min and max cannot be None")
+                if min_val is None:
+                    min_val = float("-inf")
+                if max_val is None:
+                    max_val = float("inf")
 
-        min_val = range_spec.get("min")
-        max_val = range_spec.get("max")
+                if min_val <= value <= max_val:
+                    return value_range.get("interpretation"), rule.get("ranges", [])
+        else:
+            # Handle Valueset based interpretation
+            if "coding" not in value:
+                raise ValueError("Coding not found")
+            if value.get("normal_coded_value_set"):
+                interpretation = self.check_valueset(
+                    value.get("normal_coded_value_set"),
+                    value.get("coding"),
+                    NORMAL_INTERPRETATION,
+                )
+                if interpretation:
+                    return interpretation, []
+            if value.get("critical_coded_value_set"):
+                interpretation = self.check_valueset(
+                    value.get("critical_coded_value_set"),
+                    value.get("coding"),
+                    CRITICAL_INTERPRETATION,
+                )
+                if interpretation:
+                    return interpretation, []
+            if value.get("abnormal_coded_value_set"):
+                interpretation = self.check_valueset(
+                    value.get("abnormal_coded_value_set"),
+                    value.get("coding"),
+                    ABNORMAL_INTERPRETATION,
+                )
+                if interpretation:
+                    return interpretation, []
+            for valueset_interpretation in value.get("valueset_interpretation", []):
+                interpretation = self.check_valueset(
+                    valueset_interpretation.get("valuset"),
+                    value.get("coding"),
+                    valueset_interpretation.get("interpretation"),
+                )
+                if interpretation:
+                    return interpretation, []
 
-        if min_val is None:
-            min_val = float("-inf")
-        if max_val is None:
-            max_val = float("inf")
+        return False, False
 
-        return min_val <= value <= max_val
+    def get_matching_condition(self, context: dict, value: Any):
+        metric_cache = {}
+        for rule in self.rules:
+            conditions = rule.get("conditions", {})
+            condition_boolean = True
+            for condition in conditions:
+                metric = condition.get("metric")
+                if metric in metric_cache:
+                    metric_evaluator_obj = metric_cache[metric]
+                else:
+                    metric_evaluator = EvaluatorMetricsRegistry.get_evaluator(metric)
+                    metric_evaluator_obj = metric_evaluator(
+                        context.get(metric_evaluator.context)
+                    )
+                    metric_cache[metric] = metric_evaluator_obj
+                condition_boolean = (
+                    condition_boolean
+                    and metric_evaluator_obj.apply_rule(
+                        condition.get("operation"), condition.get("value")
+                    )
+                )
+                if not condition_boolean:
+                    # Short circuit if any condition is false
+                    break
+            if condition_boolean:
+                # All required conditions are met.
+                return rule, value
 
-    def evaluate(self, context: dict, value: Any, **kwargs) -> str:
+        return None, None
+
+    def evaluate(self, context: dict, value: Any) -> str:
         """
         Evaluate an observation value against rules to determine clinical interpretation.
         """
-        for rule in self.rules:
-            if self.matches_conditions(rule.get("conditions", {}), context):
-                return self.apply_rule(rule, value, **kwargs)
-        return self.handle_no_match()
-
-    def get_matching_condition(self, context: dict) -> dict | None:
-        """
-        Find the first rule that matches the given context conditions.
-        """
-        for rule in self.rules:
-            if self.matches_conditions(rule.get("conditions", {}), context):
-                return rule
-        return None
-
-    def _get_required_context_keys(self) -> set[str]:
-        """
-        Analyze rules to determine which context keys are required for evaluation.
-        """
-        required_keys = set()
-        for rule in self.rules:
-            conditions = rule.get("conditions", {})
-            required_keys.update(conditions.keys())
-        return required_keys
-
-    def build_patient_context(self, patient, effective_datetime: str) -> dict:
-        """
-        Build context dictionary with only the required patient data for evaluation.
-        """
-        required_keys = self._get_required_context_keys()
-        context = {}
-
-        if "gender" in required_keys:
-            context["gender"] = patient.gender
-
-        if "age" in required_keys:
-            date_delta = (
-                datetime.fromisoformat(effective_datetime).date()
-                - patient.date_of_birth
-            )
-            context["age"] = date_delta.days / 365.25
-
-        if "applies_to" in required_keys:
-            from care.emr.tagging.base import (
-                PatientFacilityTagManager,
-                PatientInstanceTagManager,
-            )
-
-            # Get patient instance tags
-            instance_tags = [
-                tag.get("slug")
-                for tag in PatientInstanceTagManager().render_tags(patient)
-                if tag.get("slug") is not None
-            ]
-
-            # Get patient facility tags
-            facility_tags = []
-            if patient.facility:
-                facility_tags = [
-                    tag.get("slug")
-                    for tag in PatientFacilityTagManager(patient.facility).render_tags(
-                        patient
-                    )
-                    if tag.get("slug") is not None
-                ]
-
-            context["applies_to"] = instance_tags + facility_tags
-
-        return context
-
-    def _get_reference_range(
-        self, matched_condition: dict | None, interpretation: str
-    ) -> list:
-        """
-        Extract reference ranges from a matched rule condition.
-        """
-        if not matched_condition:
-            return []
-
-        # For numeric data, return the numeric ranges
-        numeric_ranges = matched_condition.get("ranges", [])
-        if numeric_ranges:
-            return numeric_ranges
-        return []
-
-    def extract_value(self, val: Any) -> Any:
-        """
-        Extract the core value from complex observation value structures.
-        """
-        if isinstance(val, dict):
-            if coding := val.get("coding"):
-                return coding.get("code")
-            if "quantity" in val:
-                return val["quantity"]
-            if "value" in val:
-                return val["value"]
-        return val
+        rule, value = self.get_matching_condition(context, value)
+        # All required conditions are met.
+        if rule:
+            interpretation, ranges = self.get_interpretation(rule, value)
+            if interpretation:
+                return interpretation, ranges
+        return None, []

@@ -1,5 +1,4 @@
 import enum
-from typing import Any
 
 from pydantic import UUID4, BaseModel, field_validator, model_validator
 
@@ -15,6 +14,7 @@ from care.emr.resources.observation.valueset import (
 from care.emr.resources.questionnaire.spec import QuestionType
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.facility.models import Facility
+from care.utils.registries.evaluation_metric import EvaluatorMetricsRegistry
 
 
 class ObservationCategoryChoices(str, enum.Enum):
@@ -48,8 +48,8 @@ def validate_question_type(question_type):
 
 class InterpretationSpec(BaseModel):
     display: str
-    icon: str
-    color: str
+    icon: str | None = ""
+    color: str | None = ""
 
 
 class NumericRangeSpec(BaseModel):
@@ -71,12 +71,31 @@ class ValueSetInterpretationSpec(BaseModel):
     valuset: str
 
 
+NORMAL_INTERPRETATION = {"display": "Normal"}
+CRITICAL_INTERPRETATION = {"display": "Critical"}
+ABNORMAL_INTERPRETATION = {"display": "Abnormal"}
+
+
+class ConditionSpec(BaseModel):
+    metric: str
+    operation: str
+    value: dict | str
+
+    @model_validator(mode="after")
+    def validate_condition(self):
+        evaluator = EvaluatorMetricsRegistry.get_evaluator(self.metric)
+        if not evaluator:
+            raise ValueError("Invalid metric")
+        evaluator.validate_rule(self.operation, self.value)
+        return self
+
+
 class QualifiedRangeSpec(BaseModel):
-    conditions: dict[str, Any]
+    conditions: list[ConditionSpec] = []
     ranges: list[NumericRangeSpec] = []
-    normal_coded_value_set: str | None
-    critical_coded_value_set: str | None
-    abnormal_coded_value_set: str | None
+    normal_coded_value_set: str | None = ""
+    critical_coded_value_set: str | None = ""
+    abnormal_coded_value_set: str | None = ""
     valueset_interpretation: list[ValueSetInterpretationSpec] = []
 
     @model_validator(mode="after")

@@ -1,7 +1,9 @@
 from django_filters import rest_framework as filters
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -19,6 +21,7 @@ from care.emr.resources.observation_definition.spec import (
 )
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+from care.utils.registries.evaluation_metric import EvaluatorMetricsRegistry
 
 
 class ObservationDefinitionFilters(filters.FilterSet):
@@ -124,3 +127,17 @@ class ObservationDefinitionViewSet(
                 return base_queryset.filter(facility=facility_obj)
             base_queryset = base_queryset.filter(facility__isnull=True)
         return base_queryset
+
+    @action(detail=False, methods=["GET"])
+    def metrics(self, request, *args, **kwargs):
+        all_metrics = EvaluatorMetricsRegistry.get_all_metrics()
+        response = []
+        for metric in all_metrics:
+            response.append(
+                {
+                    "name": metric.name,
+                    "context": metric.context,
+                    "allowed_operations": metric.allowed_operations,
+                }
+            )
+        return Response(response)
