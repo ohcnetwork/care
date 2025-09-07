@@ -56,3 +56,16 @@ class SchedulePermissions(enum.Enum):
             NURSE_ROLE,
         ],
     )
+    can_reschedule_booking = Permission(
+        "Can reschedule bookings on Object",
+        "",
+        PermissionContext.FACILITY,
+        [
+            DOCTOR_ROLE,
+            STAFF_ROLE,
+            NURSE_ROLE,
+            ADMINISTRATOR,
+            FACILITY_ADMIN_ROLE,
+            ADMIN_ROLE,
+        ],
+    )

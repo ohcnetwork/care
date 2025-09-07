@@ -22,12 +22,13 @@ from care.security.authorization.base import AuthorizationController
 
 
 class ResourceCategoryFilters(filters.FilterSet):
-    parent = filters.UUIDFilter(field_name="parent__slug")
+    parent = filters.CharFilter(field_name="parent__slug", lookup_expr="iexact")
     title = filters.CharFilter(field_name="title", lookup_expr="icontains")
     resource_type = filters.CharFilter(field_name="resource_type", lookup_expr="iexact")
     resource_sub_type = filters.CharFilter(
         field_name="resource_sub_type", lookup_expr="iexact"
     )
+    level_cache = filters.NumberFilter(field_name="level_cache")
 
 
 class ResourceCategoryViewSet(
@@ -95,12 +96,14 @@ class ResourceCategoryViewSet(
             raise PermissionDenied("Access Denied to Charge Item Definition Category")
 
     def get_queryset(self):
-        base_queryset = super().get_queryset()
+        queryset = super().get_queryset()
         facility_obj = self.get_facility_obj()
+        if "parent" in self.request.GET and not self.request.GET.get("parent"):
+            queryset = queryset.filter(parent__isnull=True)
         if not AuthorizationController.call(
             "can_list_facility_resource_category",
             self.request.user,
             facility_obj,
         ):
             raise PermissionDenied("Access Denied to Charge Item Definition Category")
-        return base_queryset.filter(facility=facility_obj)
+        return queryset.filter(facility=facility_obj)

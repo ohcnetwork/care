@@ -24,10 +24,6 @@ class FileUploadTestCase(CareAPITestBase):
         self.user = self.create_super_user()  # using su to skip authz checks
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
-        self.resource = SchedulableResource.objects.create(
-            user=self.user,
-            facility=self.facility,
-        )
         self.patient = self.create_patient()
 
         self.file = io.BytesIO()

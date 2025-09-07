@@ -67,7 +67,7 @@ class ResourceCategory(EMRBaseModel):
             self.cached_parent_json = {
                 "id": str(self.parent.external_id),
                 "slug": self.parent.slug,
-                "name": self.parent.title,
+                "title": self.parent.title,
                 "description": self.parent.description,
                 "parent": self.parent.cached_parent_json,
                 "cache_expiry": str(

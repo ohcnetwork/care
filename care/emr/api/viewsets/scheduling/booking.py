@@ -201,7 +201,7 @@ class TokenBookingViewSet(
         facility = self.get_facility_obj()
         self.authorize_update({}, existing_booking)
         if not AuthorizationController.call(
-            "can_reschedule_appointment", self.request.user, facility
+            "can_reschedule_booking", self.request.user, facility
         ):
             raise PermissionDenied(
                 "You do not have permission to reschedule appointments"
@@ -365,11 +365,11 @@ def authorize_booking_list(
     else:
         raise ValidationError("Invalid resource type")
     if resource_ids:
-        resource_ids = []
+        resource_pk_ids = []
         for resource_id in resource_ids:
             resource = get_or_create_resource(resource_type, resource_id, facility)
             if not AuthorizationController.call("can_list_booking", resource, user):
                 raise PermissionDenied("You do not have permission to list bookings")
-            resource_ids.append(resource.id)
-        base_query = base_query.filter(token_slot__resource_id__in=resource_ids)
+            resource_pk_ids.append(resource.id)
+        base_query = base_query.filter(token_slot__resource_id__in=resource_pk_ids)
     return base_query

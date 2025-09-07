@@ -12,12 +12,15 @@ from care.emr.models import (
     TokenBooking,
     TokenSlot,
 )
-from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions
+from care.emr.resources.scheduling.schedule.spec import (
+    SlotTypeOptions,
+    SchedulableResourceTypeOptions,
+)
 from care.emr.resources.scheduling.slot.spec import (
     CANCELLED_STATUS_CHOICES,
     BookingStatusChoices,
 )
-from care.security.permissions.user_schedule import UserSchedulePermissions
+from care.security.permissions.schedule import SchedulePermissions
 from care.utils.tests.base import CareAPITestBase
 from config.patient_otp_authentication import PatientOtpObject
 
@@ -80,6 +83,7 @@ class TestBookingViewSet(CareAPITestBase):
 
     def create_resource(self, **kwargs):
         data = {
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
             "user": self.user,
             "facility": self.facility,
         }
@@ -120,46 +124,51 @@ class TestBookingViewSet(CareAPITestBase):
 
     def test_list_booking_with_permissions(self):
         """Users with can_list_user_booking permission can list bookings."""
-        permissions = [UserSchedulePermissions.can_list_user_booking.name]
+        permissions = [SchedulePermissions.can_list_booking.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        response = self.client.get(self.base_url)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_ids": self.user.external_id,
+            },
+        )
         self.assertEqual(response.status_code, 200)
 
     def test_list_booking_without_permissions(self):
         """Users without can_list_user_booking permission cannot list bookings."""
-        response = self.client.get(self.base_url)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_ids": self.user.external_id,
+            },
+        )
         self.assertEqual(response.status_code, 403)
-
-    def test_list_booking_filtered_by_schedulable_user(self):
-        """Users can list bookings filtered by schedulable user resource."""
-        permissions = [UserSchedulePermissions.can_list_user_booking.name]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        self.create_booking()
-
-        response = self.client.get(self.base_url, data={"user": self.user.external_id})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), 1)
 
     def test_list_booking_filtered_by_non_schedulable_user(self):
         """Users can list bookings filtered by non-schedulable user resource, but it'd be empty queryset."""
-        permissions = [UserSchedulePermissions.can_list_user_booking.name]
+        permissions = [SchedulePermissions.can_list_booking.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         non_schedulable_user = self.create_user()
         response = self.client.get(
-            self.base_url, data={"user": non_schedulable_user.external_id}
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_ids": non_schedulable_user.external_id,
+            },
         )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), 0)
+        self.assertContains(
+            response, "Schedule User is not part of the facility", status_code=400
+        )
 
     def test_retrieve_booking_with_permissions(self):
         """Users with can_list_user_booking permission can retrieve bookings."""
-        permissions = [UserSchedulePermissions.can_list_user_booking.name]
+        permissions = [SchedulePermissions.can_list_booking.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -176,8 +185,8 @@ class TestBookingViewSet(CareAPITestBase):
     def test_update_with_permissions(self):
         """Users with can_write_user_booking permission can update bookings."""
         permissions = [
-            UserSchedulePermissions.can_write_user_booking.name,
-            UserSchedulePermissions.can_list_user_booking.name,
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -196,7 +205,7 @@ class TestBookingViewSet(CareAPITestBase):
     def test_update_without_permissions(self):
         """Users without can_write_user_booking permission cannot update bookings."""
         permissions = [
-            UserSchedulePermissions.can_list_user_booking.name,
+            SchedulePermissions.can_list_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -204,8 +213,8 @@ class TestBookingViewSet(CareAPITestBase):
     def test_cancel_booking_via_update(self):
         """Users cannot cancel bookings via update."""
         permissions = [
-            UserSchedulePermissions.can_write_user_booking.name,
-            UserSchedulePermissions.can_list_user_booking.name,
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -227,8 +236,8 @@ class TestBookingViewSet(CareAPITestBase):
     def test_cancel_booking_with_permission(self):
         """Users with proper permissions can cancel bookings via the cancel endpoint."""
         permissions = [
-            UserSchedulePermissions.can_write_user_booking.name,
-            UserSchedulePermissions.can_list_user_booking.name,
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -254,7 +263,7 @@ class TestBookingViewSet(CareAPITestBase):
     def test_cancel_booking_without_permission(self):
         """Users without proper permissions cannot cancel bookings via the cancel endpoint."""
         permissions = [
-            UserSchedulePermissions.can_list_user_booking.name,
+            SchedulePermissions.can_list_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -278,8 +287,8 @@ class TestBookingViewSet(CareAPITestBase):
     def test_cancel_booking_in_consultation_status(self):
         """Users cannot cancel a appointment which is in In-consultation status"""
         permissions = [
-            UserSchedulePermissions.can_write_user_booking.name,
-            UserSchedulePermissions.can_list_user_booking.name,
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -303,8 +312,8 @@ class TestBookingViewSet(CareAPITestBase):
     def test_cancel_cancelled_booking(self):
         """Users can cancel bookings to another cancelled status even if already cancelled. However, tokens allocated on slot won't be changed."""
         permissions = [
-            UserSchedulePermissions.can_write_user_booking.name,
-            UserSchedulePermissions.can_list_user_booking.name,
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -336,10 +345,9 @@ class TestBookingViewSet(CareAPITestBase):
     def test_reschedule_booking_with_permission(self):
         """Users with proper permissions can reschedule bookings via the re-schedule endpoint."""
         permissions = [
-            UserSchedulePermissions.can_write_user_booking.name,
-            UserSchedulePermissions.can_list_user_booking.name,
-            UserSchedulePermissions.can_create_appointment.name,
-            UserSchedulePermissions.can_reschedule_appointment.name,
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
+            SchedulePermissions.can_reschedule_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -370,9 +378,8 @@ class TestBookingViewSet(CareAPITestBase):
     def test_reschedule_booking_without_permission(self):
         """Users without proper permissions cannot reschedule bookings via the re-schedule endpoint."""
         permissions = [
-            UserSchedulePermissions.can_write_user_booking.name,
-            UserSchedulePermissions.can_list_user_booking.name,
-            UserSchedulePermissions.can_create_appointment.name,
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -400,10 +407,9 @@ class TestBookingViewSet(CareAPITestBase):
     def test_reschedule_booking_to_another_user_resource_of_same_facility(self):
         """Users can reschedule bookings via the re-schedule endpoint with another user resource of same facility."""
         permissions = [
-            UserSchedulePermissions.can_write_user_booking.name,
-            UserSchedulePermissions.can_list_user_booking.name,
-            UserSchedulePermissions.can_create_appointment.name,
-            UserSchedulePermissions.can_reschedule_appointment.name,
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
+            SchedulePermissions.can_reschedule_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -429,10 +435,9 @@ class TestBookingViewSet(CareAPITestBase):
     def test_reschedule_booking_to_another_user_resource_of_another_facility(self):
         """Users cannot reschedule bookings via the re-schedule endpoint with another user resource of different facility."""
         permissions = [
-            UserSchedulePermissions.can_write_user_booking.name,
-            UserSchedulePermissions.can_list_user_booking.name,
-            UserSchedulePermissions.can_create_appointment.name,
-            UserSchedulePermissions.can_reschedule_appointment.name,
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
+            SchedulePermissions.can_reschedule_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -459,10 +464,9 @@ class TestBookingViewSet(CareAPITestBase):
     def test_reschedule_booking_with_slot_in_past(self):
         """Users cannot reschedule bookings to slots that are in the past."""
         permissions = [
-            UserSchedulePermissions.can_write_user_booking.name,
-            UserSchedulePermissions.can_list_user_booking.name,
-            UserSchedulePermissions.can_create_appointment.name,
-            UserSchedulePermissions.can_reschedule_appointment.name,
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
+            SchedulePermissions.can_reschedule_booking.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -507,9 +511,7 @@ class TestBookingViewSet(CareAPITestBase):
 
     def test_list_booking_for_user_with_schedules_in_multiple_facilities(self):
         """Appointments for a user with schedules in multiple facilities are filtered correctly."""
-        permissions = [
-            UserSchedulePermissions.can_list_user_booking.name,
-        ]
+        permissions = [SchedulePermissions.can_list_booking.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -559,14 +561,26 @@ class TestBookingViewSet(CareAPITestBase):
             ),
         )
 
-        response = self.client.get(self.base_url)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_ids": self.user.external_id,
+            },
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
         url = reverse(
             "appointments-list",
             kwargs={"facility_external_id": facility_2.external_id},
         )
-        response = self.client.get(url)
+        response = self.client.get(
+            url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_ids": self.user.external_id,
+            },
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
 
@@ -580,7 +594,9 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
         self.organization = self.create_facility_organization(facility=self.facility)
         self.patient = self.create_patient()
         self.resource = SchedulableResource.objects.create(
-            user=self.user, facility=self.facility
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+            facility=self.facility,
         )
         self.schedule = Schedule.objects.create(
             resource=self.resource,
@@ -685,7 +701,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
     @override_settings(MAX_APPOINTMENTS_PER_PATIENT=1)
     def test_create_appointment_with_permission(self):
         """Users with can_create_appointment permission can create appointments."""
-        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        permissions = [SchedulePermissions.can_write_booking.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -719,7 +735,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
 
     def test_create_appointment_with_invalid_patient(self):
         """Users cannot create appointments for invalid patients."""
-        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        permissions = [SchedulePermissions.can_write_booking.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -731,7 +747,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
 
     def test_create_appointment_with_slot_in_past(self):
         """Users cannot create appointments for slots that are in the past."""
-        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        permissions = [SchedulePermissions.can_write_booking.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -747,7 +763,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
 
     def test_create_appointment_ongoing_slot(self):
         """Users can create appointments for a slot that's currently ongoing."""
-        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        permissions = [SchedulePermissions.can_write_booking.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -763,7 +779,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
 
     def test_create_multiple_appointments_on_same_slot(self):
         """Users cannot create multiple appointments on the same slot for the same patient."""
-        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        permissions = [SchedulePermissions.can_write_booking.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -781,7 +797,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
 
     def test_cancel_and_create_appointment_on_same_slot(self):
         """Users can create a new appointment on a slot after cancelling the previous one."""
-        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        permissions = [SchedulePermissions.can_write_booking.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -795,7 +811,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
 
     def test_over_booking_a_slot(self):
         """Users cannot create appointments on slots that are already fully booked."""
-        permissions = [UserSchedulePermissions.can_create_appointment.name]
+        permissions = [SchedulePermissions.can_write_booking.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -818,6 +834,7 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         self.organization = self.create_facility_organization(facility=self.facility)
         self.patient = self.create_patient()
         self.resource = SchedulableResource.objects.create(
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
             user=self.user,
             facility=self.facility,
         )
@@ -898,7 +915,8 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
     def test_get_slots_for_day(self):
         """Users can get available slots for a specific day."""
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "day": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
         }
         response = self.client.post(self._get_slot_for_day_url(), data, format="json")
@@ -908,7 +926,8 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
     def test_get_slots_for_day_on_past_day_does_not_create_objects(self):
         """If get_slots_for_day API is called on a past day, new TokenSlot objects should not be created."""
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "day": (datetime.now(UTC) - timedelta(days=1)).strftime("%Y-%m-%d"),
         }
         response = self.client.post(self._get_slot_for_day_url(), data, format="json")
@@ -917,7 +936,8 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
     def test_hit_on_get_slots_for_day_does_not_cause_duplicate_slots(self):
         """Multiple requests to get slots for a day should not create duplicate slots."""
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "day": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
         }
         url = self._get_slot_for_day_url()
@@ -935,14 +955,15 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         user = self.create_user()
         facility = self.create_facility(user=user)
         data = {
-            "user": user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
         response = self.client.post(
             self._get_slot_for_day_url(facility.external_id), data, format="json"
         )
         self.assertContains(
-            response, status_code=400, text="Resource is not schedulable"
+            response, status_code=400, text="Schedule User is not part of the facility"
         )
 
     def test_get_slots_for_day_with_full_day_exception(self):
@@ -956,7 +977,8 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             end_time="23:59:59",
         )
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
         response = self.client.post(self._get_slot_for_day_url(), data, format="json")
@@ -974,7 +996,8 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             end_time="12:00:00",
         )
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "day": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
         }
         response = self.client.post(self._get_slot_for_day_url(), data, format="json")
@@ -992,7 +1015,8 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             end_time="23:59:59",
         )
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "day": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
         }
         response = self.client.post(self._get_slot_for_day_url(), data, format="json")
@@ -1010,17 +1034,23 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             end_time="12:00:00",
         )
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "day": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
         }
         response = self.client.post(self._get_slot_for_day_url(), data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 4)
 
-    def test_availability_stats(self):
+    def test_availability_stats_with_permission(self):
         """Users can get availability statistics for a date range."""
+        permissions = [SchedulePermissions.can_list_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
             "to_date": (datetime.now(UTC) + timedelta(days=10)).strftime("%Y-%m-%d"),
         }
@@ -1029,10 +1059,27 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_availability_stats_without_permission(self):
+        data = {
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
+            "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
+            "to_date": (datetime.now(UTC) + timedelta(days=10)).strftime("%Y-%m-%d"),
+        }
+        response = self.client.post(
+            self._get_availability_stats_url(), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_availability_stats_partially_outside_schedule_validity(self):
         """Users can get availability statistics for date ranges partially outside schedule validity."""
+        permissions = [SchedulePermissions.can_list_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "from_date": (datetime.now(UTC) + timedelta(days=25)).strftime("%Y-%m-%d"),
             "to_date": (datetime.now(UTC) + timedelta(days=35)).strftime("%Y-%m-%d"),
         }
@@ -1043,8 +1090,13 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
 
     def test_availability_stats_invalid_period(self):
         """Users cannot get availability statistics when from_date is after to_date."""
+        permissions = [SchedulePermissions.can_list_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "from_date": (datetime.now(UTC) + timedelta(days=10)).strftime("%Y-%m-%d"),
             "to_date": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
         }
@@ -1057,8 +1109,13 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
 
     def test_availability_stats_exceed_period(self):
         """Users cannot get availability statistics for periods longer than the maximum allowed days."""
+        permissions = [SchedulePermissions.can_list_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
             "to_date": (datetime.now(UTC) + timedelta(days=40)).strftime("%Y-%m-%d"),
         }
@@ -1071,21 +1128,31 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
 
     def test_availability_stats_for_invalid_user(self):
         """Users cannot get availability statistics for invalid users."""
+        permissions = [SchedulePermissions.can_list_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
         data = {
-            "user": "98c763ba-5bbb-44b9-ac03-56414fbb3021",
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": "98c763ba-5bbb-44b9-ac03-56414fbb3021",
             "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
             "to_date": (datetime.now(UTC) + timedelta(days=10)).strftime("%Y-%m-%d"),
         }
         response = self.client.post(
             self._get_availability_stats_url(), data, format="json"
         )
-        self.assertContains(response, status_code=400, text="User does not exist")
+        self.assertEqual(response.status_code, 404)
 
     def test_availability_stats_for_non_schedulable_user(self):
         """Users cannot get availability statistics for non-schedulable users."""
+        permissions = [SchedulePermissions.can_list_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
         non_schedulable_user = self.create_user()
         data = {
-            "user": non_schedulable_user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": non_schedulable_user.external_id,
             "from_date": datetime.now(UTC).strftime("%Y-%m-%d"),
             "to_date": (datetime.now(UTC) + timedelta(days=10)).strftime("%Y-%m-%d"),
         }
@@ -1093,17 +1160,22 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             self._get_availability_stats_url(), data, format="json"
         )
         self.assertContains(
-            response, status_code=400, text="Resource is not schedulable"
+            response, status_code=400, text="Schedule User is not part of the facility"
         )
 
     def test_availability_heatmap_slots_same_as_get_slots_for_day_without_exceptions(
         self,
     ):
         """Availability heatmap slot counts should match individual day slot counts when there are no exceptions."""
+        permissions = [SchedulePermissions.can_list_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
         from_date = datetime.now(UTC).date() + timedelta(days=1)
         end_date = from_date + timedelta(days=7)
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "from_date": from_date.strftime("%Y-%m-%d"),
             "to_date": end_date.strftime("%Y-%m-%d"),
         }
@@ -1120,7 +1192,11 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
 
         # verify booked slots and total slots from get slots for day matches heatmap
         for day, slot_stats in response.data.items():
-            data = {"user": self.user.external_id, "day": day}
+            data = {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": self.user.external_id,
+                "day": day,
+            }
             response = self.client.post(
                 self._get_slot_for_day_url(), data, format="json"
             )
@@ -1134,6 +1210,10 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
 
     def test_availability_heatmap_slots_same_as_get_slots_for_day_with_exceptions(self):
         """Availability heatmap slot counts should match individual day slot counts even with exceptions."""
+        permissions = [SchedulePermissions.can_list_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
         AvailabilityException.objects.create(
             resource=self.resource,
             name="Test Exception",
@@ -1151,7 +1231,8 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             end_time="14:00:00",
         )
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "from_date": timezone.make_naive(timezone.now()).strftime("%Y-%m-%d"),
             "to_date": (
                 timezone.make_naive(timezone.now()) + timedelta(days=7)
@@ -1169,7 +1250,11 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             kwargs={"facility_external_id": self.facility.external_id},
         )
         for day, slot_stats in response.data.items():
-            data = {"user": self.user.external_id, "day": day}
+            data = {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": self.user.external_id,
+                "day": day,
+            }
             response = self.client.post(slots_for_day_url, data, format="json")
             self.assertEqual(response.status_code, 200)
             booked_slots_for_day = sum(x["allocated"] for x in response.data["results"])
@@ -1189,7 +1274,9 @@ class TestOtpSlotViewSet(CareAPITestBase):
         self.organization = self.create_facility_organization(facility=self.facility)
         self.patient = self.create_patient(phone_number="+917777777777")
         self.resource = SchedulableResource.objects.create(
-            user=self.user, facility=self.facility
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+            facility=self.facility,
         )
         self.schedule = Schedule.objects.create(
             resource=self.resource,
@@ -1282,7 +1369,8 @@ class TestOtpSlotViewSet(CareAPITestBase):
         """OTP authenticated users can get available slots for a specific day."""
         url = reverse("otp-slots-get-slots-for-day")
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "day": datetime.now(UTC).strftime("%Y-%m-%d"),
             "facility": self.facility.external_id,
         }
@@ -1293,7 +1381,8 @@ class TestOtpSlotViewSet(CareAPITestBase):
         """OTP authenticated users cannot get slots without specifying a facility."""
         url = reverse("otp-slots-get-slots-for-day")
         data = {
-            "user": self.user.external_id,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
             "day": datetime.now(UTC).strftime("%Y-%m-%d"),
         }
         response = self.client.post(url, data, format="json")
