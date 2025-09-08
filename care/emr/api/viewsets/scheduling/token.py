@@ -1,5 +1,5 @@
 from django.db import transaction
-from django_filters import CharFilter, FilterSet, UUIDFilter
+from django_filters import FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
@@ -18,6 +18,7 @@ from care.emr.resources.scheduling.token.spec import (
 )
 from care.facility.models import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.lock import Lock
 
 
@@ -28,7 +29,7 @@ class SetCurrentTokenRequest(BaseModel):
 class TokenFilters(FilterSet):
     category = UUIDFilter(field_name="category__external_id")
     sub_queue = UUIDFilter(field_name="sub_queue__external_id")
-    status = CharFilter(field_name="status", lookup_expr="iexact")
+    status = MultiSelectFilter(field_name="status")
 
 
 class TokenViewSet(EMRModelViewSet):
