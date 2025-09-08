@@ -3,7 +3,6 @@ from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 
-
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
     EMRCreateMixin,
@@ -13,9 +12,10 @@ from care.emr.api.viewsets.base import (
     EMRUpsertMixin,
 )
 from care.emr.models.product_knowledge import ProductKnowledge
+from care.emr.models.resource_category import ResourceCategory
 from care.emr.resources.inventory.product_knowledge.spec import (
-    BaseProductKnowledgeSpec,
     ProductKnowledgeReadSpec,
+    ProductKnowledgeUpdateSpec,
     ProductKnowledgeWriteSpec,
 )
 from care.facility.models.facility import Facility
@@ -43,7 +43,7 @@ class ProductKnowledgeViewSet(
     lookup_field = "slug"
     database_model = ProductKnowledge
     pydantic_model = ProductKnowledgeWriteSpec
-    pydantic_update_model = BaseProductKnowledgeSpec
+    pydantic_update_model = ProductKnowledgeUpdateSpec
     pydantic_read_model = ProductKnowledgeReadSpec
     filterset_class = ProductKnowledgeFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
@@ -52,6 +52,7 @@ class ProductKnowledgeViewSet(
     def validate_data(self, instance, model_obj=None):
         queryset = ProductKnowledge.objects.filter(slug__iexact=instance.slug)
         if model_obj:
+            facility = model_obj.facility.external_id
             if getattr(model_obj, "facility", None):
                 queryset = queryset.filter(facility=model_obj.facility_id).exclude(
                     id=model_obj.id
@@ -61,11 +62,18 @@ class ProductKnowledgeViewSet(
                     id=model_obj.id
                 )
         elif instance.facility:
+            facility = instance.facility
             queryset = queryset.filter(facility__external_id=instance.facility)
         else:
             queryset = queryset.filter(facility__isnull=True)
         if queryset.exists():
             raise ValidationError("Slug already exists.")
+
+        if instance.category:
+            category = get_object_or_404(ResourceCategory, slug=instance.category)
+            if category.facility.external_id != facility:
+                raise ValidationError("Category does not belong to facility")
+
         return super().validate_data(instance, model_obj)
 
     def authorize_create(self, instance):

@@ -36,12 +36,12 @@ class BaseProductSpec(EMRResource):
 class ProductWriteSpec(BaseProductSpec):
     """Payment reconciliation write specification"""
 
-    product_knowledge: UUID4
+    product_knowledge: str
     charge_item_definition: str | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.product_knowledge = ProductKnowledge.objects.get(
-            external_id=self.product_knowledge
+            slug=self.product_knowledge
         )
         if self.charge_item_definition:
             obj.charge_item_definition = ChargeItemDefinition.objects.get(

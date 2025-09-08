@@ -17,3 +17,9 @@ class ProductKnowledge(EMRBaseModel):
     storage_guidelines = models.JSONField(default=list, null=True, blank=True)
     definitional = models.JSONField(default=dict, null=True, blank=True)
     base_unit = models.JSONField(default=dict, null=True, blank=True)
+    category = models.ForeignKey(
+        "emr.ResourceCategory",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )

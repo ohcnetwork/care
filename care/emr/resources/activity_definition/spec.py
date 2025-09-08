@@ -7,6 +7,7 @@ from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.healthcare_service import HealthcareService
 from care.emr.models.location import FacilityLocation
 from care.emr.models.observation_definition import ObservationDefinition
+from care.emr.models.resource_category import ResourceCategory
 from care.emr.models.specimen_definition import SpecimenDefinition
 from care.emr.resources.activity_definition.valueset import (
     ACTIVITY_DEFINITION_PROCEDURE_CODE_VALUESET,
@@ -20,6 +21,7 @@ from care.emr.resources.observation.valueset import (
     CARE_OBSERVATION_VALUSET,
 )
 from care.emr.resources.observation_definition.spec import ObservationDefinitionReadSpec
+from care.emr.resources.resource_category.spec import ResourceCategoryReadSpec
 from care.emr.resources.specimen_definition.spec import SpecimenDefinitionReadSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
@@ -58,7 +60,7 @@ class BaseActivityDefinitionSpec(EMRResource):
     status: ActivityDefinitionStatusOptions
     description: str = ""
     usage: str = ""
-    category: ActivityDefinitionCategoryOptions
+    classification: ActivityDefinitionCategoryOptions
     kind: ActivityDefinitionKindOptions
     code: ValueSetBoundCoding[ACTIVITY_DEFINITION_PROCEDURE_CODE_VALUESET.slug]
     body_site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug] | None = None
@@ -73,12 +75,15 @@ class ActivityDefinitionWriteSpec(BaseActivityDefinitionSpec):
     observation_result_requirements: list[UUID4]
     healthcare_service: UUID4 | None = None
     charge_item_definitions: list[str] = []
+    category: str | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.healthcare_service:
             obj.healthcare_service = HealthcareService.objects.only("id").get(
                 external_id=self.healthcare_service
             )
+        if self.category:
+            obj.category = ResourceCategory.objects.get(slug=self.category)
 
 
 class ActivityDefinitionReadSpec(BaseActivityDefinitionSpec):
@@ -86,11 +91,17 @@ class ActivityDefinitionReadSpec(BaseActivityDefinitionSpec):
 
     version: int | None = None
     tags: list[dict] = []
+    category: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+
+        if obj.category:
+            mapping["category"] = ResourceCategoryReadSpec.serialize(
+                obj.category
+            ).to_json()
 
 
 class ActivityDefinitionRetrieveSpec(ActivityDefinitionReadSpec):

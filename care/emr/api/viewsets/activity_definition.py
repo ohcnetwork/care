@@ -16,6 +16,7 @@ from care.emr.models import ActivityDefinition
 from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.location import FacilityLocation
 from care.emr.models.observation_definition import ObservationDefinition
+from care.emr.models.resource_category import ResourceCategory
 from care.emr.models.specimen_definition import SpecimenDefinition
 from care.emr.resources.activity_definition.spec import (
     ActivityDefinitionReadSpec,
@@ -25,13 +26,16 @@ from care.emr.resources.activity_definition.spec import (
 from care.emr.resources.tag.config_spec import TagResource
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyCharFilter
 
 
 class ActivityDefinitionFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     title = filters.CharFilter(lookup_expr="icontains")
-    category = filters.CharFilter(lookup_expr="iexact")
+    classification = filters.CharFilter(lookup_expr="iexact")
     kind = filters.CharFilter(lookup_expr="iexact")
+    category = DummyCharFilter()
+    include_children = DummyBooleanFilter()
 
 
 class ActivityDefinitionViewSet(
@@ -43,6 +47,7 @@ class ActivityDefinitionViewSet(
     EMRBaseViewSet,
     EMRUpsertMixin,
 ):
+    lookup_field = "slug"
     database_model = ActivityDefinition
     pydantic_model = ActivityDefinitionWriteSpec
     pydantic_read_model = ActivityDefinitionReadSpec
@@ -124,6 +129,15 @@ class ActivityDefinitionViewSet(
         ):
             raise ValidationError("Healthcare Service must be from the same facility")
 
+    def validate_data(self, instance, model_obj=None):
+        facility = self.get_facility_obj() if not model_obj else model_obj.facility
+
+        if instance.category:
+            category = get_object_or_404(ResourceCategory, slug=instance.category)
+            if category.facility != facility:
+                raise ValidationError("Category does not belong to facility")
+        return super().validate_data(instance, model_obj)
+
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
         if ActivityDefinition.objects.filter(
@@ -161,6 +175,18 @@ class ActivityDefinitionViewSet(
         """
         base_queryset = super().get_queryset()
         facility_obj = self.get_facility_obj()
+        if self.action == "list" and self.request.GET.get("category"):
+            category = get_object_or_404(
+                ResourceCategory.objects.only("id"),
+                slug=self.request.GET.get("category"),
+                facility=facility_obj,
+            )
+            if self.request.GET.get("include_children", "False").lower() == "true":
+                base_queryset = base_queryset.filter(
+                    category__parent_cache__overlap=[category.id]
+                )
+            else:
+                base_queryset = base_queryset.filter(category=category)
         if not AuthorizationController.call(
             "can_list_facility_activity_definition",
             self.request.user,
