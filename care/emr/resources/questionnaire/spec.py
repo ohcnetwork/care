@@ -180,7 +180,7 @@ class Question(QuestionnaireBaseSpec):
 
 class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
     version: str = Field("1.0", frozen=True, description="Version of the questionnaire")
-    slug: SlugType
+    slug: SlugType | None = None
     title: str
     description: str | None = None
     type: str = "custom"
