@@ -914,6 +914,23 @@ class Command(BaseCommand):
                 category="laboratory",
                 code=code_loinc_fasting_glucose,
                 permitted_data_type="quantity",
+                qualified_ranges=[
+                    {
+                        "conditions": {
+                            "age": {"min": 18, "max": 65},
+                            "applies_to": ["non-diabetic"],
+                        },
+                        "ranges": [
+                            {"interpretation": "low", "max": 70},
+                            {
+                                "interpretation": "normal",
+                                "min": 70,
+                                "max": 99,
+                            },
+                            {"interpretation": "high", "min": 100},
+                        ],
+                    }
+                ],
             )
         )
         cbc_observation_definition = __create_object(
@@ -930,27 +947,144 @@ class Command(BaseCommand):
                         "code": code_loinc_hemoglobin,
                         "permitted_unit": code_ucum_g_dl,
                         "permitted_data_type": "quantity",
+                        "qualified_ranges": [
+                            {
+                                "conditions": {
+                                    "gender": "female",
+                                    "age": {"min": 18, "max": 60},
+                                },
+                                "ranges": [
+                                    {
+                                        "interpretation": "low",
+                                        "max": 12,
+                                    },
+                                    {
+                                        "interpretation": "normal",
+                                        "min": 12,
+                                        "max": 16,
+                                    },
+                                    {
+                                        "interpretation": "high",
+                                        "min": 16,
+                                    },
+                                ],
+                            },
+                            {
+                                "conditions": {
+                                    "gender": "male",
+                                    "age": {"min": 18, "max": 60},
+                                },
+                                "ranges": [
+                                    {
+                                        "interpretation": "low",
+                                        "max": 14,
+                                    },
+                                    {
+                                        "interpretation": "normal",
+                                        "min": 14,
+                                        "max": 18,
+                                    },
+                                    {
+                                        "interpretation": "high",
+                                        "min": 18,
+                                    },
+                                ],
+                            },
+                        ],
                     },
                     {
                         "code": code_loinc_hematocrit,
                         "permitted_unit": code_ucum_percent,
                         "permitted_data_type": "quantity",
+                        "qualified_ranges": [
+                            {
+                                "conditions": {
+                                    "gender": "female",
+                                    "age": {"min": 18, "max": 60},
+                                },
+                                "ranges": [
+                                    {"interpretation": "low", "max": 36},
+                                    {
+                                        "interpretation": "normal",
+                                        "min": 36,
+                                        "max": 48,
+                                    },
+                                    {"interpretation": "high", "min": 48},
+                                ],
+                            },
+                            {
+                                "conditions": {
+                                    "gender": "male",
+                                    "age": {"min": 18, "max": 60},
+                                },
+                                "ranges": [
+                                    {"interpretation": "low", "max": 40},
+                                    {
+                                        "interpretation": "normal",
+                                        "min": 40,
+                                        "max": 52,
+                                    },
+                                    {"interpretation": "high", "min": 52},
+                                ],
+                            },
+                        ],
                     },
                     {
                         "code": code_loinc_erythrocytes,
                         "permitted_unit": code_ucum_million_per_ul,
                         "permitted_data_type": "quantity",
+                        "qualified_ranges": [
+                            {
+                                "conditions": {"age": {"min": 18, "max": 65}},
+                                "ranges": [
+                                    {
+                                        "interpretation": "low",
+                                        "max": 4.0,
+                                    },
+                                    {
+                                        "interpretation": "normal",
+                                        "min": 4.0,
+                                        "max": 6.0,
+                                    },
+                                    {
+                                        "interpretation": "high",
+                                        "min": 6.0,
+                                    },
+                                ],
+                            }
+                        ],
                     },
                     {
                         "code": code_loinc_platelets,
                         "permitted_unit": code_ucum_thousands_per_ul,
                         "permitted_data_type": "quantity",
+                        "qualified_ranges": [
+                            {
+                                "conditions": {"age": {"min": 18, "max": 65}},
+                                "ranges": [
+                                    {
+                                        "interpretation": "low",
+                                        "max": 150,
+                                    },
+                                    {
+                                        "interpretation": "normal",
+                                        "min": 150,
+                                        "max": 450,
+                                    },
+                                    {
+                                        "interpretation": "high",
+                                        "min": 450,
+                                    },
+                                ],
+                            }
+                        ],
                     },
                 ],
                 method=code_snomed_automated_count,
                 permitted_unit=code_ucum_g_dl,
             )
         )
+
         lipid_panel_observation_definition = __create_object(
             BaseObservationDefinitionSpec(
                 slug="lipid-panel-observation",
@@ -960,8 +1094,26 @@ class Command(BaseCommand):
                 category="laboratory",
                 code=code_loinc_lipid_panel,
                 permitted_data_type="quantity",
+                qualified_ranges=[
+                    {
+                        "conditions": {"age": {"min": 18, "max": 65}},
+                        "ranges": [
+                            {
+                                "interpretation": "desirable",
+                                "max": 200,
+                            },
+                            {
+                                "interpretation": "borderline high",
+                                "min": 200,
+                                "max": 239,
+                            },
+                            {"interpretation": "high", "min": 239},
+                        ],
+                    }
+                ],
             )
         )
+
         urinalysis_observation_definition = __create_object(
             BaseObservationDefinitionSpec(
                 slug="urinalysis-observation",
@@ -970,11 +1122,32 @@ class Command(BaseCommand):
                 description="A diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
                 category="laboratory",
                 code=code_loinc_urine,
-                permitted_data_type="quantity",
+                permitted_data_type="coded",
                 method=code_snomed_urine_dipstick,
+                qualified_ranges=[
+                    {
+                        "conditions": {"age": {"min": 18, "max": 65}},
+                        "ranges": [],
+                        "data_type": "coded",
+                        "normal_coded_value_set": [
+                            {
+                                "code": "NEG",
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "display": "Negative",
+                            }
+                        ],
+                        "abnormal_coded_value_set": [
+                            {
+                                "code": "POS",
+                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                                "display": "Positive",
+                            }
+                        ],
+                        "critical_coded_value_set": [],
+                    }
+                ],
             )
         )
-
         default_price_components = [
             {
                 "code": {

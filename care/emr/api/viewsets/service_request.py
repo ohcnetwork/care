@@ -60,7 +60,7 @@ class ServiceRequestFilters(filters.FilterSet):
 
 
 class ApplyActivityDefinitionRequest(BaseModel):
-    activity_definition: UUID4
+    activity_definition: str
     service_request: ServiceRequestUpdateSpec
     encounter: UUID4
 
@@ -224,11 +224,11 @@ class ServiceRequestViewSet(
         )
         activity_definition = get_object_or_404(
             ActivityDefinition,
-            external_id=request_params.activity_definition,
+            slug=request_params.activity_definition,
             facility=facility,
         )
         service_request = convert_ad_to_sr(activity_definition, encounter)
-        self.authorize_update(request_params.service_request, service_request)
+        self.authorize_update(None, service_request)
         serializer_obj = ServiceRequestUpdateSpec.model_validate(
             request_params.service_request.model_dump(mode="json")
         )

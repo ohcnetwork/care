@@ -24,3 +24,4 @@ class ObservationDefinition(EMRBaseModel):
     method = models.JSONField(null=True, blank=True)
     permitted_unit = models.JSONField(null=True, blank=True)
     component = models.JSONField(null=True, blank=True)
+    qualified_ranges = models.JSONField(default=list, null=True, blank=True)

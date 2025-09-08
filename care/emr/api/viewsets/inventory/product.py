@@ -20,7 +20,9 @@ from care.security.authorization.base import AuthorizationController
 class ProductFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     facility = filters.UUIDFilter(field_name="facility__external_id")
-    product_knowledge = filters.UUIDFilter(field_name="product_knowledge__external_id")
+    product_knowledge = filters.CharFilter(
+        lookup_expr="iexact", field_name="product_knowledge__slug"
+    )
 
 
 class ProductViewSet(
@@ -76,3 +78,6 @@ class ProductViewSet(
         ):
             raise PermissionDenied("Cannot list products")
         return queryset
+
+    def get_serializer_create_context(self):
+        return {"facility": self.get_facility_obj()}

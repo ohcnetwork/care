@@ -1,5 +1,6 @@
 import json
 
+from django.conf import settings
 from django.db import transaction
 from django.http.response import Http404
 from drf_spectacular.utils import extend_schema
@@ -118,10 +119,12 @@ class EMRCreateMixin:
 
     def handle_create(self, request_data):
         clean_data = self.clean_create_data(request_data)
+        context = {"is_create": True, **self.get_serializer_create_context()}
         instance = self.pydantic_model.model_validate(
             clean_data,
-            context={"is_create": True, **self.get_serializer_create_context()},
+            context=context,
         )
+        instance._context = context  # noqa: SLF001
         self.validate_data(instance, None)
         self.authorize_create(instance)
         model_instance = instance.de_serialize()
@@ -203,14 +206,16 @@ class EMRUpdateMixin:
     def handle_update(self, instance, request_data):
         clean_data = self.clean_update_data(request_data)  # From Create
         pydantic_model = self.get_update_pydantic_model()
+        context = {
+            "is_update": True,
+            "object": instance,
+            **self.get_serializer_update_context(),
+        }
         serializer_obj = pydantic_model.model_validate(
             clean_data,
-            context={
-                "is_update": True,
-                "object": instance,
-                **self.get_serializer_update_context(),
-            },
+            context=context,
         )
+        serializer_obj._context = context  # noqa: SLF001
         self.validate_data(serializer_obj, instance)
         self.authorize_update(serializer_obj, instance)
         partial = getattr(self, "partial", False)
@@ -242,8 +247,12 @@ class EMRUpsertMixin:
     @action(detail=False, methods=["POST"])
     def upsert(self, request, *args, **kwargs):
         if type(request.data) is not dict:
-            raise ValidationError("Invalid request data")
+            raise RestFrameworkValidationError("Invalid request data")
         datapoints = request.data.get("datapoints", [])
+        if len(datapoints) == 0:
+            raise RestFrameworkValidationError("No datapoints provided")
+        if len(datapoints) > settings.MAX_DATAPOINTS_PER_UPSERT:
+            raise RestFrameworkValidationError("Too many datapoints provided")
         results = []
         errored = False
         unhandled = False
@@ -253,7 +262,8 @@ class EMRUpsertMixin:
                     try:
                         if "id" in datapoint:
                             instance = get_object_or_404(
-                                self.database_model, external_id=datapoint["id"]
+                                self.database_model,
+                                **{self.lookup_field: datapoint["id"]},
                             )
                             result = self.handle_update(instance, datapoint)
                         else:

@@ -12,13 +12,15 @@ from care.emr.api.viewsets.base import (
     EMRUpsertMixin,
 )
 from care.emr.models.product_knowledge import ProductKnowledge
+from care.emr.models.resource_category import ResourceCategory
 from care.emr.resources.inventory.product_knowledge.spec import (
-    BaseProductKnowledgeSpec,
     ProductKnowledgeReadSpec,
+    ProductKnowledgeUpdateSpec,
     ProductKnowledgeWriteSpec,
 )
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyCharFilter
 from care.utils.filters.null_filter import NullFilter
 
 
@@ -29,6 +31,8 @@ class ProductKnowledgeFilters(filters.FilterSet):
     product_type = filters.CharFilter(lookup_expr="iexact")
     facility_is_null = NullFilter(field_name="facility")
     alternate_identifier = filters.CharFilter(lookup_expr="iexact")
+    category = DummyCharFilter()
+    include_children = DummyBooleanFilter()
 
 
 class ProductKnowledgeViewSet(
@@ -39,9 +43,10 @@ class ProductKnowledgeViewSet(
     EMRBaseViewSet,
     EMRUpsertMixin,
 ):
+    lookup_field = "slug"
     database_model = ProductKnowledge
     pydantic_model = ProductKnowledgeWriteSpec
-    pydantic_update_model = BaseProductKnowledgeSpec
+    pydantic_update_model = ProductKnowledgeUpdateSpec
     pydantic_read_model = ProductKnowledgeReadSpec
     filterset_class = ProductKnowledgeFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
@@ -50,6 +55,7 @@ class ProductKnowledgeViewSet(
     def validate_data(self, instance, model_obj=None):
         queryset = ProductKnowledge.objects.filter(slug__iexact=instance.slug)
         if model_obj:
+            facility = model_obj.facility.external_id
             if getattr(model_obj, "facility", None):
                 queryset = queryset.filter(facility=model_obj.facility_id).exclude(
                     id=model_obj.id
@@ -59,11 +65,19 @@ class ProductKnowledgeViewSet(
                     id=model_obj.id
                 )
         elif instance.facility:
+            facility = instance.facility
             queryset = queryset.filter(facility__external_id=instance.facility)
         else:
+            facility = None
             queryset = queryset.filter(facility__isnull=True)
         if queryset.exists():
             raise ValidationError("Slug already exists.")
+
+        if instance.category:
+            category = get_object_or_404(ResourceCategory, slug=instance.category)
+            if not facility or category.facility.external_id != facility:
+                raise ValidationError("Category does not belong to facility")
+
         return super().validate_data(instance, model_obj)
 
     def authorize_create(self, instance):
@@ -98,10 +112,29 @@ class ProductKnowledgeViewSet(
         ):
             raise PermissionDenied("Cannot read product knowledge")
 
+    def get_object(self):
+        queryset = self.get_queryset()
+        try:
+            if "facility" not in self.request.GET:
+                return get_object_or_404(
+                    queryset,
+                    slug=self.kwargs["slug"],
+                    facility__isnull=True,
+                )
+            facility = get_object_or_404(
+                Facility.objects.only("id"), external_id=self.request.GET["facility"]
+            )
+            return get_object_or_404(
+                queryset,
+                slug=self.kwargs["slug"],
+                facility=facility,
+            )
+        except ProductKnowledge.MultipleObjectsReturned:
+            raise ValidationError("Multiple product knowledge with this slug found")
+
     def get_queryset(self):
-        if self.action != "list":
-            return super().get_queryset()
-        if "facility" in self.request.GET:
+        queryset = super().get_queryset()
+        if self.action == "list" and "facility" in self.request.GET:
             facility = get_object_or_404(
                 Facility, external_id=self.request.GET["facility"]
             )
@@ -111,5 +144,18 @@ class ProductKnowledgeViewSet(
                 facility,
             ):
                 raise PermissionDenied("Cannot read product knowledge")
-            return ProductKnowledge.objects.filter(facility=facility)
-        return super().get_queryset()
+
+            queryset = queryset.filter(facility=facility)
+            if self.action == "list" and self.request.GET.get("category"):
+                category = get_object_or_404(
+                    ResourceCategory.objects.only("id"),
+                    slug=self.request.GET.get("category"),
+                    facility=facility,
+                )
+                if self.request.GET.get("include_children", "False").lower() == "true":
+                    queryset = queryset.filter(
+                        category__parent_cache__overlap=[category.id]
+                    )
+                else:
+                    queryset = queryset.filter(category=category)
+        return queryset

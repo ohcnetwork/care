@@ -33,6 +33,7 @@ class SpecimenDefinitionViewSet(
     EMRBaseViewSet,
     EMRUpsertMixin,
 ):
+    lookup_field = "slug"
     database_model = SpecimenDefinition
     pydantic_model = BaseSpecimenDefinitionSpec
     pydantic_read_model = SpecimenDefinitionReadSpec

@@ -89,6 +89,7 @@ class PaymentReconciliationWriteSpec(BasePaymentReconciliationSpec):
     amount: float | None = None
     tendered_amount: float
     returned_amount: float
+    is_credit_note: bool = False
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.target_invoice:

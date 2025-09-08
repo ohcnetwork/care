@@ -13,7 +13,7 @@ from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet, EMRModelViewSet
-from care.emr.models import Organization, SchedulableUserResource
+from care.emr.models import Organization, SchedulableResource
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.resources.facility.spec import (
     FacilityCreateSpec,
@@ -179,7 +179,7 @@ class FacilitySchedulableUsersViewSet(EMRModelReadOnlyViewSet):
 
     def get_queryset(self):
         return User.objects.filter(
-            id__in=SchedulableUserResource.objects.filter(
+            id__in=SchedulableResource.objects.filter(
                 facility__external_id=self.kwargs["facility_external_id"]
             ).values("user_id")
         )

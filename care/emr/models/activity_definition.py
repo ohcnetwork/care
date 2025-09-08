@@ -9,7 +9,7 @@ class ActivityDefinition(EMRBaseModel):
     version = models.IntegerField(default=1)
     slug = models.CharField(max_length=255)
     title = models.CharField(max_length=1024)
-    category = models.CharField(max_length=100)
+    classification = models.CharField(max_length=100)
     derived_from_uri = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=255)
     description = models.TextField()
@@ -31,3 +31,9 @@ class ActivityDefinition(EMRBaseModel):
         blank=True,
     )
     tags = ArrayField(models.IntegerField(), default=list)
+    category = models.ForeignKey(
+        "emr.ResourceCategory",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )

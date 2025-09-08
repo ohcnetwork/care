@@ -36,28 +36,31 @@ class BaseProductSpec(EMRResource):
 class ProductWriteSpec(BaseProductSpec):
     """Payment reconciliation write specification"""
 
-    product_knowledge: UUID4
-    charge_item_definition: UUID4 | None = None
+    product_knowledge: str
+    charge_item_definition: str | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.product_knowledge = ProductKnowledge.objects.get(
-            external_id=self.product_knowledge
+            slug=self.product_knowledge,
+            facility=self.get_context().get("facility"),
         )
         if self.charge_item_definition:
             obj.charge_item_definition = ChargeItemDefinition.objects.get(
-                external_id=self.charge_item_definition
+                slug=self.charge_item_definition,
+                facility=self.get_context().get("facility"),
             )
 
 
 class ProductUpdateSpec(BaseProductSpec):
     """Payment reconciliation write specification"""
 
-    charge_item_definition: UUID4 | None = None
+    charge_item_definition: str | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.charge_item_definition:
             obj.charge_item_definition = ChargeItemDefinition.objects.get(
-                external_id=self.charge_item_definition
+                slug=self.charge_item_definition,
+                facility=self.get_context().get("facility"),
             )
 
 

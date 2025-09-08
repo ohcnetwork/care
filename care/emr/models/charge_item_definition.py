@@ -16,3 +16,9 @@ class ChargeItemDefinition(EMRBaseModel):
     description = models.TextField(null=True, blank=True)
     purpose = models.TextField(null=True, blank=True)
     price_components = models.JSONField(default=list)
+    category = models.ForeignKey(
+        "emr.ResourceCategory",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
