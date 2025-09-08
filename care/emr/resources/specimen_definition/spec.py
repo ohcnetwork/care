@@ -11,6 +11,7 @@ from care.emr.resources.specimen_definition.valueset import (
     SPECIMEN_COLLECTION_CODE_VALUESET,
     SPECIMEN_TYPE_CODE_VALUESET,
 )
+from care.emr.utils.slug_type import SlugType
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
 
@@ -85,7 +86,7 @@ class BaseSpecimenDefinitionSpec(EMRResource):
     __exclude__ = ["facility"]
 
     id: UUID4 | None = None
-    slug: str
+    slug: SlugType
     title: str
     derived_from_uri: str | None = None
     status: SpecimenDefinitionStatusOptions

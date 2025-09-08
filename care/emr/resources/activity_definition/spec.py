@@ -22,6 +22,7 @@ from care.emr.resources.observation.valueset import (
 from care.emr.resources.observation_definition.spec import ObservationDefinitionReadSpec
 from care.emr.resources.specimen_definition.spec import SpecimenDefinitionReadSpec
 from care.emr.tagging.base import SingleFacilityTagManager
+from care.emr.utils.slug_type import SlugType
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
 
@@ -52,7 +53,7 @@ class BaseActivityDefinitionSpec(EMRResource):
     __exclude__ = ["facility"]
 
     id: UUID4 | None = None
-    slug: str
+    slug: SlugType
     title: str
     derived_from_uri: str | None = None
     status: ActivityDefinitionStatusOptions

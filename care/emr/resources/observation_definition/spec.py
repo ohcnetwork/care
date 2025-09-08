@@ -12,6 +12,7 @@ from care.emr.resources.observation.valueset import (
     CARE_UCUM_UNITS,
 )
 from care.emr.resources.questionnaire.spec import QuestionType
+from care.emr.utils.slug_type import SlugType
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.facility.models import Facility
 
@@ -61,7 +62,7 @@ class BaseObservationDefinitionSpec(EMRResource):
     __exclude__ = ["facility"]
 
     id: UUID4 | None = None
-    slug: str
+    slug: SlugType
     title: str
     status: ObservationStatusChoices
     description: str

@@ -413,7 +413,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         self.create_product_knowledge(
             facility=self.facility,
             name="Test Product",
-            slug="test-duplicate-product-knowledge",
+            slug="test-duplicate-product",
         )
         response = self.client.post(
             self.get_base_url(),
@@ -422,7 +422,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
                 name="Test Product",
                 product_type="medication",
                 alternate_identifier="12345",
-                slug="test-duplicate-product-knowledge",
+                slug="test-duplicate-product",
             ),
             format="json",
         )
@@ -437,7 +437,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         self.create_product_knowledge(
             facility=self.facility,
             name="Test Product",
-            slug="test-duplicate-product-knowledge",
+            slug="test-duplicate-product",
         )
         response = self.client.post(
             self.get_base_url(),
@@ -446,7 +446,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
                 name="Test Product",
                 product_type="medication",
                 alternate_identifier="12345",
-                slug="test-duplicate-product-knowledge",
+                slug="test-duplicate-product",
             ),
             format="json",
         )
@@ -460,7 +460,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         self.create_product_knowledge(
             facility=None,
             name="Test Product",
-            slug="test-duplicate-product-knowledge",
+            slug="test-duplicate-product",
         )
         response = self.client.post(
             self.get_base_url(),
@@ -469,7 +469,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
                 name="Test Product",
                 product_type="medication",
                 alternate_identifier="12345",
-                slug="test-duplicate-product-knowledge",
+                slug="test-duplicate-product",
             ),
             format="json",
         )
@@ -483,12 +483,12 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         self.create_product_knowledge(
             facility=None,
             name="Test Product",
-            slug="test-duplicate-product-knowledge",
+            slug="test-duplicate-product",
         )
         self.create_product_knowledge(
             facility=self.facility,
             name="Test Product",
-            slug="test-duplicate-product-knowledge",
+            slug="test-duplicate-product",
         )
         another_facility = self.create_facility(
             name="Another Facility", user=self.superuser
@@ -500,7 +500,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
                 name="Test Product",
                 product_type="medication",
                 alternate_identifier="12345",
-                slug="test-duplicate-product-knowledge",
+                slug="test-duplicate-product",
             ),
             format="json",
         )
@@ -514,7 +514,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         self.create_product_knowledge(
             facility=self.facility,
             name="Test Product",
-            slug="test-duplicate-product-knowledge",
+            slug="test-duplicate-product",
         )
         product2 = self.create_product_knowledge(
             facility=self.facility,
@@ -523,9 +523,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         )
         response = self.client.put(
             self.get_details_url(product2.external_id),
-            self.create_update_product_knowledge_data(
-                slug="test-duplicate-product-knowledge"
-            ),
+            self.create_update_product_knowledge_data(slug="test-duplicate-product"),
             format="json",
         )
         self.assertEqual(response.status_code, 400)
@@ -536,7 +534,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         self.create_product_knowledge(
             facility=None,
             name="Test Product",
-            slug="test-duplicate-product-knowledge",
+            slug="test-duplicate-product",
         )
         product2 = self.create_product_knowledge(
             facility=None,
@@ -545,9 +543,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         )
         response = self.client.put(
             self.get_details_url(product2.external_id),
-            self.create_update_product_knowledge_data(
-                slug="test-duplicate-product-knowledge"
-            ),
+            self.create_update_product_knowledge_data(slug="test-duplicate-product"),
             format="json",
         )
         self.assertEqual(response.status_code, 400)
@@ -559,7 +555,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         self.create_product_knowledge(
             facility=self.facility,
             name="Test Product",
-            slug="test-duplicate-product-knowledge",
+            slug="test-duplicate-product",
         )
         product2 = self.create_product_knowledge(
             facility=None,
@@ -568,9 +564,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         )
         response = self.client.put(
             self.get_details_url(product2.external_id),
-            self.create_update_product_knowledge_data(
-                slug="test-duplicate-product-knowledge"
-            ),
+            self.create_update_product_knowledge_data(slug="test-duplicate-product"),
             format="json",
         )
         self.assertEqual(response.status_code, 200)
