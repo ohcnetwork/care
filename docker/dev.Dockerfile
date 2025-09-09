@@ -8,7 +8,7 @@ WORKDIR $APP_HOME
 ENV PIPENV_CACHE_DIR=/root/.cache/pip
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  build-essential libjpeg-dev zlib1g-dev libgmp-dev \
+  build-essential libjpeg-dev zlib1g-dev libgmp-dev libmagic-dev \
   libpq-dev gettext wget curl gnupg git \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
