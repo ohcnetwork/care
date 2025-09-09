@@ -55,8 +55,8 @@ class ProductKnowledgeViewSet(
     def validate_data(self, instance, model_obj=None):
         queryset = ProductKnowledge.objects.filter(slug__iexact=instance.slug)
         if model_obj:
-            facility = model_obj.facility.external_id
             if getattr(model_obj, "facility", None):
+                facility = model_obj.facility.external_id
                 queryset = queryset.filter(facility=model_obj.facility_id).exclude(
                     id=model_obj.id
                 )
@@ -130,7 +130,9 @@ class ProductKnowledgeViewSet(
                 facility=facility,
             )
         except ProductKnowledge.MultipleObjectsReturned:
-            raise ValidationError("Multiple product knowledge with this slug found")
+            raise ValidationError(
+                "Multiple product knowledge with this slug found"
+            ) from ProductKnowledge.MultipleObjectsReturned
 
     def get_queryset(self):
         queryset = super().get_queryset()

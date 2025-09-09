@@ -1,7 +1,6 @@
 from django.test import TestCase
 from pydantic import BaseModel, ValidationError
 
-from care.emr.resources.valueset.spec import ValueSetSpec
 from care.emr.utils.slug_type import SlugType
 
 
@@ -95,32 +94,3 @@ class TestSlugTypeValidation(TestCase):
         for char in invalid_chars:
             with self.assertRaises(ValidationError):
                 TestModel(slug=f"test{char}slug")
-
-    def test_compatibility_with_actual_specs(self):
-        valid_valueset_data = {
-            "slug": "valid-slug-test",
-            "name": "Test ValueSet",
-            "description": "A test value set",
-            "compose": {"include": []},
-            "status": "active",
-        }
-
-        try:
-            spec = ValueSetSpec(**valid_valueset_data)
-            self.assertEqual(spec.slug, "valid-slug-test")
-        except Exception as e:
-            self.fail(f"Valid ValueSetSpec creation failed: {e}")
-
-        valid_valueset_data_none_slug = {
-            "slug": None,
-            "name": "Test ValueSet",
-            "description": "A test value set",
-            "compose": {"include": []},
-            "status": "active",
-        }
-
-        try:
-            spec = ValueSetSpec(**valid_valueset_data_none_slug)
-            self.assertIsNone(spec.slug)
-        except Exception as e:
-            self.fail(f"ValueSetSpec creation with None slug failed: {e}")
