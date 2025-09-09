@@ -798,7 +798,7 @@ class Command(BaseCommand):
 
         blood_glucose_specimen_definition = __create_object(
             BaseSpecimenDefinitionSpec(
-                slug="blood-glucose-test-specimen",
+                slug="blood-glucose-specimen",
                 title="Blood Glucose Test Specimen",
                 status="active",
                 description="A venous blood specimen collected for the quantitative measurement of glucose concentration in blood. Used in diagnosis and monitoring of diabetes mellitus and glucose metabolism disorders.",
@@ -852,7 +852,7 @@ class Command(BaseCommand):
         )
         lipid_panel_specimen_definition = __create_object(
             BaseSpecimenDefinitionSpec(
-                slug="lipid-panel-blood-specimen",
+                slug="lipid-panel-specimen",
                 title="Lipid Panel Blood Specimen",
                 status="active",
                 description="Venous blood specimen collected to evaluate cholesterol levels including total cholesterol, HDL, LDL, and triglycerides.",
@@ -916,18 +916,15 @@ class Command(BaseCommand):
                 permitted_data_type="quantity",
                 qualified_ranges=[
                     {
-                        "conditions": {
-                            "age": {"min": 18, "max": 65},
-                            "applies_to": ["non-diabetic"],
-                        },
+                        "conditions": [],
                         "ranges": [
-                            {"interpretation": "low", "max": 70},
+                            {"interpretation": {"display": "Low"}, "max": 70},
                             {
-                                "interpretation": "normal",
+                                "interpretation": {"display": "Normal"},
                                 "min": 70,
                                 "max": 99,
                             },
-                            {"interpretation": "high", "min": 100},
+                            {"interpretation": {"display": "High"}, "min": 100},
                         ],
                     }
                 ],
@@ -935,7 +932,7 @@ class Command(BaseCommand):
         )
         cbc_observation_definition = __create_object(
             BaseObservationDefinitionSpec(
-                slug="CBC",
+                slug="complete-blood-count",
                 title="Complete Blood Count",
                 status="active",
                 description="A Complete Blood Count (CBC) is a common laboratory test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), white blood cells (WBC), hemoglobin, hematocrit, and platelets. This test is performed on whole blood using an automated hematology analyzer.",
@@ -949,43 +946,37 @@ class Command(BaseCommand):
                         "permitted_data_type": "quantity",
                         "qualified_ranges": [
                             {
-                                "conditions": {
-                                    "gender": "female",
-                                    "age": {"min": 18, "max": 60},
-                                },
+                                "conditions": [],
                                 "ranges": [
                                     {
-                                        "interpretation": "low",
+                                        "interpretation": {"display": "Low"},
                                         "max": 12,
                                     },
                                     {
-                                        "interpretation": "normal",
+                                        "interpretation": {"display": "Normal"},
                                         "min": 12,
                                         "max": 16,
                                     },
                                     {
-                                        "interpretation": "high",
+                                        "interpretation": {"display": "High"},
                                         "min": 16,
                                     },
                                 ],
                             },
                             {
-                                "conditions": {
-                                    "gender": "male",
-                                    "age": {"min": 18, "max": 60},
-                                },
+                                "conditions": [],
                                 "ranges": [
                                     {
-                                        "interpretation": "low",
+                                        "interpretation": {"display": "Low"},
                                         "max": 14,
                                     },
                                     {
-                                        "interpretation": "normal",
+                                        "interpretation": {"display": "Normal"},
                                         "min": 14,
                                         "max": 18,
                                     },
                                     {
-                                        "interpretation": "high",
+                                        "interpretation": {"display": "High"},
                                         "min": 18,
                                     },
                                 ],
@@ -998,33 +989,27 @@ class Command(BaseCommand):
                         "permitted_data_type": "quantity",
                         "qualified_ranges": [
                             {
-                                "conditions": {
-                                    "gender": "female",
-                                    "age": {"min": 18, "max": 60},
-                                },
+                                "conditions": [],
                                 "ranges": [
-                                    {"interpretation": "low", "max": 36},
+                                    {"interpretation": {"display": "Low"}, "max": 36},
                                     {
-                                        "interpretation": "normal",
+                                        "interpretation": {"display": "Normal"},
                                         "min": 36,
                                         "max": 48,
                                     },
-                                    {"interpretation": "high", "min": 48},
+                                    {"interpretation": {"display": "High"}, "min": 48},
                                 ],
                             },
                             {
-                                "conditions": {
-                                    "gender": "male",
-                                    "age": {"min": 18, "max": 60},
-                                },
+                                "conditions": [],
                                 "ranges": [
-                                    {"interpretation": "low", "max": 40},
+                                    {"interpretation": {"display": "Low"}, "max": 40},
                                     {
-                                        "interpretation": "normal",
+                                        "interpretation": {"display": "Normal"},
                                         "min": 40,
                                         "max": 52,
                                     },
-                                    {"interpretation": "high", "min": 52},
+                                    {"interpretation": {"display": "High"}, "min": 52},
                                 ],
                             },
                         ],
@@ -1035,19 +1020,19 @@ class Command(BaseCommand):
                         "permitted_data_type": "quantity",
                         "qualified_ranges": [
                             {
-                                "conditions": {"age": {"min": 18, "max": 65}},
+                                "conditions": [],
                                 "ranges": [
                                     {
-                                        "interpretation": "low",
+                                        "interpretation": {"display": "Low"},
                                         "max": 4.0,
                                     },
                                     {
-                                        "interpretation": "normal",
+                                        "interpretation": {"display": "Normal"},
                                         "min": 4.0,
                                         "max": 6.0,
                                     },
                                     {
-                                        "interpretation": "high",
+                                        "interpretation": {"display": "High"},
                                         "min": 6.0,
                                     },
                                 ],
@@ -1060,19 +1045,19 @@ class Command(BaseCommand):
                         "permitted_data_type": "quantity",
                         "qualified_ranges": [
                             {
-                                "conditions": {"age": {"min": 18, "max": 65}},
+                                "conditions": [],
                                 "ranges": [
                                     {
-                                        "interpretation": "low",
+                                        "interpretation": {"display": "Low"},
                                         "max": 150,
                                     },
                                     {
-                                        "interpretation": "normal",
+                                        "interpretation": {"display": "Normal"},
                                         "min": 150,
                                         "max": 450,
                                     },
                                     {
-                                        "interpretation": "high",
+                                        "interpretation": {"display": "High"},
                                         "min": 450,
                                     },
                                 ],
@@ -1096,18 +1081,18 @@ class Command(BaseCommand):
                 permitted_data_type="quantity",
                 qualified_ranges=[
                     {
-                        "conditions": {"age": {"min": 18, "max": 65}},
+                        "conditions": [],
                         "ranges": [
                             {
-                                "interpretation": "desirable",
+                                "interpretation": {"display": "Desirable"},
                                 "max": 200,
                             },
                             {
-                                "interpretation": "borderline high",
+                                "interpretation": {"display": "Borderline High"},
                                 "min": 200,
                                 "max": 239,
                             },
-                            {"interpretation": "high", "min": 239},
+                            {"interpretation": {"display": "High"}, "min": 239},
                         ],
                     }
                 ],
@@ -1122,30 +1107,9 @@ class Command(BaseCommand):
                 description="A diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
                 category="laboratory",
                 code=code_loinc_urine,
-                permitted_data_type="coded",
+                permitted_data_type="choice",
                 method=code_snomed_urine_dipstick,
-                qualified_ranges=[
-                    {
-                        "conditions": {"age": {"min": 18, "max": 65}},
-                        "ranges": [],
-                        "data_type": "coded",
-                        "normal_coded_value_set": [
-                            {
-                                "code": "NEG",
-                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
-                                "display": "Negative",
-                            }
-                        ],
-                        "abnormal_coded_value_set": [
-                            {
-                                "code": "POS",
-                                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
-                                "display": "Positive",
-                            }
-                        ],
-                        "critical_coded_value_set": [],
-                    }
-                ],
+                qualified_ranges=[],
             )
         )
         default_price_components = [
@@ -1182,7 +1146,7 @@ class Command(BaseCommand):
             ChargeItemDefinitionSpec(
                 status="active",
                 title="Fasting Blood Glucose Test",
-                slug="fasting-blood-glucose-test",
+                slug="fasting-glucose-test",
                 description="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
                 purpose="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
                 price_components=[
@@ -1270,6 +1234,7 @@ class Command(BaseCommand):
                 status="active",
                 description="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
                 usage="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
+                classification="laboratory",
                 category="laboratory",
                 kind="service_request",
                 code=code_snomed_fasting_glucose,
@@ -1290,6 +1255,7 @@ class Command(BaseCommand):
                 status="active",
                 description="A Complete Blood Count (CBC) is a common laboratory test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), white blood cells (WBC), hemoglobin, hematocrit, and platelets.",
                 usage="test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), ",
+                classification="laboratory",
                 category="laboratory",
                 kind="service_request",
                 code=code_snomed_cbc,
@@ -1308,6 +1274,7 @@ class Command(BaseCommand):
                 derived_from_uri="urn:activity:lipid-panel",
                 description="A comprehensive blood test measuring cholesterol and triglyceride levels to assess cardiovascular health.",
                 usage="A comprehensive blood test measuring cholesterol and triglyceride levels to assess cardiovascular health.",
+                classification="laboratory",
                 category="laboratory",
                 kind="service_request",
                 code=code_loinc_lipid_panel,
@@ -1325,6 +1292,7 @@ class Command(BaseCommand):
                 status="active",
                 description="A diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
                 usage="A diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
+                classification="laboratory",
                 category="laboratory",
                 kind="service_request",
                 code=code_loinc_urine,
