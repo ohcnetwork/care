@@ -53,10 +53,11 @@ class ProductKnowledgeViewSet(
     ordering_fields = ["created_date", "modified_date"]
 
     def get_serializer_create_context(self):
-        facility = get_object_or_404(
-            Facility, external_id=self.request.data.get("facility")
-        )
-        return {"facility": facility}
+        facility_id = self.request.data.get("facility")
+        if facility_id:
+            facility = get_object_or_404(Facility, external_id=facility_id)
+            return {"facility": facility}
+        return {}
 
     def get_serializer_update_context(self):
         obj = self.get_object()
