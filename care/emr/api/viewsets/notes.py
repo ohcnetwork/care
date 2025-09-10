@@ -40,8 +40,8 @@ class NoteThreadViewSet(
 ):
     database_model = NoteThread
     pydantic_model = NoteThreadCreateSpec
-    pydantic_read_model = NoteThreadUpdateSpec
-    pydantic_update_model = NoteThreadReadSpec
+    pydantic_read_model = NoteThreadReadSpec
+    pydantic_update_model = NoteThreadUpdateSpec
     filterset_class = NoteThreadFilters
     filter_backends = [filters.DjangoFilterBackend]
 
