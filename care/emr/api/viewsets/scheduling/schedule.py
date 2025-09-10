@@ -41,7 +41,7 @@ from care.utils.lock import Lock
 class ChargeItemDefinitionSetSpec(BaseModel):
     charge_item_definition: str
     re_visit_allowed_days: int
-    re_visit_charge_item_definition: str | None = None
+    re_visit_charge_item_definition: str | None
 
 
 class ScheduleFilters(FilterSet):

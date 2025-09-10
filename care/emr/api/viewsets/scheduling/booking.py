@@ -152,11 +152,23 @@ class TokenBookingViewSet(
         if self.action == "list":
             if "resource_type" not in self.request.query_params:
                 raise ValidationError("Resource Type is required")
+
+            organization_ids = []
+            if self.request.query_params.get("organization_ids"):
+                organization_ids = self.request.query_params.get(
+                    "organization_ids", ""
+                ).split(",")
+            resource_ids = []
+            if self.request.query_params.get("resource_ids"):
+                resource_ids = self.request.query_params.get("resource_ids", "").split(
+                    ","
+                )
+
             queryset = authorize_booking_list(
                 queryset,
                 self.request.query_params["resource_type"],
-                self.request.query_params.get("organization_ids", "").split(","),
-                self.request.query_params.get("resource_ids", "").split(","),
+                organization_ids,
+                resource_ids,
                 self.request.user,
                 facility,
             )
