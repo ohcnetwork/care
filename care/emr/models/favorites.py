@@ -49,6 +49,10 @@ class UserResourceFavorites(EMRBaseModel):
         )
 
     def save(self, *args, **kwargs):
+        if not self.pk:
+            cache.delete(
+                favorite_lists_cache_key(self.user, self.resource_type, self.facility)
+            )
         update_fields = kwargs.get("update_fields", [])
         super().save(*args, **kwargs)
         self.refresh_cache(refresh_list="favorite_list" in update_fields)
