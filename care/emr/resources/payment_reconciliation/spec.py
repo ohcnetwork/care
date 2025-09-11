@@ -70,6 +70,9 @@ class BasePaymentReconciliationSpec(EMRResource):
     method: PaymentReconciliationPaymentMethodOptions
     reference_number: str | None = None
     authorization: str | None = None
+    returned_amount: float
+    tendered_amount: float
+    amount: float | None = None
 
     note: str | None = None
 
@@ -86,9 +89,6 @@ class PaymentReconciliationWriteSpec(BasePaymentReconciliationSpec):
 
     target_invoice: UUID4 | None = None
     account: UUID4
-    amount: float | None = None
-    tendered_amount: float
-    returned_amount: float
     is_credit_note: bool = False
 
     def perform_extra_deserialization(self, is_update, obj):
@@ -102,9 +102,6 @@ class PaymentReconciliationReadSpec(BasePaymentReconciliationSpec):
 
     account: dict
     target_invoice: dict | None = None
-    amount: float | None = None
-    tendered_amount: float
-    returned_amount: float
     is_credit_note: bool
 
     @classmethod
