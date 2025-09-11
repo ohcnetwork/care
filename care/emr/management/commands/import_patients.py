@@ -1,15 +1,17 @@
 import json
+from collections.abc import Iterable
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Tuple
+from typing import Any
 from urllib.parse import urlparse
-import sys
 
 import requests
-
+from dateutil.parser import isoparse
 from django.core.management.base import BaseCommand, CommandError
 from django.db import transaction
+from django.utils import timezone
 
-from care.emr.models import Patient, Organization
+from care.emr.models import Organization, Patient
+from care.emr.models.patient import PatientIdentifier, PatientIdentifierConfig
 
 REQUIRED_FIELDS = ["external_id"]
 OPTIONAL_FIELDS = [
@@ -27,7 +29,12 @@ OPTIONAL_FIELDS = [
     "blood_group",
     "geo_organization",
 ]
-ALL_FIELDS = REQUIRED_FIELDS + OPTIONAL_FIELDS
+EXTRA_FIELDS = [
+    "identifiers",  # List[{"config": <config_external_id>, "value": <str>}] (optional)
+    "created_date",  # ISO8601 datetime
+    "modified_date",  # ISO8601 datetime
+]
+ALL_FIELDS = REQUIRED_FIELDS + OPTIONAL_FIELDS + EXTRA_FIELDS
 
 
 class Command(BaseCommand):
@@ -40,16 +47,23 @@ class Command(BaseCommand):
             help="Path or URL to the JSON file (list or JSONL). If URL (http/https), it will be downloaded.",
         )
         parser.add_argument(
-            "--dry-run", action="store_true", help="Validate and show summary without writing to DB"
+            "--dry-run",
+            action="store_true",
+            help="Validate and show summary without writing to DB",
         )
         parser.add_argument(
-            "--strict", action="store_true", help="Fail fast on first error instead of skipping"
+            "--strict",
+            action="store_true",
+            help="Fail fast on first error instead of skipping",
         )
         parser.add_argument(
-            "--batch-size", type=int, default=100, help="Number of rows per DB transaction batch"
+            "--batch-size",
+            type=int,
+            default=100,
+            help="Number of rows per DB transaction batch",
         )
 
-    def fetch_source(self, source: str) -> Tuple[str, bool]:
+    def fetch_source(self, source: str) -> tuple[str, bool]:
         """Return the raw text content of a local path or URL.
 
         Returns (text, downloaded) where downloaded indicates a network fetch.
@@ -58,7 +72,9 @@ class Command(BaseCommand):
         if parsed.scheme in {"http", "https"}:
             resp = requests.get(source, timeout=60)
             if resp.status_code != 200:
-                raise CommandError(f"Failed to download {source}: HTTP {resp.status_code}")
+                raise CommandError(
+                    f"Failed to download {source}: HTTP {resp.status_code}"
+                )
             return resp.text, True
         # treat as file path
         path = Path(source).expanduser()
@@ -66,7 +82,7 @@ class Command(BaseCommand):
             raise CommandError(f"File not found: {path}")
         return path.read_text(), False
 
-    def load_json(self, raw_text: str) -> Iterable[Dict[str, Any]]:
+    def load_json(self, raw_text: str) -> Iterable[dict[str, Any]]:
         """Support two formats: a single JSON array OR newline delimited JSON (JSONL)."""
         raw = raw_text.strip()
         if not raw:
@@ -77,7 +93,7 @@ class Command(BaseCommand):
                 raise CommandError("Top-level JSON must be a list of objects")
             return data
         # Assume JSONL
-        records: List[Dict[str, Any]] = []
+        records: list[dict[str, Any]] = []
         for i, line in enumerate(raw.splitlines(), start=1):
             line = line.strip()
             if not line:
@@ -89,20 +105,55 @@ class Command(BaseCommand):
             records.append(obj)
         return records
 
-    def normalize_record(self, rec: Dict[str, Any]) -> Dict[str, Any]:
-        # Only keep known fields
+    def normalize_record(self, rec: dict[str, Any]) -> dict[str, Any]:
+        """Validate required fields and basic structure.
+
+        Supports optional 'identifiers' list with objects having 'config' and 'value'.
+        """
         cleaned = {k: v for k, v in rec.items() if k in ALL_FIELDS}
         missing = [f for f in REQUIRED_FIELDS if not cleaned.get(f)]
         if missing:
             raise ValueError(f"Missing required fields: {', '.join(missing)}")
+
+        identifiers = cleaned.get("identifiers") or []
+        if identifiers and not isinstance(identifiers, list):
+            raise ValueError("'identifiers' must be a list")
+        validated_identifiers: list[dict[str, Any]] = []
+        for i, ident in enumerate(identifiers, start=1):
+            if not isinstance(ident, dict):
+                raise ValueError(f"identifiers[{i}] must be an object")
+            cfg = ident.get("config")
+            # value may be empty -> indicates deletion when updating
+            if not cfg:
+                raise ValueError(f"identifiers[{i}].config is required")
+            validated_identifiers.append({"config": cfg, "value": ident.get("value")})
+        if validated_identifiers:
+            cleaned["identifiers"] = validated_identifiers
+
+        # Validate optional created_date / modified_date for dry-run visibility
+        for dt_field in ("created_date", "modified_date"):
+            if cleaned.get(dt_field):
+                try:
+                    dt = (
+                        isoparse(cleaned[dt_field])
+                        if isinstance(cleaned[dt_field], str)
+                        else cleaned[dt_field]
+                    )
+                    if timezone.is_naive(dt):  # make timezone aware
+                        dt = timezone.make_aware(dt)
+                    cleaned[dt_field] = dt
+                except Exception as exc:
+                    raise ValueError(f"Invalid {dt_field}: {exc}") from exc
         return cleaned
 
-    def resolve_foreign_keys(self, rec: Dict[str, Any]) -> Dict[str, Any]:
+    def resolve_foreign_keys(self, rec: dict[str, Any]) -> dict[str, Any]:
         geo_external = rec.get("geo_organization")
         if geo_external:
             org = Organization.objects.filter(external_id=geo_external).first()
             if not org:
-                raise ValueError(f"geo_organization with external_id '{geo_external}' not found")
+                raise ValueError(
+                    f"geo_organization with external_id '{geo_external}' not found"
+                )
             rec["geo_organization"] = org
         else:
             rec["geo_organization"] = None
@@ -114,7 +165,7 @@ class Command(BaseCommand):
             raw_text, downloaded = self.fetch_source(source)
             if downloaded:
                 msg = f"Downloaded source from {source}"
-                if hasattr(self.style, 'NOTICE'):
+                if hasattr(self.style, "NOTICE"):
                     self.stdout.write(self.style.NOTICE(msg))
                 else:
                     self.stdout.write(self.style.WARNING(msg))
@@ -129,8 +180,8 @@ class Command(BaseCommand):
             self.stdout.write(self.style.WARNING("No records found in input"))
             return
 
-        normalized: List[Dict[str, Any]] = []
-        errors: List[str] = []
+        normalized: list[dict[str, Any]] = []
+        errors: list[str] = []
         for idx, rec in enumerate(records, start=1):
             try:
                 rec = self.normalize_record(rec)
@@ -142,7 +193,11 @@ class Command(BaseCommand):
                 errors.append(msg)
 
         if errors:
-            self.stdout.write(self.style.WARNING(f"Skipped {len(errors)} invalid rows (use --strict to fail):"))
+            self.stdout.write(
+                self.style.WARNING(
+                    f"Skipped {len(errors)} invalid rows (use --strict to fail):"
+                )
+            )
             for e in errors[:10]:  # show sample
                 self.stdout.write("  - " + e)
             if len(errors) > 10:
@@ -160,29 +215,89 @@ class Command(BaseCommand):
             return
 
         batch_size = options["batch_size"]
-        batch: List[Dict[str, Any]] = []
+        batch: list[dict[str, Any]] = []
 
-        def flush(batch: List[Dict[str, Any]]):
+        def flush(batch: list[dict[str, Any]]):
             nonlocal created, updated, failed
             if not batch:
                 return
+            # Simple per-batch cache for identifier configs
+            id_config_cache: dict[str, PatientIdentifierConfig] = {}
             with transaction.atomic():
                 for rec in batch:
                     try:
+                        identifiers = rec.pop("identifiers", [])  # custom field
+                        create_dt = rec.pop("created_date", None)
+                        modify_dt = rec.pop("modified_date", None)
                         rec = self.resolve_foreign_keys(rec)
                         ext_id = rec.pop("external_id")
-                        obj, is_created = Patient.objects.update_or_create(
+                        patient_obj, is_created = Patient.objects.update_or_create(
                             external_id=ext_id, defaults=rec
                         )
+                        # Process identifiers after patient is saved
+                        if identifiers:
+                            for ident in identifiers:
+                                cfg_ext = ident["config"]
+                                value = ident.get("value")
+                                try:
+                                    if cfg_ext not in id_config_cache:
+                                        id_config_cache[cfg_ext] = (
+                                            PatientIdentifierConfig.objects.filter(
+                                                external_id=cfg_ext
+                                            ).first()
+                                        ) or None  # type: ignore[assignment]
+                                    cfg_obj = id_config_cache[cfg_ext]
+                                    if not cfg_obj:
+                                        raise ValueError(
+                                            f"Identifier config '{cfg_ext}' not found"
+                                        )
+                                    ident_qs = PatientIdentifier.objects.filter(
+                                        patient=patient_obj, config=cfg_obj
+                                    )
+                                    ident_obj = ident_qs.first()
+                                    if value in (None, ""):
+                                        # Deletion request
+                                        if ident_obj:
+                                            ident_obj.delete()
+                                        continue
+                                    if not ident_obj:
+                                        ident_obj = PatientIdentifier(
+                                            patient=patient_obj,
+                                            config=cfg_obj,
+                                        )
+                                    ident_obj.value = value
+                                    ident_obj.save()
+                                except Exception as ident_exc:
+                                    raise ValueError(
+                                        f"Identifier '{cfg_ext}' failed: {ident_exc}"
+                                    ) from ident_exc
+                            # rebuild patient identifier cache json fields
+                            patient_obj.build_instance_identifiers()
+                            patient_obj.save()
+                        # Apply imported timestamps AFTER all saves to avoid auto_now overrides
+                        updates_ts = {}
+                        if is_created and create_dt:
+                            updates_ts["created_date"] = create_dt
+                        if modify_dt:
+                            updates_ts["modified_date"] = modify_dt
+                        if updates_ts:
+                            Patient.objects.filter(pk=patient_obj.pk).update(
+                                **updates_ts
+                            )
                         if is_created:
                             created += 1
                         else:
                             updated += 1
                     except Exception as exc:
                         failed += 1
-                        self.stderr.write(self.style.ERROR(f"Failure for external_id={rec.get('external_id')}: {exc}"))
+                        self.stderr.write(
+                            self.style.ERROR(
+                                f"Failure for external_id={rec.get('external_id') or ext_id}: {exc}"
+                            )
+                        )
 
         last_progress_print = 0
+
         def print_progress(force=False):
             nonlocal last_progress_print
             # print every 100 records or on force
@@ -192,7 +307,7 @@ class Command(BaseCommand):
                 pct = (processed / max(1, len(normalized))) * 100
                 self.stdout.write(
                     f"Progress: {processed}/{len(normalized)} ({pct:0.1f}%) | Created: {created} Updated: {updated} Failed: {failed}\r",
-                    ending=""
+                    ending="",
                 )
                 self.stdout.flush()
 
