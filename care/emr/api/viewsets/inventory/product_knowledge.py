@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -25,6 +24,7 @@ from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyCharFilter
 from care.utils.filters.null_filter import NullFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class ProductKnowledgeFilters(filters.FilterSet):

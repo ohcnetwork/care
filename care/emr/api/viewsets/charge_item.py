@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel, model_validator
@@ -51,6 +50,7 @@ from care.emr.resources.tag.config_spec import TagResource
 from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class ChargeItemDefinitionFilters(filters.FilterSet):

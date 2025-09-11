@@ -8,7 +8,6 @@ from django.utils import timezone
 from pydantic import UUID4, BaseModel, model_validator
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRBaseViewSet, EMRRetrieveMixin
@@ -36,6 +35,7 @@ from care.emr.tagging.base import SingleFacilityTagManager
 from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
 from care.utils.lock import Lock
+from care.utils.shortcuts import get_object_or_404
 from care.utils.time_util import care_now
 
 
