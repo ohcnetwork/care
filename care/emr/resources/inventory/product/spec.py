@@ -1,6 +1,7 @@
 import datetime
 from enum import Enum
 
+from django.shortcuts import get_object_or_404
 from pydantic import UUID4, BaseModel
 
 from care.emr.models.charge_item_definition import ChargeItemDefinition
@@ -40,12 +41,14 @@ class ProductWriteSpec(BaseProductSpec):
     charge_item_definition: str | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
-        obj.product_knowledge = ProductKnowledge.objects.get(
+        obj.product_knowledge = get_object_or_404(
+            ProductKnowledge,
             slug=self.product_knowledge,
             facility=self.get_context().get("facility"),
         )
         if self.charge_item_definition:
-            obj.charge_item_definition = ChargeItemDefinition.objects.get(
+            obj.charge_item_definition = get_object_or_404(
+                ChargeItemDefinition,
                 slug=self.charge_item_definition,
                 facility=self.get_context().get("facility"),
             )
