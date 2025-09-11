@@ -62,6 +62,8 @@ class InvoiceReadSpec(BaseInvoiceSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+        mapping["total_net"] = str(round(obj.total_net, 2))
+        mapping["total_gross"] = str(round(obj.total_gross, 2))
 
 
 class InvoiceRetrieveSpec(InvoiceReadSpec):
