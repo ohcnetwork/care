@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import UUID4
@@ -56,14 +57,12 @@ class InvoiceWriteSpec(BaseInvoiceSpec):
 class InvoiceReadSpec(BaseInvoiceSpec):
     """Invoice read specification"""
 
-    total_net: float
-    total_gross: float
+    total_net: Decimal
+    total_gross: Decimal
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["total_net"] = str(round(obj.total_net, 2))
-        mapping["total_gross"] = str(round(obj.total_gross, 2))
 
 
 class InvoiceRetrieveSpec(InvoiceReadSpec):
