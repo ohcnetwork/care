@@ -28,7 +28,7 @@ def emr_exception_handler(exc, context):
                 "errors": [
                     {
                         "type": "object_not_found",
-                        "msg": exc.args[0] if exc.args else "Object Not found",
+                        "msg": exc.args[0] if exc.args else "Object not found",
                     }
                 ]
             },
