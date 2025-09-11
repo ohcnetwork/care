@@ -53,7 +53,7 @@ class FavoritesFilter(BaseFilterBackend):
                 request.user, view.FAVORITE_RESOURCE, facility, favorite_list
             )
         )
-        if favorites is not None:
+        if favorites is None:
             favorites_objs = UserResourceFavorites.objects.filter(
                 user=request.user,
                 favorite_list=favorite_list,

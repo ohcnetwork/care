@@ -49,6 +49,6 @@ class UserResourceFavorites(EMRBaseModel):
         )
 
     def save(self, *args, **kwargs):
-        update_fields = kwargs.get("update_fields")
+        update_fields = kwargs.get("update_fields", [])
         super().save(*args, **kwargs)
         self.refresh_cache(refresh_list="favorite_list" in update_fields)
