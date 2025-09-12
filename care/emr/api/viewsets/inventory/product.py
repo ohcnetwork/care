@@ -9,6 +9,7 @@ from care.emr.api.viewsets.base import (
     EMRListMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
+    EMRUpsertMixin,
 )
 from care.emr.models.product import Product
 from care.emr.resources.inventory.product.spec import ProductReadSpec, ProductWriteSpec
@@ -23,7 +24,12 @@ class ProductFilters(filters.FilterSet):
 
 
 class ProductViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRUpsertMixin,
+    EMRBaseViewSet,
 ):
     database_model = Product
     pydantic_model = ProductWriteSpec

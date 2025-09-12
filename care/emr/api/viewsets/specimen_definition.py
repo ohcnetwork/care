@@ -9,6 +9,7 @@ from care.emr.api.viewsets.base import (
     EMRListMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
+    EMRUpsertMixin,
 )
 from care.emr.models.specimen_definition import SpecimenDefinition
 from care.emr.resources.specimen_definition.spec import (
@@ -25,7 +26,12 @@ class SpecimenDefinitionFilters(filters.FilterSet):
 
 
 class SpecimenDefinitionViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRUpsertMixin,
 ):
     database_model = SpecimenDefinition
     pydantic_model = BaseSpecimenDefinitionSpec
