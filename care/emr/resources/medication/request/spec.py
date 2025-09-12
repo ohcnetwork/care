@@ -1,7 +1,6 @@
 from datetime import datetime
 from enum import Enum
 
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 
 from care.emr.models.encounter import Encounter
@@ -25,6 +24,7 @@ from care.emr.resources.medication.valueset.route import CARE_ROUTE_VALUESET
 from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.users.models import User
+from care.utils.shortcuts import get_object_or_404
 
 
 class MedicationRequestStatus(str, Enum):

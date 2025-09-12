@@ -1,7 +1,6 @@
 from datetime import datetime
 from enum import Enum
 
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4, BaseModel
 
 from care.emr.models.encounter import Encounter
@@ -14,6 +13,7 @@ from care.emr.resources.charge_item.spec import ChargeItemReadSpec
 from care.emr.resources.inventory.inventory_item.spec import InventoryItemReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
 from care.emr.resources.medication.request.spec import DosageInstruction
+from care.utils.shortcuts import get_object_or_404
 
 
 class MedicationDispenseStatus(str, Enum):

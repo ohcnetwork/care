@@ -2,7 +2,6 @@ from django_filters import rest_framework as filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -22,6 +21,7 @@ from care.emr.resources.observation_definition.spec import (
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.utils.registries.evaluation_metric import EvaluatorMetricsRegistry
+from care.utils.shortcuts import get_object_or_404
 
 
 class ObservationDefinitionFilters(filters.FilterSet):

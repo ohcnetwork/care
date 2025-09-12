@@ -2,7 +2,6 @@ from django.db import transaction
 from django_filters import DateFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -21,6 +20,7 @@ from care.emr.resources.scheduling.availability_exception.spec import (
 )
 from care.facility.models import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class AvailabilityExceptionFilters(FilterSet):

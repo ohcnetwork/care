@@ -1,7 +1,6 @@
 import datetime
 from enum import Enum
 
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4
 
 from care.emr.models.diagnostic_report import DiagnosticReport
@@ -28,6 +27,7 @@ from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.users.models import User
+from care.utils.shortcuts import get_object_or_404
 
 
 class ServiceRequestStatusChoices(str, Enum):

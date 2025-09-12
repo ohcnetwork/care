@@ -3,7 +3,6 @@ from django_filters import rest_framework as filters
 from rest_framework import filters as rest_framework_filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -30,6 +29,7 @@ from care.security.authorization import AuthorizationController
 from care.users.models import User
 from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.filters.null_filter import NullFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class MedicationRequestFilter(filters.FilterSet):

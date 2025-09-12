@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -36,6 +35,7 @@ from care.emr.utils.compute_observation_interpretation import (
     compute_observation_interpretation,
 )
 from care.security.authorization.base import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class UpsertObservationRequest(BaseModel):
