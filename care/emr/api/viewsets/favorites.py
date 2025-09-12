@@ -1,6 +1,5 @@
 from django.conf import settings
 from django.core.cache import cache
-from django.shortcuts import get_object_or_404
 from pydantic import BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
@@ -9,6 +8,7 @@ from rest_framework.response import Response
 from care.emr.models.favorites import UserResourceFavorites, favorite_lists_cache_key
 from care.emr.resources.favorites.spec import DEFAULT_FAVORITE_LIST
 from care.facility.models.facility import Facility
+from care.utils.shortcuts import get_object_or_404
 
 
 class FavoriteRequest(BaseModel):
