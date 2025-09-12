@@ -73,15 +73,14 @@ x-postgres-env: &postgres-env
   POSTGRES_DB: care
   POSTGRES_USER: postgres
   POSTGRES_PASSWORD: postgres
-
-x-backend-env: &backend-env
-  DJANGO_SETTINGS_MODULE: config.settings.production
-  DATABASE_URL: postgres://postgres:postgres@db:5432/care
-  POSTGRES_DB: care
-  POSTGRES_USER: postgres
-  POSTGRES_PASSWORD: postgres
   POSTGRES_HOST: db
   POSTGRES_PORT: 5432
+  POSTGRES_DATABASE: care
+
+x-backend-env: &backend-env
+  <<: *postgres-env
+  DJANGO_SETTINGS_MODULE: config.settings.production
+  DATABASE_URL: postgres://postgres:postgres@db:5432/care
   REDIS_URL: redis://redis:6379/0
   CELERY_BROKER_URL: redis://redis:6379/0
   BUCKET_ENDPOINT: http://minio:9000
@@ -110,9 +109,9 @@ x-policy-template: &policy-template
 services:
   db:
     image: haproxy:alpine
-    ports:
-      - "5432:5432" # Write operations (master)
-      - "5433:5433" # Read operations (slaves)
+    # ports:
+    #   - "5432:5432" # Write operations (master)
+    #   - "5433:5433" # Read operations (slaves)
     configs:
       - source: haproxy-config
         target: /usr/local/etc/haproxy/haproxy.cfg
@@ -164,7 +163,7 @@ services:
       timeout: 10s
       retries: 3
 
-  db-slave1:
+  db-slave1: &postgres-slave
     image: postgres:alpine
     environment:
       <<: *postgres-env
@@ -199,42 +198,14 @@ services:
       retries: 3
 
   db-slave2:
-    image: postgres:alpine
-    environment:
-      <<: *postgres-env
-      POSTGRES_REPLICATION_USER: replicator
-      POSTGRES_REPLICATION_PASSWORD: replicator
-      POSTGRES_MASTER_HOST: db-master
-      POSTGRES_MASTER_PORT: 5432
+    <<: *postgres-slave
     volumes:
       - postgres-slave2-data:/var/lib/postgresql/data
-    configs:
-      - source: postgres-slave
-        target: /docker-entrypoint-initdb.d/init.sh
-        mode: 0755
-    deploy:
-      <<: *policy-template
-      replicas: 1
-      placement:
-        constraints:
-          - node.role == worker
-        max_replicas_per_node: 1
-      resources:
-        limits:
-          memory: 256M
-          cpus: "0.2"
-        reservations:
-          memory: 128M
-          cpus: "0.1"
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres -d care"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
 
   db-backup:
     image: eeshugerman/postgres-backup-s3:16
     environment:
+      <<: *postgres-env
       SCHEDULE: "@daily"
       BACKUP_KEEP_DAYS: 14
       S3_REGION: ap-south-1
@@ -243,9 +214,6 @@ services:
       S3_BUCKET: care-postgres-backup
       S3_PREFIX: backup
       POSTGRES_HOST: db-master
-      POSTGRES_PORT: 5432
-      POSTGRES_DATABASE: care
-      <<: *postgres-env
     deploy:
       <<: *policy-template
       replicas: 1
