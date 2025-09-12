@@ -25,7 +25,7 @@ python manage.py <command_name> [options]
 Import patients from a JSON array file, newline‑delimited JSON (JSONL), or a remote URL (http/https). Creates or updates rows keyed by `external_id`.
 
 ### Supported Fields
-`external_id` (required) plus optional: `name`, `gender`, `phone_number`, `emergency_phone_number`, `address`, `permanent_address`, `pincode`, `date_of_birth`, `year_of_birth`, `deceased_datetime`, `marital_status`, `blood_group`, `geo_organization` (organization `external_id`).
+`external_id` (required) plus optional: `name`, `gender`, `phone_number`, `emergency_phone_number`, `address`, `permanent_address`, `pincode`, `date_of_birth`, `year_of_birth`, `deceased_datetime`, `marital_status`, `blood_group`, `geo_organization` (organization `external_id`), `created_by`, `updated_by` (user `external_id` UUIDs).
 
 Structured field:
 - `identifiers`: list of objects `{ "config": "<identifier_config_external_id>", "value": "<string or empty>" }`
@@ -61,6 +61,8 @@ python manage.py import_patients https://example.com/patients.json --strict --ba
     "name": "John Doe",
     "gender": "M",
     "geo_organization": "ORG001",
+    "created_by": "8c7f0c8d-3c5d-4ec2-9b3b-0d4a4be5e7aa",
+    "updated_by": "8c7f0c8d-3c5d-4ec2-9b3b-0d4a4be5e7aa",
     "identifiers": [
       {"config": "NATIONAL_ID", "value": "ABC123"},
       {"config": "HOSPITAL_MRN", "value": "MRN-0099"}

@@ -16,6 +16,7 @@ from care.emr.models.questionnaire import (
     Questionnaire,
     QuestionnaireResponse,
 )
+from care.users.models import User
 
 # ---------------------------------------------------------------------------
 # Field configuration
@@ -33,6 +34,9 @@ OPTIONAL_FIELDS = [
     "responses",  # list (default [])
     "structured_responses",  # dict (default {})
     "structured_response_type",  # string or null
+    # Optional user external_ids (UUID) for attribution
+    "created_by",
+    "updated_by",
 ]
 
 EXTRA_FIELDS = [
@@ -155,6 +159,11 @@ class Command(BaseCommand):
                 except Exception as exc:
                     raise ValueError(f"Invalid {dt_field}: {exc}") from exc
 
+        # Treat empty created_by/updated_by as absent
+        for user_field in ("created_by", "updated_by"):
+            if user_field in cleaned and cleaned[user_field] in (None, ""):
+                cleaned.pop(user_field, None)
+
         return cleaned
 
     # ------------------------------------------------------------------
@@ -255,13 +264,40 @@ class Command(BaseCommand):
             if not batch:
                 return
             with transaction.atomic():
+                user_cache: dict[str, User | None] = {}
                 for rec in batch:
                     try:
                         create_dt = rec.pop("created_date", None)
                         modify_dt = rec.pop("modified_date", None)
+                        created_by_ext = rec.pop("created_by", None)
+                        updated_by_ext = rec.pop("updated_by", None)
                         ext_id = rec["external_id"]
                         defaults = {k: v for k, v in rec.items() if k != "external_id"}
                         defaults = self.resolve_foreign_keys(defaults)
+
+                        # Resolve attribution users
+                        if created_by_ext:
+                            if created_by_ext not in user_cache:
+                                user_cache[created_by_ext] = User.objects.filter(
+                                    external_id=created_by_ext
+                                ).first()
+                            user_obj = user_cache[created_by_ext]
+                            if not user_obj:
+                                raise ValueError(
+                                    f"created_by user '{created_by_ext}' not found"
+                                )
+                            defaults["created_by"] = user_obj
+                        if updated_by_ext:
+                            if updated_by_ext not in user_cache:
+                                user_cache[updated_by_ext] = User.objects.filter(
+                                    external_id=updated_by_ext
+                                ).first()
+                            user_obj = user_cache[updated_by_ext]
+                            if not user_obj:
+                                raise ValueError(
+                                    f"updated_by user '{updated_by_ext}' not found"
+                                )
+                            defaults["updated_by"] = user_obj
                         obj, is_created = (
                             QuestionnaireResponse.objects.update_or_create(
                                 external_id=ext_id, defaults=defaults

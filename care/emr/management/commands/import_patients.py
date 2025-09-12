@@ -12,6 +12,7 @@ from django.utils import timezone
 
 from care.emr.models import Organization, Patient
 from care.emr.models.patient import PatientIdentifier, PatientIdentifierConfig
+from care.users.models import User
 
 REQUIRED_FIELDS = ["external_id"]
 OPTIONAL_FIELDS = [
@@ -28,6 +29,9 @@ OPTIONAL_FIELDS = [
     "marital_status",
     "blood_group",
     "geo_organization",
+    # Creator / updater external IDs (UUID strings). Optional.
+    "created_by",
+    "updated_by",
 ]
 EXTRA_FIELDS = [
     "identifiers",  # List[{"config": <config_external_id>, "value": <str>}] (optional)
@@ -144,6 +148,12 @@ class Command(BaseCommand):
                     cleaned[dt_field] = dt
                 except Exception as exc:
                     raise ValueError(f"Invalid {dt_field}: {exc}") from exc
+
+        # created_by / updated_by are user external_ids. We'll resolve later.
+        for user_field in ("created_by", "updated_by"):
+            if user_field in cleaned and cleaned[user_field] in (None, ""):
+                # Treat empty string as an explicit null (no change on update)
+                cleaned.pop(user_field, None)
         return cleaned
 
     def resolve_foreign_keys(self, rec: dict[str, Any]) -> dict[str, Any]:
@@ -223,14 +233,41 @@ class Command(BaseCommand):
                 return
             # Simple per-batch cache for identifier configs
             id_config_cache: dict[str, PatientIdentifierConfig] = {}
+            user_cache: dict[str, User | None] = {}
             with transaction.atomic():
                 for rec in batch:
                     try:
                         identifiers = rec.pop("identifiers", [])  # custom field
                         create_dt = rec.pop("created_date", None)
                         modify_dt = rec.pop("modified_date", None)
+                        created_by_ext = rec.pop("created_by", None)
+                        updated_by_ext = rec.pop("updated_by", None)
                         rec = self.resolve_foreign_keys(rec)
                         ext_id = rec.pop("external_id")
+
+                        # Resolve created_by / updated_by external UUIDs to User objects if provided
+                        if created_by_ext:
+                            if created_by_ext not in user_cache:
+                                user_cache[created_by_ext] = User.objects.filter(
+                                    external_id=created_by_ext
+                                ).first()
+                            user_obj = user_cache[created_by_ext]
+                            if not user_obj:
+                                raise ValueError(
+                                    f"created_by user '{created_by_ext}' not found"
+                                )
+                            rec["created_by"] = user_obj
+                        if updated_by_ext:
+                            if updated_by_ext not in user_cache:
+                                user_cache[updated_by_ext] = User.objects.filter(
+                                    external_id=updated_by_ext
+                                ).first()
+                            user_obj = user_cache[updated_by_ext]
+                            if not user_obj:
+                                raise ValueError(
+                                    f"updated_by user '{updated_by_ext}' not found"
+                                )
+                            rec["updated_by"] = user_obj
                         patient_obj, is_created = Patient.objects.update_or_create(
                             external_id=ext_id, defaults=rec
                         )
