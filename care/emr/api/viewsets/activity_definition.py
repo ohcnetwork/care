@@ -10,6 +10,7 @@ from care.emr.api.viewsets.base import (
     EMRRetrieveMixin,
     EMRTagMixin,
     EMRUpdateMixin,
+    EMRUpsertMixin,
 )
 from care.emr.models import ActivityDefinition
 from care.emr.models.charge_item_definition import ChargeItemDefinition
@@ -40,6 +41,7 @@ class ActivityDefinitionViewSet(
     EMRListMixin,
     EMRTagMixin,
     EMRBaseViewSet,
+    EMRUpsertMixin,
 ):
     database_model = ActivityDefinition
     pydantic_model = ActivityDefinitionWriteSpec
@@ -127,7 +129,11 @@ class ActivityDefinitionViewSet(
     def validate_data(self, instance, model_obj=None):
         queryset = ActivityDefinition.objects.filter(slug__iexact=instance.slug)
         if model_obj:
-            queryset = queryset.exclude(id=model_obj.id)
+            queryset = queryset.filter(facility=model_obj.facility).exclude(
+                id=model_obj.id
+            )
+        else:
+            queryset = queryset.filter(facility=self.get_facility_obj())
         if queryset.exists():
             raise ValidationError("Slug already exists in this facility.")
         return super().validate_data(instance, model_obj)

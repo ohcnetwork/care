@@ -23,7 +23,7 @@ class MonetaryComponent(BaseModel):
     def base_no_factor(self):
         if (
             self.monetary_component_type == MonetaryComponentType.base.value
-            and not self.amount
+            and self.amount is None
         ):
             raise ValueError("Base component must have an amount.")
         return self
