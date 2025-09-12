@@ -1,7 +1,6 @@
 from datetime import date
 from enum import Enum
 
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4
 
 from care.emr.models.patient import Patient
@@ -14,6 +13,7 @@ from care.emr.resources.scheduling.token_category.spec import TokenCategoryReadS
 from care.emr.resources.scheduling.token_queue.spec import TokenQueueReadSpec
 from care.emr.resources.scheduling.token_sub_queue.spec import TokenSubQueueReadSpec
 from care.emr.resources.user.spec import UserSpec
+from care.utils.shortcuts import get_object_or_404
 
 
 class TokenStatusOptions(str, Enum):

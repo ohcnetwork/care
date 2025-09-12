@@ -1,7 +1,6 @@
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -11,15 +10,19 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.api.viewsets.favorites import EMRFavoritesMixin
 from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.resource_category import ResourceCategory
 from care.emr.resources.charge_item_definition.spec import (
     ChargeItemDefinitionReadSpec,
     ChargeItemDefinitionSpec,
 )
+from care.emr.resources.favorites.filters import FavoritesFilter
+from care.emr.resources.favorites.spec import FavoriteResourceChoices
 from care.facility.models import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyCharFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class ChargeItemDefinitionFilters(filters.FilterSet):
@@ -30,6 +33,7 @@ class ChargeItemDefinitionFilters(filters.FilterSet):
 
 
 class ChargeItemDefinitionViewSet(
+    EMRFavoritesMixin,
     EMRCreateMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
@@ -42,8 +46,9 @@ class ChargeItemDefinitionViewSet(
     pydantic_model = ChargeItemDefinitionSpec
     pydantic_read_model = ChargeItemDefinitionReadSpec
     filterset_class = ChargeItemDefinitionFilters
-    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter, FavoritesFilter]
     ordering_fields = ["created_date", "modified_date"]
+    FAVORITE_RESOURCE = FavoriteResourceChoices.charge_item_definition
 
     def get_facility_obj(self):
         return get_object_or_404(

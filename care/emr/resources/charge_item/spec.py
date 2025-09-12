@@ -1,6 +1,5 @@
 from enum import Enum
 
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4, BaseModel, model_validator
 
 from care.emr.models.account import Account
@@ -15,6 +14,7 @@ from care.emr.resources.common.monetary_component import (
     MonetaryComponentType,
 )
 from care.emr.tagging.base import SingleFacilityTagManager
+from care.utils.shortcuts import get_object_or_404
 
 
 class ChargeItemStatusOptions(str, Enum):

@@ -3,7 +3,6 @@ from enum import Enum
 from typing import Any
 
 from pydantic import UUID4, UUID5, ConfigDict, Field, field_validator, model_validator
-from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
 from care.emr.resources.base import EMRResource
@@ -14,6 +13,7 @@ from care.emr.resources.observation.valueset import (
 from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.slug_type import SlugType
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
+from care.utils.shortcuts import get_object_or_404
 
 
 class EnableOperator(str, Enum):

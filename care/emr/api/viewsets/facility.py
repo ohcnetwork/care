@@ -8,7 +8,6 @@ from rest_framework import filters as drf_filters
 from rest_framework import serializers
 from rest_framework.decorators import action, parser_classes
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
@@ -32,6 +31,7 @@ from care.utils.models.validators import (
     cover_image_validator,
     custom_image_extension_validator,
 )
+from care.utils.shortcuts import get_object_or_404
 
 
 class FacilityImageUploadSerializer(serializers.ModelSerializer):

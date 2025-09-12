@@ -1,9 +1,10 @@
 from enum import Enum
 
-from pydantic import UUID4, Field
+from pydantic import UUID4
 
 from care.emr.models.resource_category import ResourceCategory
 from care.emr.resources.base import EMRResource
+from care.emr.utils.slug_type import SlugType
 
 
 class ResourceCategoryResourceTypeOptions(str, Enum):
@@ -20,7 +21,7 @@ class ResourceCategoryBaseSpec(EMRResource):
 
     id: UUID4 | None = None
     title: str
-    slug: str = Field(max_length=20)
+    slug: SlugType
     description: str | None = None
     resource_type: ResourceCategoryResourceTypeOptions
     resource_sub_type: str

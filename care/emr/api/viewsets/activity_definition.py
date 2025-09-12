@@ -1,7 +1,6 @@
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -12,6 +11,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.api.viewsets.favorites import EMRFavoritesMixin
 from care.emr.models import ActivityDefinition
 from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.location import FacilityLocation
@@ -23,10 +23,13 @@ from care.emr.resources.activity_definition.spec import (
     ActivityDefinitionRetrieveSpec,
     ActivityDefinitionWriteSpec,
 )
+from care.emr.resources.favorites.filters import FavoritesFilter
+from care.emr.resources.favorites.spec import FavoriteResourceChoices
 from care.emr.resources.tag.config_spec import TagResource
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyCharFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class ActivityDefinitionFilters(filters.FilterSet):
@@ -46,6 +49,7 @@ class ActivityDefinitionViewSet(
     EMRTagMixin,
     EMRBaseViewSet,
     EMRUpsertMixin,
+    EMRFavoritesMixin,
 ):
     lookup_field = "slug"
     database_model = ActivityDefinition
@@ -53,9 +57,10 @@ class ActivityDefinitionViewSet(
     pydantic_read_model = ActivityDefinitionReadSpec
     pydantic_retrieve_model = ActivityDefinitionRetrieveSpec
     filterset_class = ActivityDefinitionFilters
-    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter, FavoritesFilter]
     ordering_fields = ["created_date", "modified_date"]
     resource_type = TagResource.activity_definition
+    FAVORITE_RESOURCE = FavoriteResourceChoices.activity_definition
 
     def get_facility_obj(self):
         return get_object_or_404(
@@ -141,9 +146,10 @@ class ActivityDefinitionViewSet(
         facility = self.get_facility_obj() if not model_obj else model_obj.facility
 
         if instance.category:
-            category = get_object_or_404(ResourceCategory, slug=instance.category)
-            if category.facility != facility:
-                raise ValidationError("Category does not belong to facility")
+            get_object_or_404(
+                ResourceCategory, slug=instance.category, facility=facility
+            )
+
         return super().validate_data(instance, model_obj)
 
     def perform_create(self, instance):

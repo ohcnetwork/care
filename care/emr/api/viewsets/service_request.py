@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -45,6 +44,7 @@ from care.emr.resources.specimen_definition.specimen import convert_sd_to_specim
 from care.emr.resources.tag.config_spec import TagResource
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class ServiceRequestFilters(filters.FilterSet):

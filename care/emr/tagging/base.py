@@ -1,10 +1,10 @@
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
 from rest_framework.exceptions import ValidationError
 
 from care.emr.models.tag_config import TagConfig
 from care.emr.resources.tag.config_spec import TagConfigReadSpec
 from care.facility.models.facility import Facility
+from care.utils.shortcuts import get_object_or_404
 
 
 class BaseTagManager:

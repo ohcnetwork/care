@@ -1,7 +1,6 @@
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -19,6 +18,7 @@ from care.emr.resources.resource_category.spec import (
 )
 from care.facility.models import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class ResourceCategoryFilters(filters.FilterSet):
@@ -65,9 +65,9 @@ class ResourceCategoryViewSet(
         if not model_obj and instance.parent:
             parent = instance.parent
             if parent:
-                parent = get_object_or_404(ResourceCategory, slug=parent)
-                if parent.facility != facility:
-                    raise ValidationError("Parent category does not belong to facility")
+                parent = get_object_or_404(
+                    ResourceCategory, slug=parent, facility=facility
+                )
                 if parent.resource_type != instance.resource_type:
                     raise ValidationError(
                         "Parent category does not belong to same resource type"

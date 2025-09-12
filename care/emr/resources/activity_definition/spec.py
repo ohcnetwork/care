@@ -71,12 +71,12 @@ class BaseActivityDefinitionSpec(EMRResource):
 
 
 class ActivityDefinitionWriteSpec(BaseActivityDefinitionSpec):
-    locations: list[UUID4] = []
+    locations: list[UUID4]
     specimen_requirements: list[SlugType]
     observation_result_requirements: list[SlugType]
-    healthcare_service: UUID4 | None = None
-    charge_item_definitions: list[str] = []
-    category: str | None = None
+    healthcare_service: UUID4 | None
+    charge_item_definitions: list[SlugType]
+    category: SlugType | None
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.healthcare_service:

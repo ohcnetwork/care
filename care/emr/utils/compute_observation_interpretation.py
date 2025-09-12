@@ -22,12 +22,16 @@ def compute_observation_interpretation(model_instance, metrics_cache):
         if not model_instance.observation_definition.component:
             return None
         component_definition_dict = {
-            component_def["code"]["code"]: component_def["qualified_ranges"]
+            component_def.get("code", {}).get("code"): component_def.get(
+                "qualified_ranges"
+            )
             for component_def in model_instance.observation_definition.component
         }
 
         for component in model_instance.component:
             component_code = component.get("code", {}).get("code")
+            if not component_code or not component_definition_dict.get(component_code):
+                continue
             evaluator = InterpretationEvaluator(
                 component_definition_dict.get(component_code, [])
             )

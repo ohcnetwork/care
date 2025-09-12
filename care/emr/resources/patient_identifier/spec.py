@@ -1,6 +1,5 @@
 from enum import Enum
 
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4, BaseModel, field_validator
 
 from care.emr.models.patient import PatientIdentifierConfig
@@ -9,6 +8,7 @@ from care.emr.resources.patient_identifier.default_expression_evaluator import (
     evaluate_patient_dummy_expression,
 )
 from care.facility.models.facility import Facility
+from care.utils.shortcuts import get_object_or_404
 
 
 class PatientIdentifierUse(str, Enum):

@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -11,8 +10,11 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.api.viewsets.favorites import EMRFavoritesMixin
 from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.models.resource_category import ResourceCategory
+from care.emr.resources.favorites.filters import FavoritesFilter
+from care.emr.resources.favorites.spec import FavoriteResourceChoices
 from care.emr.resources.inventory.product_knowledge.spec import (
     ProductKnowledgeReadSpec,
     ProductKnowledgeUpdateSpec,
@@ -22,6 +24,7 @@ from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyCharFilter
 from care.utils.filters.null_filter import NullFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class ProductKnowledgeFilters(filters.FilterSet):
@@ -42,6 +45,7 @@ class ProductKnowledgeViewSet(
     EMRListMixin,
     EMRBaseViewSet,
     EMRUpsertMixin,
+    EMRFavoritesMixin,
 ):
     lookup_field = "slug"
     database_model = ProductKnowledge
@@ -49,8 +53,9 @@ class ProductKnowledgeViewSet(
     pydantic_update_model = ProductKnowledgeUpdateSpec
     pydantic_read_model = ProductKnowledgeReadSpec
     filterset_class = ProductKnowledgeFilters
-    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter, FavoritesFilter]
     ordering_fields = ["created_date", "modified_date"]
+    FAVORITE_RESOURCE = FavoriteResourceChoices.product_knowledge
 
     def get_serializer_create_context(self):
         facility_id = self.request.data.get("facility")
@@ -65,10 +70,11 @@ class ProductKnowledgeViewSet(
 
     def validate_data(self, instance, model_obj=None):
         queryset = ProductKnowledge.objects.filter(slug__iexact=instance.slug)
+        facility = None
         if model_obj:
             if getattr(model_obj, "facility", None):
-                facility = model_obj.facility.external_id
-                queryset = queryset.filter(facility=model_obj.facility_id).exclude(
+                facility = model_obj.facility
+                queryset = queryset.filter(facility=model_obj.facility).exclude(
                     id=model_obj.id
                 )
             else:
@@ -76,18 +82,20 @@ class ProductKnowledgeViewSet(
                     id=model_obj.id
                 )
         elif instance.facility:
-            facility = instance.facility
-            queryset = queryset.filter(facility__external_id=instance.facility)
+            facility = get_object_or_404(
+                Facility.objects.only("id"), external_id=instance.facility
+            )
+            queryset = queryset.filter(facility=facility)
         else:
             facility = None
             queryset = queryset.filter(facility__isnull=True)
         if queryset.exists():
             raise ValidationError("Slug already exists.")
 
-        if instance.category:
-            category = get_object_or_404(ResourceCategory, slug=instance.category)
-            if not facility or category.facility.external_id != facility:
-                raise ValidationError("Category does not belong to facility")
+        if instance.category and facility:
+            get_object_or_404(
+                ResourceCategory, slug=instance.category, facility=facility
+            )
 
         return super().validate_data(instance, model_obj)
 

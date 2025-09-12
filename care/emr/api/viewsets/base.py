@@ -10,7 +10,6 @@ from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError as RestFrameworkValidationError
 from rest_framework.fields import get_error_detail
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.views import exception_handler as drf_exception_handler
 from rest_framework.viewsets import GenericViewSet
@@ -19,6 +18,7 @@ from care.emr.models import QuestionnaireResponse
 from care.emr.models.base import EMRBaseModel
 from care.emr.resources.base import EMRResource
 from care.emr.tagging.base import SingleFacilityTagManager
+from care.utils.shortcuts import get_object_or_404
 
 
 def emr_exception_handler(exc, context):
@@ -33,7 +33,7 @@ def emr_exception_handler(exc, context):
                 "errors": [
                     {
                         "type": "object_not_found",
-                        "msg": "Object not found",
+                        "msg": exc.args[0] if exc.args else "Object not found",
                     }
                 ]
             },
