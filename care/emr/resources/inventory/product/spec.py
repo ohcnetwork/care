@@ -1,7 +1,6 @@
 import datetime
 from enum import Enum
 
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4, BaseModel
 
 from care.emr.models.charge_item_definition import ChargeItemDefinition
@@ -10,6 +9,7 @@ from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.resources.base import EMRResource
 from care.emr.resources.charge_item_definition.spec import ChargeItemDefinitionReadSpec
 from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledgeReadSpec
+from care.utils.shortcuts import get_object_or_404
 
 
 class ProductStatusOptions(str, Enum):
