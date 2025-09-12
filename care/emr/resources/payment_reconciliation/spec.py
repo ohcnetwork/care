@@ -73,13 +73,6 @@ class BasePaymentReconciliationSpec(EMRResource):
 
     note: str | None = None
 
-    @model_validator(mode="after")
-    def check_amount_or_factor(self):
-        if self.returned_amount >= self.tendered_amount:
-            raise ValueError("Retrurned amount cannot be greater than tendered amount")
-        self.amount = self.tendered_amount - self.returned_amount
-        return self
-
 
 class PaymentReconciliationWriteSpec(BasePaymentReconciliationSpec):
     """Payment reconciliation write specification"""
@@ -95,6 +88,13 @@ class PaymentReconciliationWriteSpec(BasePaymentReconciliationSpec):
         if self.target_invoice:
             obj.target_invoice = Invoice.objects.get(external_id=self.target_invoice)
         obj.account = Account.objects.get(external_id=self.account)
+
+    @model_validator(mode="after")
+    def check_amount_or_factor(self):
+        if self.returned_amount >= self.tendered_amount:
+            raise ValueError("Retrurned amount cannot be greater than tendered amount")
+        self.amount = self.tendered_amount - self.returned_amount
+        return self
 
 
 class PaymentReconciliationReadSpec(BasePaymentReconciliationSpec):

@@ -1,5 +1,4 @@
 from django.core.cache import cache
-from django.shortcuts import get_object_or_404
 from rest_framework.compat import coreapi, coreschema
 from rest_framework.filters import BaseFilterBackend
 
@@ -8,6 +7,7 @@ from care.emr.models.favorites import (
     favorite_list_object_cache_key,
 )
 from care.facility.models.facility import Facility
+from care.utils.shortcuts import get_object_or_404
 
 
 class FavoritesFilter(BaseFilterBackend):

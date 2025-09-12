@@ -6,7 +6,6 @@ from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
@@ -31,6 +30,7 @@ from care.emr.resources.scheduling.token_queue.spec import (
 from care.facility.models import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.lock import Lock
+from care.utils.shortcuts import get_object_or_404
 
 
 class TokenQueueFilters(FilterSet):

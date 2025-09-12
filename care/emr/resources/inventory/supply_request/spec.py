@@ -1,6 +1,5 @@
 from enum import Enum
 
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4
 
 from care.emr.models.location import FacilityLocation
@@ -14,6 +13,7 @@ from care.emr.resources.organization.spec import (
     OrganizationReadSpec,
     OrganizationTypeChoices,
 )
+from care.utils.shortcuts import get_object_or_404
 
 
 class SupplyRequestStatusOptions(str, Enum):

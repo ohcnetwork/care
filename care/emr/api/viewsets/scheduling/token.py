@@ -5,7 +5,6 @@ from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models.scheduling.token import Token, TokenQueue, TokenSubQueue
@@ -20,6 +19,7 @@ from care.facility.models import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.lock import Lock
+from care.utils.shortcuts import get_object_or_404
 
 
 class SetCurrentTokenRequest(BaseModel):

@@ -5,7 +5,6 @@ from django_filters.rest_framework import DjangoFilterBackend
 from pydantic import BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -36,6 +35,7 @@ from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
 from care.utils.lock import Lock
+from care.utils.shortcuts import get_object_or_404
 
 
 class ChargeItemDefinitionSetSpec(BaseModel):
