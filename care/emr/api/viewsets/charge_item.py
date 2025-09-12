@@ -150,7 +150,7 @@ class ChargeItemViewSet(
             Facility, external_id=self.kwargs["facility_external_id"]
         )
 
-    def get_serializer_create_context(self):
+    def get_serializer_create_context(self, request_data: dict):
         return {"facility": self.get_facility_obj()}
 
     def perform_create(self, instance):

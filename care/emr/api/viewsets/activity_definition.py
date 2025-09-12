@@ -67,11 +67,11 @@ class ActivityDefinitionViewSet(
             Facility, external_id=self.kwargs["facility_external_id"]
         )
 
-    def get_serializer_create_context(self):
+    def get_serializer_create_context(self, request_data: dict):
         facility = self.get_facility_obj()
         return {"facility": facility}
 
-    def get_serializer_update_context(self):
+    def get_serializer_update_context(self, request_data: dict):
         obj = self.get_object()
         return {"facility": obj.facility}
 

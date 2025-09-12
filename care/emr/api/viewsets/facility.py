@@ -147,7 +147,7 @@ class FacilityViewSet(EMRModelViewSet):
             context={
                 "is_update": True,
                 "object": instance,
-                **self.get_serializer_update_context(),
+                **self.get_serializer_update_context(request.data),
             },
         )
         model_instance = serializer_obj.de_serialize(obj=instance)

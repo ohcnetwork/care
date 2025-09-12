@@ -99,6 +99,8 @@ class EMRResource(BaseModel):
                 meta[field] = dump[field]
         obj.meta = meta
 
+        obj._context = getattr(self, "_context", None)  # noqa: SLF001
+
         self.perform_extra_deserialization(is_update, obj)
         return obj
 

@@ -114,12 +114,15 @@ class EMRCreateMixin:
     def create(self, request, *args, **kwargs):
         return Response(self.handle_create(request.data))
 
-    def get_serializer_create_context(self):
+    def get_serializer_create_context(self, request_data: dict):
         return {}
 
     def handle_create(self, request_data):
         clean_data = self.clean_create_data(request_data)
-        context = {"is_create": True, **self.get_serializer_create_context()}
+        context = {
+            "is_create": True,
+            **self.get_serializer_create_context(request_data),
+        }
         instance = self.pydantic_model.model_validate(
             clean_data,
             context=context,
@@ -197,7 +200,7 @@ class EMRUpdateMixin:
         kwargs["partial"] = True
         return self.update(request, *args, **kwargs)
 
-    def get_serializer_update_context(self):
+    def get_serializer_update_context(self, request_data: dict):
         return {}
 
     def authorize_update(self, request_obj, model_instance):
@@ -209,7 +212,7 @@ class EMRUpdateMixin:
         context = {
             "is_update": True,
             "object": instance,
-            **self.get_serializer_update_context(),
+            **self.get_serializer_update_context(request_data),
         }
         serializer_obj = pydantic_model.model_validate(
             clean_data,

@@ -57,14 +57,14 @@ class ProductKnowledgeViewSet(
     ordering_fields = ["created_date", "modified_date"]
     FAVORITE_RESOURCE = FavoriteResourceChoices.product_knowledge
 
-    def get_serializer_create_context(self):
-        facility_id = self.request.data.get("facility")
+    def get_serializer_create_context(self, request_data: dict):
+        facility_id = request_data.get("facility")
         if facility_id:
             facility = get_object_or_404(Facility, external_id=facility_id)
             return {"facility": facility}
         return {}
 
-    def get_serializer_update_context(self):
+    def get_serializer_update_context(self, request_data: dict):
         obj = self.get_object()
         return {"facility": obj.facility}
 

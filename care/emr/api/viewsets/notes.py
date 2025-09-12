@@ -118,11 +118,14 @@ class NoteMessageViewSet(
             Patient, external_id=self.kwargs["patient_external_id"]
         )
 
+    def get_serializer_create_context(self, request_data: dict):
+        return {"encounter": request_data.get("encounter")}
+
     def perform_create(self, instance):
         instance.thread = get_object_or_404(
             NoteThread, external_id=self.kwargs["thread_external_id"]
         )
-        if encounter_id := self.request.data.get("encounter"):
+        if encounter_id := instance._context.get("encounter"):  # noqa: SLF001
             encounter = get_object_or_404(Encounter, external_id=encounter_id)
             if encounter.patient != instance.thread.patient:
                 raise ValidationError("Patient Mismatch")

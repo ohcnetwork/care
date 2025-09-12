@@ -66,6 +66,12 @@ class DeviceViewSet(EMRModelViewSet):
             Facility, external_id=self.kwargs["facility_external_id"]
         )
 
+    def get_serializer_create_context(self, request_data: dict):
+        return {"request_data": request_data}
+
+    def get_serializer_update_context(self, request_data: dict):
+        return {"request_data": request_data}
+
     def authorize_create(self, instance):
         facility = self.get_facility_obj()
         if not AuthorizationController.call(
@@ -90,7 +96,8 @@ class DeviceViewSet(EMRModelViewSet):
                 care_device_class = DeviceTypeRegistry.get_care_device_class(
                     instance.care_type
                 )
-                care_device_class().handle_create(self.request.data, instance)
+                request_data = instance._context.get("request_data", {})  # noqa: SLF001
+                care_device_class().handle_create(request_data, instance)
 
     def perform_update(self, instance):
         with transaction.atomic():
@@ -99,7 +106,8 @@ class DeviceViewSet(EMRModelViewSet):
                 care_device_class = DeviceTypeRegistry.get_care_device_class(
                     instance.care_type
                 )
-                care_device_class().handle_update(self.request.data, instance)
+                request_data = instance._context.get("request_data", {})  # noqa: SLF001
+                care_device_class().handle_update(request_data, instance)
 
     def perform_destroy(self, instance):
         with transaction.atomic():
