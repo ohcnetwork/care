@@ -7,11 +7,12 @@ class EvaluatorConditionSpec(BaseModel):
     metric: str
     operation: str
     value: dict | str
+    value_type: str | None = None
 
     @model_validator(mode="after")
     def validate_condition(self):
         evaluator = EvaluatorMetricsRegistry.get_evaluator(self.metric)
         if not evaluator:
             raise ValueError("Invalid metric")
-        evaluator.validate_rule(self.operation, self.value)
+        evaluator.validate_rule(self.operation, self.value, self.value_type)
         return self

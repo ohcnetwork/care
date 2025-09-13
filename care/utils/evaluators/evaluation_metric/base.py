@@ -8,29 +8,29 @@ class EvaluationMetricBase:
         self.context_object = context_object
 
     @classmethod
-    def validate_rule(cls, operation, value):
+    def validate_rule(cls, operation, value, value_type):
         if operation not in cls.allowed_operations:
             raise ValueError("Invalid operation")
         # TODO Check if value is the correct type for the operation
 
-    def apply_rule(self, operation, rule):
+    def apply_rule(self, operation, rule, value_type):
         if not self.context_object:
             return False
         if operation not in self.allowed_operations or not getattr(
             self, f"evaluate_{operation}", None
         ):
             raise ValueError("Invalid operation")
-        return getattr(self, f"evaluate_{operation}")(rule)
+        return getattr(self, f"evaluate_{operation}")(rule, value_type)
 
-    def evaluate_equality(self, rule):
+    def evaluate_equality(self, rule, value_type):
         value = self.get_value()
         return value == rule
 
-    def evaluate_in_range(self, rule):
+    def evaluate_in_range(self, rule, value_type):
         value = self.get_value()
         return value >= rule["min"] and value <= rule["max"]
 
-    def evaluate_intersects_any(self, rule):
+    def evaluate_intersects_any(self, rule, value_type):
         value = self.get_value()
 
         return value in rule["values"]
