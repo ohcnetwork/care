@@ -285,6 +285,27 @@ class MedicationRequestUpdateSpec(MedicationRequestResource):
     dispense_status: MedicationRequestDispenseStatus | None = None
 
 
+class SimpleMedicationRequestSpec:
+    """Simple spec to avoid circular references when including medication requests in prescription response"""
+    
+    @classmethod
+    def serialize(cls, obj):
+        return {
+            "id": obj.external_id,
+            "status": obj.status,
+            "intent": obj.intent,
+            "category": obj.category,
+            "priority": obj.priority,
+            "medication": obj.medication,
+            "dosage_instruction": obj.dosage_instruction,
+            "note": obj.note,
+            "authored_on": obj.authored_on,
+            "dispense_status": obj.dispense_status,
+            "created_date": obj.created_date,
+            "modified_date": obj.modified_date,
+        }
+
+
 class MedicationRequestReadSpec(BaseMedicationRequestSpec):
     created_by: UserSpec = {}
     updated_by: UserSpec = {}

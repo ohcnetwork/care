@@ -23,25 +23,7 @@ class MedicationRequestPrescriptionStatus(str, Enum):
     draft = "draft"
 
 
-class SimpleMedicationRequestSpec:
-    """Simple spec to avoid circular imports when including medication requests in prescription response"""
-    
-    @classmethod
-    def serialize(cls, obj):
-        return {
-            "id": obj.external_id,
-            "status": obj.status,
-            "intent": obj.intent,
-            "category": obj.category,
-            "priority": obj.priority,
-            "medication": obj.medication,
-            "dosage_instruction": obj.dosage_instruction,
-            "note": obj.note,
-            "authored_on": obj.authored_on,
-            "dispense_status": obj.dispense_status,
-            "created_date": obj.created_date,
-            "modified_date": obj.modified_date,
-        }
+
 
 
 class SimpleMedicationRequestPrescriptionSpec:
@@ -49,7 +31,6 @@ class SimpleMedicationRequestPrescriptionSpec:
     
     @classmethod
     def serialize(cls, obj):
-        from care.emr.tagging.base import SingleFacilityTagManager
         from care.emr.resources.base import model_from_cache
         
         data = {
@@ -114,6 +95,8 @@ class MedicationRequestPrescriptionReadSpec(BaseMedicationRequestPrescriptionSpe
         # Include related medication requests
         medication_requests = []
         for med_request in obj.medication_requests.all():
+            # Import here to avoid circular imports
+            from care.emr.resources.medication.request.spec import SimpleMedicationRequestSpec
             medication_requests.append(SimpleMedicationRequestSpec.serialize(med_request))
         mapping["medication_requests"] = medication_requests
 
