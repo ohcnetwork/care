@@ -61,4 +61,5 @@ class MedicationRequest(EMRBaseModel):
         null=True,
         blank=True,
         default=None,
+        related_name="medication_requests",
     )

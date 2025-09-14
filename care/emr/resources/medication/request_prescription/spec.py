@@ -23,6 +23,27 @@ class MedicationRequestPrescriptionStatus(str, Enum):
     draft = "draft"
 
 
+class SimpleMedicationRequestSpec:
+    """Simple spec to avoid circular imports when including medication requests in prescription response"""
+    
+    @classmethod
+    def serialize(cls, obj):
+        return {
+            "id": obj.external_id,
+            "status": obj.status,
+            "intent": obj.intent,
+            "category": obj.category,
+            "priority": obj.priority,
+            "medication": obj.medication,
+            "dosage_instruction": obj.dosage_instruction,
+            "note": obj.note,
+            "authored_on": obj.authored_on,
+            "dispense_status": obj.dispense_status,
+            "created_date": obj.created_date,
+            "modified_date": obj.modified_date,
+        }
+
+
 class MedicationRequestPrescriptionResource(EMRResource):
     __model__ = MedicationRequestPrescription
     __exclude__ = ["patient", "encounter"]
@@ -54,6 +75,7 @@ class MedicationRequestPrescriptionReadSpec(BaseMedicationRequestPrescriptionSpe
     modified_date: datetime
     prescribed_by: UserSpec = {}
     tags: list[dict] = []
+    medication_requests: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -63,6 +85,11 @@ class MedicationRequestPrescriptionReadSpec(BaseMedicationRequestPrescriptionSpe
                 UserSpec, id=obj.prescribed_by_id
             )
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+        # Include related medication requests
+        medication_requests = []
+        for med_request in obj.medication_requests.all():
+            medication_requests.append(SimpleMedicationRequestSpec.serialize(med_request))
+        mapping["medication_requests"] = medication_requests
 
 
 class MedicationRequestPrescriptionRetrieveSpec(MedicationRequestPrescriptionReadSpec):

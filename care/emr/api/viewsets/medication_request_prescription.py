@@ -45,5 +45,6 @@ class MedicationRequestPrescriptionViewSet(
             super()
             .get_queryset()
             .filter(patient__external_id=self.kwargs["patient_external_id"])
-            .select_related("patient", "encounter", "created_by", "updated_by")
+            .select_related("patient", "encounter", "created_by", "updated_by", "prescribed_by")
+            .prefetch_related("medication_requests")
         )
