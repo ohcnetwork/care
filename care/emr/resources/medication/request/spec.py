@@ -16,6 +16,7 @@ from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledge
 from care.emr.resources.medication.request_prescription.spec import (
     MedicationRequestPrescriptionReadSpec,
     MedicationRequestPrescriptionStatus,
+    SimpleMedicationRequestPrescriptionSpec,
 )
 from care.emr.resources.medication.valueset.additional_instruction import (
     CARE_ADDITIONAL_INSTRUCTION_VALUESET,
@@ -306,6 +307,6 @@ class MedicationRequestReadSpec(BaseMedicationRequestSpec):
             mapping["requester"] = model_from_cache(UserSpec, id=obj.requester_id)
         cls.serialize_audit_users(mapping, obj)
         if obj.prescription:
-            mapping["prescription"] = MedicationRequestPrescriptionReadSpec.serialize(
+            mapping["prescription"] = SimpleMedicationRequestPrescriptionSpec.serialize(
                 obj.prescription
-            ).to_json()
+            )

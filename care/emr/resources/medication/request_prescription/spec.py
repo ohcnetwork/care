@@ -44,6 +44,32 @@ class SimpleMedicationRequestSpec:
         }
 
 
+class SimpleMedicationRequestPrescriptionSpec:
+    """Simple spec to avoid circular references when including prescription in medication request response"""
+    
+    @classmethod
+    def serialize(cls, obj):
+        from care.emr.tagging.base import SingleFacilityTagManager
+        from care.emr.resources.base import model_from_cache
+        
+        data = {
+            "id": obj.external_id,
+            "status": obj.status,
+            "note": obj.note,
+            "name": obj.name,
+            "created_date": obj.created_date,
+            "modified_date": obj.modified_date,
+            "tags": SingleFacilityTagManager().render_tags(obj),
+        }
+        
+        if obj.prescribed_by:
+            data["prescribed_by"] = model_from_cache(
+                UserSpec, id=obj.prescribed_by_id
+            )
+        
+        return data
+
+
 class MedicationRequestPrescriptionResource(EMRResource):
     __model__ = MedicationRequestPrescription
     __exclude__ = ["patient", "encounter"]
