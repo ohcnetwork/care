@@ -108,6 +108,7 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
     item: UUID4
     quantity: float
     days_supply: float | None = None
+    fully_dispensed: bool
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.encounter = get_object_or_404(
@@ -131,10 +132,14 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
                 external_id=self.item, location__facility=obj.encounter.facility
             ).only("id")
         )
+        obj._fully_dispensed = self.fully_dispensed  # noqa # SLF001
 
 
 class MedicationDispenseUpdateSpec(BaseMedicationDispenseSpec):
-    pass
+    fully_dispensed: bool
+
+    def perform_extra_deserialization(self, is_update, obj):
+        obj._fully_dispensed = self.fully_dispensed  # noqa
 
 
 class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):

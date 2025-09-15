@@ -98,9 +98,14 @@ class MedicationDispenseViewSet(
                 instance.save(update_fields=["charge_item"])
             sync_inventory_item(instance.item.location, instance.item.product)
             if instance.authorizing_request:
-                instance.authorizing_request.dispense_status = (
-                    MedicationRequestDispenseStatus.partial.value
-                )
+                if instance._fully_dispensed:  # noqa
+                    instance.authorizing_request.dispense_status = (
+                        MedicationRequestDispenseStatus.complete.value
+                    )
+                else:
+                    instance.authorizing_request.dispense_status = (
+                        MedicationRequestDispenseStatus.partial.value
+                    )
                 instance.authorizing_request.save()
 
     def authorize_location_write(self, location):
@@ -155,6 +160,19 @@ class MedicationDispenseViewSet(
                 instance.charge_item.save()
             super().perform_update(instance)
             sync_inventory_item(instance.item.location, instance.item.product)
+            if instance._fully_dispensed:  # noqa
+                instance.authorizing_request.dispense_status = (
+                    MedicationRequestDispenseStatus.complete.value
+                )
+            else:
+                instance.authorizing_request.dispense_status = (
+                    MedicationRequestDispenseStatus.partial.value
+                )
+            if (
+                current_obj.authorizing_request.dispense_status
+                != instance.authorizing_request.dispense_status
+            ):
+                instance.authorizing_request.save()
             return instance
 
     def authorize_location_read(self, location):

@@ -43,8 +43,8 @@ def update_amount(price_component, total_price_components):
 def sync_invoice_items(invoice: Invoice):
     charge_items = ChargeItem.objects.filter(id__in=invoice.charge_items)
     summary = calculate_charge_items_summary(charge_items)
-    invoice.total_net = summary["net"]
-    invoice.total_gross = summary["gross"]
+    invoice.total_net = Decimal(round(summary["net"], 2))
+    invoice.total_gross = Decimal(round(summary["gross"], 2))
     invoice.total_price_components = json.loads(
         json.dumps(
             summary["total_price_components"],
