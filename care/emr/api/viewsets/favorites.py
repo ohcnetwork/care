@@ -5,7 +5,11 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from care.emr.models.favorites import UserResourceFavorites, favorite_lists_cache_key
+from care.emr.models.favorites import (
+    UserResourceFavorites,
+    favorite_list_object_cache_key,
+    favorite_lists_cache_key,
+)
 from care.emr.resources.favorites.spec import DEFAULT_FAVORITE_LIST
 from care.facility.models.facility import Facility
 from care.utils.shortcuts import get_object_or_404
@@ -78,11 +82,12 @@ class EMRFavoritesMixin:
         favorite_list = request_data.favorite_list
         obj = self.get_object()
         user = self.request.user
+        facility = self.retrieve_facility_obj(obj)
         favorite_list_obj = UserResourceFavorites.objects.filter(
             user=user,
             favorite_list=favorite_list,
             resource_type=self.FAVORITE_RESOURCE,
-            facility=self.retrieve_facility_obj(obj),
+            facility=facility,
         ).first()
         if not favorite_list_obj:
             raise ValidationError("Favorite List not found")
@@ -91,6 +96,20 @@ class EMRFavoritesMixin:
             favorite_list_obj_favorites.remove(obj.id)
         except KeyError:
             pass
+        if len(favorite_list_obj_favorites) == 0:
+            cache.delete(
+                favorite_lists_cache_key(user, self.FAVORITE_RESOURCE, facility)
+            )
+            cache.delete(
+                favorite_list_object_cache_key(
+                    user,
+                    self.FAVORITE_RESOURCE,
+                    facility,
+                    favorite_list_obj.favorite_list,
+                )
+            )
+            favorite_list_obj.delete()
+            return Response({})
         favorite_list_obj.favorites = list(favorite_list_obj_favorites)
         favorite_list_obj.save(update_fields=["favorites"])
         return Response({})
