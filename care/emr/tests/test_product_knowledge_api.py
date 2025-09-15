@@ -35,7 +35,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         product_type=None,
     ):
         return {
-            "slug": slug or "test-product-knowledge",
+            "slug_value": slug or "test-product-knowledge",
             "alternate_identifier": alternate_identifier or "test-alternate-identifier",
             "name": name or "Test Product Knowledge",
             "status": status or ProductKnowledgeStatusOptions.active.value,
@@ -51,6 +51,13 @@ class ProductKnowledgeAPITest(CareAPITestBase):
 
     def create_product_knowledge(self, facility, **kwargs):
         data = self.generate_product_knowledge_data(facility=facility, **kwargs)
+        # Convert slug_value to slug for Django model and apply proper prefixing
+        if "slug_value" in data:
+            raw_slug = data.pop("slug_value")
+            if facility:
+                data["slug"] = f"f-{facility.external_id}-{raw_slug}"
+            else:
+                data["slug"] = f"i-{raw_slug}"
         return baker.make(
             "emr.ProductKnowledge",
             **data,
@@ -72,7 +79,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
 
     def create_update_product_knowledge_data(self, slug=None):
         return {
-            "slug": slug or "updated-product-knowledge",
+            "slug_value": slug or "updated-product-knowledge",
             "name": "Updated Product Knowledge",
             "status": ProductKnowledgeStatusOptions.retired.value,
             "product_type": ProductTypeOptions.medication.value,
@@ -94,6 +101,88 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         get_response = self.client.get(self.get_details_url(response.data["slug"]))
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["id"], response.data["id"])
+
+    def test_create_product_knowledge_as_superuser_with_different_facilities(self):
+        """Test creating products in different facilities"""
+        self.client.force_authenticate(user=self.superuser)
+
+        # Create another facility
+        another_facility = self.create_facility(
+            name="Another Facility", user=self.superuser
+        )
+
+        # Create product in first facility
+        data1 = self.generate_product_knowledge_data(facility=self.facility.external_id)
+        data1["slug_value"] = "facility1-product"
+        response1 = self.client.post(self.get_base_url(), data1, format="json")
+        self.assertEqual(response1.status_code, 200)
+        self.assertTrue(response1.data["slug"].startswith("f-"))
+        self.assertIn(str(self.facility.external_id), response1.data["slug"])
+
+        # Create product in second facility with same slug_value (should work)
+        data2 = self.generate_product_knowledge_data(
+            facility=another_facility.external_id
+        )
+        data2["slug_value"] = "facility1-product"  # Same slug_value, different facility
+        response2 = self.client.post(self.get_base_url(), data2, format="json")
+        self.assertEqual(response2.status_code, 200)
+        self.assertTrue(response2.data["slug"].startswith("f-"))
+        self.assertIn(str(another_facility.external_id), response2.data["slug"])
+
+        # Verify they have different final slugs
+        self.assertNotEqual(response1.data["slug"], response2.data["slug"])
+
+    def test_create_and_retrieve_instance_vs_facility_products(self):
+        """Test creating and retrieving both instance-level and facility-scoped products"""
+        self.client.force_authenticate(user=self.superuser)
+
+        # Create instance-level product
+        instance_data = self.generate_product_knowledge_data()
+        instance_data["slug_value"] = "test-instance-product"
+        instance_response = self.client.post(
+            self.get_base_url(), instance_data, format="json"
+        )
+        self.assertEqual(instance_response.status_code, 200)
+        self.assertTrue(instance_response.data["slug"].startswith("i-"))
+        self.assertTrue(instance_response.data["is_instance_level"])
+
+        # Create facility-scoped product
+        facility_data = self.generate_product_knowledge_data(
+            facility=self.facility.external_id
+        )
+        facility_data["slug_value"] = "test-facility-product"
+        facility_response = self.client.post(
+            self.get_base_url(), facility_data, format="json"
+        )
+        self.assertEqual(facility_response.status_code, 200)
+        self.assertTrue(facility_response.data["slug"].startswith("f-"))
+        self.assertFalse(facility_response.data["is_instance_level"])
+
+        # Retrieve instance-level product
+        instance_get_response = self.client.get(
+            self.get_details_url(instance_response.data["slug"])
+        )
+        self.assertEqual(instance_get_response.status_code, 200)
+        self.assertEqual(
+            instance_get_response.data["slug_config"]["slug_value"],
+            "test-instance-product",
+        )
+
+        # Retrieve facility-scoped product
+        facility_get_response = self.client.get(
+            self.get_details_url(
+                facility_response.data["slug"], facility=self.facility.external_id
+            )
+        )
+        self.assertEqual(facility_get_response.status_code, 200)
+        self.assertEqual(
+            facility_get_response.data["slug_config"]["slug_value"],
+            "test-facility-product",
+        )
+        self.assertEqual(
+            facility_get_response.data["slug_config"]["facility"],
+            str(self.facility.external_id),
+        )
 
     def test_create_product_knowledge_as_user(self):
         self.client.force_authenticate(user=self.user)
@@ -248,7 +337,11 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         )
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["name"], updated_data["name"])
-        self.assertEqual(get_response.data["slug"], updated_data["slug"])
+        # The API response contains the full slug, but test data contains slug_value
+        # Extract the slug_value from the API response to compare
+        expected_slug_value = updated_data["slug_value"]
+        actual_slug_config = get_response.data["slug_config"]
+        self.assertEqual(actual_slug_config["slug_value"], expected_slug_value)
 
     def test_update_product_knowledge_as_user(self):
         self.client.force_authenticate(user=self.user)
@@ -272,7 +365,80 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         )
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["name"], updated_data["name"])
-        self.assertEqual(get_response.data["slug"], updated_data["slug"])
+        # The API response contains the full slug, but test data contains slug_value
+        # Extract the slug_value from the API response to compare
+        expected_slug_value = updated_data["slug_value"]
+        actual_slug_config = get_response.data["slug_config"]
+        self.assertEqual(actual_slug_config["slug_value"], expected_slug_value)
+
+    def test_update_product_knowledge_facility_vs_instance_level(self):
+        """Test updating products at different scoping levels"""
+        self.client.force_authenticate(user=self.superuser)
+
+        # Test updating facility-scoped product
+        facility_product = self.create_product_knowledge(
+            facility=self.facility, name="Original Facility Product"
+        )
+        facility_update_data = self.create_update_product_knowledge_data()
+        facility_update_data["slug_value"] = "updated-facility-product"
+
+        facility_response = self.client.patch(
+            self.get_details_url(
+                facility_product.slug, facility=self.facility.external_id
+            ),
+            facility_update_data,
+            format="json",
+        )
+        self.assertEqual(facility_response.status_code, 200)
+        self.assertTrue(facility_response.data["slug"].startswith("f-"))
+        self.assertIn(str(self.facility.external_id), facility_response.data["slug"])
+
+        # Verify updated facility product
+        facility_get_response = self.client.get(
+            self.get_details_url(
+                facility_response.data["slug"], facility=self.facility.external_id
+            )
+        )
+        self.assertEqual(facility_get_response.status_code, 200)
+        self.assertEqual(
+            facility_get_response.data["name"], facility_update_data["name"]
+        )
+        self.assertEqual(
+            facility_get_response.data["slug_config"]["slug_value"],
+            "updated-facility-product",
+        )
+        self.assertEqual(
+            facility_get_response.data["slug_config"]["facility"],
+            str(self.facility.external_id),
+        )
+
+        # Test updating instance-level product
+        instance_product = self.create_product_knowledge(
+            facility=None, name="Original Instance Product"
+        )
+        instance_update_data = self.create_update_product_knowledge_data()
+        instance_update_data["slug_value"] = "updated-instance-product"
+
+        instance_response = self.client.patch(
+            self.get_details_url(instance_product.slug),
+            instance_update_data,
+            format="json",
+        )
+        self.assertEqual(instance_response.status_code, 200)
+        self.assertTrue(instance_response.data["slug"].startswith("i-"))
+
+        # Verify updated instance product
+        instance_get_response = self.client.get(
+            self.get_details_url(instance_response.data["slug"])
+        )
+        self.assertEqual(instance_get_response.status_code, 200)
+        self.assertEqual(
+            instance_get_response.data["name"], instance_update_data["name"]
+        )
+        self.assertEqual(
+            instance_get_response.data["slug_config"]["slug_value"],
+            "updated-instance-product",
+        )
 
     def test_update_product_knowledge_as_user_without_permission(self):
         self.client.force_authenticate(user=self.user)
@@ -320,7 +486,11 @@ class ProductKnowledgeAPITest(CareAPITestBase):
         get_response = self.client.get(self.get_details_url(response.data["slug"]))
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["name"], updated_data["name"])
-        self.assertEqual(get_response.data["slug"], updated_data["slug"])
+        # The API response contains the full slug, but test data contains slug_value
+        # Extract the slug_value from the API response to compare
+        expected_slug_value = updated_data["slug_value"]
+        actual_slug_config = get_response.data["slug_config"]
+        self.assertEqual(actual_slug_config["slug_value"], expected_slug_value)
 
     # Testcases for List Product Knowledge
 
@@ -369,10 +539,8 @@ class ProductKnowledgeAPITest(CareAPITestBase):
 
     def test_filter_product_knowledge_by_name(self):
         self.client.force_authenticate(user=self.superuser)
-        product = self.create_product_knowledge(
-            facility=self.facility, name="Test Product"
-        )
-        self.create_product_knowledge(facility=self.facility, name="Another Product")
+        product = self.create_product_knowledge(facility=None, name="Test Product")
+        self.create_product_knowledge(facility=None, name="Another Product")
         response = self.client.get(self.get_base_url(), {"name": "Test"})
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
@@ -395,10 +563,10 @@ class ProductKnowledgeAPITest(CareAPITestBase):
     def test_filter_product_knowledge_by_status(self):
         self.client.force_authenticate(user=self.superuser)
         product = self.create_product_knowledge(
-            facility=self.facility, name="Test Product", status="active"
+            facility=None, name="Test Product", status="active"
         )
         self.create_product_knowledge(
-            facility=self.facility, name="Another Product", status="inactive"
+            facility=None, name="Another Product", status="inactive"
         )
         response = self.client.get(self.get_base_url(), {"status": "active"})
         self.assertEqual(response.status_code, 200)
@@ -408,10 +576,10 @@ class ProductKnowledgeAPITest(CareAPITestBase):
     def test_filter_product_knowledge_by_product_type(self):
         self.client.force_authenticate(user=self.superuser)
         product = self.create_product_knowledge(
-            facility=self.facility, name="Test Product", product_type="medication"
+            facility=None, name="Test Product", product_type="medication"
         )
         self.create_product_knowledge(
-            facility=self.facility, name="Another Product", product_type="consumable"
+            facility=None, name="Another Product", product_type="consumable"
         )
         response = self.client.get(self.get_base_url(), {"product_type": "medication"})
         self.assertEqual(response.status_code, 200)
@@ -434,6 +602,74 @@ class ProductKnowledgeAPITest(CareAPITestBase):
     def test_filter_product_knowledge_by_alternate_identifier(self):
         self.client.force_authenticate(user=self.superuser)
         product = self.create_product_knowledge(
+            facility=None,
+            name="Test Product",
+            product_type="medication",
+            alternate_identifier="12345",
+        )
+        self.create_product_knowledge(
+            facility=None,
+            name="Another Product",
+            product_type="consumable",
+            alternate_identifier="67890",
+        )
+        response = self.client.get(
+            self.get_base_url(), {"alternate_identifier": "12345"}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    # Facility-scoped filter tests
+    def test_filter_product_knowledge_by_name_with_facility(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product_knowledge(
+            facility=self.facility, name="Test Product"
+        )
+        self.create_product_knowledge(facility=self.facility, name="Another Product")
+        response = self.client.get(
+            self.get_base_url(),
+            {"name": "Test", "facility": str(self.facility.external_id)},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    def test_filter_product_knowledge_by_status_with_facility(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product_knowledge(
+            facility=self.facility, name="Test Product", status="active"
+        )
+        self.create_product_knowledge(
+            facility=self.facility, name="Another Product", status="inactive"
+        )
+        response = self.client.get(
+            self.get_base_url(),
+            {"status": "active", "facility": str(self.facility.external_id)},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    def test_filter_product_knowledge_by_product_type_with_facility(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product_knowledge(
+            facility=self.facility, name="Test Product", product_type="medication"
+        )
+        self.create_product_knowledge(
+            facility=self.facility, name="Another Product", product_type="consumable"
+        )
+        response = self.client.get(
+            self.get_base_url(),
+            {"product_type": "medication", "facility": str(self.facility.external_id)},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    def test_filter_product_knowledge_by_alternate_identifier_with_facility(self):
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product_knowledge(
             facility=self.facility,
             name="Test Product",
             product_type="medication",
@@ -446,11 +682,79 @@ class ProductKnowledgeAPITest(CareAPITestBase):
             alternate_identifier="67890",
         )
         response = self.client.get(
-            self.get_base_url(), {"alternate_identifier": "12345"}
+            self.get_base_url(),
+            {
+                "alternate_identifier": "12345",
+                "facility": str(self.facility.external_id),
+            },
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(response.data["results"][0]["id"], str(product.external_id))
+
+    # Test mixed facility and instance-level products
+    def test_mixed_facility_and_instance_level_products(self):
+        self.client.force_authenticate(user=self.superuser)
+
+        # Create facility-scoped products
+        facility_product1 = self.create_product_knowledge(
+            facility=self.facility, name="Facility Product 1", product_type="medication"
+        )
+        facility_product2 = self.create_product_knowledge(
+            facility=self.facility, name="Facility Product 2", product_type="consumable"
+        )
+
+        # Create instance-level products
+        instance_product1 = self.create_product_knowledge(
+            facility=None, name="Instance Product 1", product_type="medication"
+        )
+        instance_product2 = self.create_product_knowledge(
+            facility=None, name="Instance Product 2", product_type="consumable"
+        )
+
+        # Test facility-scoped query
+        facility_response = self.client.get(
+            self.get_base_url(), {"facility": str(self.facility.external_id)}
+        )
+        self.assertEqual(facility_response.status_code, 200)
+        self.assertEqual(len(facility_response.data["results"]), 2)
+        facility_result_ids = {
+            result["id"] for result in facility_response.data["results"]
+        }
+        self.assertIn(str(facility_product1.external_id), facility_result_ids)
+        self.assertIn(str(facility_product2.external_id), facility_result_ids)
+
+        # Test instance-level query (no facility parameter)
+        instance_response = self.client.get(self.get_base_url())
+        self.assertEqual(instance_response.status_code, 200)
+        self.assertEqual(len(instance_response.data["results"]), 2)
+        instance_result_ids = {
+            result["id"] for result in instance_response.data["results"]
+        }
+        self.assertIn(str(instance_product1.external_id), instance_result_ids)
+        self.assertIn(str(instance_product2.external_id), instance_result_ids)
+
+        # Test filtering by product type across both scopes
+        facility_med_response = self.client.get(
+            self.get_base_url(),
+            {"product_type": "medication", "facility": str(self.facility.external_id)},
+        )
+        self.assertEqual(facility_med_response.status_code, 200)
+        self.assertEqual(len(facility_med_response.data["results"]), 1)
+        self.assertEqual(
+            facility_med_response.data["results"][0]["id"],
+            str(facility_product1.external_id),
+        )
+
+        instance_med_response = self.client.get(
+            self.get_base_url(), {"product_type": "medication"}
+        )
+        self.assertEqual(instance_med_response.status_code, 200)
+        self.assertEqual(len(instance_med_response.data["results"]), 1)
+        self.assertEqual(
+            instance_med_response.data["results"][0]["id"],
+            str(instance_product1.external_id),
+        )
 
     # Testcases for Validation
 
