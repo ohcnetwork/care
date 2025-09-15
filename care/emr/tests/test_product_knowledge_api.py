@@ -42,9 +42,9 @@ class ProductKnowledgeAPITest(CareAPITestBase):
             "product_type": product_type or ProductTypeOptions.medication.value,
             "code": None,
             "base_unit": {
-                "display": "milligram",
-                "system": "http://unitsofmeasure.org",
-                "code": "mg",
+                "display": "Test Value",
+                "system": "http://test_system.care/test",
+                "code": "123",
             },
             "facility": facility,
         }
@@ -85,9 +85,9 @@ class ProductKnowledgeAPITest(CareAPITestBase):
             "product_type": ProductTypeOptions.medication.value,
             "code": None,
             "base_unit": {
-                "display": "gram",
-                "system": "http://unitsofmeasure.org",
-                "code": "g",
+                "display": "Updated Test Value",
+                "system": "http://test_system.care/test",
+                "code": "456",
             },
         }
 
