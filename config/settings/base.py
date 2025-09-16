@@ -28,6 +28,7 @@ BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "care"
 env = environ.Env()
 
+
 if READ_DOT_ENV_FILE := env.bool("DJANGO_READ_DOT_ENV_FILE", default=False):
     # OS environment variables take precedence over variables from .env
     env.read_env(str(BASE_DIR / ".env"))
@@ -132,6 +133,7 @@ THIRD_PARTY_APPS = [
     "django.contrib.postgres",
     "django_rest_passwordreset",
     "healthy_django",
+    "import_export",
 ]
 LOCAL_APPS = [
     "care.security",
@@ -385,6 +387,9 @@ REST_FRAMEWORK = {
     "SEARCH_PARAM": "search_text",
     "DEFAULT_SCHEMA_CLASS": "care.utils.swagger.schema.AutoSchema",
     "EXCEPTION_HANDLER": "config.exception_handler.exception_handler",
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
 }
 
 # drf-spectacular (schema generation)

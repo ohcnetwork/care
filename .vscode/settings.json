@@ -24,5 +24,13 @@
   "python.languageServer": "Pylance",
   "cSpell.words": [
     "Typst"
-  ]
+  ],
+  "python.testing.unittestArgs": [
+    "--noinput",
+    "--shuffle",
+    "--parallel",
+    "--keepdb",
+  ],
+  "python.testing.pytestEnabled": false,
+  "python.testing.unittestEnabled": true
 }
