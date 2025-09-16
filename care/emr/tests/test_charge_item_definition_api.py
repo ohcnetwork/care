@@ -135,7 +135,9 @@ class TestChargeItemDefinitionViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
         self.client.force_authenticate(user=self.user)
 
-        data = self.get_valid_charge_item_definition_data(category="non-existent-slug")
+        data = self.get_valid_charge_item_definition_data(
+            category="f-non-existent-slug"
+        )
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
@@ -630,7 +632,7 @@ class TestChargeItemDefinitionMissingCoverage(CareAPITestBase):
         self.client.force_authenticate(user=self.user)
 
         data = self.get_valid_charge_item_definition_data(
-            category="non-existent-category"
+            category="f-non-existent-category"
         )
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
