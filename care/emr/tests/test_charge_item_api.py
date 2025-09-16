@@ -7,6 +7,11 @@ from django.urls import reverse
 from pydantic import ValidationError as PydanticValidationError
 from rest_framework import status
 
+from care.emr.api.viewsets.charge_item import (
+    ApplyChargeItemDefinitionRequest,
+    ApplyMultipleChargeItemDefinitionRequest,
+    validate_service_resource,
+)
 from care.emr.models.account import Account
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.charge_item_definition import ChargeItemDefinition
@@ -25,6 +30,7 @@ from care.emr.resources.charge_item_definition.spec import (
     ChargeItemDefinitionStatusOptions,
 )
 from care.emr.resources.common.monetary_component import MonetaryComponentType
+from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.security.permissions.charge_item import ChargeItemPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -1017,3 +1023,704 @@ class TestChargeItemBusinessLogicValidation(CareAPITestBase):
         )
 
         self.assertIsNotNone(charge_item.id)
+
+
+class TestChargeItemMissingCoverage(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.user)
+        self.organization = self.create_facility_organization(facility=self.facility)
+        self.patient = self.create_patient()
+        self.encounter = self.create_encounter(
+            patient=self.patient, facility=self.facility, organization=self.organization
+        )
+
+        self.account = Account.objects.create(
+            facility=self.facility,
+            patient=self.patient,
+            name=f"Account for {self.patient.name}",
+            status=AccountStatusOptions.active.value,
+            billing_status=AccountBillingStatusOptions.open.value,
+        )
+
+        self.charge_item_definition = ChargeItemDefinition.objects.create(
+            facility=self.facility,
+            status=ChargeItemDefinitionStatusOptions.active.value,
+            title="Test Charge Definition",
+            slug=f"f-{self.facility.external_id}-test-charge-def",
+            price_components=[
+                {
+                    "monetary_component_type": "base",
+                    "currency": "INR",
+                    "amount": "100.00",
+                }
+            ],
+        )
+
+        self.base_url = reverse(
+            "charge_item-list",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+
+    def _get_detail_url(self, charge_item_id):
+        return reverse(
+            "charge_item-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": charge_item_id,
+            },
+        )
+
+    def get_valid_charge_item_data(self, **kwargs):
+        data = {
+            "title": self.fake.sentence(nb_words=4),
+            "description": self.fake.text(),
+            "status": ChargeItemStatusOptions.billable.value,
+            "quantity": 1.0,
+            "unit_price_components": [
+                {
+                    "monetary_component_type": "base",
+                    "currency": "INR",
+                    "amount": "100.00",
+                    "code": {
+                        "system": "http://test.system.com",
+                        "code": "test-code-001",
+                        "display": "Test Code",
+                    },
+                }
+            ],
+            "encounter": self.encounter.external_id,
+            "account": self.account.external_id,
+        }
+        data.update(**kwargs)
+        return data
+
+    def create_charge_item(self, **kwargs):
+        data = {
+            "facility": self.facility,
+            "title": self.fake.sentence(nb_words=4),
+            "patient": self.patient,
+            "encounter": self.encounter,
+            "account": self.account,
+            "status": ChargeItemStatusOptions.billable.value,
+            "quantity": Decimal("1.00"),
+            "unit_price_components": [
+                {
+                    "monetary_component_type": "base",
+                    "currency": "INR",
+                    "amount": "100.00",
+                }
+            ],
+            "total_price_components": [
+                {
+                    "monetary_component_type": "base",
+                    "currency": "INR",
+                    "amount": "100.00",
+                }
+            ],
+            "total_price": Decimal("100.00"),
+        }
+        data.update(**kwargs)
+        return ChargeItem.objects.create(**data)
+
+    def test_validate_service_resource_with_invalid_resource_type(self):
+        result = validate_service_resource(
+            self.facility,
+            "invalid_resource_type",
+            "resource-id",
+            self.patient,
+            self.encounter,
+        )
+        self.assertFalse(result)
+
+    def test_validate_service_resource_service_request_without_encounter(self):
+        service_request = self.create_service_request(
+            patient=self.patient, facility=self.facility, encounter=self.encounter
+        )
+
+        result = validate_service_resource(
+            self.facility,
+            ChargeItemResourceOptions.service_request.value,
+            str(service_request.external_id),
+            self.patient,
+            None,
+        )
+        self.assertTrue(result)
+
+    def test_validate_service_resource_bed_association_without_encounter(self):
+        result = validate_service_resource(
+            self.facility,
+            ChargeItemResourceOptions.bed_association.value,
+            "bed-id",
+            self.patient,
+            None,
+        )
+        self.assertFalse(result)
+
+    def test_validate_service_resource_bed_association_wrong_facility(self):
+        other_user = self.create_user()
+        other_facility = self.create_facility(user=other_user)
+        other_encounter = self.create_encounter(
+            patient=self.patient,
+            facility=other_facility,
+            organization=self.create_facility_organization(facility=other_facility),
+        )
+
+        result = validate_service_resource(
+            self.facility,
+            ChargeItemResourceOptions.bed_association.value,
+            "bed-id",
+            self.patient,
+            other_encounter,
+        )
+        self.assertFalse(result)
+
+    def test_validate_service_resource_bed_association_completed_encounter(self):
+        completed_encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization,
+            status=COMPLETED_CHOICES[0],
+        )
+
+        result = validate_service_resource(
+            self.facility,
+            ChargeItemResourceOptions.bed_association.value,
+            "bed-id",
+            self.patient,
+            completed_encounter,
+        )
+        self.assertFalse(result)
+
+    def test_validate_service_resource_exception_handling(self):
+        with patch(
+            "care.emr.models.service_request.ServiceRequest.objects.filter"
+        ) as mock_filter:
+            mock_filter.side_effect = Exception("Database error")
+
+            result = validate_service_resource(
+                self.facility,
+                ChargeItemResourceOptions.service_request.value,
+                "resource-id",
+                self.patient,
+                self.encounter,
+            )
+            self.assertFalse(result)
+
+    def test_create_charge_item_with_invalid_service_resource(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        data = self.get_valid_charge_item_data(
+            service_resource=ChargeItemResourceOptions.service_request.value,
+            service_resource_id="non-existent-id",
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Invalid service resource", str(response.data))
+
+    def test_create_charge_item_with_wrong_facility_encounter(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        other_user = self.create_user()
+        other_facility = self.create_facility(user=other_user)
+        other_encounter = self.create_encounter(
+            patient=self.patient,
+            facility=other_facility,
+            organization=self.create_facility_organization(facility=other_facility),
+        )
+
+        data = self.get_valid_charge_item_data(encounter=other_encounter.external_id)
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("not associated with the facility", str(response.data))
+
+    def test_create_charge_item_with_wrong_facility_account(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        other_user = self.create_user()
+        other_facility = self.create_facility(user=other_user)
+        other_account = Account.objects.create(
+            facility=other_facility,
+            patient=self.patient,
+            name="Other Account",
+            status=AccountStatusOptions.active.value,
+            billing_status=AccountBillingStatusOptions.open.value,
+        )
+
+        data = self.get_valid_charge_item_data(account=other_account.external_id)
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("not associated with the facility", str(response.data))
+
+    def test_get_queryset_without_read_permission(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.base_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_apply_charge_item_defs_with_patient_only(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        url = f"{self.base_url}apply_charge_item_defs/"
+        data = {
+            "requests": [
+                {
+                    "charge_item_definition": self.charge_item_definition.slug,
+                    "quantity": 2,
+                    "patient": self.patient.external_id,
+                }
+            ]
+        }
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_apply_charge_item_defs_with_wrong_facility_definition(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        other_user = self.create_user()
+        other_facility = self.create_facility(user=other_user)
+        other_definition = ChargeItemDefinition.objects.create(
+            facility=other_facility,
+            status=ChargeItemDefinitionStatusOptions.active.value,
+            title="Other Definition",
+            slug=f"f-{other_facility.external_id}-other-def",
+        )
+
+        url = f"{self.base_url}apply_charge_item_defs/"
+        data = {
+            "requests": [
+                {
+                    "charge_item_definition": other_definition.slug,
+                    "quantity": 1,
+                    "encounter": self.encounter.external_id,
+                }
+            ]
+        }
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_apply_charge_item_defs_with_wrong_facility_encounter(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        other_user = self.create_user()
+        other_facility = self.create_facility(user=other_user)
+        other_encounter = self.create_encounter(
+            patient=self.patient,
+            facility=other_facility,
+            organization=self.create_facility_organization(facility=other_facility),
+        )
+
+        url = f"{self.base_url}apply_charge_item_defs/"
+        data = {
+            "requests": [
+                {
+                    "charge_item_definition": self.charge_item_definition.slug,
+                    "quantity": 1,
+                    "encounter": other_encounter.external_id,
+                }
+            ]
+        }
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_apply_charge_item_defs_with_invalid_service_resource(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        url = f"{self.base_url}apply_charge_item_defs/"
+        data = {
+            "requests": [
+                {
+                    "charge_item_definition": self.charge_item_definition.slug,
+                    "quantity": 1,
+                    "encounter": self.encounter.external_id,
+                    "service_resource": ChargeItemResourceOptions.service_request.value,
+                    "service_resource_id": "invalid-id",
+                }
+            ]
+        }
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Invalid service resource", str(response.data))
+
+    def test_apply_charge_item_defs_without_patient_or_encounter(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        url = f"{self.base_url}apply_charge_item_defs/"
+        data = {
+            "requests": [
+                {
+                    "charge_item_definition": self.charge_item_definition.slug,
+                    "quantity": 1,
+                }
+            ]
+        }
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_apply_charge_item_defs_with_service_resource_and_encounter_none(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        service_request = self.create_service_request(
+            patient=self.patient, facility=self.facility, encounter=self.encounter
+        )
+
+        url = f"{self.base_url}apply_charge_item_defs/"
+        data = {
+            "requests": [
+                {
+                    "charge_item_definition": self.charge_item_definition.slug,
+                    "quantity": 1,
+                    "patient": self.patient.external_id,
+                    "service_resource": ChargeItemResourceOptions.service_request.value,
+                    "service_resource_id": str(service_request.external_id),
+                }
+            ]
+        }
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_facility_obj_with_invalid_facility_id(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_read_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        invalid_url = reverse(
+            "charge_item-list",
+            kwargs={"facility_external_id": "invalid-facility-id"},
+        )
+        response = self.client.get(invalid_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_filter_by_service_resource(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_read_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        service_request = self.create_service_request(
+            patient=self.patient, facility=self.facility, encounter=self.encounter
+        )
+
+        self.create_charge_item(
+            title="Service Request Item",
+            service_resource=ChargeItemResourceOptions.service_request.value,
+            service_resource_id=str(service_request.external_id),
+        )
+        self.create_charge_item(title="Regular Item")
+
+        response = self.client.get(f"{self.base_url}?service_resource=service_request")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["title"], "Service Request Item")
+
+    def test_filter_by_service_resource_id(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_read_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        service_request = self.create_service_request(
+            patient=self.patient, facility=self.facility, encounter=self.encounter
+        )
+
+        self.create_charge_item(
+            title="Specific Service Request Item",
+            service_resource=ChargeItemResourceOptions.service_request.value,
+            service_resource_id=str(service_request.external_id),
+        )
+        self.create_charge_item(
+            title="Other Service Request Item",
+            service_resource=ChargeItemResourceOptions.service_request.value,
+            service_resource_id="other-id",
+        )
+
+        response = self.client.get(
+            f"{self.base_url}?service_resource_id={service_request.external_id}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["title"], "Specific Service Request Item"
+        )
+
+
+class TestChargeItemPydanticValidation(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.user)
+        self.patient = self.create_patient()
+        self.encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.create_facility_organization(facility=self.facility),
+        )
+
+    def test_apply_charge_item_definition_request_missing_encounter_and_patient(self):
+        with self.assertRaises(PydanticValidationError) as context:
+            ApplyChargeItemDefinitionRequest(
+                charge_item_definition="test-definition",
+                quantity=1,
+            )
+        self.assertIn("Encounter or patient is required", str(context.exception))
+
+    def test_apply_charge_item_definition_request_with_encounter_only(self):
+        request = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition",
+            quantity=1,
+            encounter=self.encounter.external_id,
+        )
+        self.assertEqual(request.encounter, self.encounter.external_id)
+        self.assertIsNone(request.patient)
+
+    def test_apply_charge_item_definition_request_with_patient_only(self):
+        request = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition",
+            quantity=1,
+            patient=self.patient.external_id,
+        )
+        self.assertEqual(request.patient, self.patient.external_id)
+        self.assertIsNone(request.encounter)
+
+    def test_apply_charge_item_definition_request_with_both_encounter_and_patient(self):
+        request = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition",
+            quantity=1,
+            encounter=self.encounter.external_id,
+            patient=self.patient.external_id,
+        )
+        self.assertEqual(request.encounter, self.encounter.external_id)
+        self.assertEqual(request.patient, self.patient.external_id)
+
+    def test_apply_charge_item_definition_request_service_resource_without_id(self):
+        with self.assertRaises(PydanticValidationError) as context:
+            ApplyChargeItemDefinitionRequest(
+                charge_item_definition="test-definition",
+                quantity=1,
+                encounter=self.encounter.external_id,
+                service_resource=ChargeItemResourceOptions.service_request.value,
+            )
+        self.assertIn("Service resource id is required", str(context.exception))
+
+    def test_apply_charge_item_definition_request_service_resource_with_id(self):
+        request = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition",
+            quantity=1,
+            encounter=self.encounter.external_id,
+            service_resource=ChargeItemResourceOptions.service_request.value,
+            service_resource_id="test-resource-id",
+        )
+        self.assertEqual(
+            request.service_resource, ChargeItemResourceOptions.service_request.value
+        )
+        self.assertEqual(request.service_resource_id, "test-resource-id")
+
+    def test_apply_charge_item_definition_request_without_service_resource(self):
+        request = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition",
+            quantity=1,
+            encounter=self.encounter.external_id,
+        )
+        self.assertIsNone(request.service_resource)
+        self.assertIsNone(request.service_resource_id)
+
+    def test_apply_charge_item_definition_request_with_service_resource_id_but_no_resource(
+        self,
+    ):
+        request = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition",
+            quantity=1,
+            encounter=self.encounter.external_id,
+            service_resource_id="test-resource-id",
+        )
+        self.assertIsNone(request.service_resource)
+        self.assertEqual(request.service_resource_id, "test-resource-id")
+
+    def test_apply_multiple_charge_item_definition_request_empty_list(self):
+        request = ApplyMultipleChargeItemDefinitionRequest(requests=[])
+        self.assertEqual(len(request.requests), 0)
+
+    def test_apply_multiple_charge_item_definition_request_single_item(self):
+        single_request = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition",
+            quantity=1,
+            encounter=self.encounter.external_id,
+        )
+
+        multiple_request = ApplyMultipleChargeItemDefinitionRequest(
+            requests=[single_request]
+        )
+        self.assertEqual(len(multiple_request.requests), 1)
+        self.assertEqual(
+            multiple_request.requests[0].charge_item_definition, "test-definition"
+        )
+
+    def test_apply_multiple_charge_item_definition_request_multiple_items(self):
+        request1 = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition-1",
+            quantity=1,
+            encounter=self.encounter.external_id,
+        )
+
+        request2 = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition-2",
+            quantity=2,
+            patient=self.patient.external_id,
+        )
+
+        multiple_request = ApplyMultipleChargeItemDefinitionRequest(
+            requests=[request1, request2]
+        )
+        self.assertEqual(len(multiple_request.requests), 2)
+        self.assertEqual(
+            multiple_request.requests[0].charge_item_definition, "test-definition-1"
+        )
+        self.assertEqual(
+            multiple_request.requests[1].charge_item_definition, "test-definition-2"
+        )
+        self.assertEqual(multiple_request.requests[1].quantity, 2)
+
+    def test_apply_charge_item_definition_request_all_service_resource_options(self):
+        for option in ChargeItemResourceOptions:
+            request = ApplyChargeItemDefinitionRequest(
+                charge_item_definition="test-definition",
+                quantity=1,
+                encounter=self.encounter.external_id,
+                service_resource=option.value,
+                service_resource_id="test-resource-id",
+            )
+            self.assertEqual(request.service_resource, option.value)
+
+    def test_apply_charge_item_definition_request_zero_quantity(self):
+        request = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition",
+            quantity=0,
+            encounter=self.encounter.external_id,
+        )
+        self.assertEqual(request.quantity, 0)
+
+    def test_apply_charge_item_definition_request_negative_quantity(self):
+        request = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition",
+            quantity=-1,
+            encounter=self.encounter.external_id,
+        )
+        self.assertEqual(request.quantity, -1)
+
+    def test_apply_charge_item_definition_request_large_quantity(self):
+        request = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition",
+            quantity=999999,
+            encounter=self.encounter.external_id,
+        )
+        self.assertEqual(request.quantity, 999999)
+
+    def test_apply_charge_item_definition_request_uuid_validation(self):
+        import uuid
+
+        valid_uuid = uuid.uuid4()
+
+        request = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition",
+            quantity=1,
+            encounter=valid_uuid,
+            patient=valid_uuid,
+        )
+        self.assertEqual(request.encounter, valid_uuid)
+        self.assertEqual(request.patient, valid_uuid)
+
+    def test_apply_charge_item_definition_request_string_charge_item_definition(self):
+        test_strings = [
+            "simple-slug",
+            "complex-slug-with-dashes",
+            "slug_with_underscores",
+            "slug123with456numbers",
+            "f-12345678-1234-1234-1234-123456789012-test-slug",
+        ]
+
+        for test_string in test_strings:
+            request = ApplyChargeItemDefinitionRequest(
+                charge_item_definition=test_string,
+                quantity=1,
+                encounter=self.encounter.external_id,
+            )
+            self.assertEqual(request.charge_item_definition, test_string)
+
+    def test_model_validator_execution_order(self):
+        with self.assertRaises(PydanticValidationError) as context:
+            ApplyChargeItemDefinitionRequest(
+                charge_item_definition="test-definition",
+                quantity=1,
+                service_resource=ChargeItemResourceOptions.service_request.value,
+                service_resource_id="test-id",
+            )
+
+        self.assertIn("Encounter or patient is required", str(context.exception))
+
+    def test_model_validator_service_resource_validation_after_encounter_patient(self):
+        with self.assertRaises(PydanticValidationError) as context:
+            ApplyChargeItemDefinitionRequest(
+                charge_item_definition="test-definition",
+                quantity=1,
+                encounter=self.encounter.external_id,
+                service_resource=ChargeItemResourceOptions.service_request.value,
+            )
+
+        self.assertIn("Service resource id is required", str(context.exception))
+
+    def test_apply_charge_item_definition_request_defaults(self):
+        request = ApplyChargeItemDefinitionRequest(
+            charge_item_definition="test-definition",
+            quantity=1,
+            encounter=self.encounter.external_id,
+        )
+
+        self.assertIsNone(request.patient)
+        self.assertIsNone(request.service_resource)
+        self.assertIsNone(request.service_resource_id)

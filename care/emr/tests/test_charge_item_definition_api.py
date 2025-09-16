@@ -520,3 +520,345 @@ class TestChargeItemDefinitionSpecValidation(CareAPITestBase):
             }
             spec = ChargeItemDefinitionWriteSpec(**spec_data)
             self.assertEqual(spec.status, status_option.value)
+
+
+class TestChargeItemDefinitionMissingCoverage(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.user)
+        self.organization = self.facility.default_internal_organization
+
+        self.resource_category = ResourceCategory.objects.create(
+            facility=self.facility,
+            title="Test Category",
+            slug="i-test-category",
+            description="Test description",
+            resource_type="test_type",
+            resource_sub_type="test_sub_type",
+        )
+
+        # Create parent category for testing include_children
+        self.parent_category = ResourceCategory.objects.create(
+            facility=self.facility,
+            title="Parent Category",
+            slug="i-parent-category",
+            description="Parent description",
+            resource_type="parent_type",
+            resource_sub_type="parent_sub_type",
+        )
+
+        # Create child category
+        self.child_category = ResourceCategory.objects.create(
+            facility=self.facility,
+            title="Child Category",
+            slug="i-child-category",
+            description="Child description",
+            resource_type="child_type",
+            resource_sub_type="child_sub_type",
+            parent=self.parent_category,
+            parent_cache=[self.parent_category.id],
+        )
+
+        self.base_url = reverse(
+            "charge_item_definition-list",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+
+    def _get_detail_url(self, slug):
+        return reverse(
+            "charge_item_definition-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "slug": slug,
+            },
+        )
+
+    def get_valid_charge_item_definition_data(self, **kwargs):
+        data = {
+            "status": ChargeItemDefinitionStatusOptions.active.value,
+            "title": self.fake.sentence(nb_words=4),
+            "slug_value": self.fake.slug(),
+            "description": self.fake.text(),
+            "purpose": self.fake.text(),
+            "price_components": [
+                {
+                    "monetary_component_type": "base",
+                    "currency": "INR",
+                    "amount": str(Decimal("100.00")),
+                    "code": {
+                        "system": "http://test.system.com",
+                        "code": "test-code-001",
+                        "display": "Test Code",
+                    },
+                }
+            ],
+        }
+        data.update(**kwargs)
+        return data
+
+    def create_charge_item_definition(self, **kwargs):
+        data = {
+            "facility": self.facility,
+            "status": ChargeItemDefinitionStatusOptions.active.value,
+            "title": self.fake.sentence(nb_words=4),
+            "slug": f"f-{self.facility.external_id}-{self.fake.slug()}",
+            "description": self.fake.text(),
+        }
+        data.update(**kwargs)
+        return ChargeItemDefinition.objects.create(**data)
+
+    def test_get_facility_obj_with_invalid_facility_id(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemDefinitionPermissions.can_read_charge_item_definition.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        invalid_url = reverse(
+            "charge_item_definition-list",
+            kwargs={"facility_external_id": "invalid-facility-id"},
+        )
+        response = self.client.get(invalid_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_validate_data_with_non_existent_category(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemDefinitionPermissions.can_write_charge_item_definition.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        data = self.get_valid_charge_item_definition_data(
+            category="non-existent-category"
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_perform_create_sets_facility_and_slug(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemDefinitionPermissions.can_write_charge_item_definition.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        slug_value = "test-create-slug"
+        data = self.get_valid_charge_item_definition_data(slug_value=slug_value)
+        response = self.client.post(self.base_url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        expected_slug = f"f-{self.facility.external_id}-{slug_value}"
+        self.assertEqual(response.data["slug"], expected_slug)
+
+    def test_perform_update_recalculates_slug(self):
+        role = self.create_role_with_permissions(
+            [
+                ChargeItemDefinitionPermissions.can_write_charge_item_definition.name,
+                ChargeItemDefinitionPermissions.can_read_charge_item_definition.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        charge_def = self.create_charge_item_definition()
+        url = self._get_detail_url(charge_def.slug)
+
+        new_slug_value = "updated-slug-value"
+        data = self.get_valid_charge_item_definition_data(
+            title="Updated Title",
+            slug_value=new_slug_value,
+        )
+        response = self.client.put(url, data, format="json")
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        expected_slug = f"f-{self.facility.external_id}-{new_slug_value}"
+        self.assertEqual(response.data["slug"], expected_slug)
+
+    def test_authorize_create_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        data = self.get_valid_charge_item_definition_data()
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_authorize_update_without_permission(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemDefinitionPermissions.can_write_charge_item_definition.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        charge_def = self.create_charge_item_definition()
+
+        self.user.facilityorganizationuser_set.all().delete()
+        url = self._get_detail_url(charge_def.slug)
+
+        data = self.get_valid_charge_item_definition_data(title="Updated Title")
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_queryset_without_list_permission(self):
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.base_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_get_queryset_with_category_filter_include_children_true(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemDefinitionPermissions.can_read_charge_item_definition.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        self.create_charge_item_definition(
+            title="Parent Category Definition", category=self.parent_category
+        )
+        self.create_charge_item_definition(
+            title="Child Category Definition", category=self.child_category
+        )
+        self.create_charge_item_definition(
+            title="Unrelated Definition", category=self.resource_category
+        )
+
+        response = self.client.get(
+            f"{self.base_url}?category={self.parent_category.slug}&include_children=true"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        titles = [result["title"] for result in response.data["results"]]
+        self.assertIn("Child Category Definition", titles)
+        self.assertEqual(len(response.data["results"]), 1)
+
+    def test_get_queryset_with_category_filter_include_children_false(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemDefinitionPermissions.can_read_charge_item_definition.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        self.create_charge_item_definition(
+            title="Parent Category Definition", category=self.parent_category
+        )
+        self.create_charge_item_definition(
+            title="Child Category Definition", category=self.child_category
+        )
+
+        response = self.client.get(
+            f"{self.base_url}?category={self.parent_category.slug}&include_children=false"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["title"], "Parent Category Definition"
+        )
+
+    def test_get_queryset_with_category_filter_lowercase_true(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemDefinitionPermissions.can_read_charge_item_definition.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        self.create_charge_item_definition(
+            title="Child Category Definition", category=self.child_category
+        )
+
+        response = self.client.get(
+            f"{self.base_url}?category={self.parent_category.slug}&include_children=True"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 1)
+
+    def test_get_queryset_with_invalid_category(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemDefinitionPermissions.can_read_charge_item_definition.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(f"{self.base_url}?category=invalid-category")
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_dummy_filters(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemDefinitionPermissions.can_read_charge_item_definition.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        self.create_charge_item_definition(title="Test Definition 1")
+        self.create_charge_item_definition(title="Test Definition 2")
+
+        response = self.client.get(f"{self.base_url}?category=&include_children=")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 2)
+
+    def test_lookup_field_slug(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemDefinitionPermissions.can_read_charge_item_definition.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        charge_def = self.create_charge_item_definition(title="Test Lookup")
+
+        url = self._get_detail_url(charge_def.slug)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["title"], "Test Lookup")
+
+        invalid_url = reverse(
+            "charge_item_definition-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "slug": str(charge_def.external_id),
+            },
+        )
+        response = self.client.get(invalid_url)
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_filter_backends_configuration(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemDefinitionPermissions.can_read_charge_item_definition.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        self.create_charge_item_definition(
+            title="Active Definition",
+            status=ChargeItemDefinitionStatusOptions.active.value,
+        )
+        self.create_charge_item_definition(
+            title="Draft Definition",
+            status=ChargeItemDefinitionStatusOptions.draft.value,
+        )
+
+        response = self.client.get(f"{self.base_url}?status=active")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["title"], "Active Definition")
+
+        response = self.client.get(f"{self.base_url}?ordering=title")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 2)
+
+        response = self.client.get(f"{self.base_url}?ordering=-title")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data["results"]), 2)
+
+    def test_select_related_category_optimization(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemDefinitionPermissions.can_read_charge_item_definition.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        self.create_charge_item_definition(
+            title="Definition with Category", category=self.resource_category
+        )
+
+        response = self.client.get(self.base_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        self.assertEqual(len(response.data["results"]), 1)
+        result = response.data["results"][0]
+        self.assertIsNotNone(result.get("category"))
+        if result.get("category"):
+            self.assertEqual(result["category"]["title"], self.resource_category.title)
