@@ -238,3 +238,58 @@ class AccountAPITest(CareAPITestBase):
         self.assertIn(
             "Active account already exists for this patient", str(response.data)
         )
+
+    # Test cases for retrieve account
+
+    def test_retrieve_account_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        account = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        response = self.client.get(
+            self.get_detail_url(self.facility.external_id, account.external_id)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(account.external_id))
+        self.assertEqual(
+            response.data["patient"]["id"], str(account.patient.external_id)
+        )
+
+    def test_retrieve_account_as_user_with_permission(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        account = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        response = self.client.get(
+            self.get_detail_url(self.facility.external_id, account.external_id)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(account.external_id))
+        self.assertEqual(
+            response.data["patient"]["id"], str(account.patient.external_id)
+        )
+
+    def test_retrieve_account_as_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        account = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        response = self.client.get(
+            self.get_detail_url(self.facility.external_id, account.external_id)
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You are not authorized to read accounts", response.data["detail"]
+        )
