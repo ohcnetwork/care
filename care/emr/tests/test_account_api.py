@@ -18,7 +18,7 @@ class AccountAPITest(CareAPITestBase):
         self.user = self.create_user(username="testuser")
         self.superuser = self.create_super_user(username="testsuperuser")
         self.facility = self.create_facility(name="Test Facility", user=self.superuser)
-        self.patient = self.create_patient()
+        self.patient = self.create_patient(name="Test Patient")
         self.facility_organization = self.create_facility_organization(
             facility=self.facility, name="Test Facility Org", org_type="root"
         )
@@ -113,6 +113,126 @@ class AccountAPITest(CareAPITestBase):
         data = self.generate_account_data(patient=self.patient.external_id)
         response = self.client.post(
             self.get_base_url(self.facility.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Active account already exists for this patient", str(response.data)
+        )
+
+    # Test cases for update account
+
+    def test_update_account_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        account = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        data = self.generate_account_data(
+            status=AccountStatusOptions.inactive,
+            description="Updated Description",
+            billing_status=AccountBillingStatusOptions.closed_completed,
+            patient=self.patient.external_id,
+        )
+        response = self.client.put(
+            self.get_detail_url(self.facility.external_id, account.external_id),
+            data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(self.facility.external_id, account.external_id)
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["status"], data["status"])
+        self.assertEqual(get_response.data["patient"]["id"], str(data["patient"]))
+
+    def test_update_account_as_user_with_permission(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        account = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        data = self.generate_account_data(
+            status=AccountStatusOptions.inactive,
+            description="Updated Description",
+            billing_status=AccountBillingStatusOptions.closed_completed,
+            patient=self.patient.external_id,
+        )
+        response = self.client.put(
+            self.get_detail_url(self.facility.external_id, account.external_id),
+            data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(self.facility.external_id, account.external_id)
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["status"], data["status"])
+        self.assertEqual(get_response.data["patient"]["id"], str(data["patient"]))
+
+    def test_update_account_as_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(
+            permissions=[
+                AccountPermissions.can_read_account.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        account = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        data = self.generate_account_data(
+            status=AccountStatusOptions.inactive,
+            description="Updated Description",
+            billing_status=AccountBillingStatusOptions.closed_completed,
+            patient=self.patient.external_id,
+        )
+        response = self.client.put(
+            self.get_detail_url(self.facility.external_id, account.external_id),
+            data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You are not authorized to update accounts", response.data["detail"]
+        )
+
+    def test_update_account_with_existing_active_account_for_that_patient(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        account2 = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.inactive,
+            billing_status=AccountBillingStatusOptions.closed_completed,
+        )
+        data = self.generate_account_data(
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+            patient=self.patient.external_id,
+        )
+        response = self.client.put(
+            self.get_detail_url(self.facility.external_id, account2.external_id),
+            data,
+            format="json",
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn(
