@@ -50,5 +50,5 @@ SlugType = Annotated[
 
 
 ExtendedSlugType = Annotated[
-    str, Field(min_length=7, max_length=75), AfterValidator(slug_validator)
+    str, Field(min_length=7, max_length=75), AfterValidator(extended_slug_validator)
 ]
