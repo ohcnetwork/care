@@ -293,3 +293,144 @@ class AccountAPITest(CareAPITestBase):
         self.assertIn(
             "You are not authorized to read accounts", response.data["detail"]
         )
+
+    # Test cases for listing account
+
+    def test_list_account_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        account1 = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        account2 = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.inactive,
+            billing_status=AccountBillingStatusOptions.closed_completed,
+        )
+        response = self.client.get(
+            self.get_base_url(self.facility.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 2)
+        returned_ids = {item["id"] for item in response.data["results"]}
+        self.assertIn(str(account1.external_id), returned_ids)
+        self.assertIn(str(account2.external_id), returned_ids)
+
+    def test_list_account_as_user_with_permission(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        account1 = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        account2 = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.inactive,
+            billing_status=AccountBillingStatusOptions.closed_completed,
+        )
+        response = self.client.get(
+            self.get_base_url(self.facility.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 2)
+        returned_ids = {item["id"] for item in response.data["results"]}
+        self.assertIn(str(account1.external_id), returned_ids)
+        self.assertIn(str(account2.external_id), returned_ids)
+
+    def test_list_account_with_status_filter(self):
+        self.client.force_authenticate(user=self.superuser)
+        account1 = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.inactive,
+            billing_status=AccountBillingStatusOptions.closed_completed,
+        )
+        response = self.client.get(
+            self.get_base_url(self.facility.external_id),
+            {"status": AccountStatusOptions.active},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(account1.external_id))
+
+    def test_list_account_with_name_filter(self):
+        self.client.force_authenticate(user=self.superuser)
+        account1 = self.get_account(
+            self.facility,
+            patient=self.patient,
+            name="Special Account Name",
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        self.get_account(
+            self.facility,
+            patient=self.patient,
+            name="Another Name",
+            status=AccountStatusOptions.inactive,
+            billing_status=AccountBillingStatusOptions.closed_completed,
+        )
+        response = self.client.get(
+            self.get_base_url(self.facility.external_id), {"name": "Special"}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(account1.external_id))
+
+    def test_list_account_with_billing_status_filter(self):
+        self.client.force_authenticate(user=self.superuser)
+        account1 = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.inactive,
+            billing_status=AccountBillingStatusOptions.closed_completed,
+        )
+        response = self.client.get(
+            self.get_base_url(self.facility.external_id),
+            {"billing_status": AccountBillingStatusOptions.open},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(account1.external_id))
+
+    def test_list_account_with_patient_filter(self):
+        self.client.force_authenticate(user=self.superuser)
+        patient2 = self.create_patient(name="Another Patient")
+        account1 = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        self.get_account(
+            self.facility,
+            patient=patient2,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        response = self.client.get(
+            self.get_base_url(self.facility.external_id),
+            {"patient": str(self.patient.external_id)},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(account1.external_id))
