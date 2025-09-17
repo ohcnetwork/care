@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 
 from django.urls import reverse
 from django.utils import timezone
@@ -35,9 +36,6 @@ class AccountAPITest(CareAPITestBase):
 
     def get_detail_url(self, facility_external_id, external_id):
         return reverse("account-detail", args=[facility_external_id, external_id])
-
-    def get_rebalance_url(self, facility_external_id, external_id):
-        return reverse("account-rebalance", args=[facility_external_id, external_id])
 
     def generate_account_data(self, **kwargs):
         default_start = str(timezone.make_aware(datetime(2023, 1, 1)))
@@ -434,3 +432,208 @@ class AccountAPITest(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(response.data["results"][0]["id"], str(account1.external_id))
+
+
+class RebalanceAccountTests(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user(username="testuser")
+        self.superuser = self.create_super_user(username="testsuperuser")
+        self.facility = self.create_facility(name="Test Facility", user=self.superuser)
+        self.patient = self.create_patient(name="Test Patient")
+        self.facility_organization = self.create_facility_organization(
+            facility=self.facility, name="Test Facility Org", org_type="root"
+        )
+
+        self.encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            status="active",
+            organization=self.facility_organization,
+        )
+
+        self.role = self.create_role_with_permissions(
+            permissions=[
+                AccountPermissions.can_create_account.name,
+                AccountPermissions.can_update_account.name,
+                AccountPermissions.can_read_account.name,
+            ]
+        )
+        self.account = baker.make(
+            "emr.Account",
+            facility=self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        self.category = baker.make(
+            "emr.ResourceCategory",
+            facility=self.facility,
+            slug=f"f-{self.facility.external_id}-test-category",
+            title="Test Category",
+            description="Test Charge Item Category",
+        )
+        self.charge_item_defintion = baker.make(
+            "emr.ChargeItemDefinition",
+            facility=self.facility,
+            title="Test Charge Item Definition",
+            description="Test Charge Item Definition",
+            slug=f"f-{self.facility.external_id}-test-charge-item-def",
+            price_components=[{"amount": 500, "monetary_component_type": "base"}],
+            category=self.category,
+        )
+        self.charge_item = baker.make(
+            "emr.ChargeItem",
+            facility=self.facility,
+            encounter=self.encounter,
+            charge_item_definition=self.charge_item_defintion,
+            account=self.account,
+            title="Test Charge Item",
+            status="billed",
+            code=None,
+            quantity="1.00",
+            unit_price_components=[{"amount": 500, "monetary_component_type": "base"}],
+            note=None,
+            override_reason=None,
+            total_price_components=[{"amount": 500, "monetary_component_type": "base"}],
+            total_price="500.00",
+            service_resource="service_request",
+            service_resource_id=str(self.encounter.external_id),
+        )
+        self.invoice = baker.make(
+            "emr.Invoice",
+            facility=self.facility,
+            patient=self.patient,
+            account=self.account,
+            status="issued",
+            total_net=500,
+            total_gross=500,
+            issue_date=timezone.now(),
+        )
+
+    def create_payment_reconciliation(
+        self,
+        account,
+        invoice,
+        amount=None,
+        tendered_amount=None,
+        returned_amount=None,
+        is_credit_note=False,
+    ):
+        return baker.make(
+            "emr.PaymentReconciliation",
+            facility=self.facility,
+            target_invoice=invoice,
+            account=account,
+            status="active",
+            outcome="complete",
+            amount=amount or 300,
+            tendered_amount=tendered_amount or 300,
+            returned_amount=returned_amount or 0,
+            is_credit_note=is_credit_note,
+            method="cash",
+            reconciliation_type="payment",
+            kind="deposit",
+            issuer_type="patient",
+        )
+
+    def get_detail_url(self, facility_external_id, external_id):
+        return reverse("account-detail", args=[facility_external_id, external_id])
+
+    def get_rebalance_url(self, facility_external_id, external_id):
+        return reverse("account-rebalance", args=[facility_external_id, external_id])
+
+    def test_rebalance_account_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        initial_balance = self.account.total_balance
+        initial_gross = self.account.total_gross
+        initial_paid = self.account.total_paid
+        self.assertEqual(initial_balance, Decimal("0.00"))
+        self.assertEqual(initial_gross, Decimal("0.00"))
+        self.assertEqual(initial_paid, Decimal("0.00"))
+        self.create_payment_reconciliation(self.account, self.invoice)
+
+        response = self.client.post(
+            self.get_rebalance_url(self.facility.external_id, self.account.external_id)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.account.refresh_from_db()
+
+        self.assertEqual(self.account.total_gross, Decimal("500.00"))
+        self.assertEqual(self.account.total_paid, Decimal("300.00"))
+        self.assertEqual(self.account.total_balance, Decimal("200.00"))
+        self.assertIsNotNone(self.account.calculated_at)
+
+    def test_rebalance_account_as_user_with_permission(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        initial_balance = self.account.total_balance
+        initial_gross = self.account.total_gross
+        initial_paid = self.account.total_paid
+        self.assertEqual(initial_balance, Decimal("0.00"))
+        self.assertEqual(initial_gross, Decimal("0.00"))
+        self.assertEqual(initial_paid, Decimal("0.00"))
+        self.create_payment_reconciliation(self.account, self.invoice)
+
+        response = self.client.post(
+            self.get_rebalance_url(self.facility.external_id, self.account.external_id)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.account.refresh_from_db()
+
+        self.assertEqual(self.account.total_gross, Decimal("500.00"))
+        self.assertEqual(self.account.total_paid, Decimal("300.00"))
+        self.assertEqual(self.account.total_balance, Decimal("200.00"))
+        self.assertIsNotNone(self.account.calculated_at)
+
+    def test_rebalance_account_as_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(
+            permissions=[
+                AccountPermissions.can_read_account.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        initial_balance = self.account.total_balance
+        initial_gross = self.account.total_gross
+        initial_paid = self.account.total_paid
+        self.assertEqual(initial_balance, Decimal("0.00"))
+        self.assertEqual(initial_gross, Decimal("0.00"))
+        self.assertEqual(initial_paid, Decimal("0.00"))
+        self.create_payment_reconciliation(self.account, self.invoice)
+
+        response = self.client.post(
+            self.get_rebalance_url(self.facility.external_id, self.account.external_id)
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You are not authorized to update accounts", response.data["detail"]
+        )
+
+    def test_rebalance_account_with_credit_note(self):
+        self.client.force_authenticate(user=self.superuser)
+        initial_balance = self.account.total_balance
+        initial_gross = self.account.total_gross
+        initial_paid = self.account.total_paid
+        self.assertEqual(initial_balance, Decimal("0.00"))
+        self.assertEqual(initial_gross, Decimal("0.00"))
+        self.assertEqual(initial_paid, Decimal("0.00"))
+        self.create_payment_reconciliation(self.account, self.invoice)
+        self.create_payment_reconciliation(
+            self.account, self.invoice, amount=200, is_credit_note=True
+        )
+
+        response = self.client.post(
+            self.get_rebalance_url(self.facility.external_id, self.account.external_id)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.account.refresh_from_db()
+
+        self.assertEqual(self.account.total_gross, Decimal("500.00"))
+        self.assertEqual(self.account.total_paid, Decimal("100.00"))
+        self.assertEqual(self.account.total_balance, Decimal("400.00"))
+        self.assertIsNotNone(self.account.calculated_at)
