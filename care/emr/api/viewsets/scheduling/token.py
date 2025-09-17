@@ -79,7 +79,9 @@ class TokenViewSet(EMRModelViewSet):
             and model_obj.sub_queue
             and instance.sub_queue != model_obj.sub_queue.external_id
         ):
-            existing_current = TokenSubQueue.objects.filter(current=model_obj).exists()
+            existing_current = TokenSubQueue.objects.filter(
+                current_token=model_obj
+            ).exists()
             if existing_current:
                 raise ValidationError("Sub Queue already has a current token")
 
