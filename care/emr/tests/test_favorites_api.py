@@ -9,7 +9,6 @@ from care.emr.models.favorites import (
     favorite_list_object_cache_key,
     favorite_lists_cache_key,
 )
-from care.emr.models.resource_category import ResourceCategory
 from care.emr.resources.charge_item_definition.spec import (
     ChargeItemDefinitionStatusOptions,
 )
@@ -27,16 +26,7 @@ class TestFavorites(CareAPITestBase):
         super().setUp()
         self.user = self.create_super_user()
         self.facility = self.create_facility(user=self.user)
-        self.organization = self.facility.default_internal_organization
 
-        self.resource_category = ResourceCategory.objects.create(
-            facility=self.facility,
-            title="Test Category",
-            slug="i-test-category",
-            description="Test description",
-            resource_type="test_type",
-            resource_sub_type="test_sub_type",
-        )
         self.favorite_list_name = DEFAULT_FAVORITE_LIST
         self.FAVORITE_RESOURCE = ChargeItemDefinitionViewSet.FAVORITE_RESOURCE
 
@@ -111,11 +101,6 @@ class TestFavorites(CareAPITestBase):
         )
         expected_list = [charge_item_2.id, charge_item_3.id, charge_item.id]
         favorite_list_obj.refresh_from_db()
-        self.assertCountEqual(
-            favorite_list_obj.favorites,
-            expected_list,
-            "Favorite list should contain all added charge items",
-        )
         self.assertEqual(
             favorite_list_obj.favorites,
             expected_list,
@@ -194,7 +179,7 @@ class TestFavorites(CareAPITestBase):
             self.list_queryset.first(), "Favorite list should be deleted when empty"
         )
         null = object()
-        data = cache.get(str(self.favorite_list_object_cache_key), null)
+        data = cache.get(self.favorite_list_object_cache_key, null)
         self.assertEqual(
             data, null, "Cache should be cleared when favorite list is deleted"
         )
@@ -224,7 +209,7 @@ class TestFavorites(CareAPITestBase):
             data={"favorite_list": self.favorite_list_name},
             format="json",
         )
-        response = self.client.post(
+        self.client.post(
             self._get_detail_url(charge_item_2.slug) + "add_favorite/",
             data={"favorite_list": "another_list"},
             format="json",

@@ -26,10 +26,10 @@ def sort_index(field_name: str, order: list[Any] | None) -> models.Case:
         ).order_by('priority_order')
     """
     if not order:
-        return models.Case()
+        return models.Value(0, output_field=models.IntegerField())
 
     if not isinstance(order, list):
-        raise ValueError("Order must be a list")
+        raise TypeError("order must be a list")
 
     return models.Case(
         *[

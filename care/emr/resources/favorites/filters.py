@@ -43,7 +43,7 @@ class FavoritesFilter(BaseFilterBackend):
         if not favorite_list:
             return queryset
 
-        facility = request.parser_context.get("kwargs", {}).get(
+        facility = getattr(view, "kwargs", {}).get(
             "facility_external_id"
         ) or request.query_params.get("facility")
         if facility:
