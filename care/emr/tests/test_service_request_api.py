@@ -22,7 +22,7 @@ from care.security.permissions.specimen import SpecimenPermissions
 from care.utils.tests.base import CareAPITestBase
 
 
-class TestSpecimenViewSet(CareAPITestBase):
+class TestServiceRequestViewSet(CareAPITestBase):
     def setUp(self):
         super().setUp()
         self.user = self.create_user()
@@ -115,14 +115,15 @@ class TestSpecimenViewSet(CareAPITestBase):
             **kwargs,
         )
 
-    def create_activity_definition(self, **kwargs):
+    def create_activity_definition(self, slug=None, **kwargs):
         from care.emr.models import ActivityDefinition
 
         return baker.make(
             ActivityDefinition,
             facility=self.facility,
             status="active",
-            category=ActivityDefinitionCategoryOptions.laboratory.value,
+            slug=f"f-{self.facility.external_id}-{slug}",
+            classification=ActivityDefinitionCategoryOptions.laboratory.value,
             kind=ActivityDefinitionKindOptions.service_request.value,
             **kwargs,
         )
@@ -145,13 +146,14 @@ class TestSpecimenViewSet(CareAPITestBase):
             **kwargs,
         )
 
-    def create_specimen_definition(self, **kwargs):
+    def create_specimen_definition(self, slug=None, **kwargs):
         from care.emr.models import SpecimenDefinition
 
         return baker.make(
             SpecimenDefinition,
             facility=self.facility,
             status=SpecimenDefinitionStatusOptions.active.value,
+            slug=f"f-{self.facility.external_id}-{slug}",
             **kwargs,
         )
 
@@ -199,9 +201,11 @@ class TestSpecimenViewSet(CareAPITestBase):
         )
         self.client.force_authenticate(user=self.user)
         response = self.client.get(
-            self.get_detail_url(self.facility.external_id, "invalid-external-id")
+            self.get_detail_url(self.facility.external_id, uuid.uuid4())
         )
-        self.assertContains(response, "Object not found", status_code=404)
+        self.assertContains(
+            response, "No ServiceRequest matches the given query.", status_code=404
+        )
 
     # test cases for creating a service request
 
@@ -344,6 +348,52 @@ class TestSpecimenViewSet(CareAPITestBase):
             response,
             "requester must be a member of the facility",
             status_code=400,
+        )
+
+    def test_create_service_request_with_non_facility_member_requester(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        another_user = self.create_user()
+        data = self.service_request_data.copy()
+        data["requester"] = str(another_user.external_id)
+        response = self.client.post(
+            self.url,
+            data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "requester must be a member of the facility",
+            status_code=400,
+        )
+
+    def test_create_service_request_with_completed_encounter(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+            current_location=self.facility_location,
+            status="completed",
+        )
+        data = self.service_request_data.copy()
+        data["encounter"] = str(encounter.external_id)
+        response = self.client.post(
+            self.url,
+            data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "You do not have permission to create a service request for this encounter",
+            status_code=403,
         )
 
     # test cases for updating a service request
@@ -512,7 +562,7 @@ class TestSpecimenViewSet(CareAPITestBase):
             kwargs={"facility_external_id": self.facility.external_id},
         )
         data = {
-            "activity_definition": str(activity_definition.external_id),
+            "activity_definition": str(activity_definition.slug),
             "service_request": self.service_request_data,
             "encounter": str(self.encounter.external_id),
         }
@@ -539,7 +589,7 @@ class TestSpecimenViewSet(CareAPITestBase):
             kwargs={"facility_external_id": self.facility.external_id},
         )
         data = {
-            "activity_definition": str(activity_definition.external_id),
+            "activity_definition": str(activity_definition.slug),
             "service_request": self.service_request_data,
             "encounter": str(self.encounter.external_id),
         }
@@ -563,7 +613,7 @@ class TestSpecimenViewSet(CareAPITestBase):
             kwargs={"facility_external_id": self.facility.external_id},
         )
         data = {
-            "activity_definition": str(activity_definition.external_id),
+            "activity_definition": str(activity_definition.slug),
             "service_request": self.service_request_data,
             "encounter": str(self.encounter.external_id),
         }
@@ -584,13 +634,15 @@ class TestSpecimenViewSet(CareAPITestBase):
             kwargs={"facility_external_id": self.facility.external_id},
         )
         data = {
-            "activity_definition": str(uuid.uuid4()),  # Invalid UUID
+            "activity_definition": "invalid-slug",  # Invalid slug
             "service_request": self.service_request_data,
             "encounter": str(self.encounter.external_id),
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 404)
-        self.assertContains(response, "Object not found", status_code=404)
+        self.assertContains(
+            response, "No ActivityDefinition matches the given query", status_code=404
+        )
 
     # Test cases for create specimen
 
@@ -776,7 +828,7 @@ class TestSpecimenViewSet(CareAPITestBase):
         response_ids = [item["title"] for item in response.data["results"]]
         self.assertTrue(all(id == "Test Service Request" for id in response_ids))
 
-    def test_filter_service_request_by_donot_perform(self):
+    def test_filter_service_request_by_do_not_perform(self):
         self.client.force_authenticate(user=self.superuser)
         self.create_service_request(
             title="Test Service Request",
