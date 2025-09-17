@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
@@ -20,6 +19,7 @@ from care.emr.resources.patient_identifier.spec import (
 )
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class PatientIdentifierConfigFilters(filters.FilterSet):
