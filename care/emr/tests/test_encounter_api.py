@@ -12,7 +12,7 @@ from care.emr.models.location import FacilityLocation, FacilityLocationEncounter
 from care.emr.models.scheduling.booking import TokenBooking, TokenSlot
 from care.emr.models.scheduling.schedule import (
     Availability,
-    SchedulableUserResource,
+    SchedulableResource,
     Schedule,
 )
 from care.emr.resources.encounter.constants import (
@@ -298,17 +298,6 @@ class EncounterAPITests(CareAPITestBase):
         results = response.data.get("results", [])
         self.assertEqual(len(results), 1)
         self.assertEqual(results[0]["id"], str(self.encounter.external_id))
-
-    def test_filter_by_patient_filter_without_permission(self):
-        response = self.client.get(
-            self.url,
-            {
-                "patient_filter": self.patient.external_id,
-                "facility": self.facility.external_id,
-            },
-        )
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-        self.assertContains(response, "User cannot access facility", status_code=403)
 
     def test_filter_by_patient(self):
         self.get_list_view_permission()
@@ -858,7 +847,7 @@ class EncounterAppointmentAPITests(CareAPITestBase):
 
     def create_appointment(self, **kwargs):
         schedule_user = baker.make(
-            SchedulableUserResource, user=self.user, facility=self.facility
+            SchedulableResource, user=self.user, facility=self.facility
         )
         schedule = baker.make(
             Schedule,

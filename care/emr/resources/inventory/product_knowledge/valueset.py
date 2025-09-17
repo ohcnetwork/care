@@ -36,3 +36,22 @@ CARE_NUTRIENTS_VALUESET.register_valueset(
 )
 
 CARE_NUTRIENTS_VALUESET.register_as_system()
+
+MEDICATION_FORM_CODES = CareValueset(
+    "Medication Form Codes",
+    "system-medication-form-codes",
+    ValueSetStatusOptions.active.value,
+)
+
+MEDICATION_FORM_CODES.register_valueset(
+    ValueSetCompose(
+        include=[
+            {
+                "system": "http://snomed.info/sct",
+                "filter": [{"property": "concept", "op": "is-a", "value": "736542009"}],
+            }
+        ]
+    )
+)
+
+MEDICATION_FORM_CODES.register_as_system()
