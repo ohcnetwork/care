@@ -42,6 +42,7 @@ from care.emr.resources.specimen.spec import (
 )
 from care.emr.resources.specimen_definition.specimen import convert_sd_to_specimen
 from care.emr.resources.tag.config_spec import TagResource
+from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.shortcuts import get_object_or_404
@@ -84,7 +85,11 @@ class ServiceRequestViewSet(
     pydantic_read_model = ServiceRequestReadSpec
     pydantic_retrieve_model = ServiceRequestRetrieveSpec
     filterset_class = ServiceRequestFilters
-    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        OrderingFilter,
+        SingleFacilityTagFilter,
+    ]
     questionnaire_type = "service_request"
     questionnaire_title = "Service Request"
     questionnaire_description = "Service Request"

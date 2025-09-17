@@ -11,7 +11,7 @@ class EncounterTagsMetric(EvaluationMetricBase):
     name = "encounter_tag"
     verbose_name = "Encounter Tag"
     allowed_operations = [
-        AllowedOperations.intersects_any.value,
+        AllowedOperations.has_tag.value,
     ]
 
     def clean_rule(self, rule):

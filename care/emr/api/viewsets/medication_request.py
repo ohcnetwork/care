@@ -1,35 +1,20 @@
-from django.db.models import Count
 from django_filters import rest_framework as filters
 from rest_framework import filters as rest_framework_filters
-from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import (
-    EMRBaseViewSet,
-    EMRModelViewSet,
-    EMRQuestionnaireResponseMixin,
-)
+from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
 from care.emr.models.encounter import Encounter
-from care.emr.models.medication_request import (
-    MedicationRequest,
-    MedicationRequestPrescription,
-)
+from care.emr.models.medication_request import MedicationRequest
 from care.emr.registries.system_questionnaire.system_questionnaire import (
     InternalQuestionnaireRegistry,
 )
 from care.emr.resources.medication.request.spec import (
     MedicationRequestReadSpec,
     MedicationRequestSpec,
-    MedicationRequestStatus,
     MedicationRequestUpdateSpec,
 )
-from care.emr.resources.medication.request_prescription.spec import (
-    MedicationRequestPrescriptionRetrieveDetailedSpec,
-)
 from care.emr.resources.questionnaire.spec import SubjectType
-from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
 from care.utils.filters.multiselect import MultiSelectFilter
@@ -95,73 +80,3 @@ class MedicationRequestViewSet(
 
 
 InternalQuestionnaireRegistry.register(MedicationRequestViewSet)
-
-
-class MedicationRequestSummaryFilters(filters.FilterSet):
-    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
-    status = filters.CharFilter(lookup_expr="iexact")
-    intent = filters.CharFilter(lookup_expr="iexact")
-    priority = filters.CharFilter(lookup_expr="iexact")
-    category = filters.CharFilter(lookup_expr="iexact")
-    patient_external_id = filters.UUIDFilter(field_name="patient__external_id")
-    encounter_external_id = filters.UUIDFilter(field_name="encounter__external_id")
-    dispense_status = MultiSelectFilter(field_name="dispense_status")
-    exclude_dispense_status = MultiSelectFilter(
-        field_name="dispense_status", exclude=True
-    )
-    dispense_status_isnull = NullFilter(field_name="dispense_status")
-    encounter_class = filters.CharFilter(
-        field_name="encounter__encounter_class", lookup_expr="iexact"
-    )
-
-
-class MedicationRequestSummaryViewSet(EMRBaseViewSet):
-    filter_backends = [filters.DjangoFilterBackend]
-    filterset_class = MedicationRequestSummaryFilters
-
-    def get_facility_obj(self):
-        return get_object_or_404(
-            Facility, external_id=self.kwargs["facility_external_id"]
-        )
-
-    def authorize_for_pharmacist(self, facility):
-        if not AuthorizationController.call(
-            "can_view_as_pharmacist", self.request.user, facility
-        ):
-            raise PermissionDenied("You do not have permission to view this facility")
-
-    @action(methods=["GET"], detail=False)
-    def summary(self, request, *args, **kwargs):
-        facility = self.get_facility_obj()
-        self.authorize_for_pharmacist(facility)
-        queryset = (
-            MedicationRequest.objects.filter(
-                encounter__facility=facility,
-                status=MedicationRequestStatus.active.value,
-                prescription__isnull=False,
-            )
-            .values("prescription_id")
-            .annotate(dcount=Count("prescription_id"))
-        ).order_by("prescription_id")
-        queryset = self.filter_queryset(queryset)
-        paginator = self.pagination_class()
-        page = paginator.paginate_queryset(queryset, request)
-        if page is not None:
-            prescriptions = MedicationRequestPrescription.objects.filter(
-                id__in=[x["prescription_id"] for x in page]
-            )
-            prescriptions = {
-                x.id: MedicationRequestPrescriptionRetrieveDetailedSpec.serialize(
-                    x
-                ).to_json()
-                for x in prescriptions
-            }
-            data = [
-                {
-                    "prescription": prescriptions.get(x["prescription_id"], None),
-                    "count": x["dcount"],
-                }
-                for x in page
-            ]
-            return paginator.get_paginated_response(data)
-        return Response({})

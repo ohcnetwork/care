@@ -67,7 +67,7 @@ class BaseObservationSpec(EMRResource):
 
     alternate_coding: CodeableConcept | None = None
 
-    subject_type: SubjectType
+    subject_type: SubjectType = SubjectType.encounter.value
 
     encounter: UUID4 | None = None
 

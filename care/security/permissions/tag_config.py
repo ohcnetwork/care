@@ -20,6 +20,19 @@ class TagConfigPermissions(enum.Enum):
         PermissionContext.FACILITY,
         [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
     )
+    can_apply_tag_config = Permission(
+        "Can Apply Tag Config to Resources",
+        "",
+        PermissionContext.FACILITY,
+        [
+            FACILITY_ADMIN_ROLE,
+            ADMIN_ROLE,
+            STAFF_ROLE,
+            DOCTOR_ROLE,
+            NURSE_ROLE,
+            PHARMACIST_ROLE,
+        ],
+    )
     can_read_tag_config = Permission(
         "Can Read Tag Config",
         "",

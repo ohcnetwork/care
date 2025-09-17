@@ -30,7 +30,7 @@ class EvaluationMetricBase:
         value = self.get_value()
         return value >= rule["min"] and value <= rule["max"]
 
-    def evaluate_intersects_any(self, rule):
+    def evaluate_has_tag(self, rule):
         value = self.get_value()
         rule = self.clean_rule(rule)
         return rule in value

@@ -278,7 +278,7 @@ class PatientViewSet(EMRModelViewSet):
     @action(detail=True, methods=["GET"])
     def get_appointments(self, request, *args, **kwargs):
         facility = self.request.GET.get("facility", None)
-        queryset = TokenBooking.objects.all()
+        queryset = TokenBooking.objects.all().order_by("-token_slot__start_datetime")
         if facility:
             facility = get_object_or_404(Facility, external_id=facility)
             if not AuthorizationController.call(
@@ -304,7 +304,7 @@ class PatientViewSet(EMRModelViewSet):
     @action(detail=True, methods=["GET"])
     def get_tokens(self, request, *args, **kwargs):
         facility = self.request.GET.get("facility", None)
-        queryset = Token.objects.all()
+        queryset = Token.objects.all().order_by("-created_date")
         if facility:
             facility = get_object_or_404(Facility, external_id=facility)
             if not AuthorizationController.call(

@@ -47,7 +47,6 @@ class TagConfigBaseSpec(EMRResource):
     __model__ = TagConfig
     __exclude__ = ["facility", "facility_organization", "organization", "parent"]
     id: UUID4 | None = None
-    slug: str
     display: str
     category: TagCategoryChoices
     description: str = ""
@@ -56,7 +55,20 @@ class TagConfigBaseSpec(EMRResource):
 
 
 class TagConfigUpdateSpec(TagConfigBaseSpec):
-    pass
+    facility_organization: UUID4 | None = None
+    organization: UUID4 | None = None
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.organization:
+            obj.organization = get_object_or_404(
+                Organization.objects.only("id"), external_id=self.organization
+            )
+        if self.facility_organization:
+            obj.facility_organization = get_object_or_404(
+                FacilityOrganization.objects.only("id"),
+                external_id=self.facility_organization,
+                facility=obj.facility,
+            )
 
 
 class TagConfigWriteSpec(TagConfigBaseSpec):
@@ -99,13 +111,6 @@ class TagConfigWriteSpec(TagConfigBaseSpec):
             if not config.exists():
                 err = "Parent tag config not found"
                 raise ValueError(err)
-        # Validate slug uniqueness
-        configs = TagConfig.objects.filter(slug=self.slug)
-        if facility:
-            configs = configs.filter(facility=facility)
-        if configs.exists():
-            err = "Slug must be unique"
-            raise ValidationError(err)
         return self
 
     @model_validator(mode="after")
@@ -154,8 +159,23 @@ class TagConfigReadSpec(TagConfigBaseSpec):
 class TagConfigRetrieveSpec(TagConfigReadSpec):
     created_by: dict
     updated_by: dict
+    facility_organization: dict | None = None
+    organization: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.facility_organization.spec import (
+            FacilityOrganizationReadSpec,
+        )
+        from care.emr.resources.organization.spec import OrganizationReadSpec
+
         super().perform_extra_serialization(mapping, obj)
         cls.serialize_audit_users(mapping, obj)
+        if obj.facility_organization:
+            mapping["facility_organization"] = FacilityOrganizationReadSpec.serialize(
+                obj.facility_organization
+            ).to_json()
+        if obj.organization:
+            mapping["organization"] = OrganizationReadSpec.serialize(
+                obj.organization
+            ).to_json()

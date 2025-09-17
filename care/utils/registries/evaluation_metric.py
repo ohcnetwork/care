@@ -10,7 +10,7 @@ class AllowedOperations(Enum):
     # Core Supported Operations
     equality = "equality"
     in_range = "in_range"
-    intersects_any = "intersects_any"
+    has_tag = "has_tag"
 
 
 class EvaluatorMetricsRegistry:

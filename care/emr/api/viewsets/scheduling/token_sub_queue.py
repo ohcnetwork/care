@@ -21,6 +21,7 @@ from care.utils.shortcuts import get_object_or_404
 
 class TokenSubQueueFilters(FilterSet):
     name = CharFilter(lookup_expr="icontains")
+    status = CharFilter(lookup_expr="iexact")
 
 
 class TokenSubQueueViewSet(EMRModelViewSet):

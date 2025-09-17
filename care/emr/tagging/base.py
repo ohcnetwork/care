@@ -1,9 +1,10 @@
 from django.db.models import Q
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from care.emr.models.tag_config import TagConfig
 from care.emr.resources.tag.config_spec import TagConfigReadSpec
 from care.facility.models.facility import Facility
+from care.security.authorization.base import AuthorizationController
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -47,12 +48,18 @@ class SingleFacilityTagManager(BaseTagManager):
         return ["tags"]
 
     def set_tag(self, resource_type, resource, tag_instance, user, facility=None):
-        # AuthZ pending
         # Attain Tag lock for resource id
         tags = self.get_resource_tag(resource)
         tag_instance = self.get_tag_config_object(tag_instance, facility)
         if not tag_instance:
             return
+
+        if not AuthorizationController.call("can_apply_tag_config", user, tag_instance):
+            error_msg = (
+                f"You do not have permission to apply tag '{tag_instance.display}'"
+            )
+            raise PermissionDenied(error_msg)
+
         if tag_instance.id in tags:
             raise ValidationError("Tag already set")
         if tag_instance.resource != resource_type:
@@ -71,6 +78,13 @@ class SingleFacilityTagManager(BaseTagManager):
     def unset_tag(self, resource, tag_instance, user):
         tags = self.get_resource_tag(resource)
         tag_instance = self.get_tag_from_external_id(tag_instance)
+
+        if not AuthorizationController.call("can_apply_tag_config", user, tag_instance):
+            error_msg = (
+                f"You do not have permission to remove tag '{tag_instance.display}'"
+            )
+            raise PermissionDenied(error_msg)
+
         if tag_instance.id not in tags:
             # TODO Standardise and use valueerror and reraise as validation error
             raise ValidationError("Tag not set")

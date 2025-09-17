@@ -85,7 +85,6 @@ class TokenBookingMinimumReadSpec(TokenBookingBaseSpec):
     booked_on: datetime.datetime
     status: str
     note: str
-    user: UserSpec
     created_date: datetime.datetime
     modified_date: datetime.datetime
 
@@ -95,7 +94,6 @@ class TokenBookingMinimumReadSpec(TokenBookingBaseSpec):
         mapping["token_slot"] = TokenSlotBaseSpec.serialize(obj.token_slot).model_dump(
             exclude=["meta"]
         )
-        mapping["user"] = model_from_cache(UserSpec, id=obj.token_slot.resource.user_id)
 
 
 class TokenBookingReadSpec(TokenBookingBaseSpec):
