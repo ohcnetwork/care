@@ -283,7 +283,9 @@ class UserviewTestCase(CareAPITestBase):
         # For a hard delete, we should check if the user no longer exists in the database
         get_response = self.client.get(url)
         self.assertEqual(get_response.status_code, 404)
-        self.assertContains(get_response, "Object not found", status_code=404)
+        self.assertContains(
+            get_response, "No User matches the given query.", status_code=404
+        )
 
     def test_delete_user_login_history_without_permission(self):
         """Test that regular users cannot delete other users."""
