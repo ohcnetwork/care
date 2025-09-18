@@ -1,4 +1,5 @@
 import hashlib
+import logging
 from datetime import timedelta
 
 import jwt
@@ -6,10 +7,11 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils import timezone
-from psycopg import logger
 
 from care.emr.resources.common.mail_type import MailTypeChoices
 from care.users.models import User
+
+logger = logging.getLogger(__name__)
 
 
 def generate_password_reset_token(user):
