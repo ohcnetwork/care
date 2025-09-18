@@ -3,7 +3,6 @@ from enum import Enum
 from typing import Any
 
 from pydantic import UUID4, UUID5, ConfigDict, Field, field_validator, model_validator
-from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
 from care.emr.resources.base import EMRResource
@@ -12,7 +11,9 @@ from care.emr.resources.observation.valueset import (
     CARE_UCUM_UNITS,
 )
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.slug_type import SlugType
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
+from care.utils.shortcuts import get_object_or_404
 
 
 class EnableOperator(str, Enum):
@@ -179,7 +180,7 @@ class Question(QuestionnaireBaseSpec):
 
 class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
     version: str = Field("1.0", frozen=True, description="Version of the questionnaire")
-    slug: str | None = Field(None, min_length=5, max_length=25, pattern=r"^[-\w]+$")
+    slug: SlugType | None = None
     title: str
     description: str | None = None
     type: str = "custom"
@@ -262,7 +263,7 @@ class QuestionnaireUpdateSpec(QuestionnaireWriteSpec):
 
 class QuestionnaireReadSpec(QuestionnaireBaseSpec):
     id: str
-    slug: str | None = None
+    slug: SlugType | None = None
     version: str
     title: str
     description: str | None = None
@@ -295,7 +296,7 @@ class QuestionnaireTagSpec(EMRResource):
     __model__ = QuestionnaireTag
     id: UUID4 | None = None
     name: str
-    slug: str
+    slug: SlugType
 
     @field_validator("slug")
     @classmethod

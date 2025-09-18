@@ -16,7 +16,7 @@ class MedicationDispense(EMRBaseModel):
     encounter = models.ForeignKey("emr.Encounter", on_delete=models.CASCADE)
     patient = models.ForeignKey("emr.Patient", on_delete=models.CASCADE)
     location = models.ForeignKey("emr.FacilityLocation", on_delete=models.CASCADE)
-    authorizing_prescription = models.ForeignKey(
+    authorizing_request = models.ForeignKey(
         MedicationRequest, on_delete=models.SET_NULL, null=True, blank=True
     )
     item = models.ForeignKey("emr.InventoryItem", on_delete=models.CASCADE)

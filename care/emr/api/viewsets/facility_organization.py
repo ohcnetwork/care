@@ -6,7 +6,6 @@ from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
@@ -29,6 +28,7 @@ from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.security.roles.role import FACILITY_ADMIN_ROLE
 from care.users.models import User
+from care.utils.shortcuts import get_object_or_404
 
 
 class FacilityOrganizationFilter(filters.FilterSet):

@@ -1,7 +1,6 @@
 import datetime
 from enum import Enum
 
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4, model_validator
 
 from care.emr.models.inventory_item import InventoryItem
@@ -20,6 +19,7 @@ from care.emr.resources.organization.spec import (
     OrganizationTypeChoices,
 )
 from care.emr.resources.user.spec import UserSpec
+from care.utils.shortcuts import get_object_or_404
 
 
 class SupplyDeliveryStatusOptions(str, Enum):

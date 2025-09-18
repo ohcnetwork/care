@@ -4,8 +4,8 @@ from enum import Enum
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
+from django.shortcuts import get_object_or_404
 from pydantic import UUID4, BaseModel, Field, field_validator
-from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Organization
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser

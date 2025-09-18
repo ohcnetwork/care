@@ -1,7 +1,6 @@
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -12,26 +11,34 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.api.viewsets.favorites import EMRFavoritesMixin
 from care.emr.models import ActivityDefinition
 from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.location import FacilityLocation
 from care.emr.models.observation_definition import ObservationDefinition
+from care.emr.models.resource_category import ResourceCategory
 from care.emr.models.specimen_definition import SpecimenDefinition
 from care.emr.resources.activity_definition.spec import (
     ActivityDefinitionReadSpec,
     ActivityDefinitionRetrieveSpec,
     ActivityDefinitionWriteSpec,
 )
+from care.emr.resources.favorites.filters import FavoritesFilter
+from care.emr.resources.favorites.spec import FavoriteResourceChoices
 from care.emr.resources.tag.config_spec import TagResource
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyCharFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class ActivityDefinitionFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     title = filters.CharFilter(lookup_expr="icontains")
-    category = filters.CharFilter(lookup_expr="iexact")
+    classification = filters.CharFilter(lookup_expr="iexact")
     kind = filters.CharFilter(lookup_expr="iexact")
+    category = DummyCharFilter()
+    include_children = DummyBooleanFilter()
 
 
 class ActivityDefinitionViewSet(
@@ -42,15 +49,18 @@ class ActivityDefinitionViewSet(
     EMRTagMixin,
     EMRBaseViewSet,
     EMRUpsertMixin,
+    EMRFavoritesMixin,
 ):
+    lookup_field = "slug"
     database_model = ActivityDefinition
     pydantic_model = ActivityDefinitionWriteSpec
     pydantic_read_model = ActivityDefinitionReadSpec
     pydantic_retrieve_model = ActivityDefinitionRetrieveSpec
     filterset_class = ActivityDefinitionFilters
-    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    filter_backends = [filters.DjangoFilterBackend, OrderingFilter, FavoritesFilter]
     ordering_fields = ["created_date", "modified_date"]
     resource_type = TagResource.activity_definition
+    FAVORITE_RESOURCE = FavoriteResourceChoices.activity_definition
 
     def get_facility_obj(self):
         return get_object_or_404(
@@ -63,7 +73,7 @@ class ActivityDefinitionViewSet(
         for specimen_requirement in instance.specimen_requirements:
             obj = (
                 SpecimenDefinition.objects.only("id")
-                .filter(external_id=specimen_requirement, facility=instance.facility)
+                .filter(slug=specimen_requirement, facility=instance.facility)
                 .first()
             )
             if not obj:
@@ -78,7 +88,7 @@ class ActivityDefinitionViewSet(
         for observation_result in instance.observation_result_requirements:
             obj = (
                 ObservationDefinition.objects.only("id")
-                .filter(external_id=observation_result, facility=instance.facility)
+                .filter(slug=observation_result, facility=instance.facility)
                 .first()
             )
             if not obj:
@@ -108,13 +118,11 @@ class ActivityDefinitionViewSet(
         for charge_item_definition in instance.charge_item_definitions:
             obj = (
                 ChargeItemDefinition.objects.only("id")
-                .filter(external_id=charge_item_definition, facility=instance.facility)
+                .filter(slug=charge_item_definition, facility=instance.facility)
                 .first()
             )
             if not obj:
-                error_msg = (
-                    f"Charge Item Definition with id {charge_item_definition} not found"
-                )
+                error_msg = f"Charge Item Definition with slug {charge_item_definition} not found"
                 raise ValidationError(error_msg)
             ids.append(obj.id)
         instance.charge_item_definitions = ids
@@ -126,17 +134,43 @@ class ActivityDefinitionViewSet(
         ):
             raise ValidationError("Healthcare Service must be from the same facility")
 
+    def validate_data(self, instance, model_obj=None):
+        facility = self.get_facility_obj() if not model_obj else model_obj.facility
+
+        queryset = ActivityDefinition.objects.all()
+        if model_obj:
+            queryset = queryset.exclude(id=model_obj.id)
+
+        facility_external_id = str(facility.external_id)
+        slug = ActivityDefinition.calculate_slug_from_facility(
+            facility_external_id, instance.slug_value
+        )
+
+        queryset = queryset.filter(slug__iexact=slug)
+
+        if queryset.exists():
+            raise ValidationError("Activity Definition with this slug already exists.")
+
+        if instance.category:
+            get_object_or_404(
+                ResourceCategory, slug=instance.category, facility=facility
+            )
+
+        return super().validate_data(instance, model_obj)
+
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
-        if ActivityDefinition.objects.filter(
-            slug__iexact=instance.slug, facility=instance.facility
-        ).exists():
-            raise ValidationError("Activity Definition with this slug already exists.")
+        instance.slug = ActivityDefinition.calculate_slug_from_facility(
+            instance.facility.external_id, instance.slug
+        )
         self.convert_external_id_to_internal_id(instance)
         self.validate_health_care_service(instance)
         super().perform_create(instance)
 
     def perform_update(self, instance):
+        instance.slug = ActivityDefinition.calculate_slug_from_facility(
+            instance.facility.external_id, instance.slug
+        )
         self.convert_external_id_to_internal_id(instance)
         self.validate_health_care_service(instance)
         super().perform_update(instance)
@@ -163,6 +197,18 @@ class ActivityDefinitionViewSet(
         """
         base_queryset = super().get_queryset()
         facility_obj = self.get_facility_obj()
+        if self.action == "list" and self.request.GET.get("category"):
+            category = get_object_or_404(
+                ResourceCategory.objects.only("id"),
+                slug=self.request.GET.get("category"),
+                facility=facility_obj,
+            )
+            if self.request.GET.get("include_children", "False").lower() == "true":
+                base_queryset = base_queryset.filter(
+                    category__parent_cache__overlap=[category.id]
+                )
+            else:
+                base_queryset = base_queryset.filter(category=category)
         if not AuthorizationController.call(
             "can_list_facility_activity_definition",
             self.request.user,
