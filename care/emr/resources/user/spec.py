@@ -21,6 +21,7 @@ from care.security.roles.role import (
     VOLUNTEER_ROLE,
 )
 from care.users.models import User
+from care.utils.shortcuts import get_object_or_404
 
 
 def is_valid_username(username):

@@ -21,6 +21,7 @@ from .payment_reconciliation import *  # noqa F403
 from .product import *  # noqa F403
 from .product_knowledge import *  # noqa F403
 from .questionnaire import *  # noqa F403
+from .resource_category import *  # noqa F403
 from .scheduling import *  # noqa F403
 from .service_request import *  # noqa F403
 from .specimen import *  # noqa F403

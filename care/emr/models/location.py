@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import Max
 from django.utils import timezone
 
-from care.emr.models import EMRBaseModel, Encounter, FacilityOrganization
+from care.emr.models import EMRBaseModel, Encounter
 from config.celery_app import app
 
 
@@ -94,11 +94,7 @@ class FacilityLocation(EMRBaseModel):
                 }
             )
 
-        facility_root_org = FacilityOrganization.objects.filter(
-            org_type="root", facility=self.facility
-        ).first()
-        if facility_root_org:
-            orgs = orgs.union({facility_root_org.id})
+        orgs = orgs.union({self.facility.default_internal_organization_id})
 
         self.facility_organization_cache = list(orgs)
         super().save(update_fields=["facility_organization_cache"])

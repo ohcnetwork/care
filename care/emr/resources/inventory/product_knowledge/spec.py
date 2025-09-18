@@ -3,14 +3,19 @@ from enum import Enum
 from pydantic import UUID4, BaseModel
 
 from care.emr.models.product_knowledge import ProductKnowledge
+from care.emr.models.resource_category import ResourceCategory
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.quantity import Quantity, Ratio
 from care.emr.resources.inventory.product_knowledge.valueset import (
     CARE_NUTRIENTS_VALUESET,
     CARE_SUBSTANCE_VALUSET,
+    MEDICATION_FORM_CODES,
 )
+from care.emr.resources.observation.valueset import CARE_UCUM_UNITS
+from care.emr.resources.resource_category.spec import ResourceCategoryReadSpec
 from care.emr.resources.specimen.spec import DurationSpec
+from care.emr.utils.slug_type import SlugType
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.facility.models.facility import Facility
 
@@ -78,7 +83,7 @@ class DrugCharacteristic(BaseModel):
 
 
 class ProductDefinitionSpec(BaseModel):
-    dosage_form: Coding | None = None
+    dosage_form: ValueSetBoundCoding[MEDICATION_FORM_CODES.slug] | None
     intended_routes: list[Coding] = []
     ingredients: list[ProductIngredient] = []
     nutrients: list[ProductNutrient] = []
@@ -92,24 +97,34 @@ class BaseProductKnowledgeSpec(EMRResource):
     __exclude__ = ["facility"]
 
     id: UUID4 | None = None
-    slug: str
     alternate_identifier: str | None = None
     status: ProductKnowledgeStatusOptions
     product_type: ProductTypeOptions
     code: Coding | None = None
-    base_unit: Coding | None = None
+    base_unit: ValueSetBoundCoding[CARE_UCUM_UNITS.slug]
     name: str
     names: list[ProductName] = []
     storage_guidelines: list[StorageGuideline] = []
     definitional: ProductDefinitionSpec | None = None
 
 
-class ProductKnowledgeWriteSpec(BaseProductKnowledgeSpec):
+class ProductKnowledgeUpdateSpec(BaseProductKnowledgeSpec):
+    category: str | None = None
+    slug_value: SlugType
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.category:
+            obj.category = ResourceCategory.objects.get(slug=self.category)
+        obj.slug = self.slug_value
+
+
+class ProductKnowledgeWriteSpec(ProductKnowledgeUpdateSpec):
     """Payment reconciliation write specification"""
 
     facility: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
+        super().perform_extra_deserialization(is_update, obj)
         if self.facility:
             obj.facility = Facility.objects.get(external_id=self.facility)
 
@@ -117,6 +132,21 @@ class ProductKnowledgeWriteSpec(BaseProductKnowledgeSpec):
 class ProductKnowledgeReadSpec(BaseProductKnowledgeSpec):
     """Invoice read specification"""
 
+    is_instance_level: bool
+    category: dict | None = None
+
+    slug_config: dict
+    slug: str
+
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+        if obj.facility_id:
+            mapping["is_instance_level"] = False
+        else:
+            mapping["is_instance_level"] = True
+        if obj.category:
+            mapping["category"] = ResourceCategoryReadSpec.serialize(
+                obj.category
+            ).to_json()
+        mapping["slug_config"] = obj.parse_slug(obj.slug)

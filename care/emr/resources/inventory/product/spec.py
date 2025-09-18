@@ -9,6 +9,7 @@ from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.resources.base import EMRResource
 from care.emr.resources.charge_item_definition.spec import ChargeItemDefinitionReadSpec
 from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledgeReadSpec
+from care.utils.shortcuts import get_object_or_404
 
 
 class ProductStatusOptions(str, Enum):
@@ -36,28 +37,28 @@ class BaseProductSpec(EMRResource):
 class ProductWriteSpec(BaseProductSpec):
     """Payment reconciliation write specification"""
 
-    product_knowledge: UUID4
-    charge_item_definition: UUID4 | None = None
+    product_knowledge: str
+    charge_item_definition: str | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
-        obj.product_knowledge = ProductKnowledge.objects.get(
-            external_id=self.product_knowledge
+        obj.product_knowledge = get_object_or_404(
+            ProductKnowledge, slug=self.product_knowledge
         )
         if self.charge_item_definition:
-            obj.charge_item_definition = ChargeItemDefinition.objects.get(
-                external_id=self.charge_item_definition
+            obj.charge_item_definition = get_object_or_404(
+                ChargeItemDefinition, slug=self.charge_item_definition
             )
 
 
 class ProductUpdateSpec(BaseProductSpec):
     """Payment reconciliation write specification"""
 
-    charge_item_definition: UUID4 | None = None
+    charge_item_definition: str | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.charge_item_definition:
             obj.charge_item_definition = ChargeItemDefinition.objects.get(
-                external_id=self.charge_item_definition
+                slug=self.charge_item_definition
             )
 
 

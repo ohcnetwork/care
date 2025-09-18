@@ -7,4 +7,4 @@ class EMRConfig(AppConfig):
     verbose_name = _("Electronic Medical Record")
 
     def ready(self):
-        pass
+        from care.utils.evaluators.evaluation_metric import EvaluationMetricBase  # noqa

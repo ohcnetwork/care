@@ -4,11 +4,15 @@ from care.emr.resources.utils import MonetaryCodes, MonetaryComponentDefinitions
 
 env = environ.Env()
 
+MAX_DATAPOINTS_PER_UPSERT = env.int("MAX_DATAPOINTS_PER_UPSERT", default=100)
+
 MAX_APPOINTMENTS_PER_PATIENT = env.int("MAX_APPOINTMENTS_PER_PATIENT", default=10)
 
 MAX_ACTIVE_ENCOUNTERS_PER_PATIENT_IN_FACILITY = env.int(
     "MAX_ACTIVE_ENCOUNTERS_PER_PATIENT_IN_FACILITY", default=5
 )
+
+MAX_FAVORITES_PER_LIST = env.int("MAX_FAVORITES_PER_LIST", default=50)
 
 # Maximum file upload size in MB
 MAX_FILE_UPLOAD_SIZE = env.int("MAX_FILE_UPLOAD_SIZE", default=5)
