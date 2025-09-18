@@ -236,7 +236,6 @@ class ResetPasswordConfirmRequest(BaseModel):
 
 
 class ResetPasswordResponse(BaseModel):
-    status: str
     detail: str
 
 

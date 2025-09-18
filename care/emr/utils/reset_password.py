@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.mail import EmailMessage
 from django.template.loader import render_to_string
 from django.utils import timezone
-from rest_framework.exceptions import ValidationError
+from psycopg import logger
 
 from care.emr.resources.common.mail_type import MailTypeChoices
 from care.users.models import User
@@ -14,7 +14,7 @@ from care.users.models import User
 
 def generate_password_reset_token(user):
     """Generate a JWT token with HMAC-SHA256 signature"""
-    exp_time = timezone.now() + timedelta(hours=24)
+    exp_time = timezone.now() + timedelta(hours=settings.PASSWORD_RESET_TOKEN_TTL_HOURS)
     secret_key = settings.SECRET_KEY
     password_hash = hashlib.sha256((user.password + secret_key).encode()).hexdigest()
     payload = {
@@ -38,28 +38,29 @@ def verify_password_reset_token(token):
         payload = jwt.decode(token, secret_key, algorithms=["HS256"])
         username = payload.get("username")
         if not username:
-            error_message = "Invalid token format"
+            return (None, "Invalid token")
         user = User.objects.get(username=username)
 
         expected_password_hash = hashlib.sha256(
             (user.password + secret_key).encode()
         ).hexdigest()
         if payload.get("password_hash") != expected_password_hash:
-            error_message = "Token invalid due to password change"
+            return (None, "Token invalid due to password change")
 
         if payload.get("type") != "password_reset":
-            error_message = "Invalid token type"
-        elif payload.get("sub") != str(user.external_id):
-            error_message = "Token doesn't match user"
+            return (None, "Invalid token type")
+        if payload.get("sub") != str(user.external_id):
+            return (None, "Token doesn't match user")
 
     except jwt.ExpiredSignatureError:
-        error_message = "Invalid token"
+        error_message = "Token has expired"
     except User.DoesNotExist:
         error_message = "User not found"
     except Exception as e:
-        error_message = f"Error verifying token: {e!s}"
+        logger.error("Error verifying token: %s", e)
+        error_message = "Error verifying token"
 
-    return (user, error_message) if not error_message else (None, error_message)
+    return (user, None) if not error_message else (None, error_message)
 
 
 def send_password_reset_email(user, mail_type):
@@ -94,4 +95,4 @@ def send_password_reset_email(user, mail_type):
         msg.send()
 
     except Exception as err:
-        raise ValidationError("Failed to send password reset email.") from err
+        logger.error("Failed to send password reset email: %s", err)
