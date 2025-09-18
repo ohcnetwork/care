@@ -56,7 +56,7 @@ class ResetPasswordCheck(GenericAPIView):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if ratelimit(request, "reset", [token], "20/h"):
+        if ratelimit(request, "reset-check", [token, "ip"], "10/h"):
             error_message = "Too many requests. Please try again later."
             response = ResetPasswordResponse(detail=error_message).model_dump()
             return Response(
@@ -103,23 +103,25 @@ class ResetPasswordConfirm(GenericAPIView):
             token = data.token
 
         except Exception:
+            error_message = "Failed to confirm password reset token."
+            response = ResetPasswordResponse(detail=error_message).model_dump()
             return Response(
-                {"detail": "Failed to confirm password reset token."},
+                response,
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        if ratelimit(request, "reset", [token], "20/h"):
+        if ratelimit(request, "reset-confirm", [token, "ip"], "10/h"):
+            error_message = "Too many requests. Please try again later."
+            response = ResetPasswordResponse(detail=error_message).model_dump()
             return Response(
-                {"detail": "Too Many Requests. Please try again later."},
+                response,
                 status=status.HTTP_429_TOO_MANY_REQUESTS,
             )
 
         # Verify token and get user
         user, error_message = verify_password_reset_token(token)
         if not user:
-            response = ResetPasswordResponse(
-                status="invalid", detail=error_message
-            ).model_dump()
+            response = ResetPasswordResponse(detail=error_message).model_dump()
             return Response(response, status=status.HTTP_404_NOT_FOUND)
 
         validate_password(
@@ -163,7 +165,7 @@ class ResetPasswordRequestToken(GenericAPIView):
             response = ResetPasswordResponse(detail=error_message).model_dump()
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-        if ratelimit(request, "reset", [username]):
+        if ratelimit(request, "reset-request", [username, "ip"], "10/h"):
             error_message = "Too many requests. Please try again later."
             response = ResetPasswordResponse(detail=error_message).model_dump()
             return Response(response, status=status.HTTP_429_TOO_MANY_REQUESTS)
