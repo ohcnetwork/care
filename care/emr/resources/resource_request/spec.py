@@ -2,7 +2,6 @@ import datetime
 from enum import Enum
 
 from pydantic import UUID4, model_validator
-from rest_framework.generics import get_object_or_404
 
 from care.emr.models import Patient
 from care.emr.models.organization import FacilityOrganizationUser
@@ -13,6 +12,7 @@ from care.emr.resources.patient.spec import PatientListSpec
 from care.emr.resources.user.spec import UserSpec
 from care.facility.models import Facility
 from care.users.models import User
+from care.utils.shortcuts import get_object_or_404
 
 
 class StatusChoices(str, Enum):
