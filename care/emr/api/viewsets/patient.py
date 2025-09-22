@@ -1,5 +1,6 @@
 from django.db import transaction
 from django.utils import timezone
+from django.utils.dateparse import parse_date
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
@@ -326,12 +327,10 @@ class PatientViewSet(EMRModelViewSet):
             queryset = queryset.filter(patient=self.get_object())
 
         if date:
-            try:
-                date.fromisoformat(date)
-            except ValueError:
-                err = "Invalid date format. Expected YYYY-MM-DD format."
-                raise ValidationError(err) from err
-            queryset = queryset.filter(queue__date=date)
+            parsed_date = parse_date(date)
+            if not parsed_date:
+                raise ValidationError("Invalid date format. Expected YYYY-MM-DD.")
+            queryset = queryset.filter(queue__date=parsed_date)
 
         paginator = self.pagination_class()
         page = paginator.paginate_queryset(queryset, request)
