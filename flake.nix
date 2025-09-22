@@ -6,7 +6,7 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils }:
+  outputs = { nixpkgs, flake-utils, ... }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
@@ -89,10 +89,24 @@
           echo "Starting PostgreSQL..."
           if ! pgrep -x "postgres" > /dev/null; then
             mkdir -p ~/.local/share/postgres/sockets
-            initdb -D ~/.local/share/postgres -U postgres --auth=trust || true
+
+            # Check if database directory is corrupted or not properly initialized
+            if [ -d ~/.local/share/postgres ] && [ ! -f ~/.local/share/postgres/PG_VERSION ]; then
+              echo "Database directory exists but appears corrupted. Cleaning up..."
+              rm -rf ~/.local/share/postgres
+              mkdir -p ~/.local/share/postgres/sockets
+            fi
+
+            # Initialize database if it doesn't exist
+            if [ ! -f ~/.local/share/postgres/PG_VERSION ]; then
+              echo "Initializing new PostgreSQL database..."
+              initdb -D ~/.local/share/postgres -U postgres --auth=trust
+            fi
 
             # Configure socket directory
-            echo "unix_socket_directories = '$HOME/.local/share/postgres/sockets'" >> ~/.local/share/postgres/postgresql.conf
+            if ! grep -q "unix_socket_directories" ~/.local/share/postgres/postgresql.conf; then
+              echo "unix_socket_directories = '$HOME/.local/share/postgres/sockets'" >> ~/.local/share/postgres/postgresql.conf
+            fi
 
             pg_ctl -D ~/.local/share/postgres -l ~/.local/share/postgres/logfile start
             sleep 2
