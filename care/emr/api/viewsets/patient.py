@@ -326,6 +326,11 @@ class PatientViewSet(EMRModelViewSet):
             queryset = queryset.filter(patient=self.get_object())
 
         if date:
+            try:
+                date.fromisoformat(date)
+            except ValueError:
+                err = "Invalid date format. Expected YYYY-MM-DD format."
+                raise ValidationError(err) from err
             queryset = queryset.filter(queue__date=date)
 
         paginator = self.pagination_class()
