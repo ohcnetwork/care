@@ -6,7 +6,6 @@ from pydantic import UUID4, BaseModel
 from rest_framework import filters as rest_framework_filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
@@ -33,6 +32,7 @@ from care.emr.resources.location.spec import (
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.utils.lock import Lock
+from care.utils.shortcuts import get_object_or_404
 from care.utils.time_util import care_now
 
 

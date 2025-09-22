@@ -1,6 +1,5 @@
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -24,6 +23,7 @@ from care.emr.resources.notes.thread_spec import (
 )
 from care.security.authorization import AuthorizationController
 from care.utils.filters.null_filter import NullFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class NoteThreadFilters(filters.FilterSet):
@@ -40,8 +40,8 @@ class NoteThreadViewSet(
 ):
     database_model = NoteThread
     pydantic_model = NoteThreadCreateSpec
-    pydantic_read_model = NoteThreadUpdateSpec
-    pydantic_update_model = NoteThreadReadSpec
+    pydantic_read_model = NoteThreadReadSpec
+    pydantic_update_model = NoteThreadUpdateSpec
     filterset_class = NoteThreadFilters
     filter_backends = [filters.DjangoFilterBackend]
 
