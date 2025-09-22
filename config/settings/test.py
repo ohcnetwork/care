@@ -108,3 +108,6 @@ JWKS = JsonWebKey.import_key_set(
 DISABLE_RATELIMIT = True
 
 SMS_BACKEND = "care.utils.sms.backend.console.ConsoleBackend"
+
+# https://github.com/anexia-it/django-rest-passwordreset#configuration--settings
+DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE = True

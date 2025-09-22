@@ -49,7 +49,7 @@ class ResetPasswordCheck(GenericAPIView):
             data = ResetPasswordCheckRequest(**request.data)
             token = data.token
         except Exception:
-            error_message = "Reset password token is invalid or has expired."
+            error_message = "Missing required parameter token."
             response = ResetPasswordResponse(detail=error_message).model_dump()
             return Response(
                 response,
@@ -73,7 +73,7 @@ class ResetPasswordCheck(GenericAPIView):
                 return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
             response = ResetPasswordResponse(detail=error_message).model_dump()
-            return Response(response, status=status.HTTP_404_NOT_FOUND)
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
         return Response({"status": "OK"})
 
@@ -161,7 +161,7 @@ class ResetPasswordRequestToken(GenericAPIView):
             data = ResetPasswordRequestTokenRequest(**request.data)
             username = data.username
         except Exception:
-            error_message = "Failed to send password reset email."
+            error_message = "Missing required parameter username."
             response = ResetPasswordResponse(detail=error_message).model_dump()
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
