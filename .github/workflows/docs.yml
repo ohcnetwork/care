@@ -30,7 +30,7 @@ jobs:
         run: pip install pipenv
 
       - name: Install dependencies
-        run: pipenv sync --categories "docs"
+        run: pipenv sync --categories "packages docs"
 
       - name: Build docs
         run: |

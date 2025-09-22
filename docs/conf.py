@@ -23,7 +23,7 @@ import django
 
 sys.path.insert(0, str(Path("..").resolve()))
 
-os.environ["DJANGO_SETTINGS_MODULE"] = "config.settings.test"
+os.environ["DJANGO_SETTINGS_MODULE"] = "config.settings.base"
 django.setup()
 
 project = "Care"
