@@ -310,6 +310,7 @@ class PatientViewSet(EMRModelViewSet):
     @action(detail=True, methods=["GET"])
     def get_tokens(self, request, *args, **kwargs):
         facility = self.request.GET.get("facility", None)
+        date = self.request.GET.get("date", None)
         queryset = Token.objects.all().order_by("-created_date")
         if facility:
             facility = get_object_or_404(Facility, external_id=facility)
@@ -323,6 +324,10 @@ class PatientViewSet(EMRModelViewSet):
             queryset = queryset.filter(facility=facility, patient=patient)
         else:
             queryset = queryset.filter(patient=self.get_object())
+
+        if date:
+            queryset = queryset.filter(queue__date=date)
+
         paginator = self.pagination_class()
         page = paginator.paginate_queryset(queryset, request)
         if page is not None:
