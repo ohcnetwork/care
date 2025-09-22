@@ -20,7 +20,9 @@ class PatientAgeMetric(EvaluationMetricBase):
     ]
 
     def get_value(self):
-        start = self.context_object.date_of_birth or date(self.context_object.year_of_birth, 1, 1)
+        start = self.context_object.date_of_birth or date(
+            self.context_object.year_of_birth, 1, 1
+        )
         end = (self.context_object.deceased_datetime or timezone.now()).date()
         return relativedelta(end, start).normalized()
 
@@ -36,6 +38,7 @@ class PatientAgeMetric(EvaluationMetricBase):
     def evaluate_in_range(self, rule):
         value = self.get_value()
         value_type = rule.get("value_type", "years")
+
         age = self.convert_value_to_units(value, value_type or "years")
         return age >= int(rule["min"]) and age <= int(rule["max"])
 
@@ -44,5 +47,6 @@ class PatientAgeMetric(EvaluationMetricBase):
         value_type = rule.get("value_type", "years")
         age = self.convert_value_to_units(value, value_type or "years")
         return age == int(rule["value"])
+
 
 EvaluatorMetricsRegistry.register(PatientAgeMetric)
