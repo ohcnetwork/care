@@ -18,6 +18,7 @@ from care.emr.resources.scheduling.token.spec import (
 from care.facility.models import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.filters.null_filter import NullFilter
 from care.utils.lock import Lock
 from care.utils.shortcuts import get_object_or_404
 
@@ -30,6 +31,7 @@ class TokenFilters(FilterSet):
     category = UUIDFilter(field_name="category__external_id")
     sub_queue = UUIDFilter(field_name="sub_queue__external_id")
     status = MultiSelectFilter(field_name="status")
+    sub_queue_is_null = NullFilter(field_name="sub_queue")
 
 
 class TokenViewSet(EMRModelViewSet):
@@ -90,7 +92,18 @@ class TokenViewSet(EMRModelViewSet):
     def perform_update(self, instance):
         if instance.sub_queue and instance.sub_queue.facility != instance.facility:
             raise ValidationError("Sub Queue and Queue are not in the same facility")
-        super().perform_update(instance)
+        with transaction.atomic():
+            obj = self.get_object()
+            if obj.sub_queue and obj.sub_queue != instance.sub_queue:
+                if obj.sub_queue.resource != instance.sub_queue.resource:
+                    raise ValidationError(
+                        "Sub Queue and Queue are not in the same resource"
+                    )
+                # Clear current token if the sub queue is changed
+                if obj.sub_queue.current_token == obj:
+                    obj.sub_queue.current_token = None
+                    obj.sub_queue.save(update_fields=["current_token"])
+            super().perform_update(instance)
 
     def perform_destroy(self, instance):
         instance.status = TokenStatusOptions.ENTERED_IN_ERROR.value
