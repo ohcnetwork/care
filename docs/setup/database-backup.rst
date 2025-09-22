@@ -4,6 +4,7 @@ Docker database backup
 This page explains how to automate the backup process of a Docker database on a daily basis and restore the backup snapshot created by the `backup script <../../scripts/backup.sh>`_.
 
    Note: This documentation assumes that you are using a Linux-based system.
+
 -------------------------------------------------------------------------------
 
 Here's how the script works
@@ -34,6 +35,7 @@ For a debian based system:
 Automate the cronjob
 ~~~~~~~~~~~~~~~~~~~~
    Note: Make sure you are inside the care directory at the time of executing the following.
+
 -------------------------------------------------------------------------------
 
 Open up a crontab:
@@ -71,7 +73,8 @@ For a debian based os:
  sudo systemctl status cron
 
 Verify the cron job
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
+
 To verify the cron job is working:
 
 1. Check the system logs for cron activity, which is usually somewhere in
@@ -88,6 +91,7 @@ Restoration of the Database
 We are basically deleting the container's existing database and creating a new database with the same name. Then we will use ``pg_restore`` to restore the database. Run the following commands in your terminal.
 
    Make sure you have stopped all the containers except the db before proceeding. And be inside the care directory at the time of executing the following.
+
 ------------------------------------------------------------------------------
 
 Delete the existing database:

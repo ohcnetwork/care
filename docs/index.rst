@@ -10,23 +10,6 @@ Welcome to Care's documentation!
    :maxdepth: 4
    :caption: Contents:
 
-   local-setup/configuration
-   pycharm/configuration
-   working-components/configuration
-   django-configuration/configuration
-   pluggable-apps/configuration
-   django-commands/configuration
-   github-repo/configuration
-   others/configuration
-   glossary/configuration
-   middleware/configuration
-   databases/backup
-
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   development/index
+   setup/index
+   source/index
