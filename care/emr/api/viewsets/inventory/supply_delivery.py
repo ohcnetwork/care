@@ -92,7 +92,10 @@ class SupplyDeliveryViewSet(
             raise ValidationError("Insufficient stock")
 
     def perform_create(self, instance):
-        instance.status = SupplyDeliveryStatusOptions.in_progress.value
+        if instance.origin:
+            # When the delivery is from outside facility,
+            # all statuses are allowed to be updated by the recieving location
+            instance.status = SupplyDeliveryStatusOptions.in_progress.value
         if instance.supplied_item:
             instance.supplied_inventory_item = create_inventory_item(
                 instance.supplied_item, instance.destination

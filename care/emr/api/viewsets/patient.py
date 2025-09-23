@@ -278,6 +278,7 @@ class PatientViewSet(EMRModelViewSet):
     @action(detail=True, methods=["GET"])
     def get_appointments(self, request, *args, **kwargs):
         facility = self.request.GET.get("facility", None)
+        status = self.request.GET.get("status", None)
         queryset = TokenBooking.objects.all().order_by("-token_slot__start_datetime")
         if facility:
             facility = get_object_or_404(Facility, external_id=facility)
@@ -293,6 +294,11 @@ class PatientViewSet(EMRModelViewSet):
             )
         else:
             queryset = queryset.filter(patient=self.get_object())
+
+        if status:
+            status_list = status.split(",")
+            queryset = queryset.filter(status__in=status_list)
+
         paginator = self.pagination_class()
         page = paginator.paginate_queryset(queryset, request)
         if page is not None:

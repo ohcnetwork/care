@@ -55,11 +55,13 @@ class TokenGenerateWithQueueSpec(TokenGenerateSpec):
 class TokenUpdateSpec(TokenBaseSpec):
     status: TokenStatusOptions | None = None
     note: str | None = None
-    sub_queue: UUID4 | None = None
+    sub_queue: UUID4 | None
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.sub_queue:
             obj.sub_queue = get_object_or_404(TokenSubQueue, external_id=self.sub_queue)
+        else:
+            obj.sub_queue = None
 
 
 class TokenMinimalSpec(TokenBaseSpec):
