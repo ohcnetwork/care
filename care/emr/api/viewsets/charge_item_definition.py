@@ -48,7 +48,7 @@ class ChargeItemDefinitionViewSet(
     filterset_class = ChargeItemDefinitionFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter, FavoritesFilter]
     ordering_fields = ["created_date", "modified_date"]
-    FAVORITE_RESOURCE = FavoriteResourceChoices.charge_item_definition
+    FAVORITE_RESOURCE = FavoriteResourceChoices.charge_item_definition.value
 
     def get_facility_obj(self):
         return get_object_or_404(

@@ -55,7 +55,7 @@ class ProductKnowledgeViewSet(
     filterset_class = ProductKnowledgeFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter, FavoritesFilter]
     ordering_fields = ["created_date", "modified_date"]
-    FAVORITE_RESOURCE = FavoriteResourceChoices.product_knowledge
+    FAVORITE_RESOURCE = FavoriteResourceChoices.product_knowledge.value
 
     def recalculate_slug(self, instance):
         if instance.facility:

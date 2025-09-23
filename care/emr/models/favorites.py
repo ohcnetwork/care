@@ -27,7 +27,7 @@ class UserResourceFavorites(EMRBaseModel):
     def refresh_cache(self, refresh_list=False):
         if refresh_list:
             favorites_obj = list(
-                set(
+                dict.fromkeys(
                     self.__class__.objects.filter(
                         user_id=self.user_id,
                         resource_type=self.resource_type,

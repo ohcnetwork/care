@@ -95,7 +95,10 @@ class TokenViewSet(EMRModelViewSet):
         with transaction.atomic():
             obj = self.get_object()
             if obj.sub_queue and obj.sub_queue != instance.sub_queue:
-                if obj.sub_queue.resource != instance.sub_queue.resource:
+                if (
+                    instance.sub_queue
+                    and obj.sub_queue.resource != instance.sub_queue.resource
+                ):
                     raise ValidationError(
                         "Sub Queue and Queue are not in the same resource"
                     )
