@@ -103,7 +103,7 @@ class ResetPasswordConfirm(GenericAPIView):
             token = data.token
 
         except Exception:
-            error_message = "Failed to confirm password reset token."
+            error_message = "Missing required parameter token or password."
             response = ResetPasswordResponse(detail=error_message).model_dump()
             return Response(
                 response,
@@ -122,7 +122,7 @@ class ResetPasswordConfirm(GenericAPIView):
         user, error_message = verify_password_reset_token(token)
         if not user:
             response = ResetPasswordResponse(detail=error_message).model_dump()
-            return Response(response, status=status.HTTP_404_NOT_FOUND)
+            return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
         validate_password(
             password,

@@ -56,8 +56,7 @@ def verify_password_reset_token(token):
         error_message = "Token has expired"
     except User.DoesNotExist:
         error_message = "User not found"
-    except Exception as e:
-        logger.error("Error verifying token: %s", e)
+    except Exception:
         error_message = "Error verifying token"
 
     return (user, None) if not error_message else (None, error_message)
