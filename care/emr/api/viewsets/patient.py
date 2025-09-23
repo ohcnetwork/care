@@ -319,7 +319,11 @@ class PatientViewSet(EMRModelViewSet):
     def get_tokens(self, request, *args, **kwargs):
         facility = self.request.GET.get("facility", None)
         date = self.request.GET.get("date", None)
+        status = self.request.GET.get("status", None)
         queryset = Token.objects.all().order_by("-created_date")
+        if status:
+            status_list = status.split(",")
+            queryset = queryset.filter(status__in=status_list)
         if facility:
             facility = get_object_or_404(Facility, external_id=facility)
             if not AuthorizationController.call(
