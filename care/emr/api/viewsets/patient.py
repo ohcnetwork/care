@@ -280,6 +280,7 @@ class PatientViewSet(EMRModelViewSet):
     def get_appointments(self, request, *args, **kwargs):
         facility = self.request.GET.get("facility", None)
         status = self.request.GET.get("status", None)
+        date = self.request.GET.get("date", None)
         queryset = TokenBooking.objects.all().order_by("-token_slot__start_datetime")
         if facility:
             facility = get_object_or_404(Facility, external_id=facility)
@@ -299,6 +300,12 @@ class PatientViewSet(EMRModelViewSet):
         if status:
             status_list = status.split(",")
             queryset = queryset.filter(status__in=status_list)
+
+        if date:
+            parsed_date = parse_date(date)
+            if not parsed_date:
+                raise ValidationError("Invalid date format. Expected YYYY-MM-DD.")
+            queryset = queryset.filter(booked_on__date=parsed_date)
 
         paginator = self.pagination_class()
         page = paginator.paginate_queryset(queryset, request)
