@@ -7,6 +7,7 @@ from care.emr.models.favorites import (
     favorite_list_object_cache_key,
 )
 from care.facility.models.facility import Facility
+from care.utils.queryset.filters import sort_index
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -42,7 +43,9 @@ class FavoritesFilter(BaseFilterBackend):
         if not favorite_list:
             return queryset
 
-        facility = request.query_params.get("facility")
+        facility = getattr(view, "kwargs", {}).get(
+            "facility_external_id"
+        ) or request.query_params.get("facility")
         if facility:
             facility = get_object_or_404(
                 Facility.objects.only("id"), external_id=facility
@@ -50,7 +53,7 @@ class FavoritesFilter(BaseFilterBackend):
 
         favorites = cache.get(
             favorite_list_object_cache_key(
-                request.user, view.FAVORITE_RESOURCE.value, facility, favorite_list
+                request.user, view.FAVORITE_RESOURCE, facility, favorite_list
             )
         )
         if favorites is None:
@@ -71,4 +74,8 @@ class FavoritesFilter(BaseFilterBackend):
 
         if not favorites:
             return queryset.none()
-        return queryset.filter(id__in=favorites)
+        return (
+            queryset.filter(id__in=favorites)
+            .annotate(favorite_order=sort_index("id", favorites))
+            .order_by("favorite_order")
+        )

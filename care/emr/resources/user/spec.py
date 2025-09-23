@@ -4,7 +4,6 @@ from enum import Enum
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4, BaseModel, Field, field_validator
 
 from care.emr.models import Organization
@@ -21,6 +20,7 @@ from care.security.roles.role import (
     VOLUNTEER_ROLE,
 )
 from care.users.models import User
+from care.utils.shortcuts import get_object_or_404
 
 
 def is_valid_username(username):
