@@ -41,13 +41,40 @@ extensions = [
     "sphinx.ext.napoleon",
     "sphinx.ext.intersphinx",
     "sphinx.ext.extlinks",
-    "sphinx.ext.viewcode",
+    # "sphinx.ext.viewcode",
     "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary",
+    "sphinx.ext.apidoc",
     "sphinx.ext.doctest",
 ]
 
 autosummary_generate = True
+
+
+apidoc_modules = [
+    {
+        "path": "../care",
+        "destination": "source/generated",
+        "exclude_patterns": ["**/test*", "**/migrations*", "**/migrations_old*"],
+        "max_depth": 4,
+        "follow_links": False,
+        "separate_modules": True,
+        "include_private": False,
+        "no_headings": False,
+        "module_first": True,
+        "implicit_namespaces": False,
+    },
+]
+
+autodoc_inherit_docstrings = False
+
+autodoc_default_options = {
+    "members": True,
+    "member-order": "bysource",
+    "special-members": "__init__",
+    "undoc-members": False,
+    "show-inheritance": True,
+    "inherited-members": False,
+}
 
 extlinks = {
     "commit": ("https://github.com/ohcnetwork/care/commit/%s", "%s"),
