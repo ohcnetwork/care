@@ -44,6 +44,7 @@ from care.emr.tasks.discharge_summary import generate_discharge_summary_task
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
+from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -61,7 +62,7 @@ class LiveFilter(filters.CharFilter):
 
 class EncounterFilters(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
-    status = filters.CharFilter(field_name="status", lookup_expr="iexact")
+    status = MultiSelectFilter(field_name="status")
     encounter_class = filters.CharFilter(
         field_name="encounter_class", lookup_expr="iexact"
     )
