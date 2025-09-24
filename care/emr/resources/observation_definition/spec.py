@@ -141,7 +141,7 @@ class ObservationDefinitionComponentSpec(BaseModel):
     code: ValueSetBoundCoding[CARE_OBSERVATION_VALUSET.slug]
     permitted_data_type: QuestionType
     permitted_unit: ValueSetBoundCoding[CARE_UCUM_UNITS.slug] | None = None
-    qualified_ranges: list[QualifiedRangeSpec] = []
+    qualified_ranges: list[QualifiedRangeSpec]
 
     @field_validator("permitted_data_type")
     @classmethod
@@ -165,7 +165,7 @@ class BaseObservationDefinitionSpec(EMRResource):
     method: ValueSetBoundCoding[CARE_OBSERVATION_COLLECTION_METHOD.slug] | None = None
     permitted_unit: ValueSetBoundCoding[CARE_UCUM_UNITS.slug] | None = None
     derived_from_uri: str | None = None
-    qualified_ranges: list[QualifiedRangeSpec] = []
+    qualified_ranges: list[QualifiedRangeSpec]
 
     @field_validator("permitted_data_type")
     @classmethod
