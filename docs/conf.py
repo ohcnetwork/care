@@ -47,7 +47,7 @@ extensions = [
     "sphinx.ext.doctest",
 ]
 
-autosummary_generate = True
+# autosummary_generate = True
 
 
 apidoc_modules = [
@@ -80,7 +80,8 @@ extlinks = {
     "commit": ("https://github.com/ohcnetwork/care/commit/%s", "%s"),
     # A file or directory. GitHub redirects from blob to tree if needed.
     "source": ("https://github.com/ohcnetwork/care/blob/develop/%s", "%s"),
-    "issue": ("https://github.com/ohcnetwork/care/issue/%s", "#%s"),
+    "issue": ("https://github.com/ohcnetwork/care/issues/%s", "#%s"),
+    "pr": ("https://github.com/ohcnetwork/care/pull/%s", "PR #%s"),
 }
 
 # Add any paths that contain templates here, relative to this directory.
@@ -115,7 +116,7 @@ spelling_warning = True
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
-default_role = "default-role-error"
+# default_role = "default-role-error"
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 add_function_parentheses = True
