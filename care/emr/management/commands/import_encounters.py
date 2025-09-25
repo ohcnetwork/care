@@ -14,6 +14,7 @@ from care.emr.models import Encounter, Patient
 from care.emr.models.encounter import EncounterOrganization
 from care.emr.models.organization import FacilityOrganization
 from care.emr.models.scheduling.booking import TokenBooking
+from care.emr.utils.auto_time import disable_auto_time
 from care.facility.models import Facility
 from care.users.models import User
 
@@ -217,6 +218,7 @@ class Command(BaseCommand):
     # Main handler
     # ------------------------------------------------------------------
     def handle(self, *args, **options):
+        enable_auto_time = disable_auto_time(Encounter)
         source = options["source"]
         try:
             raw_text, downloaded = self.fetch_source(source)
@@ -248,6 +250,9 @@ class Command(BaseCommand):
                     raise CommandError(msg)
                 errors.append(msg)
 
+        del raw_text
+        del records
+
         if errors:
             self.stdout.write(
                 self.style.WARNING(
@@ -271,6 +276,9 @@ class Command(BaseCommand):
         updated = 0
         failed = 0
 
+        user_cache: dict[str, int] = dict(User.objects.values_list("external_id", "id"))
+        facility_org_cache: dict[str, int] = {}
+
         batch: list[dict[str, Any]] = []
 
         def flush(batch: list[dict[str, Any]]):
@@ -278,44 +286,25 @@ class Command(BaseCommand):
             if not batch:
                 return
             with transaction.atomic():
-                user_cache: dict[str, User | None] = {}
                 for rec in batch:
                     try:
                         orgs = rec.pop("organizations", None)
-                        create_dt = rec.pop("created_date", None)
-                        modify_dt = rec.pop("modified_date", None)
                         created_by_ext = rec.pop("created_by", None)
                         updated_by_ext = rec.pop("updated_by", None)
+                        rec.pop("patient")
+                        rec.pop("facility")
                         ext_id = rec["external_id"]
                         # We'll not pass external_id inside defaults; reserve it for lookup
                         rec_defaults = {
                             k: v for k, v in rec.items() if k != "external_id"
                         }
-                        rec_defaults = self.resolve_foreign_keys(rec_defaults)
+                        # rec_defaults = self.resolve_foreign_keys(rec_defaults)
 
                         # Resolve attribution users if provided
                         if created_by_ext:
-                            if created_by_ext not in user_cache:
-                                user_cache[created_by_ext] = User.objects.filter(
-                                    external_id=created_by_ext
-                                ).first()
-                            user_obj = user_cache[created_by_ext]
-                            if not user_obj:
-                                raise ValueError(
-                                    f"created_by user '{created_by_ext}' not found"
-                                )
-                            rec_defaults["created_by"] = user_obj
+                            rec_defaults["created_by_id"] = user_cache[created_by_ext]
                         if updated_by_ext:
-                            if updated_by_ext not in user_cache:
-                                user_cache[updated_by_ext] = User.objects.filter(
-                                    external_id=updated_by_ext
-                                ).first()
-                            user_obj = user_cache[updated_by_ext]
-                            if not user_obj:
-                                raise ValueError(
-                                    f"updated_by user '{updated_by_ext}' not found"
-                                )
-                            rec_defaults["updated_by"] = user_obj
+                            rec_defaults["updated_by_id"] = user_cache[updated_by_ext]
                         encounter_obj, is_created = Encounter.objects.update_or_create(
                             external_id=ext_id, defaults=rec_defaults
                         )
@@ -330,35 +319,28 @@ class Command(BaseCommand):
                             desired_org_ids = set(orgs)
                             # Add missing
                             for org_ext in desired_org_ids - current_org_ids:
-                                org_obj = FacilityOrganization.objects.filter(
-                                    external_id=org_ext, facility=encounter_obj.facility
-                                ).first()
-                                if not org_obj:
-                                    raise ValueError(
-                                        f"FacilityOrganization '{org_ext}' not found for facility"
-                                    )
+                                if org_ext not in facility_org_cache:
+                                    org_obj = FacilityOrganization.objects.filter(
+                                        external_id=org_ext,
+                                        facility=encounter_obj.facility,
+                                    ).first()
+                                    if not org_obj:
+                                        raise ValueError(
+                                            f"FacilityOrganization '{org_ext}' not found for facility"
+                                        )
+                                    facility_org_cache[org_ext] = org_obj.id
                                 EncounterOrganization.objects.create(
-                                    encounter=encounter_obj, organization=org_obj
+                                    encounter=encounter_obj,
+                                    organization_id=facility_org_cache[org_ext],
                                 )
                             # Remove extras
                             for org_ext in current_org_ids - desired_org_ids:
                                 EncounterOrganization.objects.filter(
                                     encounter=encounter_obj,
-                                    organization__external_id=org_ext,
+                                    organization_id=facility_org_cache[org_ext],
                                 ).delete()
                             # sync cache (save already triggers, but ensure after deletions)
                             encounter_obj.sync_organization_cache()
-
-                        # Apply timestamp overrides
-                        ts_updates = {}
-                        if is_created and create_dt:
-                            ts_updates["created_date"] = create_dt
-                        if modify_dt:
-                            ts_updates["modified_date"] = modify_dt
-                        if ts_updates:
-                            Encounter.objects.filter(pk=encounter_obj.pk).update(
-                                **ts_updates
-                            )
 
                         if is_created:
                             created += 1
@@ -402,3 +384,5 @@ class Command(BaseCommand):
         self.stdout.write(f"  Updated: {updated}")
         self.stdout.write(f"  Failed: {failed}")
         self.stdout.write(f"  Skipped (invalid pre-validation): {len(errors)}")
+
+        enable_auto_time()

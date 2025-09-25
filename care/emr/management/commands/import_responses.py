@@ -12,10 +12,8 @@ from django.db import transaction
 from django.utils import timezone
 
 from care.emr.models import Encounter, Patient
-from care.emr.models.questionnaire import (
-    Questionnaire,
-    QuestionnaireResponse,
-)
+from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
+from care.emr.utils.auto_time import disable_auto_time
 from care.users.models import User
 
 # ---------------------------------------------------------------------------
@@ -203,6 +201,7 @@ class Command(BaseCommand):
     # Main handler
     # ------------------------------------------------------------------
     def handle(self, *args, **options):
+        enable_auto_time = disable_auto_time(QuestionnaireResponse)
         source = options["source"]
         try:
             raw_text, downloaded = self.fetch_source(source)
@@ -234,6 +233,9 @@ class Command(BaseCommand):
                     raise CommandError(msg)
                 errors.append(msg)
 
+        del raw_text
+        del records
+
         if errors:
             self.stdout.write(
                 self.style.WARNING(
@@ -257,6 +259,8 @@ class Command(BaseCommand):
         updated = 0
         failed = 0
 
+        user_cache: dict[str, int] = dict(User.objects.values_list("external_id", "id"))
+
         batch: list[dict[str, Any]] = []
 
         def flush(batch: list[dict[str, Any]]):
@@ -264,54 +268,24 @@ class Command(BaseCommand):
             if not batch:
                 return
             with transaction.atomic():
-                user_cache: dict[str, User | None] = {}
                 for rec in batch:
                     try:
-                        create_dt = rec.pop("created_date", None)
-                        modify_dt = rec.pop("modified_date", None)
                         created_by_ext = rec.pop("created_by", None)
                         updated_by_ext = rec.pop("updated_by", None)
                         ext_id = rec["external_id"]
                         defaults = {k: v for k, v in rec.items() if k != "external_id"}
-                        defaults = self.resolve_foreign_keys(defaults)
+                        # defaults = self.resolve_foreign_keys(defaults)
 
                         # Resolve attribution users
                         if created_by_ext:
-                            if created_by_ext not in user_cache:
-                                user_cache[created_by_ext] = User.objects.filter(
-                                    external_id=created_by_ext
-                                ).first()
-                            user_obj = user_cache[created_by_ext]
-                            if not user_obj:
-                                raise ValueError(
-                                    f"created_by user '{created_by_ext}' not found"
-                                )
-                            defaults["created_by"] = user_obj
+                            defaults["created_by_id"] = user_cache[created_by_ext]
                         if updated_by_ext:
-                            if updated_by_ext not in user_cache:
-                                user_cache[updated_by_ext] = User.objects.filter(
-                                    external_id=updated_by_ext
-                                ).first()
-                            user_obj = user_cache[updated_by_ext]
-                            if not user_obj:
-                                raise ValueError(
-                                    f"updated_by user '{updated_by_ext}' not found"
-                                )
-                            defaults["updated_by"] = user_obj
+                            defaults["updated_by_id"] = user_cache[updated_by_ext]
                         obj, is_created = (
                             QuestionnaireResponse.objects.update_or_create(
                                 external_id=ext_id, defaults=defaults
                             )
                         )
-                        ts_updates = {}
-                        if is_created and create_dt:
-                            ts_updates["created_date"] = create_dt
-                        if modify_dt:
-                            ts_updates["modified_date"] = modify_dt
-                        if ts_updates:
-                            QuestionnaireResponse.objects.filter(pk=obj.pk).update(
-                                **ts_updates
-                            )
                         if is_created:
                             created += 1
                         else:
@@ -354,3 +328,5 @@ class Command(BaseCommand):
         self.stdout.write(f"  Updated: {updated}")
         self.stdout.write(f"  Failed: {failed}")
         self.stdout.write(f"  Skipped (invalid pre-validation): {len(errors)}")
+
+        enable_auto_time()

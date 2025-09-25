@@ -3,6 +3,7 @@ from collections.abc import Iterable
 from pathlib import Path
 from typing import Any
 from urllib.parse import urlparse
+from xml.dom.minidom import Identified
 
 import requests
 from dateutil.parser import isoparse
@@ -12,6 +13,7 @@ from django.utils import timezone
 
 from care.emr.models import Organization, Patient
 from care.emr.models.patient import PatientIdentifier, PatientIdentifierConfig
+from care.emr.utils.auto_time import disable_auto_time
 from care.users.models import User
 
 REQUIRED_FIELDS = ["external_id"]
@@ -156,20 +158,9 @@ class Command(BaseCommand):
                 cleaned.pop(user_field, None)
         return cleaned
 
-    def resolve_foreign_keys(self, rec: dict[str, Any]) -> dict[str, Any]:
-        geo_external = rec.get("geo_organization")
-        if geo_external:
-            org = Organization.objects.filter(external_id=geo_external).first()
-            if not org:
-                raise ValueError(
-                    f"geo_organization with external_id '{geo_external}' not found"
-                )
-            rec["geo_organization"] = org
-        else:
-            rec["geo_organization"] = None
-        return rec
-
     def handle(self, *args, **options):
+        enable_auto_time = disable_auto_time(Patient, Identified)
+
         source = options["source"]
         try:
             raw_text, downloaded = self.fetch_source(source)
@@ -202,6 +193,9 @@ class Command(BaseCommand):
                     raise CommandError(msg)
                 errors.append(msg)
 
+        del raw_text
+        del records
+
         if errors:
             self.stdout.write(
                 self.style.WARNING(
@@ -224,6 +218,12 @@ class Command(BaseCommand):
             self.stdout.write(f"  Invalid rows: {len(errors)}")
             return
 
+        id_config_cache: dict[str, int] = dict(
+            PatientIdentifierConfig.objects.values_list("external_id", "id")
+        )
+        user_cache: dict[str, int] = dict(User.objects.values_list("external_id", "id"))
+        geo_org_cache: dict[str, int] = {}
+
         batch_size = options["batch_size"]
         batch: list[dict[str, Any]] = []
 
@@ -231,96 +231,73 @@ class Command(BaseCommand):
             nonlocal created, updated, failed
             if not batch:
                 return
-            # Simple per-batch cache for identifier configs
-            id_config_cache: dict[str, PatientIdentifierConfig] = {}
-            user_cache: dict[str, User | None] = {}
             with transaction.atomic():
                 for rec in batch:
                     try:
                         identifiers = rec.pop("identifiers", [])  # custom field
-                        create_dt = rec.pop("created_date", None)
-                        modify_dt = rec.pop("modified_date", None)
                         created_by_ext = rec.pop("created_by", None)
                         updated_by_ext = rec.pop("updated_by", None)
-                        rec = self.resolve_foreign_keys(rec)
+                        if geo_org_ext := rec.pop("geo_organization", None):
+                            if geo_org_ext in geo_org_cache:
+                                rec["geo_organization_id"] = geo_org_cache[geo_org_ext]
+                            else:
+                                org = Organization.objects.filter(
+                                    external_id=geo_org_ext
+                                ).first()
+                                if not org:
+                                    raise ValueError(
+                                        f"geo_organization with external_id '{geo_org_ext}' not found"
+                                    )
+                                geo_org_cache[geo_org_ext] = org.id
+                                rec["geo_organization_id"] = org.id
                         ext_id = rec.pop("external_id")
+                        int_id = rec.pop("id", None)
 
                         # Resolve created_by / updated_by external UUIDs to User objects if provided
                         if created_by_ext:
-                            if created_by_ext not in user_cache:
-                                user_cache[created_by_ext] = User.objects.filter(
-                                    external_id=created_by_ext
-                                ).first()
-                            user_obj = user_cache[created_by_ext]
-                            if not user_obj:
-                                raise ValueError(
-                                    f"created_by user '{created_by_ext}' not found"
-                                )
-                            rec["created_by"] = user_obj
+                            user_obj_id = user_cache[created_by_ext]
+                            rec["created_by_id"] = user_obj_id
                         if updated_by_ext:
-                            if updated_by_ext not in user_cache:
-                                user_cache[updated_by_ext] = User.objects.filter(
-                                    external_id=updated_by_ext
-                                ).first()
-                            user_obj = user_cache[updated_by_ext]
-                            if not user_obj:
-                                raise ValueError(
-                                    f"updated_by user '{updated_by_ext}' not found"
-                                )
-                            rec["updated_by"] = user_obj
+                            user_obj_id = user_cache[updated_by_ext]
+                            rec["updated_by_id"] = user_obj_id
                         patient_obj, is_created = Patient.objects.update_or_create(
-                            external_id=ext_id, defaults=rec
+                            id=int_id, defaults=rec
                         )
                         # Process identifiers after patient is saved
+                        update_ident_cache = False
                         if identifiers:
                             for ident in identifiers:
                                 cfg_ext = ident["config"]
                                 value = ident.get("value")
                                 try:
-                                    if cfg_ext not in id_config_cache:
-                                        id_config_cache[cfg_ext] = (
-                                            PatientIdentifierConfig.objects.filter(
-                                                external_id=cfg_ext
-                                            ).first()
-                                        ) or None  # type: ignore[assignment]
-                                    cfg_obj = id_config_cache[cfg_ext]
-                                    if not cfg_obj:
-                                        raise ValueError(
-                                            f"Identifier config '{cfg_ext}' not found"
-                                        )
+                                    cfg_id = id_config_cache[cfg_ext]
                                     ident_qs = PatientIdentifier.objects.filter(
-                                        patient=patient_obj, config=cfg_obj
+                                        patient=patient_obj, config_id=cfg_id
                                     )
                                     ident_obj = ident_qs.first()
-                                    if value in (None, ""):
+                                    if not value:
                                         # Deletion request
                                         if ident_obj:
                                             ident_obj.delete()
+                                        update_ident_cache = True
                                         continue
                                     if not ident_obj:
                                         ident_obj = PatientIdentifier(
                                             patient=patient_obj,
-                                            config=cfg_obj,
+                                            config_id=cfg_id,
                                         )
-                                    ident_obj.value = value
-                                    ident_obj.save()
+                                    if ident_obj.value != value:
+                                        ident_obj.value = value
+                                        ident_obj.save()
+                                        update_ident_cache = True
                                 except Exception as ident_exc:
                                     raise ValueError(
                                         f"Identifier '{cfg_ext}' failed: {ident_exc}"
                                     ) from ident_exc
                             # rebuild patient identifier cache json fields
-                            patient_obj.build_instance_identifiers()
-                            patient_obj.save()
-                        # Apply imported timestamps AFTER all saves to avoid auto_now overrides
-                        updates_ts = {}
-                        if is_created and create_dt:
-                            updates_ts["created_date"] = create_dt
-                        if modify_dt:
-                            updates_ts["modified_date"] = modify_dt
-                        if updates_ts:
-                            Patient.objects.filter(pk=patient_obj.pk).update(
-                                **updates_ts
-                            )
+                            if update_ident_cache:
+                                patient_obj.build_instance_identifiers()
+                                patient_obj.save()
                         if is_created:
                             created += 1
                         else:
@@ -365,3 +342,5 @@ class Command(BaseCommand):
         self.stdout.write(f"  Updated: {updated}")
         self.stdout.write(f"  Failed: {failed}")
         self.stdout.write(f"  Skipped (invalid pre-validation): {len(errors)}")
+
+        enable_auto_time()
