@@ -1,0 +1,7 @@
+care.facility.models.patient\_investigation module
+==================================================
+
+.. automodule:: care.facility.models.patient_investigation
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,15 @@
+care.emr.units package
+======================
+
+.. automodule:: care.emr.units
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.units.units_client

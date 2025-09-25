@@ -1,0 +1,15 @@
+care.utils.file\_uploads package
+================================
+
+.. automodule:: care.utils.file_uploads
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.utils.file_uploads.cover_image

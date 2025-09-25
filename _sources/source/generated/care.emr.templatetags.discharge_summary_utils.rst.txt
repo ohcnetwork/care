@@ -1,0 +1,7 @@
+care.emr.templatetags.discharge\_summary\_utils module
+======================================================
+
+.. automodule:: care.emr.templatetags.discharge_summary_utils
+   :members:
+   :show-inheritance:
+   :undoc-members:

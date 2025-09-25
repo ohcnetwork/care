@@ -1,0 +1,7 @@
+care.emr.resources.mfa.spec module
+==================================
+
+.. automodule:: care.emr.resources.mfa.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

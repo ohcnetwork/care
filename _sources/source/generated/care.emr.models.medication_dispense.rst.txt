@@ -1,0 +1,7 @@
+care.emr.models.medication\_dispense module
+===========================================
+
+.. automodule:: care.emr.models.medication_dispense
+   :members:
+   :show-inheritance:
+   :undoc-members:

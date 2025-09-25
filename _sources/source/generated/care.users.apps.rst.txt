@@ -1,0 +1,7 @@
+care.users.apps module
+======================
+
+.. automodule:: care.users.apps
+   :members:
+   :show-inheritance:
+   :undoc-members:

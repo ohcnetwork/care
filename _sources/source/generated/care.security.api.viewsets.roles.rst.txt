@@ -1,0 +1,7 @@
+care.security.api.viewsets.roles module
+=======================================
+
+.. automodule:: care.security.api.viewsets.roles
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.users.models module
+========================
+
+.. automodule:: care.users.models
+   :members:
+   :show-inheritance:
+   :undoc-members:

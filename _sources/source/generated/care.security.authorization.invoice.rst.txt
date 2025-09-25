@@ -1,0 +1,7 @@
+care.security.authorization.invoice module
+==========================================
+
+.. automodule:: care.security.authorization.invoice
+   :members:
+   :show-inheritance:
+   :undoc-members:

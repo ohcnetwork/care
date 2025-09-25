@@ -1,0 +1,7 @@
+care.utils.registries.feature\_flag module
+==========================================
+
+.. automodule:: care.utils.registries.feature_flag
+   :members:
+   :show-inheritance:
+   :undoc-members:

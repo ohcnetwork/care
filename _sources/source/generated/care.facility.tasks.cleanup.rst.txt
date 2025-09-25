@@ -1,0 +1,7 @@
+care.facility.tasks.cleanup module
+==================================
+
+.. automodule:: care.facility.tasks.cleanup
+   :members:
+   :show-inheritance:
+   :undoc-members:

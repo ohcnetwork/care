@@ -1,0 +1,7 @@
+care.emr.resources.activity\_definition.valueset module
+=======================================================
+
+.. automodule:: care.emr.resources.activity_definition.valueset
+   :members:
+   :show-inheritance:
+   :undoc-members:

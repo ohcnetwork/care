@@ -1,0 +1,7 @@
+care.emr.models.favorites module
+================================
+
+.. automodule:: care.emr.models.favorites
+   :members:
+   :show-inheritance:
+   :undoc-members:

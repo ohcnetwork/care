@@ -1,0 +1,7 @@
+care.facility.models.patient module
+===================================
+
+.. automodule:: care.facility.models.patient
+   :members:
+   :show-inheritance:
+   :undoc-members:

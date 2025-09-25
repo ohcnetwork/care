@@ -1,0 +1,7 @@
+care
+====
+
+.. toctree::
+   :maxdepth: 4
+
+   care

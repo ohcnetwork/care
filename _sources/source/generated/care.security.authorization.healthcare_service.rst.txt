@@ -1,0 +1,7 @@
+care.security.authorization.healthcare\_service module
+======================================================
+
+.. automodule:: care.security.authorization.healthcare_service
+   :members:
+   :show-inheritance:
+   :undoc-members:

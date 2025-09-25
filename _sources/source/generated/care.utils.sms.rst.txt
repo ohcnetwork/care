@@ -1,0 +1,24 @@
+care.utils.sms package
+======================
+
+.. automodule:: care.utils.sms
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.utils.sms.backend
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.utils.sms.message
+   care.utils.sms.utils

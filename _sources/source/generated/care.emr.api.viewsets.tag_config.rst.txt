@@ -1,0 +1,7 @@
+care.emr.api.viewsets.tag\_config module
+========================================
+
+.. automodule:: care.emr.api.viewsets.tag_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

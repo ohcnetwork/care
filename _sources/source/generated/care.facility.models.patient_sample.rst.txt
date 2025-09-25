@@ -1,0 +1,7 @@
+care.facility.models.patient\_sample module
+===========================================
+
+.. automodule:: care.facility.models.patient_sample
+   :members:
+   :show-inheritance:
+   :undoc-members:

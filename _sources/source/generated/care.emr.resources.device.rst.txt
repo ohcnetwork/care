@@ -1,0 +1,16 @@
+care.emr.resources.device package
+=================================
+
+.. automodule:: care.emr.resources.device
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.device.history_spec
+   care.emr.resources.device.spec

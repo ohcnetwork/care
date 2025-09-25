@@ -1,0 +1,17 @@
+care.emr.resources.inventory.inventory\_item package
+====================================================
+
+.. automodule:: care.emr.resources.inventory.inventory_item
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.inventory.inventory_item.create_inventory_item
+   care.emr.resources.inventory.inventory_item.spec
+   care.emr.resources.inventory.inventory_item.sync_inventory_item

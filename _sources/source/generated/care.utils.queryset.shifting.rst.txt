@@ -1,0 +1,7 @@
+care.utils.queryset.shifting module
+===================================
+
+.. automodule:: care.utils.queryset.shifting
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,15 @@
+care.emr.resources.location package
+===================================
+
+.. automodule:: care.emr.resources.location
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.location.spec

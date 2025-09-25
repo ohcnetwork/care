@@ -1,0 +1,7 @@
+care.emr.api.viewsets.mfa\_login module
+=======================================
+
+.. automodule:: care.emr.api.viewsets.mfa_login
+   :members:
+   :show-inheritance:
+   :undoc-members:

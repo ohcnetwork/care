@@ -1,0 +1,7 @@
+care.emr.resources.account.spec module
+======================================
+
+.. automodule:: care.emr.resources.account.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

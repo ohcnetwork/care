@@ -1,0 +1,7 @@
+care.security.authorization.encounter module
+============================================
+
+.. automodule:: care.security.authorization.encounter
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.resources.charge\_item.sync\_charge\_item\_costs module
+================================================================
+
+.. automodule:: care.emr.resources.charge_item.sync_charge_item_costs
+   :members:
+   :show-inheritance:
+   :undoc-members:

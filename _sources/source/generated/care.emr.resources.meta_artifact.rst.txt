@@ -1,0 +1,15 @@
+care.emr.resources.meta\_artifact package
+=========================================
+
+.. automodule:: care.emr.resources.meta_artifact
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.meta_artifact.spec

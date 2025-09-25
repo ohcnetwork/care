@@ -1,0 +1,7 @@
+care.utils.serializers.fields module
+====================================
+
+.. automodule:: care.utils.serializers.fields
+   :members:
+   :show-inheritance:
+   :undoc-members:

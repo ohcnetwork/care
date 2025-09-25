@@ -1,0 +1,15 @@
+care.emr.resources.file\_upload package
+=======================================
+
+.. automodule:: care.emr.resources.file_upload
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.file_upload.spec

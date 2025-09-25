@@ -1,0 +1,7 @@
+care.emr.api.viewsets.condition module
+======================================
+
+.. automodule:: care.emr.api.viewsets.condition
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.utils.slug\_type module
+================================
+
+.. automodule:: care.emr.utils.slug_type
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.security.permissions.patient\_identifier\_config module
+============================================================
+
+.. automodule:: care.security.permissions.patient_identifier_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

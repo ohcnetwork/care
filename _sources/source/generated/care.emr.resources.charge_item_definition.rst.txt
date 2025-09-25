@@ -1,0 +1,15 @@
+care.emr.resources.charge\_item\_definition package
+===================================================
+
+.. automodule:: care.emr.resources.charge_item_definition
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.charge_item_definition.spec

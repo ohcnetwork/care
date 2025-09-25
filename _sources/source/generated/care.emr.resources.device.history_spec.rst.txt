@@ -1,0 +1,7 @@
+care.emr.resources.device.history\_spec module
+==============================================
+
+.. automodule:: care.emr.resources.device.history_spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

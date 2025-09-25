@@ -1,0 +1,7 @@
+care.emr.api.viewsets.medication\_request module
+================================================
+
+.. automodule:: care.emr.api.viewsets.medication_request
+   :members:
+   :show-inheritance:
+   :undoc-members:

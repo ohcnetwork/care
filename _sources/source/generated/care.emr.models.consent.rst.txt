@@ -1,0 +1,7 @@
+care.emr.models.consent module
+==============================
+
+.. automodule:: care.emr.models.consent
+   :members:
+   :show-inheritance:
+   :undoc-members:

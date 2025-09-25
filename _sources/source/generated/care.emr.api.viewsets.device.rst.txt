@@ -1,0 +1,7 @@
+care.emr.api.viewsets.device module
+===================================
+
+.. automodule:: care.emr.api.viewsets.device
+   :members:
+   :show-inheritance:
+   :undoc-members:

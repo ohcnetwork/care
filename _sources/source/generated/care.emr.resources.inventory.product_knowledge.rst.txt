@@ -1,0 +1,16 @@
+care.emr.resources.inventory.product\_knowledge package
+=======================================================
+
+.. automodule:: care.emr.resources.inventory.product_knowledge
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.inventory.product_knowledge.spec
+   care.emr.resources.inventory.product_knowledge.valueset

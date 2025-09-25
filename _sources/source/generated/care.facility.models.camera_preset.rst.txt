@@ -1,0 +1,7 @@
+care.facility.models.camera\_preset module
+==========================================
+
+.. automodule:: care.facility.models.camera_preset
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.api.viewsets.encounter\_authz\_base module
+===================================================
+
+.. automodule:: care.emr.api.viewsets.encounter_authz_base
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.security.permissions.base module
+=====================================
+
+.. automodule:: care.security.permissions.base
+   :members:
+   :show-inheritance:
+   :undoc-members:

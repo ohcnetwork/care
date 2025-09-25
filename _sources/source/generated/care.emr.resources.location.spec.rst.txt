@@ -1,0 +1,7 @@
+care.emr.resources.location.spec module
+=======================================
+
+.. automodule:: care.emr.resources.location.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

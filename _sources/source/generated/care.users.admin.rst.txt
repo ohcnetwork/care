@@ -1,0 +1,7 @@
+care.users.admin module
+=======================
+
+.. automodule:: care.users.admin
+   :members:
+   :show-inheritance:
+   :undoc-members:

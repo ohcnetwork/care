@@ -1,0 +1,7 @@
+care.emr.models.activity\_definition module
+===========================================
+
+.. automodule:: care.emr.models.activity_definition
+   :members:
+   :show-inheritance:
+   :undoc-members:

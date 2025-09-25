@@ -1,0 +1,15 @@
+care.emr.resources.user package
+===============================
+
+.. automodule:: care.emr.resources.user
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.user.spec

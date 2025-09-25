@@ -1,0 +1,16 @@
+care.utils.models package
+=========================
+
+.. automodule:: care.utils.models
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.utils.models.base
+   care.utils.models.validators

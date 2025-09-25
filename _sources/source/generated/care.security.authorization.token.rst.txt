@@ -1,0 +1,7 @@
+care.security.authorization.token module
+========================================
+
+.. automodule:: care.security.authorization.token
+   :members:
+   :show-inheritance:
+   :undoc-members:

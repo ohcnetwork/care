@@ -1,0 +1,34 @@
+care.emr package
+================
+
+.. automodule:: care.emr
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.admin
+   care.emr.api
+   care.emr.fhir
+   care.emr.locks
+   care.emr.models
+   care.emr.reports
+   care.emr.resources
+   care.emr.tagging
+   care.emr.tasks
+   care.emr.templatetags
+   care.emr.units
+   care.emr.utils
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.apps

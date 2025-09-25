@@ -1,0 +1,7 @@
+care.security.models.permission\_association module
+===================================================
+
+.. automodule:: care.security.models.permission_association
+   :members:
+   :show-inheritance:
+   :undoc-members:

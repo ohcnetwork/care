@@ -1,0 +1,7 @@
+care.emr.fhir.exceptions module
+===============================
+
+.. automodule:: care.emr.fhir.exceptions
+   :members:
+   :show-inheritance:
+   :undoc-members:

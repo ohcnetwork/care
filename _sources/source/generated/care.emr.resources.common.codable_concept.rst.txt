@@ -1,0 +1,7 @@
+care.emr.resources.common.codable\_concept module
+=================================================
+
+.. automodule:: care.emr.resources.common.codable_concept
+   :members:
+   :show-inheritance:
+   :undoc-members:

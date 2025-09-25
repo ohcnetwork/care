@@ -1,0 +1,7 @@
+care.security.authorization.specimen\_definition module
+=======================================================
+
+.. automodule:: care.security.authorization.specimen_definition
+   :members:
+   :show-inheritance:
+   :undoc-members:

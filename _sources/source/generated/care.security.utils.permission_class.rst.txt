@@ -1,0 +1,7 @@
+care.security.utils.permission\_class module
+============================================
+
+.. automodule:: care.security.utils.permission_class
+   :members:
+   :show-inheritance:
+   :undoc-members:

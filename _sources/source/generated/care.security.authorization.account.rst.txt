@@ -1,0 +1,7 @@
+care.security.authorization.account module
+==========================================
+
+.. automodule:: care.security.authorization.account
+   :members:
+   :show-inheritance:
+   :undoc-members:

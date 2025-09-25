@@ -1,0 +1,7 @@
+care.emr.utils.decimal\_context module
+======================================
+
+.. automodule:: care.emr.utils.decimal_context
+   :members:
+   :show-inheritance:
+   :undoc-members:

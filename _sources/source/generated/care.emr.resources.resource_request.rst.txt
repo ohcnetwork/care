@@ -1,0 +1,15 @@
+care.emr.resources.resource\_request package
+============================================
+
+.. automodule:: care.emr.resources.resource_request
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.resource_request.spec

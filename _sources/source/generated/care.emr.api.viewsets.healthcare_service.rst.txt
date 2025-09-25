@@ -1,0 +1,7 @@
+care.emr.api.viewsets.healthcare\_service module
+================================================
+
+.. automodule:: care.emr.api.viewsets.healthcare_service
+   :members:
+   :show-inheritance:
+   :undoc-members:

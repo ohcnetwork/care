@@ -1,0 +1,7 @@
+care.utils.shortcuts module
+===========================
+
+.. automodule:: care.utils.shortcuts
+   :members:
+   :show-inheritance:
+   :undoc-members:

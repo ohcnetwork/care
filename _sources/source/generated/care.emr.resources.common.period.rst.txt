@@ -1,0 +1,7 @@
+care.emr.resources.common.period module
+=======================================
+
+.. automodule:: care.emr.resources.common.period
+   :members:
+   :show-inheritance:
+   :undoc-members:

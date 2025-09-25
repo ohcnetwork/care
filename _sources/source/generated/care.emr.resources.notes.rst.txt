@@ -1,0 +1,16 @@
+care.emr.resources.notes package
+================================
+
+.. automodule:: care.emr.resources.notes
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.notes.notes_spec
+   care.emr.resources.notes.thread_spec

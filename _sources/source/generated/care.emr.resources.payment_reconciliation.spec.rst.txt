@@ -1,0 +1,7 @@
+care.emr.resources.payment\_reconciliation.spec module
+======================================================
+
+.. automodule:: care.emr.resources.payment_reconciliation.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

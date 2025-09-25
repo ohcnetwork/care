@@ -1,0 +1,7 @@
+care.emr.resources.common.monetary\_component module
+====================================================
+
+.. automodule:: care.emr.resources.common.monetary_component
+   :members:
+   :show-inheritance:
+   :undoc-members:

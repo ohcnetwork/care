@@ -1,0 +1,16 @@
+care.utils.registries package
+=============================
+
+.. automodule:: care.utils.registries
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.utils.registries.evaluation_metric
+   care.utils.registries.feature_flag

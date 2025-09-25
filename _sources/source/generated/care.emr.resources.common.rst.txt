@@ -1,0 +1,22 @@
+care.emr.resources.common package
+=================================
+
+.. automodule:: care.emr.resources.common
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.common.codable_concept
+   care.emr.resources.common.coding
+   care.emr.resources.common.condition_evaluator
+   care.emr.resources.common.contact_point
+   care.emr.resources.common.monetary_component
+   care.emr.resources.common.period
+   care.emr.resources.common.quantity
+   care.emr.resources.common.valueset

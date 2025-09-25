@@ -1,0 +1,7 @@
+care.emr.api.viewsets.diagnostic\_report module
+===============================================
+
+.. automodule:: care.emr.api.viewsets.diagnostic_report
+   :members:
+   :show-inheritance:
+   :undoc-members:

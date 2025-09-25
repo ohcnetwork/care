@@ -1,0 +1,29 @@
+care.security package
+=====================
+
+.. automodule:: care.security
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.security.api
+   care.security.authorization
+   care.security.management
+   care.security.models
+   care.security.permissions
+   care.security.roles
+   care.security.utils
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.security.apps

@@ -1,0 +1,7 @@
+care.security.permissions.location module
+=========================================
+
+.. automodule:: care.security.permissions.location
+   :members:
+   :show-inheritance:
+   :undoc-members:

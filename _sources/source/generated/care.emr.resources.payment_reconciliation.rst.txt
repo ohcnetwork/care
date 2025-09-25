@@ -1,0 +1,15 @@
+care.emr.resources.payment\_reconciliation package
+==================================================
+
+.. automodule:: care.emr.resources.payment_reconciliation
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.payment_reconciliation.spec

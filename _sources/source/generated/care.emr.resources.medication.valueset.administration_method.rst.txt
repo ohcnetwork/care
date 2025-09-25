@@ -1,0 +1,7 @@
+care.emr.resources.medication.valueset.administration\_method module
+====================================================================
+
+.. automodule:: care.emr.resources.medication.valueset.administration_method
+   :members:
+   :show-inheritance:
+   :undoc-members:

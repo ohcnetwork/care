@@ -1,0 +1,7 @@
+care.emr.resources.encounter.constants module
+=============================================
+
+.. automodule:: care.emr.resources.encounter.constants
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.security.permissions.inventory\_item module
+================================================
+
+.. automodule:: care.security.permissions.inventory_item
+   :members:
+   :show-inheritance:
+   :undoc-members:

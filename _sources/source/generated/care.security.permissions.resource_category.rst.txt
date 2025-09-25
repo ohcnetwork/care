@@ -1,0 +1,7 @@
+care.security.permissions.resource\_category module
+===================================================
+
+.. automodule:: care.security.permissions.resource_category
+   :members:
+   :show-inheritance:
+   :undoc-members:

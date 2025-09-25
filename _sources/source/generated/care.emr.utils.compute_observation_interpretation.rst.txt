@@ -1,0 +1,7 @@
+care.emr.utils.compute\_observation\_interpretation module
+==========================================================
+
+.. automodule:: care.emr.utils.compute_observation_interpretation
+   :members:
+   :show-inheritance:
+   :undoc-members:

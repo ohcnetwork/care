@@ -1,0 +1,7 @@
+care.utils.pagination.care\_pagination module
+=============================================
+
+.. automodule:: care.utils.pagination.care_pagination
+   :members:
+   :show-inheritance:
+   :undoc-members:

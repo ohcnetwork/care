@@ -1,0 +1,7 @@
+care.emr.models.medication\_request module
+==========================================
+
+.. automodule:: care.emr.models.medication_request
+   :members:
+   :show-inheritance:
+   :undoc-members:

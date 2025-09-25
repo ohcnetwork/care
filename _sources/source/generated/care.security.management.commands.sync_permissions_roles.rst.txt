@@ -1,0 +1,7 @@
+care.security.management.commands.sync\_permissions\_roles module
+=================================================================
+
+.. automodule:: care.security.management.commands.sync_permissions_roles
+   :members:
+   :show-inheritance:
+   :undoc-members:

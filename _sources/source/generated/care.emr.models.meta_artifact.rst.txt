@@ -1,0 +1,7 @@
+care.emr.models.meta\_artifact module
+=====================================
+
+.. automodule:: care.emr.models.meta_artifact
+   :members:
+   :show-inheritance:
+   :undoc-members:

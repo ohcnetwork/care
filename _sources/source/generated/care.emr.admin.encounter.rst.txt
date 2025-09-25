@@ -1,0 +1,7 @@
+care.emr.admin.encounter module
+===============================
+
+.. automodule:: care.emr.admin.encounter
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,15 @@
+care.emr.resources.scheduling.token\_category package
+=====================================================
+
+.. automodule:: care.emr.resources.scheduling.token_category
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.scheduling.token_category.spec

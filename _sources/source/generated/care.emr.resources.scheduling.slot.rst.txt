@@ -1,0 +1,15 @@
+care.emr.resources.scheduling.slot package
+==========================================
+
+.. automodule:: care.emr.resources.scheduling.slot
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.scheduling.slot.spec

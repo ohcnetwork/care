@@ -1,0 +1,7 @@
+care.utils.filters.multiselect module
+=====================================
+
+.. automodule:: care.utils.filters.multiselect
+   :members:
+   :show-inheritance:
+   :undoc-members:

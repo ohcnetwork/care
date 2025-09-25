@@ -1,0 +1,7 @@
+care.emr.templatetags.data\_formatting\_extras module
+=====================================================
+
+.. automodule:: care.emr.templatetags.data_formatting_extras
+   :members:
+   :show-inheritance:
+   :undoc-members:

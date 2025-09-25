@@ -1,0 +1,7 @@
+care.facility.models.prescription module
+========================================
+
+.. automodule:: care.facility.models.prescription
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,15 @@
+care.utils.pagination package
+=============================
+
+.. automodule:: care.utils.pagination
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.utils.pagination.care_pagination

@@ -1,0 +1,48 @@
+care.security.permissions package
+=================================
+
+.. automodule:: care.security.permissions
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.security.permissions.account
+   care.security.permissions.activity_definition
+   care.security.permissions.base
+   care.security.permissions.charge_item
+   care.security.permissions.charge_item_definition
+   care.security.permissions.constants
+   care.security.permissions.device
+   care.security.permissions.diagnostic_report
+   care.security.permissions.encounter
+   care.security.permissions.facility
+   care.security.permissions.facility_organization
+   care.security.permissions.healthcare_service
+   care.security.permissions.inventory_item
+   care.security.permissions.invoice
+   care.security.permissions.location
+   care.security.permissions.medication
+   care.security.permissions.observation_definition
+   care.security.permissions.organization
+   care.security.permissions.patient
+   care.security.permissions.patient_identifier_config
+   care.security.permissions.payment_reconciliation
+   care.security.permissions.product
+   care.security.permissions.product_knowledge
+   care.security.permissions.questionnaire
+   care.security.permissions.resource_category
+   care.security.permissions.schedule
+   care.security.permissions.service_request
+   care.security.permissions.specimen
+   care.security.permissions.specimen_definition
+   care.security.permissions.supply_delivery
+   care.security.permissions.supply_request
+   care.security.permissions.tag_config
+   care.security.permissions.token
+   care.security.permissions.user

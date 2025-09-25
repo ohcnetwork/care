@@ -1,0 +1,7 @@
+care.emr.resources.permissions module
+=====================================
+
+.. automodule:: care.emr.resources.permissions
+   :members:
+   :show-inheritance:
+   :undoc-members:

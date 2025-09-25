@@ -1,0 +1,7 @@
+care.emr.api.viewsets.facility module
+=====================================
+
+.. automodule:: care.emr.api.viewsets.facility
+   :members:
+   :show-inheritance:
+   :undoc-members:

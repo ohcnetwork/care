@@ -1,0 +1,7 @@
+care.emr.api.viewsets.payment\_reconciliation module
+====================================================
+
+.. automodule:: care.emr.api.viewsets.payment_reconciliation
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.audit\_log.helpers module
+==============================
+
+.. automodule:: care.audit_log.helpers
+   :members:
+   :show-inheritance:
+   :undoc-members:

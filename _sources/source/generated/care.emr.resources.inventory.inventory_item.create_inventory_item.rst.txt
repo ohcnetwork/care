@@ -1,0 +1,7 @@
+care.emr.resources.inventory.inventory\_item.create\_inventory\_item module
+===========================================================================
+
+.. automodule:: care.emr.resources.inventory.inventory_item.create_inventory_item
+   :members:
+   :show-inheritance:
+   :undoc-members:

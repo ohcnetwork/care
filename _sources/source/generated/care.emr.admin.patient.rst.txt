@@ -1,0 +1,7 @@
+care.emr.admin.patient module
+=============================
+
+.. automodule:: care.emr.admin.patient
+   :members:
+   :show-inheritance:
+   :undoc-members:

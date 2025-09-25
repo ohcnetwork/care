@@ -1,0 +1,17 @@
+care.emr.api.otp\_viewsets package
+==================================
+
+.. automodule:: care.emr.api.otp_viewsets
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.api.otp_viewsets.login
+   care.emr.api.otp_viewsets.patient
+   care.emr.api.otp_viewsets.slot

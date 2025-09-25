@@ -1,0 +1,18 @@
+care.utils.evaluators.evaluation\_metric package
+================================================
+
+.. automodule:: care.utils.evaluators.evaluation_metric
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.utils.evaluators.evaluation_metric.base
+   care.utils.evaluators.evaluation_metric.encounter_tag
+   care.utils.evaluators.evaluation_metric.patient_age
+   care.utils.evaluators.evaluation_metric.patient_gender

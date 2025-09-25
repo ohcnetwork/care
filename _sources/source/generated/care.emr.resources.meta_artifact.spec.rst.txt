@@ -1,0 +1,7 @@
+care.emr.resources.meta\_artifact.spec module
+=============================================
+
+.. automodule:: care.emr.resources.meta_artifact.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

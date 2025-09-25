@@ -1,0 +1,7 @@
+care.emr.resources.account.sync\_items module
+=============================================
+
+.. automodule:: care.emr.resources.account.sync_items
+   :members:
+   :show-inheritance:
+   :undoc-members:

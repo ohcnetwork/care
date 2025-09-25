@@ -1,0 +1,7 @@
+care.emr.resources.medication.valueset.route module
+===================================================
+
+.. automodule:: care.emr.resources.medication.valueset.route
+   :members:
+   :show-inheritance:
+   :undoc-members:

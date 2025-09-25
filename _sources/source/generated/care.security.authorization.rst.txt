@@ -1,0 +1,46 @@
+care.security.authorization package
+===================================
+
+.. automodule:: care.security.authorization
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.security.authorization.account
+   care.security.authorization.activity_definition
+   care.security.authorization.base
+   care.security.authorization.booking
+   care.security.authorization.charge_item
+   care.security.authorization.charge_item_definition
+   care.security.authorization.device
+   care.security.authorization.encounter
+   care.security.authorization.facility
+   care.security.authorization.facility_location
+   care.security.authorization.facilityorganization
+   care.security.authorization.healthcare_service
+   care.security.authorization.inventory_item
+   care.security.authorization.invoice
+   care.security.authorization.medication
+   care.security.authorization.observation_definition
+   care.security.authorization.organization
+   care.security.authorization.patient
+   care.security.authorization.patient_identifier_config
+   care.security.authorization.payment_reconciliation
+   care.security.authorization.product
+   care.security.authorization.product_knowledge
+   care.security.authorization.questionnaire
+   care.security.authorization.resource_category
+   care.security.authorization.scheduling
+   care.security.authorization.service_request
+   care.security.authorization.specimen_definition
+   care.security.authorization.supply_delivery
+   care.security.authorization.supply_request
+   care.security.authorization.tag_config
+   care.security.authorization.token
+   care.security.authorization.user

@@ -1,0 +1,18 @@
+care.facility.models.json\_schema package
+=========================================
+
+.. automodule:: care.facility.models.json_schema
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.facility.models.json_schema.asset
+   care.facility.models.json_schema.common
+   care.facility.models.json_schema.consultation
+   care.facility.models.json_schema.daily_round

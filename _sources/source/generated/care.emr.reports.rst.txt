@@ -1,0 +1,15 @@
+care.emr.reports package
+========================
+
+.. automodule:: care.emr.reports
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.reports.discharge_summary

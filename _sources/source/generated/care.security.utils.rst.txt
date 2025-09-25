@@ -1,0 +1,15 @@
+care.security.utils package
+===========================
+
+.. automodule:: care.security.utils
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.security.utils.permission_class

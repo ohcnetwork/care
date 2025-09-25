@@ -1,0 +1,18 @@
+care.emr.resources.encounter package
+====================================
+
+.. automodule:: care.emr.resources.encounter
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.encounter.constants
+   care.emr.resources.encounter.enum_display_names
+   care.emr.resources.encounter.spec
+   care.emr.resources.encounter.valueset

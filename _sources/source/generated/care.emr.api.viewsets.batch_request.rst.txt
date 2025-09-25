@@ -1,0 +1,7 @@
+care.emr.api.viewsets.batch\_request module
+===========================================
+
+.. automodule:: care.emr.api.viewsets.batch_request
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.facility.models.facility\_flag module
+==========================================
+
+.. automodule:: care.facility.models.facility_flag
+   :members:
+   :show-inheritance:
+   :undoc-members:

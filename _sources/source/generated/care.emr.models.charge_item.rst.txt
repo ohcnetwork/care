@@ -1,0 +1,7 @@
+care.emr.models.charge\_item module
+===================================
+
+.. automodule:: care.emr.models.charge_item
+   :members:
+   :show-inheritance:
+   :undoc-members:

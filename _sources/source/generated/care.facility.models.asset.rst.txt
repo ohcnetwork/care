@@ -1,0 +1,7 @@
+care.facility.models.asset module
+=================================
+
+.. automodule:: care.facility.models.asset
+   :members:
+   :show-inheritance:
+   :undoc-members:

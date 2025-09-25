@@ -1,0 +1,15 @@
+care.emr.resources.tag package
+==============================
+
+.. automodule:: care.emr.resources.tag
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.tag.config_spec

@@ -1,0 +1,7 @@
+care.emr.resources.facility\_organization.spec module
+=====================================================
+
+.. automodule:: care.emr.resources.facility_organization.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

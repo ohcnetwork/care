@@ -1,0 +1,7 @@
+care.emr.resources.medication.valueset.body\_site module
+========================================================
+
+.. automodule:: care.emr.resources.medication.valueset.body_site
+   :members:
+   :show-inheritance:
+   :undoc-members:

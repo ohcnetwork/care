@@ -1,0 +1,7 @@
+care.emr.resources.inventory.inventory\_item.sync\_inventory\_item module
+=========================================================================
+
+.. automodule:: care.emr.resources.inventory.inventory_item.sync_inventory_item
+   :members:
+   :show-inheritance:
+   :undoc-members:

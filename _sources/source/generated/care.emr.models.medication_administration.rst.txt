@@ -1,0 +1,7 @@
+care.emr.models.medication\_administration module
+=================================================
+
+.. automodule:: care.emr.models.medication_administration
+   :members:
+   :show-inheritance:
+   :undoc-members:

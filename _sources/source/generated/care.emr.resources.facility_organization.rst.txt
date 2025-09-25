@@ -1,0 +1,16 @@
+care.emr.resources.facility\_organization package
+=================================================
+
+.. automodule:: care.emr.resources.facility_organization
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.facility_organization.facility_orgnization_user_spec
+   care.emr.resources.facility_organization.spec

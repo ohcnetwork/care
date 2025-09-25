@@ -1,0 +1,7 @@
+care.utils.filters.choicefilter module
+======================================
+
+.. automodule:: care.utils.filters.choicefilter
+   :members:
+   :show-inheritance:
+   :undoc-members:

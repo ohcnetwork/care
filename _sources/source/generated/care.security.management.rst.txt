@@ -1,0 +1,15 @@
+care.security.management package
+================================
+
+.. automodule:: care.security.management
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.security.management.commands

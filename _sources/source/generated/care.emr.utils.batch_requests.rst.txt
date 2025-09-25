@@ -1,0 +1,7 @@
+care.emr.utils.batch\_requests module
+=====================================
+
+.. automodule:: care.emr.utils.batch_requests
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.security.authorization.organization module
+===============================================
+
+.. automodule:: care.security.authorization.organization
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.resources.healthcare\_service.valueset module
+======================================================
+
+.. automodule:: care.emr.resources.healthcare_service.valueset
+   :members:
+   :show-inheritance:
+   :undoc-members:

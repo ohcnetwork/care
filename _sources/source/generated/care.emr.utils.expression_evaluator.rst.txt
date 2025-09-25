@@ -1,0 +1,7 @@
+care.emr.utils.expression\_evaluator module
+===========================================
+
+.. automodule:: care.emr.utils.expression_evaluator
+   :members:
+   :show-inheritance:
+   :undoc-members:

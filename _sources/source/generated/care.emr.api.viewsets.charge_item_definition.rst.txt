@@ -1,0 +1,7 @@
+care.emr.api.viewsets.charge\_item\_definition module
+=====================================================
+
+.. automodule:: care.emr.api.viewsets.charge_item_definition
+   :members:
+   :show-inheritance:
+   :undoc-members:

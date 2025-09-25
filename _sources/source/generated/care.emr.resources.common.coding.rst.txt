@@ -1,0 +1,7 @@
+care.emr.resources.common.coding module
+=======================================
+
+.. automodule:: care.emr.resources.common.coding
+   :members:
+   :show-inheritance:
+   :undoc-members:

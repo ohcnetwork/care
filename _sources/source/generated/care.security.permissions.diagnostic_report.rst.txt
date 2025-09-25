@@ -1,0 +1,7 @@
+care.security.permissions.diagnostic\_report module
+===================================================
+
+.. automodule:: care.security.permissions.diagnostic_report
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.resources.favorites.filters module
+===========================================
+
+.. automodule:: care.emr.resources.favorites.filters
+   :members:
+   :show-inheritance:
+   :undoc-members:

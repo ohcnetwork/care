@@ -1,0 +1,7 @@
+care.emr.fhir.utils module
+==========================
+
+.. automodule:: care.emr.fhir.utils
+   :members:
+   :show-inheritance:
+   :undoc-members:

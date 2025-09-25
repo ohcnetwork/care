@@ -1,0 +1,7 @@
+care.security.permissions.encounter module
+==========================================
+
+.. automodule:: care.security.permissions.encounter
+   :members:
+   :show-inheritance:
+   :undoc-members:

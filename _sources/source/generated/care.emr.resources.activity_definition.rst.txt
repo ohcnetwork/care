@@ -1,0 +1,17 @@
+care.emr.resources.activity\_definition package
+===============================================
+
+.. automodule:: care.emr.resources.activity_definition
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.activity_definition.service_request
+   care.emr.resources.activity_definition.spec
+   care.emr.resources.activity_definition.valueset

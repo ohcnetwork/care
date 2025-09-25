@@ -1,0 +1,7 @@
+care.facility.models.patient\_external\_test module
+===================================================
+
+.. automodule:: care.facility.models.patient_external_test
+   :members:
+   :show-inheritance:
+   :undoc-members:

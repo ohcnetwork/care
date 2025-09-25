@@ -1,0 +1,7 @@
+care.emr.models.tag\_config module
+==================================
+
+.. automodule:: care.emr.models.tag_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

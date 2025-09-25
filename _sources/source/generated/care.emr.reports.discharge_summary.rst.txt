@@ -1,0 +1,7 @@
+care.emr.reports.discharge\_summary module
+==========================================
+
+.. automodule:: care.emr.reports.discharge_summary
+   :members:
+   :show-inheritance:
+   :undoc-members:

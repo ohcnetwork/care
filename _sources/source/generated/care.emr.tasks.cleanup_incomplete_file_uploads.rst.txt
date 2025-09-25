@@ -1,0 +1,7 @@
+care.emr.tasks.cleanup\_incomplete\_file\_uploads module
+========================================================
+
+.. automodule:: care.emr.tasks.cleanup_incomplete_file_uploads
+   :members:
+   :show-inheritance:
+   :undoc-members:

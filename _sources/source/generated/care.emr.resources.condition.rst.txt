@@ -1,0 +1,16 @@
+care.emr.resources.condition package
+====================================
+
+.. automodule:: care.emr.resources.condition
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.condition.spec
+   care.emr.resources.condition.valueset

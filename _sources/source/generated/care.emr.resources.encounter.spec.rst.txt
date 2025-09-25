@@ -1,0 +1,7 @@
+care.emr.resources.encounter.spec module
+========================================
+
+.. automodule:: care.emr.resources.encounter.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

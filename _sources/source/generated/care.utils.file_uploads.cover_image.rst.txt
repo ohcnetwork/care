@@ -1,0 +1,7 @@
+care.utils.file\_uploads.cover\_image module
+============================================
+
+.. automodule:: care.utils.file_uploads.cover_image
+   :members:
+   :show-inheritance:
+   :undoc-members:

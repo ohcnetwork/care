@@ -1,0 +1,7 @@
+care.emr.api.viewsets.patient\_identifier module
+================================================
+
+.. automodule:: care.emr.api.viewsets.patient_identifier
+   :members:
+   :show-inheritance:
+   :undoc-members:

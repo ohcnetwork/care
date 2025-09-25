@@ -1,0 +1,7 @@
+care.security.authorization.questionnaire module
+================================================
+
+.. automodule:: care.security.authorization.questionnaire
+   :members:
+   :show-inheritance:
+   :undoc-members:

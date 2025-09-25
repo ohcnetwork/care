@@ -1,0 +1,16 @@
+care.emr.resources.patient\_identifier package
+==============================================
+
+.. automodule:: care.emr.resources.patient_identifier
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.patient_identifier.default_expression_evaluator
+   care.emr.resources.patient_identifier.spec

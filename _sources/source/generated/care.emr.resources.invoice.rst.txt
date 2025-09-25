@@ -1,0 +1,17 @@
+care.emr.resources.invoice package
+==================================
+
+.. automodule:: care.emr.resources.invoice
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.invoice.default_expression_evaluator
+   care.emr.resources.invoice.spec
+   care.emr.resources.invoice.sync_items

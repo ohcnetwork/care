@@ -1,0 +1,22 @@
+care.emr.api.viewsets.scheduling package
+========================================
+
+.. automodule:: care.emr.api.viewsets.scheduling
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.api.viewsets.scheduling.availability
+   care.emr.api.viewsets.scheduling.availability_exceptions
+   care.emr.api.viewsets.scheduling.booking
+   care.emr.api.viewsets.scheduling.schedule
+   care.emr.api.viewsets.scheduling.token
+   care.emr.api.viewsets.scheduling.token_category
+   care.emr.api.viewsets.scheduling.token_queue
+   care.emr.api.viewsets.scheduling.token_sub_queue

@@ -1,0 +1,7 @@
+care.emr.utils.pydantic\_serializers module
+===========================================
+
+.. automodule:: care.emr.utils.pydantic_serializers
+   :members:
+   :show-inheritance:
+   :undoc-members:

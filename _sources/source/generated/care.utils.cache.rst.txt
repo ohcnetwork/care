@@ -1,0 +1,17 @@
+care.utils.cache package
+========================
+
+.. automodule:: care.utils.cache
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.utils.cache.cache_allowed_facilities
+   care.utils.cache.mixin
+   care.utils.cache.patient_investigation

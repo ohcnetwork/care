@@ -1,0 +1,7 @@
+care.utils.queryset.asset\_location module
+==========================================
+
+.. automodule:: care.utils.queryset.asset_location
+   :members:
+   :show-inheritance:
+   :undoc-members:

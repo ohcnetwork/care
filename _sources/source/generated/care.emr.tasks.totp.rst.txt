@@ -1,0 +1,7 @@
+care.emr.tasks.totp module
+==========================
+
+.. automodule:: care.emr.tasks.totp
+   :members:
+   :show-inheritance:
+   :undoc-members:

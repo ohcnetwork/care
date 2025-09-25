@@ -1,0 +1,7 @@
+care.emr.resources.encounter.enum\_display\_names module
+========================================================
+
+.. automodule:: care.emr.resources.encounter.enum_display_names
+   :members:
+   :show-inheritance:
+   :undoc-members:

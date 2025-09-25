@@ -1,0 +1,7 @@
+care.emr.models.condition module
+================================
+
+.. automodule:: care.emr.models.condition
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.resources.observation.valueset module
+==============================================
+
+.. automodule:: care.emr.resources.observation.valueset
+   :members:
+   :show-inheritance:
+   :undoc-members:

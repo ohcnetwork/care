@@ -1,0 +1,15 @@
+care.emr.resources.medication.request package
+=============================================
+
+.. automodule:: care.emr.resources.medication.request
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.medication.request.spec

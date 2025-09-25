@@ -1,0 +1,7 @@
+care.users.api.viewsets.users module
+====================================
+
+.. automodule:: care.users.api.viewsets.users
+   :members:
+   :show-inheritance:
+   :undoc-members:

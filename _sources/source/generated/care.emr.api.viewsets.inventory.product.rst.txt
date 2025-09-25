@@ -1,0 +1,7 @@
+care.emr.api.viewsets.inventory.product module
+==============================================
+
+.. automodule:: care.emr.api.viewsets.inventory.product
+   :members:
+   :show-inheritance:
+   :undoc-members:

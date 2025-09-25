@@ -1,0 +1,7 @@
+care.emr.models.patient module
+==============================
+
+.. automodule:: care.emr.models.patient
+   :members:
+   :show-inheritance:
+   :undoc-members:

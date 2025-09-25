@@ -1,0 +1,7 @@
+care.emr.models.location module
+===============================
+
+.. automodule:: care.emr.models.location
+   :members:
+   :show-inheritance:
+   :undoc-members:

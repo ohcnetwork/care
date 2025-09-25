@@ -1,0 +1,7 @@
+care.emr.utils.file\_manager module
+===================================
+
+.. automodule:: care.emr.utils.file_manager
+   :members:
+   :show-inheritance:
+   :undoc-members:

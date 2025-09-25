@@ -1,0 +1,15 @@
+care.emr.resources.medication.dispense package
+==============================================
+
+.. automodule:: care.emr.resources.medication.dispense
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.medication.dispense.spec

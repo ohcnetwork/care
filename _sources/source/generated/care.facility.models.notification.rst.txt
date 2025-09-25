@@ -1,0 +1,7 @@
+care.facility.models.notification module
+========================================
+
+.. automodule:: care.facility.models.notification
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.api.viewsets.meta\_artifact module
+===========================================
+
+.. automodule:: care.emr.api.viewsets.meta_artifact
+   :members:
+   :show-inheritance:
+   :undoc-members:

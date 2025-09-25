@@ -1,0 +1,7 @@
+care.emr.utils.valueset\_coding\_type module
+============================================
+
+.. automodule:: care.emr.utils.valueset_coding_type
+   :members:
+   :show-inheritance:
+   :undoc-members:

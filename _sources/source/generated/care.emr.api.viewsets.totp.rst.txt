@@ -1,0 +1,7 @@
+care.emr.api.viewsets.totp module
+=================================
+
+.. automodule:: care.emr.api.viewsets.totp
+   :members:
+   :show-inheritance:
+   :undoc-members:

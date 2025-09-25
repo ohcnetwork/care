@@ -1,0 +1,18 @@
+care.facility.tasks package
+===========================
+
+.. automodule:: care.facility.tasks
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.facility.tasks.asset_monitor
+   care.facility.tasks.cleanup
+   care.facility.tasks.location_monitor
+   care.facility.tasks.push_asset_config

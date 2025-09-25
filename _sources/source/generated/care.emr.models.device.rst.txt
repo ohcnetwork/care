@@ -1,0 +1,7 @@
+care.emr.models.device module
+=============================
+
+.. automodule:: care.emr.models.device
+   :members:
+   :show-inheritance:
+   :undoc-members:

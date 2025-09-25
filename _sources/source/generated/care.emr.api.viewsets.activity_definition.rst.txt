@@ -1,0 +1,7 @@
+care.emr.api.viewsets.activity\_definition module
+=================================================
+
+.. automodule:: care.emr.api.viewsets.activity_definition
+   :members:
+   :show-inheritance:
+   :undoc-members:

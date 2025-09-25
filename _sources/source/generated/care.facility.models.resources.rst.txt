@@ -1,0 +1,7 @@
+care.facility.models.resources module
+=====================================
+
+.. automodule:: care.facility.models.resources
+   :members:
+   :show-inheritance:
+   :undoc-members:

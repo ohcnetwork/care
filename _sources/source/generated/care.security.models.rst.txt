@@ -1,0 +1,17 @@
+care.security.models package
+============================
+
+.. automodule:: care.security.models
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.security.models.permission
+   care.security.models.permission_association
+   care.security.models.role

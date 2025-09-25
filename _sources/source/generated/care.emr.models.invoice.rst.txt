@@ -1,0 +1,7 @@
+care.emr.models.invoice module
+==============================
+
+.. automodule:: care.emr.models.invoice
+   :members:
+   :show-inheritance:
+   :undoc-members:

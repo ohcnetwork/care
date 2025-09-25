@@ -1,0 +1,7 @@
+care.emr.models.medication\_statement module
+============================================
+
+.. automodule:: care.emr.models.medication_statement
+   :members:
+   :show-inheritance:
+   :undoc-members:

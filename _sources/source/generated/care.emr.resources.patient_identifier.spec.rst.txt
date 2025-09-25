@@ -1,0 +1,7 @@
+care.emr.resources.patient\_identifier.spec module
+==================================================
+
+.. automodule:: care.emr.resources.patient_identifier.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.utils.swagger.filter module
+================================
+
+.. automodule:: care.utils.swagger.filter
+   :members:
+   :show-inheritance:
+   :undoc-members:

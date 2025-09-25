@@ -1,0 +1,7 @@
+care.emr.models.supply\_request module
+======================================
+
+.. automodule:: care.emr.models.supply_request
+   :members:
+   :show-inheritance:
+   :undoc-members:

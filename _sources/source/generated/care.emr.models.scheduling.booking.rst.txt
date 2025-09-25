@@ -1,0 +1,7 @@
+care.emr.models.scheduling.booking module
+=========================================
+
+.. automodule:: care.emr.models.scheduling.booking
+   :members:
+   :show-inheritance:
+   :undoc-members:

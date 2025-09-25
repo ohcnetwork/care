@@ -1,0 +1,7 @@
+care.emr.resources.diagnostic\_report.spec module
+=================================================
+
+.. automodule:: care.emr.resources.diagnostic_report.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

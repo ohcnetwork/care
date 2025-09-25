@@ -1,0 +1,16 @@
+care.emr.resources.specimen package
+===================================
+
+.. automodule:: care.emr.resources.specimen
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.specimen.spec
+   care.emr.resources.specimen.valueset

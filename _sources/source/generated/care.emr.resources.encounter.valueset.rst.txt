@@ -1,0 +1,7 @@
+care.emr.resources.encounter.valueset module
+============================================
+
+.. automodule:: care.emr.resources.encounter.valueset
+   :members:
+   :show-inheritance:
+   :undoc-members:

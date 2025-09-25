@@ -1,0 +1,48 @@
+care.facility.models package
+============================
+
+.. automodule:: care.facility.models
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.facility.models.json_schema
+   care.facility.models.mixins
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.facility.models.ambulance
+   care.facility.models.asset
+   care.facility.models.base
+   care.facility.models.bed
+   care.facility.models.camera_preset
+   care.facility.models.daily_round
+   care.facility.models.encounter_symptom
+   care.facility.models.events
+   care.facility.models.facility
+   care.facility.models.facility_flag
+   care.facility.models.file_upload
+   care.facility.models.icd11_diagnosis
+   care.facility.models.inventory
+   care.facility.models.notification
+   care.facility.models.patient
+   care.facility.models.patient_base
+   care.facility.models.patient_consultation
+   care.facility.models.patient_external_test
+   care.facility.models.patient_icmr
+   care.facility.models.patient_investigation
+   care.facility.models.patient_sample
+   care.facility.models.prescription
+   care.facility.models.resources
+   care.facility.models.shifting
+   care.facility.models.stats

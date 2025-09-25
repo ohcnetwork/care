@@ -1,0 +1,7 @@
+care.emr.resources.condition.spec module
+========================================
+
+.. automodule:: care.emr.resources.condition.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

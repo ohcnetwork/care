@@ -1,0 +1,7 @@
+care.security.permissions.supply\_delivery module
+=================================================
+
+.. automodule:: care.security.permissions.supply_delivery
+   :members:
+   :show-inheritance:
+   :undoc-members:

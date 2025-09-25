@@ -1,0 +1,7 @@
+care.emr.utils.mfa module
+=========================
+
+.. automodule:: care.emr.utils.mfa
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.resources.account.default\_account module
+==================================================
+
+.. automodule:: care.emr.resources.account.default_account
+   :members:
+   :show-inheritance:
+   :undoc-members:

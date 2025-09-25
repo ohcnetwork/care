@@ -1,0 +1,7 @@
+care.emr.resources.notes.thread\_spec module
+============================================
+
+.. automodule:: care.emr.resources.notes.thread_spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

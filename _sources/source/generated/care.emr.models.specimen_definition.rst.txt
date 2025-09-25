@@ -1,0 +1,7 @@
+care.emr.models.specimen\_definition module
+===========================================
+
+.. automodule:: care.emr.models.specimen_definition
+   :members:
+   :show-inheritance:
+   :undoc-members:

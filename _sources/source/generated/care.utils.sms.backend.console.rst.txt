@@ -1,0 +1,7 @@
+care.utils.sms.backend.console module
+=====================================
+
+.. automodule:: care.utils.sms.backend.console
+   :members:
+   :show-inheritance:
+   :undoc-members:

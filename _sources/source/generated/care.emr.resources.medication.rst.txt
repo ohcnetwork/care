@@ -1,0 +1,20 @@
+care.emr.resources.medication package
+=====================================
+
+.. automodule:: care.emr.resources.medication
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.medication.administration
+   care.emr.resources.medication.dispense
+   care.emr.resources.medication.request
+   care.emr.resources.medication.request_prescription
+   care.emr.resources.medication.statement
+   care.emr.resources.medication.valueset

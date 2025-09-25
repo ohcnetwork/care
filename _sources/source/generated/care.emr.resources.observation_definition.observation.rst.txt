@@ -1,0 +1,7 @@
+care.emr.resources.observation\_definition.observation module
+=============================================================
+
+.. automodule:: care.emr.resources.observation_definition.observation
+   :members:
+   :show-inheritance:
+   :undoc-members:

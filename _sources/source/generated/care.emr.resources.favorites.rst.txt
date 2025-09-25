@@ -1,0 +1,16 @@
+care.emr.resources.favorites package
+====================================
+
+.. automodule:: care.emr.resources.favorites
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.favorites.filters
+   care.emr.resources.favorites.spec

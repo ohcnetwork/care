@@ -1,0 +1,15 @@
+care.users.management package
+=============================
+
+.. automodule:: care.users.management
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.users.management.commands

@@ -1,0 +1,7 @@
+care.utils.registries.evaluation\_metric module
+===============================================
+
+.. automodule:: care.utils.registries.evaluation_metric
+   :members:
+   :show-inheritance:
+   :undoc-members:

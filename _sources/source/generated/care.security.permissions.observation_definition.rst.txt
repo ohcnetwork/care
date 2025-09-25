@@ -1,0 +1,7 @@
+care.security.permissions.observation\_definition module
+========================================================
+
+.. automodule:: care.security.permissions.observation_definition
+   :members:
+   :show-inheritance:
+   :undoc-members:

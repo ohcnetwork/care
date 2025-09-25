@@ -1,0 +1,7 @@
+care.emr.api.viewsets.scheduling.token\_category module
+=======================================================
+
+.. automodule:: care.emr.api.viewsets.scheduling.token_category
+   :members:
+   :show-inheritance:
+   :undoc-members:

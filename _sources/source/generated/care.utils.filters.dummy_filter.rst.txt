@@ -1,0 +1,7 @@
+care.utils.filters.dummy\_filter module
+=======================================
+
+.. automodule:: care.utils.filters.dummy_filter
+   :members:
+   :show-inheritance:
+   :undoc-members:

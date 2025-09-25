@@ -1,0 +1,7 @@
+care.emr.resources.questionnaire.utils module
+=============================================
+
+.. automodule:: care.emr.resources.questionnaire.utils
+   :members:
+   :show-inheritance:
+   :undoc-members:

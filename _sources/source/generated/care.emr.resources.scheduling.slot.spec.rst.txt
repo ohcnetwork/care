@@ -1,0 +1,7 @@
+care.emr.resources.scheduling.slot.spec module
+==============================================
+
+.. automodule:: care.emr.resources.scheduling.slot.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

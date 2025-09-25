@@ -1,0 +1,7 @@
+care.utils.cache.cache\_allowed\_facilities module
+==================================================
+
+.. automodule:: care.utils.cache.cache_allowed_facilities
+   :members:
+   :show-inheritance:
+   :undoc-members:

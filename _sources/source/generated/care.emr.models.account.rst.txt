@@ -1,0 +1,7 @@
+care.emr.models.account module
+==============================
+
+.. automodule:: care.emr.models.account
+   :members:
+   :show-inheritance:
+   :undoc-members:

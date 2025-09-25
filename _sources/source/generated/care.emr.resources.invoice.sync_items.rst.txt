@@ -1,0 +1,7 @@
+care.emr.resources.invoice.sync\_items module
+=============================================
+
+.. automodule:: care.emr.resources.invoice.sync_items
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,18 @@
+care.users.api.serializers package
+==================================
+
+.. automodule:: care.users.api.serializers
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.users.api.serializers.lsg
+   care.users.api.serializers.plug_config
+   care.users.api.serializers.skill
+   care.users.api.serializers.userskill

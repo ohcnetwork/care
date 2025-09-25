@@ -1,0 +1,7 @@
+care.emr.resources.patient.otp\_based\_flow module
+==================================================
+
+.. automodule:: care.emr.resources.patient.otp_based_flow
+   :members:
+   :show-inheritance:
+   :undoc-members:

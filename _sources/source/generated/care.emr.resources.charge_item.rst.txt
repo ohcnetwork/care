@@ -1,0 +1,18 @@
+care.emr.resources.charge\_item package
+=======================================
+
+.. automodule:: care.emr.resources.charge_item
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.charge_item.apply_charge_item_definition
+   care.emr.resources.charge_item.handle_charge_item_cancel
+   care.emr.resources.charge_item.spec
+   care.emr.resources.charge_item.sync_charge_item_costs

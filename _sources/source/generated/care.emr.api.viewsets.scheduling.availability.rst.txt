@@ -1,0 +1,7 @@
+care.emr.api.viewsets.scheduling.availability module
+====================================================
+
+.. automodule:: care.emr.api.viewsets.scheduling.availability
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.security.authorization.device module
+=========================================
+
+.. automodule:: care.security.authorization.device
+   :members:
+   :show-inheritance:
+   :undoc-members:

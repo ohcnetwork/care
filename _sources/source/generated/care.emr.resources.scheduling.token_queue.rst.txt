@@ -1,0 +1,15 @@
+care.emr.resources.scheduling.token\_queue package
+==================================================
+
+.. automodule:: care.emr.resources.scheduling.token_queue
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.scheduling.token_queue.spec

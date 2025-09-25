@@ -1,0 +1,7 @@
+care.emr.models.product\_knowledge module
+=========================================
+
+.. automodule:: care.emr.models.product_knowledge
+   :members:
+   :show-inheritance:
+   :undoc-members:

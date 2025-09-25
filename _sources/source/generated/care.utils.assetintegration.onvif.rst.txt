@@ -1,0 +1,7 @@
+care.utils.assetintegration.onvif module
+========================================
+
+.. automodule:: care.utils.assetintegration.onvif
+   :members:
+   :show-inheritance:
+   :undoc-members:

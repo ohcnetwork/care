@@ -1,0 +1,18 @@
+care.utils.filters package
+==========================
+
+.. automodule:: care.utils.filters
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.utils.filters.choicefilter
+   care.utils.filters.dummy_filter
+   care.utils.filters.multiselect
+   care.utils.filters.null_filter

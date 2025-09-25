@@ -1,0 +1,7 @@
+care.emr.api.viewsets.account module
+====================================
+
+.. automodule:: care.emr.api.viewsets.account
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.fhir.resources.code\_concept module
+============================================
+
+.. automodule:: care.emr.fhir.resources.code_concept
+   :members:
+   :show-inheritance:
+   :undoc-members:

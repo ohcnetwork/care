@@ -1,0 +1,7 @@
+care.contrib.sites package
+==========================
+
+.. automodule:: care.contrib.sites
+   :members:
+   :show-inheritance:
+   :undoc-members:

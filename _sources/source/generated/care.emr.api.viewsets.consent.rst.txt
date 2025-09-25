@@ -1,0 +1,7 @@
+care.emr.api.viewsets.consent module
+====================================
+
+.. automodule:: care.emr.api.viewsets.consent
+   :members:
+   :show-inheritance:
+   :undoc-members:

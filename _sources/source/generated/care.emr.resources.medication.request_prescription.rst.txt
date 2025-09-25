@@ -1,0 +1,15 @@
+care.emr.resources.medication.request\_prescription package
+===========================================================
+
+.. automodule:: care.emr.resources.medication.request_prescription
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.medication.request_prescription.spec

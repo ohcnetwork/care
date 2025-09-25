@@ -1,0 +1,7 @@
+care.emr.resources.allergy\_intolerance.spec module
+===================================================
+
+.. automodule:: care.emr.resources.allergy_intolerance.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

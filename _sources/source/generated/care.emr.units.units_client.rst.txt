@@ -1,0 +1,7 @@
+care.emr.units.units\_client module
+===================================
+
+.. automodule:: care.emr.units.units_client
+   :members:
+   :show-inheritance:
+   :undoc-members:

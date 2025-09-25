@@ -1,0 +1,16 @@
+care.emr.resources.allergy\_intolerance package
+===============================================
+
+.. automodule:: care.emr.resources.allergy_intolerance
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.allergy_intolerance.spec
+   care.emr.resources.allergy_intolerance.valueset

@@ -1,0 +1,7 @@
+care.emr.api.viewsets.scheduling.booking module
+===============================================
+
+.. automodule:: care.emr.api.viewsets.scheduling.booking
+   :members:
+   :show-inheritance:
+   :undoc-members:

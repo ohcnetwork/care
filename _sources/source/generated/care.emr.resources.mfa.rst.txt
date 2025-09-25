@@ -1,0 +1,15 @@
+care.emr.resources.mfa package
+==============================
+
+.. automodule:: care.emr.resources.mfa
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.mfa.spec

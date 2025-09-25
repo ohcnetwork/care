@@ -1,0 +1,41 @@
+.bg-gray-100 {
+    background-color: #fbfafc;
+}
+.btn-primary {
+    background-color: #6025c0;
+    color: #fff;
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.1), 0 1px 2px 0 rgba(0,0,0,.06);
+    background-image: linear-gradient(135deg,#6025c0,#4d1e9a);
+}
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+    font-weight: 600;
+    padding: .5rem 1rem;
+    border-radius: .25rem;
+    cursor: pointer;
+}
+
+.care-secondary-color{
+  color: #6025c0;
+}
+
+label{
+  margin-top: 1rem;
+  display: inline-block;
+}
+
+.careblock{
+  display: block!important;
+}
+
+@media (min-width: 768px){
+
+.cardwidth{
+  width: 30%!important;
+  min-width: 250px!important;
+}
+
+}

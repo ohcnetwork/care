@@ -1,0 +1,16 @@
+care.emr.tagging package
+========================
+
+.. automodule:: care.emr.tagging
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.tagging.base
+   care.emr.tagging.filters

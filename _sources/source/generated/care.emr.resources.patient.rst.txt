@@ -1,0 +1,16 @@
+care.emr.resources.patient package
+==================================
+
+.. automodule:: care.emr.resources.patient
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.patient.otp_based_flow
+   care.emr.resources.patient.spec

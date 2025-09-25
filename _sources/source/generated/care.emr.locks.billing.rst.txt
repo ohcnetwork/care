@@ -1,0 +1,7 @@
+care.emr.locks.billing module
+=============================
+
+.. automodule:: care.emr.locks.billing
+   :members:
+   :show-inheritance:
+   :undoc-members:

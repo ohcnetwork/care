@@ -1,0 +1,15 @@
+care.facility.management.commands package
+=========================================
+
+.. automodule:: care.facility.management.commands
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.facility.management.commands.generate_jwks

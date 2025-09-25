@@ -1,0 +1,15 @@
+care.emr.resources.valueset package
+===================================
+
+.. automodule:: care.emr.resources.valueset
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.valueset.spec

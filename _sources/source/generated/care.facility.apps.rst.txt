@@ -1,0 +1,7 @@
+care.facility.apps module
+=========================
+
+.. automodule:: care.facility.apps
+   :members:
+   :show-inheritance:
+   :undoc-members:

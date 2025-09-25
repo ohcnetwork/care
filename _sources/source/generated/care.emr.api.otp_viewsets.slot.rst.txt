@@ -1,0 +1,7 @@
+care.emr.api.otp\_viewsets.slot module
+======================================
+
+.. automodule:: care.emr.api.otp_viewsets.slot
+   :members:
+   :show-inheritance:
+   :undoc-members:

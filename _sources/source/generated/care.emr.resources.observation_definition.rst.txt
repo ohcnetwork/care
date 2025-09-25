@@ -1,0 +1,16 @@
+care.emr.resources.observation\_definition package
+==================================================
+
+.. automodule:: care.emr.resources.observation_definition
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.observation_definition.observation
+   care.emr.resources.observation_definition.spec

@@ -1,0 +1,7 @@
+care.emr.models.observation module
+==================================
+
+.. automodule:: care.emr.models.observation
+   :members:
+   :show-inheritance:
+   :undoc-members:

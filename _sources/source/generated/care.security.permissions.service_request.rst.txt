@@ -1,0 +1,7 @@
+care.security.permissions.service\_request module
+=================================================
+
+.. automodule:: care.security.permissions.service_request
+   :members:
+   :show-inheritance:
+   :undoc-members:

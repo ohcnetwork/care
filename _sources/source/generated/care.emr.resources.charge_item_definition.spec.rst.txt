@@ -1,0 +1,7 @@
+care.emr.resources.charge\_item\_definition.spec module
+=======================================================
+
+.. automodule:: care.emr.resources.charge_item_definition.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

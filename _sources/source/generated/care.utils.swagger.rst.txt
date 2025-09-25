@@ -1,0 +1,16 @@
+care.utils.swagger package
+==========================
+
+.. automodule:: care.utils.swagger
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.utils.swagger.filter
+   care.utils.swagger.schema

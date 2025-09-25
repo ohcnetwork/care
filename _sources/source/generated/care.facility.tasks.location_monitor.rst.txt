@@ -1,0 +1,7 @@
+care.facility.tasks.location\_monitor module
+============================================
+
+.. automodule:: care.facility.tasks.location_monitor
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.resources.medication.valueset.additional\_instruction module
+=====================================================================
+
+.. automodule:: care.emr.resources.medication.valueset.additional_instruction
+   :members:
+   :show-inheritance:
+   :undoc-members:

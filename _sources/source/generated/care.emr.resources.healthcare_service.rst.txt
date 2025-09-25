@@ -1,0 +1,16 @@
+care.emr.resources.healthcare\_service package
+==============================================
+
+.. automodule:: care.emr.resources.healthcare_service
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.healthcare_service.spec
+   care.emr.resources.healthcare_service.valueset

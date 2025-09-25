@@ -1,0 +1,7 @@
+care.security.api.viewsets.permissions module
+=============================================
+
+.. automodule:: care.security.api.viewsets.permissions
+   :members:
+   :show-inheritance:
+   :undoc-members:

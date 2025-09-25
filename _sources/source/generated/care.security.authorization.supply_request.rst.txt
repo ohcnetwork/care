@@ -1,0 +1,7 @@
+care.security.authorization.supply\_request module
+==================================================
+
+.. automodule:: care.security.authorization.supply_request
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.models.healthcare\_service module
+==========================================
+
+.. automodule:: care.emr.models.healthcare_service
+   :members:
+   :show-inheritance:
+   :undoc-members:

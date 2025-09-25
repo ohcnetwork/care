@@ -1,0 +1,17 @@
+care.emr.models.scheduling package
+==================================
+
+.. automodule:: care.emr.models.scheduling
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.models.scheduling.booking
+   care.emr.models.scheduling.schedule
+   care.emr.models.scheduling.token

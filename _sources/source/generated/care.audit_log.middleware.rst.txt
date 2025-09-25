@@ -1,0 +1,7 @@
+care.audit\_log.middleware module
+=================================
+
+.. automodule:: care.audit_log.middleware
+   :members:
+   :show-inheritance:
+   :undoc-members:

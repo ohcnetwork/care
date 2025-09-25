@@ -1,0 +1,15 @@
+care.emr.resources.scheduling.availability\_exception package
+=============================================================
+
+.. automodule:: care.emr.resources.scheduling.availability_exception
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.scheduling.availability_exception.spec

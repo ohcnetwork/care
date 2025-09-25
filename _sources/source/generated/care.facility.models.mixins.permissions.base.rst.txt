@@ -1,0 +1,7 @@
+care.facility.models.mixins.permissions.base module
+===================================================
+
+.. automodule:: care.facility.models.mixins.permissions.base
+   :members:
+   :show-inheritance:
+   :undoc-members:

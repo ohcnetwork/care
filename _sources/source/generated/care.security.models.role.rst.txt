@@ -1,0 +1,7 @@
+care.security.models.role module
+================================
+
+.. automodule:: care.security.models.role
+   :members:
+   :show-inheritance:
+   :undoc-members:

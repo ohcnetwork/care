@@ -1,0 +1,7 @@
+care.emr.resources.inventory.product\_knowledge.valueset module
+===============================================================
+
+.. automodule:: care.emr.resources.inventory.product_knowledge.valueset
+   :members:
+   :show-inheritance:
+   :undoc-members:

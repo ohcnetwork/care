@@ -1,0 +1,7 @@
+care.emr.api.viewsets.encounter module
+======================================
+
+.. automodule:: care.emr.api.viewsets.encounter
+   :members:
+   :show-inheritance:
+   :undoc-members:

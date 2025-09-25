@@ -1,0 +1,7 @@
+care.emr.models.scheduling.schedule module
+==========================================
+
+.. automodule:: care.emr.models.scheduling.schedule
+   :members:
+   :show-inheritance:
+   :undoc-members:

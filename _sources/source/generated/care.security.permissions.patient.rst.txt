@@ -1,0 +1,7 @@
+care.security.permissions.patient module
+========================================
+
+.. automodule:: care.security.permissions.patient
+   :members:
+   :show-inheritance:
+   :undoc-members:

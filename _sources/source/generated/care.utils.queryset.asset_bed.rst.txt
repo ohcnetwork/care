@@ -1,0 +1,7 @@
+care.utils.queryset.asset\_bed module
+=====================================
+
+.. automodule:: care.utils.queryset.asset_bed
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.users.forms module
+=======================
+
+.. automodule:: care.users.forms
+   :members:
+   :show-inheritance:
+   :undoc-members:

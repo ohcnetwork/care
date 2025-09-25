@@ -1,0 +1,19 @@
+care.emr.resources.inventory package
+====================================
+
+.. automodule:: care.emr.resources.inventory
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.inventory.inventory_item
+   care.emr.resources.inventory.product
+   care.emr.resources.inventory.product_knowledge
+   care.emr.resources.inventory.supply_delivery
+   care.emr.resources.inventory.supply_request

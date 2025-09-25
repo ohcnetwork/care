@@ -1,0 +1,16 @@
+care.utils.jwks package
+=======================
+
+.. automodule:: care.utils.jwks
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.utils.jwks.generate_jwk
+   care.utils.jwks.token_generator

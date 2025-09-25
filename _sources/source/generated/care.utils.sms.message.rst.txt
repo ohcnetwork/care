@@ -1,0 +1,7 @@
+care.utils.sms.message module
+=============================
+
+.. automodule:: care.utils.sms.message
+   :members:
+   :show-inheritance:
+   :undoc-members:

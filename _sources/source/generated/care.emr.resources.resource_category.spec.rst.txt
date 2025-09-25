@@ -1,0 +1,7 @@
+care.emr.resources.resource\_category.spec module
+=================================================
+
+.. automodule:: care.emr.resources.resource_category.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

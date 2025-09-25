@@ -1,0 +1,19 @@
+care.audit\_log package
+=======================
+
+.. automodule:: care.audit_log
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.audit_log.apps
+   care.audit_log.enums
+   care.audit_log.helpers
+   care.audit_log.middleware
+   care.audit_log.receivers

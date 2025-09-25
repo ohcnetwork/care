@@ -1,0 +1,17 @@
+care.emr.resources.questionnaire package
+========================================
+
+.. automodule:: care.emr.resources.questionnaire
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.questionnaire.questionnaire_organization
+   care.emr.resources.questionnaire.spec
+   care.emr.resources.questionnaire.utils

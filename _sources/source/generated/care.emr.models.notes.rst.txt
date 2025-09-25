@@ -1,0 +1,7 @@
+care.emr.models.notes module
+============================
+
+.. automodule:: care.emr.models.notes
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,25 @@
+care.emr.utils package
+======================
+
+.. automodule:: care.emr.utils
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.utils.batch_requests
+   care.emr.utils.compute_observation_interpretation
+   care.emr.utils.datetime_type
+   care.emr.utils.decimal_context
+   care.emr.utils.expression_evaluator
+   care.emr.utils.file_manager
+   care.emr.utils.mfa
+   care.emr.utils.pydantic_serializers
+   care.emr.utils.send_password_reset_mail
+   care.emr.utils.slug_type
+   care.emr.utils.valueset_coding_type

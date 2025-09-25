@@ -1,0 +1,7 @@
+care.utils.queryset.consultation module
+=======================================
+
+.. automodule:: care.utils.queryset.consultation
+   :members:
+   :show-inheritance:
+   :undoc-members:

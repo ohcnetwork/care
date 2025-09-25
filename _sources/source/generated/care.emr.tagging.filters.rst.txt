@@ -1,0 +1,7 @@
+care.emr.tagging.filters module
+===============================
+
+.. automodule:: care.emr.tagging.filters
+   :members:
+   :show-inheritance:
+   :undoc-members:

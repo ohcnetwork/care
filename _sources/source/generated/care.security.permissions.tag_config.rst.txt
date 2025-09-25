@@ -1,0 +1,7 @@
+care.security.permissions.tag\_config module
+============================================
+
+.. automodule:: care.security.permissions.tag_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

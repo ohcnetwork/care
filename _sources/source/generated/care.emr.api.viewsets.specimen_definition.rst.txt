@@ -1,0 +1,7 @@
+care.emr.api.viewsets.specimen\_definition module
+=================================================
+
+.. automodule:: care.emr.api.viewsets.specimen_definition
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.resources.common.contact\_point module
+===============================================
+
+.. automodule:: care.emr.resources.common.contact_point
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,18 @@
+care.emr.fhir.resources package
+===============================
+
+.. automodule:: care.emr.fhir.resources
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.fhir.resources.base
+   care.emr.fhir.resources.code_concept
+   care.emr.fhir.resources.code_system
+   care.emr.fhir.resources.valueset

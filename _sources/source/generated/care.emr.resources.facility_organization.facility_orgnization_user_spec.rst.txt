@@ -1,0 +1,7 @@
+care.emr.resources.facility\_organization.facility\_orgnization\_user\_spec module
+==================================================================================
+
+.. automodule:: care.emr.resources.facility_organization.facility_orgnization_user_spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

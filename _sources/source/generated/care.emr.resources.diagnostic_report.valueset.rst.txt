@@ -1,0 +1,7 @@
+care.emr.resources.diagnostic\_report.valueset module
+=====================================================
+
+.. automodule:: care.emr.resources.diagnostic_report.valueset
+   :members:
+   :show-inheritance:
+   :undoc-members:

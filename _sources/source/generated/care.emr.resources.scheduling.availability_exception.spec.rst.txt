@@ -1,0 +1,7 @@
+care.emr.resources.scheduling.availability\_exception.spec module
+=================================================================
+
+.. automodule:: care.emr.resources.scheduling.availability_exception.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

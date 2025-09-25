@@ -1,0 +1,7 @@
+care.emr.fhir.resources.code\_system module
+===========================================
+
+.. automodule:: care.emr.fhir.resources.code_system
+   :members:
+   :show-inheritance:
+   :undoc-members:

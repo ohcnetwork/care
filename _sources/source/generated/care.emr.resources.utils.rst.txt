@@ -1,0 +1,7 @@
+care.emr.resources.utils package
+================================
+
+.. automodule:: care.emr.resources.utils
+   :members:
+   :show-inheritance:
+   :undoc-members:

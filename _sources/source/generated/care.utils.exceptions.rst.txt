@@ -1,0 +1,7 @@
+care.utils.exceptions module
+============================
+
+.. automodule:: care.utils.exceptions
+   :members:
+   :show-inheritance:
+   :undoc-members:

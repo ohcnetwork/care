@@ -1,0 +1,7 @@
+care.emr.apps module
+====================
+
+.. automodule:: care.emr.apps
+   :members:
+   :show-inheritance:
+   :undoc-members:

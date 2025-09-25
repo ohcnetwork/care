@@ -1,0 +1,7 @@
+care.emr.resources.common.quantity module
+=========================================
+
+.. automodule:: care.emr.resources.common.quantity
+   :members:
+   :show-inheritance:
+   :undoc-members:

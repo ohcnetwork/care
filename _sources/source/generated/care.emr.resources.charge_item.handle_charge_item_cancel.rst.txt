@@ -1,0 +1,7 @@
+care.emr.resources.charge\_item.handle\_charge\_item\_cancel module
+===================================================================
+
+.. automodule:: care.emr.resources.charge_item.handle_charge_item_cancel
+   :members:
+   :show-inheritance:
+   :undoc-members:

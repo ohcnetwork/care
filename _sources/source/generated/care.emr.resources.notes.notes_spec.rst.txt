@@ -1,0 +1,7 @@
+care.emr.resources.notes.notes\_spec module
+===========================================
+
+.. automodule:: care.emr.resources.notes.notes_spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

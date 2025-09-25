@@ -1,0 +1,7 @@
+care.emr.models.scheduling.token module
+=======================================
+
+.. automodule:: care.emr.models.scheduling.token
+   :members:
+   :show-inheritance:
+   :undoc-members:

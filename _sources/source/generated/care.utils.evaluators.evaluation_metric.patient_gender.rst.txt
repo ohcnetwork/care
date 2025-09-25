@@ -1,0 +1,7 @@
+care.utils.evaluators.evaluation\_metric.patient\_gender module
+===============================================================
+
+.. automodule:: care.utils.evaluators.evaluation_metric.patient_gender
+   :members:
+   :show-inheritance:
+   :undoc-members:

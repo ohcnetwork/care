@@ -1,0 +1,17 @@
+care.utils.sms.backend package
+==============================
+
+.. automodule:: care.utils.sms.backend
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.utils.sms.backend.base
+   care.utils.sms.backend.console
+   care.utils.sms.backend.sns

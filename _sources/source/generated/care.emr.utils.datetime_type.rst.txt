@@ -1,0 +1,7 @@
+care.emr.utils.datetime\_type module
+====================================
+
+.. automodule:: care.emr.utils.datetime_type
+   :members:
+   :show-inheritance:
+   :undoc-members:

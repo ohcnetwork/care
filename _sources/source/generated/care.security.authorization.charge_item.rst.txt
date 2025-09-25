@@ -1,0 +1,7 @@
+care.security.authorization.charge\_item module
+===============================================
+
+.. automodule:: care.security.authorization.charge_item
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.facility.tasks.push\_asset\_config module
+==============================================
+
+.. automodule:: care.facility.tasks.push_asset_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

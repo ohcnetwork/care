@@ -1,0 +1,16 @@
+care.users.api package
+======================
+
+.. automodule:: care.users.api
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.users.api.serializers
+   care.users.api.viewsets

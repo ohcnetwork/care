@@ -1,0 +1,7 @@
+care.security.authorization.activity\_definition module
+=======================================================
+
+.. automodule:: care.security.authorization.activity_definition
+   :members:
+   :show-inheritance:
+   :undoc-members:

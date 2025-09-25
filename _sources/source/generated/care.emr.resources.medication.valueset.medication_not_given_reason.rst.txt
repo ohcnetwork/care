@@ -1,0 +1,7 @@
+care.emr.resources.medication.valueset.medication\_not\_given\_reason module
+============================================================================
+
+.. automodule:: care.emr.resources.medication.valueset.medication_not_given_reason
+   :members:
+   :show-inheritance:
+   :undoc-members:

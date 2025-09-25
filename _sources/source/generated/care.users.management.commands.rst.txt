@@ -1,0 +1,7 @@
+care.users.management.commands package
+======================================
+
+.. automodule:: care.users.management.commands
+   :members:
+   :show-inheritance:
+   :undoc-members:

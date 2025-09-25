@@ -1,0 +1,22 @@
+care.emr.resources.scheduling package
+=====================================
+
+.. automodule:: care.emr.resources.scheduling
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.scheduling.availability_exception
+   care.emr.resources.scheduling.resource
+   care.emr.resources.scheduling.schedule
+   care.emr.resources.scheduling.slot
+   care.emr.resources.scheduling.token
+   care.emr.resources.scheduling.token_category
+   care.emr.resources.scheduling.token_queue
+   care.emr.resources.scheduling.token_sub_queue

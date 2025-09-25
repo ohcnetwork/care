@@ -1,0 +1,65 @@
+care.emr.resources package
+==========================
+
+.. automodule:: care.emr.resources
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.account
+   care.emr.resources.activity_definition
+   care.emr.resources.allergy_intolerance
+   care.emr.resources.charge_item
+   care.emr.resources.charge_item_definition
+   care.emr.resources.common
+   care.emr.resources.condition
+   care.emr.resources.consent
+   care.emr.resources.device
+   care.emr.resources.diagnostic_report
+   care.emr.resources.encounter
+   care.emr.resources.facility
+   care.emr.resources.facility_organization
+   care.emr.resources.favorites
+   care.emr.resources.file_upload
+   care.emr.resources.healthcare_service
+   care.emr.resources.inventory
+   care.emr.resources.invoice
+   care.emr.resources.location
+   care.emr.resources.medication
+   care.emr.resources.meta_artifact
+   care.emr.resources.mfa
+   care.emr.resources.notes
+   care.emr.resources.observation
+   care.emr.resources.observation_definition
+   care.emr.resources.organization
+   care.emr.resources.patient
+   care.emr.resources.patient_identifier
+   care.emr.resources.payment_reconciliation
+   care.emr.resources.questionnaire
+   care.emr.resources.questionnaire_response
+   care.emr.resources.resource_category
+   care.emr.resources.resource_request
+   care.emr.resources.role
+   care.emr.resources.scheduling
+   care.emr.resources.service_request
+   care.emr.resources.specimen
+   care.emr.resources.specimen_definition
+   care.emr.resources.tag
+   care.emr.resources.user
+   care.emr.resources.utils
+   care.emr.resources.valueset
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.base
+   care.emr.resources.permissions

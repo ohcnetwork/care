@@ -1,0 +1,16 @@
+care.emr.admin package
+======================
+
+.. automodule:: care.emr.admin
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.admin.encounter
+   care.emr.admin.patient

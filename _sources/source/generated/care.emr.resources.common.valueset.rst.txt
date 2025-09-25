@@ -1,0 +1,7 @@
+care.emr.resources.common.valueset module
+=========================================
+
+.. automodule:: care.emr.resources.common.valueset
+   :members:
+   :show-inheritance:
+   :undoc-members:

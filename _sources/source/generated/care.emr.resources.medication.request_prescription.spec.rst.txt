@@ -1,0 +1,7 @@
+care.emr.resources.medication.request\_prescription.spec module
+===============================================================
+
+.. automodule:: care.emr.resources.medication.request_prescription.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

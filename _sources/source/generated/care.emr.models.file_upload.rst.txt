@@ -1,0 +1,7 @@
+care.emr.models.file\_upload module
+===================================
+
+.. automodule:: care.emr.models.file_upload
+   :members:
+   :show-inheritance:
+   :undoc-members:

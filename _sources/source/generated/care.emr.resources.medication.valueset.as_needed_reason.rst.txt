@@ -1,0 +1,7 @@
+care.emr.resources.medication.valueset.as\_needed\_reason module
+================================================================
+
+.. automodule:: care.emr.resources.medication.valueset.as_needed_reason
+   :members:
+   :show-inheritance:
+   :undoc-members:

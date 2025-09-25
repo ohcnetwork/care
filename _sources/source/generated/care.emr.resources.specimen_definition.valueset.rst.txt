@@ -1,0 +1,7 @@
+care.emr.resources.specimen\_definition.valueset module
+=======================================================
+
+.. automodule:: care.emr.resources.specimen_definition.valueset
+   :members:
+   :show-inheritance:
+   :undoc-members:

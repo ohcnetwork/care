@@ -1,0 +1,7 @@
+care.security.authorization.resource\_category module
+=====================================================
+
+.. automodule:: care.security.authorization.resource_category
+   :members:
+   :show-inheritance:
+   :undoc-members:

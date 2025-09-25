@@ -1,0 +1,62 @@
+care.emr.models package
+=======================
+
+.. automodule:: care.emr.models
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.models.scheduling
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.models.account
+   care.emr.models.activity_definition
+   care.emr.models.allergy_intolerance
+   care.emr.models.base
+   care.emr.models.charge_item
+   care.emr.models.charge_item_definition
+   care.emr.models.condition
+   care.emr.models.consent
+   care.emr.models.device
+   care.emr.models.diagnostic_report
+   care.emr.models.encounter
+   care.emr.models.favorites
+   care.emr.models.file_upload
+   care.emr.models.healthcare_service
+   care.emr.models.inventory_item
+   care.emr.models.invoice
+   care.emr.models.location
+   care.emr.models.medication_administration
+   care.emr.models.medication_dispense
+   care.emr.models.medication_request
+   care.emr.models.medication_statement
+   care.emr.models.meta_artifact
+   care.emr.models.notes
+   care.emr.models.observation
+   care.emr.models.observation_definition
+   care.emr.models.organization
+   care.emr.models.patient
+   care.emr.models.payment_reconciliation
+   care.emr.models.product
+   care.emr.models.product_knowledge
+   care.emr.models.questionnaire
+   care.emr.models.resource_category
+   care.emr.models.resource_request
+   care.emr.models.service_request
+   care.emr.models.specimen
+   care.emr.models.specimen_definition
+   care.emr.models.supply_delivery
+   care.emr.models.supply_request
+   care.emr.models.tag_config
+   care.emr.models.valueset

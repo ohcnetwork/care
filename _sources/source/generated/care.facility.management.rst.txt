@@ -1,0 +1,15 @@
+care.facility.management package
+================================
+
+.. automodule:: care.facility.management
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.facility.management.commands

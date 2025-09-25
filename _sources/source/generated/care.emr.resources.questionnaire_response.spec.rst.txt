@@ -1,0 +1,7 @@
+care.emr.resources.questionnaire\_response.spec module
+======================================================
+
+.. automodule:: care.emr.resources.questionnaire_response.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

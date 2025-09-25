@@ -1,0 +1,21 @@
+care.emr.resources.medication.valueset package
+==============================================
+
+.. automodule:: care.emr.resources.medication.valueset
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.medication.valueset.additional_instruction
+   care.emr.resources.medication.valueset.administration_method
+   care.emr.resources.medication.valueset.as_needed_reason
+   care.emr.resources.medication.valueset.body_site
+   care.emr.resources.medication.valueset.medication
+   care.emr.resources.medication.valueset.medication_not_given_reason
+   care.emr.resources.medication.valueset.route

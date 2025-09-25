@@ -1,0 +1,7 @@
+care.facility.models.patient\_consultation module
+=================================================
+
+.. automodule:: care.facility.models.patient_consultation
+   :members:
+   :show-inheritance:
+   :undoc-members:

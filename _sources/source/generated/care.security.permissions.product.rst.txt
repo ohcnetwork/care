@@ -1,0 +1,7 @@
+care.security.permissions.product module
+========================================
+
+.. automodule:: care.security.permissions.product
+   :members:
+   :show-inheritance:
+   :undoc-members:

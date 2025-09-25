@@ -1,0 +1,7 @@
+care.emr.resources.patient\_identifier.default\_expression\_evaluator module
+============================================================================
+
+.. automodule:: care.emr.resources.patient_identifier.default_expression_evaluator
+   :members:
+   :show-inheritance:
+   :undoc-members:

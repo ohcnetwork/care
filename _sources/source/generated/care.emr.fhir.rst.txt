@@ -1,0 +1,25 @@
+care.emr.fhir package
+=====================
+
+.. automodule:: care.emr.fhir
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.fhir.resources
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.fhir.client
+   care.emr.fhir.exceptions
+   care.emr.fhir.utils

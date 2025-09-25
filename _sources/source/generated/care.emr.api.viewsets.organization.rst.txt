@@ -1,0 +1,7 @@
+care.emr.api.viewsets.organization module
+=========================================
+
+.. automodule:: care.emr.api.viewsets.organization
+   :members:
+   :show-inheritance:
+   :undoc-members:

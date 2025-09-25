@@ -1,0 +1,7 @@
+care.emr.fhir.client module
+===========================
+
+.. automodule:: care.emr.fhir.client
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.resources.role.spec module
+===================================
+
+.. automodule:: care.emr.resources.role.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

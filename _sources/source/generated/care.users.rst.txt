@@ -1,0 +1,29 @@
+care.users package
+==================
+
+.. automodule:: care.users
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.users.api
+   care.users.management
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.users.admin
+   care.users.apps
+   care.users.forms
+   care.users.models
+   care.users.reset_password_views
+   care.users.signals

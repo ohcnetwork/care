@@ -1,0 +1,7 @@
+care.emr.resources.medication.administration.spec module
+========================================================
+
+.. automodule:: care.emr.resources.medication.administration.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

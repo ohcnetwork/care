@@ -1,0 +1,7 @@
+care.emr.api.viewsets.file\_upload module
+=========================================
+
+.. automodule:: care.emr.api.viewsets.file_upload
+   :members:
+   :show-inheritance:
+   :undoc-members:

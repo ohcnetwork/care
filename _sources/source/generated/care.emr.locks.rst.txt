@@ -1,0 +1,16 @@
+care.emr.locks package
+======================
+
+.. automodule:: care.emr.locks
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.locks.billing
+   care.emr.locks.inventory

@@ -1,0 +1,15 @@
+care.emr.resources.facility package
+===================================
+
+.. automodule:: care.emr.resources.facility
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.facility.spec

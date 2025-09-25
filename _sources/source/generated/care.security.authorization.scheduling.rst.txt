@@ -1,0 +1,7 @@
+care.security.authorization.scheduling module
+=============================================
+
+.. automodule:: care.security.authorization.scheduling
+   :members:
+   :show-inheritance:
+   :undoc-members:

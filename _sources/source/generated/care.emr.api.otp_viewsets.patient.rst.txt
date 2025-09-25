@@ -1,0 +1,7 @@
+care.emr.api.otp\_viewsets.patient module
+=========================================
+
+.. automodule:: care.emr.api.otp_viewsets.patient
+   :members:
+   :show-inheritance:
+   :undoc-members:

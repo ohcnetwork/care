@@ -1,0 +1,7 @@
+care.emr.fhir.resources.valueset module
+=======================================
+
+.. automodule:: care.emr.fhir.resources.valueset
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.utils.swagger.schema module
+================================
+
+.. automodule:: care.utils.swagger.schema
+   :members:
+   :show-inheritance:
+   :undoc-members:

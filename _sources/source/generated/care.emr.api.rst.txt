@@ -1,0 +1,16 @@
+care.emr.api package
+====================
+
+.. automodule:: care.emr.api
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.api.otp_viewsets
+   care.emr.api.viewsets

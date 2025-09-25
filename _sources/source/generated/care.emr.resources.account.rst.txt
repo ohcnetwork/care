@@ -1,0 +1,17 @@
+care.emr.resources.account package
+==================================
+
+.. automodule:: care.emr.resources.account
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.account.default_account
+   care.emr.resources.account.spec
+   care.emr.resources.account.sync_items

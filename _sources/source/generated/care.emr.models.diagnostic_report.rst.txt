@@ -1,0 +1,7 @@
+care.emr.models.diagnostic\_report module
+=========================================
+
+.. automodule:: care.emr.models.diagnostic_report
+   :members:
+   :show-inheritance:
+   :undoc-members:

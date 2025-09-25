@@ -1,0 +1,15 @@
+care.emr.resources.inventory.supply\_delivery package
+=====================================================
+
+.. automodule:: care.emr.resources.inventory.supply_delivery
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.inventory.supply_delivery.spec

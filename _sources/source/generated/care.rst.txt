@@ -1,0 +1,21 @@
+care package
+============
+
+.. automodule:: care
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.audit_log
+   care.contrib
+   care.emr
+   care.facility
+   care.security
+   care.users
+   care.utils

@@ -1,0 +1,7 @@
+care.users.api.viewsets.lsg module
+==================================
+
+.. automodule:: care.users.api.viewsets.lsg
+   :members:
+   :show-inheritance:
+   :undoc-members:

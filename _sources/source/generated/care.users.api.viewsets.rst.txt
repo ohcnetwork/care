@@ -1,0 +1,20 @@
+care.users.api.viewsets package
+===============================
+
+.. automodule:: care.users.api.viewsets
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.users.api.viewsets.change_password
+   care.users.api.viewsets.lsg
+   care.users.api.viewsets.plug_config
+   care.users.api.viewsets.skill
+   care.users.api.viewsets.users
+   care.users.api.viewsets.userskill

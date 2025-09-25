@@ -1,0 +1,7 @@
+care.audit\_log.receivers module
+================================
+
+.. automodule:: care.audit_log.receivers
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,69 @@
+care.emr.api.viewsets package
+=============================
+
+.. automodule:: care.emr.api.viewsets
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.api.viewsets.inventory
+   care.emr.api.viewsets.scheduling
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.api.viewsets.account
+   care.emr.api.viewsets.activity_definition
+   care.emr.api.viewsets.allergy_intolerance
+   care.emr.api.viewsets.base
+   care.emr.api.viewsets.batch_request
+   care.emr.api.viewsets.charge_item
+   care.emr.api.viewsets.charge_item_definition
+   care.emr.api.viewsets.condition
+   care.emr.api.viewsets.consent
+   care.emr.api.viewsets.device
+   care.emr.api.viewsets.diagnostic_report
+   care.emr.api.viewsets.encounter
+   care.emr.api.viewsets.encounter_authz_base
+   care.emr.api.viewsets.facility
+   care.emr.api.viewsets.facility_organization
+   care.emr.api.viewsets.favorites
+   care.emr.api.viewsets.file_upload
+   care.emr.api.viewsets.healthcare_service
+   care.emr.api.viewsets.invoice
+   care.emr.api.viewsets.location
+   care.emr.api.viewsets.medication_administration
+   care.emr.api.viewsets.medication_dispense
+   care.emr.api.viewsets.medication_request
+   care.emr.api.viewsets.medication_request_prescription
+   care.emr.api.viewsets.medication_statement
+   care.emr.api.viewsets.meta_artifact
+   care.emr.api.viewsets.mfa_login
+   care.emr.api.viewsets.notes
+   care.emr.api.viewsets.observation
+   care.emr.api.viewsets.observation_definition
+   care.emr.api.viewsets.organization
+   care.emr.api.viewsets.patient
+   care.emr.api.viewsets.patient_identifier
+   care.emr.api.viewsets.payment_reconciliation
+   care.emr.api.viewsets.questionnaire
+   care.emr.api.viewsets.questionnaire_response
+   care.emr.api.viewsets.resource_category
+   care.emr.api.viewsets.resource_request
+   care.emr.api.viewsets.service_request
+   care.emr.api.viewsets.specimen
+   care.emr.api.viewsets.specimen_definition
+   care.emr.api.viewsets.tag_config
+   care.emr.api.viewsets.totp
+   care.emr.api.viewsets.units
+   care.emr.api.viewsets.user
+   care.emr.api.viewsets.valueset

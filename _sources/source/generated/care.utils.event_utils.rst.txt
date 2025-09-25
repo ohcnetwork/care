@@ -1,0 +1,7 @@
+care.utils.event\_utils module
+==============================
+
+.. automodule:: care.utils.event_utils
+   :members:
+   :show-inheritance:
+   :undoc-members:

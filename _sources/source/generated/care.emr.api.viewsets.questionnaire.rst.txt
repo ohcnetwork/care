@@ -1,0 +1,7 @@
+care.emr.api.viewsets.questionnaire module
+==========================================
+
+.. automodule:: care.emr.api.viewsets.questionnaire
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,16 @@
+care.security.api.viewsets package
+==================================
+
+.. automodule:: care.security.api.viewsets
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.security.api.viewsets.permissions
+   care.security.api.viewsets.roles

@@ -1,0 +1,7 @@
+care.utils.queryset.filters module
+==================================
+
+.. automodule:: care.utils.queryset.filters
+   :members:
+   :show-inheritance:
+   :undoc-members:

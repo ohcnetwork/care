@@ -1,0 +1,7 @@
+care.emr.resources.allergy\_intolerance.valueset module
+=======================================================
+
+.. automodule:: care.emr.resources.allergy_intolerance.valueset
+   :members:
+   :show-inheritance:
+   :undoc-members:

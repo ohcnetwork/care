@@ -1,0 +1,7 @@
+care.utils.sms.backend.sns module
+=================================
+
+.. automodule:: care.utils.sms.backend.sns
+   :members:
+   :show-inheritance:
+   :undoc-members:

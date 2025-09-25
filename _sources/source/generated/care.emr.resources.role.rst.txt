@@ -1,0 +1,15 @@
+care.emr.resources.role package
+===============================
+
+.. automodule:: care.emr.resources.role
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.role.spec

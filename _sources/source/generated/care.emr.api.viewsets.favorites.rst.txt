@@ -1,0 +1,7 @@
+care.emr.api.viewsets.favorites module
+======================================
+
+.. automodule:: care.emr.api.viewsets.favorites
+   :members:
+   :show-inheritance:
+   :undoc-members:

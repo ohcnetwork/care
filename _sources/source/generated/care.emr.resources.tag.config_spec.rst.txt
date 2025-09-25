@@ -1,0 +1,7 @@
+care.emr.resources.tag.config\_spec module
+==========================================
+
+.. automodule:: care.emr.resources.tag.config_spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

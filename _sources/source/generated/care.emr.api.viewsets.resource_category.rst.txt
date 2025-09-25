@@ -1,0 +1,7 @@
+care.emr.api.viewsets.resource\_category module
+===============================================
+
+.. automodule:: care.emr.api.viewsets.resource_category
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.resources.inventory.product\_knowledge.spec module
+===========================================================
+
+.. automodule:: care.emr.resources.inventory.product_knowledge.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:
