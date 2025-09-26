@@ -195,3 +195,156 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         return baker.make(
             "emr.PaymentReconciliation", facility=facility or self.facility, **data
         )
+
+    # Test cases for create payment reconciliation
+
+    def test_create_payment_reconciliation_as_super_user(self):
+        """
+        Test creating a payment reconciliation as a superuser
+        """
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            self.base_url,
+            data=self.generate_payment_reconciliation_data(),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(float(get_response.data["amount"]), 4500.00)
+        self.assertEqual(float(get_response.data["tendered_amount"]), 4500.00)
+        self.account.refresh_from_db()
+        self.assertEqual(float(self.account.total_paid), 4500.00)
+        self.assertEqual(float(self.account.total_balance), 0.00)
+
+    def test_create_payment_reconciliation_as_user_with_permission(self):
+        """
+        Test creating a payment reconciliation as a user with permission
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        response = self.client.post(
+            self.base_url,
+            data=self.generate_payment_reconciliation_data(),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(float(get_response.data["amount"]), 4500.00)
+        self.assertEqual(float(get_response.data["tendered_amount"]), 4500.00)
+        self.account.refresh_from_db()
+        self.assertEqual(float(self.account.total_paid), 4500.00)
+        self.assertEqual(float(self.account.total_balance), 0.00)
+
+    def test_create_payment_reconciliation_as_user_without_permission(self):
+        """
+        Test creating a payment reconciliation as a user without permission
+        """
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.base_url,
+            data=self.generate_payment_reconciliation_data(),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot write payment reconciliation", response.data["detail"])
+
+    def test_create_payment_reconciliation_with_invalid_account(self):
+        """
+        Test creating a payment reconciliation with an account not associated with the facility
+        """
+        other_facility = self.create_facility(
+            name="Other Facility", user=self.superuser
+        )
+        other_account = self.create_account(facility=other_facility)
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        response = self.client.post(
+            self.base_url,
+            data=self.generate_payment_reconciliation_data(
+                account=str(other_account.external_id)
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response, "Account is not associated with the facility", status_code=400
+        )
+
+    def test_create_payment_reconciliation_with_invalid_invoice(self):
+        """
+        Test creating a payment reconciliation with an invoice not associated with the facility
+        """
+        other_facility = self.create_facility(
+            name="Other Facility", user=self.superuser
+        )
+        other_invoice = self.create_invoice(facility=other_facility)
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        response = self.client.post(
+            self.base_url,
+            data=self.generate_payment_reconciliation_data(
+                target_invoice=other_invoice.external_id
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response, "Invoice is not associated with the facility", status_code=400
+        )
+
+    def test_create_payment_reconciliation_with_returned_amount_greater_than_tendered_amount(
+        self,
+    ):
+        """
+        Test creating a payment reconciliation with returned amount greater than tendered amount
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        response = self.client.post(
+            self.base_url,
+            data=self.generate_payment_reconciliation_data(
+                tendered_amount=4000.00, returned_amount=4500.00
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Retrurned amount cannot be greater than tendered amount",
+            str(response.data),
+        )
+
+    def test_create_payment_reconciliation_with_credit_note(self):
+        """
+        Test creating a payment reconciliation with credit note
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        data = self.generate_payment_reconciliation_data(
+            is_credit_note=True, amount=5000.00, tendered_amount=5000.00
+        )
+        response = self.client.post(self.base_url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(float(get_response.data["amount"]), 5000.00)
+        self.assertEqual(float(get_response.data["tendered_amount"]), 5000.00)
+        self.assertTrue(get_response.data["is_credit_note"], "true")
+        self.account.refresh_from_db()
+        self.assertEqual(float(self.account.total_gross), 4500.00)
+        self.assertEqual(float(self.account.total_paid), -5000.00)
+        self.assertEqual(float(self.account.total_balance), 9500.00)
