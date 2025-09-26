@@ -35,3 +35,9 @@ class ChargeItemDefinitionPermissions(enum.Enum):
             PHARMACIST_ROLE,
         ],
     )
+    can_set_charge_item_definition = Permission(
+        "Can Set Charge Item Definition on Facility",
+        "",
+        PermissionContext.FACILITY,
+        [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
+    )

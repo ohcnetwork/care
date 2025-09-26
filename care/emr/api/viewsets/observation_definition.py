@@ -1,7 +1,8 @@
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import get_object_or_404
+from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -9,15 +10,18 @@ from care.emr.api.viewsets.base import (
     EMRListMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
+    EMRUpsertMixin,
 )
 from care.emr.models.observation_definition import ObservationDefinition
 from care.emr.resources.observation_definition.spec import (
-    BaseObservationDefinitionSpec,
     ObservationDefinitionCreateSpec,
     ObservationDefinitionReadSpec,
+    ObservationDefinitionUpdateSpec,
 )
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+from care.utils.registries.evaluation_metric import EvaluatorMetricsRegistry
+from care.utils.shortcuts import get_object_or_404
 
 
 class ObservationDefinitionFilters(filters.FilterSet):
@@ -28,15 +32,63 @@ class ObservationDefinitionFilters(filters.FilterSet):
 
 
 class ObservationDefinitionViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRUpsertMixin,
 ):
+    lookup_field = "slug"
     database_model = ObservationDefinition
     pydantic_model = ObservationDefinitionCreateSpec
-    pydantic_update_model = BaseObservationDefinitionSpec
+    pydantic_update_model = ObservationDefinitionUpdateSpec
     pydantic_read_model = ObservationDefinitionReadSpec
     filterset_class = ObservationDefinitionFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date"]
+
+    def recalculate_slug(self, instance):
+        if instance.facility:
+            instance.slug = ObservationDefinition.calculate_slug_from_facility(
+                instance.facility.external_id, instance.slug
+            )
+        else:
+            instance.slug = ObservationDefinition.calculate_slug_from_instance(
+                instance.slug
+            )
+
+    def perform_create(self, instance):
+        self.recalculate_slug(instance)
+        super().perform_create(instance)
+
+    def perform_update(self, instance):
+        self.recalculate_slug(instance)
+        return super().perform_update(instance)
+
+    def validate_data(self, instance, model_obj=None):
+        queryset = ObservationDefinition.objects.all()
+        facility = None
+        if model_obj:
+            queryset = queryset.exclude(id=model_obj.id)
+            facility = str(model_obj.facility.external_id)
+        else:
+            facility = instance.facility
+
+        if facility:
+            slug = ObservationDefinition.calculate_slug_from_facility(
+                facility, instance.slug_value
+            )
+        else:
+            slug = ObservationDefinition.calculate_slug_from_instance(
+                instance.slug_value
+            )
+
+        queryset = queryset.filter(slug__iexact=slug)
+        if queryset.exists():
+            raise ValidationError("Slug already exists.")
+
+        return super().validate_data(instance, model_obj)
 
     def authorize_create(self, instance):
         """
@@ -97,3 +149,18 @@ class ObservationDefinitionViewSet(
                 return base_queryset.filter(facility=facility_obj)
             base_queryset = base_queryset.filter(facility__isnull=True)
         return base_queryset
+
+    @action(detail=False, methods=["GET"])
+    def metrics(self, request, *args, **kwargs):
+        all_metrics = EvaluatorMetricsRegistry.get_all_metrics()
+        response = []
+        for metric in all_metrics:
+            response.append(
+                {
+                    "name": metric.name,
+                    "verbose_name": metric.verbose_name,
+                    "context": metric.context,
+                    "allowed_operations": metric.allowed_operations,
+                }
+            )
+        return Response(response)

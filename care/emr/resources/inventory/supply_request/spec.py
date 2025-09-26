@@ -1,12 +1,11 @@
 from enum import Enum
 
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4
 
 from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import Organization
 from care.emr.models.product_knowledge import ProductKnowledge
-from care.emr.models.supply_request import SupplyRequest
+from care.emr.models.supply_request import RequestOrder, SupplyRequest
 from care.emr.resources.base import EMRResource
 from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledgeReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
@@ -14,6 +13,7 @@ from care.emr.resources.organization.spec import (
     OrganizationReadSpec,
     OrganizationTypeChoices,
 )
+from care.utils.shortcuts import get_object_or_404
 
 
 class SupplyRequestStatusOptions(str, Enum):
@@ -77,6 +77,7 @@ class SupplyRequestWriteSpec(BaseSupplyRequestSpec):
     deliver_to: UUID4
     item: UUID4
     supplier: UUID4 | None = None
+    order: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.item = get_object_or_404(
@@ -98,11 +99,22 @@ class SupplyRequestWriteSpec(BaseSupplyRequestSpec):
             if obj.supplier.org_type != OrganizationTypeChoices.product_supplier.value:
                 msg = f"Supplier organization must be of type product_supplier, got: {obj.supplier.org_type}"
                 raise ValueError(msg)
+        if self.order:
+            obj.order = get_object_or_404(
+                RequestOrder.objects.only("id").filter(external_id=self.order)
+            )
         return obj
 
 
 class SupplyRequestUpdateSpec(BaseSupplyRequestSpec):
-    pass
+    order: UUID4 | None = None
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.order:
+            obj.order = get_object_or_404(
+                RequestOrder.objects.only("id").filter(external_id=self.order)
+            )
+        return obj
 
 
 class SupplyRequestReadSpec(BaseSupplyRequestSpec):

@@ -8,12 +8,11 @@ from rest_framework import filters as drf_filters
 from rest_framework import serializers
 from rest_framework.decorators import action, parser_classes
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet, EMRModelViewSet
-from care.emr.models import Organization, SchedulableUserResource
+from care.emr.models import Organization, SchedulableResource
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.resources.facility.spec import (
     FacilityCreateSpec,
@@ -23,7 +22,7 @@ from care.emr.resources.facility.spec import (
     FacilityReadSpec,
     FacilityRetrieveSpec,
 )
-from care.emr.resources.user.spec import PublicUserReadSpec, UserSpec
+from care.emr.resources.user.spec import PublicUserReadSpec, UserRetrieveSpec, UserSpec
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
@@ -32,6 +31,7 @@ from care.utils.models.validators import (
     cover_image_validator,
     custom_image_extension_validator,
 )
+from care.utils.shortcuts import get_object_or_404
 
 
 class FacilityImageUploadSerializer(serializers.ModelSerializer):
@@ -179,7 +179,7 @@ class FacilitySchedulableUsersViewSet(EMRModelReadOnlyViewSet):
 
     def get_queryset(self):
         return User.objects.filter(
-            id__in=SchedulableUserResource.objects.filter(
+            id__in=SchedulableResource.objects.filter(
                 facility__external_id=self.kwargs["facility_external_id"]
             ).values("user_id")
         )
@@ -192,6 +192,7 @@ class FacilityUserFilter(FilterSet):
 class FacilityUsersViewSet(EMRModelReadOnlyViewSet):
     database_model = User
     pydantic_read_model = UserSpec
+    pydantic_retrieve_model = UserRetrieveSpec
     filterset_class = FacilityUserFilter
     filter_backends = [DjangoFilterBackend, drf_filters.SearchFilter]
     search_fields = ["first_name", "last_name", "username"]

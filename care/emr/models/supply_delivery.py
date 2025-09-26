@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from care.emr.models import EMRBaseModel
@@ -32,3 +33,18 @@ class SupplyDelivery(EMRBaseModel):
     supplier = models.ForeignKey(
         "emr.Organization", on_delete=models.CASCADE, null=True, blank=True
     )
+
+    order = models.ForeignKey(
+        "emr.DeliveryOrder",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )
+
+
+class DeliveryOrder(EMRBaseModel):
+    name = models.CharField(max_length=255)
+    status = models.CharField(max_length=255)
+    note = models.TextField(null=True, blank=True)
+    location = models.ForeignKey("emr.FacilityLocation", on_delete=models.CASCADE)
+    tags = ArrayField(models.IntegerField(), default=list)

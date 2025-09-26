@@ -23,3 +23,4 @@ class PaymentReconciliation(EMRBaseModel):
     returned_amount = models.DecimalField(max_digits=10, decimal_places=2)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     note = models.TextField(null=True, blank=True)
+    is_credit_note = models.BooleanField(default=False)
