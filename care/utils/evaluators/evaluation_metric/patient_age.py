@@ -4,6 +4,10 @@ from dateutil.relativedelta import relativedelta
 from django.utils import timezone
 
 from care.utils.evaluators.evaluation_metric.base import EvaluationMetricBase
+from care.utils.evaluators.evaluation_metric.validators import (
+    validate_patient_age_equality,
+    validate_patient_age_in_range,
+)
 from care.utils.registries.evaluation_metric import (
     AllowedOperations,
     EvaluatorMetricsRegistry,
@@ -18,6 +22,10 @@ class PatientAgeMetric(EvaluationMetricBase):
         AllowedOperations.in_range.value,
         AllowedOperations.equality.value,
     ]
+    validators = {
+        AllowedOperations.equality.value: validate_patient_age_equality,
+        AllowedOperations.in_range.value: validate_patient_age_in_range,
+    }
 
     def get_value(self):
         start = self.context_object.date_of_birth or date(
