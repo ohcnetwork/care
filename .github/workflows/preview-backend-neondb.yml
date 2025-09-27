@@ -15,10 +15,12 @@ concurrency:
 
 jobs:
   preview-up:
-    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, '/preview up')
+    if: github.event_name == 'issue_comment' && github.event.issue.pull_request && contains(github.event.comment.body, '/preview up')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
+        with:
+          ref: refs/pull/${{ github.event.issue.number }}/head
 
       - name: Install cloudflared
         run: |
