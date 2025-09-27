@@ -1,0 +1,97 @@
+name: PR Preview (Backend + Neon)
+
+on:
+  pull_request:
+    types: [closed]
+  issue_comment:
+    types: [created]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+
+jobs:
+  preview-up:
+    if: github.event_name == 'issue_comment' && contains(github.event.comment.body, '/preview up')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install cloudflared
+        run: |
+          wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+          sudo dpkg -i cloudflared-linux-amd64.deb
+
+      - name: Start tunnel
+        id: tunnel
+        run: |
+          cloudflared tunnel --url http://localhost:9000 --no-autoupdate > cloudflared.log 2>&1 &
+          sleep 5
+          url=$(grep -o "https://.*trycloudflare.com" cloudflared.log | head -n 1)
+          if [ -z "$url" ]; then echo "Tunnel URL not found"; exit 1; fi
+          echo "url=$url" >> $GITHUB_OUTPUT
+
+
+      - name: Run app with Neon DB
+        env:
+          NEON_API_KEY: ${{ secrets.NEON_API_KEY }}
+          NEON_PROJECT_ID: ${{ secrets.NEON_PROJECT_ID }}
+          PARENT_BRANCH_ID: ${{ secrets.PARENT_BRANCH_ID }}
+        run: |
+          docker compose \
+            -f docker-compose.preview.yaml up -d
+
+      - name: Comment PR with preview info
+        run: |
+          gh pr comment ${{ github.event.issue.number }} --body "$(cat <<MSG
+          Preview up:
+          - URL: ${{ steps.tunnel.outputs.url }}
+          MSG
+          )"
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+      - name: Watch PR comments for preview down
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          PR_NUMBER=${{ github.event.issue.number }}
+          while true; do
+            latest_comment=$(gh api repos/${{ github.repository }}/issues/$PR_NUMBER/comments \
+              --jq '.[-1].body')
+
+            if [[ "$latest_comment" == "/preview down" ]]; then
+              echo "Stopping backend because of /preview down"
+              docker compose -f docker-compose.preview.yaml down
+              break
+            fi
+
+            sleep 30
+          done
+
+      - name: Comment stopped
+        run: |
+          gh pr comment ${{ github.event.issue.number }} --body "Preview environment has been stopped and Neon DB branch deleted."
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
+  pr-closed-cleanup:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Comment PR with cleanup info
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const prNumber = context.payload.number;
+            const branchName = context.payload.pull_request.head.ref;
+            const dbBranchName = `preview/pr-${prNumber}-${branchName}`;
+            github.rest.issues.createComment({
+              issue_number: prNumber,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Preview environment removed. Deleted Neon DB branch`
+            });

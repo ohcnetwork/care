@@ -1,0 +1,83 @@
+networks:
+  default:
+    name: care
+
+services:
+  backend:
+    image: care_local
+    build:
+      context: .
+      dockerfile: docker/dev.Dockerfile
+    env_file:
+      - ./docker/.preview.env
+    volumes:
+      - .:/app
+    entrypoint: [ "bash", "scripts/start-dev.sh" ]
+    ports:
+      - "9000:9000"
+      - "9876:9876" #debugpy
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_started
+      redis:
+        condition: service_started
+      celery:
+        condition: service_healthy
+
+  celery:
+    image: care_local
+    env_file:
+      - ./docker/.preview.env
+    entrypoint: [ "bash", "scripts/celery-dev.sh" ]
+    restart: unless-stopped
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/app
+  db:
+    image: neondatabase/neon_local:latest
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./neon-data:/var/lib/neon
+    environment:
+      NEON_API_KEY: ${NEON_API_KEY}
+      NEON_PROJECT_ID: ${NEON_PROJECT_ID}
+      PARENT_BRANCH_ID: ${PARENT_BRANCH_ID}
+
+  redis:
+    image: redis:8-alpine
+    restart: unless-stopped
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6380:6379"
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin}
+      AWS_DEFAULT_REGION: ap-south-1  # To maintain compatibility with existing apps
+    volumes:
+      - "./care/media/minio:/data"
+      - "./docker/minio/init-script.sh:/init-script.sh:ro"  # Mount the init script
+      - "./docker/minio/entrypoint.sh:/entrypoint.sh:ro"  # Mount the entrypoint script
+    ports:
+      - "9100:9000"  # S3 API
+      - "9001:9001"  # Web Console
+    entrypoint: ["/entrypoint.sh"]
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/ready"]
+      interval: 10s
+      retries: 5
+      start_period: 10s
+      timeout: 10s
+
+volumes:
+  postgres-data:
+  redis-data:
