@@ -504,3 +504,83 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             "No PaymentReconciliation matches the given query",
             status_code=404,
         )
+
+    # Test cases for retrieve payment reconciliation
+
+    def test_retrieve_payment_reconciliation_as_super_user(self):
+        """
+        Test retrieving a payment reconciliation as a superuser
+        """
+        payment_reconciliation = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.get_detail_url(payment_reconciliation.external_id)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(payment_reconciliation.external_id))
+
+    def test_retrieve_payment_reconciliation_as_user_with_permission(self):
+        """
+        Test retrieving a payment reconciliation as a user with permission
+        """
+        payment_reconciliation = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        response = self.client.get(
+            self.get_detail_url(payment_reconciliation.external_id)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(payment_reconciliation.external_id))
+
+    def test_retrieve_payment_reconciliation_as_user_without_permission(self):
+        """
+        Test retrieving a payment reconciliation as a user without permission
+        """
+        payment_reconciliation = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.get_detail_url(payment_reconciliation.external_id)
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot read payment reconciliation", response.data["detail"])
+
+    def test_retrieve_payment_reconciliation_with_invalid_facility(self):
+        """
+        Test retrieving a payment reconciliation with an invalid facility
+        """
+        other_facility = self.create_facility(
+            name="Other Facility", user=self.superuser
+        )
+        payment_reconciliation = self.create_payment_reconciliation(
+            facility=other_facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.get_detail_url(
+                payment_reconciliation.external_id,
+                facility_external_id=self.facility.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertContains(
+            response,
+            "No PaymentReconciliation matches the given query",
+            status_code=404,
+        )
