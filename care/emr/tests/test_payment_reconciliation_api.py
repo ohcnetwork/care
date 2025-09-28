@@ -192,9 +192,13 @@ class PaymentReconciliationAPITest(CareAPITestBase):
 
     def create_payment_reconciliation(self, facility=None, **kwargs):
         data = self.generate_payment_reconciliation_data(**kwargs)
-        return baker.make(
+        payment_reconciliation = baker.make(
             "emr.PaymentReconciliation", facility=facility or self.facility, **data
         )
+        from care.emr.resources.account.sync_items import rebalance_account_task
+
+        rebalance_account_task(payment_reconciliation.account_id)
+        return payment_reconciliation
 
     # Test cases for create payment reconciliation
 
@@ -348,3 +352,155 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         self.assertEqual(float(self.account.total_gross), 4500.00)
         self.assertEqual(float(self.account.total_paid), -5000.00)
         self.assertEqual(float(self.account.total_balance), 9500.00)
+
+    # Test cases for update payment reconciliation
+
+    def test_update_payment_reconciliation_as_super_user(self):
+        """
+        Test updating a payment reconciliation as a superuser
+        """
+        payment_reconciliation = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.account.refresh_from_db()
+        self.assertEqual(float(self.account.total_paid), 4500.00)
+        self.assertEqual(float(self.account.total_balance), 0.00)
+        self.assertEqual(float(self.account.total_gross), 4500.00)
+
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.put(
+            self.get_detail_url(payment_reconciliation.external_id),
+            data=self.generate_payment_reconciliation_data(
+                status=PaymentReconciliationStatusOptions.draft.value,
+                note="Updated Note",
+                outcome=PaymentReconciliationOutcomeOptions.error.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(payment_reconciliation.external_id)
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(get_response.data["status"], "draft")
+        self.assertEqual(get_response.data["note"], "Updated Note")
+        self.assertEqual(get_response.data["outcome"], "error")
+
+        self.account.refresh_from_db()
+        self.assertEqual(float(self.account.total_paid), 0.00)
+        self.assertEqual(float(self.account.total_balance), 4500.00)
+        self.assertEqual(float(self.account.total_gross), 4500.00)
+
+    def test_update_payment_reconciliation_as_user_with_permission(self):
+        """
+        Test updating a payment reconciliation as a user with permission
+        """
+        payment_reconciliation = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.account.refresh_from_db()
+        self.assertEqual(float(self.account.total_paid), 4500.00)
+        self.assertEqual(float(self.account.total_balance), 0.00)
+        self.assertEqual(float(self.account.total_gross), 4500.00)
+
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        response = self.client.put(
+            self.get_detail_url(payment_reconciliation.external_id),
+            data=self.generate_payment_reconciliation_data(
+                status=PaymentReconciliationStatusOptions.draft.value,
+                note="Updated Note",
+                outcome=PaymentReconciliationOutcomeOptions.error.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(payment_reconciliation.external_id)
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(get_response.data["status"], "draft")
+        self.assertEqual(get_response.data["note"], "Updated Note")
+        self.assertEqual(get_response.data["outcome"], "error")
+
+        self.account.refresh_from_db()
+        self.assertEqual(float(self.account.total_paid), 0.00)
+        self.assertEqual(float(self.account.total_balance), 4500.00)
+        self.assertEqual(float(self.account.total_gross), 4500.00)
+
+    def test_update_payment_reconciliation_as_user_without_permission(self):
+        """
+        Test updating a payment reconciliation as a user without write permission
+        """
+        payment_reconciliation = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.account.refresh_from_db()
+        self.assertEqual(float(self.account.total_paid), 4500.00)
+        self.assertEqual(float(self.account.total_balance), 0.00)
+        self.assertEqual(float(self.account.total_gross), 4500.00)
+
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            self.user,
+            self.create_role_with_permissions(
+                permissions=[
+                    PaymentReconciliationPermissions.can_read_payment_reconciliation.name,
+                ]
+            ),
+        )
+        response = self.client.put(
+            self.get_detail_url(payment_reconciliation.external_id),
+            data=self.generate_payment_reconciliation_data(
+                status=PaymentReconciliationStatusOptions.draft.value,
+                note="Updated Note",
+                outcome=PaymentReconciliationOutcomeOptions.error.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot write payment reconciliation", response.data["detail"])
+
+    def test_update_payment_reconciliation_with_invalid_facility(self):
+        """
+        Test updating a payment reconciliation with an invalid facility
+        """
+        other_facility = self.create_facility(
+            name="Other Facility", user=self.superuser
+        )
+        payment_reconciliation = self.create_payment_reconciliation(
+            facility=other_facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.put(
+            self.get_detail_url(
+                payment_reconciliation.external_id,
+                facility_external_id=self.facility.external_id,
+            ),
+            data=self.generate_payment_reconciliation_data(
+                status=PaymentReconciliationStatusOptions.draft.value,
+                note="Updated Note",
+                outcome=PaymentReconciliationOutcomeOptions.error.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertContains(
+            response,
+            "No PaymentReconciliation matches the given query",
+            status_code=404,
+        )
