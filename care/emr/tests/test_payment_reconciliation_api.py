@@ -325,7 +325,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn(
-            "Retrurned amount cannot be greater than tendered amount",
+            "Returned amount cannot be greater than tendered amount",
             str(response.data),
         )
 
@@ -805,3 +805,145 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         self.assertEqual(
             response.data["results"][0]["id"], str(payment_reconciliation_1.external_id)
         )
+
+    # Test cases for cancel payment reconciliation
+
+    def test_cancel_payment_reconciliation_as_super_user(self):
+        """
+        Test cancelling a payment reconciliation as a superuser
+        """
+        payment_reconciliation = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.account.refresh_from_db()
+        self.assertEqual(float(self.account.total_paid), 4500.00)
+        self.assertEqual(float(self.account.total_balance), 0.00)
+        self.assertEqual(float(self.account.total_gross), 4500.00)
+
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            self.get_cancel_url(
+                self.facility.external_id,
+                payment_reconciliation.external_id,
+            ),
+            {"reason": "cancelled"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(payment_reconciliation.external_id)
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(
+            get_response.data["id"], str(payment_reconciliation.external_id)
+        )
+        self.assertEqual(get_response.data["status"], "cancelled")
+        self.account.refresh_from_db()
+
+        self.assertEqual(float(self.account.total_paid), 0.00)
+        self.assertEqual(float(self.account.total_balance), 4500.00)
+        self.assertEqual(float(self.account.total_gross), 4500.00)
+
+    def test_cancel_payment_reconciliation_as_user_with_permission(self):
+        """
+        Test cancelling a payment reconciliation as a user with permission
+        """
+        payment_reconciliation = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.account.refresh_from_db()
+        self.assertEqual(float(self.account.total_paid), 4500.00)
+        self.assertEqual(float(self.account.total_balance), 0.00)
+        self.assertEqual(float(self.account.total_gross), 4500.00)
+
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        response = self.client.post(
+            self.get_cancel_url(
+                self.facility.external_id,
+                payment_reconciliation.external_id,
+            ),
+            {"reason": "cancelled"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(payment_reconciliation.external_id)
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(
+            get_response.data["id"], str(payment_reconciliation.external_id)
+        )
+        self.assertEqual(get_response.data["status"], "cancelled")
+        self.account.refresh_from_db()
+
+        self.assertEqual(float(self.account.total_paid), 0.00)
+        self.assertEqual(float(self.account.total_balance), 4500.00)
+        self.assertEqual(float(self.account.total_gross), 4500.00)
+
+    def test_cancel_payment_reconciliation_as_user_without_permission(self):
+        """
+        Test cancelling a payment reconciliation as a user without permission
+        """
+        payment_reconciliation = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.account.refresh_from_db()
+        self.assertEqual(float(self.account.total_paid), 4500.00)
+        self.assertEqual(float(self.account.total_balance), 0.00)
+        self.assertEqual(float(self.account.total_gross), 4500.00)
+
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            self.user,
+            self.create_role_with_permissions(
+                permissions=[
+                    PaymentReconciliationPermissions.can_read_payment_reconciliation.name,
+                ]
+            ),
+        )
+        response = self.client.post(
+            self.get_cancel_url(
+                self.facility.external_id,
+                payment_reconciliation.external_id,
+            ),
+            {"reason": "cancelled"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot write payment reconciliation", response.data["detail"])
+
+    def test_cancel_payment_reconciliation_with_invalid_reason(self):
+        """
+        Test cancelling a payment reconciliation with an invalid reason
+        """
+        payment_reconciliation = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.account.refresh_from_db()
+        self.assertEqual(float(self.account.total_paid), 4500.00)
+        self.assertEqual(float(self.account.total_balance), 0.00)
+        self.assertEqual(float(self.account.total_gross), 4500.00)
+
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            self.get_cancel_url(
+                self.facility.external_id,
+                payment_reconciliation.external_id,
+            ),
+            {"reason": "draft"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Invalid reason", response.data["errors"][0]["msg"])
