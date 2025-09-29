@@ -7,6 +7,7 @@ from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.healthcare_service import HealthcareService
 from care.emr.models.location import FacilityLocation
 from care.emr.models.observation_definition import ObservationDefinition
+from care.emr.models.resource_category import ResourceCategory
 from care.emr.models.specimen_definition import SpecimenDefinition
 from care.emr.resources.activity_definition.valueset import (
     ACTIVITY_DEFINITION_PROCEDURE_CODE_VALUESET,
@@ -20,8 +21,10 @@ from care.emr.resources.observation.valueset import (
     CARE_OBSERVATION_VALUSET,
 )
 from care.emr.resources.observation_definition.spec import ObservationDefinitionReadSpec
+from care.emr.resources.resource_category.spec import ResourceCategoryReadSpec
 from care.emr.resources.specimen_definition.spec import SpecimenDefinitionReadSpec
 from care.emr.tagging.base import SingleFacilityTagManager
+from care.emr.utils.slug_type import ExtendedSlugType, SlugType
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
 
@@ -52,13 +55,12 @@ class BaseActivityDefinitionSpec(EMRResource):
     __exclude__ = ["facility"]
 
     id: UUID4 | None = None
-    slug: str
     title: str
     derived_from_uri: str | None = None
     status: ActivityDefinitionStatusOptions
     description: str = ""
     usage: str = ""
-    category: ActivityDefinitionCategoryOptions
+    classification: ActivityDefinitionCategoryOptions
     kind: ActivityDefinitionKindOptions
     code: ValueSetBoundCoding[ACTIVITY_DEFINITION_PROCEDURE_CODE_VALUESET.slug]
     body_site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug] | None = None
@@ -68,17 +70,22 @@ class BaseActivityDefinitionSpec(EMRResource):
 
 
 class ActivityDefinitionWriteSpec(BaseActivityDefinitionSpec):
-    locations: list[UUID4] = []
-    specimen_requirements: list[UUID4]
-    observation_result_requirements: list[UUID4]
-    healthcare_service: UUID4 | None = None
-    charge_item_definitions: list[UUID4] = []
+    locations: list[UUID4]
+    specimen_requirements: list[ExtendedSlugType]
+    observation_result_requirements: list[ExtendedSlugType]
+    healthcare_service: UUID4 | None
+    charge_item_definitions: list[ExtendedSlugType]
+    category: ExtendedSlugType | None
+    slug_value: SlugType
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.healthcare_service:
             obj.healthcare_service = HealthcareService.objects.only("id").get(
                 external_id=self.healthcare_service
             )
+        if self.category:
+            obj.category = ResourceCategory.objects.get(slug=self.category)
+        obj.slug = self.slug_value
 
 
 class ActivityDefinitionReadSpec(BaseActivityDefinitionSpec):
@@ -86,11 +93,20 @@ class ActivityDefinitionReadSpec(BaseActivityDefinitionSpec):
 
     version: int | None = None
     tags: list[dict] = []
+    category: dict | None = None
+    slug_config: dict
+    slug: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+
+        if obj.category:
+            mapping["category"] = ResourceCategoryReadSpec.serialize(
+                obj.category
+            ).to_json()
+        mapping["slug_config"] = obj.parse_slug(obj.slug)
 
 
 class ActivityDefinitionRetrieveSpec(ActivityDefinitionReadSpec):
@@ -107,30 +123,32 @@ class ActivityDefinitionRetrieveSpec(ActivityDefinitionReadSpec):
         super().perform_extra_serialization(mapping, obj)
         specimen_requirements = []
         for specimen_requirement in obj.specimen_requirements:
+            specimen_obj = SpecimenDefinition.objects.filter(
+                id=specimen_requirement
+            ).first()
+            if not specimen_obj:
+                continue
             specimen_requirements.append(
-                SpecimenDefinitionReadSpec.serialize(
-                    SpecimenDefinition.objects.get(id=specimen_requirement)
-                ).to_json()
+                SpecimenDefinitionReadSpec.serialize(specimen_obj).to_json()
             )
         mapping["specimen_requirements"] = specimen_requirements
         observation_result_requirements = []
         for observation_result_requirement in obj.observation_result_requirements:
+            observation_obj = ObservationDefinition.objects.filter(
+                id=observation_result_requirement
+            ).first()
+            if not observation_obj:
+                continue
             observation_result_requirements.append(
-                ObservationDefinitionReadSpec.serialize(
-                    ObservationDefinition.objects.get(id=observation_result_requirement)
-                ).to_json()
+                ObservationDefinitionReadSpec.serialize(observation_obj).to_json()
             )
         mapping["observation_result_requirements"] = observation_result_requirements
         locations = []
         for location in obj.locations:
-            try:
-                locations.append(
-                    FacilityLocationListSpec.serialize(
-                        FacilityLocation.objects.get(id=location)
-                    ).to_json()
-                )
-            except Exception:  # noqa S110
-                pass
+            location_obj = FacilityLocation.objects.filter(id=location).first()
+            if not location_obj:
+                continue
+            locations.append(FacilityLocationListSpec.serialize(location_obj).to_json())
         mapping["locations"] = locations
         if obj.healthcare_service:
             mapping["healthcare_service"] = HealthcareServiceReadSpec.serialize(
@@ -138,9 +156,12 @@ class ActivityDefinitionRetrieveSpec(ActivityDefinitionReadSpec):
             ).to_json()
         charge_item_definitions = []
         for charge_item_definition in obj.charge_item_definitions:
+            charge_item_obj = ChargeItemDefinition.objects.filter(
+                id=charge_item_definition
+            ).first()
+            if not charge_item_obj:
+                continue
             charge_item_definitions.append(
-                ChargeItemDefinitionReadSpec.serialize(
-                    ChargeItemDefinition.objects.get(id=charge_item_definition)
-                ).to_json()
+                ChargeItemDefinitionReadSpec.serialize(charge_item_obj).to_json()
             )
         mapping["charge_item_definitions"] = charge_item_definitions

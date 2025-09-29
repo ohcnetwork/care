@@ -321,7 +321,11 @@ class TestPatientIdentifierConfigAPI(CareAPITestBase):
             self.get_detail_url("non-existent-id"), format="json"
         )
         self.assertEqual(response.status_code, 404)
-        self.assertContains(response, "Object not found", status_code=404)
+        self.assertContains(
+            response,
+            "No PatientIdentifierConfig matches the given query.",
+            status_code=404,
+        )
 
     # Test cases for patient identifier config update
 

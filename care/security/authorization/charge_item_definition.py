@@ -27,5 +27,16 @@ class ChargeItemDefinitionAccess(AuthorizationHandler):
             root=True,
         )
 
+    def can_set_charge_item_definition_in_facility(self, user, facility):
+        """
+        Check if the user has permission to set charge item definitions in the facility
+        """
+        return self.check_permission_in_facility_organization(
+            [ChargeItemDefinitionPermissions.can_set_charge_item_definition.name],
+            user,
+            facility=facility,
+            root=True,
+        )
+
 
 AuthorizationController.register_internal_controller(ChargeItemDefinitionAccess)
