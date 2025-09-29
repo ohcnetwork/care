@@ -68,22 +68,26 @@ class UsernameValidator(validators.RegexValidator):
 @deconstructible
 class PhoneNumberValidator(RegexValidator):
     """
-    Any one of the specified types of phone numbers are considered valid.
+    Validate phone numbers against one or more allowed types.
+
+    Any one of the specified types passed to the validator is considered
+    sufficient for the value to be valid.
 
     Allowed types:
-    - `mobile` (Indian XOR International)
-    - `indian_mobile` (Indian only)
-    - `international_mobile` (International only)
-    - `landline` (Indian only)
-    - `support` (Indian only)
 
-    Example usage:
+    - ``mobile`` (Indian XOR International)
+    - ``indian_mobile`` (Indian only)
+    - ``international_mobile`` (International only)
+    - ``landline`` (Indian only)
+    - ``support`` (Indian only)
 
-    ```
-    field = models.CharField(
-        validators=[PhoneNumberValidator(types=("mobile", "landline", "support"))])
-    )
-    ```
+    Example usage::
+
+        field = models.CharField(
+            validators=[
+                PhoneNumberValidator(types=("mobile", "landline", "support"))
+            ]
+        )
     """
 
     indian_mobile_number_regex = r"^(?=^\+91)(^\+91[6-9]\d{9}$)"

@@ -34,9 +34,12 @@ from care.emr.api.viewsets.facility_organization import (
 )
 from care.emr.api.viewsets.file_upload import FileUploadViewSet
 from care.emr.api.viewsets.healthcare_service import HealthcareServiceViewSet
+from care.emr.api.viewsets.inventory.delivery_order import DeliveryOrderViewSet
+from care.emr.api.viewsets.inventory.dispense_order import DispenseOrderViewSet
 from care.emr.api.viewsets.inventory.inventory_item import InventoryItemViewSet
 from care.emr.api.viewsets.inventory.product import ProductViewSet
 from care.emr.api.viewsets.inventory.product_knowledge import ProductKnowledgeViewSet
+from care.emr.api.viewsets.inventory.request_order import RequestOrderViewSet
 from care.emr.api.viewsets.inventory.supply_delivery import SupplyDeliveryViewSet
 from care.emr.api.viewsets.inventory.supply_request import SupplyRequestViewSet
 from care.emr.api.viewsets.invoice import InvoiceViewSet
@@ -48,9 +51,10 @@ from care.emr.api.viewsets.medication_administration import (
     MedicationAdministrationViewSet,
 )
 from care.emr.api.viewsets.medication_dispense import MedicationDispenseViewSet
-from care.emr.api.viewsets.medication_request import (
-    MedicationRequestSummaryViewSet,
-    MedicationRequestViewSet,
+from care.emr.api.viewsets.medication_request import MedicationRequestViewSet
+from care.emr.api.viewsets.medication_request_prescription import (
+    MedicationPrescriptionSummaryViewSet,
+    MedicationRequestPrescriptionViewSet,
 )
 from care.emr.api.viewsets.medication_statement import MedicationStatementViewSet
 from care.emr.api.viewsets.meta_artifact import MetaArtifactViewSet
@@ -71,6 +75,7 @@ from care.emr.api.viewsets.questionnaire import (
     QuestionnaireViewSet,
 )
 from care.emr.api.viewsets.questionnaire_response import QuestionnaireResponseViewSet
+from care.emr.api.viewsets.resource_category import ResourceCategoryViewSet
 from care.emr.api.viewsets.resource_request import (
     ResourceRequestCommentViewSet,
     ResourceRequestViewSet,
@@ -84,6 +89,10 @@ from care.emr.api.viewsets.scheduling.availability_exceptions import (
     AvailabilityExceptionsViewSet,
 )
 from care.emr.api.viewsets.scheduling.booking import TokenBookingViewSet
+from care.emr.api.viewsets.scheduling.token import TokenViewSet
+from care.emr.api.viewsets.scheduling.token_category import TokenCategoryViewSet
+from care.emr.api.viewsets.scheduling.token_queue import TokenQueueViewSet
+from care.emr.api.viewsets.scheduling.token_sub_queue import TokenSubQueueViewSet
 from care.emr.api.viewsets.service_request import ServiceRequestViewSet
 from care.emr.api.viewsets.specimen import SpecimenViewSet
 from care.emr.api.viewsets.specimen_definition import SpecimenDefinitionViewSet
@@ -209,6 +218,26 @@ facility_organization_nested_router.register(
 )
 
 facility_nested_router.register(r"schedule", ScheduleViewSet, basename="schedule")
+
+facility_nested_router.register(
+    r"token/queue", TokenQueueViewSet, basename="token-queue"
+)
+
+queue_nested_router = NestedSimpleRouter(
+    facility_nested_router, r"token/queue", lookup="token_queue"
+)
+
+queue_nested_router.register(r"token", TokenViewSet, basename="queue")
+
+facility_nested_router.register(
+    r"token/sub_queue", TokenSubQueueViewSet, basename="token-sub-queue"
+)
+
+facility_nested_router.register(
+    r"token/category", TokenCategoryViewSet, basename="token-category"
+)
+
+
 schedule_nested_router = NestedSimpleRouter(
     facility_nested_router, r"schedule", lookup="schedule"
 )
@@ -283,6 +312,13 @@ facility_nested_router.register(
 )
 
 facility_nested_router.register(
+    r"resource_category",
+    ResourceCategoryViewSet,
+    basename="resource_category",
+)
+
+
+facility_nested_router.register(
     r"charge_item",
     ChargeItemViewSet,
     basename="charge_item",
@@ -307,11 +343,30 @@ facility_nested_router.register(
 )
 
 facility_nested_router.register(
-    r"medication_request",
-    MedicationRequestSummaryViewSet,
-    basename="medication_request",
+    r"medication_prescription",
+    MedicationPrescriptionSummaryViewSet,
+    basename="medication_prescription",
 )
 
+# Orders
+
+facility_nested_router.register(
+    r"order/delivery",
+    DeliveryOrderViewSet,
+    basename="delivery-order",
+)
+
+facility_nested_router.register(
+    r"order/request",
+    RequestOrderViewSet,
+    basename="request-order",
+)
+
+facility_nested_router.register(
+    r"order/dispense",
+    DispenseOrderViewSet,
+    basename="dispense_order",
+)
 
 device_nested_router = NestedSimpleRouter(
     facility_nested_router, r"device", lookup="device"
@@ -352,6 +407,7 @@ facility_location_nested_router.register(
     basename="inventory-item",
 )
 
+
 router.register("patient", PatientViewSet, basename="patient")
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
 
@@ -387,6 +443,11 @@ patient_nested_router.register(
     basename="medication-request",
 )
 patient_nested_router.register(
+    r"medication/prescription",
+    MedicationRequestPrescriptionViewSet,
+    basename="medication-request-prescription",
+)
+patient_nested_router.register(
     r"medication/statement",
     MedicationStatementViewSet,
     basename="medication-statement",
@@ -420,6 +481,7 @@ urlpatterns = [
     path("", include(user_nested_router.urls)),
     path("", include(facility_nested_router.urls)),
     path("", include(schedule_nested_router.urls)),
+    path("", include(queue_nested_router.urls)),
     path("", include(patient_nested_router.urls)),
     path("", include(thread_nested_router.urls)),
     path("", include(resource_nested_router.urls)),

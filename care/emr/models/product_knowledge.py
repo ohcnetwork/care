@@ -1,9 +1,9 @@
 from django.db import models
 
-from care.emr.models import EMRBaseModel
+from care.emr.models.base import SlugBaseModel
 
 
-class ProductKnowledge(EMRBaseModel):
+class ProductKnowledge(SlugBaseModel):
     facility = models.ForeignKey(
         "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
     )
@@ -17,3 +17,9 @@ class ProductKnowledge(EMRBaseModel):
     storage_guidelines = models.JSONField(default=list, null=True, blank=True)
     definitional = models.JSONField(default=dict, null=True, blank=True)
     base_unit = models.JSONField(default=dict, null=True, blank=True)
+    category = models.ForeignKey(
+        "emr.ResourceCategory",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+    )

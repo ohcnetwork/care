@@ -13,6 +13,7 @@ from rest_framework.response import Response
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models import Organization
 from care.emr.models.organization import OrganizationUser
+from care.emr.resources.common.mail_type import MailTypeChoices
 from care.emr.resources.user.spec import (
     CurrentUserRetrieveSpec,
     UserCreateSpec,
@@ -21,7 +22,7 @@ from care.emr.resources.user.spec import (
     UserTypeRoleMapping,
     UserUpdateSpec,
 )
-from care.emr.utils.send_password_reset_mail import send_password_creation_email
+from care.emr.utils.reset_password import send_password_reset_email
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.users.models import User
@@ -106,7 +107,8 @@ class UserViewSet(EMRModelViewSet):
             )
             if not instance.has_usable_password():
                 try:
-                    send_password_creation_email(instance)
+                    mail_type = MailTypeChoices.create.value
+                    send_password_reset_email(instance, mail_type)
                 except Exception as e:
                     raise IntegrityError(
                         "User creation failed due to email error."

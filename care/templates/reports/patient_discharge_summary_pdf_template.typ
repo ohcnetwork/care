@@ -213,5 +213,5 @@
 #text("")
 {% if discharge_summary_advice %}
     = Discharge Summary Advice
-    #text("{{ discharge_summary_advice }}")
+    #`{{ discharge_summary_advice }}`.text
 {% endif %}
