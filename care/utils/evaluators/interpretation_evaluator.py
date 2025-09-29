@@ -111,11 +111,11 @@ class InterpretationEvaluator:
                     context.get(metric_evaluator.context)
                 )
                 self.metric_cache[metric] = metric_evaluator_obj
-            if metric_evaluator_obj.apply_rule(
+            if not metric_evaluator_obj.apply_rule(
                 condition.get("operation"), condition.get("value")
             ):
-                return True
-        return False
+                return False
+        return True
 
     def get_matching_condition(self, context: dict, value: Any):
         for rule in self.rules:

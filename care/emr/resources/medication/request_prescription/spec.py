@@ -26,6 +26,13 @@ class MedicationRequestPrescriptionStatus(str, Enum):
     draft = "draft"
 
 
+MEDICATION_PRESCRIPTION_PHARMACIST_ALLOWED_STATUS = [
+    MedicationRequestPrescriptionStatus.active.value,
+    MedicationRequestPrescriptionStatus.on_hold.value,
+    MedicationRequestPrescriptionStatus.completed.value,
+]
+
+
 class MedicationRequestPrescriptionResource(EMRResource):
     __model__ = MedicationRequestPrescription
     __exclude__ = ["patient", "encounter"]

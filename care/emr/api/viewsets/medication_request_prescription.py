@@ -4,10 +4,19 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import EMRBaseViewSet, EMRModelViewSet, EMRTagMixin
+from care.emr.api.viewsets.base import (
+    EMRBaseViewSet,
+    EMRCreateMixin,
+    EMRListMixin,
+    EMRRetrieveMixin,
+    EMRTagMixin,
+    EMRUpdateMixin,
+    EMRUpsertMixin,
+)
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
 from care.emr.models.medication_request import MedicationRequestPrescription
 from care.emr.resources.medication.request_prescription.spec import (
+    MEDICATION_PRESCRIPTION_PHARMACIST_ALLOWED_STATUS,
     MedicationRequestPrescriptionReadSpec,
     MedicationRequestPrescriptionRetrieveDetailedSpec,
     MedicationRequestPrescriptionRetrieveMedicationsSpec,
@@ -29,7 +38,14 @@ class MedicationRequestPrescriptionFilter(filters.FilterSet):
 
 
 class MedicationRequestPrescriptionViewSet(
-    EncounterBasedAuthorizationBase, EMRModelViewSet, EMRTagMixin
+    EncounterBasedAuthorizationBase,
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRUpsertMixin,
+    EMRTagMixin,
 ):
     database_model = MedicationRequestPrescription
     pydantic_model = MedicationRequestPrescriptionWriteSpec
@@ -47,6 +63,34 @@ class MedicationRequestPrescriptionViewSet(
 
     def get_facility_from_instance(self, instance):
         return instance.encounter.facility  # Overide as needed
+
+    def authorize_update(self, request_obj, model_instance):
+        encounter_access = AuthorizationController.call(
+            "can_update_encounter_obj", self.request.user, model_instance.encounter
+        )
+        if encounter_access:
+            return
+        pharmacist_access = self.authorize_for_pharmacist_facility(
+            model_instance.encounter.facility
+        )
+        if not pharmacist_access:
+            raise PermissionDenied("Access Denied to prescription")
+        old_obj = self.database_model.objects.get(id=model_instance.id)
+        if (
+            old_obj.status != request_obj.status
+            and request_obj.status
+            not in MEDICATION_PRESCRIPTION_PHARMACIST_ALLOWED_STATUS
+        ):
+            raise PermissionDenied(
+                "You do not have permission to update medication request prescription"
+            )
+        model_instance._pharmacist_mode = True  # noqa
+
+    def perform_update(self, instance):
+        if getattr(instance, "_pharmacist_mode", False):
+            instance.save(update_fields=["status"])
+        else:
+            super().perform_update(instance)
 
     def get_queryset(self):
         self.authorize_read_for_medication()

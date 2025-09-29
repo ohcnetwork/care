@@ -39,6 +39,10 @@ class PatientIdentifierConfigViewSet(
     filter_backends = [filters.DjangoFilterBackend]
 
     def authorize_create(self, instance):
+        if instance.config.auto_maintained:
+            raise PermissionDenied(
+                "Cannot create auto maintained patient identifier config"
+            )
         if instance.facility:
             facility = get_object_or_404(Facility, external_id=instance.facility)
             if not AuthorizationController.call(
@@ -68,6 +72,17 @@ class PatientIdentifierConfigViewSet(
                 "You are not authorized to update a patient identifier config"
             )
 
+    def perform_update(self, instance):
+        obj = self.get_object()
+        if obj.config.get("auto_maintained", False):
+            # If auto maintained, only update the retrieve_config,
+            # the rest should not be updated
+            retrieve_config = instance.config.get("retrieve_config", {})
+            instance.config = obj.config
+            instance.config["retrieve_config"] = retrieve_config
+        self.clean_cache(instance)
+        return super().perform_update(instance)
+
     def clean_cache(self, instance):
         if instance.facility:
             PatientIdentifierConfigCache.clear_facility_cache(instance.facility_id)
@@ -77,10 +92,6 @@ class PatientIdentifierConfigViewSet(
     def perform_create(self, instance):
         self.clean_cache(instance)
         return super().perform_create(instance)
-
-    def perform_update(self, instance):
-        self.clean_cache(instance)
-        return super().perform_update(instance)
 
     def validate_data(self, instance, model_obj=None):
         # Validate that the system is not present at the instance or the facility level

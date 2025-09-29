@@ -41,6 +41,11 @@ class EncounterBasedAuthorizationBase:
             )
         return False
 
+    def authorize_for_pharmacist_facility(self, facility):
+        return AuthorizationController.call(
+            "can_view_as_pharmacist", self.request.user, facility
+        )
+
     def authorize_read_for_medication(self):
         if self.authorize_for_pharmacist():
             return True

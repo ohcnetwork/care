@@ -117,11 +117,14 @@ class PatientViewSet(EMRModelViewSet):
         with transaction.atomic():
             super().perform_create(instance)
             for identifier in identifiers:
+                config = get_object_or_404(
+                    PatientIdentifierConfig, external_id=identifier.config
+                )
+                if config.config.get("auto_maintained"):
+                    continue
                 PatientIdentifier.objects.create(
                     patient=instance,
-                    config=get_object_or_404(
-                        PatientIdentifierConfig, external_id=identifier.config
-                    ),
+                    config=config,
                     value=identifier.value,
                 )
             evaluate_patient_instance_default_values(instance)
@@ -141,11 +144,14 @@ class PatientViewSet(EMRModelViewSet):
         with transaction.atomic():
             super().perform_update(instance)
             for identifier in identifiers:
+                config = get_object_or_404(
+                    PatientIdentifierConfig, external_id=identifier.config
+                )
+                if config.config.get("auto_maintained"):
+                    continue
                 identifier_obj = PatientIdentifier.objects.filter(
                     patient=instance,
-                    config=get_object_or_404(
-                        PatientIdentifierConfig, external_id=identifier.config
-                    ),
+                    config=config,
                 ).first()
                 if identifier_obj:
                     if not identifier.value:
@@ -168,14 +174,16 @@ class PatientViewSet(EMRModelViewSet):
         config: UUID4 | None = None
         value: str | None = None
         facility: UUID4 | None = None
+        page_size: int = 100
 
     @extend_schema(
         request=SearchRequestSpec,
     )
     @action(detail=False, methods=["POST"])
     def search(self, request, *args, **kwargs):
-        max_page_size = 200
         request_data = self.SearchRequestSpec(**request.data)
+        max_page_size = 100
+        page_size = min(max_page_size, request_data.page_size)
         partial = False
         if not request_data.phone_number and not request_data.config:
             raise ValidationError("Either phone number or config is required")
@@ -194,21 +202,32 @@ class PatientViewSet(EMRModelViewSet):
             if not config:
                 raise ValidationError("Config not found")
 
-            queryset = PatientIdentifier.objects.filter(
-                config=config,
-                value__iexact=request_data.value,
+            partial_search = config.config.get("retrieve_config", {}).get(
+                "retrieve_partial_search", False
             )
-            identifier = queryset.first()
+
+            if not partial_search:
+                identifier_queryset = PatientIdentifier.objects.filter(
+                    config=config,
+                    value__iexact=request_data.value,
+                )
+
+            elif partial_search:
+                identifier_queryset = PatientIdentifier.objects.filter(
+                    config=config,
+                    value__icontains=request_data.value,
+                )[:page_size]
+
+            queryset = Patient.objects.filter(
+                id__in=identifier_queryset.values("patient_id")
+            )
 
             if config.config.get("retrieve_config", {}).get(
                 "retrieve_with_year_of_birth"
             ):
                 partial = True
-            if not identifier:
-                queryset = queryset.none()
-            else:
-                queryset = Patient.objects.filter(id=identifier.patient_id)
-        queryset = queryset.order_by("-created_date")[:max_page_size]
+
+        queryset = queryset.order_by("-created_date")[:page_size]
         if partial:
             data = [PatientPartialSpec.serialize(obj).to_json() for obj in queryset]
             return Response({"partial": True, "results": data})
@@ -350,6 +369,8 @@ class PatientViewSet(EMRModelViewSet):
         request_config = get_object_or_404(
             PatientIdentifierConfig, external_id=request_data.config
         )
+        if request_config.config.get("auto_maintained"):
+            raise ValidationError("Cannot update auto maintained identifier")
         # TODO: Check Facility Authz
         value = request_data.value
         if not value and request_config.config["required"]:

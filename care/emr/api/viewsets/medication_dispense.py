@@ -60,6 +60,7 @@ class MedicationDispenseFilters(filters.FilterSet):
     exclude_status = MultiSelectFilter(field_name="status", exclude=True)
     location = filters.UUIDFilter(field_name="location__external_id")
     include_children = DummyBooleanFilter()
+    order = filters.UUIDFilter(field_name="order__external_id")
 
 
 class MedicationDispenseViewSet(
@@ -204,8 +205,8 @@ class MedicationDispenseViewSet(
                 self.authorize_location_read(location)
                 if include_children:
                     queryset = queryset.filter(
-                        Q(deliver_from=location)
-                        | Q(deliver_from__parent_cache__overlap=[location.id])
+                        Q(location=location)
+                        | Q(location__parent_cache__overlap=[location.id])
                     )
                 else:
                     queryset = queryset.filter(location=location)
