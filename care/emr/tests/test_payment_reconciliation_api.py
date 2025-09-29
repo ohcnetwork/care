@@ -470,7 +470,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             format="json",
         )
         self.assertEqual(response.status_code, 403)
-        self.assertIn("Cannot write payment reconciliation", response.data["detail"])
+        self.assertIn("Cannot update payment reconciliation", response.data["detail"])
 
     def test_update_payment_reconciliation_with_invalid_facility(self):
         """
