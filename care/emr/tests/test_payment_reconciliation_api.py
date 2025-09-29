@@ -49,13 +49,13 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             description="Test Charge Item Category",
         )
 
-        self.charge_item_defintion = self.create_charge_item_defintion(
+        self.charge_item_definition = self.create_charge_item_definition(
             facility=self.facility
         )
         self.charge_item = self.create_charge_item(
             facility=self.facility,
             account=self.account,
-            charge_item_definition=self.charge_item_defintion,
+            charge_item_definition=self.charge_item_definition,
         )
         self.invoice = self.create_invoice(
             facility=self.facility, account=self.account, patient=self.patient
@@ -99,13 +99,13 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             billing_status=billing_status or "active",
         )
 
-    def create_charge_item_defintion(self, facility):
+    def create_charge_item_definition(self, facility):
         return baker.make(
             "emr.ChargeItemDefinition",
-            facility=self.facility,
+            facility=facility,
             title="Test Charge Item Definition",
             description="Test Charge Item Definition",
-            slug=f"f-{self.facility.external_id}-test-charge-item-def",
+            slug=f"f-{facility.external_id}-test-charge-item-def",
             price_components=[{"amount": 500, "monetary_component_type": "base"}],
             category=self.category,
         )
@@ -117,7 +117,8 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             "emr.ChargeItem",
             facility=facility or self.facility,
             encounter=self.encounter,
-            charge_item_definition=charge_item_definition or self.charge_item_defintion,
+            charge_item_definition=charge_item_definition
+            or self.charge_item_definition,
             account=account or self.account,
             title="Test Charge Item",
             status=status or "billed",
@@ -470,7 +471,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             format="json",
         )
         self.assertEqual(response.status_code, 403)
-        self.assertIn("Cannot write payment reconciliation", response.data["detail"])
+        self.assertIn("Cannot update payment reconciliation", response.data["detail"])
 
     def test_update_payment_reconciliation_with_invalid_facility(self):
         """
