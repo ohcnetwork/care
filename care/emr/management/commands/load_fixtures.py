@@ -1067,6 +1067,7 @@ class Command(BaseCommand):
                 ],
                 method=code_snomed_automated_count,
                 permitted_unit=code_ucum_g_dl,
+                qualified_ranges=[],
             )
         )
 
