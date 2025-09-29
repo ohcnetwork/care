@@ -41,10 +41,10 @@ class RoleApiTestCase(CareAPITestBase):
     def _get_role_detail_url(self, external_id):
         return reverse("role-detail", kwargs={"external_id": external_id})
 
-    def _create_role(self, is_system=False, permissions=None):
+    def _create_role(self, is_system=False, permissions=None, name=None):
         role = baker.make(
             RoleModel,
-            name=self.role_data["name"],
+            name=name or self.role_data["name"],
             description=self.role_data["description"],
             is_system=is_system,
         )
@@ -69,15 +69,25 @@ class RoleApiTestCase(CareAPITestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertGreaterEqual(len(response.json()), 1)
 
+    def test_list_roles_with_name_filter(self):
+        """User can filter roles by name"""
+        self._create_role(name="Demonstration Role")
+        role = self._create_role()
+        response = self.client.get(self.role_list_url, {"name": "Test"}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(role.external_id))
+        self.assertEqual(response.data["results"][0]["name"], role.name)
+
     def test_retrieve_role(self):
         """Any user can retrieve role details"""
         role = self._create_role()
         response = self.client.get(self._get_role_detail_url(role.external_id))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.json()["name"], role.name)
+        self.assertEqual(response.data["name"], role.name)
 
         # Verify permissions are included in response
-        permissions_data = response.json()["permissions"]
+        permissions_data = response.data["permissions"]
         self.assertEqual(len(permissions_data), len(self.permissions))
 
         # Check that each permission has the expected fields
@@ -128,7 +138,7 @@ class RoleApiTestCase(CareAPITestBase):
         self.assertEqual(permissions[0].permission, self.permissions[0])
 
     def test_create_role_without_permissions_as_superuser(self):
-        """Superusers cannot create roles without specifying permissions"""
+        """Superusers cannot create roles without specifying permissions to that role"""
         self.client.force_authenticate(user=self.superuser)
         role_data_no_perms = {
             "name": "Role without permissions",
@@ -161,6 +171,41 @@ class RoleApiTestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 400)
         self.assertContains(
             response, "Role with this name already exists", status_code=400
+        )
+
+    def test_create_role_with_empty_name(self):
+        """Superusers cannot create roles with empty name"""
+        self.client.force_authenticate(user=self.superuser)
+        role_data_empty_name = {
+            "name": "",
+            "description": "Test role with empty name",
+            "permissions": [self.permissions[0].slug],
+        }
+        response = self.client.post(
+            self.role_list_url, role_data_empty_name, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "Role name cannot be empty",
+            status_code=400,
+        )
+
+    def test_create_system_role_as_superuser(self):
+        """Superusers cannot create system roles"""
+        self.client.force_authenticate(user=self.superuser)
+        role_data_system = {
+            "name": "System Role",
+            "description": "Test system role",
+            "permissions": [self.permissions[0].slug],
+            "is_system": True,
+        }
+        response = self.client.post(self.role_list_url, role_data_system, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "Cannot create system roles",
+            status_code=400,
         )
 
     def test_update_role_as_user(self):
@@ -235,6 +280,26 @@ class RoleApiTestCase(CareAPITestBase):
         self.assertContains(
             response,
             "At least one permission must be assigned to the role",
+            status_code=400,
+        )
+
+    def test_update_system_role_as_superuser(self):
+        """Superusers cannot update system roles"""
+        role = self._create_role(is_system=True)
+        self.client.force_authenticate(user=self.superuser)
+        update_data = {
+            "name": "Attempted Update of System Role",
+            "description": role.description,
+            "permissions": [p.slug for p in self.permissions],
+            "is_system": role.is_system,
+        }
+        response = self.client.put(
+            self._get_role_detail_url(role.external_id), update_data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "Cannot update system roles",
             status_code=400,
         )
 
