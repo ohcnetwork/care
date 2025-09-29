@@ -584,3 +584,224 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             "No PaymentReconciliation matches the given query",
             status_code=404,
         )
+
+    # Test cases for list payment reconciliation
+
+    def test_list_payment_reconciliation_as_super_user(self):
+        """
+        Test listing payment reconciliations as a superuser
+        """
+        payment_reconciliation_1 = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        payment_reconciliation_2 = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(self.base_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        ids = [result["id"] for result in response.data["results"]]
+        self.assertIn(str(payment_reconciliation_1.external_id), ids)
+        self.assertIn(str(payment_reconciliation_2.external_id), ids)
+
+    def test_list_payment_reconciliation_as_user_with_permission(self):
+        """
+        Test listing payment reconciliations as a user with permission
+        """
+        payment_reconciliation_1 = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        payment_reconciliation_2 = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        response = self.client.get(self.base_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        ids = [result["id"] for result in response.data["results"]]
+        self.assertIn(str(payment_reconciliation_1.external_id), ids)
+        self.assertIn(str(payment_reconciliation_2.external_id), ids)
+
+    def test_list_payment_reconciliation_as_user_without_permission(self):
+        """
+        Test listing payment reconciliations as a user without permission
+        """
+        self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.base_url)
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot read payment reconciliation", response.data["detail"])
+
+    def test_list_payment_reconciliation_with_invalid_facility(self):
+        """
+        Test listing payment reconciliations with an invalid facility
+        """
+        other_facility = self.create_facility(
+            name="Other Facility", user=self.superuser
+        )
+        self.create_payment_reconciliation(
+            facility=other_facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.create_payment_reconciliation(
+            facility=other_facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.get_base_url(facility_external_id=self.facility.external_id)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 0)
+
+    def test_filter_payment_reconciliation_by_account(self):
+        """
+        Test filtering payment reconciliations by account
+        """
+        other_account = self.create_account(facility=self.facility)
+        payment_reconciliation_1 = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=other_account,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.base_url, {"account": str(self.account.external_id)}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(payment_reconciliation_1.external_id)
+        )
+
+    def test_filter_payment_reconciliation_by_status(self):
+        """
+        Test filtering payment reconciliations by status
+        """
+        payment_reconciliation_1 = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+            status=PaymentReconciliationStatusOptions.active.value,
+        )
+        self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+            status=PaymentReconciliationStatusOptions.draft.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.base_url, {"status": PaymentReconciliationStatusOptions.active.value}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(payment_reconciliation_1.external_id)
+        )
+
+    def test_filter_payment_reconciliation_by_target_invoice(self):
+        """
+        Test filtering payment reconciliations by target invoice
+        """
+        other_invoice = self.create_invoice(
+            facility=self.facility, account=self.account, patient=self.patient
+        )
+        payment_reconciliation_1 = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=other_invoice,
+            account=self.account,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.base_url, {"target_invoice": str(self.invoice.external_id)}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(payment_reconciliation_1.external_id)
+        )
+
+    def test_filter_payment_reconciliation_by_reconciliation_type(self):
+        """
+        Test filtering payment reconciliations by reconciliation type
+        """
+        payment_reconciliation_1 = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+            reconciliation_type=PaymentReconciliationTypeOptions.payment.value,
+        )
+        self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+            reconciliation_type=PaymentReconciliationTypeOptions.adjustment.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.base_url,
+            {"reconciliation_type": PaymentReconciliationTypeOptions.payment.value},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(payment_reconciliation_1.external_id)
+        )
+
+    def test_filter_payment_reconciliation_by_is_credit_note(self):
+        """
+        Test filtering payment reconciliations by is_credit_note
+        """
+        payment_reconciliation_1 = self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+            is_credit_note=True,
+        )
+        self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(self.base_url, {"is_credit_note": True})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(payment_reconciliation_1.external_id)
+        )
