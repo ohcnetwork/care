@@ -1,3 +1,5 @@
+from rest_framework.exceptions import ValidationError
+
 from care.emr.resources.common.monetary_component import (
     MonetaryComponents,
     MonetaryComponentType,
@@ -11,7 +13,7 @@ def calculate_amount(component, quantity, base):
     if component.factor:
         component.amount = base * component.factor / 100
         return component
-    return None
+    raise ValidationError("Amount or factor is required")
 
 
 def sync_charge_item_costs(charge_item):
