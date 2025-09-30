@@ -88,7 +88,7 @@ class SupplyDeliveryViewSet(
                 parents = inventory_item.location.parent_cache
                 if not (
                     order.origin.id in parents
-                    or order.origin == inventory_item.location.id
+                    or order.origin.id == inventory_item.location.id
                 ):
                     raise ValidationError(
                         "Supplied inventory item is not part of the origin or its children"
