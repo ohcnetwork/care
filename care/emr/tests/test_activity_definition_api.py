@@ -31,15 +31,18 @@ class ActivityDefinitionAPITestBase(CareAPITestBase):
         self.facility_location = self.create_facility_location(
             facility=self.facility, name="Test Facility Location"
         )
-        self.resource_category = baker.make(
-            "emr.ResourceCategory",
-            title="Test Resource Category",
-            slug=f"f-{self.facility.external_id}-resource-category",
-            facility=self.facility,
+        self.resource_category = self.create_resource_category(
+            facility=self.facility, slug="resource-category", title="Resource Category"
         )
 
     def generate_activity_definition_data(
-        self, title=None, status=None, category=None, kind=None, **kwargs
+        self,
+        title=None,
+        status=None,
+        category=None,
+        kind=None,
+        classification=None,
+        **kwargs,
     ):
         return {
             "title": title or "Test Activity Definition",
@@ -48,7 +51,7 @@ class ActivityDefinitionAPITestBase(CareAPITestBase):
             "description": "This is a test activity definition.",
             "usage": "Test usage",
             "category": category or self.resource_category.slug,
-            "classification": category
+            "classification": classification
             or ActivityDefinitionCategoryOptions.laboratory.value,
             "kind": kind or ActivityDefinitionKindOptions.service_request.value,
             "code": {"system": "http://example.com", "code": "12345"},
@@ -118,6 +121,15 @@ class ActivityDefinitionAPITestBase(CareAPITestBase):
 
     def create_facility_location(self, facility, **kwargs):
         return baker.make("emr.FacilityLocation", facility=facility, **kwargs)
+
+    def create_resource_category(self, facility, slug=None, **kwargs):
+        return baker.make(
+            "emr.ResourceCategory",
+            facility=facility,
+            slug=f"f-{facility.external_id}-{slug or 'resource-category'}",
+            resource_type="test-resource-type",
+            **kwargs,
+        )
 
     # Test cases for create activity definition
 
@@ -426,6 +438,28 @@ class ActivityDefinitionAPITestBase(CareAPITestBase):
         )
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["id"], response.data["id"])
+
+    def test_create_activity_definition_without_category(self):
+        """Test creating an activity definition without category"""
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_activity_definition_data(
+            slug_value="test-activity-definition",
+            specimen_requirements=[
+                self.generate_specimen_definition(self.facility).slug
+            ],
+            observation_result_requirements=[
+                self.generate_observation_definition(self.facility).slug
+            ],
+            healthcare_service=self.generate_healthcare_service(
+                self.facility
+            ).external_id,
+            charge_item_definitions=[self.charge_item_definition(self.facility).slug],
+            locations=[self.facility_location.external_id],
+        )
+        data.pop("category")
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Field required", response.data["errors"][0]["msg"])
 
     # Test cases for update activity definition
 
@@ -1191,4 +1225,71 @@ class ActivityDefinitionAPITestBase(CareAPITestBase):
             response,
             "No Facility matches the given query.",
             status_code=404,
+        )
+
+    def test_list_activity_definition_with_include_children_with_is_child_false(self):
+        """
+        Test to list activity definitions with dummy filter include_children set to false to view only the activity definitions in the parent category.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        activity_definition = self.create_activity_definition(
+            facility=self.facility,
+            slug="parent-activity",
+            category=self.resource_category,
+        )
+        child_resource_category = self.create_resource_category(
+            facility=self.facility,
+            slug="child-category",
+            parent=self.resource_category,
+            is_child=True,
+        )
+        self.create_activity_definition(
+            facility=self.facility,
+            slug="sub-activity-definition",
+            category=child_resource_category,
+            title="Sub Category Activity Definition",
+        )
+        response = self.client.get(
+            self.base_url,
+            {"include_children": "false", "category": self.resource_category.slug},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(activity_definition.external_id)
+        )
+
+    def test_list_activity_definition_with_include_children_with_is_child_true(self):
+        """
+        Test to list activity definitions with dummy filter include_children set to true to view only the activity definitions in child categories.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.create_activity_definition(
+            facility=self.facility,
+            slug="parent-activity",
+            category=self.resource_category,
+        )
+        child_resource_category = self.create_resource_category(
+            facility=self.facility,
+            slug="child-category",
+            parent=self.resource_category,
+            is_child=True,
+        )
+        child_activity_definition = self.create_activity_definition(
+            facility=self.facility,
+            slug="sub-activity-definition",
+            category=child_resource_category,
+            title="Sub Category Activity Definition",
+        )
+        response = self.client.get(
+            self.base_url,
+            {"include_children": "true", "category": self.resource_category.slug},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"],
+            str(child_activity_definition.external_id),
         )
