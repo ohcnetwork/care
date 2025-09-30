@@ -24,3 +24,6 @@ class PaymentReconciliation(EMRBaseModel):
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     note = models.TextField(null=True, blank=True)
     is_credit_note = models.BooleanField(default=False)
+    location = models.ForeignKey(
+        "emr.FacilityLocation", on_delete=models.PROTECT, null=True, blank=True
+    )
