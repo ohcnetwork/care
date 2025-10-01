@@ -128,4 +128,7 @@ class PaymentReconciliationRetrieveSpec(PaymentReconciliationReadSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        mapping["location"] = FacilityLocationListSpec.serialize(obj.location).to_json()
+        if obj.location:
+            mapping["location"] = FacilityLocationListSpec.serialize(
+                obj.location
+            ).to_json()
