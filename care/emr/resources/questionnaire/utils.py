@@ -209,7 +209,7 @@ def validate_question_result(  # noqa : PLR0912
     if questionnaire["type"] == QuestionType.group.value:
         # Iterate and call all child questions
         questionnaire_mapping[questionnaire["id"]] = questionnaire
-        if questionnaire["questions"]:
+        if questionnaire.get("questions"):
             if questionnaire.get("repeats", False):
                 # Handle repeating groups
                 response = responses.get(questionnaire["id"])
@@ -439,11 +439,19 @@ def convert_to_observation_spec(
 def collect_and_validate_enable_when_questions(
     questions, responses, questionnaire_obj, errors, parent=None
 ):
-    """
-    Walk the questions and:
-     - If enable_when fails → check if it (or its children) were answered → error
-     - Otherwise recurse into groups and keep the question
-    Returns the filtered list of “enabled” questions.
+    """Filter questions by ``enable_when`` rules and record related errors.
+
+    Algorithm:
+
+    - If a question's ``enable_when`` evaluates to False and the question (or any
+      of its descendant questions) has answers, an ``enable_when_failed`` error
+      is appended to ``errors``.
+    - Enabled groups are traversed recursively and pruned so that only their
+      enabled descendants remain.
+
+    Returns:
+        list: The filtered list of enabled questions (with nested structure
+        preserved for groups that remain enabled).
     """
 
     def any_answered(q, resp_map):
@@ -485,7 +493,9 @@ def collect_and_validate_enable_when_questions(
             continue  # skip this question/group
 
         # Recurse into groups
-        if q["type"] == QuestionType.group.value:
+        if q["type"] == QuestionType.group.value and q.get(
+            "questions"
+        ):  # this ignores the case where a group has no questions
             grp = q.copy()
             grp["questions"] = collect_and_validate_enable_when_questions(
                 q["questions"], responses, questionnaire_obj, errors, parent=q["id"]

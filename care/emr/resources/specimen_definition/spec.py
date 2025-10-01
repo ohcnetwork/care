@@ -11,6 +11,7 @@ from care.emr.resources.specimen_definition.valueset import (
     SPECIMEN_COLLECTION_CODE_VALUESET,
     SPECIMEN_TYPE_CODE_VALUESET,
 )
+from care.emr.utils.slug_type import SlugType
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
 
@@ -27,6 +28,14 @@ class PreferenceOptions(str, Enum):
 
     preferred = "preferred"
     alternate = "alternate"
+
+
+class HandlingConditionOptions(str, Enum):
+    """Handling condition options for specimen testing"""
+
+    room = "room"
+    refrigerated = "refrigerated"
+    frozen = "frozen"
 
 
 class QuantitySpec(BaseModel):
@@ -67,6 +76,22 @@ class DurationSpec(BaseModel):
     unit: Coding  # Nees to be restricted to Datetime Units
 
 
+class RangeSpec(BaseModel):
+    """Specification for a range with low and high values"""
+
+    low: QuantitySpec | None = None
+    high: QuantitySpec | None = None
+
+
+class HandlingSpec(BaseModel):
+    """Specification for specimen handling"""
+
+    temperature_qualifier: HandlingConditionOptions | None = None
+    temperature_range: RangeSpec | None = None
+    max_duration: DurationSpec | None = None
+    instruction: str | None = None
+
+
 class TypeTestedSpec(BaseModel):
     """Specification for tested specimen types"""
 
@@ -76,6 +101,7 @@ class TypeTestedSpec(BaseModel):
     requirement: str | None = None
     retention_time: DurationSpec | None = None
     single_use: bool | None = None
+    handling: HandlingSpec | None = None
 
 
 class BaseSpecimenDefinitionSpec(EMRResource):
@@ -85,7 +111,6 @@ class BaseSpecimenDefinitionSpec(EMRResource):
     __exclude__ = ["facility"]
 
     id: UUID4 | None = None
-    slug: str
     title: str
     derived_from_uri: str | None = None
     status: SpecimenDefinitionStatusOptions
@@ -100,11 +125,21 @@ class BaseSpecimenDefinitionSpec(EMRResource):
     type_tested: TypeTestedSpec | None = None
 
 
+class SpecimenDefinitionWriteSpec(BaseSpecimenDefinitionSpec):
+    slug_value: SlugType
+
+    def perform_extra_deserialization(self, is_update, obj):
+        obj.slug = self.slug_value
+
+
 class SpecimenDefinitionReadSpec(BaseSpecimenDefinitionSpec):
     """Specimen definition read specification"""
 
     version: int | None = None
+    slug_config: dict
+    slug: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+        mapping["slug_config"] = obj.parse_slug(obj.slug)

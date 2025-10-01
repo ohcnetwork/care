@@ -10,7 +10,6 @@ from pydantic import UUID4, BaseModel
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -45,6 +44,8 @@ from care.emr.tasks.discharge_summary import generate_discharge_summary_task
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
+from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class LiveFilter(filters.CharFilter):
@@ -61,7 +62,7 @@ class LiveFilter(filters.CharFilter):
 
 class EncounterFilters(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
-    status = filters.CharFilter(field_name="status", lookup_expr="iexact")
+    status = MultiSelectFilter(field_name="status")
     encounter_class = filters.CharFilter(
         field_name="encounter_class", lookup_expr="iexact"
     )
@@ -143,6 +144,11 @@ class EncounterViewSet(
                 )
             if not organizations:
                 instance.sync_organization_cache()
+            if instance.appointment:
+                if instance.appointment.associated_encounter_id:
+                    raise ValidationError("Encounter already has an associated booking")
+                instance.appointment.associated_encounter = instance
+                instance.appointment.save(update_fields=["associated_encounter"])
 
     def perform_update(self, instance):
         with transaction.atomic():
@@ -191,7 +197,7 @@ class EncounterViewSet(
                 "can_view_patient_obj", self.request.user, patient
             ):
                 return qs.filter(patient=patient)
-            raise PermissionDenied("User Cannot access patient")
+            raise PermissionDenied("User cannot access patient")
 
         if (
             self.action in ["list"]

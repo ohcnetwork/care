@@ -71,10 +71,13 @@ class EMRResource(BaseModel):
             )
         return cls.model_construct(**constructed)
 
+    def get_context(self):
+        return self._context
+
     def perform_extra_deserialization(self, is_update, obj):
         pass
 
-    def de_serialize(self, obj=None):
+    def de_serialize(self, obj=None, partial=False):
         """
         Creates a database object from a pydantic object
         """

@@ -34,6 +34,7 @@ from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.facility.models import Facility
+from care.utils.shortcuts import get_object_or_404
 
 User = get_user_model()
 
@@ -74,10 +75,19 @@ class EncounterCreateSpec(EncounterSpecBase):
 
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
-            obj.patient = Patient.objects.get(external_id=self.patient)
-            obj.facility = Facility.objects.get(external_id=self.facility)
+            obj.patient = get_object_or_404(
+                Patient.objects.all().only("id"), external_id=self.patient
+            )
+            obj.facility = get_object_or_404(
+                Facility.objects.all().only("id"), external_id=self.facility
+            )
             if self.appointment:
-                obj.appointment = TokenBooking.objects.get(external_id=self.appointment)
+                obj.appointment = get_object_or_404(
+                    TokenBooking.objects.all().only("id"),
+                    patient=obj.patient,
+                    external_id=self.appointment,
+                    token_slot__resource__facility=obj.facility,
+                )
             obj._organizations = list(set(self.organizations))  # noqa SLF001
             obj.status_history = {
                 "history": [{"status": obj.status, "moved_at": str(timezone.now())}]

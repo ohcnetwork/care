@@ -251,13 +251,24 @@ class PatientConsultation(PatientBaseModel, ConsultationRelatedPermissionMixin):
         return f"{self.patient.name}<>{self.facility.name}"
 
     def save(self, *args, **kwargs):
-        """
-        # Removing Patient Hospital Change on Referral
-        if not self.pk or self.referred_to is not None:
-            # pk is None when the consultation is created
-            # referred to is not null when the person is being referred to a new facility
-            self.patient.facility = self.referred_to or self.facility
-            self.patient.save()
+        """Persist the consultation and sync related patient fields.
+
+        Currently this method updates the patient's ``death_datetime`` if it
+        changed here.
+
+        Historical logic that updated the patient's facility on referral has
+        been intentionally removed. For reference, the deprecated logic looked
+        like this:
+
+        .. code-block:: python
+
+            # Removed: Patient hospital change on referral
+            # if not self.pk or self.referred_to is not None:
+            #     # pk is None when the consultation is created
+            #     # referred_to is not null when the person is being referred
+            #     # to a new facility
+            #     self.patient.facility = self.referred_to or self.facility
+            #     self.patient.save()
         """
         if self.death_datetime and self.patient.death_datetime != self.death_datetime:
             self.patient.death_datetime = self.death_datetime

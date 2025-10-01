@@ -1,7 +1,6 @@
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -19,6 +18,7 @@ from care.emr.resources.healthcare_service.spec import (
 )
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class HealthcareServiceFilters(filters.FilterSet):
@@ -59,6 +59,11 @@ class HealthcareServiceViewSet(
 
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
+        if (
+            instance.managing_organization
+            and instance.managing_organization.facility != instance.facility
+        ):
+            raise ValidationError("Invalid Organization")
         self.convert_external_id_to_internal_id(instance)
         super().perform_create(instance)
 
