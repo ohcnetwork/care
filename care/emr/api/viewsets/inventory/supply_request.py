@@ -1,7 +1,9 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
+from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -12,7 +14,11 @@ from care.emr.api.viewsets.base import (
     EMRUpsertMixin,
 )
 from care.emr.models.location import FacilityLocation
+from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
 from care.emr.models.supply_request import RequestOrder, SupplyRequest
+from care.emr.resources.inventory.supply_request.request_order import (
+    SupplyRequestOrderReadSpec,
+)
 from care.emr.resources.inventory.supply_request.spec import (
     SupplyRequestReadSpec,
     SupplyRequestUpdateSpec,
@@ -113,6 +119,25 @@ class SupplyRequestViewSet(
         else:
             queryset = queryset.filter(**{attribute: location_obj})
         return queryset
+
+    @action(detail=False, methods=["GET"])
+    def request_orders(self, request, *args, **kwargs):
+        if "delivery_order" not in request.GET:
+            raise ValidationError("delivery_order is required")
+        delivery_order = get_object_or_404(
+            DeliveryOrder, external_id=request.GET["delivery_order"]
+        )
+        self.authorize_order_read(delivery_order)
+        orders_qs = (
+            SupplyDelivery.objects.filter(order=delivery_order)
+            .values("supply_request__order_id")
+            .distinct("supply_request__order_id")[:100]
+        )
+        orders_qs = RequestOrder.objects.filter(id__in=orders_qs)
+        response = [
+            SupplyRequestOrderReadSpec.serialize(order).to_json() for order in orders_qs
+        ]
+        return Response({"results": response})
 
     def get_queryset(self):
         queryset = super().get_queryset()
