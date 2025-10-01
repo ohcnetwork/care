@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -29,6 +28,7 @@ from care.emr.resources.questionnaire_response.spec import (
     QuestionnaireSubmitRequest,
 )
 from care.security.authorization import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class QuestionnaireTagFilter(filters.FilterSet):

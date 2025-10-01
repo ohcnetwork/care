@@ -1,6 +1,5 @@
 from enum import Enum
 
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4
 
 from care.emr.models.healthcare_service import HealthcareService
@@ -13,6 +12,7 @@ from care.emr.resources.healthcare_service.valueset import (
 )
 from care.emr.resources.location.spec import FacilityLocationListSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
+from care.utils.shortcuts import get_object_or_404
 
 
 class HealthcareServiceInternalType(str, Enum):

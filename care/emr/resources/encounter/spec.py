@@ -1,7 +1,6 @@
 import datetime
 
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from pydantic import UUID4, BaseModel
 
@@ -35,6 +34,7 @@ from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.facility.models import Facility
+from care.utils.shortcuts import get_object_or_404
 
 User = get_user_model()
 
