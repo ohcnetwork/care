@@ -37,10 +37,11 @@ class Performer(BaseModel):
 
 
 class ReferenceRange(BaseModel):
-    low: float | None = None
-    high: float | None = None
+    min: float | None = None
+    max: float | None = None
     unit: str | None = None
-    text: str | None = None
+    interpretation: str
+    value: str | None = None
 
 
 class Component(BaseModel):
@@ -66,7 +67,7 @@ class BaseObservationSpec(EMRResource):
 
     alternate_coding: CodeableConcept | None = None
 
-    subject_type: SubjectType
+    subject_type: SubjectType = SubjectType.encounter.value
 
     encounter: UUID4 | None = None
 

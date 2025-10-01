@@ -6,7 +6,6 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema, extend_schema_view
 from rest_framework import filters as rest_framework_filters
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -31,6 +30,7 @@ from care.emr.resources.allergy_intolerance.spec import (
 from care.emr.resources.questionnaire.spec import SubjectType
 from care.security.authorization import AuthorizationController
 from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class AllergyIntoleranceFilters(FilterSet):

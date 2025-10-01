@@ -55,6 +55,7 @@ staticfiles/
 
 # Sphinx documentation
 docs/_build/
+docs/source/generated/
 
 # PyBuilder
 target/

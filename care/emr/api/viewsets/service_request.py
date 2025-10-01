@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -19,6 +18,7 @@ from care.emr.api.viewsets.base import (
 from care.emr.models.activity_definition import ActivityDefinition
 from care.emr.models.encounter import Encounter
 from care.emr.models.location import FacilityLocation
+from care.emr.models.organization import FacilityOrganizationUser
 from care.emr.models.service_request import ServiceRequest
 from care.emr.models.specimen_definition import SpecimenDefinition
 from care.emr.registries.system_questionnaire.system_questionnaire import (
@@ -42,8 +42,10 @@ from care.emr.resources.specimen.spec import (
 )
 from care.emr.resources.specimen_definition.specimen import convert_sd_to_specimen
 from care.emr.resources.tag.config_spec import TagResource
+from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class ServiceRequestFilters(filters.FilterSet):
@@ -55,10 +57,11 @@ class ServiceRequestFilters(filters.FilterSet):
     do_not_perform = filters.BooleanFilter()
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
+    requester = filters.UUIDFilter(field_name="requester__external_id")
 
 
 class ApplyActivityDefinitionRequest(BaseModel):
-    activity_definition: UUID4
+    activity_definition: str
     service_request: ServiceRequestUpdateSpec
     encounter: UUID4
 
@@ -82,7 +85,11 @@ class ServiceRequestViewSet(
     pydantic_read_model = ServiceRequestReadSpec
     pydantic_retrieve_model = ServiceRequestRetrieveSpec
     filterset_class = ServiceRequestFilters
-    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        OrderingFilter,
+        SingleFacilityTagFilter,
+    ]
     questionnaire_type = "service_request"
     questionnaire_title = "Service Request"
     questionnaire_description = "Service Request"
@@ -116,10 +123,17 @@ class ServiceRequestViewSet(
         ):
             raise ValidationError("Healthcare Service must be from the same facility")
 
+    def validate_requester(self, instance, facility):
+        if not FacilityOrganizationUser.objects.filter(
+            organization__facility=facility, user=instance.requester
+        ).exists():
+            raise ValidationError("requester must be a member of the facility")
+
     def perform_create(self, instance):
         self.convert_external_id_to_internal_id(instance)
         instance.facility = self.get_facility_obj()
         self.validate_health_care_service(instance)
+        self.validate_requester(instance, instance.facility)
         return super().perform_create(instance)
 
     def perform_update(self, instance):
@@ -215,11 +229,11 @@ class ServiceRequestViewSet(
         )
         activity_definition = get_object_or_404(
             ActivityDefinition,
-            external_id=request_params.activity_definition,
+            slug=request_params.activity_definition,
             facility=facility,
         )
         service_request = convert_ad_to_sr(activity_definition, encounter)
-        self.authorize_update(request_params.service_request, service_request)
+        self.authorize_update(None, service_request)
         serializer_obj = ServiceRequestUpdateSpec.model_validate(
             request_params.service_request.model_dump(mode="json")
         )
