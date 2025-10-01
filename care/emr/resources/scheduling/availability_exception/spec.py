@@ -1,20 +1,11 @@
 import datetime
-from enum import Enum
 
-from django.core.exceptions import ObjectDoesNotExist
 from pydantic import UUID4, field_validator, model_validator
-from rest_framework.exceptions import ValidationError
 
-from care.emr.models import AvailabilityException, TokenSlot
-from care.emr.models.scheduling.schedule import SchedulableUserResource
+from care.emr.models import AvailabilityException
 from care.emr.resources.base import EMRResource
-from care.facility.models import Facility
-from care.users.models import User
+from care.emr.resources.scheduling.schedule.spec import SchedulableResourceTypeOptions
 from care.utils.time_util import care_now
-
-
-class ResourceTypeOptions(str, Enum):
-    user = "user"
 
 
 class AvailabilityExceptionBaseSpec(EMRResource):
@@ -31,7 +22,8 @@ class AvailabilityExceptionBaseSpec(EMRResource):
 
 class AvailabilityExceptionWriteSpec(AvailabilityExceptionBaseSpec):
     facility: UUID4 | None = None
-    user: UUID4
+    resource_type: SchedulableResourceTypeOptions
+    resource_id: UUID4
 
     @field_validator("valid_from", "valid_to")
     @classmethod
@@ -48,27 +40,8 @@ class AvailabilityExceptionWriteSpec(AvailabilityExceptionBaseSpec):
         return self
 
     def perform_extra_deserialization(self, is_update, obj):
-        if not is_update:
-            try:
-                user = User.objects.get(external_id=self.user)
-                resource = SchedulableUserResource.objects.get(
-                    user=user,
-                    facility=Facility.objects.get(external_id=self.facility),
-                )
-                obj.resource = resource
-            except ObjectDoesNotExist as e:
-                raise ValidationError("Object does not exist") from e
-
-        slots = TokenSlot.objects.filter(
-            resource=obj.resource,
-            start_datetime__date__gte=self.valid_from,
-            start_datetime__date__lte=self.valid_to,
-            start_datetime__time__gte=self.start_time,
-            start_datetime__time__lte=self.end_time,
-        )
-        if slots.filter(allocated__gt=0).exists():
-            raise ValidationError("There are bookings during this exception")
-        slots.update(deleted=True)
+        obj._resource_type = self.resource_type  # noqa SLF001
+        obj._resource_id = self.resource_id  # noqa SLF001
 
 
 class AvailabilityExceptionReadSpec(AvailabilityExceptionBaseSpec):

@@ -5,6 +5,7 @@ from pydantic import UUID4, BaseModel, model_validator
 from care.emr.models.account import Account
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.encounter import Encounter
+from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource
 from care.emr.resources.charge_item_definition.spec import ChargeItemDefinitionReadSpec
 from care.emr.resources.common.coding import Coding
@@ -13,6 +14,7 @@ from care.emr.resources.common.monetary_component import (
     MonetaryComponentType,
 )
 from care.emr.tagging.base import SingleFacilityTagManager
+from care.utils.shortcuts import get_object_or_404
 
 
 class ChargeItemStatusOptions(str, Enum):
@@ -25,8 +27,18 @@ class ChargeItemStatusOptions(str, Enum):
     entered_in_error = "entered_in_error"
 
 
+CHARGE_ITEM_CANCELLED_STATUS = [
+    ChargeItemStatusOptions.entered_in_error.value,
+    ChargeItemStatusOptions.not_billable.value,
+    ChargeItemStatusOptions.aborted.value,
+]
+
+
 class ChargeItemResourceOptions(str, Enum):
     service_request = "service_request"
+    medication_dispense = "medication_dispense"
+    appointment = "appointment"
+    bed_association = "bed_association"
 
 
 class ChargeItemOverrideReason(BaseModel):
@@ -49,14 +61,6 @@ class ChargeItemSpec(EMRResource):
     unit_price_components: list[MonetaryComponent]
     note: str | None = None
     override_reason: ChargeItemOverrideReason | None = None
-    service_resource: ChargeItemResourceOptions | None = None
-    service_resource_id: str | None = None
-
-    @model_validator(mode="after")
-    def validate_service_resource(self):
-        if self.service_resource and not self.service_resource_id:
-            raise ValueError("Service resource id is required.")
-        return self
 
     @model_validator(mode="after")
     def check_duplicate_codes(self):
@@ -88,14 +92,34 @@ class ChargeItemSpec(EMRResource):
 
 
 class ChargeItemWriteSpec(ChargeItemSpec):
-    encounter: UUID4
+    encounter: UUID4 | None = None
+    patient: UUID4 | None = None
     account: UUID4 | None = None
+    service_resource: ChargeItemResourceOptions | None = None
+    service_resource_id: str | None = None
+
+    @model_validator(mode="after")
+    def validate_service_resource(self):
+        if self.service_resource and not self.service_resource_id:
+            raise ValueError("Service resource id is required.")
+        return self
+
+    @model_validator(mode="after")
+    def validate_encounter_patient(self):
+        if not self.encounter and not self.patient:
+            raise ValueError("Encounter or patient is required")
+        return self
 
     def perform_extra_deserialization(self, is_update, obj):
-        obj.encounter = Encounter.objects.get(external_id=self.encounter)
-        obj.patient = obj.encounter.patient
+        if self.patient:
+            obj.patient = get_object_or_404(Patient, external_id=self.patient)
+        if self.encounter:
+            obj.encounter = get_object_or_404(Encounter, external_id=self.encounter)
+            obj.patient = obj.encounter.patient
         if self.account:
-            obj.account = Account.objects.get(external_id=self.account)
+            obj.account = Account.objects.get(
+                external_id=self.account, patient=obj.patient
+            )
 
 
 class ChargeItemReadSpec(ChargeItemSpec):
@@ -106,6 +130,8 @@ class ChargeItemReadSpec(ChargeItemSpec):
     charge_item_definition: dict
     paid_invoice: dict | None = None
     tags: list[dict] = []
+    service_resource: ChargeItemResourceOptions | None = None
+    service_resource_id: str | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

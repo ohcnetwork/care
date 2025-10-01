@@ -2,7 +2,6 @@ from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRBaseViewSet, EMRRetrieveMixin
@@ -19,6 +18,7 @@ from care.emr.resources.scheduling.slot.spec import (
     TokenBookingReadSpec,
     TokenSlotBaseSpec,
 )
+from care.utils.shortcuts import get_object_or_404
 from config.patient_otp_authentication import (
     JWTTokenPatientAuthentication,
     OTPAuthenticatedPermission,

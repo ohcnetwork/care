@@ -1,12 +1,12 @@
 from enum import Enum
 
-from django.core.validators import slug_re
-from pydantic import UUID4, Field, field_validator, model_validator
+from pydantic import UUID4, field_validator, model_validator
 
 from care.emr.models.valueset import ValueSet as ValuesetDatabaseModel
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.valueset import ValueSetCompose
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.slug_type import SlugType
 
 
 class ValueSetStatusOptions(str, Enum):
@@ -20,7 +20,7 @@ class ValueSetBaseSpec(EMRResource):
     __model__ = ValuesetDatabaseModel
 
     id: UUID4 = None
-    slug: str | None = Field(None, min_length=5, max_length=25, pattern=r"^[-\w]+$")
+    slug: SlugType
     name: str
     description: str
     compose: ValueSetCompose
@@ -39,9 +39,6 @@ class ValueSetSpec(ValueSetBaseSpec):
     @field_validator("slug")
     @classmethod
     def validate_slug(cls, slug: str, info) -> str:
-        if not slug_re.match(slug):
-            err = "Slug must be alphanumeric and can contain hyphens, underscores, and periods."
-            raise ValueError(err)
         queryset = ValuesetDatabaseModel.objects.filter(slug=slug)
         context = cls.get_serializer_context(info)
         if context.get("is_update", False):
@@ -53,7 +50,7 @@ class ValueSetSpec(ValueSetBaseSpec):
 
     @model_validator(mode="after")
     def validate_slug_system(self):
-        if not self.is_system_defined and "system-" in self.slug:
+        if not self.is_system_defined and self.slug and "system-" in self.slug:
             err = "Cannot create valueset with system like slug"
             raise ValueError(err)
         return self

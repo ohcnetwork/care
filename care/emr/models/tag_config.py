@@ -32,7 +32,6 @@ class TagConfig(EMRBaseModel):
         blank=True,
     )
     status = models.CharField(max_length=255)
-    slug = models.CharField(max_length=255)
     display = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     category = models.CharField(max_length=255)
@@ -76,7 +75,6 @@ class TagConfig(EMRBaseModel):
             self.parent.get_parent_json()
             self.cached_parent_json = {
                 "id": str(self.parent.external_id),
-                "slug": self.parent.slug,
                 "display": self.parent.display,
                 "description": self.parent.description,
                 "category": self.parent.category,

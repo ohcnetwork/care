@@ -2,13 +2,13 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4
 
 from care.emr.models import Account
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PeriodSpec
 from care.emr.resources.patient.spec import PatientListSpec
+from care.utils.shortcuts import get_object_or_404
 
 
 class AccountStatusOptions(str, Enum):

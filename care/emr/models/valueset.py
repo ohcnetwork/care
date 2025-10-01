@@ -31,6 +31,8 @@ class ValueSet(EMRBaseModel):
             system = exclude.system
             if system not in systems:
                 systems[system] = {"exclude": []}
+            elif "exclude" not in systems[system]:
+                systems[system]["exclude"] = []
             systems[system]["exclude"].append(exclude.model_dump(exclude_defaults=True))
         return systems
 

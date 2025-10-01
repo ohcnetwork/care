@@ -3,8 +3,8 @@
 <p align="center">
   <a href="https://ohc.network">
     <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="./care/static/images/logos/light-logo.svg">
-      <img alt="care logo" src="./care/static/images/logos/black-logo.svg"  width="300">
+      <source media="(prefers-color-scheme: dark)" srcset="./care/static/images/logos/logo-dark.svg">
+      <img alt="care logo" src="./care/static/images/logos/logo-light.svg"  width="300">
     </picture>
   </a>
 </p>

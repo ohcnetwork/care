@@ -6,7 +6,7 @@
   "configurations": [
     {
       "name": "Docker: Django",
-      "type": "python",
+      "type": "debugpy",
       "request": "attach",
       "pathMappings": [
         {
@@ -14,12 +14,14 @@
           "remoteRoot": "/app"
         }
       ],
-      "port": 9876,
-      "host": "127.0.0.1",
+      "connect": {
+        "port": 9876,
+        "host": "127.0.0.1",
+      },
     },
     {
       "name": "Python: Django",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
       "args": [
@@ -27,54 +29,43 @@
         "9000",
         "--print-sql"
       ],
-      "env": {
-        "DATABASE_URL": "postgres://postgres:postgres@localhost:5433/care"
-      },
+      "envFile": "${workspaceFolder}/.env",
       "django": true,
       "justMyCode": false
     },
     {
       "name": "Python: Django Make Migrations",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
       "args": [
         "makemigrations"
       ],
-      "env": {
-        "DATABASE_URL": "postgres://postgres:postgres@localhost:5433/care"
-      },
+      "envFile": "${workspaceFolder}/.env",
       "django": true,
       "justMyCode": false
     },
     {
       "name": "Python: Django Migrate",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
       "args": [
         "migrate"
       ],
-      "env": {
-        "DATABASE_URL": "postgres://postgres:postgres@localhost:5433/care"
-      },
+      "envFile": "${workspaceFolder}/.env",
       "django": true,
       "justMyCode": false
     },
     {
-      "name": "Python: Django test",
-      "type": "python",
+      "name": "Python: Debug Tests",
+      "type": "debugpy",
       "request": "launch",
-      "program": "${workspaceFolder}/manage.py",
-      "env": {
-        "DATABASE_URL": "postgres://postgres:postgres@localhost:5433/care"
-      },
-      "args": [
-        "test",
-        "--keepdb"
-      ],
-      "django": true,
+      "program": "${file}",
+      "envFile": "${workspaceFolder}/.env",
+      "purpose": ["debug-test"],
+      "console": "integratedTerminal",
       "justMyCode": false
-    },
+    }
   ]
 }

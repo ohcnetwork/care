@@ -6,18 +6,12 @@ from django.conf import settings
 from django.db.models import Sum
 from pydantic import UUID4, Field, field_validator, model_validator
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import get_object_or_404
 
 from care.emr.models.scheduling.booking import TokenSlot
-from care.emr.models.scheduling.schedule import (
-    Availability,
-    SchedulableUserResource,
-    Schedule,
-)
+from care.emr.models.scheduling.schedule import Availability, Schedule
 from care.emr.resources.base import EMRResource
-from care.emr.resources.user.spec import UserSpec
+from care.emr.resources.charge_item_definition.spec import ChargeItemDefinitionReadSpec
 from care.facility.models import Facility
-from care.users.models import User
 from care.utils.time_util import care_now
 
 
@@ -25,6 +19,12 @@ class SlotTypeOptions(str, Enum):
     open = "open"
     appointment = "appointment"
     closed = "closed"
+
+
+class SchedulableResourceTypeOptions(str, Enum):
+    practitioner = "practitioner"
+    location = "location"
+    healthcare_service = "healthcare_service"
 
 
 class AvailabilityDateTimeSpec(EMRResource):
@@ -129,12 +129,13 @@ class ScheduleBaseSpec(EMRResource):
 
 
 class ScheduleCreateSpec(ScheduleBaseSpec):
-    user: UUID4
     facility: UUID4
     name: str
     valid_from: datetime.datetime
     valid_to: datetime.datetime
     availabilities: list[AvailabilityForScheduleSpec]
+    resource_type: SchedulableResourceTypeOptions
+    resource_id: UUID4
 
     @field_validator("valid_from", "valid_to")
     @classmethod
@@ -163,15 +164,9 @@ class ScheduleCreateSpec(ScheduleBaseSpec):
         return availabilities
 
     def perform_extra_deserialization(self, is_update, obj):
-        user = get_object_or_404(User, external_id=self.user)
-        # TODO Validation that user is in given facility
         obj.facility = Facility.objects.get(external_id=self.facility)
-
-        resource, _ = SchedulableUserResource.objects.get_or_create(
-            facility=obj.facility,
-            user=user,
-        )
-        obj.resource = resource
+        obj._resource_id = self.resource_id  # noqa SLF001
+        obj._resource_type = self.resource_type  # noqa SLF001
         obj.availabilities = self.availabilities
 
 
@@ -218,22 +213,33 @@ class ScheduleReadSpec(ScheduleBaseSpec):
     valid_from: datetime.datetime
     valid_to: datetime.datetime
     availabilities: list = []
-    created_by: UserSpec = {}
-    updated_by: UserSpec = {}
+    resource_type: SchedulableResourceTypeOptions
+    charge_item_definition: dict | None = None
+    revisit_allowed_days: int | None = None
+    revisit_charge_item_definition: dict | None = None
+    created_by: dict = {}
+    updated_by: dict = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
 
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        cls.serialize_audit_users(mapping, obj)
 
         mapping["availabilities"] = [
             AvailabilityForScheduleSpec.serialize(o)
             for o in Availability.objects.filter(schedule=obj)
         ]
+        mapping["charge_item_definition"] = (
+            ChargeItemDefinitionReadSpec.serialize(obj.charge_item_definition)
+            if obj.charge_item_definition
+            else None
+        )
+        mapping["revisit_charge_item_definition"] = (
+            ChargeItemDefinitionReadSpec.serialize(obj.revisit_charge_item_definition)
+            if obj.revisit_charge_item_definition
+            else None
+        )
 
 
 def has_overlapping_availability(availabilities: list[AvailabilityDateTimeSpec]):
