@@ -72,6 +72,13 @@ class Patient(EMRBaseModel):
 
         return "0 days"
 
+    @property
+    def age(self) -> int:
+        start = self.date_of_birth or date(self.year_of_birth, 1, 1)
+        end = (self.deceased_datetime or timezone.now()).date()
+        delta = relativedelta(end, start)
+        return delta.years
+
     def rebuild_organization_cache(self):
         organization_parents = []
         if self.geo_organization:

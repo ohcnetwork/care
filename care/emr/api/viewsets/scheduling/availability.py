@@ -8,16 +8,24 @@ from django.utils import timezone
 from pydantic import UUID4, BaseModel, model_validator
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRBaseViewSet, EMRRetrieveMixin
+from care.emr.api.viewsets.scheduling.schedule import get_or_create_resource
 from care.emr.models import AvailabilityException, Schedule, TokenBooking
 from care.emr.models.patient import Patient
 from care.emr.models.scheduling.booking import TokenSlot
-from care.emr.models.scheduling.schedule import Availability, SchedulableUserResource
-from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions
+from care.emr.models.scheduling.schedule import Availability
+from care.emr.resources.charge_item.apply_charge_item_definition import (
+    apply_charge_item_definition,
+)
+from care.emr.resources.charge_item.spec import ChargeItemResourceOptions
+from care.emr.resources.scheduling.schedule.spec import (
+    SchedulableResourceTypeOptions,
+    SlotTypeOptions,
+)
 from care.emr.resources.scheduling.slot.spec import (
+    CANCELLED_STATUS_CHOICES,
     COMPLETED_STATUS_CHOICES,
     TokenBookingReadSpec,
     TokenSlotBaseSpec,
@@ -26,13 +34,14 @@ from care.emr.resources.tag.config_spec import TagResource
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
-from care.users.models import User
 from care.utils.lock import Lock
+from care.utils.shortcuts import get_object_or_404
 from care.utils.time_util import care_now
 
 
 class SlotsForDayRequestSpec(BaseModel):
-    user: UUID4
+    resource_type: SchedulableResourceTypeOptions
+    resource_id: UUID4
     day: datetime.date
 
 
@@ -46,7 +55,8 @@ class AppointmentBookingSpec(BaseModel):
 class AvailabilityStatsRequestSpec(BaseModel):
     from_date: datetime.date
     to_date: datetime.date
-    user: UUID4
+    resource_type: SchedulableResourceTypeOptions
+    resource_id: UUID4
 
     @model_validator(mode="after")
     def validate_period(self):
@@ -124,7 +134,7 @@ def lock_create_appointment(token_slot, patient, created_by, note):
             raise ValidationError("Patient already has a booking for this slot")
         token_slot.allocated += 1
         token_slot.save()
-        return TokenBooking.objects.create(
+        booking = TokenBooking.objects.create(
             token_slot=token_slot,
             patient=patient,
             booked_by=created_by,
@@ -133,6 +143,45 @@ def lock_create_appointment(token_slot, patient, created_by, note):
             note=note,
             status="booked",
         )
+        # Generate Charge Item
+        schedule = booking.token_slot.availability.schedule
+        last_booking = (
+            TokenBooking.objects.exclude(status__in=CANCELLED_STATUS_CHOICES)
+            .filter(
+                patient=patient,
+                token_slot__availability__schedule=schedule,
+                charge_item__isnull=False,
+                token_slot__start_datetime__lte=token_slot.start_datetime,
+            )
+            .order_by("-token_slot__start_datetime")
+        ).first()
+        if last_booking:
+            booking_start_time = last_booking.token_slot.start_datetime
+            current_time = timezone.now()
+            diff_days = (booking_start_time - current_time).days
+        else:
+            diff_days = -1
+        if (
+            schedule.revisit_allowed_days
+            and diff_days != -1
+            and diff_days <= schedule.revisit_allowed_days
+        ):
+            charge_item_definition = schedule.revisit_charge_item_definition
+        else:
+            charge_item_definition = schedule.charge_item_definition
+        if charge_item_definition:
+            charge_item = apply_charge_item_definition(
+                charge_item_definition,
+                patient,
+                token_slot.resource.facility,
+                quantity=1,
+            )
+            charge_item.service_resource = ChargeItemResourceOptions.appointment.value
+            charge_item.service_resource_id = str(booking.external_id)
+            charge_item.save()
+            booking.charge_item = charge_item
+            booking.save(update_fields=["charge_item"])
+        return booking
 
 
 class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
@@ -141,6 +190,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
 
     @action(detail=False, methods=["POST"])
     def get_slots_for_day(self, request, *args, **kwargs):
+        # TODO : Add Authorization, Need to confirm what works here
         return self.get_slots_for_day_handler(
             self.kwargs["facility_external_id"], request.data
         )
@@ -148,19 +198,20 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     @classmethod
     def get_slots_for_day_handler(cls, facility_external_id, request_data):
         request_data = SlotsForDayRequestSpec(**request_data)
-        user = get_object_or_404(User, external_id=request_data.user)
-        schedulable_resource_obj = SchedulableUserResource.objects.filter(
-            facility__external_id=facility_external_id,
-            user=user,
-        ).first()
-        if not schedulable_resource_obj:
+        facility = get_object_or_404(Facility, external_id=facility_external_id)
+        resource = get_or_create_resource(
+            request_data.resource_type,
+            request_data.resource_id,
+            facility,
+        )
+        if not resource:
             raise ValidationError("Resource is not schedulable")
         # Find all relevant schedules
         availabilities = Availability.objects.filter(
             slot_type=SlotTypeOptions.appointment.value,
             schedule__valid_from__lte=request_data.day,
             schedule__valid_to__gte=request_data.day,
-            schedule__resource=schedulable_resource_obj,
+            schedule__resource=resource,
         )
         # Fetch all availabilities for that day of week
         calculated_dow_availabilities = []
@@ -175,7 +226,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
                         }
                     )
         exceptions = AvailabilityException.objects.filter(
-            resource=schedulable_resource_obj,
+            resource=resource,
             valid_from__lte=request_data.day,
             valid_to__gte=request_data.day,
         )
@@ -187,7 +238,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         created_slots = TokenSlot.objects.filter(
             start_datetime__date=request_data.day,
             end_datetime__date=request_data.day,
-            resource=schedulable_resource_obj,
+            resource=resource,
         )
         for slot in created_slots:
             slot_key = f"{timezone.make_naive(slot.start_datetime).time()}-{timezone.make_naive(slot.end_datetime).time()}"
@@ -198,8 +249,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
                 slots.pop(slot_key)
 
         # Create everything else
-        for _slot in slots:
-            slot = slots[_slot]
+        for _, slot in slots.items():
             end_datetime = datetime.datetime.combine(
                 request_data.day, slot["end_time"], tzinfo=None
             )
@@ -207,7 +257,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             if end_datetime < timezone.make_naive(timezone.now()):
                 continue
             TokenSlot.objects.create(
-                resource=schedulable_resource_obj,
+                resource=resource,
                 start_datetime=datetime.datetime.combine(
                     request_data.day, slot["start_time"], tzinfo=None
                 ),
@@ -222,7 +272,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
                     for slot in TokenSlot.objects.filter(
                         start_datetime__date=request_data.day,
                         end_datetime__date=request_data.day,
-                        resource=schedulable_resource_obj,
+                        resource=resource,
                     ).select_related("availability")
                 ]
             }
@@ -264,14 +314,16 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
         )
 
+    def authorize_update(self, request_obj, model_instance):
+        if not AuthorizationController.call(
+            "can_create_booking", model_instance.resource, self.request.user
+        ):
+            raise PermissionDenied("You do not have permission to create appointments")
+
     @action(detail=True, methods=["POST"])
     def create_appointment(self, request, *args, **kwargs):
         slot_obj = self.get_object()
-        facility = slot_obj.resource.facility
-        if not AuthorizationController.call(
-            "can_create_appointment", self.request.user, facility
-        ):
-            raise PermissionDenied("You do not have permission to create appointments")
+        self.authorize_update(None, slot_obj)
         return self.create_appointment_handler(slot_obj, request.data, request.user)
 
     @action(detail=False, methods=["POST"])
@@ -282,17 +334,18 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         """
         request_data = AvailabilityStatsRequestSpec(**request.data)
         # Fetch the entire schedule and calculate total slots available for each day
-        user = User.objects.filter(external_id=request_data.user).first()
-        if not user:
-            raise ValidationError("User does not exist")
         facility = get_object_or_404(
             Facility, external_id=self.kwargs["facility_external_id"]
         )
-        resource = SchedulableUserResource.objects.filter(
-            user=user, facility=facility
-        ).first()
+        resource = get_or_create_resource(
+            request_data.resource_type,
+            request_data.resource_id,
+            facility,
+        )
         if not resource:
             raise ValidationError("Resource is not schedulable")
+
+        self.authorize_resource_read(resource)
 
         schedules = Schedule.objects.filter(
             valid_from__lte=request_data.to_date,
@@ -324,7 +377,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             response_days[str(day)] = {"total_slots": 0, "booked_slots": 0}
             day += timedelta(days=1)
 
-        for day in days:
+        for day, day_data in days.items():
             # Calculate all matching schedules
             current_schedules = []
             for schedule in schedules:
@@ -344,7 +397,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             slots_count = calculate_slots(
                 day, availabilities, current_schedules, exceptions
             )
-            days[day]["total_slots"] = slots_count
+            day_data["total_slots"] = slots_count
             response_days[str(day)]["total_slots"] = slots_count
         # Query slots data for these dates, group by date and sum up count
 
@@ -366,6 +419,18 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         # Query all the booked slots for the given days and get the total booked
 
         return Response(response_days)
+
+    def authorize_retrieve(self, model_instance):
+        self.authorize_resource_read(model_instance.resource)
+
+    def authorize_resource_read(self, resource_obj):
+        if not AuthorizationController.call(
+            "can_list_booking", resource_obj, self.request.user
+        ):
+            raise PermissionDenied("You do not have permission to list bookings")
+
+    def get_queryset(self):
+        return super().get_queryset().select_related("resource")
 
 
 def calculate_slots(

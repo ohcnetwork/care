@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -32,18 +31,17 @@ from care.emr.resources.observation_definition.observation import (
     convert_od_to_observation,
 )
 from care.emr.resources.questionnaire.spec import SubjectType
+from care.emr.utils.compute_observation_interpretation import (
+    compute_observation_interpretation,
+)
 from care.security.authorization.base import AuthorizationController
-
-
-class ApplyObservationDefinitionRequest(BaseModel):
-    observation_definition: UUID4
-    observation: ObservationUpdateSpec
+from care.utils.shortcuts import get_object_or_404
 
 
 class UpsertObservationRequest(BaseModel):
     observation: ObservationUpdateSpec
     observation_id: UUID4 | None = None
-    observation_definition: UUID4 | None = None
+    observation_definition: str | None = None
 
 
 class BatchUpdateObservationRequest(BaseModel):
@@ -157,11 +155,12 @@ class DiagnosticReportViewSet(
                 "Cannot update observations for a final diagnostic report"
             )
         self.authorize_update({}, diagnostic_report)
+        metrics_cache = {}
         for request_param in request_params.observations:
             if request_param.observation_definition:
                 observation_definition = get_object_or_404(
                     ObservationDefinition,
-                    external_id=request_param.observation_definition,
+                    slug=request_param.observation_definition,
                     facility=diagnostic_report.facility,
                 )
                 observation_obj = convert_od_to_observation(
@@ -197,5 +196,12 @@ class DiagnosticReportViewSet(
             model_instance.subject_id = diagnostic_report.encounter.external_id
             model_instance.diagnostic_report = diagnostic_report
             model_instance.subject_type = SubjectType.encounter.value
+
+            # Compute interpretation if observation_definition is linked
+            if model_instance.observation_definition:
+                returned_cache = compute_observation_interpretation(
+                    model_instance, metrics_cache
+                )
+                metrics_cache = returned_cache
             model_instance.save()
         return Response({"message": "Observations updated successfully"})
