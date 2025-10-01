@@ -10,6 +10,7 @@ from care.emr.resources.payment_reconciliation.spec import (
     PaymentReconciliationStatusOptions,
     PaymentReconciliationTypeOptions,
 )
+from care.security.permissions.location import FacilityLocationPermissions
 from care.security.permissions.payment_reconciliation import (
     PaymentReconciliationPermissions,
 )
@@ -37,6 +38,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
                 PaymentReconciliationPermissions.can_read_payment_reconciliation.name,
                 PaymentReconciliationPermissions.can_write_payment_reconciliation.name,
                 PaymentReconciliationPermissions.can_destroy_payment_reconciliation.name,
+                FacilityLocationPermissions.can_list_facility_locations.name,
             ]
         )
         self.account = self.create_account(facility=self.facility)
@@ -61,6 +63,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             facility=self.facility, account=self.account, patient=self.patient
         )
         self.base_url = self.get_base_url()
+        self.facility_location = self.create_facility_location(facility=self.facility)
 
     def get_base_url(self, facility_external_id=None):
         return reverse(
@@ -89,6 +92,21 @@ class PaymentReconciliationAPITest(CareAPITestBase):
                 "external_id": external_id,
             },
         )
+
+    def create_facility_location(self, facility, parent=None):
+        location = baker.make(
+            "emr.FacilityLocation",
+            facility=facility,
+            name="Test Location",
+            description="Test Location",
+            parent=parent,
+        )
+        baker.make(
+            "emr.FacilityLocationOrganization",
+            location=location,
+            organization=self.facility_organization,
+        )
+        return location
 
     def create_account(self, facility, status=None, billing_status=None):
         return baker.make(
@@ -166,12 +184,11 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         amount=None,
         note=None,
         is_credit_note=False,
+        location=None,
     ):
         return {
             "account": account or str(self.account.external_id),
-            "target_invoice": target_invoice
-            if target_invoice
-            else self.invoice.external_id,
+            "target_invoice": target_invoice or str(self.invoice.external_id),
             "reconciliation_type": reconciliation_type
             or PaymentReconciliationTypeOptions.payment.value,
             "status": status or PaymentReconciliationStatusOptions.active.value,
@@ -189,6 +206,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             "amount": amount or 4500.00,
             "note": note or "Test Note",
             "is_credit_note": is_credit_note,
+            "location": location or str(self.facility_location.external_id),
         }
 
     def create_payment_reconciliation(self, facility=None, **kwargs):
@@ -354,6 +372,106 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         self.assertEqual(float(self.account.total_paid), -5000.00)
         self.assertEqual(float(self.account.total_balance), 9500.00)
 
+    def test_create_payment_reconciliation_without_location(self):
+        """
+        Test creating a payment reconciliation without location
+        """
+        self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(
+            permissions=[
+                PaymentReconciliationPermissions.can_read_payment_reconciliation.name,
+                PaymentReconciliationPermissions.can_write_payment_reconciliation.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        data = self.generate_payment_reconciliation_data()
+        data.pop("location")
+        response = self.client.post(
+            self.base_url,
+            data=data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertIsNone(get_response.data["location"])
+        self.account.refresh_from_db()
+        self.assertEqual(float(self.account.total_paid), 4500.00)
+        self.assertEqual(float(self.account.total_balance), 0.00)
+
+    def test_create_payment_reconciliation_without_location_permission(self):
+        """
+        Test creating a payment reconciliation without location permission
+        """
+        self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(
+            permissions=[
+                PaymentReconciliationPermissions.can_read_payment_reconciliation.name,
+                PaymentReconciliationPermissions.can_write_payment_reconciliation.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        response = self.client.post(
+            self.base_url,
+            data=self.generate_payment_reconciliation_data(
+                location=str(self.facility_location.external_id)
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to given location", str(response.data)
+        )
+
+    def test_create_payment_reconciliation_with_invalid_location(self):
+        """
+        Test creating a payment reconciliation with an location not associated with the facility
+        """
+        other_facility = self.create_facility(
+            name="Other Facility", user=self.superuser
+        )
+        other_location = self.create_facility_location(facility=other_facility)
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        response = self.client.post(
+            self.base_url,
+            data=self.generate_payment_reconciliation_data(
+                location=str(other_location.external_id)
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response, "Location is not associated with the facility", status_code=400
+        )
+
+    def test_create_payment_reconciliation_without_invoice(self):
+        """
+        Test creating a payment reconciliation without an invoice
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        data = self.generate_payment_reconciliation_data()
+        data.pop("target_invoice")
+        response = self.client.post(
+            self.base_url,
+            data=data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+
     # Test cases for update payment reconciliation
 
     def test_update_payment_reconciliation_as_super_user(self):
@@ -361,6 +479,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test updating a payment reconciliation as a superuser
         """
         payment_reconciliation = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -400,6 +519,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test updating a payment reconciliation as a user with permission
         """
         payment_reconciliation = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -442,6 +562,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test updating a payment reconciliation as a user without write permission
         """
         payment_reconciliation = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -481,6 +602,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             name="Other Facility", user=self.superuser
         )
         payment_reconciliation = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=other_facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -506,6 +628,32 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             status_code=404,
         )
 
+    def test_update_payment_reconciliation_status_to_cancelled(self):
+        """
+        Test updating a payment reconciliation status to cancelled
+        """
+        payment_reconciliation = self.create_payment_reconciliation(
+            location=self.facility_location,
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.put(
+            self.get_detail_url(payment_reconciliation.external_id),
+            data=self.generate_payment_reconciliation_data(
+                status=PaymentReconciliationStatusOptions.cancelled.value,
+                note="Updated Note",
+                outcome=PaymentReconciliationOutcomeOptions.error.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Cannot update payment reconciliation, use the cancel endpoint instead",
+            str(response.data),
+        )
+
     # Test cases for retrieve payment reconciliation
 
     def test_retrieve_payment_reconciliation_as_super_user(self):
@@ -513,6 +661,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test retrieving a payment reconciliation as a superuser
         """
         payment_reconciliation = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -529,6 +678,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test retrieving a payment reconciliation as a user with permission
         """
         payment_reconciliation = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -548,6 +698,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test retrieving a payment reconciliation as a user without permission
         """
         payment_reconciliation = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -567,6 +718,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             name="Other Facility", user=self.superuser
         )
         payment_reconciliation = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=other_facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -593,11 +745,13 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test listing payment reconciliations as a superuser
         """
         payment_reconciliation_1 = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
         )
         payment_reconciliation_2 = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -615,11 +769,13 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test listing payment reconciliations as a user with permission
         """
         payment_reconciliation_1 = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
         )
         payment_reconciliation_2 = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -640,11 +796,13 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test listing payment reconciliations as a user without permission
         """
         self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
         )
         self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -662,11 +820,13 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             name="Other Facility", user=self.superuser
         )
         self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=other_facility,
             target_invoice=self.invoice,
             account=self.account,
         )
         self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=other_facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -685,11 +845,13 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         """
         other_account = self.create_account(facility=self.facility)
         payment_reconciliation_1 = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
         )
         self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=other_account,
@@ -709,12 +871,14 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test filtering payment reconciliations by status
         """
         payment_reconciliation_1 = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
             status=PaymentReconciliationStatusOptions.active.value,
         )
         self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -738,11 +902,13 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             facility=self.facility, account=self.account, patient=self.patient
         )
         payment_reconciliation_1 = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
         )
         self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=other_invoice,
             account=self.account,
@@ -762,12 +928,14 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test filtering payment reconciliations by reconciliation type
         """
         payment_reconciliation_1 = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
             reconciliation_type=PaymentReconciliationTypeOptions.payment.value,
         )
         self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -789,18 +957,47 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test filtering payment reconciliations by is_credit_note
         """
         payment_reconciliation_1 = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
             is_credit_note=True,
         )
         self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
         )
         self.client.force_authenticate(user=self.superuser)
         response = self.client.get(self.base_url, {"is_credit_note": True})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(payment_reconciliation_1.external_id)
+        )
+
+    def test_filter_payment_reconciliation_by_location(self):
+        """
+        Test filtering payment reconciliations by location
+        """
+        other_location = self.create_facility_location(facility=self.facility)
+        payment_reconciliation_1 = self.create_payment_reconciliation(
+            location=self.facility_location,
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+        )
+        self.create_payment_reconciliation(
+            facility=self.facility,
+            target_invoice=self.invoice,
+            account=self.account,
+            location=other_location,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.base_url, {"location": str(self.facility_location.external_id)}
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(
@@ -814,6 +1011,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test cancelling a payment reconciliation as a superuser
         """
         payment_reconciliation = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -852,6 +1050,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test cancelling a payment reconciliation as a user with permission
         """
         payment_reconciliation = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -893,6 +1092,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test cancelling a payment reconciliation as a user without permission
         """
         payment_reconciliation = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
@@ -928,6 +1128,7 @@ class PaymentReconciliationAPITest(CareAPITestBase):
         Test cancelling a payment reconciliation with an invalid reason
         """
         payment_reconciliation = self.create_payment_reconciliation(
+            location=self.facility_location,
             facility=self.facility,
             target_invoice=self.invoice,
             account=self.account,
