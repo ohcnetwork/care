@@ -1,5 +1,5 @@
 from django.db import transaction
-from django_filters import FilterSet, UUIDFilter
+from django_filters import DateFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
@@ -32,6 +32,7 @@ class TokenFilters(FilterSet):
     sub_queue = UUIDFilter(field_name="sub_queue__external_id")
     status = MultiSelectFilter(field_name="status")
     sub_queue_is_null = NullFilter(field_name="sub_queue")
+    date = DateFilter(field_name="queue__date")  # For dependent filtering only
 
 
 class TokenViewSet(EMRModelViewSet):
@@ -95,7 +96,10 @@ class TokenViewSet(EMRModelViewSet):
         with transaction.atomic():
             obj = self.get_object()
             if obj.sub_queue and obj.sub_queue != instance.sub_queue:
-                if obj.sub_queue.resource != instance.sub_queue.resource:
+                if (
+                    instance.sub_queue
+                    and obj.sub_queue.resource != instance.sub_queue.resource
+                ):
                     raise ValidationError(
                         "Sub Queue and Queue are not in the same resource"
                     )

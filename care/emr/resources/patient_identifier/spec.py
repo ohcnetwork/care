@@ -29,6 +29,7 @@ class PatientIdentifierRetrieveConfig(BaseModel):
     retrieve_with_dob: bool = False
     retrieve_with_year_of_birth: bool = False
     retrieve_with_otp: bool = False
+    retrieve_partial_search: bool = False
 
 
 class IdentifierConfig(BaseModel):
@@ -41,6 +42,7 @@ class IdentifierConfig(BaseModel):
     display: str
     retrieve_config: PatientIdentifierRetrieveConfig = {}
     default_value: str | None = None
+    auto_maintained: bool = False
 
     @field_validator("default_value")
     @classmethod

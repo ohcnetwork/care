@@ -6,7 +6,7 @@ from pydantic import UUID4, BaseModel
 from care.emr.models.encounter import Encounter
 from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.location import FacilityLocation
-from care.emr.models.medication_dispense import MedicationDispense
+from care.emr.models.medication_dispense import DispenseOrder, MedicationDispense
 from care.emr.models.medication_request import MedicationRequest
 from care.emr.resources.base import EMRResource
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
@@ -109,6 +109,7 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
     quantity: float
     days_supply: float | None = None
     fully_dispensed: bool | None = None
+    order: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.encounter = get_object_or_404(
@@ -133,13 +134,22 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
             ).only("id")
         )
         obj._fully_dispensed = self.fully_dispensed  # noqa # SLF001
+        if self.order:
+            obj.order = get_object_or_404(
+                DispenseOrder.objects.only("id").filter(external_id=self.order)
+            )
 
 
 class MedicationDispenseUpdateSpec(BaseMedicationDispenseSpec):
     fully_dispensed: bool | None = None
+    order: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         obj._fully_dispensed = self.fully_dispensed  # noqa
+        if self.order:
+            obj.order = get_object_or_404(
+                DispenseOrder.objects.only("id").filter(external_id=self.order)
+            )
 
 
 class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
