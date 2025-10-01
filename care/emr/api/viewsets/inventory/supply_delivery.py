@@ -202,7 +202,7 @@ class SupplyDeliveryViewSet(
         return queryset
 
     @action(detail=False, methods=["GET"])
-    def request_orders(self, request, *args, **kwargs):
+    def delivery_orders(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         if "request_order" not in request.GET:
             raise ValidationError("request_order is required")
@@ -218,7 +218,7 @@ class SupplyDeliveryViewSet(
         queryset = self.database_model.objects.all()
         if self.action == "list":
             queryset = queryset.order_by("-id")
-        if self.action in ["list", "request_orders"]:
+        if self.action in ["list", "delivery_orders"]:
             include_children = (
                 self.request.GET.get("include_children", "false").lower() == "true"
             )
