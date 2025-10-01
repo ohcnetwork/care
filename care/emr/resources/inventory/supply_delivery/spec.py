@@ -125,6 +125,7 @@ class SupplyDeliveryReadSpec(BaseSupplyDeliverySpec):
     created_date: datetime.datetime
     modified_date: datetime.datetime
     supplied_inventory_item: dict | None = None
+    supply_request: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -137,20 +138,19 @@ class SupplyDeliveryReadSpec(BaseSupplyDeliverySpec):
             mapping["supplied_inventory_item"] = InventoryItemReadSpec.serialize(
                 obj.supplied_inventory_item
             ).to_json()
+        if obj.supply_request:
+            mapping["supply_request"] = SupplyRequestReadSpec.serialize(
+                obj.supply_request
+            ).to_json()
 
 
 class SupplyDeliveryRetrieveSpec(SupplyDeliveryReadSpec):
     """Supply delivery retrieve specification"""
 
-    supply_request: dict | None = None
     created_by: UserSpec = {}
     updated_by: UserSpec = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        if obj.supply_request:
-            mapping["supply_request"] = SupplyRequestReadSpec.serialize(
-                obj.supply_request
-            ).to_json()
         cls.serialize_audit_users(mapping, obj)
