@@ -1,6 +1,6 @@
 import enum
 
-from pydantic import UUID4, BaseModel, field_validator
+from pydantic import UUID4, BaseModel, field_validator, model_validator
 
 from care.emr.models.observation_definition import ObservationDefinition
 from care.emr.resources.base import EMRResource
