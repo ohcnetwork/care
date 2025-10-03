@@ -14,11 +14,13 @@ from care.emr.api.viewsets.base import (
 )
 from care.emr.models.account import Account
 from care.emr.models.invoice import Invoice
+from care.emr.models.location import FacilityLocation
 from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.resources.account.sync_items import rebalance_account_task
 from care.emr.resources.payment_reconciliation.spec import (
     BasePaymentReconciliationSpec,
     PaymentReconciliationReadSpec,
+    PaymentReconciliationRetrieveSpec,
     PaymentReconciliationStatusOptions,
     PaymentReconciliationWriteSpec,
 )
@@ -37,6 +39,7 @@ class PaymentReconciliationFilters(filters.FilterSet):
     reconciliation_type = filters.CharFilter(lookup_expr="iexact")
     account = filters.UUIDFilter(field_name="account__external_id")
     is_credit_note = filters.BooleanFilter(field_name="is_credit_note")
+    location = filters.UUIDFilter(field_name="location__external_id")
 
 
 class PaymentReconciliationViewSet(
@@ -50,6 +53,7 @@ class PaymentReconciliationViewSet(
     pydantic_model = PaymentReconciliationWriteSpec
     pydantic_update_model = BasePaymentReconciliationSpec
     pydantic_read_model = PaymentReconciliationReadSpec
+    pydantic_retrieve_model = PaymentReconciliationRetrieveSpec
     filterset_class = PaymentReconciliationFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date", "payment_datetime"]
@@ -98,6 +102,17 @@ class PaymentReconciliationViewSet(
             raise PermissionDenied("Cannot write payment reconciliation")
         if account.facility != facility:
             raise ValidationError("Account is not associated with the facility")
+        if instance.location:
+            location = get_object_or_404(
+                FacilityLocation, external_id=instance.location
+            )
+            if location.facility != facility:
+                raise ValidationError("Location is not associated with the facility")
+            if not AuthorizationController.call(
+                "can_list_facility_location_obj", self.request.user, facility, location
+            ):
+                raise PermissionDenied("You do not have permission to given location")
+
         if instance.target_invoice:
             invoice = get_object_or_404(
                 Invoice, external_id=instance.target_invoice, account=account

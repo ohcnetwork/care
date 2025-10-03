@@ -102,7 +102,6 @@ class TokenSubQueueViewSet(EMRModelViewSet):
             super()
             .get_queryset()
             .select_related("resource", "created_by", "updated_by")
-            .order_by("-modified_date")
         )
         if self.action == "list":
             if (
