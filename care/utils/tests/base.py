@@ -80,6 +80,11 @@ class CareAPITestBase(APITestCase):
 
         return baker.make(Facility, created_by=user, **kwargs)
 
+    def create_facility_location(self, facility, **kwargs):
+        from care.emr.models import FacilityLocation
+
+        return baker.make(FacilityLocation, facility=facility, **kwargs)
+
     def create_encounter(self, patient, facility, organization, status=None, **kwargs):
         from care.emr.models import Encounter
         from care.emr.models.encounter import EncounterOrganization
