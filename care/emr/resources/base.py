@@ -9,6 +9,8 @@ from django.utils.timezone import is_naive
 from pydantic import BaseModel, model_validator
 from pydantic_extra_types.phone_numbers import PhoneNumberValidator
 
+from care.emr.models import TagConfig
+
 
 class EMRResource(BaseModel):
     __model__ = None
@@ -309,3 +311,39 @@ def delete_model_cache(sender, instance, **kwargs) -> None:
     """
     sender_model_string = model_string(sender)
     cache.delete(model_cache_key(sender_model_string, pk=instance.id))
+
+
+def invalidate_tag_cache(tag_id):
+    """Helper function to invalidate cache for a specific tag by its ID."""
+    TagConfig.objects.filter(id=tag_id).update(cached_parent_json={})
+
+    cache_key = model_cache_key(model_string(TagConfig), "TagConfigReadSpec", tag_id)
+    cache.delete(cache_key)
+
+
+def invalidate_tag_descendants(tag_id):
+    """Recursively invalidate cache for a tag and all its descendants."""
+    from care.emr.models import TagConfig
+
+    invalidate_tag_cache(tag_id)
+
+    children_ids = TagConfig.objects.filter(parent_id=tag_id).values_list(
+        "id", flat=True
+    )
+
+    for child_id in children_ids:
+        invalidate_tag_descendants(child_id)
+
+
+def invalidate_tag_config_cache(sender, instance, **kwargs):
+    """
+    Invalidate cache for tag and related tags when a tag is updated.
+
+    When a tag is saved:
+    1. Invalidate the tag's own cache
+    2. Invalidate all descendants' cache recursively (they store parent data)
+    3. Invalidate parent's cache (has_children might have changed)
+    """
+    invalidate_tag_descendants(instance.id)
+    if instance.parent_id:
+        invalidate_tag_cache(instance.parent_id)
