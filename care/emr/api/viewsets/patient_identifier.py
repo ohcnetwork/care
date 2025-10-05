@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
@@ -20,6 +19,7 @@ from care.emr.resources.patient_identifier.spec import (
 )
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class PatientIdentifierConfigFilters(filters.FilterSet):
@@ -39,6 +39,10 @@ class PatientIdentifierConfigViewSet(
     filter_backends = [filters.DjangoFilterBackend]
 
     def authorize_create(self, instance):
+        if instance.config.auto_maintained:
+            raise PermissionDenied(
+                "Cannot create auto maintained patient identifier config"
+            )
         if instance.facility:
             facility = get_object_or_404(Facility, external_id=instance.facility)
             if not AuthorizationController.call(
@@ -55,20 +59,29 @@ class PatientIdentifierConfigViewSet(
             )
 
     def authorize_update(self, request_obj, model_instance):
-        if model_instance.facility:
-            facility = get_object_or_404(Facility, external_id=model_instance.facility)
-            if not AuthorizationController.call(
-                "can_write_facility_patient_identifier_config",
-                self.request.user,
-                facility,
-            ):
-                raise PermissionDenied(
-                    "You do not have permission to write patient identifier configs"
-                )
+        if model_instance.facility and not AuthorizationController.call(
+            "can_write_facility_patient_identifier_config",
+            self.request.user,
+            model_instance.facility,
+        ):
+            raise PermissionDenied(
+                "You do not have permission to write patient identifier configs"
+            )
         if not model_instance.facility and not self.request.user.is_superuser:
             raise PermissionDenied(
                 "You are not authorized to update a patient identifier config"
             )
+
+    def perform_update(self, instance):
+        obj = self.get_object()
+        if obj.config.get("auto_maintained", False):
+            # If auto maintained, only update the retrieve_config,
+            # the rest should not be updated
+            retrieve_config = instance.config.get("retrieve_config", {})
+            instance.config = obj.config
+            instance.config["retrieve_config"] = retrieve_config
+        self.clean_cache(instance)
+        return super().perform_update(instance)
 
     def clean_cache(self, instance):
         if instance.facility:
@@ -79,10 +92,6 @@ class PatientIdentifierConfigViewSet(
     def perform_create(self, instance):
         self.clean_cache(instance)
         return super().perform_create(instance)
-
-    def perform_update(self, instance):
-        self.clean_cache(instance)
-        return super().perform_update(instance)
 
     def validate_data(self, instance, model_obj=None):
         # Validate that the system is not present at the instance or the facility level
@@ -104,16 +113,14 @@ class PatientIdentifierConfigViewSet(
             )
 
     def authorize_retrieve(self, model_instance):
-        if model_instance.facility:
-            facility = get_object_or_404(Facility, external_id=model_instance.facility)
-            if not AuthorizationController.call(
-                "can_list_facility_patient_identifier_config",
-                self.request.user,
-                facility,
-            ):
-                raise PermissionDenied(
-                    "You do not have permission to read patient identifier configs"
-                )
+        if model_instance.facility and not AuthorizationController.call(
+            "can_list_facility_patient_identifier_config",
+            self.request.user,
+            model_instance.facility,
+        ):
+            raise PermissionDenied(
+                "You do not have permission to read patient identifier configs"
+            )
 
     def get_queryset(self):
         queryset = super().get_queryset()

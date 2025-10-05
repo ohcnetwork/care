@@ -1,12 +1,12 @@
 from django.db.utils import IntegrityError
 from rest_framework.exceptions import ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.permissions import SAFE_METHODS, BasePermission
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 from care.users.api.serializers.userskill import UserSkillSerializer
 from care.users.models import User, UserSkill
 from care.utils.queryset.user import get_users
+from care.utils.shortcuts import get_object_or_404
 
 
 class UserSkillPermission(BasePermission):

@@ -3,7 +3,6 @@ from decimal import Decimal
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
-from django.shortcuts import get_object_or_404
 
 from care.facility.models import (
     CATEGORY_CHOICES,
@@ -25,6 +24,7 @@ from care.facility.models.json_schema.daily_round import (
 from care.facility.models.patient_consultation import PatientConsultation
 from care.users.models import User
 from care.utils.models.validators import JSONFieldSchemaValidator
+from care.utils.shortcuts import get_object_or_404
 
 
 class DailyRound(PatientBaseModel):

@@ -8,12 +8,11 @@ from rest_framework import filters as drf_filters
 from rest_framework import serializers
 from rest_framework.decorators import action, parser_classes
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet, EMRModelViewSet
-from care.emr.models import Organization, SchedulableUserResource
+from care.emr.models import Organization, SchedulableResource
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.resources.facility.spec import (
     FacilityCreateSpec,
@@ -32,6 +31,7 @@ from care.utils.models.validators import (
     cover_image_validator,
     custom_image_extension_validator,
 )
+from care.utils.shortcuts import get_object_or_404
 
 
 class FacilityImageUploadSerializer(serializers.ModelSerializer):
@@ -179,7 +179,7 @@ class FacilitySchedulableUsersViewSet(EMRModelReadOnlyViewSet):
 
     def get_queryset(self):
         return User.objects.filter(
-            id__in=SchedulableUserResource.objects.filter(
+            id__in=SchedulableResource.objects.filter(
                 facility__external_id=self.kwargs["facility_external_id"]
             ).values("user_id")
         )
