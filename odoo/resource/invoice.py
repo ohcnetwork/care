@@ -160,6 +160,44 @@ class OdooInvoiceResource(OdooBaseResource):
                     "sale_price": self.get_charge_item_base_price(charge_item),
                     "x_care_id": str(charge_item.external_id)
                 }
+                # Attach agent (requester) information similar to sync_invoice_to_odoo
+                from care.emr.resources.charge_item.spec import (
+                    ChargeItemResourceOptions,
+                )
+
+                if (
+                    charge_item.service_resource
+                    == ChargeItemResourceOptions.service_request.value
+                ):
+                    service_request = ServiceRequest.objects.get(
+                        external_id=charge_item.service_resource_id
+                    )
+                    requester = service_request.requester
+                elif (
+                    charge_item.service_resource
+                    == ChargeItemResourceOptions.appointment.value
+                ):
+                    token_booking = TokenBooking.objects.get(
+                        external_id=charge_item.service_resource_id
+                    )
+                    requester = token_booking.token_slot.resource.user
+                elif (
+                    charge_item.service_resource
+                    == ChargeItemResourceOptions.medication_dispense.value
+                ):
+                    medication_dispense = MedicationDispense.objects.get(
+                        external_id=charge_item.service_resource_id
+                    )
+                    requester = (
+                        medication_dispense.authorizing_request.requester
+                        if medication_dispense.authorizing_request
+                        else None
+                    )
+                else:
+                    requester = None
+
+                if requester:
+                    item["agent"] = {"x_care_id": str(requester.external_id)}
                 invoice_items.append(item)
 
         # Prepare final data
