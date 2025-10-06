@@ -139,7 +139,7 @@ class OdooInvoiceResource(OdooBaseResource):
         # Prepare partner data
         partner_data = {
             "name": invoice.patient.name,
-            "care_pid": str(invoice.patient.external_id),
+            "x_care_id": str(invoice.patient.external_id),
             "partner_type": "person",
             "phone": invoice.patient.phone_number,
             "state": invoice.facility.state or "kerala",
@@ -153,12 +153,12 @@ class OdooInvoiceResource(OdooBaseResource):
                 item = {
                     "product": {
                         "product_name": charge_item.charge_item_definition.title,
-                        "care_product_id": str(charge_item.charge_item_definition.external_id),
+                        "x_care_id": str(charge_item.charge_item_definition.external_id),
                         "mrp": self.get_charge_item_base_price(charge_item),
                     },
                     "quantity": str(charge_item.quantity),
                     "sale_price": self.get_charge_item_base_price(charge_item),
-                    "care_line_ref": str(charge_item.external_id)
+                    "x_care_id": str(charge_item.external_id)
                 }
                 invoice_items.append(item)
 
@@ -167,7 +167,7 @@ class OdooInvoiceResource(OdooBaseResource):
             "partner_data": partner_data,
             "invoice_items": invoice_items,
             "invoice_date": invoice.created_date.strftime("%d-%m-%Y"),
-            "care_inv_ref": invoice.number,
+            "x_care_id": invoice.number,
             "bill_type": "customer"
         }
         logging.info(f"Odoo Invoice Data: {data}")
