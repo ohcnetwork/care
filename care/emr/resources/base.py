@@ -323,7 +323,6 @@ def invalidate_tag_cache(tag_id):
 
 def invalidate_tag_descendants(tag_id):
     """Recursively invalidate cache for a tag and all its descendants."""
-    from care.emr.models import TagConfig
 
     invalidate_tag_cache(tag_id)
 
