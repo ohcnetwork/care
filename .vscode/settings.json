@@ -21,15 +21,13 @@
   "files.trimFinalNewlines": true,
   "files.trimTrailingWhitespace": true,
   "githubPullRequests.ignoredPullRequestBranches": ["develop", "staging"],
-  "python.languageServer": "Pylance",
-  "cSpell.words": [
-    "Typst"
-  ],
+  "python.languageServer": "None",
+  "cSpell.words": ["Typst"],
   "python.testing.unittestArgs": [
     "--noinput",
     "--shuffle",
     "--parallel",
-    "--keepdb",
+    "--keepdb"
   ],
   "python.testing.pytestEnabled": false,
   "python.testing.unittestEnabled": true
