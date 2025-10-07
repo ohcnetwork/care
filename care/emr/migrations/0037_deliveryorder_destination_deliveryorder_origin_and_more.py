@@ -10,7 +10,7 @@ def migrate_orders(apps, schema_editor):
     SupplyRequest = apps.get_model('emr', 'SupplyRequest')
     SupplyDelivery = apps.get_model('emr', 'SupplyDelivery')
 
-    for supply_request in SupplyRequest.objects.filter(order__isnull=False):
+    for supply_request in SupplyRequest.objects.filter(order__isnull=True):
         order = RequestOrder.objects.create(
             name="Migrated Order",
             status="completed",
@@ -24,7 +24,7 @@ def migrate_orders(apps, schema_editor):
         )
         supply_request.order = order
         supply_request.save()
-    for supply_delivery in SupplyDelivery.objects.filter(order__isnull=False):
+    for supply_delivery in SupplyDelivery.objects.filter(order__isnull=True):
         order = DeliveryOrder.objects.create(
             name="Migrated Order",
             status="completed",
