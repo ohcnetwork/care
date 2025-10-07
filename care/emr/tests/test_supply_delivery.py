@@ -429,3 +429,108 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             "supplied_item and supplied_inventory_item cannot both be provided",
             status_code=400,
         )
+
+    # Testcases for update supply delivery
+
+    def test_update_supply_delivery_as_superuser(self):
+        """
+        Test updating an external supply delivery as a superuser
+        """
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        update_response = self.client.put(
+            self.get_detail_url(supply_delivery.external_id),
+            {"status": SupplyDeliveryStatusOptions.completed.value},
+            format="json",
+        )
+        self.assertEqual(update_response.status_code, 200)
+        self.inventory_item_destination.refresh_from_db()
+        self.assertEqual(self.inventory_item_destination.net_content, (float(2000)))
+        get_response = self.client.get(
+            self.get_detail_url(supply_delivery.external_id), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["status"], "completed")
+
+    def test_update_supply_delivery_as_user_with_permissions(self):
+        """
+        Test updating an external supply delivery as a user with permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            facility_organization=self.facility_organization,
+            user=self.user,
+            role=self.role,
+        )
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        update_response = self.client.put(
+            self.get_detail_url(supply_delivery.external_id),
+            {"status": SupplyDeliveryStatusOptions.completed.value},
+            format="json",
+        )
+        self.assertEqual(update_response.status_code, 200)
+        self.inventory_item_destination.refresh_from_db()
+        self.assertEqual(self.inventory_item_destination.net_content, (float(2000)))
+        get_response = self.client.get(
+            self.get_detail_url(supply_delivery.external_id), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["status"], "completed")
+
+    def test_update_supply_delivery_as_user_without_permissions(self):
+        """
+        Test updating an external supply delivery as a user without permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        update_response = self.client.put(
+            self.get_detail_url(supply_delivery.external_id),
+            {"status": SupplyDeliveryStatusOptions.completed.value},
+            format="json",
+        )
+        self.assertEqual(update_response.status_code, 403)
+        self.assertContains(
+            update_response, "Cannot write supply requests", status_code=403
+        )
+
+    def test_update_supply_delivery_with_already_completed(self):
+        """
+        Test updating an external supply delivery which is already completed as a superuser
+        """
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.completed.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        update_response = self.client.put(
+            self.get_detail_url(supply_delivery.external_id),
+            {"status": SupplyDeliveryStatusOptions.in_progress.value},
+            format="json",
+        )
+        self.assertEqual(update_response.status_code, 400)
+        self.assertContains(
+            update_response,
+            "Supply delivery already completed",
+            status_code=400,
+        )
