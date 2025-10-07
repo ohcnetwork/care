@@ -11,8 +11,6 @@ from django.db import transaction
 from faker import Faker
 from faker.providers.geo import Provider as GeoProvider
 
-# Override the validate_valueset function to skip validation for fixtures
-import care.emr.utils.valueset_coding_type  # noqa  # isort:skip
 from care.emr.models import FacilityOrganization, Organization, Patient, Questionnaire
 from care.emr.models.encounter import EncounterOrganization
 from care.emr.models.location import FacilityLocationOrganization
@@ -49,6 +47,9 @@ from care.emr.resources.specimen_definition.spec import BaseSpecimenDefinitionSp
 from care.emr.resources.user.spec import UserCreateSpec
 from care.security.models import RoleModel
 from care.users.models import User
+
+# Override the validate_valueset function to skip validation for fixtures
+import care.emr.utils.valueset_coding_type  # noqa  # isort:skip
 
 sys.modules["care.emr.utils.valueset_coding_type"].validate_valueset = (
     lambda _, __, code: code
@@ -626,9 +627,7 @@ class Command(BaseCommand):
         device.save()
         return device
 
-    def _create_lab_definition_objects_for_facility(
-        self, facility, user=None
-    ):  # noqa: PLR0915
+    def _create_lab_definition_objects_for_facility(self, facility, user=None):  # noqa : PLR0915
         def __create_object(model, **kwargs):
             obj = model.de_serialize()
             obj.facility = facility
