@@ -160,7 +160,6 @@ class OdooInvoiceResource(OdooBaseResource):
                     "sale_price": self.get_charge_item_base_price(charge_item),
                     "x_care_id": str(charge_item.external_id)
                 }
-                # Attach agent (requester) information similar to sync_invoice_to_odoo
                 from care.emr.resources.charge_item.spec import (
                     ChargeItemResourceOptions,
                 )
