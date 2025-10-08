@@ -204,7 +204,7 @@ class OdooInvoiceResource(OdooBaseResource):
             "partner_data": partner_data,
             "invoice_items": invoice_items,
             "invoice_date": invoice.created_date.strftime("%d-%m-%Y"),
-            "x_care_id": invoice.number,
+            "x_care_id": invoice.external_id,
             "bill_type": "customer"
         }
         logging.info(f"Odoo Invoice Data: {data}")

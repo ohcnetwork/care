@@ -4,8 +4,7 @@ import requests
 import json
 import logging
 from django.conf import settings
-from rest_framework.exceptions import APIException
-from rest_framework import status
+from rest_framework.exceptions import ValidationError
 
 
 class OdooConnector:
@@ -60,7 +59,8 @@ class OdooConnector:
             response.raise_for_status()
 
         except Exception:
-            raise APIException({"error": "Error connecting to Odoo API"}, status.HTTP_503_SERVICE_UNAVAILABLE)
+            logging.error(f"Error connecting to Odoo API: {response.json()}")
+            raise ValidationError({"error": "Error connecting to Odoo API"})
 
         # Handle JSON-RPC response format
         response_json = response.json()
@@ -69,9 +69,10 @@ class OdooConnector:
                 return response_json
             else:
                 logging.error(f"Error response from Odoo API: {response_json}")
-                raise APIException({"error": "Invalid response from Odoo API"}, status.HTTP_503_SERVICE_UNAVAILABLE)
+                raise ValidationError({"error": "Invalid response from Odoo API"})
         except Exception:
-            raise APIException({"error": "Error response from Odoo API"}, status.HTTP_503_SERVICE_UNAVAILABLE)
+            logging.error(f"Error response from Odoo API: {response.json()}")
+            raise ValidationError({"error": "Error response from Odoo API"})
 
 
     @classmethod
