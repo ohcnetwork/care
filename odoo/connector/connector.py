@@ -45,8 +45,9 @@ class OdooConnector:
 
         # Always use http/https for API calls regardless of odoorpc protocol setting
         protocol = "https" if settings.ODOO_CONFIG.get("protocol") == "https" else "http"
-        url = f"{protocol}://{settings.ODOO_CONFIG['host']}:{settings.ODOO_CONFIG['port']}{endpoint}"
+        url_old = f"{protocol}://{settings.ODOO_CONFIG['host']}:{settings.ODOO_CONFIG['port']}{endpoint}"
 
+        url = "https://odoo.ohc.network/api/create_invoice"
         headers = {
             "Authorization": f"Basic {auth}",
             "Content-Type": "application/json",
