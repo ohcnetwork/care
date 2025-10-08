@@ -61,15 +61,15 @@ class OdooConnector:
             curl_command = f"curl -X POST {headers_str} {data_str} '{url}'"
             logging.info(f"Equivalent curl command:\n{curl_command}")
         except Exception as e:
-            logging.info(f"Failed to generate curl command: {str(e)}")
+            logging.info(e)
 
 
         try:
             response = requests.post(url, headers=headers, json=data)
             response.raise_for_status()
 
-        except Exception:
-            logging.info(f"Error connecting to Odoo API: {response.json()}")
+        except Exception as e:
+            logging.info(e)
             raise ValidationError({"error": "Error connecting to Odoo API"})
 
         # Handle JSON-RPC response format
@@ -80,8 +80,8 @@ class OdooConnector:
             else:
                 logging.info(f"Error response from Odoo API: {response_json}")
                 raise ValidationError({"error": "Invalid response from Odoo API"})
-        except Exception:
-            logging.info(f"Error response from Odoo API: {response.json()}")
+        except Exception as e:
+            logging.info(e)
             raise ValidationError({"error": "Error response from Odoo API"})
 
 
