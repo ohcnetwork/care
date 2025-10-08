@@ -63,9 +63,7 @@ class OTPSlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         appointment = SlotViewSet.create_appointment_handler(
             self.get_object(), request.data, None
         )
-        return Response(
-            TokenBookingOTPReadSpec.serialize(appointment).model_dump(exclude=["meta"])
-        )
+        return Response(TokenBookingOTPReadSpec.serialize(appointment).to_json())
 
     @extend_schema(
         request=CancelAppointmentSpec,
@@ -84,9 +82,7 @@ class OTPSlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         appointment = TokenBookingViewSet.cancel_appointment_handler(
             token_booking, {"reason": BookingStatusChoices.cancelled}, None
         )
-        return Response(
-            TokenBookingOTPReadSpec.serialize(appointment).model_dump(exclude=["meta"])
-        )
+        return Response(TokenBookingOTPReadSpec.serialize(appointment).to_json())
 
     @action(detail=False, methods=["GET"])
     def get_appointments(self, request, *args, **kwargs):
@@ -96,7 +92,7 @@ class OTPSlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         return Response(
             {
                 "results": [
-                    TokenBookingOTPReadSpec.serialize(obj).model_dump(exclude=["meta"])
+                    TokenBookingOTPReadSpec.serialize(obj).to_json()
                     for obj in appointments
                 ]
             }

@@ -202,9 +202,7 @@ class TokenBookingViewSet(
         appointment = self.cancel_appointment_handler(
             instance, request.data, request.user
         )
-        return Response(
-            TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
-        )
+        return Response(TokenBookingReadSpec.serialize(appointment).to_json())
 
     @extend_schema(
         request=RescheduleBookingSpec,
@@ -253,9 +251,7 @@ class TokenBookingViewSet(
                     request.user,
                     facility,
                 )
-            return Response(
-                TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
-            )
+            return Response(TokenBookingReadSpec.serialize(appointment).to_json())
 
     @action(detail=False, methods=["GET"])
     def available_users(self, request, *args, **kwargs):

@@ -325,9 +325,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         appointment = self.create_appointment_handler(
             slot_obj, request.data, request.user
         )
-        return Response(
-            TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
-        )
+        return Response(TokenBookingReadSpec.serialize(appointment).to_json())
 
     @action(detail=False, methods=["POST"])
     def availability_stats(self, request, *args, **kwargs):

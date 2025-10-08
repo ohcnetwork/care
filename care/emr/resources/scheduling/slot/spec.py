@@ -92,9 +92,7 @@ class TokenBookingMinimumReadSpec(TokenBookingBaseSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["token_slot"] = TokenSlotBaseSpec.serialize(obj.token_slot).model_dump(
-            exclude=["meta"]
-        )
+        mapping["token_slot"] = TokenSlotBaseSpec.serialize(obj.token_slot).to_json()
 
 
 class TokenBookingBaseReadSpec(TokenBookingBaseSpec):
@@ -119,9 +117,7 @@ class TokenBookingBaseReadSpec(TokenBookingBaseSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["token_slot"] = TokenSlotBaseSpec.serialize(obj.token_slot).model_dump(
-            exclude=["meta"]
-        )
+        mapping["token_slot"] = TokenSlotBaseSpec.serialize(obj.token_slot).to_json()
         mapping["resource_type"] = obj.token_slot.resource.resource_type
         mapping["resource"] = serialize_resource(obj.token_slot.resource)
         mapping["facility"] = model_from_cache(
@@ -145,9 +141,7 @@ class TokenBookingOTPReadSpec(TokenBookingBaseReadSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        mapping["patient"] = PatientOTPReadSpec.serialize(obj.patient).model_dump(
-            exclude=["meta"]
-        )
+        mapping["patient"] = PatientOTPReadSpec.serialize(obj.patient).to_json()
 
 
 class TokenBookingReadSpec(TokenBookingBaseReadSpec):
@@ -156,9 +150,7 @@ class TokenBookingReadSpec(TokenBookingBaseReadSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        mapping["patient"] = PatientListSpec.serialize(obj.patient).model_dump(
-            exclude=["meta"]
-        )
+        mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
 
 
 class TokenBookingRetrieveSpec(TokenBookingReadSpec):
