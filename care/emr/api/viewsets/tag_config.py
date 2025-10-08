@@ -38,7 +38,7 @@ class TagConfigFilters(filters.FilterSet):
     display = filters.CharFilter(lookup_expr="icontains")
     category = filters.CharFilter(lookup_expr="iexact")
     parent = filters.UUIDFilter(lookup_expr="exact", field_name="parent__external_id")
-    resource = filters.CharFilter(lookup_expr="iexact")
+    resource = MultiSelectFilter()
     parent_is_null = NullFilter(field_name="parent")
     ids = MultiSelectFilter(field_name="external_id")
 
