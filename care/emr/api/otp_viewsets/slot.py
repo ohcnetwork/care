@@ -15,8 +15,8 @@ from care.emr.models.patient import Patient
 from care.emr.models.scheduling import TokenBooking, TokenSlot
 from care.emr.resources.scheduling.slot.spec import (
     BookingStatusChoices,
-    TokenSlotBaseSpec,
     TokenBookingOTPReadSpec,
+    TokenSlotBaseSpec,
 )
 from care.utils.shortcuts import get_object_or_404
 from config.patient_otp_authentication import (

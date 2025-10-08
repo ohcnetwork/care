@@ -199,7 +199,9 @@ class TokenBookingViewSet(
     def cancel(self, request, *args, **kwargs):
         instance = self.get_object()
         self.authorize_update({}, instance)
-        appointment = self.cancel_appointment_handler(instance, request.data, request.user)
+        appointment = self.cancel_appointment_handler(
+            instance, request.data, request.user
+        )
         return Response(
             TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
         )

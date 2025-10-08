@@ -27,7 +27,8 @@ from care.emr.resources.scheduling.schedule.spec import (
 from care.emr.resources.scheduling.slot.spec import (
     CANCELLED_STATUS_CHOICES,
     COMPLETED_STATUS_CHOICES,
-    TokenSlotBaseSpec, TokenBookingReadSpec,
+    TokenBookingReadSpec,
+    TokenSlotBaseSpec,
 )
 from care.emr.resources.tag.config_spec import TagResource
 from care.emr.tagging.base import SingleFacilityTagManager
@@ -321,7 +322,9 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     def create_appointment(self, request, *args, **kwargs):
         slot_obj = self.get_object()
         self.authorize_update(None, slot_obj)
-        appointment = self.create_appointment_handler(slot_obj, request.data, request.user)
+        appointment = self.create_appointment_handler(
+            slot_obj, request.data, request.user
+        )
         return Response(
             TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
         )
