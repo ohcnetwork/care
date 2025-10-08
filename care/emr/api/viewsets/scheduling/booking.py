@@ -193,15 +193,16 @@ class TokenBookingViewSet(
                 instance.charge_item.status = ChargeItemStatusOptions.aborted.value
                 instance.charge_item.save()
             instance.save()
-        return Response(
-            TokenBookingReadSpec.serialize(instance).model_dump(exclude=["meta"])
-        )
+        return instance
 
     @action(detail=True, methods=["POST"])
     def cancel(self, request, *args, **kwargs):
         instance = self.get_object()
         self.authorize_update({}, instance)
-        return self.cancel_appointment_handler(instance, request.data, request.user)
+        appointment = self.cancel_appointment_handler(
+            instance, request.data, request.user
+        )
+        return Response(TokenBookingReadSpec.serialize(appointment).to_json())
 
     @extend_schema(
         request=RescheduleBookingSpec,
@@ -250,9 +251,7 @@ class TokenBookingViewSet(
                     request.user,
                     facility,
                 )
-            return Response(
-                TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
-            )
+            return Response(TokenBookingReadSpec.serialize(appointment).to_json())
 
     @action(detail=False, methods=["GET"])
     def available_users(self, request, *args, **kwargs):
