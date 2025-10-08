@@ -1410,3 +1410,356 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.assertContains(
             get_response, "Cannot read supply requests", status_code=403
         )
+
+    # Testcases for filtering supply deliveries
+
+    def test_filter_supply_delivery_by_status_as_superuser(self):
+        """
+        Test filtering supply deliveries by status as a superuser
+        """
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "status": SupplyDeliveryStatusOptions.in_progress.value,
+                "order": self.delivery_order_destination_external.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_delivery.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.in_progress.value,
+        )
+
+    def test_filter_supply_delivery_by_status_as_user_with_permissions(self):
+        """
+        Test filtering supply deliveries by status as a user with permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            facility_organization=self.facility_organization,
+            user=self.user,
+            role=self.role,
+        )
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "status": SupplyDeliveryStatusOptions.in_progress.value,
+                "order": self.delivery_order_destination_external.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_delivery.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.in_progress.value,
+        )
+
+    def test_filter_supply_delivery_by_status_as_user_without_permissions(self):
+        """
+        Test filtering supply deliveries by status as a user without permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "status": SupplyDeliveryStatusOptions.in_progress.value,
+                "order": self.delivery_order_destination_external.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(response, "Cannot read supply requests", status_code=403)
+
+    def test_filter_supply_delivery_as_superuser_without_queryset_filter(self):
+        """
+        Test filtering supply deliveries as a superuser without any queryset filter
+        """
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.base_url,
+            {"status": SupplyDeliveryStatusOptions.in_progress.value},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(response, "No filters provided", status_code=400)
+
+    def test_filter_supply_delivery_as_superuser_with_supplied_item_filter(self):
+        """
+        Test filtering supply deliveries as a superuser with supplied_item filter
+        """
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "status": SupplyDeliveryStatusOptions.in_progress.value,
+                "supplied_item": self.product.external_id,
+                "order": self.delivery_order_destination_external.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_delivery.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.in_progress.value,
+        )
+        self.assertEqual(
+            response.data["results"][0]["supplied_item"]["id"],
+            str(self.product.external_id),
+        )
+
+    def test_filter_supply_delivery_as_superuser_with_supplied_inventory_item_product_knowledge(
+        self,
+    ):
+        """
+        Test filtering supply deliveries as a superuser with filtering by product knowledge from product of supplied_inventory_item
+        """
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "status": SupplyDeliveryStatusOptions.in_progress.value,
+                "supplied_inventory_item_product_knowledge": self.product_knowledge.external_id,
+                "order": self.delivery_order_destination_external.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_delivery.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.in_progress.value,
+        )
+        self.assertEqual(
+            response.data["results"][0]["supplied_inventory_item"]["id"],
+            str(self.inventory_item_destination.external_id),
+        )
+
+    def test_filter_supply_delivery_as_superuser_with_supplied_item(self):
+        """
+        Test filtering supply deliveries as a superuser with filtering by supplied_item(product)
+        """
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "status": SupplyDeliveryStatusOptions.in_progress.value,
+                "supplied_item": self.product.external_id,
+                "order": self.delivery_order_destination_external.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_delivery.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.in_progress.value,
+        )
+        self.assertEqual(
+            response.data["results"][0]["supplied_item"]["id"],
+            str(self.product.external_id),
+        )
+
+    def test_filter_supply_delivery_as_superuser_with_supplied_item_product_knowledge(
+        self,
+    ):
+        """
+        Test filtering supply deliveries as a superuser with filtering by product knowledge from supplied_item(product)
+        """
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "status": SupplyDeliveryStatusOptions.in_progress.value,
+                "supplied_item_product_knowledge": self.product_knowledge.external_id,
+                "order": self.delivery_order_destination_external.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_delivery.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.in_progress.value,
+        )
+        self.assertEqual(
+            response.data["results"][0]["supplied_item"]["id"],
+            str(self.product.external_id),
+        )
+
+    def test_filter_supply_delivery_as_superuser_with_supply_request_filter(self):
+        """
+        Test filtering supply deliveries as a superuser with filtering by supply_request
+        """
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+            supply_request=self.supply_request_destination_external,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "status": SupplyDeliveryStatusOptions.in_progress.value,
+                "supply_request": self.supply_request_destination_external.external_id,
+                "order": self.delivery_order_destination_external.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_delivery.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.in_progress.value,
+        )
+        self.assertEqual(
+            response.data["results"][0]["supplied_item"]["id"],
+            str(self.product.external_id),
+        )
+
+    def test_filter_supply_delivery_as_superuser_with_origin_is_null_filter(self):
+        """
+        Test filtering supply deliveries as a superuser with filtering by origin is null
+        """
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "status": SupplyDeliveryStatusOptions.in_progress.value,
+                "origin_is_null": "true",
+                "order": self.delivery_order_destination_external.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_delivery.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.in_progress.value,
+        )
+        self.assertEqual(
+            response.data["results"][0]["supplied_item"]["id"],
+            str(self.product.external_id),
+        )
+
+    def test_filter_supply_delivery_as_superuser_with_supplier_filter(self):
+        """
+        Test filtering supply deliveries as a superuser with filtering by supplier
+        """
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "status": SupplyDeliveryStatusOptions.in_progress.value,
+                "supplier": self.supplier.external_id,
+                "order": self.delivery_order_destination_external.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_delivery.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.in_progress.value,
+        )
+        self.assertEqual(
+            response.data["results"][0]["supplied_item"]["id"],
+            str(self.product.external_id),
+        )
