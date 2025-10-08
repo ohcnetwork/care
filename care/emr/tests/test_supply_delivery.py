@@ -47,12 +47,16 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.inventory_item_destination = self.create_inventory_item(
             product=self.product, location=self.destination, status="active"
         )
+        self.request_order_destination_external = self.create_request_order(
+            supplier=self.supplier,
+            destination=self.destination,
+        )
         self.supply_request = self.create_supply_request(
             item=self.product_knowledge,
             status="requested",
             quantity=50,
             supplied_item_condition=SupplyDeliveryConditionOptions.normal.value,
-            order=None,
+            order=self.request_order_destination_external,
         )
         self.role = self.create_role_with_permissions(
             permissions=[
@@ -77,16 +81,17 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             destination=self.destination,
         )
         # Purchase Order of 1500 units to destination location
-        self.create_supply_delivery(
+        self.purchase_order_destination = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
             supplied_item_quantity=1500,
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.completed.value,
             supplied_inventory_item=self.inventory_item_destination,
+            supply_request=self.supply_request,
         )
 
         # Purchase Order of 500 units from origin location
-        self.create_supply_delivery(
+        self.purchase_order_origin = self.create_supply_delivery(
             order=self.delivery_order_origin_external,
             supplied_item_quantity=500,
             supplied_item=self.product,
@@ -141,6 +146,11 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         from care.emr.models import SupplyRequest
 
         return baker.make(SupplyRequest, **kwargs)
+
+    def create_request_order(self, **kwargs):
+        from care.emr.models import RequestOrder
+
+        return baker.make(RequestOrder, **kwargs)
 
     def create_supply_delivery_data(
         self,
@@ -535,6 +545,39 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             status_code=400,
         )
 
+    def test_update_supply_delivery_with_no_status_change(self):
+        """
+        Test updating an external supply delivery without changing the status
+        """
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=500,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        update_response = self.client.put(
+            self.get_detail_url(supply_delivery.external_id),
+            {
+                "status": SupplyDeliveryStatusOptions.in_progress.value,
+                "supplied_item_condition": SupplyDeliveryConditionOptions.damaged.value,
+            },
+            format="json",
+        )
+        self.assertEqual(update_response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(supply_delivery.external_id), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(
+            get_response.data["status"], SupplyDeliveryStatusOptions.in_progress.value
+        )
+        self.assertEqual(
+            get_response.data["supplied_item_condition"],
+            SupplyDeliveryConditionOptions.damaged.value,
+        )
+
     # Testcases for retrieve supply delivery
 
     def test_retrieve_supply_delivery_as_superuser(self):
@@ -608,4 +651,436 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.assertEqual(get_response.status_code, 403)
         self.assertContains(
             get_response, "Cannot read supply requests", status_code=403
+        )
+
+    # Testcases for list supply delivery
+
+    def test_list_supply_delivery_as_superuser_with_order_filter(self):
+        """Test listing supply deliveries as a superuser with order queryset filter"""
+        self.client.force_authenticate(user=self.superuser)
+        list_response = self.client.get(
+            self.base_url,
+            {"order": self.delivery_order_destination_external.external_id},
+            format="json",
+        )
+        self.assertEqual(list_response.status_code, 200)
+        self.assertEqual(list_response.data["count"], 1)
+        self.assertEqual(
+            list_response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.completed.value,
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_item_quantity"], 1500
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["id"],
+            str(self.purchase_order_destination.external_id),
+        )
+
+    def test_list_supply_delivery_as_user_with_permissions_with_order_filter(self):
+        """Test listing supply deliveries as a user with permissions"""
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            facility_organization=self.facility_organization,
+            user=self.user,
+            role=self.role,
+        )
+        list_response = self.client.get(
+            self.base_url,
+            {"order": self.delivery_order_origin_external.external_id},
+            format="json",
+        )
+        self.assertEqual(list_response.status_code, 200)
+        self.assertEqual(list_response.data["count"], 1)
+        self.assertEqual(
+            list_response.data["results"][0]["id"],
+            str(self.purchase_order_origin.external_id),
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.completed.value,
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_item_quantity"], 500
+        )
+
+    def test_list_supply_delivery_as_user_without_permissions(self):
+        """Test listing supply deliveries as a user without 'can_list_facility_supply_delivery' permissions"""
+        self.client.force_authenticate(user=self.user)
+        list_response = self.client.get(
+            self.base_url,
+            {"order": self.delivery_order_origin_external.external_id},
+            format="json",
+        )
+        self.assertEqual(list_response.status_code, 403)
+        self.assertContains(
+            list_response, "Cannot read supply requests", status_code=403
+        )
+
+    def test_list_supply_delivery_as_superuser_without_filters(self):
+        """Test listing supply deliveries as a superuser without any filters"""
+        self.client.force_authenticate(user=self.superuser)
+        list_response = self.client.get(self.base_url, format="json")
+        self.assertEqual(list_response.status_code, 400)
+        self.assertContains(
+            list_response,
+            "No filters provided",
+            status_code=400,
+        )
+
+    def test_list_supply_delivery_as_superuser_with_destination_filter(self):
+        """Test listing supply deliveries as a superuser with destination location filter"""
+        self.client.force_authenticate(user=self.superuser)
+        list_response = self.client.get(
+            self.base_url, {"destination": self.destination.external_id}, format="json"
+        )
+        self.assertEqual(list_response.status_code, 200)
+        self.assertEqual(list_response.data["count"], 1)
+        self.assertEqual(
+            list_response.data["results"][0]["id"],
+            str(self.purchase_order_destination.external_id),
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.completed.value,
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_item_quantity"], 1500
+        )
+
+    def test_list_supply_delivery_as_superuser_with_origin_filter(self):
+        """Test listing supply deliveries as a superuser with origin location filter"""
+        self.client.force_authenticate(user=self.superuser)
+        internal_delivery = self.create_supply_delivery(
+            order=self.delivery_order_internal,
+            supplied_item_quantity=200,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.completed.value,
+            supplied_inventory_item=self.inventory_item_origin,
+        )
+        list_response = self.client.get(
+            self.base_url, {"origin": self.origin.external_id}, format="json"
+        )
+        self.assertEqual(list_response.status_code, 200)
+        self.assertEqual(list_response.data["count"], 1)
+        self.assertEqual(
+            list_response.data["results"][0]["id"], str(internal_delivery.external_id)
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.completed.value,
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_item_quantity"], 200
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_inventory_item"]["id"],
+            str(self.inventory_item_origin.external_id),
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_inventory_item"]["net_content"],
+            300,
+        )
+
+    def test_list_supply_delivery_as_user_with_permissions_with_destination_filter(
+        self,
+    ):
+        """Test listing supply deliveries as a user with permissions with destination location filter"""
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            facility_organization=self.facility_organization,
+            user=self.user,
+            role=self.role,
+        )
+        list_response = self.client.get(
+            self.base_url, {"destination": self.destination.external_id}, format="json"
+        )
+        self.assertEqual(list_response.status_code, 200)
+        self.assertEqual(list_response.data["count"], 1)
+        self.assertEqual(
+            list_response.data["results"][0]["id"],
+            str(self.purchase_order_destination.external_id),
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.completed.value,
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_item_quantity"], 1500
+        )
+
+    def test_list_supply_delivery_as_user_with_permissions_with_origin_filter(self):
+        """Test listing supply deliveries as a user with permissions with origin location filter"""
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            facility_organization=self.facility_organization,
+            user=self.user,
+            role=self.role,
+        )
+        internal_delivery = self.create_supply_delivery(
+            order=self.delivery_order_internal,
+            supplied_item_quantity=200,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.completed.value,
+            supplied_inventory_item=self.inventory_item_origin,
+        )
+        list_response = self.client.get(
+            self.base_url, {"origin": self.origin.external_id}, format="json"
+        )
+        self.assertEqual(list_response.status_code, 200)
+        self.assertEqual(list_response.data["count"], 1)
+        self.assertEqual(
+            list_response.data["results"][0]["id"], str(internal_delivery.external_id)
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.completed.value,
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_item_quantity"], 200
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_inventory_item"]["id"],
+            str(self.inventory_item_origin.external_id),
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_inventory_item"]["net_content"],
+            300,
+        )
+
+    def test_list_supply_delivery_as_user_without_permissions_with_destination_filter(
+        self,
+    ):
+        """Test listing supply deliveries as a user without permissions with destination location filter"""
+        self.client.force_authenticate(user=self.user)
+        list_response = self.client.get(
+            self.base_url, {"destination": self.destination.external_id}, format="json"
+        )
+        self.assertEqual(list_response.status_code, 403)
+        self.assertContains(
+            list_response, "Cannot list supply requests", status_code=403
+        )
+
+    def test_list_supply_delivery_as_user_without_permissions_with_origin_filter(self):
+        """Test listing supply deliveries as a user without permissions with origin location filter"""
+        self.client.force_authenticate(user=self.user)
+        list_response = self.client.get(
+            self.base_url, {"origin": self.origin.external_id}, format="json"
+        )
+        self.assertEqual(list_response.status_code, 403)
+        self.assertContains(
+            list_response, "Cannot list supply requests", status_code=403
+        )
+
+    def test_list_supply_delivery_with_include_children_as_true(self):
+        """Test listing supply deliveries with include_children filter as true , should return deliveries to origin and its child locations"""
+
+        self.client.force_authenticate(user=self.superuser)
+        child_location = self.create_facility_location(
+            name="Child Location", parent=self.origin, facility=self.facility
+        )
+        inventory_item_child = self.create_inventory_item(
+            product=self.product,
+            location=child_location,
+            status="active",
+        )
+        child_delivery_order_external = self.create_delivery_order(
+            destination=child_location,
+            supplier=self.supplier,
+        )
+        self.create_supply_delivery(
+            order=child_delivery_order_external,
+            supplied_item_quantity=200,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.completed.value,
+            supplied_inventory_item=inventory_item_child,
+        )
+
+        child_delivery_order_internal = self.create_delivery_order(
+            origin=child_location,
+            destination=self.destination,
+        )
+        supply_delivery_parent = self.create_supply_delivery(
+            order=self.delivery_order_internal,
+            supplied_item_quantity=200,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.completed.value,
+            supplied_inventory_item=self.inventory_item_origin,
+        )
+        supply_delivery_child = self.create_supply_delivery(
+            supplied_item_quantity=100,
+            order=child_delivery_order_internal,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.completed.value,
+            supplied_inventory_item=inventory_item_child,
+        )
+        list_response = self.client.get(
+            self.base_url,
+            {"origin": self.origin.external_id, "include_children": "true"},
+            format="json",
+        )
+        self.assertEqual(list_response.status_code, 200)
+        self.assertEqual(list_response.data["count"], 2)
+        self.assertEqual(
+            list_response.data["results"][0]["id"],
+            str(supply_delivery_child.external_id),
+        )
+        self.assertEqual(
+            list_response.data["results"][1]["id"],
+            str(supply_delivery_parent.external_id),
+        )
+
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_item_quantity"], 100
+        )
+        self.assertEqual(
+            list_response.data["results"][1]["supplied_item_quantity"], 200
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_inventory_item"]["id"],
+            str(inventory_item_child.external_id),
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_inventory_item"]["net_content"],
+            100,
+        )
+        self.assertEqual(
+            list_response.data["results"][1]["supplied_inventory_item"]["id"],
+            str(self.inventory_item_origin.external_id),
+        )
+        self.assertEqual(
+            list_response.data["results"][1]["supplied_inventory_item"]["net_content"],
+            300,
+        )
+
+    def test_list_supply_delivery_with_include_children_as_false(self):
+        """Test listing supply deliveries with include_children filter as false should return deliveries to origin location only"""
+        self.client.force_authenticate(user=self.superuser)
+        child_location = self.create_facility_location(
+            name="Child Location", parent=self.origin, facility=self.facility
+        )
+        inventory_item_child = self.create_inventory_item(
+            product=self.product,
+            location=child_location,
+            status="active",
+        )
+        child_delivery_order_external = self.create_delivery_order(
+            destination=child_location,
+            supplier=self.supplier,
+        )
+        self.create_supply_delivery(
+            order=child_delivery_order_external,
+            supplied_item_quantity=200,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.completed.value,
+            supplied_inventory_item=inventory_item_child,
+        )
+
+        child_delivery_order_internal = self.create_delivery_order(
+            origin=child_location,
+            destination=self.destination,
+        )
+        supply_delivery_parent = self.create_supply_delivery(
+            order=self.delivery_order_internal,
+            supplied_item_quantity=200,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.completed.value,
+            supplied_inventory_item=self.inventory_item_origin,
+        )
+        self.create_supply_delivery(
+            supplied_item_quantity=100,
+            order=child_delivery_order_internal,
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.completed.value,
+            supplied_inventory_item=inventory_item_child,
+        )
+        list_response = self.client.get(
+            self.base_url,
+            {"origin": self.origin.external_id, "include_children": "false"},
+            format="json",
+        )
+        self.assertEqual(list_response.status_code, 200)
+        self.assertEqual(list_response.data["count"], 1)
+        self.assertEqual(
+            list_response.data["results"][0]["id"],
+            str(supply_delivery_parent.external_id),
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_item_quantity"], 200
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_inventory_item"]["id"],
+            str(self.inventory_item_origin.external_id),
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_inventory_item"]["net_content"],
+            300,
+        )
+
+    def test_list_supply_delivery_as_superuser_with_request_order_filter(self):
+        """Test listing supply deliveries as a superuser with request_order queryset filter"""
+        self.client.force_authenticate(user=self.superuser)
+
+        list_response = self.client.get(
+            self.base_url,
+            {"request_order": self.request_order_destination_external.external_id},
+            format="json",
+        )
+        self.assertEqual(list_response.status_code, 200)
+        self.assertEqual(list_response.data["count"], 1)
+        self.assertEqual(
+            list_response.data["results"][0]["id"],
+            str(self.purchase_order_destination.external_id),
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.completed.value,
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_item_quantity"], 1500
+        )
+
+    def test_list_supply_delivery_as_user_with_permissions_with_request_order_filter(
+        self,
+    ):
+        """Test listing supply deliveries as a user with permissions and request_order queryset filter"""
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            facility_organization=self.facility_organization,
+            user=self.user,
+            role=self.role,
+        )
+        list_response = self.client.get(
+            self.base_url,
+            {"request_order": self.request_order_destination_external.external_id},
+            format="json",
+        )
+        self.assertEqual(list_response.status_code, 200)
+        self.assertEqual(list_response.data["count"], 1)
+        self.assertEqual(
+            list_response.data["results"][0]["id"],
+            str(self.purchase_order_destination.external_id),
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["status"],
+            SupplyDeliveryStatusOptions.completed.value,
+        )
+        self.assertEqual(
+            list_response.data["results"][0]["supplied_item_quantity"], 1500
+        )
+
+    def test_list_supply_delivery_as_user_without_permissions_with_request_order_filter(
+        self,
+    ):
+        """Test listing supply deliveries as a user without permissions and request_order queryset filter"""
+        self.client.force_authenticate(user=self.user)
+
+        list_response = self.client.get(
+            self.base_url,
+            {"request_order": self.request_order_destination_external.external_id},
+            format="json",
+        )
+        self.assertEqual(list_response.status_code, 403)
+        self.assertContains(
+            list_response, "Cannot read supply requests", status_code=403
         )
