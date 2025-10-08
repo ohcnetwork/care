@@ -256,6 +256,8 @@ class SupplyDeliveryViewSet(
                     queryset, "order__origin", origin, include_children
                 )
                 filtered = True
+            if "supplier" in self.request.GET:
+                filtered = True
             if not filtered:
                 raise ValidationError("No filters provided")
         return queryset
