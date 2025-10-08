@@ -144,7 +144,7 @@ class TokenBookingOTPReadSpec(TokenBookingBaseReadSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
-        TokenBookingBaseReadSpec.perform_extra_serialization(mapping, obj)
+        super().perform_extra_serialization(mapping, obj)
         mapping["patient"] = PatientOTPReadSpec.serialize(obj.patient).model_dump(
             exclude=["meta"]
         )
@@ -155,7 +155,7 @@ class TokenBookingReadSpec(TokenBookingBaseReadSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
-        TokenBookingBaseReadSpec.perform_extra_serialization(mapping, obj)
+        super().perform_extra_serialization(mapping, obj)
         mapping["patient"] = PatientListSpec.serialize(obj.patient).model_dump(
             exclude=["meta"]
         )
