@@ -122,6 +122,96 @@ class OdooInvoiceResource(OdooBaseResource):
             "account.move", "action_post", [invoice_id]
         )
 
+    def sync_invoice_to_odoo_api(self, invoice_id: str) -> int | None:
+        """
+        Synchronize a Django invoice to Odoo using the custom addon API.
+
+        Args:
+            invoice_id: External ID of the Django invoice
+
+        Returns:
+            Odoo invoice ID if successful, None otherwise
+        """
+        invoice = Invoice.objects.select_related("facility", "patient").get(
+            external_id=invoice_id
+        )
+
+        # Prepare partner data
+        partner_data = {
+            "name": invoice.patient.name,
+            "x_care_id": str(invoice.patient.external_id),
+            "partner_type": "person",
+            "phone": invoice.patient.phone_number,
+            "state": invoice.facility.state or "kerala",
+            "email": "",
+        }
+
+        # Prepare invoice items
+        invoice_items = []
+        for charge_item in ChargeItem.objects.filter(paid_invoice=invoice).select_related("charge_item_definition"):
+            if charge_item.charge_item_definition:
+                item = {
+                    "product": {
+                        "product_name": charge_item.charge_item_definition.title,
+                        "x_care_id": str(charge_item.charge_item_definition.external_id),
+                        "mrp": self.get_charge_item_base_price(charge_item),
+                    },
+                    "quantity": str(charge_item.quantity),
+                    "sale_price": self.get_charge_item_base_price(charge_item),
+                    "x_care_id": str(charge_item.external_id)
+                }
+                from care.emr.resources.charge_item.spec import (
+                    ChargeItemResourceOptions,
+                )
+
+                if (
+                    charge_item.service_resource
+                    == ChargeItemResourceOptions.service_request.value
+                ):
+                    service_request = ServiceRequest.objects.get(
+                        external_id=charge_item.service_resource_id
+                    )
+                    requester = service_request.requester
+                elif (
+                    charge_item.service_resource
+                    == ChargeItemResourceOptions.appointment.value
+                ):
+                    token_booking = TokenBooking.objects.get(
+                        external_id=charge_item.service_resource_id
+                    )
+                    requester = token_booking.token_slot.resource.user
+                elif (
+                    charge_item.service_resource
+                    == ChargeItemResourceOptions.medication_dispense.value
+                ):
+                    medication_dispense = MedicationDispense.objects.get(
+                        external_id=charge_item.service_resource_id
+                    )
+                    requester = (
+                        medication_dispense.authorizing_request.requester
+                        if medication_dispense.authorizing_request
+                        else None
+                    )
+                else:
+                    requester = None
+
+                if requester:
+                    item["agent"] = {"x_care_id": str(requester.external_id)}
+                invoice_items.append(item)
+
+        # Prepare final data
+        data = {
+            "partner_data": partner_data,
+            "invoice_items": invoice_items,
+            "invoice_date": invoice.created_date.strftime("%d-%m-%Y"),
+            "x_care_id": invoice.number,
+            "bill_type": "customer"
+        }
+        logging.info(f"Odoo Invoice Data: {data}")
+
+        response = OdooConnector.call_api("/api/create_invoice", data)
+        return response["result"]["invoice_id"]
+
     def sync_invoice_to_odoo(self, invoice_id: str) -> int | None:
         """
         Synchronize a Django invoice to Odoo.

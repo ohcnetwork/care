@@ -26,4 +26,4 @@ def save_fields_before_update(sender, instance, raw, using, update_fields, **kwa
         InvoiceStatusOptions.balanced.value,
     ]:
         odoo_integration = OdooInvoiceResource()
-        odoo_integration.sync_invoice_to_odoo(instance.external_id)
+        odoo_integration.sync_invoice_to_odoo_api(instance.external_id)
