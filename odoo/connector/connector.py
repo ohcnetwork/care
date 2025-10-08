@@ -40,7 +40,7 @@ class OdooConnector:
         """
         # Include database name in credentials for Odoo session authentication
         auth = base64.b64encode(
-            f"{settings.ODOO_CONFIG['username']}:{settings.ODOO_CONFIG['password']}:{settings.ODOO_CONFIG['database']}".encode()
+            f"{settings.ODOO_CONFIG['username']}:{settings.ODOO_CONFIG['password']}".encode()
         ).decode()
 
         # Always use http/https for API calls regardless of odoorpc protocol setting
