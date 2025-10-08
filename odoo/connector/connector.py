@@ -54,6 +54,16 @@ class OdooConnector:
         }
 
 
+        # Log curl equivalent for debugging
+        try:
+            headers_str = ' '.join([f"-H '{k}: {v}'" for k,v in headers.items()])
+            data_str = f"-d '{json.dumps(data)}'" if data else ""
+            curl_command = f"curl -X POST {headers_str} {data_str} '{url}'"
+            logging.debug(f"Equivalent curl command:\n{curl_command}")
+        except Exception as e:
+            logging.error(f"Failed to generate curl command: {str(e)}")
+
+
         try:
             response = requests.post(url, headers=headers, json=data)
             response.raise_for_status()
