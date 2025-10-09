@@ -1,8 +1,10 @@
 from django.db import transaction
 from django.db.models import Q
 from django_filters import rest_framework as filters
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
+from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -22,6 +24,9 @@ from care.emr.resources.inventory.inventory_item.create_inventory_item import (
 from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
     sync_inventory_item,
 )
+from care.emr.resources.inventory.supply_delivery.delivery_order import (
+    SupplyDeliveryOrderReadSpec,
+)
 from care.emr.resources.inventory.supply_delivery.spec import (
     SupplyDeliveryReadSpec,
     SupplyDeliveryRetrieveSpec,
@@ -31,12 +36,13 @@ from care.emr.resources.inventory.supply_delivery.spec import (
 )
 from care.security.authorization.base import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyUUIDFilter
+from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.filters.null_filter import NullFilter
 from care.utils.shortcuts import get_object_or_404
 
 
 class SupplyDeliveryFilters(filters.FilterSet):
-    status = filters.CharFilter(lookup_expr="iexact")
+    status = MultiSelectFilter(field_name="status")
     origin = DummyUUIDFilter()
     destination = DummyUUIDFilter()
     supplied_item = filters.UUIDFilter(field_name="supplied_item__external_id")
@@ -51,6 +57,7 @@ class SupplyDeliveryFilters(filters.FilterSet):
     supplier = filters.UUIDFilter(field_name="order__supplier__external_id")
     include_children = DummyBooleanFilter()
     order = DummyUUIDFilter()
+    request_order = DummyUUIDFilter()
 
 
 class SupplyDeliveryViewSet(
@@ -71,9 +78,9 @@ class SupplyDeliveryViewSet(
     ordering_fields = ["created_date", "modified_date"]
 
     def validate_data(self, instance, model_obj=None):
-        if not model_obj and instance.origin:
+        if not model_obj:
             order = get_object_or_404(DeliveryOrder, external_id=instance.order)
-            if instance.supplied_inventory_item:
+            if order.origin and instance.supplied_inventory_item:
                 inventory_item = get_object_or_404(
                     InventoryItem,
                     external_id=instance.supplied_inventory_item,
@@ -81,7 +88,7 @@ class SupplyDeliveryViewSet(
                 parents = inventory_item.location.parent_cache
                 if not (
                     order.origin.id in parents
-                    or order.origin == inventory_item.location.id
+                    or order.origin.id == inventory_item.location.id
                 ):
                     raise ValidationError(
                         "Supplied inventory item is not part of the origin or its children"
@@ -176,7 +183,7 @@ class SupplyDeliveryViewSet(
         self.authorize_order_write(model_instance.order)
 
     def authorize_create(self, instance):
-        order = get_object_or_404(RequestOrder, external_id=instance.order)
+        order = get_object_or_404(DeliveryOrder, external_id=instance.order)
         self.authorize_order_write(order)
 
     def authorize_retrieve(self, model_instance):
@@ -194,18 +201,43 @@ class SupplyDeliveryViewSet(
             queryset = queryset.filter(**{attribute: location_obj})
         return queryset
 
+    @action(detail=False, methods=["GET"])
+    def delivery_orders(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        if "request_order" not in request.GET:
+            raise ValidationError("request_order is required")
+        orders = queryset.values("order_id").distinct()[:100]
+        orders_qs = DeliveryOrder.objects.filter(id__in=orders)
+        response = [
+            SupplyDeliveryOrderReadSpec.serialize(order).to_json()
+            for order in orders_qs
+        ]
+        return Response({"results": response})
+
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = self.database_model.objects.all()
         if self.action == "list":
+            queryset = queryset.order_by("-id")
+        if self.action in ["list", "delivery_orders"]:
             include_children = (
                 self.request.GET.get("include_children", "false").lower() == "true"
             )
+            filtered = False
             if "order" in self.request.GET:
                 order = get_object_or_404(
-                    RequestOrder, external_id=self.request.GET["order"]
+                    DeliveryOrder, external_id=self.request.GET["order"]
                 )
                 self.authorize_order_read(order)
                 queryset = queryset.filter(order=order)
+                filtered = True
+            if "request_order" in self.request.GET:
+                order = get_object_or_404(
+                    RequestOrder, external_id=self.request.GET["request_order"]
+                )
+                self.authorize_order_read(order)
+                # TODO Optimize without joins
+                queryset = queryset.filter(supply_request__order=order)
+                filtered = True
             if "destination" in self.request.GET:
                 destination = get_object_or_404(
                     FacilityLocation, external_id=self.request.GET["destination"]
@@ -214,6 +246,7 @@ class SupplyDeliveryViewSet(
                 queryset = self.filter_location_queryset(
                     queryset, "order__destination", destination, include_children
                 )
+                filtered = True
             if "origin" in self.request.GET:
                 origin = get_object_or_404(
                     FacilityLocation, external_id=self.request.GET["origin"]
@@ -222,4 +255,7 @@ class SupplyDeliveryViewSet(
                 queryset = self.filter_location_queryset(
                     queryset, "order__origin", origin, include_children
                 )
+                filtered = True
+            if not filtered:
+                raise ValidationError("No filters provided")
         return queryset

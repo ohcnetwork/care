@@ -205,8 +205,8 @@ class MedicationDispenseViewSet(
                 self.authorize_location_read(location)
                 if include_children:
                     queryset = queryset.filter(
-                        Q(deliver_from=location)
-                        | Q(deliver_from__parent_cache__overlap=[location.id])
+                        Q(location=location)
+                        | Q(location__parent_cache__overlap=[location.id])
                     )
                 else:
                     queryset = queryset.filter(location=location)

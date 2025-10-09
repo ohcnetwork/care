@@ -4,7 +4,6 @@ from pydantic import UUID4
 
 from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import Organization
-from care.emr.models.product import Product
 from care.emr.models.supply_delivery import DeliveryOrder
 from care.emr.resources.base import EMRResource
 from care.emr.resources.location.spec import FacilityLocationListSpec
@@ -12,11 +11,13 @@ from care.emr.resources.organization.spec import (
     OrganizationReadSpec,
     OrganizationTypeChoices,
 )
+from care.emr.tagging.base import SingleFacilityTagManager
 from care.utils.shortcuts import get_object_or_404
 
 
 class SupplyDeliveryOrderStatusOptions(str, Enum):
     draft = "draft"
+    pending = "pending"
     in_progress = "in_progress"
     completed = "completed"
     abandoned = "abandoned"
@@ -49,14 +50,6 @@ class SupplyDeliveryOrderWriteSpec(BaseSupplyDeliveryOrderSpec):
         obj.destination = get_object_or_404(
             FacilityLocation.objects.only("id").filter(external_id=self.destination)
         )
-
-        if self.supplied_item:
-            obj.supplied_item = get_object_or_404(
-                Product.objects.only("id").filter(
-                    external_id=self.supplied_item, facility=obj.destination.facility
-                )
-            )
-
         if self.origin:
             obj.origin = get_object_or_404(
                 FacilityLocation.objects.only("id").filter(external_id=self.origin)
@@ -77,6 +70,7 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
     origin: dict | None = None
     destination: dict
     supplier: dict | None = None
+    tags: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -88,3 +82,4 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
         ).to_json()
         if obj.supplier:
             mapping["supplier"] = OrganizationReadSpec.serialize(obj.supplier).to_json()
+        mapping["tags"] = SingleFacilityTagManager().render_tags(obj)

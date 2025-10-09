@@ -12,11 +12,13 @@ from care.emr.resources.organization.spec import (
     OrganizationReadSpec,
     OrganizationTypeChoices,
 )
+from care.emr.tagging.base import SingleFacilityTagManager
 from care.utils.shortcuts import get_object_or_404
 
 
 class SupplyRequestOrderStatusOptions(str, Enum):
     draft = "draft"
+    pending = "pending"
     in_progress = "in_progress"
     completed = "completed"
     abandoned = "abandoned"
@@ -75,8 +77,8 @@ class BaseSupplyRequestOrderSpec(EMRResource):
 
 class SupplyRequestOrderWriteSpec(BaseSupplyRequestOrderSpec):
     supplier: UUID4 | None = None
-    deliver_from: UUID4 | None = None
-    deliver_to: UUID4
+    origin: UUID4 | None = None
+    destination: UUID4
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.supplier:
@@ -87,31 +89,29 @@ class SupplyRequestOrderWriteSpec(BaseSupplyRequestOrderSpec):
                 msg = f"Supplier organization must be of type product_supplier, got: {obj.supplier.org_type}"
                 raise ValidationError(msg)
 
-        obj.deliver_to = get_object_or_404(
-            FacilityLocation.objects.only("id").filter(external_id=self.deliver_to)
+        obj.destination = get_object_or_404(
+            FacilityLocation.objects.only("id").filter(external_id=self.destination)
         )
-        if self.deliver_from:
-            obj.deliver_from = get_object_or_404(
-                FacilityLocation.objects.only("id").filter(
-                    external_id=self.deliver_from
-                )
+        if self.origin:
+            obj.origin = get_object_or_404(
+                FacilityLocation.objects.only("id").filter(external_id=self.origin)
             )
 
 
 class SupplyRequestOrderReadSpec(BaseSupplyRequestOrderSpec):
     supplier: OrganizationReadSpec | None = None
-    deliver_from: dict | None = None
-    deliver_to: dict
+    origin: dict | None = None
+    destination: dict
+    tags: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         if obj.supplier:
             mapping["supplier"] = OrganizationReadSpec.serialize(obj.supplier).to_json()
-        if obj.deliver_from:
-            mapping["deliver_from"] = FacilityLocationListSpec.serialize(
-                obj.deliver_from
-            ).to_json()
-        mapping["deliver_to"] = FacilityLocationListSpec.serialize(
-            obj.deliver_to
+        if obj.origin:
+            mapping["origin"] = FacilityLocationListSpec.serialize(obj.origin).to_json()
+        mapping["destination"] = FacilityLocationListSpec.serialize(
+            obj.destination
         ).to_json()
+        mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
