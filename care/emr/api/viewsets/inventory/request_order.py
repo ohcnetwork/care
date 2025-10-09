@@ -9,6 +9,7 @@ from care.emr.api.viewsets.base import (
     EMRCreateMixin,
     EMRListMixin,
     EMRRetrieveMixin,
+    EMRTagMixin,
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
@@ -19,20 +20,27 @@ from care.emr.resources.inventory.supply_request.request_order import (
     SupplyRequestOrderReadSpec,
     SupplyRequestOrderWriteSpec,
 )
+from care.emr.resources.tag.config_spec import TagResource
+from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.security.authorization.base import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyUUIDFilter
+from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.filters.null_filter import NullFilter
 
 
 class RequestOrderFilters(filters.FilterSet):
-    status = filters.CharFilter(lookup_expr="iexact")
+    status = MultiSelectFilter(field_name="status")
     date = filters.DateFilter(field_name="created_date")
     priority = filters.CharFilter(lookup_expr="iexact")
+    supplier = filters.UUIDFilter(field_name="supplier__external_id")
+    intent = filters.CharFilter(lookup_expr="iexact")
+    category = filters.CharFilter(lookup_expr="iexact")
+    reason = filters.CharFilter(lookup_expr="iexact")
 
     origin = DummyUUIDFilter()
     destination = DummyUUIDFilter()
     include_children = DummyBooleanFilter()
-    destination_isnull = NullFilter(field_name="destination")
+    origin_isnull = NullFilter(field_name="origin")
 
 
 class RequestOrderViewSet(
@@ -41,6 +49,7 @@ class RequestOrderViewSet(
     EMRUpdateMixin,
     EMRListMixin,
     EMRUpsertMixin,
+    EMRTagMixin,
     EMRBaseViewSet,
 ):
     database_model = RequestOrder
@@ -48,8 +57,16 @@ class RequestOrderViewSet(
     pydantic_update_model = BaseSupplyRequestOrderSpec
     pydantic_read_model = SupplyRequestOrderReadSpec
     filterset_class = RequestOrderFilters
-    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        OrderingFilter,
+        SingleFacilityTagFilter,
+    ]
     ordering_fields = ["created_date", "modified_date"]
+    resource_type = TagResource.supply_request_order
+
+    def get_facility_from_instance(self, instance):
+        return instance.destination.facility  # Overide as needed
 
     def authorize_location_read(self, location_obj, raise_error=True):
         if not AuthorizationController.call(

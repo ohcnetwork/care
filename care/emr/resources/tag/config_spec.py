@@ -36,6 +36,8 @@ class TagResource(str, Enum):
     patient = "patient"
     token_booking = "token_booking"
     medication_request_prescription = "medication_request_prescription"
+    supply_request_order = "supply_request_order"
+    supply_delivery_order = "supply_delivery_order"
 
 
 class TagStatus(str, Enum):

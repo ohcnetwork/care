@@ -9,6 +9,7 @@ from care.emr.api.viewsets.base import (
     EMRCreateMixin,
     EMRListMixin,
     EMRRetrieveMixin,
+    EMRTagMixin,
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
@@ -19,12 +20,23 @@ from care.emr.resources.inventory.supply_delivery.delivery_order import (
     SupplyDeliveryOrderReadSpec,
     SupplyDeliveryOrderWriteSpec,
 )
+from care.emr.resources.tag.config_spec import TagResource
+from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.security.authorization.base import AuthorizationController
+from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyUUIDFilter
+from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.filters.null_filter import NullFilter
 
 
 class DeliveryOrderFilters(filters.FilterSet):
-    status = filters.CharFilter(lookup_expr="iexact")
+    status = MultiSelectFilter(field_name="status")
     created_date = filters.DateRangeFilter()
+    supplier = filters.UUIDFilter(field_name="supplier__external_id")
+
+    origin = DummyUUIDFilter()
+    destination = DummyUUIDFilter()
+    include_children = DummyBooleanFilter()
+    origin_isnull = NullFilter(field_name="origin")
 
 
 class DeliveryOrderViewSet(
@@ -33,6 +45,7 @@ class DeliveryOrderViewSet(
     EMRUpdateMixin,
     EMRListMixin,
     EMRUpsertMixin,
+    EMRTagMixin,
     EMRBaseViewSet,
 ):
     database_model = DeliveryOrder
@@ -40,8 +53,16 @@ class DeliveryOrderViewSet(
     pydantic_update_model = BaseSupplyDeliveryOrderSpec
     pydantic_read_model = SupplyDeliveryOrderReadSpec
     filterset_class = DeliveryOrderFilters
-    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        OrderingFilter,
+        SingleFacilityTagFilter,
+    ]
     ordering_fields = ["created_date", "modified_date"]
+    resource_type = TagResource.supply_delivery_order
+
+    def get_facility_from_instance(self, instance):
+        return instance.destination.facility  # Overide as needed
 
     def authorize_location_read(self, location_obj, raise_error=True):
         if not AuthorizationController.call(

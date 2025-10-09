@@ -1459,7 +1459,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
-        self.assertEqual(response.data["results"][0]["id"], booking.external_id)
+        self.assertEqual(response.data["results"][0]["id"], str(booking.external_id))
 
     def test_get_appointments_of_another_patient(self):
         """OTP authenticated users cannot get appointments of other patients."""
