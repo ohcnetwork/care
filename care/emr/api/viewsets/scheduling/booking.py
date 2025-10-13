@@ -380,7 +380,7 @@ def authorize_booking_list(  # noqa PLR0912
         for resource_id in resource_ids:
             resource = get_schedulable_resource(resource_type, resource_id, facility)
             if not resource:
-                raise PermissionDenied("No schedules found for this resource")
+                raise ValidationError("No schedules found for this resource")
             if not AuthorizationController.call("can_list_booking", resource, user):
                 raise PermissionDenied("You do not have permission to list bookings")
             resource_pk_ids.append(resource.id)
