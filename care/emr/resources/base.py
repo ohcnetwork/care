@@ -322,16 +322,23 @@ def invalidate_tag_cache(tag_id):
 
 
 def invalidate_tag_descendants(tag_id):
-    """Recursively invalidate cache for a tag and all its descendants."""
+    """Invalidate cache for a tag and all its descendants using bulk operations."""
 
-    invalidate_tag_cache(tag_id)
-
-    children_ids = TagConfig.objects.filter(parent_id=tag_id).values_list(
-        "id", flat=True
+    descendant_ids = list(
+        TagConfig.objects.filter(parent_cache__contains=[tag_id]).values_list(
+            "id", flat=True
+        )
     )
 
-    for child_id in children_ids:
-        invalidate_tag_descendants(child_id)
+    all_tag_ids = [tag_id, *descendant_ids]
+
+    TagConfig.objects.filter(id__in=all_tag_ids).update(cached_parent_json={})
+
+    cache_keys = [
+        model_cache_key(model_string(TagConfig), "TagConfigReadSpec", tag_id)
+        for tag_id in all_tag_ids
+    ]
+    cache.delete_many(cache_keys)
 
 
 def invalidate_tag_config_cache(sender, instance, **kwargs):
