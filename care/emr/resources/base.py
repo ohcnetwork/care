@@ -313,30 +313,29 @@ def delete_model_cache(sender, instance, **kwargs) -> None:
     cache.delete(model_cache_key(sender_model_string, pk=instance.id))
 
 
-def invalidate_tag_cache(tag_id):
-    """Helper function to invalidate cache for a specific tag by its ID."""
-    TagConfig.objects.filter(id=tag_id).update(cached_parent_json={})
+def invalidate_tag_cache(tag_id, include_descendants=False):
+    """
+    Invalidate cache for a tag and optionally its descendants.
 
-    cache_key = model_cache_key(model_string(TagConfig), "TagConfigReadSpec", tag_id)
-    cache.delete(cache_key)
-
-
-def invalidate_tag_descendants(tag_id):
-    """Invalidate cache for a tag and all its descendants using bulk operations."""
-
-    descendant_ids = list(
-        TagConfig.objects.filter(parent_cache__contains=[tag_id]).values_list(
-            "id", flat=True
+    Args:
+        tag_id: ID of the tag to invalidate
+        include_descendants: If True, also invalidates all descendant tags
+    """
+    if include_descendants:
+        descendant_ids = list(
+            TagConfig.objects.filter(parent_cache__overlap=[tag_id]).values_list(
+                "id", flat=True
+            )
         )
-    )
-
-    all_tag_ids = [tag_id, *descendant_ids]
+        all_tag_ids = [tag_id, *descendant_ids]
+    else:
+        all_tag_ids = [tag_id]
 
     TagConfig.objects.filter(id__in=all_tag_ids).update(cached_parent_json={})
 
     cache_keys = [
-        model_cache_key(model_string(TagConfig), "TagConfigReadSpec", tag_id)
-        for tag_id in all_tag_ids
+        model_cache_key(model_string(TagConfig), "TagConfigReadSpec", tid)
+        for tid in all_tag_ids
     ]
     cache.delete_many(cache_keys)
 
@@ -350,6 +349,6 @@ def invalidate_tag_config_cache(sender, instance, **kwargs):
     2. Invalidate all descendants' cache recursively (they store parent data)
     3. Invalidate parent's cache (has_children might have changed)
     """
-    invalidate_tag_descendants(instance.id)
+    invalidate_tag_cache(instance.id, include_descendants=True)
     if instance.parent_id:
-        invalidate_tag_cache(instance.parent_id)
+        invalidate_tag_cache(instance.parent_id, include_descendants=False)
