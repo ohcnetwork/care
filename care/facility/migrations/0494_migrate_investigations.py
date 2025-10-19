@@ -1711,8 +1711,10 @@ def migrate_investigations(apps, schema_editor):
                         val = int(value.value)
                         if val < 100:
                             value.value = str(val * 1_00_000)
-                    except ValueError:
-                        pass
+                    except (ValueError, ValueError):
+                        logger.warning(
+                            f"Could not convert platelets value {value.value} to int for session {session.id}"
+                        )
                 if investigation_name in haematology_group:
                     haematology_responses[deterministic_uuid(investigation_name)] = {
                         "question_id": deterministic_uuid(investigation_name),
