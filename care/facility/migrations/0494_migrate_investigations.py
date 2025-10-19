@@ -1711,7 +1711,7 @@ def migrate_investigations(apps, schema_editor):
                         val = int(value.value)
                         if val < 100:
                             value.value = str(val * 1_00_000)
-                    except (ValueError, ValueError):
+                    except (ValueError, TypeError):
                         logger.warning(
                             f"Could not convert platelets value {value.value} to int for session {session.id}"
                         )
