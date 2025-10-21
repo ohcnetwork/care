@@ -1,0 +1,7 @@
+care.emr.resources.inventory.supply\_request.request\_order module
+==================================================================
+
+.. automodule:: care.emr.resources.inventory.supply_request.request_order
+   :members:
+   :show-inheritance:
+   :undoc-members:

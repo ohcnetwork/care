@@ -1,0 +1,17 @@
+care.emr.signals.patient package
+================================
+
+.. automodule:: care.emr.signals.patient
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.signals.patient.base
+   care.emr.signals.patient.name_identifier
+   care.emr.signals.patient.phone_number_identifier

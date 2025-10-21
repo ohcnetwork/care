@@ -1,0 +1,7 @@
+care.emr.api.viewsets.inventory.dispense\_order module
+======================================================
+
+.. automodule:: care.emr.api.viewsets.inventory.dispense_order
+   :members:
+   :show-inheritance:
+   :undoc-members:

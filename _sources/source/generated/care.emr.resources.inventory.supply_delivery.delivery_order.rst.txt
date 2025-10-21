@@ -1,0 +1,7 @@
+care.emr.resources.inventory.supply\_delivery.delivery\_order module
+====================================================================
+
+.. automodule:: care.emr.resources.inventory.supply_delivery.delivery_order
+   :members:
+   :show-inheritance:
+   :undoc-members:

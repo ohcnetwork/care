@@ -1,0 +1,7 @@
+care.emr.signals.patient.phone\_number\_identifier module
+=========================================================
+
+.. automodule:: care.emr.signals.patient.phone_number_identifier
+   :members:
+   :show-inheritance:
+   :undoc-members:

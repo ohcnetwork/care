@@ -19,6 +19,7 @@ Subpackages
    care.emr.models
    care.emr.reports
    care.emr.resources
+   care.emr.signals
    care.emr.tagging
    care.emr.tasks
    care.emr.templatetags

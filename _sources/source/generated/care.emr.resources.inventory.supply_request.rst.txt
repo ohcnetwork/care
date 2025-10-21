@@ -12,4 +12,5 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   care.emr.resources.inventory.supply_request.request_order
    care.emr.resources.inventory.supply_request.spec

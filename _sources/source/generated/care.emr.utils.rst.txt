@@ -20,6 +20,6 @@ Submodules
    care.emr.utils.file_manager
    care.emr.utils.mfa
    care.emr.utils.pydantic_serializers
-   care.emr.utils.send_password_reset_mail
+   care.emr.utils.reset_password
    care.emr.utils.slug_type
    care.emr.utils.valueset_coding_type

@@ -1,0 +1,7 @@
+care.emr.api.viewsets.inventory.delivery\_order module
+======================================================
+
+.. automodule:: care.emr.api.viewsets.inventory.delivery_order
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,0 +1,15 @@
+care.emr.signals package
+========================
+
+.. automodule:: care.emr.signals
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.signals.patient

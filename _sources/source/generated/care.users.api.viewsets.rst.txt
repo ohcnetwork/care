@@ -16,5 +16,4 @@ Submodules
    care.users.api.viewsets.lsg
    care.users.api.viewsets.plug_config
    care.users.api.viewsets.skill
-   care.users.api.viewsets.users
    care.users.api.viewsets.userskill

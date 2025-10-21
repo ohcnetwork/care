@@ -16,6 +16,7 @@ Submodules
    care.emr.resources.common.coding
    care.emr.resources.common.condition_evaluator
    care.emr.resources.common.contact_point
+   care.emr.resources.common.mail_type
    care.emr.resources.common.monetary_component
    care.emr.resources.common.period
    care.emr.resources.common.quantity

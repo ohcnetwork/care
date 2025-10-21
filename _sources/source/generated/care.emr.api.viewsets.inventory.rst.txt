@@ -12,8 +12,11 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   care.emr.api.viewsets.inventory.delivery_order
+   care.emr.api.viewsets.inventory.dispense_order
    care.emr.api.viewsets.inventory.inventory_item
    care.emr.api.viewsets.inventory.product
    care.emr.api.viewsets.inventory.product_knowledge
+   care.emr.api.viewsets.inventory.request_order
    care.emr.api.viewsets.inventory.supply_delivery
    care.emr.api.viewsets.inventory.supply_request

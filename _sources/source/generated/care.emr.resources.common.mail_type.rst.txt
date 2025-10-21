@@ -1,0 +1,7 @@
+care.emr.resources.common.mail\_type module
+===========================================
+
+.. automodule:: care.emr.resources.common.mail_type
+   :members:
+   :show-inheritance:
+   :undoc-members:

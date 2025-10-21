@@ -1,0 +1,7 @@
+care.emr.resources.medication.dispense.dispense\_order module
+=============================================================
+
+.. automodule:: care.emr.resources.medication.dispense.dispense_order
+   :members:
+   :show-inheritance:
+   :undoc-members:
