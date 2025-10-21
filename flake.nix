@@ -6,19 +6,23 @@
     flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { nixpkgs, flake-utils, ... }:
-    flake-utils.lib.eachDefaultSystem (system:
+  outputs =
+    { nixpkgs, flake-utils, ... }:
+    flake-utils.lib.eachDefaultSystem (
+      system:
       let
         pkgs = nixpkgs.legacyPackages.${system};
         python = pkgs.python313;
 
         # Create a Python environment with pip-installable packages
-        pythonEnv = python.withPackages (ps: with ps; [
-          pip
-          setuptools
-          wheel
-          virtualenv
-        ]);
+        pythonEnv = python.withPackages (
+          ps: with ps; [
+            pip
+            setuptools
+            wheel
+            virtualenv
+          ]
+        );
 
         # Project-local data directory (still impure but isolated)
         projectDataDir = ".nix-data";
@@ -71,10 +75,12 @@
         };
 
         # Helper scripts
-        makeScript = name: text: pkgs.writeShellScriptBin name ''
-          set -euo pipefail
-          ${text}
-        '';
+        makeScript =
+          name: text:
+          pkgs.writeShellScriptBin name ''
+            set -euo pipefail
+            ${text}
+          '';
 
         # Service management scripts using Nix store binaries
         startServices = makeScript "start-services" ''
@@ -242,7 +248,7 @@
 
           echo "✅ Development environment setup complete!"
           echo ""
-          echo "Note: Typst ${pkgs.typst.version} is available from Nix store"
+          echo "Note: Typst ${pkgs.typst.version} and ruff ${pkgs.ruff.version} are available from Nix store"
         '';
 
         # Django management commands
@@ -379,20 +385,17 @@
           coverage report
         '';
 
-        # Code quality
+        # Code quality (using Nix-provided ruff for NixOS compatibility)
         ruffCheck = makeScript "ruff" ''
-          source .venv/bin/activate
-          ruff check --fix $(git diff --name-only --staged | grep -E '\.py$|/pyproject\.toml$' || echo ".")
+          ${pkgs.ruff}/bin/ruff check --fix $(git diff --name-only --staged | grep -E '\.py$|/pyproject\.toml$' || echo ".")
         '';
 
         ruffAll = makeScript "ruff-all" ''
-          source .venv/bin/activate
-          ruff check .
+          ${pkgs.ruff}/bin/ruff check .
         '';
 
         ruffFix = makeScript "ruff-fix-all" ''
-          source .venv/bin/activate
-          ruff check --fix .
+          ${pkgs.ruff}/bin/ruff check --fix .
         '';
 
         # Database backup/restore using Nix store binaries
@@ -435,7 +438,8 @@
             libpq
             redis
             minio
-            typst  # Typst directly from nixpkgs
+            typst # Typst directly from nixpkgs
+            ruff # Ruff from Nix for NixOS compatibility
 
             # System dependencies for building Python packages
             pkg-config
@@ -483,7 +487,9 @@
           ];
 
           shellHook = ''
-            ${builtins.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (name: value: "export ${name}='${value}'") envVars)}
+            ${builtins.concatStringsSep "\n" (
+              pkgs.lib.mapAttrsToList (name: value: "export ${name}='${value}'") envVars
+            )}
 
             # Create project data directory
             mkdir -p ${projectDataDir}
@@ -500,6 +506,7 @@
             echo "   Redis: ${pkgs.redis.version}"
             echo "   MinIO: ${pkgs.minio.version}"
             echo "   Typst: ${pkgs.typst.version}"
+            echo "   Ruff: ${pkgs.ruff.version}"
             echo ""
             echo "Available commands:"
             echo "  setup-dev          - Set up the development environment"
@@ -545,18 +552,26 @@
             # Verify tools are available
             echo "✅ PostgreSQL development tools available (${pkgs.postgresql_15.version})"
             echo "✅ Typst available (${pkgs.typst.version})"
+            echo "✅ Ruff available (${pkgs.ruff.version})"
           '';
         };
 
         # Package for CI/CD or other use cases
         packages.default = pkgs.writeShellApplication {
           name = "care-dev";
-          runtimeInputs = [ pythonEnv pkgs.postgresql_15 pkgs.redis pkgs.minio pkgs.typst ];
+          runtimeInputs = [
+            pythonEnv
+            pkgs.postgresql_15
+            pkgs.redis
+            pkgs.minio
+            pkgs.typst
+            pkgs.ruff
+          ];
           text = ''
             echo "Care development environment package"
             echo "Use 'nix develop' to enter the development shell"
           '';
         };
-      });
+      }
+    );
 }
-
