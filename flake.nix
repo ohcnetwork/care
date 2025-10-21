@@ -1,5 +1,5 @@
 {
-  description = "CARE -  Care is a Digital Public Good enabling TeleICU & Decentralised Administration of Healthcare Capacity across States.";
+  description = "CARE - Care is a Digital Public Good enabling TeleICU & Decentralised Administration of Healthcare Capacity across States.";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -19,6 +19,12 @@
           wheel
           virtualenv
         ]);
+
+        # Project-local data directory (still impure but isolated)
+        projectDataDir = ".nix-data";
+        postgresDir = "${projectDataDir}/postgres";
+        redisDir = "${projectDataDir}/redis";
+        minioDir = "${projectDataDir}/minio";
 
         # Environment variables for development
         envVars = {
@@ -58,10 +64,7 @@
           HCX_USERNAME = "qwertyreboot@gmail.com";
           HCX_CERT_URL = "https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/main/demo-app/server/resources/keys/x509-self-signed-certificate.pem";
 
-          # Typst
-          TYPST_VERSION = "0.12.0";
-
-          # PostgreSQL configuration for compilation
+          # PostgreSQL configuration for compilation (using Nix store paths)
           PG_CONFIG = "${pkgs.postgresql_15}/bin/pg_config";
           LDFLAGS = "-L${pkgs.postgresql_15}/lib";
           CPPFLAGS = "-I${pkgs.postgresql_15}/include";
@@ -73,74 +76,88 @@
           ${text}
         '';
 
-        # Install Typst
-        typstInstaller = makeScript "install-typst" ''
-          if ! command -v typst >/dev/null 2>&1; then
-            echo "Installing Typst v${envVars.TYPST_VERSION}..."
-            TYPST_INSTALL_DIR="$HOME/.local/bin" TYPST_VERSION="${envVars.TYPST_VERSION}" ./scripts/install_typst.sh
-            export PATH="$HOME/.local/bin:$PATH"
-          else
-            echo "Typst already installed"
-          fi
-        '';
-
-        # Service management scripts
+        # Service management scripts using Nix store binaries
         startServices = makeScript "start-services" ''
-          echo "Starting PostgreSQL..."
-          if ! pgrep -x "postgres" > /dev/null; then
-            mkdir -p ~/.local/share/postgres/sockets
+          echo "📂 Using project data directory: ${projectDataDir}"
+          mkdir -p ${postgresDir} ${redisDir} ${minioDir}
 
+          echo "🐘 Starting PostgreSQL..."
+          if ! ${pkgs.procps}/bin/pgrep -x "postgres" > /dev/null; then
             # Check if database directory is corrupted or not properly initialized
-            if [ -d ~/.local/share/postgres ] && [ ! -f ~/.local/share/postgres/PG_VERSION ]; then
+            if [ -d ${postgresDir} ] && [ ! -f ${postgresDir}/PG_VERSION ]; then
               echo "Database directory exists but appears corrupted. Cleaning up..."
-              rm -rf ~/.local/share/postgres
-              mkdir -p ~/.local/share/postgres/sockets
+              rm -rf ${postgresDir}
+              mkdir -p ${postgresDir}
             fi
 
             # Initialize database if it doesn't exist
-            if [ ! -f ~/.local/share/postgres/PG_VERSION ]; then
+            if [ ! -f ${postgresDir}/PG_VERSION ]; then
               echo "Initializing new PostgreSQL database..."
-              initdb -D ~/.local/share/postgres -U postgres --auth=trust
+              ${pkgs.postgresql_15}/bin/initdb -D ${postgresDir} -U postgres --auth=trust
+              # Configure to use Unix socket in project directory
+              echo "unix_socket_directories = '$(pwd)/${postgresDir}'" >> ${postgresDir}/postgresql.conf
+              echo "port = 5432" >> ${postgresDir}/postgresql.conf
             fi
 
-            # Configure socket directory
-            if ! grep -q "unix_socket_directories" ~/.local/share/postgres/postgresql.conf; then
-              echo "unix_socket_directories = '$HOME/.local/share/postgres/sockets'" >> ~/.local/share/postgres/postgresql.conf
-            fi
-
-            pg_ctl -D ~/.local/share/postgres -l ~/.local/share/postgres/logfile start
+            ${pkgs.postgresql_15}/bin/pg_ctl -D ${postgresDir} -l ${postgresDir}/logfile start
             sleep 2
-            createdb -U postgres care || echo "Database 'care' already exists"
+            ${pkgs.postgresql_15}/bin/createdb -h localhost -U postgres care || echo "Database 'care' already exists"
           else
             echo "PostgreSQL already running"
           fi
 
-          echo "Starting Redis..."
-          if ! pgrep -x "redis-server" > /dev/null; then
-            redis-server --daemonize yes --bind 127.0.0.1 --port 6379
+          echo "📮 Starting Redis..."
+          if ! ${pkgs.procps}/bin/pgrep -x "redis-server" > /dev/null; then
+            # Ensure Redis directory exists
+            mkdir -p ${redisDir}
+
+            ${pkgs.redis}/bin/redis-server \
+              --daemonize yes \
+              --bind 127.0.0.1 \
+              --port 6379 \
+              --dir ${redisDir} \
+              --dbfilename dump.rdb
           else
             echo "Redis already running"
           fi
-
-          echo "Starting MinIO..."
-          if ! pgrep -x "minio" > /dev/null; then
-            mkdir -p ~/.local/share/minio
-            MINIO_ROOT_USER="${envVars.BUCKET_KEY}" MINIO_ROOT_PASSWORD="${envVars.BUCKET_SECRET}" \
-            minio server ~/.local/share/minio --address ":9100" --console-address ":9001" &
+          echo "🗄️  Starting MinIO..."
+          if ! ${pkgs.procps}/bin/pgrep -x "minio" > /dev/null; then
+            MINIO_ROOT_USER="${envVars.BUCKET_KEY}" \
+            MINIO_ROOT_PASSWORD="${envVars.BUCKET_SECRET}" \
+            ${pkgs.minio}/bin/minio server ${minioDir} \
+              --address ":9100" \
+              --console-address ":9001" &
             sleep 3
           else
             echo "MinIO already running"
           fi
 
-          echo "All services started!"
+          echo "✅ All services started!"
+          echo "   PostgreSQL data: ${postgresDir}"
+          echo "   Redis data: ${redisDir}"
+          echo "   MinIO data: ${minioDir}"
         '';
 
         stopServices = makeScript "stop-services" ''
-          echo "Stopping services..."
-          pkill postgres || true
-          pkill redis-server || true
-          pkill minio || true
-          echo "Services stopped"
+          PROJECT_DATA_DIR="${projectDataDir}"
+          POSTGRES_DIR="$PROJECT_DATA_DIR/postgres"
+
+          echo "🛑 Stopping services..."
+
+          echo "Stopping PostgreSQL..."
+          if [ -f "$POSTGRES_DIR/postmaster.pid" ]; then
+            ${pkgs.postgresql_15}/bin/pg_ctl -D "$POSTGRES_DIR" stop
+          else
+            ${pkgs.procps}/bin/pkill postgres || true
+          fi
+
+          echo "Stopping Redis..."
+          ${pkgs.procps}/bin/pkill redis-server || true
+
+          echo "Stopping MinIO..."
+          ${pkgs.procps}/bin/pkill minio || true
+
+          echo "✅ Services stopped"
         '';
 
         # Kill all development processes
@@ -149,38 +166,36 @@
 
           # Stop Django development server
           echo "Stopping Django development server..."
-          pkill -f "runserver_plus" || true
-          pkill -f "manage.py runserver" || true
-          pkill -f "python.*manage.py" || true
+          ${pkgs.procps}/bin/pkill -f "runserver_plus" || true
+          ${pkgs.procps}/bin/pkill -f "manage.py runserver" || true
+          ${pkgs.procps}/bin/pkill -f "python.*manage.py" || true
 
           # Stop Celery workers and beat
           echo "Stopping Celery workers..."
-          pkill -f "celery.*worker" || true
-          pkill -f "celery.*beat" || true
-          pkill -f "watchmedo.*celery" || true
+          ${pkgs.procps}/bin/pkill -f "celery.*worker" || true
+          ${pkgs.procps}/bin/pkill -f "celery.*beat" || true
+          ${pkgs.procps}/bin/pkill -f "watchmedo.*celery" || true
 
           # Stop debugpy if running
           echo "Stopping debugger..."
-          pkill -f "debugpy" || true
+          ${pkgs.procps}/bin/pkill -f "debugpy" || true
 
           # Stop background services
           echo "Stopping background services..."
-          pkill postgres || true
-          pkill redis-server || true
-          pkill minio || true
+          ${stopServices}/bin/stop-services
 
           # Clean up any remaining Python processes that might be related
           echo "Cleaning up remaining processes..."
-          pkill -f "python.*config.celery_app" || true
+          ${pkgs.procps}/bin/pkill -f "python.*config.celery_app" || true
 
           # Wait a moment for processes to terminate
           sleep 2
 
           # Force kill any stubborn processes
           echo "Force killing stubborn processes..."
-          pkill -9 -f "runserver_plus" 2>/dev/null || true
-          pkill -9 -f "celery.*worker" 2>/dev/null || true
-          pkill -9 -f "celery.*beat" 2>/dev/null || true
+          ${pkgs.procps}/bin/pkill -9 -f "runserver_plus" 2>/dev/null || true
+          ${pkgs.procps}/bin/pkill -9 -f "celery.*worker" 2>/dev/null || true
+          ${pkgs.procps}/bin/pkill -9 -f "celery.*beat" 2>/dev/null || true
 
           echo "✅ All development processes stopped"
           echo ""
@@ -189,14 +204,31 @@
           echo "  rundev          # Start unified development environment"
         '';
 
+        # Clean project data (useful for fresh start)
+        cleanData = makeScript "clean-data" ''
+          PROJECT_DATA_DIR="${projectDataDir}"
+
+          echo "⚠️  This will delete all local service data (PostgreSQL, Redis, MinIO)"
+          read -p "Are you sure? (y/N) " -n 1 -r
+          echo
+          if [[ $REPLY =~ ^[Yy]$ ]]; then
+            ${stopServices}/bin/stop-services
+            echo "🗑️  Removing $PROJECT_DATA_DIR..."
+            rm -rf "$PROJECT_DATA_DIR"
+            echo "✅ Project data cleaned"
+          else
+            echo "Cancelled"
+          fi
+        '';
+
         # Development setup
         setupDev = makeScript "setup-dev" ''
-          echo "Setting up development environment..."
+          echo "🏗️  Setting up development environment..."
 
           # Install Python dependencies
           if [ ! -d ".venv" ]; then
             echo "Creating virtual environment..."
-            python -m venv .venv
+            ${python}/bin/python -m venv .venv
           fi
 
           source .venv/bin/activate
@@ -208,10 +240,9 @@
           # Install plugins
           python install_plugins.py
 
-          # Install Typst
-          ${typstInstaller}/bin/install-typst
-
-          echo "Development environment setup complete!"
+          echo "✅ Development environment setup complete!"
+          echo ""
+          echo "Note: Typst ${pkgs.typst.version} is available from Nix store"
         '';
 
         # Django management commands
@@ -242,18 +273,18 @@
 
           echo "🚀 Starting unified Care development environment..."
 
-          # Wait for services
-          ./scripts/wait_for_db.sh
-          ./scripts/wait_for_redis.sh
+          # Wait for services (using Nix bash)
+          ${pkgs.bash}/bin/bash ./scripts/wait_for_db.sh
+          ${pkgs.bash}/bin/bash ./scripts/wait_for_redis.sh
 
-          # Run migrations and setup (from celery scripts)
+          # Run migrations and setup
           echo "📊 Running database migrations..."
           python manage.py migrate --noinput
           python manage.py compilemessages -v 0
           python manage.py sync_permissions_roles
           python manage.py sync_valueset
 
-          # Collect static files (from start script)
+          # Collect static files
           echo "📦 Collecting static files..."
           python manage.py collectstatic --noinput
 
@@ -291,8 +322,8 @@
         # Individual development server (API only)
         runServer = makeScript "runserver" ''
           source .venv/bin/activate
-          ./scripts/wait_for_db.sh
-          ./scripts/wait_for_redis.sh
+          ${pkgs.bash}/bin/bash ./scripts/wait_for_db.sh
+          ${pkgs.bash}/bin/bash ./scripts/wait_for_redis.sh
 
           echo "📊 Running migrations..."
           python manage.py migrate --noinput
@@ -315,8 +346,8 @@
         # Individual Celery worker
         runCelery = makeScript "celery" ''
           source .venv/bin/activate
-          ./scripts/wait_for_db.sh
-          ./scripts/wait_for_redis.sh
+          ${pkgs.bash}/bin/bash ./scripts/wait_for_db.sh
+          ${pkgs.bash}/bin/bash ./scripts/wait_for_redis.sh
 
           echo "📊 Running migrations..."
           python manage.py migrate --noinput
@@ -364,32 +395,32 @@
           ruff check --fix .
         '';
 
-        # Database backup/restore
+        # Database backup/restore using Nix store binaries
         dumpDb = makeScript "dump-db" ''
-          pg_dump -U postgres -Fc care > care_db.dump
-          echo "Database dumped to care_db.dump"
+          ${pkgs.postgresql_15}/bin/pg_dump -h localhost -U postgres -Fc care > care_db.dump
+          echo "✅ Database dumped to care_db.dump"
         '';
 
         loadDb = makeScript "load-db" ''
           if [ -f "care_db.dump" ]; then
-            pg_restore -U postgres --clean --if-exists -d care care_db.dump
-            echo "Database restored from care_db.dump"
+            ${pkgs.postgresql_15}/bin/pg_restore -h localhost -U postgres --clean --if-exists -d care care_db.dump
+            echo "✅ Database restored from care_db.dump"
           else
-            echo "care_db.dump not found"
+            echo "❌ care_db.dump not found"
             exit 1
           fi
         '';
 
         resetDb = makeScript "reset-db" ''
-          dropdb -U postgres care -f || true
-          createdb -U postgres care
-          echo "Database reset"
+          ${pkgs.postgresql_15}/bin/dropdb -h localhost -U postgres care -f || true
+          ${pkgs.postgresql_15}/bin/createdb -h localhost -U postgres care
+          echo "✅ Database reset"
         '';
 
         # Health check
         healthCheck = makeScript "healthcheck" ''
           source .venv/bin/activate
-          ./scripts/healthcheck.sh
+          ${pkgs.bash}/bin/bash ./scripts/healthcheck.sh
         '';
 
       in
@@ -399,12 +430,12 @@
             # Python and package management
             pythonEnv
 
-            # Databases and services
-            postgresql_15  # PostgreSQL server and client
-            libpq  # PostgreSQL client library
-            libpq.pg_config  # pg_config tool for psycopg compilation
+            # Databases and services (from Nix store)
+            postgresql_15
+            libpq
             redis
             minio
+            typst  # Typst directly from nixpkgs
 
             # System dependencies for building Python packages
             pkg-config
@@ -415,6 +446,9 @@
             curl
             wget
             git
+
+            # Process management
+            procps
 
             # Development tools
             pre-commit
@@ -428,6 +462,7 @@
             startServices
             stopServices
             killAll
+            cleanData
             djangoManage
             migrateDb
             makeMigrations
@@ -445,25 +480,33 @@
             loadDb
             resetDb
             healthCheck
-            typstInstaller
           ];
 
           shellHook = ''
-            # Add local binaries to PATH (Nix automatically adds buildInputs to PATH)
-            export PATH="$HOME/.local/bin:$PATH"
-
             ${builtins.concatStringsSep "\n" (pkgs.lib.mapAttrsToList (name: value: "export ${name}='${value}'") envVars)}
 
-            # Create necessary directories
-            mkdir -p ~/.local/bin ~/.local/share/postgres ~/.local/share/postgres/sockets ~/.local/share/minio
+            # Create project data directory
+            mkdir -p ${projectDataDir}
+
+            # Add .nix-data to .gitignore if not already there
+            if [ -f .gitignore ] && ! grep -q "^\.nix-data$" .gitignore; then
+              echo ".nix-data" >> .gitignore
+            fi
 
             echo "🏥 Welcome to Care development environment!"
+            echo ""
+            echo "📦 Using reproducible Nix store binaries:"
+            echo "   PostgreSQL: ${pkgs.postgresql_15.version}"
+            echo "   Redis: ${pkgs.redis.version}"
+            echo "   MinIO: ${pkgs.minio.version}"
+            echo "   Typst: ${pkgs.typst.version}"
             echo ""
             echo "Available commands:"
             echo "  setup-dev          - Set up the development environment"
             echo "  start-services     - Start PostgreSQL, Redis, and MinIO"
             echo "  stop-services      - Stop background services only"
             echo "  kill-care          - 🛑 Stop ALL development processes and services"
+            echo "  clean-data         - 🗑️  Remove all local service data"
             echo "  rundev             - 🚀 Start both API server and Celery worker (RECOMMENDED)"
             echo "  runserver          - Start Django development server only"
             echo "  celery             - Start Celery worker with beat only"
@@ -483,15 +526,9 @@
             echo "  healthcheck        - Check application health"
             echo ""
             echo "🚀 Quick Start (Recommended):"
-            echo "  1. Run 'setup-dev' to install dependencies"
+            echo "  1. Run 'setup-dev' to install Python dependencies"
             echo "  2. Run 'start-services' to start required services"
             echo "  3. Run 'rundev' to start both API server and Celery worker"
-            echo ""
-            echo "📋 Manual Setup:"
-            echo "  1. Run 'setup-dev' to install dependencies"
-            echo "  2. Run 'start-services' to start required services"
-            echo "  3. Run 'migrate' to set up the database"
-            echo "  4. Run 'runserver' and 'celery' in separate terminals"
             echo ""
             echo "The Django server will be available at http://localhost:9000"
             echo "MinIO console will be available at http://localhost:9001"
@@ -505,19 +542,16 @@
               echo "⚠️  Run 'setup-dev' to create virtual environment and install dependencies"
             fi
 
-            # Verify pg_config is available
-            if command -v pg_config >/dev/null 2>&1; then
-              echo "✅ PostgreSQL development tools available"
-            else
-              echo "❌ PostgreSQL development tools not found in PATH"
-            fi
+            # Verify tools are available
+            echo "✅ PostgreSQL development tools available (${pkgs.postgresql_15.version})"
+            echo "✅ Typst available (${pkgs.typst.version})"
           '';
         };
 
-        # Additional outputs for flexibility
+        # Package for CI/CD or other use cases
         packages.default = pkgs.writeShellApplication {
           name = "care-dev";
-          runtimeInputs = [ pythonEnv ];
+          runtimeInputs = [ pythonEnv pkgs.postgresql_15 pkgs.redis pkgs.minio pkgs.typst ];
           text = ''
             echo "Care development environment package"
             echo "Use 'nix develop' to enter the development shell"
@@ -525,3 +559,4 @@
         };
       });
 }
+
