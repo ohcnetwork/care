@@ -126,7 +126,8 @@
           else
             echo "Redis already running"
           fi
-          echo "🗄️  Starting MinIO..."
+
+          echo "🗄️ Starting MinIO..."
           if ! ${pkgs.procps}/bin/pgrep -x "minio" > /dev/null; then
             MINIO_ROOT_USER="${envVars.BUCKET_KEY}" \
             MINIO_ROOT_PASSWORD="${envVars.BUCKET_SECRET}" \

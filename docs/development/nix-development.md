@@ -26,7 +26,7 @@ This document describes how to set up and use the Nix-based development environm
    sudo dnf install direnv  # Fedora
    ```
 
-## Automated Setup 
+## Automated Setup
 
 For first-time setup, use the automated setup script:
 
@@ -91,7 +91,7 @@ start-services
 
 This starts:
 - PostgreSQL on port 5432
-- Redis on port 6379  
+- Redis on port 6379
 - MinIO on port 9100 (console on 9001)
 
 ### 4. Set Up Database
@@ -115,7 +115,7 @@ This single command starts both the Django server and Celery worker together wit
 # Terminal 1: Django server
 runserver
 
-# Terminal 2: Celery worker  
+# Terminal 2: Celery worker
 celery
 ```
 
