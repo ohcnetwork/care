@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -205,18 +206,22 @@ class PatientViewSet(EMRModelViewSet):
             partial_search = config.config.get("retrieve_config", {}).get(
                 "retrieve_partial_search", False
             )
-
-            if not partial_search:
+            if not request_data.value:
+                raise ValidationError("Value is required")
+            if partial_search:
+                terms = request_data.value.split()
+                query = Q()
+                for term in terms:
+                    query &= Q(value__icontains=term)
                 identifier_queryset = PatientIdentifier.objects.filter(
+                    query,
                     config=config,
-                    value__iexact=request_data.value,
-                )
-
-            elif partial_search:
-                identifier_queryset = PatientIdentifier.objects.filter(
-                    config=config,
-                    value__icontains=request_data.value,
                 )[:page_size]
+            else:
+                identifier_queryset = PatientIdentifier.objects.filter(
+                    config=config,
+                    value__exact=request_data.value,
+                )
 
             queryset = Patient.objects.filter(
                 id__in=identifier_queryset.values("patient_id")
