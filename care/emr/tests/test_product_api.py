@@ -27,22 +27,28 @@ class ProductAPITest(CareAPITestBase):
                 ProductPermissions.can_write_product.name,
             ]
         )
-        self.charge_item_definition = self.create_charge_item_definition(
-            facility=self.facility
+        self.resource_category = baker.make(
+            "emr.ResourceCategory",
+            facility=self.facility,
+            slug=f"f-{self.facility.external_id}-test-category",
         )
-        self.product_knowledge = self.create_product_knowledge(facility=self.facility)
+        self.charge_item_definition = self.create_charge_item_definition(
+            facility=self.facility, category=self.resource_category
+        )
+        self.product_knowledge = self.create_product_knowledge(
+            facility=self.facility, category=self.resource_category
+        )
 
     def generate_product_knowledge_data(
         self,
-        slug=None,
         name=None,
         status=None,
         alternate_identifier=None,
         facility=None,
         product_type=None,
+        **kwargs,
     ):
         return {
-            "slug": slug or "test-product-knowledge",
             "alternate_identifier": alternate_identifier or "test-alternate-identifier",
             "name": name or "Test Product Knowledge",
             "status": status or ProductKnowledgeStatusOptions.active.value,
@@ -50,17 +56,24 @@ class ProductAPITest(CareAPITestBase):
             "code": None,
             "base_unit": None,
             "facility": facility,
+            **kwargs,
         }
 
     def create_product_knowledge(self, facility, **kwargs):
         data = self.generate_product_knowledge_data(facility=facility, **kwargs)
         return baker.make(
             "emr.ProductKnowledge",
+            slug=f"f-{facility.external_id}-test-knowledge",
             **data,
         )
 
-    def create_charge_item_definition(self, facility, **kwargs):
-        return baker.make("emr.ChargeItemDefinition", facility=facility, **kwargs)
+    def create_charge_item_definition(self, facility, slug=None, **kwargs):
+        return baker.make(
+            "emr.ChargeItemDefinition",
+            facility=facility,
+            slug=slug or f"f-{facility.external_id}-test-charge-item",
+            **kwargs,
+        )
 
     def get_details_url(self, product=None, facility=None):
         return reverse(
@@ -79,9 +92,7 @@ class ProductAPITest(CareAPITestBase):
             },
         )
 
-    def product_data(
-        self, product_knowledge=None, charge_item_definition=None, status=None
-    ):
+    def product_data(self, product_knowledge, charge_item_definition, status=None):
         return {
             "status": status or ProductStatusOptions.active.value,
             "batch": {"lot_number": "12345"},
@@ -103,11 +114,12 @@ class ProductAPITest(CareAPITestBase):
         response = self.client.post(
             self.get_base_url(facility=self.facility.external_id),
             self.product_data(
-                product_knowledge=self.product_knowledge.external_id,
-                charge_item_definition=self.charge_item_definition.external_id,
+                product_knowledge=self.product_knowledge.slug,
+                charge_item_definition=self.charge_item_definition.slug,
             ),
             format="json",
         )
+
         self.assertEqual(response.status_code, 200)
         get_response = self.client.get(
             self.get_details_url(
@@ -128,8 +140,8 @@ class ProductAPITest(CareAPITestBase):
         response = self.client.post(
             self.get_base_url(facility=self.facility.external_id),
             self.product_data(
-                product_knowledge=self.product_knowledge.external_id,
-                charge_item_definition=self.charge_item_definition.external_id,
+                product_knowledge=self.product_knowledge.slug,
+                charge_item_definition=self.charge_item_definition.slug,
             ),
             format="json",
         )
@@ -148,8 +160,8 @@ class ProductAPITest(CareAPITestBase):
         response = self.client.post(
             self.get_base_url(facility=self.facility.external_id),
             self.product_data(
-                product_knowledge=self.product_knowledge.external_id,
-                charge_item_definition=self.charge_item_definition.external_id,
+                product_knowledge=self.product_knowledge.slug,
+                charge_item_definition=self.charge_item_definition.slug,
             ),
             format="json",
         )
@@ -158,7 +170,8 @@ class ProductAPITest(CareAPITestBase):
 
     def test_create_product_with_invalid_charge_item(self):
         different_charge_item = self.create_charge_item_definition(
-            facility=self.create_facility(name="Invalid Facility", user=self.user)
+            facility=self.create_facility(name="Invalid Facility", user=self.user),
+            category=self.resource_category,
         )
         self.client.force_authenticate(user=self.user)
         self.attach_role_facility_organization_user(
@@ -169,8 +182,8 @@ class ProductAPITest(CareAPITestBase):
         response = self.client.post(
             self.get_base_url(facility=self.facility.external_id),
             self.product_data(
-                product_knowledge=self.product_knowledge.external_id,
-                charge_item_definition=different_charge_item.external_id,
+                product_knowledge=self.product_knowledge.slug,
+                charge_item_definition=different_charge_item.slug,
             ),
             format="json",
         )
@@ -179,7 +192,8 @@ class ProductAPITest(CareAPITestBase):
 
     def test_create_product_with_invalid_product_knowledge(self):
         different_product_knowledge = self.create_product_knowledge(
-            facility=self.create_facility(name="Invalid Facility", user=self.user)
+            facility=self.create_facility(name="Invalid Facility", user=self.user),
+            category=self.resource_category,
         )
         self.client.force_authenticate(user=self.user)
         self.attach_role_facility_organization_user(
@@ -190,8 +204,8 @@ class ProductAPITest(CareAPITestBase):
         response = self.client.post(
             self.get_base_url(facility=self.facility.external_id),
             self.product_data(
-                product_knowledge=different_product_knowledge.external_id,
-                charge_item_definition=self.charge_item_definition.external_id,
+                product_knowledge=different_product_knowledge.slug,
+                charge_item_definition=self.charge_item_definition.slug,
             ),
             format="json",
         )
@@ -209,14 +223,16 @@ class ProductAPITest(CareAPITestBase):
         )
         charge_item_definition = self.create_charge_item_definition(
             facility=self.facility,
+            category=self.resource_category,
+            slug=f"f-{self.facility.external_id}-charge-item-2",
         )
         response = self.client.put(
             self.get_details_url(
                 product=product.external_id, facility=self.facility.external_id
             ),
             self.product_data(
-                charge_item_definition=str(charge_item_definition.external_id),
-                product_knowledge=str(self.product_knowledge.external_id),
+                charge_item_definition=str(charge_item_definition.slug),
+                product_knowledge=str(self.product_knowledge.slug),
             ),
             format="json",
         )
@@ -247,14 +263,16 @@ class ProductAPITest(CareAPITestBase):
         )
         charge_item_definition = self.create_charge_item_definition(
             facility=self.facility,
+            category=self.resource_category,
+            slug=f"f-{self.facility.external_id}-charge-item-2",
         )
         response = self.client.put(
             self.get_details_url(
                 product=product.external_id, facility=self.facility.external_id
             ),
             self.product_data(
-                charge_item_definition=str(charge_item_definition.external_id),
-                product_knowledge=str(self.product_knowledge.external_id),
+                charge_item_definition=str(charge_item_definition.slug),
+                product_knowledge=str(self.product_knowledge.slug),
             ),
             format="json",
         )
@@ -286,8 +304,8 @@ class ProductAPITest(CareAPITestBase):
                 product=product.external_id, facility=self.facility.external_id
             ),
             self.product_data(
-                charge_item_definition=str(charge_item_definition.external_id),
-                product_knowledge=str(self.product_knowledge.external_id),
+                charge_item_definition=str(charge_item_definition.slug),
+                product_knowledge=str(self.product_knowledge.slug),
             ),
             format="json",
         )
@@ -309,8 +327,8 @@ class ProductAPITest(CareAPITestBase):
                 product=product.external_id, facility=self.facility.external_id
             ),
             self.product_data(
-                charge_item_definition=str(different_charge_item.external_id),
-                product_knowledge=str(self.product_knowledge.external_id),
+                charge_item_definition=str(different_charge_item.slug),
+                product_knowledge=str(self.product_knowledge.slug),
             ),
             format="json",
         )
@@ -484,7 +502,9 @@ class ProductAPITest(CareAPITestBase):
             status=ProductStatusOptions.active.value,
         )
         product_knowledge_2 = self.create_product_knowledge(
-            name="Another Product Knowledge", facility=self.facility
+            name="Another Product Knowledge",
+            facility=self.facility,
+            category=self.resource_category,
         )
         self.create_product(
             facility=self.facility,
@@ -494,7 +514,10 @@ class ProductAPITest(CareAPITestBase):
         )
         response = self.client.get(
             self.get_base_url(facility=self.facility.external_id),
-            {"product_knowledge": self.product_knowledge.external_id},
+            {
+                "product_knowledge": self.product_knowledge.slug,
+                "status": ProductStatusOptions.active.value,
+            },
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
