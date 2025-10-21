@@ -11,12 +11,8 @@ from rest_framework.exceptions import ValidationError
 
 from care.emr.models.organization import FacilityOrganization, Organization
 from care.emr.models.tag_config import TagConfig
-from care.emr.resources.base import (
-    EMRResource,
-    cacheable,
-    invalidate_tag_config_cache,
-    model_string,
-)
+from care.emr.resources.base import EMRResource, cacheable, model_string
+from care.emr.resources.tag.cache_invalidation import invalidate_tag_config_cache
 from care.facility.models.facility import Facility
 from care.utils.shortcuts import get_object_or_404
 
