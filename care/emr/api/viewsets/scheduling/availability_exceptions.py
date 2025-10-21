@@ -11,7 +11,10 @@ from care.emr.api.viewsets.base import (
     EMRRetrieveMixin,
     EMRUpsertMixin,
 )
-from care.emr.api.viewsets.scheduling.schedule import get_or_create_resource
+from care.emr.api.viewsets.scheduling.schedule import (
+    get_or_create_resource,
+    get_schedulable_resource,
+)
 from care.emr.models import AvailabilityException
 from care.emr.models.scheduling.booking import TokenSlot
 from care.emr.resources.scheduling.availability_exception.spec import (
@@ -116,11 +119,13 @@ class AvailabilityExceptionsViewSet(
                 or "resource_id" not in self.request.query_params
             ):
                 raise ValidationError("resource_type and resource_id are required")
-            resource_obj = get_or_create_resource(
+            resource_obj = get_schedulable_resource(
                 self.request.query_params["resource_type"],
                 self.request.query_params["resource_id"],
                 facility,
             )
+            if not resource_obj:
+                return queryset.none()
             if not AuthorizationController.call(
                 "can_list_schedule", resource_obj, self.request.user
             ):
