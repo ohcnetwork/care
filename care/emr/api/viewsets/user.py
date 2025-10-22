@@ -106,7 +106,6 @@ class UserViewSet(EMRModelViewSet):
                 ),
             )
 
-
             if not instance.has_usable_password():
                 try:
                     mail_type = MailTypeChoices.create.value
