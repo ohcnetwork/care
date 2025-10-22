@@ -220,7 +220,7 @@ class PatientViewSet(EMRModelViewSet):
             else:
                 identifier_queryset = PatientIdentifier.objects.filter(
                     config=config,
-                    value__icontains=request_data.value,
+                    value__exact=request_data.value,
                 )
 
             queryset = Patient.objects.filter(

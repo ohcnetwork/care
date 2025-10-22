@@ -9,7 +9,10 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
-from care.emr.api.viewsets.scheduling.schedule import get_or_create_resource
+from care.emr.api.viewsets.scheduling.schedule import (
+    get_or_create_resource,
+    get_schedulable_resource,
+)
 from care.emr.models.patient import Patient
 from care.emr.models.scheduling.token import (
     Token,
@@ -130,11 +133,13 @@ class TokenQueueViewSet(EMRModelViewSet):
                 or "resource_id" not in self.request.query_params
             ):
                 raise ValidationError("resource_type and resource_id is required")
-            resource = get_or_create_resource(
+            resource = get_schedulable_resource(
                 self.request.query_params["resource_type"],
                 self.request.query_params.get("resource_id"),
                 facility,
             )
+            if not resource:
+                return queryset.none()
             self.can_read_resource_token(resource)
             queryset = queryset.filter(resource=resource)
         return queryset
