@@ -585,7 +585,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             supplied_item_quantity=500,
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
-            supplied_inventory_item=self.inventory_item_destination,
+            supplied_inventory_item=self.inventory_item_origin,
         )
         update_response = self.client.put(
             self.get_detail_url(supply_delivery.external_id),

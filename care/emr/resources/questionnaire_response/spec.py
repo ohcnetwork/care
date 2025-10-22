@@ -32,6 +32,7 @@ class QuestionnaireSubmitRequest(BaseModel):
     encounter: UUID4 | None = None
     patient: UUID4
     results: list[QuestionnaireSubmitResult]
+    form_submission: UUID4 | None = None
 
 
 class QuestionnaireResponseReadSpec(EMRResource):

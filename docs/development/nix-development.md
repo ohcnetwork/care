@@ -1,6 +1,6 @@
 # Nix Development Environment for CARE
 
-This document describes how to set up and use the Nix-based development environment for the CARE
+This document describes how to set up and use the Nix-based development environment for the CARE project.
 
 ## Prerequisites
 
@@ -26,21 +26,40 @@ This document describes how to set up and use the Nix-based development environm
    sudo dnf install direnv  # Fedora
    ```
 
-## Quick Setup
+## Automated Setup
 
-For first-time setup, run the automated setup script:
+For first-time setup, use the automated setup script:
 
 ```bash
 ./scripts/nix-dev-setup.sh
 ```
 
 This script will:
-- Verify Nix installation
-- Set up the development environment
-- Install all Python dependencies
+- Check if Nix is installed and flakes are enabled
+- Set up the Python virtual environment and install dependencies
 - Start required services (PostgreSQL, Redis, MinIO)
 - Run database migrations
-- Optionally load sample data
+- Optionally load sample fixtures
+- Provide helpful guidance for next steps
+
+The script includes safety checks and won't run on NixOS systems (which should use NixOS-specific configurations).
+
+## Quick Setup (Manual)
+
+For first-time setup without the script:
+
+```bash
+nix develop
+setup-dev
+start-services
+rundev
+```
+
+This will:
+- Enter the development environment
+- Set up Python virtual environment and install dependencies
+- Start required services (PostgreSQL, Redis, MinIO)
+- Run database migrations and start the unified development server
 
 ## Manual Setup
 
@@ -53,7 +72,7 @@ nix develop
 ```
 
 This will:
-- Install all required system packages
+- Install all required system packages from Nix store
 - Set up environment variables
 - Make development commands available
 - Show a helpful welcome message
@@ -72,8 +91,8 @@ start-services
 
 This starts:
 - PostgreSQL on port 5432
-- Redis on port 6379  
-- MinIO on port 9000 (console on 9001)
+- Redis on port 6379
+- MinIO on port 9100 (console on 9001)
 
 ### 4. Set Up Database
 
@@ -96,8 +115,8 @@ This single command starts both the Django server and Celery worker together wit
 # Terminal 1: Django server
 runserver
 
-# Terminal 2: Celery worker  
-nix develop --command celery
+# Terminal 2: Celery worker
+celery
 ```
 
 The Django server will be available at http://localhost:9000
@@ -110,6 +129,7 @@ Once in the development shell (`nix develop`), you have access to these commands
 - `start-services` - Start PostgreSQL, Redis, and MinIO
 - `stop-services` - Stop background services only
 - `kill-care` - **🛑 Stop ALL development processes and services**
+- `clean-data` - **🗑️ Remove all local service data** (requires confirmation)
 - `healthcheck` - Check application health
 
 ### Development Server
@@ -152,6 +172,7 @@ The development environment sets these variables automatically:
 - `POSTGRES_PASSWORD=postgres`
 - `POSTGRES_HOST=localhost`
 - `POSTGRES_DB=care`
+- `POSTGRES_PORT=5432`
 - `DATABASE_URL=postgres://postgres:postgres@localhost:5432/care`
 
 ### Redis
@@ -160,12 +181,27 @@ The development environment sets these variables automatically:
 
 ### Django
 - `DJANGO_DEBUG=true`
+- `ATTACH_DEBUGGER=false`
 - `DJANGO_SETTINGS_MODULE=config.settings.local`
 
 ### MinIO/S3
-- `BUCKET_ENDPOINT=http://localhost:9100`
+- `BUCKET_REGION=ap-south-1`
 - `BUCKET_KEY=minioadmin`
 - `BUCKET_SECRET=minioadmin`
+- `BUCKET_ENDPOINT=http://localhost:9100`
+- `BUCKET_EXTERNAL_ENDPOINT=http://localhost:9100`
+- `FILE_UPLOAD_BUCKET=patient-bucket`
+- `FACILITY_S3_BUCKET=facility-bucket`
+
+### HCX Configuration (for local testing)
+- `HCX_AUTH_BASE_PATH=https://staging-hcx.swasth.app/auth/realms/swasth-health-claim-exchange/protocol/openid-connect/token`
+- `HCX_ENCRYPTION_PRIVATE_KEY_URL=https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/main/demo-app/server/resources/keys/x509-private-key.pem`
+- `HCX_IG_URL=https://ig.hcxprotocol.io/v0.7.1`
+- `HCX_PARTICIPANT_CODE=qwertyreboot.gmail@swasth-hcx-staging`
+- `HCX_PASSWORD=Opensaber@123`
+- `HCX_PROTOCOL_BASE_PATH=http://staging-hcx.swasth.app/api/v0.7`
+- `HCX_USERNAME=qwertyreboot@gmail.com`
+- `HCX_CERT_URL=https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/main/demo-app/server/resources/keys/x509-self-signed-certificate.pem`
 
 ## Service URLs
 
@@ -205,7 +241,7 @@ The development environment sets these variables automatically:
    runserver
 
    # Terminal 2: Celery worker
-   nix develop --command celery
+   celery
    ```
 
 3. **Make changes and test**:
@@ -245,14 +281,14 @@ Set `ATTACH_DEBUGGER=true` and use `runserver` to start with debugpy on port 987
 # Check if services are running
 ps aux | grep -E 'postgres|redis|minio'
 
-# View service logs
-journalctl --user -f  # On systemd systems
+# View service logs (if using systemd)
+journalctl --user -f
 ```
 
 #### Database Connection Issues
 ```bash
 # Check PostgreSQL status
-pg_ctl status -D ~/.local/share/postgres
+pg_ctl status -D .nix-data/postgres
 
 # Restart PostgreSQL
 stop-services
@@ -266,7 +302,7 @@ start-services
 1. **"Permission denied" errors**:
    ```bash
    # Ensure directories are writable
-   mkdir -p ~/.local/bin ~/.local/share/postgres ~/.local/share/minio
+   mkdir -p .nix-data/postgres .nix-data/redis .nix-data/minio
    ```
 
 2. **Services won't start**:
@@ -276,7 +312,7 @@ start-services
    # Check for processes using ports
    lsof -i :5432  # PostgreSQL
    lsof -i :6379  # Redis
-   lsof -i :9000  # MinIO
+   lsof -i :9100  # MinIO
    ```
 
 3. **Python dependencies issues**:
@@ -293,7 +329,7 @@ start-services
    # Wait for PostgreSQL to fully start
    sleep 5
    # Or check if initialization is complete
-   pg_ctl status -D ~/.local/share/postgres
+   pg_ctl status -D .nix-data/postgres
    ```
 
 ### Clean Reset
@@ -304,8 +340,8 @@ If you encounter persistent issues:
 # Stop all processes and services
 kill-care
 
-# Clean up data directories
-rm -rf ~/.local/share/postgres ~/.local/share/minio
+# Clean up data directories (will prompt for confirmation)
+clean-data
 
 # Exit and re-enter development shell
 exit
@@ -317,6 +353,16 @@ start-services
 migrate
 ```
 
+## Data Storage
+
+The Nix development environment stores all service data in the project-local `.nix-data` directory:
+
+- **PostgreSQL data**: `.nix-data/postgres/`
+- **Redis data**: `.nix-data/redis/`
+- **MinIO data**: `.nix-data/minio/`
+
+This directory is automatically added to `.gitignore` and provides isolation from system-wide services.
+
 ## Differences from Docker Setup
 
 ### Advantages of Nix
@@ -325,12 +371,14 @@ migrate
 - **Reproducible**: Same environment across different machines
 - **Integrated tooling**: All tools available in single shell
 - **Easier debugging**: Direct access to processes and files
+- **Version pinning**: All tools use specific versions from Nix store
 
 ### Key Differences
 - Services run directly on host (not in containers)
-- Data stored in `~/.local/share/` instead of Docker volumes
+- Data stored in `.nix-data/` instead of Docker volumes
 - Environment variables set in shell instead of env files
 - All commands available directly (no `docker compose exec`)
+- Uses Python 3.13 and PostgreSQL 15 from Nix store
 
 ## Integration with Existing Workflow
 
@@ -339,6 +387,18 @@ The Nix setup coexists with Docker setup:
 - Same Python dependencies and versions
 - Same database schema and migrations
 - Compatible with existing CI/CD pipelines
+
+## Available Tools
+
+The development environment includes these tools from the Nix store:
+
+- **Python 3.13**: Base Python interpreter
+- **PostgreSQL 15**: Database server and client tools
+- **Redis**: In-memory data structure store
+- **MinIO**: S3-compatible object storage
+- **Typst**: Modern typesetting system
+- **Pre-commit**: Git hook framework
+- **GCC & build tools**: For compiling Python packages
 
 ## Contributing
 
@@ -371,5 +431,3 @@ When adding new dependencies:
 - Default credentials are for development only
 - MinIO uses development keys (minioadmin/minioadmin)
 - Database has no password (local development only)
-
-For production deployment, use the Docker setup with proper security configurations.
