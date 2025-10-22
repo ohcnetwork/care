@@ -3,7 +3,7 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
@@ -15,6 +15,8 @@ from care.emr.models import (
     QuestionnaireOrganization,
     QuestionnaireTag,
 )
+from care.emr.models.questionnaire import FormSubmission, QuestionnaireResponse
+from care.emr.resources.form_submission.spec import FormSubmissionStatusChoices
 from care.emr.resources.organization.spec import OrganizationReadSpec
 from care.emr.resources.questionnaire.spec import (
     QuestionnaireReadSpec,
@@ -142,6 +144,7 @@ class QuestionnaireViewSet(EMRModelViewSet):
         request_params = QuestionnaireSubmitRequest(**request.data)
         questionnaire = self.get_object()
         patient = get_object_or_404(Patient, external_id=request_params.patient)
+        form_submission_params = {"patient": patient}
         if request_params.encounter:
             encounter = get_object_or_404(
                 Encounter, external_id=request_params.encounter, patient=patient
@@ -152,12 +155,27 @@ class QuestionnaireViewSet(EMRModelViewSet):
                 raise PermissionDenied(
                     "Permission Denied to submit patient questionnaire"
                 )
+            form_submission_params["encounter"] = encounter
         elif not AuthorizationController.call(
             "can_submit_questionnaire_patient_obj", request.user, patient
         ):
             raise PermissionDenied("Permission Denied to submit patient questionnaire")
         with transaction.atomic():
             response = handle_response(questionnaire, request_params, request.user)
+            if request_params.form_submission:
+                form_submission = get_object_or_404(
+                    FormSubmission,
+                    status=FormSubmissionStatusChoices.draft.value,
+                    external_id=request_params.form_submission,
+                    **form_submission_params,
+                )
+                if QuestionnaireResponse.objects.filter(
+                    form_submission=form_submission,
+                    questionnaire=questionnaire,
+                ).exists():
+                    raise ValidationError("Form submission already has a response")
+                response.form_submission = form_submission
+                response.save(update_fields=["form_submission"])
         return Response(QuestionnaireResponseReadSpec.serialize(response).to_json())
 
     @action(detail=True, methods=["GET"])

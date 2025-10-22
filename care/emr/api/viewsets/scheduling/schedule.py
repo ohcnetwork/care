@@ -85,6 +85,31 @@ def validate_resource(
     raise ValidationError("Invalid Resource Type")
 
 
+def get_schedulable_resource(
+    resource_type: SchedulableResourceTypeOptions, resource_id, facility: Facility
+):
+    resource_obj = validate_resource(resource_type, resource_id, facility)
+    if resource_type == SchedulableResourceTypeOptions.practitioner.value:
+        return SchedulableResource.objects.filter(
+            facility=facility,
+            resource_type=resource_type,
+            user=resource_obj,
+        ).first()
+    if resource_type == SchedulableResourceTypeOptions.healthcare_service.value:
+        return SchedulableResource.objects.filter(
+            facility=facility,
+            resource_type=resource_type,
+            healthcare_service=resource_obj,
+        ).first()
+    if resource_type == SchedulableResourceTypeOptions.location.value:
+        return SchedulableResource.objects.filter(
+            facility=facility,
+            resource_type=resource_type,
+            location=resource_obj,
+        ).first()
+    raise ValidationError("Invalid Resource Type")
+
+
 def get_or_create_resource(
     resource_type: SchedulableResourceTypeOptions, resource_id, facility: Facility
 ):
@@ -218,11 +243,13 @@ class ScheduleViewSet(EMRModelViewSet):
                 or "resource_id" not in self.request.query_params
             ):
                 raise ValidationError("resource_type and resource_id are required")
-            resource = get_or_create_resource(
+            resource = get_schedulable_resource(
                 self.request.query_params["resource_type"],
                 self.request.query_params["resource_id"],
                 facility,
             )
+            if not resource:
+                return queryset.none()
             self.can_read_resource_schedule(resource)
             queryset = queryset.filter(resource=resource)
         return queryset
