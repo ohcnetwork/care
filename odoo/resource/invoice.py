@@ -148,17 +148,21 @@ class OdooInvoiceResource(OdooBaseResource):
 
         # Prepare invoice items
         invoice_items = []
-        for charge_item in ChargeItem.objects.filter(paid_invoice=invoice).select_related("charge_item_definition"):
+        for charge_item in ChargeItem.objects.filter(
+            paid_invoice=invoice
+        ).select_related("charge_item_definition"):
             if charge_item.charge_item_definition:
                 item = {
                     "product": {
                         "product_name": charge_item.charge_item_definition.title,
-                        "x_care_id": str(charge_item.charge_item_definition.external_id),
+                        "x_care_id": str(
+                            charge_item.charge_item_definition.external_id
+                        ),
                         "mrp": self.get_charge_item_base_price(charge_item),
                     },
                     "quantity": str(charge_item.quantity),
                     "sale_price": self.get_charge_item_base_price(charge_item),
-                    "x_care_id": str(charge_item.external_id)
+                    "x_care_id": str(charge_item.external_id),
                 }
                 from care.emr.resources.charge_item.spec import (
                     ChargeItemResourceOptions,
@@ -205,9 +209,9 @@ class OdooInvoiceResource(OdooBaseResource):
             "invoice_items": invoice_items,
             "invoice_date": invoice.created_date.strftime("%d-%m-%Y"),
             "x_care_id": str(invoice.external_id),
-            "bill_type": "customer"
+            "bill_type": "customer",
         }
-        logging.info(f"Odoo Invoice Data: {data}")
+        logger.info("Odoo Invoice Data: %s", data)
 
         response = OdooConnector.call_api("/api/create_invoice", data)
         return response["result"]["invoice_id"]

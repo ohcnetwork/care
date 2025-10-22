@@ -1,10 +1,13 @@
-import odoorpc
 import base64
-import requests
 import json
 import logging
+
+import odoorpc
+import requests
 from django.conf import settings
 from rest_framework.exceptions import ValidationError
+
+logger = logging.getLogger(__name__)
 
 
 class OdooConnector:
@@ -43,9 +46,11 @@ class OdooConnector:
             f"{settings.ODOO_CONFIG['username']}:{settings.ODOO_CONFIG['password']}".encode()
         ).decode()
 
-        # Always use http/https for API calls regardless of odoorpc protocol setting
-        protocol = "https" if settings.ODOO_CONFIG.get("protocol") == "https" else "http"
-        url_old = f"{protocol}://{settings.ODOO_CONFIG['host']}:{settings.ODOO_CONFIG['port']}{endpoint}"
+        # # Always use http/https for API calls regardless of odoorpc protocol setting
+        # protocol = (
+        #     "https" if settings.ODOO_CONFIG.get("protocol") == "https" else "http"
+        # )
+        # url_old = f"{protocol}://{settings.ODOO_CONFIG['host']}:{settings.ODOO_CONFIG['port']}{endpoint}"
 
         url = "https://odoo.ohc.network/api/create_invoice"
         headers = {
@@ -54,37 +59,33 @@ class OdooConnector:
             "db": settings.ODOO_CONFIG["database"],
         }
 
-
         # Log curl equivalent for debugging
         try:
-            headers_str = ' '.join([f"-H '{k}: {v}'" for k,v in headers.items()])
+            headers_str = " ".join([f"-H '{k}: {v}'" for k, v in headers.items()])
             data_str = f"-d '{json.dumps(data)}'" if data else ""
             curl_command = f"curl -X POST {headers_str} {data_str} '{url}'"
-            logging.info(f"Equivalent curl command:\n{curl_command}")
+            logger.info("Equivalent curl command:\n%s", curl_command)
         except Exception as e:
-            logging.info(e)
-
+            logger.info(e)
 
         try:
-            response = requests.post(url, headers=headers, json=data)
+            response = requests.post(url, headers=headers, json=data, timeout=30)
             response.raise_for_status()
 
         except Exception as e:
-            logging.info(e)
-            raise ValidationError({"error": "Error connecting to Odoo API"})
+            logger.info(e)
+            raise ValidationError({"error": "Error connecting to Odoo API"}) from e
 
         # Handle JSON-RPC response format
         response_json = response.json()
         try:
             if response_json.get("result", {}).get("success"):
                 return response_json
-            else:
-                logging.info(f"Error response from Odoo API: {response_json}")
-                raise ValidationError({"error": "Invalid response from Odoo API"})
+            logger.info("Error response from Odoo API: %s", response_json)
+            raise ValidationError({"error": "Invalid response from Odoo API"})
         except Exception as e:
-            logging.info(e)
-            raise ValidationError({"error": "Error response from Odoo API"})
-
+            logger.info(e)
+            raise ValidationError({"error": "Error response from Odoo API"}) from e
 
     @classmethod
     def validate_connection(cls):
