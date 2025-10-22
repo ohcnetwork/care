@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 from odoo.connector.connector import OdooConnector
 from odoo.resource.base import OdooBaseResource
@@ -17,7 +16,8 @@ class OdooFieldManagerResource(OdooBaseResource):
         model = OdooConnector.get_model("ir.model")
         results = model.search([("model", "=", model_name)], limit=1)
         if not results:
-            raise ValueError(f"Model {model_name} not found in Odoo")
+            msg = f"Model {model_name} not found in Odoo"
+            raise ValueError(msg)
         return results[0]
 
     def check_field_exists(self, model_name: str, field_name: str) -> bool:
@@ -41,7 +41,8 @@ class OdooFieldManagerResource(OdooBaseResource):
         try:
             # Check if field already exists
             if self.check_field_exists(model_name, "x_care_id"):
-                logger.info(f"x_care_id field already exists in {model_name}")
+                msg = f"x_care_id field already exists in {model_name}"
+                logger.info(msg)
                 return True
 
             # Get model ID
@@ -62,14 +63,16 @@ class OdooFieldManagerResource(OdooBaseResource):
 
             # Create the field
             self.get_odoo_model().create(field_data)
-            logger.info(f"Successfully created x_care_id field in {model_name}")
+            msg = f"Successfully created x_care_id field in {model_name}"
+            logger.info(msg)
             return True
 
         except Exception as e:
-            logger.error(f"Failed to create x_care_id field in {model_name}: {str(e)}")
+            msg = f"Failed to create x_care_id field in {model_name}: {e!s}"
+            logger.error(msg)
             return False
 
-    def create_care_id_fields(self, model_names: List[str]) -> dict:
+    def create_care_id_fields(self, model_names: list[str]) -> dict:
         """
         Create x_care_id field in multiple models.
 

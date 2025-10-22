@@ -18,7 +18,7 @@ class OdooAgentResource(OdooBaseResource):
         city: str | None = None,
         state_id: int | None = None,
         country_id: int | None = None,
-        zip: str | None = None,
+        zip_code: str | None = None,
         vat: str | None = None,
         ref: str | None = None,
         comment: str | None = None,
@@ -38,7 +38,7 @@ class OdooAgentResource(OdooBaseResource):
             city: City
             state_id: State/Province ID
             country_id: Country ID
-            zip: ZIP/Postal code
+            zip_code: ZIP/Postal code
             vat: VAT number
             ref: Reference number
             comment: Additional notes
@@ -62,7 +62,7 @@ class OdooAgentResource(OdooBaseResource):
         agent_data["mobile"] = mobile if mobile else ""
         agent_data["street"] = street if street else ""
         agent_data["street2"] = street2 if street2 else ""
-        agent_data["zip"] = zip if zip else ""
+        agent_data["zip"] = zip_code if zip_code else ""
         agent_data["category_id"] = None
         agent_data["city"] = city if city else ""
         agent_data["state_id"] = state_id if state_id else ""
@@ -102,12 +102,9 @@ class OdooAgentResource(OdooBaseResource):
                     name=user_name,
                     phone=user.phone_number,
                     email=user.email,
-                    care_id=user_id
+                    care_id=user_id,
                 )
 
             # Create the mapping
-            UserOdooAgent.objects.create(
-                user=user,
-                odoo_agent_id=existing_agent_id
-            )
+            UserOdooAgent.objects.create(user=user, odoo_agent_id=existing_agent_id)
             return existing_agent_id

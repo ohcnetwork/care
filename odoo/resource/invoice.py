@@ -4,13 +4,13 @@ from decimal import Decimal
 
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.invoice import Invoice
-from care.emr.models.service_request import ServiceRequest
-from care.emr.models.scheduling.booking import TokenBooking
 from care.emr.models.medication_dispense import MedicationDispense
+from care.emr.models.scheduling.booking import TokenBooking
+from care.emr.models.service_request import ServiceRequest
 from care.emr.resources.common.monetary_component import MonetaryComponentType
 from odoo.connector.connector import OdooConnector
-from odoo.resource.base import OdooBaseResource
 from odoo.resource.agent import OdooAgentResource
+from odoo.resource.base import OdooBaseResource
 
 logger = logging.getLogger(__name__)
 
@@ -269,15 +269,34 @@ class OdooInvoiceResource(OdooBaseResource):
 
             from care.emr.resources.charge_item.spec import ChargeItemResourceOptions
 
-            if charge_item.service_resource == ChargeItemResourceOptions.service_request.value:
-                service_request = ServiceRequest.objects.get(external_id=charge_item.service_resource_id)
+            if (
+                charge_item.service_resource
+                == ChargeItemResourceOptions.service_request.value
+            ):
+                service_request = ServiceRequest.objects.get(
+                    external_id=charge_item.service_resource_id
+                )
                 requester = service_request.requester
-            elif charge_item.service_resource == ChargeItemResourceOptions.appointment.value:
-                token_booking = TokenBooking.objects.get(external_id=charge_item.service_resource_id)
+            elif (
+                charge_item.service_resource
+                == ChargeItemResourceOptions.appointment.value
+            ):
+                token_booking = TokenBooking.objects.get(
+                    external_id=charge_item.service_resource_id
+                )
                 requester = token_booking.token_slot.resource.user
-            elif charge_item.service_resource == ChargeItemResourceOptions.medication_dispense.value:
-                medication_dispense = MedicationDispense.objects.get(external_id=charge_item.service_resource_id)
-                requester = medication_dispense.authorizing_request.requester if medication_dispense.authorizing_request else None
+            elif (
+                charge_item.service_resource
+                == ChargeItemResourceOptions.medication_dispense.value
+            ):
+                medication_dispense = MedicationDispense.objects.get(
+                    external_id=charge_item.service_resource_id
+                )
+                requester = (
+                    medication_dispense.authorizing_request.requester
+                    if medication_dispense.authorizing_request
+                    else None
+                )
             else:
                 requester = None
 
@@ -285,10 +304,14 @@ class OdooInvoiceResource(OdooBaseResource):
                 agent_id = OdooAgentResource().get_or_create_doctor_agent(requester)
 
                 line_item["agent_ids"] = [
-                        (0, 0, {
+                    (
+                        0,
+                        0,
+                        {
                             "agent_id": agent_id,
-                        })
-                    ]
+                        },
+                    )
+                ]
 
             line_items.append([0, f"{line_id}", line_item])
             if discounts:

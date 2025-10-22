@@ -1,12 +1,12 @@
+from django.db import IntegrityError, transaction
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from django.db import transaction, IntegrityError
 
 from care.emr.models.invoice import Invoice
 from care.emr.resources.invoice.spec import InvoiceStatusOptions
 from care.users.models import User
-from odoo.resource.invoice import OdooInvoiceResource
 from odoo.resource.agent import OdooAgentResource
+from odoo.resource.invoice import OdooInvoiceResource
 
 
 @receiver(post_save, sender=User)
@@ -16,7 +16,9 @@ def create_odoo_agent(sender, instance, created, **kwargs):
             agent_resource = OdooAgentResource()
             agent_resource.get_or_create_doctor_agent(instance)
     except Exception as e:
-        raise IntegrityError("User creation failed due to Odoo agent creation error.") from e
+        raise IntegrityError(
+            "User creation failed due to Odoo agent creation error."
+        ) from e
 
 
 @receiver(post_save, sender=Invoice)
