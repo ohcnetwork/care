@@ -1,3 +1,5 @@
+from uuid import uuid4
+
 from django.urls import reverse
 from model_bakery import baker
 
@@ -21,8 +23,17 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         self.destination = self.create_facility_location(facility=self.facility)
         self.origin = self.create_facility_location(facility=self.facility)
 
-        self.request_order = self.create_request_order(
+        self.request_order_internal = self.create_request_order(
             origin=self.origin,
+            destination=self.destination,
+        )
+        self.request_order_origin_external = self.create_request_order(
+            supplier=self.supplier,
+            destination=self.origin,
+        )
+
+        self.request_order_destination_external = self.create_request_order(
+            supplier=self.supplier,
             destination=self.destination,
         )
 
@@ -35,17 +46,17 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         self.base_url = reverse("supply_request-list")
         self.role = self.create_role_with_permissions(
             permissions=[
-                SupplyRequestPermissions.can_write_supply_request,
-                SupplyRequestPermissions.can_read_supply_request,
+                SupplyRequestPermissions.can_write_supply_request.name,
+                SupplyRequestPermissions.can_read_supply_request.name,
             ]
         )
         self.request_order_url = reverse("supply_request-request-orders")
 
-    def generate_supply_request_data(self, quantity=None, **kwargs):
+    def generate_supply_request_data(self, quantity=None, item=None, **kwargs):
         data = {
             "status": SupplyRequestStatusOptions.active,
             "quantity": quantity or 100,
-            "item": str(self.product_knowledge.external_id),
+            "item": item or str(self.product_knowledge.external_id),
             **kwargs,
         }
         data.update(kwargs)
@@ -75,3 +86,96 @@ class SupplyRequestAPITestCase(CareAPITestBase):
             organization=self.facility_organization,
         )
         return location
+
+    # Test cases for create supply request
+
+    def test_create_supply_request_as_superuser(self):
+        """Test creating a supply request as a superuser"""
+
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_supply_request_data(
+            order=str(self.request_order_internal.external_id)
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        get_response = self.client.get(
+            self.get_detail_url(response.data["id"]), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["status"], data["status"])
+        self.assertEqual(get_response.data["quantity"], data["quantity"])
+        self.assertEqual(
+            get_response.data["item"]["id"], str(self.product_knowledge.external_id)
+        )
+
+    def test_create_supply_request_as_user_with_permissions(self):
+        """Test creating a supply request as a user with permissions"""
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_supply_request_data(
+            order=str(self.request_order_internal.external_id)
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        get_response = self.client.get(
+            self.get_detail_url(response.data["id"]), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["status"], data["status"])
+        self.assertEqual(get_response.data["quantity"], data["quantity"])
+        self.assertEqual(
+            get_response.data["item"]["id"], str(self.product_knowledge.external_id)
+        )
+
+    def test_create_supply_request_for_internal_as_user_without_permissions(self):
+        """Test creating a supply request as a user without permissions"""
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_supply_request_data(
+            order=str(self.request_order_internal.external_id)
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot write supply requests", str(response.data))
+
+    def test_create_supply_request_without_order(self):
+        """Test creating a supply request without an order"""
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_supply_request_data()
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+
+    def test_create_supply_request_with_invalid_item(self):
+        """Test creating a supply request with an invalid item"""
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_supply_request_data(
+            item=uuid4(), order=str(self.request_order_internal.external_id)
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 404)
+        self.assertIn(
+            "No ProductKnowledge matches the given query.", str(response.data)
+        )
+
+    def test_create_supply_request_for_origin_externally_without_permission(self):
+        """Test creating a supply request for an origin externally without permission"""
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_supply_request_data(
+            order=str(self.request_order_origin_external.external_id)
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot write supply requests", str(response.data))
+
+    def test_create_supply_request_for_destination_externally_without_permission(self):
+        """Test creating a supply request for a destination externally without permission"""
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_supply_request_data(
+            order=str(self.request_order_destination_external.external_id)
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot write supply requests", str(response.data))
