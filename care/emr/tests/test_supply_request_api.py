@@ -246,3 +246,93 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot read supply requests", str(response.data))
+
+    # Test cases for update supply request
+
+    def test_update_supply_request_as_superuser(self):
+        """Test updating a supply request as a superuser"""
+        supply_request = self.create_supply_request(
+            order=self.request_order_internal,
+            quantity=100,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_supply_request_data(
+            quantity=200, order=str(self.request_order_origin_external.external_id)
+        )
+        response = self.client.patch(
+            self.get_detail_url(supply_request.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(supply_request.external_id), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], str(supply_request.external_id))
+        self.assertEqual(get_response.data["quantity"], 200)
+
+    def test_update_supply_request_as_user_with_permissions(self):
+        """Test updating a supply request as a user with permissions"""
+        supply_request = self.create_supply_request(
+            order=self.request_order_internal,
+            quantity=100,
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_supply_request_data(
+            quantity=200, order=str(self.request_order_origin_external.external_id)
+        )
+        response = self.client.patch(
+            self.get_detail_url(supply_request.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["quantity"], 200)
+
+    def test_update_supply_request_as_user_without_permissions(self):
+        """Test updating a supply request as a user without permissions"""
+        supply_request = self.create_supply_request(
+            order=self.request_order_internal,
+            quantity=100,
+        )
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_supply_request_data(
+            quantity=200, order=str(self.request_order_origin_external.external_id)
+        )
+        response = self.client.patch(
+            self.get_detail_url(supply_request.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot write supply requests", str(response.data))
+
+    def test_update_supply_request_for_origin_externally_without_permission(self):
+        """Test updating a supply request for an origin externally without permission"""
+        supply_request = self.create_supply_request(
+            order=self.request_order_origin_external,
+            quantity=100,
+        )
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_supply_request_data(
+            quantity=200, order=str(self.request_order_internal.external_id)
+        )
+        response = self.client.patch(
+            self.get_detail_url(supply_request.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot write supply requests", str(response.data))
+
+    def test_update_supply_request_for_destination_externally_without_permission(self):
+        """Test updating a supply request for a destination externally without permission"""
+        supply_request = self.create_supply_request(
+            order=self.request_order_destination_external,
+            quantity=100,
+        )
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_supply_request_data(
+            quantity=200, order=str(self.request_order_internal.external_id)
+        )
+        response = self.client.patch(
+            self.get_detail_url(supply_request.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot write supply requests", str(response.data))
