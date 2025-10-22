@@ -497,3 +497,153 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot list supply requests", str(response.data))
+
+    def test_list_supply_request_with_origin_filter_and_include_children_as_true(self):
+        """Test listing supply requests with origin filter and include children as true"""
+        child_location = self.create_facility_location(
+            facility=self.facility, parent=self.origin
+        )
+        child_request_order = self.create_request_order(
+            origin=child_location,
+            destination=self.destination,
+        )
+        supply_request_child = self.create_supply_request(
+            order=child_request_order,
+        )
+        supply_request1 = self.create_supply_request(
+            order=self.request_order_internal,
+        )
+
+        self.create_supply_request(order=self.request_order_destination_external)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {
+                "origin": str(self.origin.external_id),
+                "include_children": "true",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_request1.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][1]["id"], str(supply_request_child.external_id)
+        )
+
+    def test_list_supply_request_with_origin_filter_and_include_children_as_false(self):
+        """Test listing supply requests with origin filter and include children as false"""
+        child_location = self.create_facility_location(
+            facility=self.facility, parent=self.origin
+        )
+        child_request_order = self.create_request_order(
+            origin=child_location,
+            destination=self.destination,
+        )
+        self.create_supply_request(
+            order=child_request_order,
+        )
+        supply_request1 = self.create_supply_request(
+            order=self.request_order_internal,
+        )
+
+        self.create_supply_request(order=self.request_order_destination_external)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {
+                "origin": str(self.origin.external_id),
+                "include_children": "false",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_request1.external_id)
+        )
+
+    def test_list_supply_request_with_destination_filter_and_include_children_as_true(
+        self,
+    ):
+        """Test listing supply requests with destination filter and include children as true"""
+        child_location = self.create_facility_location(
+            facility=self.facility, parent=self.destination
+        )
+        child_request_order = self.create_request_order(
+            origin=self.origin,
+            destination=child_location,
+        )
+        supply_request_child = self.create_supply_request(
+            order=child_request_order,
+        )
+        supply_request2 = self.create_supply_request(
+            order=self.request_order_internal,
+        )
+
+        self.create_supply_request(order=self.request_order_origin_external)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {
+                "destination": str(self.destination.external_id),
+                "include_children": "true",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_request2.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][1]["id"], str(supply_request_child.external_id)
+        )
+
+    def test_list_supply_request_with_destination_filter_and_include_children_as_false(
+        self,
+    ):
+        """Test listing supply requests with destination filter and include children as false"""
+        child_location = self.create_facility_location(
+            facility=self.facility, parent=self.destination
+        )
+        child_request_order = self.create_request_order(
+            origin=self.origin,
+            destination=child_location,
+        )
+        self.create_supply_request(
+            order=child_request_order,
+        )
+        supply_request2 = self.create_supply_request(
+            order=self.request_order_internal,
+        )
+
+        self.create_supply_request(order=self.request_order_origin_external)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {
+                "destination": str(self.destination.external_id),
+                "include_children": "false",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_request2.external_id)
+        )
