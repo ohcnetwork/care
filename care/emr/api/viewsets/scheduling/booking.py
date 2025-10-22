@@ -18,7 +18,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
 )
 from care.emr.api.viewsets.scheduling import lock_create_appointment
-from care.emr.api.viewsets.scheduling.schedule import get_or_create_resource
+from care.emr.api.viewsets.scheduling.schedule import get_schedulable_resource
 from care.emr.models import TokenSlot
 from care.emr.models.organization import (
     FacilityOrganization,
@@ -336,7 +336,7 @@ class TokenBookingViewSet(
         return Response(TokenReadSpec.serialize(token).to_json())
 
 
-def authorize_booking_list(
+def authorize_booking_list(  # noqa PLR0912
     base_query, resource_type, organization_ids, resource_ids, user, facility
 ):
     if resource_type == SchedulableResourceTypeOptions.practitioner.value:
@@ -378,7 +378,9 @@ def authorize_booking_list(
     if resource_ids:
         resource_pk_ids = []
         for resource_id in resource_ids:
-            resource = get_or_create_resource(resource_type, resource_id, facility)
+            resource = get_schedulable_resource(resource_type, resource_id, facility)
+            if not resource:
+                raise ValidationError("No schedules found for this resource")
             if not AuthorizationController.call("can_list_booking", resource, user):
                 raise PermissionDenied("You do not have permission to list bookings")
             resource_pk_ids.append(resource.id)
