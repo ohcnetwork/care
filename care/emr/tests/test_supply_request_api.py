@@ -52,9 +52,11 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.request_order_url = reverse("supply_request-request-orders")
 
-    def generate_supply_request_data(self, quantity=None, item=None, **kwargs):
+    def generate_supply_request_data(
+        self, quantity=None, item=None, status=None, **kwargs
+    ):
         data = {
-            "status": SupplyRequestStatusOptions.active,
+            "status": status or SupplyRequestStatusOptions.active,
             "quantity": quantity or 100,
             "item": item or str(self.product_knowledge.external_id),
             **kwargs,
@@ -65,10 +67,10 @@ class SupplyRequestAPITestCase(CareAPITestBase):
     def create_request_order(self, **kwargs):
         return baker.make("emr.RequestOrder", name="Test Request Order", **kwargs)
 
-    def create_supply_request(self, **kwargs):
+    def create_supply_request(self, status=None, **kwargs):
         return baker.make(
             "emr.SupplyRequest",
-            status=SupplyRequestStatusOptions.active,
+            status=status or SupplyRequestStatusOptions.active,
             item=self.product_knowledge,
             **kwargs,
         )
@@ -336,3 +338,162 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot write supply requests", str(response.data))
+
+    # Test cases for list supply requests
+
+    def test_list_supply_requests_as_superuser_with_order_filter(self):
+        """Test listing supply requests as a superuser with order filter"""
+        supply_request1 = self.create_supply_request(
+            order=self.request_order_internal,
+        )
+        supply_request2 = self.create_supply_request(order=self.request_order_internal)
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.base_url,
+            {"order": str(self.request_order_internal.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
+        external_ids = [supply_request1.external_id, supply_request2.external_id]
+        for item in response.data["results"]:
+            self.assertIn(item["id"], map(str, external_ids))
+
+    def test_list_supply_requests_with_order_filter_as_user_with_permissions(self):
+        """Test listing supply requests as a user with permissions and order filter"""
+        supply_request1 = self.create_supply_request(
+            order=self.request_order_internal,
+        )
+        supply_request2 = self.create_supply_request(order=self.request_order_internal)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {"order": str(self.request_order_internal.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
+        external_ids = [supply_request1.external_id, supply_request2.external_id]
+        for item in response.data["results"]:
+            self.assertIn(item["id"], map(str, external_ids))
+
+    def test_list_supply_requests_as_user_without_permissions(self):
+        """Test listing supply requests as a user without permissions"""
+        self.create_supply_request(
+            order=self.request_order_internal,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {"order": str(self.request_order_internal.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot read supply requests", str(response.data))
+
+    def test_list_supply_requests_without_filter(self):
+        """Test listing supply requests without any filter"""
+        self.create_supply_request(
+            order=self.request_order_internal,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(self.base_url, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("No filters provided", str(response.data))
+
+    def test_list_supply_requests_for_origin_externally_without_permission(self):
+        """Test listing supply requests for an origin externally without permission with order filter"""
+        self.create_supply_request(
+            order=self.request_order_origin_external,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {"order": str(self.request_order_origin_external.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot read supply requests", str(response.data))
+
+    def test_list_supply_requests_for_destination_externally_without_permission(self):
+        """Test listing supply requests for a destination externally without permission with order filter"""
+        self.create_supply_request(
+            order=self.request_order_destination_external,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {"order": str(self.request_order_destination_external.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot read supply requests", str(response.data))
+
+    def test_list_supply_request_with_origin_filter(self):
+        """Test listing supply requests with origin filter"""
+        supply_request1 = self.create_supply_request(
+            order=self.request_order_internal,
+        )
+        self.create_supply_request(order=self.request_order_destination_external)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url, {"origin": str(self.origin.external_id)}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_request1.external_id)
+        )
+
+    def test_list_supply_request_with_destination_filter(self):
+        """Test listing supply requests with destination filter"""
+        self.create_supply_request(
+            order=self.request_order_origin_external,
+        )
+        supply_request2 = self.create_supply_request(order=self.request_order_internal)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {"destination": str(self.destination.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(supply_request2.external_id)
+        )
+
+    def test_list_supply_request_with_origin_filter_without_permission(self):
+        """Test listing supply requests with origin filter without permission"""
+        self.create_supply_request(
+            order=self.request_order_internal,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url, {"origin": str(self.origin.external_id)}, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot list supply requests", str(response.data))
+
+    def test_list_supply_request_with_destination_filter_without_permission(self):
+        """Test listing supply requests with destination filter without permission"""
+        self.create_supply_request(
+            order=self.request_order_internal,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {"destination": str(self.destination.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot list supply requests", str(response.data))
