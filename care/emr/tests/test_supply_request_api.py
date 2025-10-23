@@ -27,6 +27,10 @@ class SupplyRequestAPITestCase(CareAPITestBase):
             origin=self.origin,
             destination=self.destination,
         )
+        self.delivery_order_internal = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
         self.request_order_origin_external = self.create_request_order(
             supplier=self.supplier,
             destination=self.origin,
@@ -88,6 +92,16 @@ class SupplyRequestAPITestCase(CareAPITestBase):
             organization=self.facility_organization,
         )
         return location
+
+    def create_delivery_order(self, **kwargs):
+        from care.emr.models import DeliveryOrder
+
+        return baker.make(DeliveryOrder, **kwargs)
+
+    def create_supply_delivery(self, **kwargs):
+        from care.emr.models import SupplyDelivery
+
+        return baker.make(SupplyDelivery, **kwargs)
 
     # Test cases for create supply request
 
@@ -647,3 +661,84 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         self.assertEqual(
             response.data["results"][0]["id"], str(supply_request2.external_id)
         )
+
+    # Test case for request orders endpoint
+
+    # We need to create a supply request and supply delivery linked to that request
+    # Then we can test the request orders endpoint to retrieve the request orders
+    # associated with a given delivery order.
+
+    def test_retrive_supply_delivery_request_orders_as_superuser(self):
+        """Test retrieving supply delivery related request orders as superuser"""
+        self.client.force_authenticate(user=self.superuser)
+        supply_request = self.create_supply_request(
+            order=self.request_order_internal,
+            status=SupplyRequestStatusOptions.completed,
+        )
+        self.create_supply_delivery(
+            order=self.delivery_order_internal,
+            supply_request=supply_request,
+        )
+        response = self.client.get(
+            self.request_order_url,
+            {"delivery_order": str(self.delivery_order_internal.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"],
+            str(self.request_order_internal.external_id),
+        )
+
+    def test_retrive_supply_delivery_request_orders_without_delivery_order(self):
+        """Test retrieving supply delivery related request orders without delivery order"""
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(self.request_order_url, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("delivery_order is required", str(response.data))
+
+    def test_retrive_supply_delivery_request_orders_as_user_with_permissions(self):
+        """Test retrieving supply delivery related request orders as user with permissions"""
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        supply_request = self.create_supply_request(
+            order=self.request_order_internal,
+            status=SupplyRequestStatusOptions.completed,
+        )
+        self.create_supply_delivery(
+            order=self.delivery_order_internal,
+            supply_request=supply_request,
+        )
+        response = self.client.get(
+            self.request_order_url,
+            {"delivery_order": str(self.delivery_order_internal.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"],
+            str(self.request_order_internal.external_id),
+        )
+
+    def test_retrive_supply_delivery_request_orders_as_user_without_permissions(self):
+        """Test retrieving supply delivery related request orders as user without permissions"""
+        self.client.force_authenticate(user=self.user)
+        supply_request = self.create_supply_request(
+            order=self.request_order_internal,
+            status=SupplyRequestStatusOptions.completed,
+        )
+        self.create_supply_delivery(
+            order=self.delivery_order_internal,
+            supply_request=supply_request,
+        )
+        response = self.client.get(
+            self.request_order_url,
+            {"delivery_order": str(self.delivery_order_internal.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot read supply requests", str(response.data))
