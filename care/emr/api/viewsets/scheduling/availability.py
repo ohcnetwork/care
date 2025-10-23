@@ -11,7 +11,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRBaseViewSet, EMRRetrieveMixin
-from care.emr.api.viewsets.scheduling.schedule import get_or_create_resource
+from care.emr.api.viewsets.scheduling.schedule import get_schedulable_resource
 from care.emr.models import AvailabilityException, Schedule, TokenBooking
 from care.emr.models.patient import Patient
 from care.emr.models.scheduling.booking import TokenSlot
@@ -199,13 +199,13 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     def get_slots_for_day_handler(cls, facility_external_id, request_data):
         request_data = SlotsForDayRequestSpec(**request_data)
         facility = get_object_or_404(Facility, external_id=facility_external_id)
-        resource = get_or_create_resource(
+        resource = get_schedulable_resource(
             request_data.resource_type,
             request_data.resource_id,
             facility,
         )
         if not resource:
-            raise ValidationError("Resource is not schedulable")
+            raise ValidationError("No schedules found for this resource")
         # Find all relevant schedules
         availabilities = Availability.objects.filter(
             slot_type=SlotTypeOptions.appointment.value,
@@ -310,9 +310,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
                     user,
                     obj.resource.facility,
                 )
-        return Response(
-            TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
-        )
+        return appointment
 
     def authorize_update(self, request_obj, model_instance):
         if not AuthorizationController.call(
@@ -324,7 +322,10 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     def create_appointment(self, request, *args, **kwargs):
         slot_obj = self.get_object()
         self.authorize_update(None, slot_obj)
-        return self.create_appointment_handler(slot_obj, request.data, request.user)
+        appointment = self.create_appointment_handler(
+            slot_obj, request.data, request.user
+        )
+        return Response(TokenBookingReadSpec.serialize(appointment).to_json())
 
     @action(detail=False, methods=["POST"])
     def availability_stats(self, request, *args, **kwargs):
@@ -337,13 +338,13 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         facility = get_object_or_404(
             Facility, external_id=self.kwargs["facility_external_id"]
         )
-        resource = get_or_create_resource(
+        resource = get_schedulable_resource(
             request_data.resource_type,
             request_data.resource_id,
             facility,
         )
         if not resource:
-            raise ValidationError("Resource is not schedulable")
+            raise ValidationError("No schedules found for this resource")
 
         self.authorize_resource_read(resource)
 

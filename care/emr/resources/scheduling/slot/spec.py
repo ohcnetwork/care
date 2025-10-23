@@ -10,6 +10,7 @@ from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.patient.otp_based_flow import PatientOTPReadSpec
+from care.emr.resources.patient.spec import PatientListSpec
 from care.emr.resources.scheduling.resource.spec import serialize_resource
 from care.emr.resources.scheduling.schedule.spec import SchedulableResourceTypeOptions
 from care.emr.resources.scheduling.token.spec import TokenReadSpec
@@ -91,16 +92,13 @@ class TokenBookingMinimumReadSpec(TokenBookingBaseSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["token_slot"] = TokenSlotBaseSpec.serialize(obj.token_slot).model_dump(
-            exclude=["meta"]
-        )
+        mapping["token_slot"] = TokenSlotBaseSpec.serialize(obj.token_slot).to_json()
 
 
-class TokenBookingReadSpec(TokenBookingBaseSpec):
+class TokenBookingBaseReadSpec(TokenBookingBaseSpec):
     id: UUID4 | None = None
 
     token_slot: TokenSlotBaseSpec
-    patient: PatientOTPReadSpec
     booked_on: datetime.datetime
     booked_by: UserSpec
     status: str
@@ -119,12 +117,7 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["token_slot"] = TokenSlotBaseSpec.serialize(obj.token_slot).model_dump(
-            exclude=["meta"]
-        )
-        mapping["patient"] = PatientOTPReadSpec.serialize(obj.patient).model_dump(
-            exclude=["meta"]
-        )
+        mapping["token_slot"] = TokenSlotBaseSpec.serialize(obj.token_slot).to_json()
         mapping["resource_type"] = obj.token_slot.resource.resource_type
         mapping["resource"] = serialize_resource(obj.token_slot.resource)
         mapping["facility"] = model_from_cache(
@@ -140,6 +133,24 @@ class TokenBookingReadSpec(TokenBookingBaseSpec):
                 obj.charge_item
             ).to_json()
         cls.serialize_audit_users(mapping, obj)
+
+
+class TokenBookingOTPReadSpec(TokenBookingBaseReadSpec):
+    patient: PatientOTPReadSpec
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        mapping["patient"] = PatientOTPReadSpec.serialize(obj.patient).to_json()
+
+
+class TokenBookingReadSpec(TokenBookingBaseReadSpec):
+    patient: PatientListSpec
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
 
 
 class TokenBookingRetrieveSpec(TokenBookingReadSpec):
