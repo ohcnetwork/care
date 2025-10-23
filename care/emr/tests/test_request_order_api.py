@@ -88,6 +88,8 @@ class SupplyRequestAPITestCase(CareAPITestBase):
     # Test cases for create request order
 
     def test_create_request_order_as_superuser(self):
+        """Test creating a request order as a superuser."""
+
         self.client.force_authenticate(user=self.superuser)
         data = self.generate_request_order_data(
             origin=self.origin.external_id,
@@ -116,6 +118,8 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
 
     def test_create_request_order_as_user_with_permission(self):
+        """Test creating a request order as a user with permission."""
+
         self.client.force_authenticate(user=self.user)
         self.attach_role_facility_organization_user(
             user=self.user,
@@ -149,6 +153,8 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
 
     def test_create_request_order_as_user_without_permission(self):
+        """Test creating a request order as a user without permission."""
+
         self.client.force_authenticate(user=self.user)
         data = self.generate_request_order_data(
             origin=self.origin.external_id,
@@ -163,6 +169,8 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         self.assertIn("Cannot write supply requests", response.data["detail"])
 
     def test_create_request_order_with_mismatched_origin_destination_facility(self):
+        """Test creating a request order with mismatched origin and destination facility."""
+
         other_facility = self.create_facility(user=self.superuser)
         other_location = self.create_facility_location(facility=other_facility)
         self.client.force_authenticate(user=self.superuser)
@@ -182,6 +190,8 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
 
     def test_create_request_order_with_invalid_supplier_type(self):
+        """Test creating a request order with an invalid supplier organization type."""
+
         non_supplier_org = self.create_organization(
             name="Non Supplier Org",
             org_type="hospital",
@@ -202,3 +212,90 @@ class SupplyRequestAPITestCase(CareAPITestBase):
             "Supplier organization must be of type product_supplier",
             status_code=400,
         )
+
+    # Test cases for retrieve request order
+
+    def test_retrieve_request_order_as_superuser(self):
+        """Test retrieving a request order as a superuser."""
+
+        request_order = self.create_request_order(
+            origin=self.origin,
+            destination=self.destination,
+            supplier=self.supplier,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.generate_detail_url(
+                external_id=request_order.external_id,
+                facility_external_id=self.facility.external_id,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["name"], request_order.name)
+        self.assertEqual(response.data["status"], request_order.status)
+        self.assertEqual(response.data["priority"], request_order.priority)
+
+    def test_retrieve_request_order_as_user_with_permission(self):
+        """Test retrieving a request order as a user with permission."""
+
+        request_order = self.create_request_order(
+            origin=self.origin,
+            destination=self.destination,
+            supplier=self.supplier,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.get(
+            self.generate_detail_url(
+                external_id=request_order.external_id,
+                facility_external_id=self.facility.external_id,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["name"], request_order.name)
+        self.assertEqual(response.data["status"], request_order.status)
+        self.assertEqual(response.data["priority"], request_order.priority)
+
+    def test_retrieve_request_order_internal_as_user_without_permission(self):
+        """Test retrieving a request order as a user without permission."""
+
+        request_order = self.create_request_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.generate_detail_url(
+                external_id=request_order.external_id,
+                facility_external_id=self.facility.external_id,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot read request orders", response.data["detail"])
+
+    def test_retrieve_request_order_destination_external_as_user_without_permission(
+        self,
+    ):
+        """Test retrieving a request order with destination external as a user without permission."""
+
+        request_order = self.create_request_order(
+            supplier=self.supplier,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.generate_detail_url(
+                external_id=request_order.external_id,
+                facility_external_id=self.facility.external_id,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot read request orders", response.data["detail"])
