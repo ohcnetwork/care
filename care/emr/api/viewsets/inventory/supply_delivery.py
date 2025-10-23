@@ -203,11 +203,17 @@ class SupplyDeliveryViewSet(
 
     @action(detail=False, methods=["GET"])
     def delivery_orders(self, request, *args, **kwargs):
+        from care.emr.api.viewsets.inventory.delivery_order import DeliveryOrderFilters
+
+        delivery_filter = DeliveryOrderFilters(
+            self.request.GET, queryset=DeliveryOrder.objects.all()
+        )
+        delivery_qs = delivery_filter.qs
         queryset = self.get_queryset()
         if "request_order" not in request.GET:
             raise ValidationError("request_order is required")
         orders = queryset.values("order_id").distinct()[:100]
-        orders_qs = DeliveryOrder.objects.filter(id__in=orders)
+        orders_qs = delivery_qs.filter(id__in=orders)
         response = [
             SupplyDeliveryOrderReadSpec.serialize(order).to_json()
             for order in orders_qs
