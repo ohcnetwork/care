@@ -176,8 +176,32 @@ class SupplyRequestAPITestCase(CareAPITestBase):
             "No ProductKnowledge matches the given query.", str(response.data)
         )
 
-    def test_create_supply_request_for_origin_externally_without_permission(self):
-        """Test creating a supply request for an origin externally without permission"""
+    def test_create_supply_request_for_origin_externally_as_user_with_permissions(self):
+        """Test creating a supply request for an origin externally as a user with permissions"""
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_supply_request_data(
+            order=str(self.request_order_origin_external.external_id)
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        get_response = self.client.get(
+            self.get_detail_url(response.data["id"]), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["status"], data["status"])
+        self.assertEqual(get_response.data["quantity"], data["quantity"])
+        self.assertEqual(
+            get_response.data["item"]["id"], str(self.product_knowledge.external_id)
+        )
+
+    def test_create_supply_request_for_origin_externally_as_user_without_permissions(
+        self,
+    ):
+        """Test creating a supply request for an origin externally as a user without permissions"""
         self.client.force_authenticate(user=self.user)
         data = self.generate_supply_request_data(
             order=str(self.request_order_origin_external.external_id)
@@ -185,6 +209,28 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot write supply requests", str(response.data))
+
+    def test_create_supply_request_for_destination_externally_with_permissions(self):
+        """Test creating a supply request for a destination externally with permissions"""
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_supply_request_data(
+            order=str(self.request_order_destination_external.external_id)
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+        get_response = self.client.get(
+            self.get_detail_url(response.data["id"]), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["status"], data["status"])
+        self.assertEqual(get_response.data["quantity"], data["quantity"])
+        self.assertEqual(
+            get_response.data["item"]["id"], str(self.product_knowledge.external_id)
+        )
 
     def test_create_supply_request_for_destination_externally_without_permission(self):
         """Test creating a supply request for a destination externally without permission"""
@@ -210,7 +256,7 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(supply_request.external_id))
 
-    def test_retrieve_supply_request_as_user_with_permissions(self):
+    def test_retrieve_supply_request_internal_as_user_with_permissions(self):
         """Test retrieving a supply request as a user with permissions"""
         supply_request = self.create_supply_request(
             order=self.request_order_internal,
@@ -225,7 +271,7 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(supply_request.external_id))
 
-    def test_retrieve_supply_request_as_user_without_permissions(self):
+    def test_retrieve_supply_request_internal_as_user_without_permissions(self):
         """Test retrieving a supply request as a user without permissions"""
         supply_request = self.create_supply_request(
             order=self.request_order_internal,
@@ -236,6 +282,21 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot read supply requests", str(response.data))
+
+    def test_retrieve_supply_request_for_origin_externally_with_permission(self):
+        """Test retrieving a supply request for an origin externally with permission"""
+        supply_request = self.create_supply_request(
+            order=self.request_order_origin_external,
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.get_detail_url(supply_request.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(supply_request.external_id))
 
     def test_retrieve_supply_request_for_origin_externally_without_permission(self):
         """Test retrieving a supply request for an origin externally without permission"""
@@ -248,6 +309,21 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot read supply requests", str(response.data))
+
+    def test_retrieve_supply_request_for_destination_externally_with_permission(self):
+        """Test retrieving a supply request for a destination externally with permission"""
+        supply_request = self.create_supply_request(
+            order=self.request_order_destination_external,
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.get_detail_url(supply_request.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(supply_request.external_id))
 
     def test_retrieve_supply_request_for_destination_externally_without_permission(
         self,
@@ -286,7 +362,7 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         self.assertEqual(get_response.data["id"], str(supply_request.external_id))
         self.assertEqual(get_response.data["quantity"], 200)
 
-    def test_update_supply_request_as_user_with_permissions(self):
+    def test_update_supply_request_internally_as_user_with_permissions(self):
         """Test updating a supply request as a user with permissions"""
         supply_request = self.create_supply_request(
             order=self.request_order_internal,
@@ -305,7 +381,7 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["quantity"], 200)
 
-    def test_update_supply_request_as_user_without_permissions(self):
+    def test_update_supply_request_internally_as_user_without_permissions(self):
         """Test updating a supply request as a user without permissions"""
         supply_request = self.create_supply_request(
             order=self.request_order_internal,
@@ -320,6 +396,25 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot write supply requests", str(response.data))
+
+    def test_update_supply_request_for_origin_externally_with_permission(self):
+        """Test updating a supply request for an origin externally with permission"""
+        supply_request = self.create_supply_request(
+            order=self.request_order_origin_external,
+            quantity=100,
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_supply_request_data(
+            quantity=200, order=str(self.request_order_internal.external_id)
+        )
+        response = self.client.patch(
+            self.get_detail_url(supply_request.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["quantity"], 200)
 
     def test_update_supply_request_for_origin_externally_without_permission(self):
         """Test updating a supply request for an origin externally without permission"""
@@ -336,6 +431,25 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot write supply requests", str(response.data))
+
+    def test_update_supply_request_for_destination_externally_with_permission(self):
+        """Test updating a supply request for a destination externally with permission"""
+        supply_request = self.create_supply_request(
+            order=self.request_order_destination_external,
+            quantity=100,
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_supply_request_data(
+            quantity=200, order=str(self.request_order_internal.external_id)
+        )
+        response = self.client.patch(
+            self.get_detail_url(supply_request.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["quantity"], 200)
 
     def test_update_supply_request_for_destination_externally_without_permission(self):
         """Test updating a supply request for a destination externally without permission"""
