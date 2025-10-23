@@ -299,3 +299,78 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot read request orders", response.data["detail"])
+
+    # Test cases for update request order
+
+    def test_update_request_order_as_superuser(self):
+        """Test updating a request order as a superuser."""
+        request_order = self.create_request_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        update_data = self.generate_request_order_data(
+            name="Updated Request Order",
+            status=SupplyRequestOrderStatusOptions.completed.value,
+        )
+        response = self.client.patch(
+            self.generate_detail_url(
+                external_id=request_order.external_id,
+                facility_external_id=self.facility.external_id,
+            ),
+            data=update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["name"], update_data["name"])
+        self.assertEqual(response.data["status"], update_data["status"])
+
+    def test_update_request_order_as_user_with_permission(self):
+        """Test updating a request order as a user with permission."""
+        request_order = self.create_request_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        update_data = self.generate_request_order_data(
+            name="Updated Request Order",
+            status=SupplyRequestOrderStatusOptions.completed.value,
+        )
+        response = self.client.patch(
+            self.generate_detail_url(
+                external_id=request_order.external_id,
+                facility_external_id=self.facility.external_id,
+            ),
+            data=update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["name"], update_data["name"])
+        self.assertEqual(response.data["status"], update_data["status"])
+
+    def test_update_request_order_as_user_without_permission(self):
+        """Test updating a request order as a user without permission."""
+        request_order = self.create_request_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.user)
+        update_data = self.generate_request_order_data(
+            name="Updated Request Order",
+            status=SupplyRequestOrderStatusOptions.completed.value,
+        )
+        response = self.client.patch(
+            self.generate_detail_url(
+                external_id=request_order.external_id,
+                facility_external_id=self.facility.external_id,
+            ),
+            data=update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot write supply requests", response.data["detail"])
