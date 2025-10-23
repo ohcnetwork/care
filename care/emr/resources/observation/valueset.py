@@ -143,3 +143,81 @@ CARE_UCUM_UNITS.register_valueset(
 )
 
 CARE_UCUM_UNITS.register_as_system()
+
+
+CARE_OBSERVATION_INTERPRETATION_NORMAL = CareValueset(
+    "Normal Coded Value Set",
+    "system-normal-coded-valueset",
+    ValueSetStatusOptions.active.value,
+)
+
+CARE_OBSERVATION_INTERPRETATION_NORMAL.register_valueset(
+    ValueSetCompose(
+        include=[
+            {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "concept": [
+                    {"code": "N", "display": "Normal"},
+                    {"code": "ND", "display": "Not detected"},
+                    {"code": "NEG", "display": "Negative"},
+                ],
+            }
+        ]
+    )
+)
+
+CARE_OBSERVATION_INTERPRETATION_NORMAL.register_as_system()
+
+
+CARE_OBSERVATION_INTERPRETATION_CRITICAL = CareValueset(
+    "Critical Coded Value Set",
+    "system-critical-coded-valueset",
+    ValueSetStatusOptions.active.value,
+)
+
+CARE_OBSERVATION_INTERPRETATION_CRITICAL.register_valueset(
+    ValueSetCompose(
+        include=[
+            {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "concept": [
+                    {"code": "C", "display": "Critical"},
+                    {"code": "CC", "display": "Critical high"},
+                    {"code": "CL", "display": "Critical low"},
+                    {"code": "CV", "display": "Critical value"},
+                ],
+            }
+        ]
+    )
+)
+
+CARE_OBSERVATION_INTERPRETATION_CRITICAL.register_as_system()
+
+
+CARE_OBSERVATION_INTERPRETATION_ABNORMAL = CareValueset(
+    "Abnormal Coded Value Set",
+    "system-abnormal-coded-valueset",
+    ValueSetStatusOptions.active.value,
+)
+
+CARE_OBSERVATION_INTERPRETATION_ABNORMAL.register_valueset(
+    ValueSetCompose(
+        include=[
+            {
+                "system": "http://terminology.hl7.org/CodeSystem/v3-ObservationInterpretation",
+                "concept": [
+                    {"code": "A", "display": "Abnormal"},
+                    {"code": "AA", "display": "Critically abnormal"},
+                    {"code": "H", "display": "High"},
+                    {"code": "HH", "display": "Critically high"},
+                    {"code": "L", "display": "Low"},
+                    {"code": "LL", "display": "Critically low"},
+                    {"code": "POS", "display": "Positive"},
+                    {"code": "DET", "display": "Detected"},
+                ],
+            }
+        ]
+    )
+)
+
+CARE_OBSERVATION_INTERPRETATION_ABNORMAL.register_as_system()

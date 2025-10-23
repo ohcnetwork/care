@@ -2,7 +2,6 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from care.emr.models.base import EMRBaseModel
-from care.emr.models.organization import FacilityOrganization
 from care.emr.models.scheduling.booking import TokenBooking
 
 
@@ -46,11 +45,7 @@ class Encounter(EMRBaseModel):
                 }
             )
 
-        facility_root_org = FacilityOrganization.objects.filter(
-            org_type="root", facility=self.facility
-        ).first()
-        if facility_root_org:
-            orgs = orgs.union({facility_root_org.id})
+        orgs = orgs.union({self.facility.default_internal_organization_id})
 
         self.facility_organization_cache = list(orgs)
         super().save(update_fields=["facility_organization_cache"])

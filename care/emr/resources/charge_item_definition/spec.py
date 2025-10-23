@@ -3,8 +3,11 @@ from enum import Enum
 from pydantic import UUID4, field_validator
 
 from care.emr.models.charge_item_definition import ChargeItemDefinition
+from care.emr.models.resource_category import ResourceCategory
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.monetary_component import MonetaryComponent
+from care.emr.resources.resource_category.spec import ResourceCategoryReadSpec
+from care.emr.utils.slug_type import ExtendedSlugType, SlugType
 
 
 class ChargeItemDefinitionStatusOptions(str, Enum):
@@ -22,11 +25,15 @@ class ChargeItemDefinitionSpec(EMRResource):
     id: UUID4 | None = None
     status: ChargeItemDefinitionStatusOptions
     title: str
-    slug: str
     derived_from_uri: str | None = None
     description: str | None = None
     purpose: str | None = None
     price_components: list[MonetaryComponent]
+
+
+class ChargeItemDefinitionWriteSpec(ChargeItemDefinitionSpec):
+    slug_value: SlugType
+    category: ExtendedSlugType | None = None
 
     @field_validator("price_components")
     @classmethod
@@ -42,12 +49,26 @@ class ChargeItemDefinitionSpec(EMRResource):
             raise ValueError("Same codes for the same component type are not allowed")
         return price_components
 
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.category:
+            obj.category = ResourceCategory.objects.get(slug=self.category)
+
+        obj.slug = self.slug_value
+
 
 class ChargeItemDefinitionReadSpec(ChargeItemDefinitionSpec):
     """ChargeItemDefinition read specification"""
 
     version: int | None = None
+    category: dict | None = None
+    slug_config: dict
+    slug: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+        if obj.category:
+            mapping["category"] = ResourceCategoryReadSpec.serialize(
+                obj.category
+            ).to_json()
+        mapping["slug_config"] = obj.parse_slug(obj.slug)

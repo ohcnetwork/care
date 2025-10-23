@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -15,12 +14,15 @@ from care.emr.models.product import Product
 from care.emr.resources.inventory.product.spec import ProductReadSpec, ProductWriteSpec
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class ProductFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     facility = filters.UUIDFilter(field_name="facility__external_id")
-    product_knowledge = filters.UUIDFilter(field_name="product_knowledge__external_id")
+    product_knowledge = filters.CharFilter(
+        lookup_expr="iexact", field_name="product_knowledge__slug"
+    )
 
 
 class ProductViewSet(
@@ -76,3 +78,6 @@ class ProductViewSet(
         ):
             raise PermissionDenied("Cannot list products")
         return queryset
+
+    def get_serializer_create_context(self):
+        return {"facility": self.get_facility_obj()}

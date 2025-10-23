@@ -18,7 +18,7 @@ from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 from care.utils.csp import config as csp_config
 from plug_config import manager
 
-from .custom_limits import *  # noqa F403
+from .config import *  # noqa F403
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -131,7 +131,6 @@ THIRD_PARTY_APPS = [
     "djangoql",
     "maintenance_mode",
     "django.contrib.postgres",
-    "django_rest_passwordreset",
     "healthy_django",
     "import_export",
 ]

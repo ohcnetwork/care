@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -35,6 +34,7 @@ from care.emr.resources.invoice.spec import (
 from care.emr.resources.invoice.sync_items import sync_invoice_items
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class InvoiceFilters(filters.FilterSet):
@@ -42,6 +42,7 @@ class InvoiceFilters(filters.FilterSet):
     title = filters.CharFilter(lookup_expr="icontains")
     account = filters.UUIDFilter(field_name="account__external_id")
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
+    patient = filters.UUIDFilter(field_name="patient__external_id")
     number = filters.CharFilter(lookup_expr="icontains")
 
 
