@@ -27,6 +27,7 @@ from care.emr.models import (
     QuestionnaireOrganization,
 )
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
+from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
 from care.emr.resources.activity_definition.spec import BaseActivityDefinitionSpec
 from care.emr.resources.device.spec import DeviceCreateSpec
 from care.emr.resources.encounter.constants import (
@@ -41,6 +42,9 @@ from care.emr.resources.facility_organization.spec import (
     FacilityOrganizationWriteSpec,
 )
 from care.emr.resources.healthcare_service.spec import BaseHealthcareServiceSpec
+from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
+    sync_inventory_item,
+)
 from care.emr.resources.location.spec import FacilityLocationWriteSpec
 from care.emr.resources.observation_definition.spec import BaseObservationDefinitionSpec
 from care.emr.resources.organization.spec import (
@@ -185,13 +189,19 @@ class Command(BaseCommand):
         self.stdout.write(f"Created geo organization: {geo_organization.name}")
 
         # create some product suppliers
-        for _ in range(3):
+        for _ in range(2):
             self._create_organization(
                 fake,
                 super_user,
                 org_type=OrganizationTypeChoices.product_supplier,
                 name=f"Supplier {fake.company()}",
             )
+        self.supplier = self._create_organization(
+            fake,
+            super_user,
+            org_type=OrganizationTypeChoices.product_supplier,
+            name=f"Supplier {fake.company()}",
+        )
 
         facility = self._create_facility(
             fake, super_user, geo_organization, "FACILITY WITH PATIENTS"
@@ -731,7 +741,7 @@ class Command(BaseCommand):
         product.save()
         return product
 
-    def _create_inventory_item(self, location, product, net_content):
+    def _create_inventory_item(self, location, product, net_content=0):
         return InventoryItem.objects.create(
             location=location,
             product=product,
@@ -739,6 +749,57 @@ class Command(BaseCommand):
             status="active",
             created_by=location.created_by,
             updated_by=location.created_by,
+        )
+
+    def _create_supply_delivery(
+        self,
+        status=None,
+        supplied_item_quantity=None,
+        supplied_item=None,
+        supplied_inventory_item=None,
+        supply_request=None,
+        order=None,
+    ):
+        supply_delivery = SupplyDelivery.objects.create(
+            status=status or "in_progress",
+            supplied_item_quantity=supplied_item_quantity,
+            supplied_item=supplied_item,
+            supplied_inventory_item=supplied_inventory_item,
+            supply_request=supply_request,
+            delivery_type="product",
+            order=order,
+            created_by=order.origin.created_by
+            if order.origin
+            else order.destination.created_by,
+            updated_by=order.origin.created_by
+            if order.origin
+            else order.destination.created_by,
+        )
+        if supply_delivery.order.origin:
+            sync_inventory_item(inventory_item=supply_delivery.supplied_inventory_item)
+        else:
+            sync_inventory_item(
+                location=supply_delivery.order.destination,
+                product=supply_delivery.supplied_inventory_item.product,
+            )
+        return supply_delivery
+
+    def _delivery_order(
+        self,
+        status=None,
+        origin=None,
+        destination=None,
+        supplier=None,
+        name=None,
+    ):
+        return DeliveryOrder.objects.create(
+            status=status or "in_progress",
+            origin=origin,
+            destination=destination,
+            supplier=supplier,
+            name=name,
+            created_by=origin.created_by if origin else destination.created_by,
+            updated_by=origin.created_by if origin else destination.created_by,
         )
 
     def _create_lab_definition_objects_for_facility(self, facility, user=None):  # noqa : PLR0915
@@ -1538,7 +1599,54 @@ class Command(BaseCommand):
         )
         gloves_product = self._create_product(facility, gloves, gloves_charge)
 
-        self._create_inventory_item(inventory_location, amoxicillin_product, 20)
-        self._create_inventory_item(inventory_location, paracetamol_product, 50)
-        self._create_inventory_item(inventory_location, ibuprofen_product, 30)
-        self._create_inventory_item(inventory_location, gloves_product, 15)
+        amoxicillin_inventory_item = self._create_inventory_item(
+            inventory_location, amoxicillin_product
+        )
+        paracetamol_inventory_item = self._create_inventory_item(
+            inventory_location, paracetamol_product
+        )
+        ibuprofen_inventory_item = self._create_inventory_item(
+            inventory_location, ibuprofen_product
+        )
+        gloves_inventory_item = self._create_inventory_item(
+            inventory_location, gloves_product
+        )
+
+        purchase_order = self._delivery_order(
+            destination=inventory_location,
+            supplier=self.supplier,
+            name="Initial Stock Delivery",
+            status="completed",
+        )
+        self._create_supply_delivery(
+            supplied_item=amoxicillin_product,
+            supply_request=None,
+            order=purchase_order,
+            supplied_item_quantity=20,
+            supplied_inventory_item=amoxicillin_inventory_item,
+            status="completed",
+        )
+        self._create_supply_delivery(
+            supplied_item=paracetamol_product,
+            supply_request=None,
+            order=purchase_order,
+            supplied_item_quantity=50,
+            supplied_inventory_item=paracetamol_inventory_item,
+            status="completed",
+        )
+        self._create_supply_delivery(
+            supplied_item=ibuprofen_product,
+            supply_request=None,
+            order=purchase_order,
+            supplied_item_quantity=30,
+            supplied_inventory_item=ibuprofen_inventory_item,
+            status="completed",
+        )
+        self._create_supply_delivery(
+            supplied_item=gloves_product,
+            supply_request=None,
+            order=purchase_order,
+            supplied_item_quantity=15,
+            supplied_inventory_item=gloves_inventory_item,
+            status="completed",
+        )
