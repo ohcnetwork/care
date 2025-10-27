@@ -171,13 +171,20 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
 
         care_team = []
         user_mapping = {x["user_id"]: x for x in obj.care_team}
-        for member in User.objects.filter(id__in=user_mapping.keys()):
-            care_team.append(
-                {
-                    "member": UserSpec.serialize(member).to_json(),
-                    "role": user_mapping[member.id]["role"],
-                }
-            )
+        user_ids = list(user_mapping.keys())
+
+        users = User.objects.filter(id__in=user_ids)
+        user_lookup = {user.id: user for user in users}
+
+        for user_id in user_ids:
+            if user_id in user_lookup:
+                member = user_lookup[user_id]
+                care_team.append(
+                    {
+                        "member": UserSpec.serialize(member).to_json(),
+                        "role": user_mapping[user_id]["role"],
+                    }
+                )
 
         mapping["care_team"] = care_team
 
