@@ -374,3 +374,105 @@ class DeliveryOrderAPITest(CareAPITestBase):
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot write supply requests", response.data["detail"])
+
+    # Testcases for retrieve delivery order
+
+    def test_retrieve_internal_delivery_order_as_superuser(self):
+        """Test retrieving a delivery order as superuser"""
+        delivery_order = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(delivery_order.external_id))
+
+    def test_retrieve_internal_delivery_order_as_user_with_permission(self):
+        """Test retrieving a delivery order as a user with permission"""
+        delivery_order = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=self.role,
+            facility_organization=self.facility_organization,
+            user=self.user,
+        )
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(delivery_order.external_id))
+
+    def test_retrieve_internal_delivery_order_as_user_without_permission(self):
+        """Test retrieving a delivery order as a user without permission"""
+        delivery_order = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.user)
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot read delivery orders", response.data["detail"])
+
+    def test_retrieve_external_delivery_order_as_superuser(self):
+        """Test retrieving an external delivery order as superuser"""
+        delivery_order = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(delivery_order.external_id))
+
+    def test_retrieve_external_delivery_order_as_user_with_permission(self):
+        """Test retrieving an external delivery order as a user with permission"""
+        delivery_order = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=self.role,
+            facility_organization=self.facility_organization,
+            user=self.user,
+        )
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(delivery_order.external_id))
+
+    def test_retrieve_external_delivery_order_as_user_without_permission(self):
+        """Test retrieving an external delivery order as a user without permission"""
+        delivery_order = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.user)
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot read delivery orders", response.data["detail"])
