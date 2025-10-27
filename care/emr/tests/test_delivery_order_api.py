@@ -198,3 +198,179 @@ class DeliveryOrderAPITest(CareAPITestBase):
             "Origin and destination must be in the same facility",
             response.data["detail"],
         )
+
+    # Testcases for update delivery order
+
+    def test_update_internal_delivery_order_as_superuser(self):
+        """Test updating a delivery order as superuser"""
+        delivery_order = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+            status=SupplyDeliveryOrderStatusOptions.draft.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        data = self.generate_delivery_order_data(
+            status=SupplyDeliveryOrderStatusOptions.completed.value,
+            note="Status updated to completed",
+        )
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.generate_detail_url(
+                delivery_order.external_id,
+                self.facility.external_id,
+            )
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(
+            get_response.data["status"],
+            SupplyDeliveryOrderStatusOptions.completed.value,
+        )
+
+    def test_update_internal_delivery_order_as_user_with_permission(self):
+        """Test updating a delivery order as a user with permission"""
+        delivery_order = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+            status=SupplyDeliveryOrderStatusOptions.draft.value,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=self.role,
+            facility_organization=self.facility_organization,
+            user=self.user,
+        )
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        data = self.generate_delivery_order_data(
+            status=SupplyDeliveryOrderStatusOptions.completed.value,
+            origin=self.origin.external_id,
+            destination=self.destination.external_id,
+        )
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.generate_detail_url(
+                delivery_order.external_id,
+                self.facility.external_id,
+            )
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(
+            get_response.data["status"],
+            SupplyDeliveryOrderStatusOptions.completed.value,
+        )
+
+    def test_update_internal_delivery_order_as_user_without_permission(self):
+        """Test updating a delivery order as a user without permission"""
+        delivery_order = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+            status=SupplyDeliveryOrderStatusOptions.draft.value,
+        )
+        self.client.force_authenticate(user=self.user)
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        data = self.generate_delivery_order_data(
+            status=SupplyDeliveryOrderStatusOptions.completed.value,
+            origin=self.origin.external_id,
+            destination=self.destination.external_id,
+        )
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot write supply requests", response.data["detail"])
+
+    def test_update_external_delivery_order_as_superuser(self):
+        """Test updating an external delivery order as superuser"""
+        delivery_order = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+            status=SupplyDeliveryOrderStatusOptions.draft.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        data = self.generate_delivery_order_data(
+            status=SupplyDeliveryOrderStatusOptions.completed.value,
+            note="Status updated to completed",
+        )
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.generate_detail_url(
+                delivery_order.external_id,
+                self.facility.external_id,
+            )
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(
+            get_response.data["status"],
+            SupplyDeliveryOrderStatusOptions.completed.value,
+        )
+
+    def test_update_external_delivery_order_as_user_with_permission(self):
+        """Test updating an external delivery order as a user with permission"""
+        delivery_order = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+            status=SupplyDeliveryOrderStatusOptions.draft.value,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=self.role,
+            facility_organization=self.facility_organization,
+            user=self.user,
+        )
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        data = self.generate_delivery_order_data(
+            status=SupplyDeliveryOrderStatusOptions.completed.value,
+            supplier=self.supplier.external_id,
+            destination=self.destination.external_id,
+        )
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.generate_detail_url(
+                delivery_order.external_id,
+                self.facility.external_id,
+            )
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(
+            get_response.data["status"],
+            SupplyDeliveryOrderStatusOptions.completed.value,
+        )
+
+    def test_update_external_delivery_order_as_user_without_permission(self):
+        """Test updating an external delivery order as a user without permission"""
+        delivery_order = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+            status=SupplyDeliveryOrderStatusOptions.draft.value,
+        )
+        self.client.force_authenticate(user=self.user)
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        data = self.generate_delivery_order_data(
+            status=SupplyDeliveryOrderStatusOptions.completed.value,
+            supplier=self.supplier.external_id,
+            destination=self.destination.external_id,
+        )
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot write supply requests", response.data["detail"])
