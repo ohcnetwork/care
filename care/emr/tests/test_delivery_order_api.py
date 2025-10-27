@@ -122,7 +122,7 @@ class DeliveryOrderAPITest(CareAPITestBase):
         )
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 403)
-        self.assertIn("Cannot write supply requests", response.data["detail"])
+        self.assertIn("Cannot write delivery orders", response.data["detail"])
 
     def test_create_delivery_order_externally_as_superuser(self):
         """Test creating an external delivery order as superuser"""
@@ -178,7 +178,7 @@ class DeliveryOrderAPITest(CareAPITestBase):
         )
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 403)
-        self.assertIn("Cannot write supply requests", response.data["detail"])
+        self.assertIn("Cannot write delivery orders", response.data["detail"])
 
     def test_create_delivery_order_with_mismatched_origin_destination(self):
         """Test creating a delivery order with mismatched origin and destination facilities"""
@@ -286,7 +286,7 @@ class DeliveryOrderAPITest(CareAPITestBase):
         )
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 403)
-        self.assertIn("Cannot write supply requests", response.data["detail"])
+        self.assertIn("Cannot write delivery orders", response.data["detail"])
 
     def test_update_external_delivery_order_as_superuser(self):
         """Test updating an external delivery order as superuser"""
@@ -373,7 +373,7 @@ class DeliveryOrderAPITest(CareAPITestBase):
         )
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 403)
-        self.assertIn("Cannot write supply requests", response.data["detail"])
+        self.assertIn("Cannot write delivery orders", response.data["detail"])
 
     # Testcases for retrieve delivery order
 
@@ -476,3 +476,414 @@ class DeliveryOrderAPITest(CareAPITestBase):
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot read delivery orders", response.data["detail"])
+
+    # Test cases for list delivery orders
+
+    def test_list_delivery_orders_as_superuser(self):
+        """Test listing delivery orders as superuser"""
+        delivery_order1 = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        delivery_order2 = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
+        self.assertIn(
+            str(delivery_order1.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+        self.assertIn(
+            str(delivery_order2.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+
+    def test_list_delivery_orders_as_user_with_permission(self):
+        """Test listing delivery orders as a user with permission"""
+        delivery_order1 = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        delivery_order2 = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=self.role,
+            facility_organization=self.facility_organization,
+            user=self.user,
+        )
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
+        self.assertIn(
+            str(delivery_order1.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+        self.assertIn(
+            str(delivery_order2.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+
+    def test_list_delivery_orders_as_user_without_permission(self):
+        """Test listing delivery orders as a user without permission without filters"""
+        delivery_order1 = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        delivery_order2 = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.user)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
+        self.assertIn(
+            str(delivery_order1.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+        self.assertIn(
+            str(delivery_order2.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+
+    def test_list_delivery_orders_with_origin_filter(self):
+        """Test listing delivery orders with origin filter"""
+        delivery_order1 = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(
+            url, {"origin": self.origin.external_id}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertIn(
+            str(delivery_order1.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+
+    def test_list_delivery_orders_with_origin_filter_as_user_without_permission(self):
+        """Test listing delivery orders with origin filter as user without permission"""
+        self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.user)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(
+            url, {"origin": self.origin.external_id}, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot list delivery orders", response.data["detail"])
+
+    def test_list_delivery_orders_with_destination_filter(self):
+        """Test listing delivery orders with destination filter"""
+        delivery_order1 = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        delivery_order2 = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+        )
+        another_destination = self.create_facility_location(facility=self.facility)
+        self.create_delivery_order(
+            supplier=self.supplier,
+            destination=another_destination,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(
+            url,
+            {"destination": self.destination.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertIn(
+            str(delivery_order1.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+        self.assertIn(
+            str(delivery_order2.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+
+    def test_list_delivery_orders_with_destination_filter_as_user_without_permission(
+        self,
+    ):
+        """Test listing delivery orders with destination filter as user without permission"""
+        self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.user)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(
+            url, {"destination": self.destination.external_id}, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot list delivery orders", response.data["detail"])
+
+    def test_list_delivery_orders_with_status_filter(self):
+        """Test listing delivery orders with status filter"""
+        delivery_order1 = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+            status=SupplyDeliveryOrderStatusOptions.draft.value,
+        )
+        self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+            status=SupplyDeliveryOrderStatusOptions.completed.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(
+            url,
+            {"status": SupplyDeliveryOrderStatusOptions.draft.value},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertIn(
+            str(delivery_order1.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+
+    def test_list_delivery_orders_with_supplier_filter(self):
+        """Test listing delivery orders with supplier filter"""
+        delivery_order2 = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+        )
+        another_supplier = self.create_organization(
+            name="Another Supplier", org_type="product_supplier"
+        )
+        self.create_delivery_order(
+            supplier=another_supplier,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(
+            url,
+            {"supplier": self.supplier.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertIn(
+            str(delivery_order2.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+
+    def test_list_delivery_orders_with_origin_include_children_filter_as_true(self):
+        """Test listing delivery orders with origin include_children filter as true"""
+        child_location = self.create_facility_location(
+            facility=self.facility,
+            parent=self.origin,
+        )
+        delivery_order1 = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        delivery_order2 = self.create_delivery_order(
+            origin=child_location,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(
+            url,
+            {"origin": self.origin.external_id, "include_children": "true"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertIn(
+            str(delivery_order1.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+        self.assertIn(
+            str(delivery_order2.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+
+    def test_list_delivery_orders_with_origin_include_children_filter_as_false(self):
+        """Test listing delivery orders with origin include_children filter as false"""
+        child_location = self.create_facility_location(
+            facility=self.facility,
+            parent=self.origin,
+        )
+        delivery_order1 = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        self.create_delivery_order(
+            origin=child_location,
+            destination=self.destination,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(
+            url,
+            {"origin": self.origin.external_id, "include_children": "false"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertIn(
+            str(delivery_order1.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+
+    def test_list_delivery_orders_with_destination_include_children_filter_as_true(
+        self,
+    ):
+        """Test listing delivery orders with destination include_children filter as true"""
+        child_location = self.create_facility_location(
+            facility=self.facility,
+            parent=self.destination,
+        )
+        delivery_order1 = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        delivery_order2 = self.create_delivery_order(
+            origin=self.origin,
+            destination=child_location,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(
+            url,
+            {"destination": self.destination.external_id, "include_children": "true"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertIn(
+            str(delivery_order1.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+        self.assertIn(
+            str(delivery_order2.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+
+    def test_list_delivery_orders_with_destination_include_children_filter_as_false(
+        self,
+    ):
+        """Test listing delivery orders with destination include_children filter as false"""
+        child_location = self.create_facility_location(
+            facility=self.facility,
+            parent=self.destination,
+        )
+        delivery_order1 = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+        )
+        self.create_delivery_order(
+            origin=self.origin,
+            destination=child_location,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(
+            url,
+            {"destination": self.destination.external_id, "include_children": "false"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertIn(
+            str(delivery_order1.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+
+    def test_list_delivery_orders_with_origin_isnull_filter_as_true(self):
+        """Test listing delivery orders with origin isnull filter as true"""
+        self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+            name="Internal Delivery Order",
+            status=SupplyDeliveryOrderStatusOptions.draft.value,
+        )
+        delivery_order = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+            name="External Delivery Order",
+            status=SupplyDeliveryOrderStatusOptions.draft.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(
+            url,
+            {
+                "origin_isnull": "true",
+                "status": SupplyDeliveryOrderStatusOptions.draft.value,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertIn(
+            str(delivery_order.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
+
+    def test_list_delivery_orders_with_origin_isnull_filter_as_false(self):
+        """Test listing delivery orders with origin isnull filter as false"""
+        delivery_order1 = self.create_delivery_order(
+            origin=self.origin,
+            destination=self.destination,
+            name="Internal Delivery Order",
+            status=SupplyDeliveryOrderStatusOptions.draft.value,
+        )
+        self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+            name="External Delivery Order",
+            status=SupplyDeliveryOrderStatusOptions.draft.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_base_url(self.facility.external_id)
+        response = self.client.get(
+            url,
+            {
+                "origin_isnull": "false",
+                "status": SupplyDeliveryOrderStatusOptions.draft.value,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertIn(
+            str(delivery_order1.external_id),
+            [order["id"] for order in response.data["results"]],
+        )
