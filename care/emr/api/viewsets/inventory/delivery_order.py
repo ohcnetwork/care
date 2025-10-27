@@ -69,7 +69,7 @@ class DeliveryOrderViewSet(
             "can_list_facility_supply_delivery", self.request.user, location_obj
         ):
             if raise_error:
-                raise PermissionDenied("Cannot list supply requests")
+                raise PermissionDenied("Cannot list delivery orders")
             return False
         return True
 
@@ -78,7 +78,7 @@ class DeliveryOrderViewSet(
             "can_write_facility_supply_delivery", self.request.user, location_obj
         ):
             if raise_error:
-                raise PermissionDenied("Cannot write supply requests")
+                raise PermissionDenied("Cannot write delivery orders")
             return False
         return True
 
@@ -122,8 +122,12 @@ class DeliveryOrderViewSet(
     def authorize_retrieve(self, model_instance):
         allowed = False
         if model_instance.origin:
-            allowed = allowed or self.authorize_location_read(model_instance.origin)
-        allowed = allowed or self.authorize_location_read(model_instance.destination)
+            allowed = allowed or self.authorize_location_read(
+                model_instance.origin, raise_error=False
+            )
+        allowed = allowed or self.authorize_location_read(
+            model_instance.destination, raise_error=False
+        )
         if not allowed:
             raise PermissionDenied("Cannot read delivery orders")
 
