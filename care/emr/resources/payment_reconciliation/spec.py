@@ -97,7 +97,7 @@ class PaymentReconciliationWriteSpec(BasePaymentReconciliationSpec):
     @model_validator(mode="after")
     def check_amount_or_factor(self):
         if self.returned_amount >= self.tendered_amount:
-            raise ValueError("Retrurned amount cannot be greater than tendered amount")
+            raise ValueError("Returned amount cannot be greater than tendered amount")
         self.amount = self.tendered_amount - self.returned_amount
         return self
 
