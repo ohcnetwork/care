@@ -52,7 +52,17 @@ class OdooConnector:
         # )
         # url_old = f"{protocol}://{settings.ODOO_CONFIG['host']}:{settings.ODOO_CONFIG['port']}{endpoint}"
 
-        url = "https://odoo.ohc.network/api/create_invoice"
+        # digital ocean
+        # url = f"https://odoo.ohc.network/{endpoint}"
+
+        # local
+        # url = f"http://host.docker.internal:8069/{endpoint}"
+
+        url = f"{settings.ODOO_CONFIG['protocol']}://{settings.ODOO_CONFIG['host']}"
+        if settings.ODOO_CONFIG["port"]:
+            url += f":{settings.ODOO_CONFIG['port']}"
+        url += f"/{endpoint}"
+
         headers = {
             "Authorization": f"Basic {auth}",
             "Content-Type": "application/json",
@@ -70,22 +80,18 @@ class OdooConnector:
 
         try:
             response = requests.post(url, headers=headers, json=data, timeout=30)
-            response.raise_for_status()
+            response_json = response.json()
+            logger.info("Odoo API Response: %s", response_json)
 
-        except Exception as e:
-            logger.info(e)
-            raise ValidationError({"error": "Error connecting to Odoo API"}) from e
+            if not response.ok:
+                error_msg = response_json.get("message", str(response.reason))
+                logger.exception("Odoo API Error: %s", error_msg)
+                response.raise_for_status()  # This will raise HTTPError with proper status code
 
-        # Handle JSON-RPC response format
-        response_json = response.json()
-        try:
-            if response_json.get("result", {}).get("success"):
-                return response_json
-            logger.info("Error response from Odoo API: %s", response_json)
-            raise ValidationError({"error": "Invalid response from Odoo API"})
-        except Exception as e:
-            logger.info(e)
-            raise ValidationError({"error": "Error response from Odoo API"}) from e
+            return response_json
+        except requests.exceptions.RequestException as e:
+            logger.exception("Odoo API Error: %s", str(e))
+            raise ValidationError(str(e)) from e
 
     @classmethod
     def validate_connection(cls):

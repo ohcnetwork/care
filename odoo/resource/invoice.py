@@ -7,10 +7,25 @@ from care.emr.models.invoice import Invoice
 from care.emr.models.medication_dispense import MedicationDispense
 from care.emr.models.scheduling.booking import TokenBooking
 from care.emr.models.service_request import ServiceRequest
+from care.emr.resources.charge_item.spec import ChargeItemResourceOptions
 from care.emr.resources.common.monetary_component import MonetaryComponentType
 from odoo.connector.connector import OdooConnector
+from odoo.resource.account_move.spec import (
+    AccountMoveApiRequest,
+    AccountMoveReturnApiRequest,
+    BillType,
+    InvoiceItem,
+)
 from odoo.resource.agent import OdooAgentResource
 from odoo.resource.base import OdooBaseResource
+from odoo.resource.currency import OdooCurrencyResource
+from odoo.resource.partner import OdooPartnerResource
+from odoo.resource.product import OdooProductResource
+from odoo.resource.product_category.spec import CategoryData
+from odoo.resource.product_product.spec import ProductData
+from odoo.resource.res_partner.spec import PartnerData, PartnerType
+from odoo.resource.state import OdooStateResource
+from odoo.resource.tax import OdooTaxResource
 
 logger = logging.getLogger(__name__)
 
@@ -30,8 +45,6 @@ class OdooInvoiceResource(OdooBaseResource):
 
     def create_invoice(self, invoice, partner_id, invoice_line_ids) -> int:
         # Prepare invoice data
-        from odoo.resource.currency import OdooCurrencyResource
-        from odoo.resource.state import OdooStateResource
 
         invoice_data = {
             "name": invoice.number + str(random.randint(1, 1000000)),  # noqa S311
@@ -64,9 +77,27 @@ class OdooInvoiceResource(OdooBaseResource):
                 return item["amount"]
         raise Exception("Base price not found")
 
-    def get_taxes(self, charge_item: ChargeItem):
-        from odoo.resource.tax import OdooTaxResource
+    def get_charge_item_purchase_price(self, charge_item: ChargeItem):
+        for item in charge_item.unit_price_components:
+            if (
+                item["monetary_component_type"]
+                == MonetaryComponentType.informational.value
+                and item["code"]["code"] == "purchase_price"
+            ):
+                return item["amount"]
+        return None
 
+    def get_charge_item_mrp(self, charge_item: ChargeItem):
+        for item in charge_item.unit_price_components:
+            if (
+                item["monetary_component_type"]
+                == MonetaryComponentType.informational.value
+                and item["code"]["code"] == "mrp"
+            ):
+                return item["amount"]
+        return None
+
+    def get_taxes(self, charge_item: ChargeItem):
         tax_items = []
         for item in charge_item.unit_price_components:
             if item["monetary_component_type"] == MonetaryComponentType.tax.value:
@@ -81,8 +112,6 @@ class OdooInvoiceResource(OdooBaseResource):
     def get_discounts(
         self, charge_item: ChargeItem, unit_price: float, quantity: Decimal
     ):
-        from odoo.resource.product import OdooProductResource
-
         discount_items = []
         for item in charge_item.unit_price_components:
             if item["monetary_component_type"] == MonetaryComponentType.discount.value:
@@ -111,6 +140,29 @@ class OdooInvoiceResource(OdooBaseResource):
         """
         return
 
+    def sync_invoice_return_to_odoo_api(self, invoice_id: str) -> int | None:
+        """
+        Synchronize a cancelled Django invoice to Odoo using the custom addon API.
+
+        Args:
+            invoice_id: External ID of the Django invoice
+
+        Returns:
+            Odoo invoice ID if successful, None otherwise
+        """
+        invoice = Invoice.objects.select_related("facility", "patient").get(
+            external_id=invoice_id
+        )
+
+        data = AccountMoveReturnApiRequest(
+            x_care_id=str(invoice.external_id),
+            reason=invoice.status,
+        ).model_dump()
+
+        logger.info("Odoo Invoice Return Data: %s", data)
+        response = OdooConnector.call_api("api/account/move/return", data)
+        return response["reverse_invoice"]["id"]
+
     def check_invoice_exists(self, invoice_id: str) -> bool:
         """
         Check if an invoice exists in Odoo.
@@ -137,14 +189,15 @@ class OdooInvoiceResource(OdooBaseResource):
         )
 
         # Prepare partner data
-        partner_data = {
-            "name": invoice.patient.name,
-            "x_care_id": str(invoice.patient.external_id),
-            "partner_type": "person",
-            "phone": invoice.patient.phone_number,
-            "state": invoice.facility.state or "kerala",
-            "email": "",
-        }
+        partner_data = PartnerData(
+            name=invoice.patient.name,
+            x_care_id=str(invoice.patient.external_id),
+            partner_type=PartnerType.person,
+            phone=invoice.patient.phone_number,
+            state=invoice.facility.state or "kerala",
+            email="",
+            agent=False,
+        )
 
         # Prepare invoice items
         invoice_items = []
@@ -152,20 +205,31 @@ class OdooInvoiceResource(OdooBaseResource):
             paid_invoice=invoice
         ).select_related("charge_item_definition"):
             if charge_item.charge_item_definition:
-                item = {
-                    "product": {
-                        "product_name": charge_item.charge_item_definition.title,
-                        "x_care_id": str(
-                            charge_item.charge_item_definition.external_id
+                base_price = self.get_charge_item_base_price(charge_item)
+                purchase_price = self.get_charge_item_purchase_price(charge_item)
+                product_data = ProductData(
+                    product_name=charge_item.charge_item_definition.title,
+                    x_care_id=str(charge_item.charge_item_definition.external_id),
+                    mrp=str(base_price),
+                    cost=str(purchase_price or base_price),
+                    category=CategoryData(
+                        category_name=charge_item.charge_item_definition.category.title,
+                        parent_x_care_id=str(
+                            charge_item.charge_item_definition.category.parent.external_id
+                        )
+                        if charge_item.charge_item_definition.category.parent
+                        else "",
+                        x_care_id=str(
+                            charge_item.charge_item_definition.category.external_id
                         ),
-                        "mrp": self.get_charge_item_base_price(charge_item),
-                    },
-                    "quantity": str(charge_item.quantity),
-                    "sale_price": self.get_charge_item_base_price(charge_item),
-                    "x_care_id": str(charge_item.external_id),
-                }
-                from care.emr.resources.charge_item.spec import (
-                    ChargeItemResourceOptions,
+                    ),
+                )
+
+                item = InvoiceItem(
+                    product_data=product_data,
+                    quantity=str(charge_item.quantity),
+                    sale_price=str(base_price),
+                    x_care_id=str(charge_item.external_id),
                 )
 
                 if (
@@ -200,21 +264,24 @@ class OdooInvoiceResource(OdooBaseResource):
                     requester = None
 
                 if requester:
-                    item["agent"] = {"x_care_id": str(requester.external_id)}
+                    item.agent_id = str(requester.external_id)
                 invoice_items.append(item)
 
-        # Prepare final data
-        data = {
-            "partner_data": partner_data,
-            "invoice_items": invoice_items,
-            "invoice_date": invoice.created_date.strftime("%d-%m-%Y"),
-            "x_care_id": str(invoice.external_id),
-            "bill_type": "customer",
-        }
+        logger.info("Invoice Items: %s", invoice_items)
+        # Prepare final data using our spec
+        data = AccountMoveApiRequest(
+            partner_data=partner_data,
+            invoice_items=invoice_items,
+            invoice_date=invoice.created_date.strftime("%d-%m-%Y"),
+            x_care_id=str(invoice.external_id),
+            bill_type=BillType.customer,
+            due_date=invoice.created_date.strftime("%d-%m-%Y"),
+            reason="",
+        ).model_dump()
         logger.info("Odoo Invoice Data: %s", data)
 
-        response = OdooConnector.call_api("/api/create_invoice", data)
-        return response["result"]["invoice_id"]
+        response = OdooConnector.call_api("api/account/move", data)
+        return response["invoice"]["id"]
 
     def sync_invoice_to_odoo(self, invoice_id: str) -> int | None:
         """
@@ -226,8 +293,6 @@ class OdooInvoiceResource(OdooBaseResource):
         Returns:
             Odoo invoice ID if successful, None otherwise
         """
-        from odoo.resource.partner import OdooPartnerResource
-        from odoo.resource.product import OdooProductResource
 
         # Get the Django invoice
         invoice = Invoice.objects.select_related("facility", "patient", "account").get(
@@ -242,7 +307,10 @@ class OdooInvoiceResource(OdooBaseResource):
             paid_invoice=invoice
         ).select_related("charge_item_definition"):
             if charge_item.charge_item_definition:
-                logging.info(charge_item.charge_item_definition)
+                logger.info(
+                    "Processing charge item definition: %s",
+                    charge_item.charge_item_definition,
+                )
                 product_id = OdooProductResource().get_or_create_patient_partner(
                     charge_item.charge_item_definition
                 )
@@ -270,8 +338,6 @@ class OdooInvoiceResource(OdooBaseResource):
                 "quantity": str(charge_item.quantity),
                 "price_unit": unit_price,
             }
-
-            from care.emr.resources.charge_item.spec import ChargeItemResourceOptions
 
             if (
                 charge_item.service_resource
@@ -327,9 +393,9 @@ class OdooInvoiceResource(OdooBaseResource):
                     line_item["price_unit"] = str(-1 * discount["amount"])
                     line_items.append([0, f"{line_id}", line_item])
             line_id += 1
-        logging.info(line_items)
+        logger.info("Created line items: %s", line_items)
         # Create invoice in Odoo
         odoo_invoice_id = self.create_invoice(invoice, partner, line_items)
         self.post_invoice(odoo_invoice_id)
-        logger.info("Successfully synced invoice to Odoo with ID")
+        logger.info("Successfully synced invoice to Odoo with ID: %s", odoo_invoice_id)
         return odoo_invoice_id
