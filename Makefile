@@ -92,5 +92,13 @@ ruff-all-docker:
 ruff-docker:
 	docker exec care bash -c "ruff check --fix $(shell git diff --name-only --staged | grep -E '\.py$$|\/pyproject.toml$$')"
 
+up-playwright:
+	docker compose exec db sh -c 'if [ -f /tmp/care_db.before_playwright.dump ]; then echo "before_playwright dump already exists, skipping"; exit 0; fi; pg_dump -U postgres -Fc care > /tmp/care_db.before_playwright.dump'
+	docker compose cp data/test_db.dump db:/tmp/test_db.dump
+	docker compose exec db sh -c 'pg_restore -U postgres --clean --if-exists -d care /tmp/test_db.dump'
+
+down-playwright:
+	docker compose exec db sh -c 'if [ -f /tmp/care_db.before_playwright.dump ]; then pg_restore -U postgres --clean --if-exists -d care /tmp/care_db.before_playwright.dump && rm -f /tmp/care_db.before_playwright.dump; else echo "no before_playwright dump to restore"; fi'
+
 %:
 	docker compose exec backend bash -c "python manage.py $*"
