@@ -1,6 +1,7 @@
 from django.urls import reverse
 from model_bakery import baker
 
+from care.emr.models.medication_dispense import DispenseOrder
 from care.emr.resources.medication.dispense.dispense_order import (
     MedicationDispenseOrderStatusOptions,
 )
@@ -54,6 +55,9 @@ class DispenseOrderAPITestCase(CareAPITestBase):
             organization=facility_organization,
         )
         return location
+
+    def create_dispense_order(self, **kwargs):
+        return baker.make(DispenseOrder, **kwargs)
 
     def generate_base_url(self, facility_external_id):
         return reverse(
@@ -156,5 +160,127 @@ class DispenseOrderAPITestCase(CareAPITestBase):
             data=self.dispense_order_data,
             format="json",
         )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Location must be in the same facility", response.data["errors"][0]["msg"]
+        )
+
+    # Testcases for updating dispense order
+
+    def test_update_dispense_order_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        dispense_order = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Initial Dispense Order",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        update_data = {
+            "name": "Updated Dispense Order",
+            "status": MedicationDispenseOrderStatusOptions.completed,
+        }
+        response = self.client.put(
+            self.get_detail_url(self.facility.external_id, dispense_order.external_id),
+            data=update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_reposense = self.client.get(
+            self.get_detail_url(self.facility.external_id, dispense_order.external_id),
+            format="json",
+        )
+        self.assertEqual(get_reposense.status_code, 200)
+        self.assertEqual(get_reposense.data["id"], str(dispense_order.external_id))
+        self.assertEqual(get_reposense.data["name"], update_data["name"])
+        self.assertEqual(get_reposense.data["status"], update_data["status"])
+
+    def test_update_dispense_order_as_user_without_permission(self):
+        dispense_order = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Initial Dispense Order",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        self.client.force_authenticate(user=self.user)
+        update_data = {
+            "name": "Updated Dispense Order",
+            "status": MedicationDispenseOrderStatusOptions.completed,
+        }
+        response = self.client.put(
+            self.get_detail_url(self.facility.external_id, dispense_order.external_id),
+            data=update_data,
+            format="json",
+        )
         self.assertEqual(response.status_code, 403)
-        self.assertIn("Location must be in the same facility", response.data["detail"])
+        self.assertIn(
+            "You do not have permission to update dispense order",
+            response.data["detail"],
+        )
+
+    def test_update_dispense_order_as_user_with_location_write_permission(self):
+        dispense_order = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Initial Dispense Order",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        update_data = {
+            "name": "Updated Dispense Order",
+            "status": MedicationDispenseOrderStatusOptions.completed,
+        }
+        response = self.client.put(
+            self.get_detail_url(self.facility.external_id, dispense_order.external_id),
+            data=update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_reposense = self.client.get(
+            self.get_detail_url(self.facility.external_id, dispense_order.external_id),
+            format="json",
+        )
+        self.assertEqual(get_reposense.status_code, 200)
+        self.assertEqual(get_reposense.data["id"], str(dispense_order.external_id))
+        self.assertEqual(get_reposense.data["name"], update_data["name"])
+        self.assertEqual(get_reposense.data["status"], update_data["status"])
+
+    def test_update_dispense_order_as_pharmacist(self):
+        dispense_order = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Initial Dispense Order",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.pharmacist_role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        update_data = {
+            "name": "Updated Dispense Order",
+            "status": MedicationDispenseOrderStatusOptions.completed,
+        }
+        response = self.client.put(
+            self.get_detail_url(self.facility.external_id, dispense_order.external_id),
+            data=update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_reposense = self.client.get(
+            self.get_detail_url(self.facility.external_id, dispense_order.external_id),
+            format="json",
+        )
+        self.assertEqual(get_reposense.status_code, 200)
+        self.assertEqual(get_reposense.data["id"], str(dispense_order.external_id))
+        self.assertEqual(get_reposense.data["name"], update_data["name"])
+        self.assertEqual(get_reposense.data["status"], update_data["status"])
