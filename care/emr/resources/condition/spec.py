@@ -12,7 +12,6 @@ from care.emr.resources.condition.valueset import CARE_CODITION_CODE_VALUESET
 from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.utils.shortcuts import get_object_or_404
-from care.utils.time_util import care_now
 
 
 class ClinicalStatusChoices(str, Enum):
