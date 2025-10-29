@@ -15,8 +15,8 @@ class EncounterTagsMetric(EvaluationMetricBase):
     ]
 
     def evaluate_has_tag(self, rule):
-        value = self.get_value()
         self._value_type = rule.get("value_type", "encounter")
+        value = self.get_value()
         rule = self.clean_rule(rule)
         return any(tag in value for tag in rule)
 
