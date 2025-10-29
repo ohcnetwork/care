@@ -284,3 +284,85 @@ class DispenseOrderAPITestCase(CareAPITestBase):
         self.assertEqual(get_reposense.data["id"], str(dispense_order.external_id))
         self.assertEqual(get_reposense.data["name"], update_data["name"])
         self.assertEqual(get_reposense.data["status"], update_data["status"])
+
+    # Testcases for retrieving dispense order
+
+    def test_retrieve_dispense_order_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        dispense_order = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Initial Dispense Order",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.get_detail_url(self.facility.external_id, dispense_order.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(dispense_order.external_id))
+        self.assertEqual(response.data["name"], dispense_order.name)
+
+    def test_retrieve_dispense_order_as_user_without_permission(self):
+        dispense_order = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Initial Dispense Order",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.get_detail_url(self.facility.external_id, dispense_order.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to read dispense order",
+            response.data["detail"],
+        )
+
+    def test_retrieve_dispense_order_as_user_with_location_read_permission(self):
+        dispense_order = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Initial Dispense Order",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.get_detail_url(self.facility.external_id, dispense_order.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(dispense_order.external_id))
+        self.assertEqual(response.data["name"], dispense_order.name)
+
+    def test_retrieve_dispense_order_as_pharmacist(self):
+        dispense_order = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Initial Dispense Order",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.pharmacist_role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.get_detail_url(self.facility.external_id, dispense_order.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(dispense_order.external_id))
+        self.assertEqual(response.data["name"], dispense_order.name)
