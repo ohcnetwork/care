@@ -15,10 +15,15 @@ class EncounterTagsMetric(EvaluationMetricBase):
     ]
 
     def clean_rule(self, rule):
-        tag_config = TagConfig.objects.only("id").filter(external_id=rule).first()
+        tag_ids = rule.get("value", "").split(",")
+        tag_config = (
+            TagConfig.objects.only("id")
+            .filter(external_id__in=tag_ids)
+            .values_list("id", flat=True)
+        )
         if tag_config is None:
             return -1
-        return tag_config.id
+        return tag_config
 
     def get_value(self):
         encounter = self.context_object

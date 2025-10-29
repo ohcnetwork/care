@@ -33,7 +33,7 @@ class EvaluationMetricBase:
     def evaluate_has_tag(self, rule):
         value = self.get_value()
         rule = self.clean_rule(rule)
-        return rule in value
+        return any(tag in value for tag in rule)
 
     def clean_rule(self, rule):
         return rule
