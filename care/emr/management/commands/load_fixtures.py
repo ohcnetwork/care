@@ -27,6 +27,7 @@ from care.emr.models import (
     QuestionnaireOrganization,
 )
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
+from care.emr.models.resource_category import ResourceCategory
 from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
 from care.emr.resources.activity_definition.spec import BaseActivityDefinitionSpec
 from care.emr.resources.device.spec import DeviceCreateSpec
@@ -664,6 +665,28 @@ class Command(BaseCommand):
         device.updated_by = super_user
         device.save()
         return device
+
+    def _create_resource_category(self, facility, title, resource_type, **kwargs):
+        resource_category = ResourceCategory.objects.filter(
+            facility=facility, title=title, resource_type=resource_type
+        ).first()
+        if resource_category:
+            return resource_category
+        _data = {
+            "facility": facility,
+            "resource_type": resource_type,
+            "title": title,
+            "slug": f"{title.lower().replace(' ', '-')}-{resource_type}",
+            "created_by": facility.created_by,
+            "updated_by": facility.created_by,
+            "resource_sub_type": "other",
+        }
+        if kwargs:
+            _data.update(kwargs)
+        resource_category = ResourceCategory(**_data)
+        resource_category.slug = resource_category.calculate_slug()
+        resource_category.save()
+        return resource_category
 
     def _create_product_knowledge(self, facility, code, base_unit, **kwargs):
         coding = code.get("code", "")
@@ -1332,6 +1355,9 @@ class Command(BaseCommand):
                 {"amount": 600.0, "monetary_component_type": "base"},
                 *default_price_components,
             ],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="charge_item_definition"
+            ),
         )
         cbc_charge_definition = self._create_charge_item_definition(
             facility,
@@ -1352,6 +1378,9 @@ class Command(BaseCommand):
                 },
                 *default_price_components,
             ],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="charge_item_definition"
+            ),
         )
 
         lipid_panel_charge_definition = self._create_charge_item_definition(
@@ -1365,6 +1394,9 @@ class Command(BaseCommand):
                 {"amount": 400.0, "monetary_component_type": "base"},
                 *default_price_components,
             ],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="charge_item_definition"
+            ),
         )
 
         urinalysis_charge_definition = self._create_charge_item_definition(
@@ -1389,6 +1421,9 @@ class Command(BaseCommand):
                 *default_price_components,
             ],
             version=1,
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="charge_item_definition"
+            ),
         )
 
         pathology_service = __create_object(
@@ -1420,6 +1455,9 @@ class Command(BaseCommand):
             ],
             locations=[pathology_service.id],
             charge_item_definitions=[fasting_blood_glucose_charge_definition.id],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="activity_definition"
+            ),
         )
         __create_object(
             BaseActivityDefinitionSpec(
@@ -1439,6 +1477,9 @@ class Command(BaseCommand):
             observation_result_requirements=[cbc_observation_definition.id],
             locations=[pathology_service.id],
             charge_item_definitions=[cbc_charge_definition.id],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="activity_definition"
+            ),
         )
         __create_object(
             BaseActivityDefinitionSpec(
@@ -1458,6 +1499,9 @@ class Command(BaseCommand):
             observation_result_requirements=[lipid_panel_observation_definition.id],
             locations=[pathology_service.id],
             charge_item_definitions=[lipid_panel_charge_definition.id],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="activity_definition"
+            ),
         )
         __create_object(
             BaseActivityDefinitionSpec(
@@ -1476,6 +1520,9 @@ class Command(BaseCommand):
             observation_result_requirements=[urinalysis_observation_definition.id],
             locations=[pathology_service.id],
             charge_item_definitions=[urinalysis_charge_definition.id],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="activity_definition"
+            ),
         )
 
     def _create_inventory_items(self, facility, user=None):
@@ -1525,8 +1572,8 @@ class Command(BaseCommand):
             ],
         }
         tablet_unit = {
-            "code": "tbl",
             "system": "http://unitsofmeasure.org",
+            "code": "{tbl}",
             "display": "tablets",
         }
 
@@ -1540,6 +1587,9 @@ class Command(BaseCommand):
             tablet_unit,
             definitional=oral_tablet_definitional,
             name="Amoxicillin",
+            category=self._create_resource_category(
+                facility, "Medications", resource_type="product_knowledge"
+            ),
         )
         paracetamol_knowledge = self._create_product_knowledge(
             facility,
@@ -1551,6 +1601,9 @@ class Command(BaseCommand):
             tablet_unit,
             definitional=oral_tablet_definitional,
             name="Paracetamol",
+            category=self._create_resource_category(
+                facility, "Medications", resource_type="product_knowledge"
+            ),
         )
         ibuprofen_knowledge = self._create_product_knowledge(
             facility,
@@ -1562,6 +1615,9 @@ class Command(BaseCommand):
             tablet_unit,
             definitional=oral_tablet_definitional,
             name="Ibuprofen",
+            category=self._create_resource_category(
+                facility, "Medications", resource_type="product_knowledge"
+            ),
         )
         gloves = self._create_product_knowledge(
             facility,
@@ -1570,22 +1626,49 @@ class Command(BaseCommand):
                 "system": "http://snomed.info/sct",
                 "display": "Gloves",
             },
-            {"code": "pair", "system": "http://unitsofmeasure.org", "display": "pairs"},
+            {
+                "system": "http://unitsofmeasure.org",
+                "code": "{count}",
+                "display": "count",
+            },
             product_type="consumable",
             name="Gloves",
+            category=self._create_resource_category(
+                facility, "Consumables", resource_type="product_knowledge"
+            ),
         )
 
         amoxicillin_charge = self._create_charge_item_definition(
-            facility, "Amoxicillin 500mg Capsule", 50.0
+            facility,
+            "Amoxicillin 500mg Capsule",
+            50.0,
+            category=self._create_resource_category(
+                facility, "Medications", resource_type="charge_item_definition"
+            ),
         )
         paracetamol_charge = self._create_charge_item_definition(
-            facility, "Paracetamol 500mg Tablet", 20.0
+            facility,
+            "Paracetamol 500mg Tablet",
+            20.0,
+            category=self._create_resource_category(
+                facility, "Medications", resource_type="charge_item_definition"
+            ),
         )
         ibuprofen_charge = self._create_charge_item_definition(
-            facility, "Ibuprofen 400mg Tablet", 30.0
+            facility,
+            "Ibuprofen 400mg Tablet",
+            30.0,
+            category=self._create_resource_category(
+                facility, "Medications", resource_type="charge_item_definition"
+            ),
         )
         gloves_charge = self._create_charge_item_definition(
-            facility, "Pair of Gloves", 5.0
+            facility,
+            "Pair of Gloves",
+            5.0,
+            category=self._create_resource_category(
+                facility, "Consumables", resource_type="charge_item_definition"
+            ),
         )
 
         amoxicillin_product = self._create_product(
