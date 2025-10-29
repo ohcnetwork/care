@@ -14,6 +14,12 @@ class EncounterTagsMetric(EvaluationMetricBase):
         AllowedOperations.has_tag.value,
     ]
 
+    def evaluate_has_tag(self, rule):
+        value = self.get_value()
+        self._value_type = rule.get("value_type", "encounter")
+        rule = self.clean_rule(rule)
+        return any(tag in value for tag in rule)
+
     def clean_rule(self, rule):
         tag_ids = rule.get("value", "").split(",")
         tag_config = (
@@ -28,11 +34,12 @@ class EncounterTagsMetric(EvaluationMetricBase):
     def get_value(self):
         encounter = self.context_object
         facility_external_id = str(encounter.facility.external_id)
+        if self._value_type == "encounter":
+            return [*encounter.tags]
         patient = encounter.patient
         patient_facility_tags = patient.facility_tags.get(facility_external_id, [])
         patient_instance_tags = patient.instance_tags
-        encounter_tags = encounter.tags
-        return [*patient_facility_tags, *patient_instance_tags, *encounter_tags]
+        return [*patient_facility_tags, *patient_instance_tags]
 
 
 EvaluatorMetricsRegistry.register(EncounterTagsMetric)
