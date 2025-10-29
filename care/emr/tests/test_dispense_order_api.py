@@ -366,3 +366,182 @@ class DispenseOrderAPITestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(dispense_order.external_id))
         self.assertEqual(response.data["name"], dispense_order.name)
+
+    # Testcases for listing dispense orders
+
+    def test_list_dispense_orders_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        dispense_order1 = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Dispense Order 1",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        dispense_order2 = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Dispense Order 2",
+            status=MedicationDispenseOrderStatusOptions.completed,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.generate_base_url(self.facility.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][1]["id"], str(dispense_order1.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][0]["id"], str(dispense_order2.external_id)
+        )
+
+    def test_list_dispense_orders_as_user_without_permission(self):
+        self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Dispense Order 1",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Dispense Order 2",
+            status=MedicationDispenseOrderStatusOptions.completed,
+            facility=self.facility,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.generate_base_url(self.facility.external_id),
+            {"location": self.location.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to read dispense order",
+            response.data["detail"],
+        )
+
+    def test_list_dispense_orders_as_user_with_location_read_permission(self):
+        dispense_order1 = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Dispense Order 1",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        dispense_order2 = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Dispense Order 2",
+            status=MedicationDispenseOrderStatusOptions.completed,
+            facility=self.facility,
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.generate_base_url(self.facility.external_id),
+            {"location": self.location.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        self.assertEqual(
+            response.data["results"][1]["id"], str(dispense_order1.external_id)
+        )
+        self.assertEqual(
+            response.data["results"][0]["id"], str(dispense_order2.external_id)
+        )
+
+    def test_list_dispense_orders_without_location(self):
+        self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Dispense Order 1",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Dispense Order 2",
+            status=MedicationDispenseOrderStatusOptions.completed,
+            facility=self.facility,
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.generate_base_url(self.facility.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Location is required for non-pharmacists",
+            response.data["errors"][0]["msg"],
+        )
+
+    def test_list_dispense_orders_with_status_filter(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Dispense Order 1",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        dispense_order2 = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Dispense Order 2",
+            status=MedicationDispenseOrderStatusOptions.completed,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.generate_base_url(self.facility.external_id),
+            data={"status": MedicationDispenseOrderStatusOptions.completed},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(dispense_order2.external_id)
+        )
+
+    def test_list_dispense_orders_with_patient_filter(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Dispense Order 1",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        other_patient = self.create_patient()
+        dispense_order2 = self.create_dispense_order(
+            location=self.location,
+            patient=other_patient,
+            name="Dispense Order 2",
+            status=MedicationDispenseOrderStatusOptions.completed,
+            facility=self.facility,
+        )
+        response = self.client.get(
+            self.generate_base_url(self.facility.external_id),
+            data={"patient": str(other_patient.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(dispense_order2.external_id)
+        )
