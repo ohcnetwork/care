@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import (
@@ -69,7 +69,7 @@ class DispenseOrderViewSet(
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
         if instance.location.facility != instance.facility:
-            raise PermissionDenied("Location must be in the same facility")
+            raise ValidationError("Location must be in the same facility")
         return super().perform_create(instance)
 
     def authorize_create(self, instance):
@@ -77,9 +77,7 @@ class DispenseOrderViewSet(
         if self.authorize_pharmacist(facility):
             return
         if self.authorize_location_write(
-            get_object_or_404(
-                FacilityLocation, external_id=instance.location, facility=facility
-            )
+            get_object_or_404(FacilityLocation, external_id=instance.location)
         ):
             return
         raise PermissionDenied("You do not have permission to create dispense order")
@@ -89,7 +87,7 @@ class DispenseOrderViewSet(
             return
         if self.authorize_location_write(model_instance.location):
             return
-        raise PermissionDenied("You do not have permission to create dispense order")
+        raise PermissionDenied("You do not have permission to update dispense order")
 
     def authorize_retrieve(self, model_instance):
         facility = self.get_facility_obj()
@@ -97,7 +95,7 @@ class DispenseOrderViewSet(
             return
         if self.authorize_location_read(model_instance.location):
             return
-        raise PermissionDenied("You do not have permission to create dispense order")
+        raise PermissionDenied("You do not have permission to read dispense order")
 
     def get_queryset(self):
         facility = self.get_facility_obj()
@@ -111,8 +109,11 @@ class DispenseOrderViewSet(
                     external_id=self.request.GET["location"],
                     facility=facility,
                 )
-                self.authorize_location_read(location)
+                if not self.authorize_location_read(location):
+                    raise PermissionDenied(
+                        "You do not have permission to read dispense order"
+                    )
                 queryset = queryset.filter(location=location)
             else:
-                raise PermissionDenied("Location is required for non-pharmacists")
+                raise ValidationError("Location is required for non-pharmacists")
         return queryset
