@@ -2,6 +2,7 @@ from django.db.models import Q
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from care.emr.models.tag_config import TagConfig
+from care.emr.resources.base import model_from_cache
 from care.emr.resources.tag.config_spec import TagConfigReadSpec
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
@@ -96,9 +97,9 @@ class SingleFacilityTagManager(BaseTagManager):
         tags = self.get_resource_tag(resource)
         rendered_tags = []
         for tag in tags:
-            tag_obj = TagConfig.objects.filter(id=tag).first()
-            if tag_obj:
-                rendered_tags.append(TagConfigReadSpec.serialize(tag_obj).to_json())
+            cached_tag = model_from_cache(TagConfigReadSpec, id=tag)
+            if cached_tag:
+                rendered_tags.append(cached_tag)
         return rendered_tags
 
 

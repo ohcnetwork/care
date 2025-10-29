@@ -10,6 +10,13 @@ PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 echo "🏥 Care Development Environment Setup"
 echo "======================================"
 
+# Check if running on NixOS
+if [[ -f /etc/NIXOS || -f /etc/nixos/configuration.nix ]]; then
+    echo "❌ This script is not intended to run on NixOS."
+    echo "   Please use the NixOS-specific configuration instead."
+    exit 1
+fi
+
 # Check if Nix is installed
 if ! command -v nix >/dev/null 2>&1; then
     echo "❌ Nix is not installed. Please install Nix first:"
@@ -74,7 +81,8 @@ nix develop --command bash -c "
     echo ''
     echo 'Available services:'
     echo '  - Django server: http://localhost:9000'
-    echo '  - MinIO console: http://localhost:9001 (admin/minioadmin)'
+    echo '  - MinIO console: http://localhost:9001 (minioadmin/minioadmin)'
+    echo '  - MinIO API: http://localhost:9100'
     echo '  - PostgreSQL: localhost:5432 (postgres/postgres)'
     echo '  - Redis: localhost:6379'
     echo ''
@@ -83,10 +91,19 @@ nix develop --command bash -c "
     echo '  - runserver        Start Django development server only'
     echo '  - celery           Start Celery worker and beat only'
     echo '  - manage <cmd>     Run Django management commands'
-    echo '  - test             Run tests'
-    echo '  - ruff-all         Check code style'
+    echo '  - test             Run tests with keepdb'
+    echo '  - test-no-keep     Run tests without keepdb'
+    echo '  - test-coverage    Run tests with coverage report'
+    echo '  - ruff             Check and fix staged files'
+    echo '  - ruff-all         Check all files'
+    echo '  - ruff-fix-all     Fix all files'
     echo '  - kill-care        🛑 Stop ALL development processes and services'
     echo '  - stop-services    Stop background services only'
+    echo '  - clean-data       🗑️  Remove all local service data'
+    echo '  - dump-db          Backup database'
+    echo '  - load-db          Restore database'
+    echo '  - reset-db         Reset database'
+    echo '  - healthcheck      Check application health'
     echo ''
 "
 
@@ -96,8 +113,11 @@ echo ""
 echo "To start developing:"
 echo "  nix develop"
 echo ""
+echo "📂 Project data is stored in .nix-data/ (git-ignored)"
+echo ""
 echo "If you encounter any issues:"
 echo "  - Check that all services are running: ps aux | grep -E 'postgres|redis|minio'"
 echo "  - Restart services: stop-services && start-services"
+echo "  - Clean all data for fresh start: clean-data"
 echo ""
 echo "Happy Developing! 🚀"
