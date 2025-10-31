@@ -7,6 +7,7 @@ from care.emr.models.scheduling.token import (
     TokenQueue,
     TokenSubQueue,
 )
+from care.emr.resources.scheduling.token.spec import TokenStatusOptions
 from care.security.permissions.token import TokenPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -50,11 +51,12 @@ class TokenAPITests(CareAPITestBase):
             },
         )
 
-    def generate_detail_url(self, facility, external_id):
+    def generate_detail_url(self, facility, token_queue, external_id):
         return reverse(
             "queue-detail",
             kwargs={
                 "facility_external_id": facility,
+                "token_queue_external_id": token_queue,
                 "external_id": external_id,
             },
         )
@@ -81,3 +83,134 @@ class TokenAPITests(CareAPITestBase):
 
     def create_subqueue(self, **kwargs):
         return baker.make(TokenSubQueue, **kwargs)
+
+    # Tests for Token Creation
+
+    def test_create_token_as_superuser(self):
+        """Test creating a token as a superuser."""
+        self.client.force_authenticate(user=self.superuser)
+        token_data = self.generate_token_data(
+            patient=self.patient.external_id,
+            category=self.token_category.external_id,
+        )
+        response = self.client.post(
+            self.token_url,
+            data=token_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(self.token_queue.external_id),
+                response.data["id"],
+            )
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["number"], 1)
+        self.assertEqual(
+            get_response.data["category"]["id"],
+            str(self.token_category.external_id),
+        )
+        self.assertEqual(
+            get_response.data["patient"]["id"], str(self.patient.external_id)
+        )
+        self.assertEqual(get_response.data["status"], TokenStatusOptions.CREATED.value)
+
+    def test_create_token_as_user_with_permission(self):
+        """Test creating a token as a user with permission."""
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        token_data = self.generate_token_data(
+            patient=self.patient.external_id,
+            category=self.token_category.external_id,
+        )
+        response = self.client.post(
+            self.token_url,
+            data=token_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(self.token_queue.external_id),
+                response.data["id"],
+            )
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["number"], 1)
+        self.assertEqual(
+            get_response.data["category"]["id"],
+            str(self.token_category.external_id),
+        )
+        self.assertEqual(
+            get_response.data["patient"]["id"], str(self.patient.external_id)
+        )
+        self.assertEqual(get_response.data["status"], TokenStatusOptions.CREATED.value)
+
+    def test_create_token_as_user_without_permission(self):
+        """Test creating a token as a user without permission."""
+        self.client.force_authenticate(user=self.user)
+        token_data = self.generate_token_data(
+            patient=self.patient.external_id,
+            category=self.token_category.external_id,
+        )
+        response = self.client.post(
+            self.token_url,
+            data=token_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to create token queue", response.data["detail"]
+        )
+
+    def test_create_token_with_different_facility_for_queue_and_category(self):
+        """Test creating a token with different facility for queue and category."""
+        another_facility = self.create_facility(user=self.superuser)
+        category = self.create_category(facility=another_facility, name="special")
+        self.client.force_authenticate(user=self.superuser)
+        token_data = self.generate_token_data(
+            patient=self.patient.external_id,
+            category=category.external_id,
+        )
+        response = self.client.post(
+            self.token_url,
+            data=token_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Category and Queue are not in the same facility",
+            response.data["errors"][0]["msg"],
+        )
+
+    def test_create_token_with_different_facility_for_subqueue_and_queue(self):
+        """Test creating a token with different facility for subqueue and queue."""
+        another_facility = self.create_facility(user=self.superuser)
+        subqueue = self.create_subqueue(
+            facility=another_facility,
+            resource=self.schedule_resource,
+            name="Sub Queue 1",
+        )
+        self.client.force_authenticate(user=self.superuser)
+        token_data = self.generate_token_data(
+            patient=self.patient.external_id,
+            category=self.token_category.external_id,
+            sub_queue=subqueue.external_id,
+        )
+        response = self.client.post(
+            self.token_url,
+            data=token_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Sub Queue and Queue are not in the same facility",
+            response.data["errors"][0]["msg"],
+        )
