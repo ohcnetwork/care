@@ -1,0 +1,106 @@
+import logging
+from typing import Any
+
+from care.emr.reports.renderer.generators.base import BaseOutputGenerator
+
+logger = logging.getLogger(__name__)
+
+
+class WeasyPrintGenerator(BaseOutputGenerator):
+    def __init__(self):
+        try:
+            from weasyprint import CSS, HTML
+
+            self.HTML = HTML
+            self.CSS = CSS
+        except ImportError as e:
+            msg = "WeasyPrint is not installed. Install it with: pip install weasyprint"
+            raise ImportError(msg) from e
+
+    def generate(self, html: str, options: dict[str, Any] | None = None) -> bytes:
+        options = options or {}
+        try:
+            html_obj = self.HTML(string=html)
+            stylesheets = []
+
+            if options.get("stylesheets"):
+                for css_string in options["stylesheets"]:
+                    stylesheets.append(self.CSS(string=css_string))
+            else:
+                stylesheets.append(self.CSS(string=self._get_default_css(options)))
+
+            return html_obj.write_pdf(stylesheets=stylesheets)
+        except Exception as e:
+            logger.error("WeasyPrint PDF generation failed: %s", e)
+            msg = f"Failed to generate PDF: {e!s}"
+            raise Exception(msg) from e
+
+    def _get_default_css(self, options: dict[str, Any]) -> str:
+        page_size = options.get("page_size", "A4")
+        margin = options.get("margin", "1cm")
+        orientation = options.get("orientation", "portrait")
+
+        return f"""
+        @page {{
+            size: {page_size} {orientation};
+            margin: {margin};
+        }}
+        body {{
+            font-family: 'DejaVu Sans', Arial, sans-serif;
+            font-size: 12pt;
+            line-height: 1.6;
+        }}
+        table {{
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1em 0;
+        }}
+        table, th, td {{
+            border: 1px solid #ddd;
+        }}
+        th, td {{
+            padding: 8px;
+            text-align: left;
+        }}
+        th {{
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }}
+        h1, h2, h3, h4, h5, h6 {{
+            margin-top: 0.5em;
+            margin-bottom: 0.5em;
+            page-break-after: avoid;
+        }}
+        p {{
+            margin: 0.5em 0;
+        }}
+        ul, ol {{
+            margin: 0.5em 0;
+            padding-left: 2em;
+        }}
+        """
+
+    def get_format(self) -> str:
+        return "pdf"
+
+    def get_supported_options(self) -> dict[str, Any]:
+        return {
+            "page_size": {
+                "type": "string",
+                "default": "A4",
+                "options": ["A4", "A3", "A5", "Letter", "Legal"],
+            },
+            "margin": {
+                "type": "string",
+                "default": "1cm",
+            },
+            "orientation": {
+                "type": "string",
+                "default": "portrait",
+                "options": ["portrait", "landscape"],
+            },
+            "stylesheets": {
+                "type": "array",
+                "default": [],
+            },
+        }

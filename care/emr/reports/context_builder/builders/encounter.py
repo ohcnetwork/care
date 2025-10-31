@@ -1,0 +1,116 @@
+from care.emr.models.encounter import Encounter
+from care.emr.reports.context_builder.base import Field, SingleObjectContextBuilder
+from care.emr.reports.context_builder.registry import contex_builder_registry
+from care.emr.reports.context_builder.utils import format_datetime
+
+STATUS_DISPLAY = {
+    "planned": "Planned",
+    "in_progress": "In Progress",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "entered_in_error": "Entered in Error",
+}
+
+
+class EncounterContextBuilder(SingleObjectContextBuilder):
+    model = Encounter
+
+    fields = [
+        Field(
+            key="status",
+            display="Encounter Status",
+            mapping=lambda e: STATUS_DISPLAY.get(
+                e.status, e.status.title() if e.status else ""
+            ),
+            preview_value="In Progress",
+            description="Current status of the encounter",
+        ),
+        Field(
+            key="encounter_class",
+            display="Encounter Type",
+            mapping=lambda e: e.encounter_class.replace("_", " ").title()
+            if e.encounter_class
+            else "",
+            preview_value="Inpatient",
+            description="Type of encounter (Outpatient/Inpatient/Emergency)",
+        ),
+        Field(
+            key="admission_date",
+            display="Admission Date & Time",
+            mapping=lambda e: format_datetime(e.period.get("start"))
+            if e.period and e.period.get("start")
+            else "",
+            preview_value="15/01/2024 10:30 AM",
+            description="Date and time of admission",
+        ),
+        Field(
+            key="discharge_date",
+            display="Discharge Date & Time",
+            mapping=lambda e: format_datetime(e.period.get("end"))
+            if e.period and e.period.get("end")
+            else "",
+            preview_value="20/01/2024 02:00 PM",
+            description="Date and time of discharge",
+        ),
+        Field(
+            key="facility_name",
+            display="Facility Name",
+            mapping=lambda e: e.facility.name if e.facility else "",
+            preview_value="City General Hospital",
+            description="Name of the healthcare facility",
+        ),
+        Field(
+            key="facility_address",
+            display="Facility Address",
+            mapping=lambda e: e.facility.address if e.facility else "",
+            preview_value="789, Hospital Road, Bangalore - 560001",
+            description="Address of the healthcare facility",
+        ),
+        Field(
+            key="priority",
+            display="Priority",
+            mapping=lambda e: e.priority.title() if e.priority else "",
+            preview_value="Routine",
+            description="Priority level of the encounter",
+        ),
+        Field(
+            key="external_identifier",
+            display="Visit/Admission Number",
+            mapping="external_identifier",
+            preview_value="ADM/2024/00123",
+            description="External identifier for the encounter",
+        ),
+        Field(
+            key="discharge_summary_advice",
+            display="Discharge Summary Advice",
+            mapping="discharge_summary_advice",
+            preview_value="Patient advised to continue medications and follow up after 1 week.",
+            description="Discharge advice and instructions",
+        ),
+    ]
+
+    @classmethod
+    def get_object(cls, ctx: dict):
+        """Get Encounter object from ctx"""
+        encounter_id = ctx.get("encounter_id")
+        if not encounter_id:
+            raise ValueError(
+                "encounter_id is required in context to fetch Encounter object"
+            )
+
+        try:
+            return Encounter.objects.get(external_id=encounter_id)
+        except Encounter.DoesNotExist as e:
+            msg = f"Encounter with id {encounter_id} not found"
+            raise ValueError(msg) from e
+
+    @classmethod
+    def get_display_name(cls):
+        return "Encounter Details"
+
+    @classmethod
+    def get_description(cls):
+        return "Encounter details"
+
+
+contex_builder_registry.register("encounter", EncounterContextBuilder)

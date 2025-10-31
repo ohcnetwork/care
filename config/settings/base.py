@@ -158,7 +158,7 @@ MIGRATION_MODULES = {"sites": "care.contrib.sites.migrations"}
 # AUTHENTICATION
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
-AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
+# AUTHENTICATION_BACKENDS = ["django.contrib.auth.backends.ModelBackend"]
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
 AUTH_USER_MODEL = "users.User"
@@ -376,10 +376,10 @@ REST_FRAMEWORK = {
         "config.authentication.CustomBasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ),
-    "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
-        "care.security.utils.permission_class.CareAuthentication",
-    ],
+    # "DEFAULT_PERMISSION_CLASSES": [
+    #     "rest_framework.permissions.IsAuthenticated",
+    #     "care.security.utils.permission_class.CareAuthentication",
+    # ],
     "DEFAULT_PAGINATION_CLASS": "care.utils.pagination.care_pagination.CareLimitOffsetPagination",
     "PAGE_SIZE": 14,
     "SEARCH_PARAM": "search_text",
