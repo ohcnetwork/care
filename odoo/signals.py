@@ -12,6 +12,9 @@ from care.emr.resources.invoice.spec import (
     InvoiceStatusOptions,
 )
 from care.emr.resources.organization.spec import OrganizationTypeChoices
+from care.emr.resources.payment_reconciliation.spec import (
+    PaymentReconciliationStatusOptions,
+)
 from care.emr.resources.resource_category.spec import (
     ResourceCategoryResourceTypeOptions,
 )
@@ -53,8 +56,9 @@ def sync_payment_to_odoo(sender, instance, created, **kwargs):
     """
     if created:
         with transaction.atomic():
-            odoo_payment = OdooPaymentResource()
-            odoo_payment.sync_payment_to_odoo_api(instance.external_id)
+            if instance.status == PaymentReconciliationStatusOptions.active.value:
+                odoo_payment = OdooPaymentResource()
+                odoo_payment.sync_payment_to_odoo_api(instance.external_id)
 
 
 @receiver(post_save, sender=ChargeItemDefinition)
