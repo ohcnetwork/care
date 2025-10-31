@@ -749,5 +749,3 @@ TOTP_DISABLED_EMAIL_TEMPLATE_PATH = env(
 
 # Cleanup incomplete file uploads, set to 0 to disable
 FILE_UPLOAD_EXPIRY_HOURS = env.int("FILE_UPLOAD_EXPIRY_HOURS", default=24)
-
-PATIENT_NAME_MAX_LENGTH = env.int("PATIENT_NAME_MAX_LENGTH", default=75)
