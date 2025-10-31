@@ -1,1 +1,1 @@
-from report_types import *  # noqa F403
+from .report_types import *  # noqa F403
