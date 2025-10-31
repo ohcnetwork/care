@@ -464,3 +464,82 @@ class TokenAPITests(CareAPITestBase):
             "Sub Queue already has a current token",
             response.data["errors"][0]["msg"],
         )
+
+    # Tests for Token Retrieval
+
+    def test_retrieve_token_as_superuser(self):
+        """Test retrieving a token as a superuser."""
+        self.client.force_authenticate(user=self.superuser)
+        token = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        response = self.client.get(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(self.token_queue.external_id),
+                str(token.external_id),
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["category"]["id"],
+            str(self.token_category.external_id),
+        )
+        self.assertEqual(response.data["patient"]["id"], str(self.patient.external_id))
+        self.assertEqual(response.data["status"], TokenStatusOptions.CREATED.value)
+
+    def test_retrieve_token_as_user_with_permission(self):
+        """Test retrieving a token as a user with permission."""
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        token = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        response = self.client.get(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(self.token_queue.external_id),
+                str(token.external_id),
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["category"]["id"],
+            str(self.token_category.external_id),
+        )
+        self.assertEqual(response.data["patient"]["id"], str(self.patient.external_id))
+        self.assertEqual(response.data["status"], TokenStatusOptions.CREATED.value)
+
+    def test_retrieve_token_as_user_without_permission(self):
+        """Test retrieving a token as a user without permission."""
+        self.client.force_authenticate(user=self.user)
+        token = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        response = self.client.get(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(self.token_queue.external_id),
+                str(token.external_id),
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to read token queue", response.data["detail"]
+        )
