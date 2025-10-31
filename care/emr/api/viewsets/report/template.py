@@ -1,5 +1,3 @@
-import logging
-
 from django.http import HttpResponse
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -25,8 +23,6 @@ from care.emr.resources.report.template.spec import (
     TemplateRetrieveSpec,
     TemplateUpdateSpec,
 )
-
-logger = logging.getLogger(__name__)
 
 
 class TemplateFilters(FilterSet):
@@ -54,21 +50,6 @@ class TemplateViewSet(EMRModelViewSet):
     filterset_class = TemplateFilters
     ordering_fields = ["created_date", "name", "template_type"]
 
-    def perform_create(self, instance):
-        instance.created_by = self.request.user
-        instance.updated_by = self.request.user
-        instance.save()
-        logger.info(
-            "Template created: %s by user %s", instance.slug, self.request.user.id
-        )
-
-    def perform_update(self, instance):
-        instance.updated_by = self.request.user
-        instance.save()
-        logger.info(
-            "Template updated: %s by user %s", instance.slug, self.request.user.id
-        )
-
     @extend_schema(
         description="Get the complete schema for report template building",
         responses={200: "Success"},
@@ -82,7 +63,6 @@ class TemplateViewSet(EMRModelViewSet):
             return Response(schema)
 
         except Exception as e:
-            logger.exception("Failed to generate schema: %s", e)
             return Response(
                 {"error": f"Failed to generate schema: {e!s}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -95,7 +75,7 @@ class TemplateViewSet(EMRModelViewSet):
         tags=["template"],
     )
     @action(detail=False, methods=["POST"])
-    def preview(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912, PLR0915
+    def preview(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912
         try:
             preview_request = PreviewTemplateRequest.model_validate(request.data)
         except Exception as e:
@@ -110,14 +90,11 @@ class TemplateViewSet(EMRModelViewSet):
         options = preview_request.options
 
         try:
-            # Build preview context from schema
             context_builder = ReportContextBuilder()
             schema = context_builder.get_full_schema()
 
-            # Build preview context based on context_config
             preview_context = {}
 
-            # Add single objects with preview values
             for obj_key in ["patient", "encounter"]:
                 if obj_key in context_config:
                     requested_fields = context_config[obj_key].get("fields", [])
@@ -130,15 +107,12 @@ class TemplateViewSet(EMRModelViewSet):
                                     "preview_value"
                                 ]
 
-            # Add querysets with preview values
             for qs_key, qs_data in schema.get("querysets", {}).items():
                 if qs_key in context_config:
                     requested_fields = context_config[qs_key].get("fields", [])
                     if requested_fields:
-                        # Get preview items (already a list of dicts)
                         preview_items = qs_data.get("preview_value", [])
 
-                        # Filter to only requested fields
                         filtered_items = []
                         for item in preview_items:
                             filtered_item = {
@@ -148,11 +122,6 @@ class TemplateViewSet(EMRModelViewSet):
 
                         preview_context[qs_key] = filtered_items
 
-            logger.info(
-                "Built preview context with keys: %s", list(preview_context.keys())
-            )
-
-            # Setup renderer
             template_engine = TemplateEngine()
 
             if output_format == "pdf":
@@ -169,7 +138,6 @@ class TemplateViewSet(EMRModelViewSet):
 
             renderer = Renderer(template_engine, generator)
 
-            # Validate template
             valid, error = renderer.validate_syntax(template_data)
             validation_result = {
                 "syntax_valid": valid,
@@ -186,22 +154,14 @@ class TemplateViewSet(EMRModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            # Try rendering with preview context
             try:
                 output_bytes = renderer.render(template_data, preview_context, options)
                 validation_result["render_valid"] = True
                 validation_result["render_error"] = None
 
-                logger.info(
-                    "Generated preview %s, size: %s bytes",
-                    output_format,
-                    len(output_bytes),
-                )
-
             except Exception as e:
                 validation_result["render_valid"] = False
                 validation_result["render_error"] = str(e)
-                logger.exception("Template rendering failed: %s", e)
                 return Response(
                     {
                         "error": f"Template rendering failed: {e!s}",
@@ -210,7 +170,6 @@ class TemplateViewSet(EMRModelViewSet):
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 
-            # Return based on format
             if output_format == "html":
                 return Response(
                     {
@@ -218,7 +177,6 @@ class TemplateViewSet(EMRModelViewSet):
                         "validation": validation_result,
                     }
                 )
-            # PDF
             response = HttpResponse(output_bytes, content_type="application/pdf")
             response["Content-Disposition"] = (
                 'attachment; filename="template_preview.pdf"'
@@ -226,7 +184,6 @@ class TemplateViewSet(EMRModelViewSet):
             return response
 
         except Exception as e:
-            logger.exception("Template preview failed: %s", e)
             return Response(
                 {"error": f"Template preview failed: {e!s}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,

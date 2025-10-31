@@ -176,5 +176,4 @@ class AllergyContextBuilder(QuerysetContextBuilder):
         return "Patient allergies and intolerances"
 
 
-# Register the builder
 contex_builder_registry.register("allergies", AllergyContextBuilder)

@@ -39,15 +39,12 @@ class QuerysetConfigSpec(BaseModel):
 class ContextConfigSpec(BaseModel):
     """
     Dynamic context config that supports any registered builder.
-    Uses __root__ to accept any dict structure, then validates against schema.
     """
 
     model_config = {"extra": "allow"}
 
-    # Accept any additional fields dynamically
     def __init__(self, **data: Any):
         super().__init__(**data)
-        # Store the raw data for validation
         self._raw_data = data
 
     @model_validator(mode="after")
@@ -56,15 +53,12 @@ class ContextConfigSpec(BaseModel):
         builder = ReportContextBuilder()
         schema = builder.get_full_schema()
 
-        # Get all configured keys from the raw data
         configured_keys = set(self._raw_data.keys())
 
-        # Get all valid keys from schema
         valid_single_keys = set(schema["single_objects"].keys())
         valid_queryset_keys = set(schema["querysets"].keys())
         all_valid_keys = valid_single_keys | valid_queryset_keys
 
-        # Check for invalid keys
         invalid_keys = configured_keys - all_valid_keys
         if invalid_keys:
             msg = (
@@ -73,20 +67,16 @@ class ContextConfigSpec(BaseModel):
             )
             raise ValueError(msg)
 
-        # Validate each configured builder
         for key in configured_keys:
             config_data = self._raw_data[key]
 
-            # Determine if it's a single object or queryset
             if key in valid_single_keys:
-                # Validate as FieldsConfigSpec
                 try:
                     config = FieldsConfigSpec.model_validate(config_data)
                 except Exception as e:
                     msg = f"Invalid config for '{key}': {e!s}"
                     raise ValueError(msg) from e
 
-                # Validate field names
                 valid_fields = {
                     field["key"] for field in schema["single_objects"][key]["fields"]
                 }
@@ -99,14 +89,12 @@ class ContextConfigSpec(BaseModel):
                         raise ValueError(msg)
 
             elif key in valid_queryset_keys:
-                # Validate as QuerysetConfigSpec
                 try:
                     config = QuerysetConfigSpec.model_validate(config_data)
                 except Exception as e:
                     msg = f"Invalid config for '{key}': {e!s}"
                     raise ValueError(msg) from e
 
-                # Validate field names
                 valid_fields = {
                     field["key"] for field in schema["querysets"][key]["fields"]
                 }
@@ -118,7 +106,6 @@ class ContextConfigSpec(BaseModel):
                         )
                         raise ValueError(msg)
 
-        # Ensure at least one builder is configured
         if not configured_keys:
             raise ValueError(
                 "context_config must include at least one model configuration"

@@ -89,5 +89,4 @@ class FileUploadContextBuilder(QuerysetContextBuilder):
         return "Documents and files uploaded for the encounter"
 
 
-# Register the builder
 contex_builder_registry.register("file_uploads", FileUploadContextBuilder)

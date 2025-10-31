@@ -27,14 +27,13 @@ class ReportUploadUpdateSpec(ReportUploadBaseSpec):
 
 
 class ReportUploadCreateSpec(ReportUploadBaseSpec):
-    template: str  # Template slug
+    template: str
     original_name: str
     report_type: str
     associating_id: str
     mime_type: str
 
     def perform_extra_deserialization(self, is_update, obj):
-        # Authz Performed in the request
         obj._just_created = True  # noqa SLF001
         obj.internal_name = self.original_name
         obj.meta["mime_type"] = self.mime_type
@@ -78,7 +77,6 @@ class ReportUploadCreateSpec(ReportUploadBaseSpec):
                 associating_model=config.associating_model,
                 associating_id=self.associating_id,
                 report_type_key=self.report_type,
-                validator_func=config.validator,
             )
         except (KeyError, ValueError) as e:
             raise ValueError(str(e)) from e
@@ -122,7 +120,6 @@ class ReportUploadRetrieveSpec(ReportUploadListSpec):
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
         if getattr(obj, "_just_created", False):
-            # Calculate Write URL and return it
             mapping["signed_url"] = obj.files_manager.signed_url(obj)
         else:
             mapping["read_signed_url"] = obj.files_manager.read_signed_url(obj)

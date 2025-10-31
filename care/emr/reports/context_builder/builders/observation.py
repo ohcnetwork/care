@@ -165,5 +165,4 @@ class ObservationContextBuilder(QuerysetContextBuilder):
         return "Clinical observations and vital signs"
 
 
-# Register the builder
 contex_builder_registry.register("observations", ObservationContextBuilder)

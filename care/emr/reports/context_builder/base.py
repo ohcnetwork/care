@@ -96,20 +96,13 @@ class BaseContextBuilder(ABC):
 
 class SingleObjectContextBuilder(BaseContextBuilder):
     """
-    Base class for single object builders (Patient, Encounter, etc.).
+    Base class for single object builders (Patient, Encounter, etc.)
     """
 
     @classmethod
     def get_context(cls, ctx: dict, requested_fields: list[str] | None = None) -> dict:
         """
-        Build context from ctx dictionary.
-
-        Args:
-            ctx: Context dictionary containing available data
-            requested_fields: List of field keys to include (if None, include all)
-
-        Returns:
-            Dictionary with field_key: value pairs
+        Build context from ctx dictionary
         """
         obj = cls.get_object(ctx)
         return cls._build_context_from_object(obj, requested_fields)
@@ -118,40 +111,21 @@ class SingleObjectContextBuilder(BaseContextBuilder):
     @abstractmethod
     def get_object(cls, ctx: dict):
         """
-        Get the model instance from ctx.
-
-        Args:
-            ctx: Context dictionary containing available data
-
-        Returns:
-            Model instance
-
-        Raises:
-            ValueError: If required data is not available in ctx
+        Get the model instance from ctx
         """
 
 
 class QuerysetContextBuilder(BaseContextBuilder):
     """
     Base class for builders that work with querysets (lists).
-    These are used for diagnoses, symptoms, medications, etc.
-
-    The ctx dict should contain either 'encounter' or 'encounter_id'.
     """
 
-    # Use this to apply default filters to the queryset
     base_filters: dict = {}
 
     @classmethod
     def get_queryset(cls, ctx: dict):
         """
         Get queryset based on context.
-
-        Args:
-            ctx: Context dictionary containing 'encounter', 'encounter_id', 'patient', or 'patient_id'
-
-        Returns:
-            QuerySet of related objects
         """
         raise NotImplementedError("Subclasses must implement get_queryset method")
 
@@ -165,15 +139,6 @@ class QuerysetContextBuilder(BaseContextBuilder):
     ):
         """
         Build context for a list of objects.
-
-        Args:
-            ctx: Context dictionary containing 'encounter' or 'encounter_id'
-            filters: Additional Django ORM filters to apply
-            limit: Maximum number of items to return
-            requested_fields: Fields to include for each item
-
-        Returns:
-            List of context dictionaries
         """
         queryset = cls.get_queryset(ctx)
 

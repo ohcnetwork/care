@@ -1,5 +1,3 @@
-import logging
-
 from django.utils import timezone
 from django_filters import BooleanFilter, CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -13,10 +11,7 @@ from rest_framework.response import Response
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models.report.report_upload import ReportUpload
 from care.emr.models.report.template import Template
-from care.emr.reports import (
-    report_types,  # noqa: F401 - Trigger registration
-    report_utils,
-)
+from care.emr.reports import report_utils
 from care.emr.reports.report_type_registry import ReportTypeRegistry
 from care.emr.reports.report_type_utils import validate_associating_id
 from care.emr.resources.report.report_upload.spec import (
@@ -28,9 +23,7 @@ from care.emr.resources.report.report_upload.spec import (
 from care.emr.tasks.report_generation import generate_report_task
 from care.utils.shortcuts import get_object_or_404
 
-logger = logging.getLogger(__name__)
-
-LOCK_DURATION = 2 * 60  # 2 minutes
+LOCK_DURATION = 2 * 60
 
 
 class ReportUploadFilters(FilterSet):
@@ -67,10 +60,8 @@ class GenerateReportRequest(BaseModel):
     def validate_report_type_and_associating_id(self):
         """Validate that associating_id matches the expected model for report_type"""
         try:
-            # Get the report type config
             config = ReportTypeRegistry.get(self.report_type)
 
-            # Validate associating_id using util function
             validate_associating_id(
                 associating_model=config.associating_model,
                 associating_id=str(self.associating_id),
@@ -114,7 +105,6 @@ class ReportUploadViewSet(EMRModelViewSet):
             schema = ReportTypeRegistry.get_schema()
             return Response(schema)
         except Exception as e:
-            logger.exception("Failed to get report types schema: %s", e)
             return Response(
                 {"error": f"Failed to get report types: {e!s}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -128,22 +118,9 @@ class ReportUploadViewSet(EMRModelViewSet):
     )
     @action(detail=False, methods=["POST"])
     def generate(self, request, *args, **kwargs):
-        logger.info(
-            "Report generation request received - user: %s, data_keys: %s",
-            request.user.id,
-            list(request.data.keys()),
-        )
-
         try:
             generate_request = GenerateReportRequest.model_validate(request.data)
-            logger.debug(
-                "Request validated - template_id: %s, report_type: %s, associating_id: %s",
-                generate_request.template_id,
-                generate_request.report_type,
-                generate_request.associating_id,
-            )
         except Exception as e:
-            logger.warning("Invalid request data validation failed: %s", e)
             return Response(
                 {"error": f"Invalid request data: {e!s}"},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -162,31 +139,14 @@ class ReportUploadViewSet(EMRModelViewSet):
         )
         output_format = generate_request.output_format.lower()
 
-        logger.debug("Fetching template with external_id: %s", template_id)
         template = get_object_or_404(Template, external_id=template_id)
-        logger.info("Template found: %s (status: %s)", template.name, template.status)
 
         context_config = generate_request.context_config
         if context_config is None:
             context_config = template.context_config
-            logger.debug(
-                "Using template context_config with keys: %s",
-                list(context_config.keys()) if context_config else [],
-            )
-        else:
-            logger.debug(
-                "Using provided context_config with keys: %s",
-                list(context_config.keys()),
-            )
 
         lock_key = f"{report_type}_report_{associating_id}"
-        logger.debug("Checking lock status for key: %s", lock_key)
         if current_progress := report_utils.get_progress(lock_key):
-            logger.warning(
-                "Report generation already in progress - lock_key: %s, progress: %s%%",
-                lock_key,
-                current_progress,
-            )
             return Response(
                 {
                     "detail": (
@@ -197,18 +157,7 @@ class ReportUploadViewSet(EMRModelViewSet):
                 status=status.HTTP_409_CONFLICT,
             )
 
-        logger.info(
-            "Queueing report generation task - report_type: %s, "
-            "associating_id: %s, template: %s, output_format: %s, patient_id: %s, encounter_id: %s",
-            report_type,
-            associating_id,
-            template.name,
-            output_format,
-            patient_id,
-            encounter_id,
-        )
-
-        task = generate_report_task.delay(
+        generate_report_task.delay(
             template_id=template_id,
             report_type=report_type,
             associating_id=associating_id,
@@ -217,13 +166,6 @@ class ReportUploadViewSet(EMRModelViewSet):
             context_config=context_config,
             output_format=output_format,
             options=generate_request.options,
-        )
-
-        logger.info(
-            "Report generation task queued successfully - task_id: %s, report_type: %s, associating_id: %s",
-            task.id,
-            report_type,
-            associating_id,
         )
 
         return Response(
@@ -248,18 +190,12 @@ class ReportUploadViewSet(EMRModelViewSet):
 
         archive_reason = request.data.get("archive_reason", "")
 
-        # Archive the report
         instance.is_archived = True
         instance.archive_reason = archive_reason
         instance.archived_by = request.user
         instance.archived_datetime = timezone.now()
         instance.save()
 
-        logger.info(
-            "Report archived: %s by user %s", instance.internal_name, request.user.id
-        )
-
-        # Return updated object
         data = self.pydantic_retrieve_model.serialize(instance, request.user).to_json()
         return Response(data)
 
@@ -281,18 +217,12 @@ class ReportUploadViewSet(EMRModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        # Unarchive the report
         instance.is_archived = False
         instance.archive_reason = ""
         instance.archived_by = None
         instance.archived_datetime = None
         instance.save()
 
-        logger.info(
-            "Report unarchived: %s by user %s", instance.internal_name, request.user.id
-        )
-
-        # Return updated object
         data = self.pydantic_retrieve_model.serialize(instance, request.user).to_json()
         return Response(data)
 
@@ -304,9 +234,7 @@ class ReportUploadViewSet(EMRModelViewSet):
     @action(detail=True, methods=["GET"])
     def download(self, request, *args, **kwargs):
         """
-        Get download URL for the report.
-
-        Returns a signed URL that expires after a certain time.
+        Returns a signed URL
         """
         instance = self.get_object()
 
@@ -317,7 +245,6 @@ class ReportUploadViewSet(EMRModelViewSet):
             )
 
         try:
-            # Generate signed URL
             signed_url = instance.files_manager.read_signed_url(instance)
 
             return Response(
@@ -328,8 +255,7 @@ class ReportUploadViewSet(EMRModelViewSet):
                 }
             )
 
-        except Exception as e:
-            logger.exception("Failed to generate download URL: %s", e)
+        except Exception:
             return Response(
                 {"error": "Failed to generate download URL"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,

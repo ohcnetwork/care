@@ -193,5 +193,4 @@ class MedicationContextBuilder(QuerysetContextBuilder):
         return "Prescribed medications"
 
 
-# Register the builder
 contex_builder_registry.register("medications", MedicationContextBuilder)

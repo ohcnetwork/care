@@ -16,8 +16,7 @@ class ContextBuilderRegistry:
 
     def register(self, key: str, builder_class: type[BaseContextBuilder]):
         """
-        Register a context builder. Automatically detects if it's a single object
-        or queryset builder by checking if it's a subclass of QuerysetContextBuilder.
+        Register a context builder
         """
         if not issubclass(builder_class, BaseContextBuilder):
             raise TypeError("Builder must be a subclass of BaseContextBuilder")
@@ -38,7 +37,7 @@ class ContextBuilderRegistry:
             )
 
     def get_single_builders(self) -> dict[str, type[BaseContextBuilder]]:
-        """Get all registered single object builders."""
+        """Get all registered single object builders"""
         return self._single_builders.copy()
 
     def get_queryset_builders(self) -> dict[str, type[BaseContextBuilder]]:
@@ -47,16 +46,7 @@ class ContextBuilderRegistry:
 
     def get_single_builder(self, key: str) -> type[BaseContextBuilder]:
         """
-        Get a specific single builder by key.
-
-        Args:
-            key: The builder key
-
-        Returns:
-            The builder class
-
-        Raises:
-            KeyError: If builder not found
+        Get a specific single builder by key
         """
         if key not in self._single_builders:
             msg = f"Single builder '{key}' not found in contex_builder_registry"
@@ -66,15 +56,6 @@ class ContextBuilderRegistry:
     def get_queryset_builder(self, key: str) -> type[BaseContextBuilder]:
         """
         Get a specific queryset builder by key.
-
-        Args:
-            key: The builder key
-
-        Returns:
-            The builder class
-
-        Raises:
-            KeyError: If builder not found
         """
         if key not in self._queryset_builders:
             msg = f"Queryset builder '{key}' not found in contex_builder_registry"
@@ -82,14 +63,14 @@ class ContextBuilderRegistry:
         return self._queryset_builders[key]
 
     def unregister(self, key: str):
-        """Unregister a builder (mainly for testing)."""
+        """Unregister a builder"""
         if key in self._single_builders:
             del self._single_builders[key]
         if key in self._queryset_builders:
             del self._queryset_builders[key]
 
     def clear(self):
-        """Clear all registrations (mainly for testing)."""
+        """Clear all registrations"""
         self._single_builders.clear()
         self._queryset_builders.clear()
 

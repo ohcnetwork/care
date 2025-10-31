@@ -1,5 +1,3 @@
-from collections.abc import Callable
-
 from django.db import models
 
 
@@ -9,13 +7,11 @@ class ReportTypeConfig:
         key: str,
         display_name: str,
         associating_model: type[models.Model],
-        validator: Callable[[str], models.Model] | None = None,
         description: str = "",
     ):
         self.key = key
         self.display_name = display_name
         self.associating_model = associating_model
-        self.validator = validator
         self.description = description
 
 
@@ -28,7 +24,6 @@ class ReportTypeRegistry:
         key: str,
         display_name: str,
         associating_model: type[models.Model],
-        validator: Callable[[str], models.Model] | None = None,
         description: str = "",
     ) -> None:
         if key in cls._registry:
@@ -39,7 +34,6 @@ class ReportTypeRegistry:
             key=key,
             display_name=display_name,
             associating_model=associating_model,
-            validator=validator,
             description=description,
         )
         cls._registry[key] = config

@@ -19,17 +19,11 @@ class TemplateStatusOptions(str, Enum):
 
 class TemplateTypeOptions(str, Enum):
     discharge_summary = "discharge_summary"
-    bill = "bill"
-    prescription = "prescription"
-    lab_report = "lab_report"
-    consent_form = "consent_form"
-    medical_certificate = "medical_certificate"
 
 
 class TemplateFormatOptions(str, Enum):
     pdf = "pdf"
     html = "html"
-    docx = "docx"
 
 
 class TemplateBaseSpec(EMRResource):
@@ -61,10 +55,8 @@ class TemplateBaseSpec(EMRResource):
     def validate_context_config(cls, v):
         """Validate context_config structure and field names"""
         if not v:
-            # Empty context_config is allowed
             return v
 
-        # Validate using ContextConfigSpec
         try:
             ContextConfigSpec.model_validate(v)
         except Exception as e:
