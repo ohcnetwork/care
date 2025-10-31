@@ -210,8 +210,8 @@ class OdooInvoiceResource(OdooBaseResource):
                 product_data = ProductData(
                     product_name=charge_item.charge_item_definition.title,
                     x_care_id=str(charge_item.charge_item_definition.external_id),
-                    mrp=str(base_price),
-                    cost=str(purchase_price or base_price),
+                    mrp=float(base_price or "0"),
+                    cost=float(purchase_price or base_price or "0"),
                     category=CategoryData(
                         category_name=charge_item.charge_item_definition.category.title,
                         parent_x_care_id=str(

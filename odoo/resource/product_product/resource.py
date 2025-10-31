@@ -3,7 +3,7 @@ from care.emr.resources.common.monetary_component import MonetaryComponentType
 from odoo.connector.connector import OdooConnector
 from odoo.resource.base import OdooBaseResource
 from odoo.resource.product_category.spec import CategoryData
-from odoo.resource.product_product.spec import ProductData
+from odoo.resource.product_product.spec import ProductData, TaxData, TaxType
 
 
 class OdooProductProductResource(OdooBaseResource):
@@ -35,6 +35,13 @@ class OdooProductProductResource(OdooBaseResource):
                 return item["amount"]
         return None
 
+    def get_taxes(self, charge_item: ChargeItemDefinition):
+        taxes = []
+        for item in charge_item.price_components:
+            if item["monetary_component_type"] == MonetaryComponentType.tax.value:
+                taxes.append(item)
+        return taxes
+
     def sync_product_to_odoo_api(self, charge_item_definition) -> int | None:
         """
         Synchronize a charge item definition to Odoo as a product.
@@ -49,11 +56,20 @@ class OdooProductProductResource(OdooBaseResource):
         mrp = self.get_charge_item_mrp(charge_item_definition)
         purchase_price = self.get_charge_item_purchase_price(charge_item_definition)
 
+        taxes = []
+        for tax in self.get_taxes(charge_item_definition):
+            taxes.append(
+                TaxData(
+                    tax_type=TaxType.sale_tax,
+                    tax_name=tax["code"]["display"],
+                    tax_percentage=float(tax["factor"]),
+                )
+            )
         data = ProductData(
             product_name=f"CARE: {charge_item_definition.title}",
             x_care_id=str(charge_item_definition.external_id),
-            mrp=str(base_price),
-            cost=str(purchase_price or mrp or ""),
+            mrp=float(base_price or "0"),
+            cost=float(purchase_price or mrp or "0"),
             category=CategoryData(
                 category_name=charge_item_definition.category.title,
                 parent_x_care_id=str(charge_item_definition.category.parent.external_id)
@@ -61,6 +77,7 @@ class OdooProductProductResource(OdooBaseResource):
                 else "",
                 x_care_id=str(charge_item_definition.category.external_id),
             ),
+            taxes=taxes,
         ).model_dump()
 
         response = OdooConnector.call_api("api/add/product", data)

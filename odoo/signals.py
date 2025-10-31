@@ -4,12 +4,14 @@ from django.dispatch import receiver
 
 from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.invoice import Invoice
+from care.emr.models.organization import Organization
 from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.models.resource_category import ResourceCategory
 from care.emr.resources.invoice.spec import (
     INVOICE_CANCELLED_STATUS,
     InvoiceStatusOptions,
 )
+from care.emr.resources.organization.spec import OrganizationTypeChoices
 from care.emr.resources.resource_category.spec import (
     ResourceCategoryResourceTypeOptions,
 )
@@ -18,6 +20,7 @@ from odoo.resource.category import OdooCategoryResource
 from odoo.resource.invoice import OdooInvoiceResource
 from odoo.resource.payment import OdooPaymentResource
 from odoo.resource.product_product.resource import OdooProductProductResource
+from odoo.resource.res_partner.resource import OdooPartnerResource
 from odoo.resource.res_user.resource import OdooUserResource
 
 
@@ -76,3 +79,14 @@ def sync_resource_category_to_odoo(sender, instance, created, **kwargs):
         ):
             odoo_category = OdooCategoryResource()
             odoo_category.sync_category_to_odoo_api(instance)
+
+
+@receiver(post_save, sender=Organization)
+def sync_organization_to_odoo(sender, instance, created, **kwargs):
+    """
+    Signal handler to sync organization to Odoo as a partner when org_type is product_supplier.
+    """
+    if instance.org_type == OrganizationTypeChoices.product_supplier.value:
+        with transaction.atomic():
+            odoo_partner = OdooPartnerResource()
+            odoo_partner.sync_partner_to_odoo_api(instance)
