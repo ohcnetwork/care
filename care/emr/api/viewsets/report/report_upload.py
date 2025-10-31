@@ -104,9 +104,9 @@ class ReportUploadViewSet(EMRModelViewSet):
         try:
             schema = ReportTypeRegistry.get_schema()
             return Response(schema)
-        except Exception as e:
+        except Exception:
             return Response(
-                {"error": f"Failed to get report types: {e!s}"},
+                {"error": "Internal server error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -120,9 +120,9 @@ class ReportUploadViewSet(EMRModelViewSet):
     def generate(self, request, *args, **kwargs):
         try:
             generate_request = GenerateReportRequest.model_validate(request.data)
-        except Exception as e:
+        except Exception:
             return Response(
-                {"error": f"Invalid request data: {e!s}"},
+                {"error": "Internal Server Error"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

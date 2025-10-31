@@ -62,9 +62,9 @@ class TemplateViewSet(EMRModelViewSet):
             schema = builder.get_full_schema()
             return Response(schema)
 
-        except Exception as e:
+        except Exception:
             return Response(
-                {"error": f"Failed to generate schema: {e!s}"},
+                {"error": "Internal Server Error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -78,9 +78,9 @@ class TemplateViewSet(EMRModelViewSet):
     def preview(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912
         try:
             preview_request = PreviewTemplateRequest.model_validate(request.data)
-        except Exception as e:
+        except Exception:
             return Response(
-                {"error": f"Invalid request data: {e!s}"},
+                {"error": "Internal Server Error"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -164,7 +164,7 @@ class TemplateViewSet(EMRModelViewSet):
                 validation_result["render_error"] = str(e)
                 return Response(
                     {
-                        "error": f"Template rendering failed: {e!s}",
+                        "error": "Internal Server Error",
                         "validation": validation_result,
                     },
                     status=status.HTTP_400_BAD_REQUEST,
@@ -183,8 +183,8 @@ class TemplateViewSet(EMRModelViewSet):
             )
             return response
 
-        except Exception as e:
+        except Exception:
             return Response(
-                {"error": f"Template preview failed: {e!s}"},
+                {"error": "Internal Server Error"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
