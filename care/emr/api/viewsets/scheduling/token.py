@@ -107,6 +107,12 @@ class TokenViewSet(EMRModelViewSet):
                 if obj.sub_queue.current_token == obj:
                     obj.sub_queue.current_token = None
                     obj.sub_queue.save(update_fields=["current_token"])
+            elif (
+                instance.sub_queue and instance.sub_queue.resource != obj.queue.resource
+            ):
+                raise ValidationError(
+                    "Sub Queue and Queue are not in the same resource"
+                )
             super().perform_update(instance)
 
     def perform_destroy(self, instance):
@@ -122,13 +128,19 @@ class TokenViewSet(EMRModelViewSet):
             resource,
             self.request.user,
         ):
-            raise PermissionDenied("You do not have permission to create token queue")
+            raise PermissionDenied("You do not have permission to create token")
 
     def authorize_update(self, request_obj, model_instance):
-        self.authorize_create(model_instance)
+        resource = model_instance.queue.resource
+        if not AuthorizationController.call(
+            "can_write_token",
+            resource,
+            self.request.user,
+        ):
+            raise PermissionDenied("You do not have permission to update token")
 
     def authorize_destroy(self, instance):
-        self.authorize_destroy(instance)
+        self.authorize_update({}, instance)
 
     def authorize_retrieve(self, model_instance):
         _, queue = self.get_queue_obj()
@@ -138,7 +150,7 @@ class TokenViewSet(EMRModelViewSet):
             resource,
             self.request.user,
         ):
-            raise PermissionDenied("You do not have permission to create token queue")
+            raise PermissionDenied("You do not have permission to read token")
 
     def get_queryset(self):
         _, queue = self.get_queue_obj()
@@ -154,9 +166,7 @@ class TokenViewSet(EMRModelViewSet):
                 queue.resource,
                 self.request.user,
             ):
-                raise PermissionDenied(
-                    "You do not have permission to create token queue"
-                )
+                raise PermissionDenied("You do not have permission to list token")
             queryset = queryset.filter(queue=queue)
         return queryset
 
