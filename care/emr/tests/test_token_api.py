@@ -1,4 +1,7 @@
+from datetime import timedelta
+
 from django.urls import reverse
+from django.utils import timezone
 from model_bakery import baker
 
 from care.emr.models.scheduling.token import (
@@ -25,7 +28,9 @@ class TokenAPITests(CareAPITestBase):
             facility=self.facility, user=self.user
         )
         self.token_queue = self.create_queue(
-            facility=self.facility, resource=self.schedule_resource
+            facility=self.facility,
+            resource=self.schedule_resource,
+            date=timezone.now().date(),
         )
         self.token_category = self.create_category(
             facility=self.facility, name="general"
@@ -167,7 +172,7 @@ class TokenAPITests(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn(
-            "You do not have permission to create token queue", response.data["detail"]
+            "You do not have permission to create token", response.data["detail"]
         )
 
     def test_create_token_with_different_facility_for_queue_and_category(self):
@@ -314,7 +319,7 @@ class TokenAPITests(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn(
-            "You do not have permission to update token queue",
+            "You do not have permission to update token",
             response.data["detail"],
         )
 
@@ -541,5 +546,198 @@ class TokenAPITests(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn(
-            "You do not have permission to read token queue", response.data["detail"]
+            "You do not have permission to read token", response.data["detail"]
         )
+
+    # Tests for Token Listing
+
+    def test_list_tokens_as_superuser(self):
+        """Test listing tokens as a superuser."""
+        self.client.force_authenticate(user=self.superuser)
+        token1 = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        token2 = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.IN_PROGRESS,
+        )
+        response = self.client.get(self.token_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 2)
+        external_ids = [result["id"] for result in response.data["results"]]
+        self.assertIn(str(token1.external_id), external_ids)
+        self.assertIn(str(token2.external_id), external_ids)
+
+    def test_list_tokens_as_user_with_permission(self):
+        """Test listing tokens as a user with permission."""
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        token1 = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        token2 = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.IN_PROGRESS,
+        )
+        response = self.client.get(self.token_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 2)
+        external_ids = [result["id"] for result in response.data["results"]]
+        self.assertIn(str(token1.external_id), external_ids)
+        self.assertIn(str(token2.external_id), external_ids)
+
+    def test_list_tokens_as_user_without_permission(self):
+        """Test listing tokens as a user without permission."""
+        self.client.force_authenticate(user=self.user)
+        self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.IN_PROGRESS,
+        )
+        response = self.client.get(self.token_url)
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to list token", response.data["detail"]
+        )
+
+    def test_list_tokens_with_status_filter(self):
+        """Test listing tokens with status filter."""
+        self.client.force_authenticate(user=self.superuser)
+        self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        token2 = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.IN_PROGRESS,
+        )
+        response = self.client.get(f"{self.token_url}?status=IN_PROGRESS")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["id"], str(token2.external_id))
+
+    def test_list_tokens_with_subqueue_filter(self):
+        """Test listing tokens with subqueue filter."""
+        self.client.force_authenticate(user=self.superuser)
+        subqueue1 = self.create_subqueue(
+            facility=self.facility,
+            resource=self.schedule_resource,
+            name="Sub Queue 1",
+        )
+        subqueue2 = self.create_subqueue(
+            facility=self.facility,
+            resource=self.schedule_resource,
+            name="Sub Queue 2",
+        )
+        self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+            sub_queue=subqueue1,
+        )
+        token2 = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.IN_PROGRESS,
+            sub_queue=subqueue2,
+        )
+        response = self.client.get(
+            f"{self.token_url}?sub_queue={subqueue2.external_id!s}"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["id"], str(token2.external_id))
+
+    def test_list_tokens_with_subqueue_isnull_filter(self):
+        """Test listing tokens with subqueue isnull filter."""
+        self.client.force_authenticate(user=self.superuser)
+        subqueue1 = self.create_subqueue(
+            facility=self.facility,
+            resource=self.schedule_resource,
+            name="Sub Queue 1",
+        )
+        self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+            sub_queue=subqueue1,
+        )
+        token2 = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.IN_PROGRESS,
+        )
+        response = self.client.get(f"{self.token_url}?sub_queue_is_null=true")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["id"], str(token2.external_id))
+
+    def test_list_tokens_with_date_filter(self):
+        """Test listing tokens with date filter."""
+        self.client.force_authenticate(user=self.superuser)
+        today = timezone.now().date()
+        yesterday = today - timedelta(days=1)
+        token_queue = self.create_queue(
+            facility=self.facility,
+            resource=self.schedule_resource,
+            date=yesterday,
+        )
+        self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        token2 = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.IN_PROGRESS,
+        )
+        response = self.client.get(f"{self.token_url}?date={today.isoformat()}")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(response.data["results"][0]["id"], str(token2.external_id))
