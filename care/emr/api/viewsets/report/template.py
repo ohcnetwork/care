@@ -55,16 +55,16 @@ class TemplateViewSet(EMRModelViewSet):
         responses={200: "Success"},
         tags=["template"],
     )
-    @action(detail=False, methods=["GET"])
-    def schema(self, request, *args, **kwargs):
+    @action(detail=False, methods=["GET"], url_path="schema")
+    def get_schema(self, request, *args, **kwargs):
         try:
             builder = ReportContextBuilder()
             schema = builder.get_full_schema()
             return Response(schema)
 
-        except Exception:
+        except Exception as e:
             return Response(
-                {"error": "Internal Server Error"},
+                {"error": f"Failed to generate schema: {e!s}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -78,9 +78,9 @@ class TemplateViewSet(EMRModelViewSet):
     def preview(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912
         try:
             preview_request = PreviewTemplateRequest.model_validate(request.data)
-        except Exception:
+        except Exception as e:
             return Response(
-                {"error": "Internal Server Error"},
+                {"error": f"Invalid request data: {e!s}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -164,7 +164,7 @@ class TemplateViewSet(EMRModelViewSet):
                 validation_result["render_error"] = str(e)
                 return Response(
                     {
-                        "error": "Internal Server Error",
+                        "error": f"Template rendering failed: {e!s}",
                         "validation": validation_result,
                     },
                     status=status.HTTP_400_BAD_REQUEST,
@@ -183,8 +183,8 @@ class TemplateViewSet(EMRModelViewSet):
             )
             return response
 
-        except Exception:
+        except Exception as e:
             return Response(
-                {"error": "Internal Server Error"},
+                {"error": f"Preview generation failed: {e!s}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

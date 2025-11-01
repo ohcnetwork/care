@@ -1,5 +1,3 @@
-from typing import Any
-
 from pydantic import BaseModel, field_validator, model_validator
 
 from care.emr.reports.context_builder.report_builder import ReportContextBuilder
@@ -43,17 +41,14 @@ class ContextConfigSpec(BaseModel):
 
     model_config = {"extra": "allow"}
 
-    def __init__(self, **data: Any):
-        super().__init__(**data)
-        self._raw_data = data
-
     @model_validator(mode="after")
     def validate_against_schema(self):
         """Validate all configured builders against the dynamic schema"""
         builder = ReportContextBuilder()
         schema = builder.get_full_schema()
 
-        configured_keys = set(self._raw_data.keys())
+        raw_data = self.model_dump()
+        configured_keys = set(raw_data.keys())
 
         valid_single_keys = set(schema["single_objects"].keys())
         valid_queryset_keys = set(schema["querysets"].keys())
@@ -68,7 +63,7 @@ class ContextConfigSpec(BaseModel):
             raise ValueError(msg)
 
         for key in configured_keys:
-            config_data = self._raw_data[key]
+            config_data = raw_data[key]
 
             if key in valid_single_keys:
                 try:

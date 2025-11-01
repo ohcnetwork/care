@@ -33,6 +33,11 @@ class ReportUpload(EMRBaseModel):
 
     files_manager = S3FilesManager(BucketType.REPORT)
 
+    @property
+    def file_type(self):
+        """Alias for report_type to maintain compatibility with S3FilesManager"""
+        return self.report_type
+
     def get_extension(self):
         extensions = parse_file_extension(self.internal_name)
         return f".{".".join(extensions)}" if extensions else ""

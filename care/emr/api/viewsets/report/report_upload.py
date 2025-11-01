@@ -21,7 +21,6 @@ from care.emr.resources.report.report_upload.spec import (
     ReportUploadUpdateSpec,
 )
 from care.emr.tasks.report_generation import generate_report_task
-from care.utils.shortcuts import get_object_or_404
 
 LOCK_DURATION = 2 * 60
 
@@ -66,7 +65,6 @@ class GenerateReportRequest(BaseModel):
                 associating_model=config.associating_model,
                 associating_id=str(self.associating_id),
                 report_type_key=self.report_type,
-                validator_func=config.validator,
             )
         except KeyError as e:
             raise ValueError(str(e)) from e
@@ -104,9 +102,9 @@ class ReportUploadViewSet(EMRModelViewSet):
         try:
             schema = ReportTypeRegistry.get_schema()
             return Response(schema)
-        except Exception:
+        except Exception as e:
             return Response(
-                {"error": "Internal server error"},
+                {"error": f"Failed to get report types: {e!s}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -117,12 +115,12 @@ class ReportUploadViewSet(EMRModelViewSet):
         tags=["report"],
     )
     @action(detail=False, methods=["POST"])
-    def generate(self, request, *args, **kwargs):
+    def generate(self, request, *args, **kwargs):  # noqa: PLR0911
         try:
             generate_request = GenerateReportRequest.model_validate(request.data)
-        except Exception:
+        except Exception as e:
             return Response(
-                {"error": "Internal Server Error"},
+                {"error": f"Invalid request data: {e!s}"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -139,11 +137,36 @@ class ReportUploadViewSet(EMRModelViewSet):
         )
         output_format = generate_request.output_format.lower()
 
-        template = get_object_or_404(Template, external_id=template_id)
+        # Validate template exists
+        try:
+            template = Template.objects.get(external_id=template_id)
+        except Template.DoesNotExist:
+            return Response(
+                {"error": f"Template with id '{template_id}' not found"},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        # Check template status
+        if template.status != "active":
+            return Response(
+                {
+                    "error": f"Template is not active (current status: {template.status})"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         context_config = generate_request.context_config
         if context_config is None:
             context_config = template.context_config
+
+        # Validate output format
+        if output_format not in ["pdf", "html"]:
+            return Response(
+                {
+                    "error": f"Invalid output_format '{output_format}'. Must be 'pdf' or 'html'"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         lock_key = f"{report_type}_report_{associating_id}"
         if current_progress := report_utils.get_progress(lock_key):
@@ -157,23 +180,29 @@ class ReportUploadViewSet(EMRModelViewSet):
                 status=status.HTTP_409_CONFLICT,
             )
 
-        generate_report_task.delay(
-            template_id=template_id,
-            report_type=report_type,
-            associating_id=associating_id,
-            patient_id=patient_id,
-            encounter_ext_id=encounter_id,
-            context_config=context_config,
-            output_format=output_format,
-            options=generate_request.options,
-        )
+        try:
+            generate_report_task.delay(
+                template_id=template_id,
+                report_type=report_type,
+                associating_id=associating_id,
+                patient_id=patient_id,
+                encounter_id=encounter_id,
+                context_config=context_config,
+                output_format=output_format,
+                options=generate_request.options,
+            )
 
-        return Response(
-            {
-                "detail": "Report generation started. You will receive a notification when complete.",
-            },
-            status=status.HTTP_200_OK,
-        )
+            return Response(
+                {
+                    "detail": "Report generation started. You will receive a notification when complete.",
+                },
+                status=status.HTTP_200_OK,
+            )
+        except Exception as e:
+            return Response(
+                {"error": f"Failed to start report generation: {e!s}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
 
     @extend_schema(
         description="Archive a report", responses={200: "Success"}, tags=["report"]
@@ -255,8 +284,8 @@ class ReportUploadViewSet(EMRModelViewSet):
                 }
             )
 
-        except Exception:
+        except Exception as e:
             return Response(
-                {"error": "Failed to generate download URL"},
+                {"error": f"Failed to generate download URL: {e!s}"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
