@@ -93,9 +93,24 @@ ruff-docker:
 	docker exec care bash -c "ruff check --fix $(shell git diff --name-only --staged | grep -E '\.py$$|\/pyproject.toml$$')"
 
 up-playwright:
-	docker compose exec db sh -c 'if [ -f /tmp/care_db.before_playwright.dump ]; then echo "before_playwright dump already exists, skipping"; exit 0; fi; pg_dump -U postgres -Fc care > /tmp/care_db.before_playwright.dump'
-	docker compose cp data/test_db.dump db:/tmp/test_db.dump
-	docker compose exec db sh -c 'pg_restore -U postgres --clean --if-exists -d care /tmp/test_db.dump'
+	# Dump current DB once
+	docker compose exec db sh -c 'if [ -f /tmp/care_db.before_playwright.dump ]; then echo "before_playwright dump already exists, skipping"; else pg_dump -U postgres -Fc care > /tmp/care_db.before_playwright.dump; fi'
+
+	# If /tmp/test_db exists -> restore; else create blank DB, run migrations+fixtures, then dump
+	@if docker compose exec db sh -c 'test -f /tmp/test_db'; then \
+	  echo "Restoring /tmp/test_db"; \
+	  docker compose exec db psql -U postgres -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'care' AND pid <> pg_backend_pid();" || true; \
+	  docker compose exec db pg_restore -U postgres --clean --if-exists -d care /tmp/test_db; \
+	else \
+	  echo "No /tmp/test_db found, creating blank DB"; \
+	  docker compose exec db psql -U postgres -d postgres -c "SELECT pg_terminate_backend(pid) FROM pg_stat_activity WHERE datname = 'care' AND pid <> pg_backend_pid();" || true; \
+	  docker compose exec db dropdb -U postgres care 2>/dev/null || true; \
+	  docker compose exec db createdb -U postgres care; \
+	  echo "Running migrations and fixtures on blank DB"; \
+	  docker compose exec backend bash -c "python manage.py migrate && python manage.py load_fixtures"; \
+	  echo "Dumping /tmp/test_db for faster subsequent runs"; \
+	  docker compose exec db sh -c 'pg_dump -U postgres -Fc care > /tmp/test_db'; \
+	fi
 
 down-playwright:
 	docker compose exec db sh -c 'if [ -f /tmp/care_db.before_playwright.dump ]; then pg_restore -U postgres --clean --if-exists -d care /tmp/care_db.before_playwright.dump && rm -f /tmp/care_db.before_playwright.dump; else echo "no before_playwright dump to restore"; fi'
