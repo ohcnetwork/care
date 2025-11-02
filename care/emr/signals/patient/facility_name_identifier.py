@@ -8,6 +8,7 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 
 from care.emr.models.encounter import Encounter
+from care.emr.models.scheduling.booking import TokenBooking
 from care.emr.signals.patient.base import BasePatientIdentifierConfig
 
 
@@ -24,8 +25,22 @@ class FacilityPatientNameIdentifierConfig(BasePatientIdentifierConfig):
 
 
 @receiver(post_save, sender=Encounter)
-def update_name_identifier(sender, instance, created, **kwargs):
+def update_facility_name_identifier_on_encounter_save(
+    sender, instance, created, **kwargs
+):
     if settings.MAINTAIN_FACILITY_PATIENT_NAME_IDENTIFIER:
         FacilityPatientNameIdentifierConfig.update_identifier(
             instance.patient, instance.facility
+        )
+
+
+@receiver(post_save, sender=TokenBooking)
+def update_facility_name_identifier_on_token_booking_save(
+    sender, instance, created, **kwargs
+):
+    if not instance.token_slot.resource.user:
+        return
+    if settings.MAINTAIN_FACILITY_PATIENT_NAME_IDENTIFIER:
+        FacilityPatientNameIdentifierConfig.update_identifier(
+            instance.patient, instance.token_slot.resource.facility
         )
