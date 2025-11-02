@@ -1,12 +1,9 @@
 from care.emr.models.organization import Organization
 from odoo.connector.connector import OdooConnector
-from odoo.resource.base import OdooBaseResource
 from odoo.resource.res_partner.spec import PartnerData, PartnerType
 
 
-class OdooPartnerResource(OdooBaseResource):
-    resource_name = "res.partner"
-
+class OdooPartnerResource:
     def sync_partner_to_odoo_api(self, organization: Organization) -> int | None:
         """
         Synchronize an organization to Odoo as a partner.

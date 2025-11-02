@@ -1,13 +1,10 @@
 from care.users.models import User
 from odoo.connector.connector import OdooConnector
-from odoo.resource.base import OdooBaseResource
 from odoo.resource.res_partner.spec import PartnerData, PartnerType
 from odoo.resource.res_user.spec import UserData, UserType
 
 
-class OdooUserResource(OdooBaseResource):
-    resource_name = "res.users"
-
+class OdooUserResource:
     def get_full_name(self, user: User):
         name = [user.prefix, user.first_name, user.last_name, user.suffix]
         name = " ".join(filter(None, [x.strip() if x else None for x in name]))

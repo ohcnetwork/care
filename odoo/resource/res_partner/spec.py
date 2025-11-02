@@ -16,3 +16,4 @@ class PartnerData(BaseModel):
     state: str
     partner_type: PartnerType
     agent: bool
+    pan: str | None = None

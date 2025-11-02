@@ -1,14 +1,11 @@
 from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.resources.common.monetary_component import MonetaryComponentType
 from odoo.connector.connector import OdooConnector
-from odoo.resource.base import OdooBaseResource
 from odoo.resource.product_category.spec import CategoryData
 from odoo.resource.product_product.spec import ProductData, TaxData, TaxType
 
 
-class OdooProductProductResource(OdooBaseResource):
-    resource_name = "product.product"
-
+class OdooProductProductResource:
     def get_charge_item_base_price(self, charge_item: ChargeItemDefinition):
         for item in charge_item.price_components:
             if item["monetary_component_type"] == MonetaryComponentType.base.value:

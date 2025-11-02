@@ -1,11 +1,8 @@
 from odoo.connector.connector import OdooConnector
-from odoo.resource.base import OdooBaseResource
 from odoo.resource.product_category.spec import CategoryData
 
 
-class OdooCategoryResource(OdooBaseResource):
-    resource_name = "product.category"
-
+class OdooCategoryResource:
     def sync_category_to_odoo_api(self, category) -> int | None:
         """
         Synchronize a resource category to Odoo.

@@ -2,7 +2,6 @@ import base64
 import json
 import logging
 
-import odoorpc
 import requests
 from django.conf import settings
 from rest_framework.exceptions import ValidationError
@@ -11,25 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 class OdooConnector:
-    connection = None
-    is_authenticated = False
-
-    @classmethod
-    def get_connection(cls):
-        if not cls.connection:
-            cls.connection = odoorpc.ODOO(
-                settings.ODOO_CONFIG["host"],
-                port=settings.ODOO_CONFIG["port"],
-                protocol=settings.ODOO_CONFIG["protocol"],
-            )
-            cls.connection.login(
-                settings.ODOO_CONFIG["database"],
-                settings.ODOO_CONFIG["username"],
-                settings.ODOO_CONFIG["password"],
-            )
-            cls.validate_connection()
-        return cls.connection
-
     @classmethod
     def call_api(cls, endpoint: str, data: dict) -> dict:
         """Call a custom Odoo addon API endpoint.
@@ -45,12 +25,6 @@ class OdooConnector:
         auth = base64.b64encode(
             f"{settings.ODOO_CONFIG['username']}:{settings.ODOO_CONFIG['password']}".encode()
         ).decode()
-
-        # # Always use http/https for API calls regardless of odoorpc protocol setting
-        # protocol = (
-        #     "https" if settings.ODOO_CONFIG.get("protocol") == "https" else "http"
-        # )
-        # url_old = f"{protocol}://{settings.ODOO_CONFIG['host']}:{settings.ODOO_CONFIG['port']}{endpoint}"
 
         # digital ocean
         # url = f"https://odoo.ohc.network/{endpoint}"
@@ -92,15 +66,3 @@ class OdooConnector:
         except requests.exceptions.RequestException as e:
             logger.exception("Odoo API Error: %s", str(e))
             raise ValidationError(str(e)) from e
-
-    @classmethod
-    def validate_connection(cls):
-        if not cls.connection.env.user:
-            cls.is_authenticated = False
-        else:
-            cls.is_authenticated = True
-
-    @classmethod
-    def get_model(cls, model_name: str):
-        cls.get_connection()
-        return cls.connection.env[model_name]

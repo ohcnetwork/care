@@ -7,18 +7,16 @@ from care.emr.resources.payment_reconciliation.spec import (
 from odoo.connector.connector import OdooConnector
 from odoo.resource.account_move_payment.spec import (
     AccountMovePaymentApiRequest,
+    CustomerType,
     JournalType,
     PaymentMode,
 )
-from odoo.resource.base import OdooBaseResource
 from odoo.resource.res_partner.spec import PartnerData, PartnerType
 
 logger = logging.getLogger(__name__)
 
 
-class OdooPaymentResource(OdooBaseResource):
-    resource_name = "account.payment"
-
+class OdooPaymentResource:
     def sync_payment_to_odoo_api(self, payment_id: str) -> int | None:
         """
         Synchronize a Django payment reconciliation to Odoo using the custom addon API.
@@ -59,6 +57,7 @@ class OdooPaymentResource(OdooBaseResource):
             if payment.is_credit_note
             else PaymentMode.receive,
             partner_data=partner_data,
+            customer_type=CustomerType.customer,
         ).model_dump()
 
         logger.info("Odoo Payment Data: %s", data)

@@ -19,9 +19,9 @@ from care.emr.resources.resource_category.spec import (
     ResourceCategoryResourceTypeOptions,
 )
 from care.users.models import User
-from odoo.resource.category import OdooCategoryResource
-from odoo.resource.invoice import OdooInvoiceResource
-from odoo.resource.payment import OdooPaymentResource
+from odoo.resource.account_move.invoice import OdooInvoiceResource
+from odoo.resource.account_move_payment.payment import OdooPaymentResource
+from odoo.resource.product_category.category import OdooCategoryResource
 from odoo.resource.product_product.resource import OdooProductProductResource
 from odoo.resource.res_partner.resource import OdooPartnerResource
 from odoo.resource.res_user.resource import OdooUserResource

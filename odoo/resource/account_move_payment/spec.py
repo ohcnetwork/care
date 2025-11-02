@@ -15,6 +15,11 @@ class PaymentMode(str, Enum):
     receive = "receive"
 
 
+class CustomerType(str, Enum):
+    customer = "customer"
+    vendor = "vendor"
+
+
 class AccountMovePaymentApiRequest(BaseModel):
     x_care_id: str
     journal_x_care_id: str | None = None
@@ -23,3 +28,4 @@ class AccountMovePaymentApiRequest(BaseModel):
     payment_date: str
     payment_mode: PaymentMode
     partner_data: PartnerData
+    customer_type: CustomerType
