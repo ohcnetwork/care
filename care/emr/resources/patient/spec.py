@@ -52,7 +52,7 @@ class PatientBaseSpec(EMRResource):
     __store_metadata__ = True
 
     id: UUID4 | None = None
-    name: str = Field(max_length=200)
+    name: str
     gender: GenderChoices
     phone_number: PhoneNumber = Field(max_length=14)
     emergency_phone_number: PhoneNumber | None = Field(None, max_length=14)
