@@ -16,6 +16,7 @@ class EMRResource(BaseModel):
     meta: dict = {}
     __questionnaire_cache__ = {}
     __store_metadata__ = False
+    __version__ = 0.1
 
     @classmethod
     def get_database_mapping(cls):
@@ -69,6 +70,7 @@ class EMRResource(BaseModel):
                 **kwargs,
                 user=user,
             )
+        constructed["version"] = getattr(cls, "__version__", 0.1)
         return cls.model_construct(**constructed)
 
     def get_context(self):
