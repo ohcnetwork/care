@@ -59,10 +59,10 @@ class OdooConnector:
 
             if not response.ok:
                 error_msg = response_json.get("message", str(response.reason))
-                logger.exception("Odoo API Error: %s", error_msg)
+                logger.exception("Odoo API Response Error: %s", error_msg)
                 response.raise_for_status()  # This will raise HTTPError with proper status code
 
             return response_json
         except requests.exceptions.RequestException as e:
-            logger.exception("Odoo API Error: %s", str(e))
+            logger.exception("Odoo API Resonse Processing Error: %s", str(e))
             raise ValidationError(str(e)) from e
