@@ -2,6 +2,7 @@ from django.urls import reverse
 from model_bakery import baker
 
 from care.emr.models.scheduling.token import TokenCategory
+from care.emr.resources.scheduling.schedule.spec import SchedulableResourceTypeOptions
 from care.security.permissions.token import TokenPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -13,24 +14,30 @@ class TokenCategoryAPITestCase(CareAPITestBase):
         self.superuser = self.create_super_user()
         self.facility = self.create_facility(user=self.superuser)
         self.facility_organization = self.create_facility_organization(
-            facility=self.facility
+            facility=self.facility, org_type="root"
         )
         self.patient = self.create_patient()
         self.role = self.create_role_with_permissions(
             permissions=[
-                TokenPermissions.can_list_token_category,
-                TokenPermissions.can_write_token_category,
+                TokenPermissions.can_list_token_category.name,
+                TokenPermissions.can_write_token_category.name,
             ],
         )
         self.base_url = self.generate_category_url(
             facility=str(self.facility.external_id),
         )
-        self.category_data = {
-            "name": "General",
-            "resource_type": "location",
-            "shorthand": "GEN",
-            "metadata": {"description": "General category"},
+
+    def generate_token_category_data(self, **kwargs):
+        data = {
+            "name": kwargs.get("name", "General"),
+            "resource_type": kwargs.get(
+                "resource_type", SchedulableResourceTypeOptions.location
+            ),
+            "shorthand": kwargs.get("shorthand", "GEN"),
+            "metadata": kwargs.get("metadata", {"description": "General category"}),
         }
+        data.update(kwargs)
+        return data
 
     def generate_category_url(self, facility):
         return reverse(
@@ -60,7 +67,9 @@ class TokenCategoryAPITestCase(CareAPITestBase):
 
     def test_create_token_category_as_superuser(self):
         self.client.force_authenticate(user=self.superuser)
-        response = self.client.post(self.base_url, self.category_data, format="json")
+        response = self.client.post(
+            self.base_url, self.generate_token_category_data(), format="json"
+        )
         self.assertEqual(response.status_code, 200)
         get_response = self.client.get(
             self.generate_detail_url(
@@ -70,19 +79,19 @@ class TokenCategoryAPITestCase(CareAPITestBase):
         )
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["id"], response.data["id"])
-        self.assertEqual(get_response.data["name"], self.category_data["name"])
-        self.assertEqual(
-            get_response.data["shorthand"], self.category_data["shorthand"]
-        )
+        self.assertEqual(get_response.data["name"], response.data["name"])
+        self.assertEqual(get_response.data["shorthand"], response.data["shorthand"])
 
     def test_create_token_category_as_user_with_permissions(self):
         self.client.force_authenticate(user=self.user)
-        self.assign_role_to_user_in_facility(
+        self.attach_role_facility_organization_user(
             user=self.user,
             role=self.role,
             facility_organization=self.facility_organization,
         )
-        response = self.client.post(self.base_url, self.category_data, format="json")
+        response = self.client.post(
+            self.base_url, self.generate_token_category_data(), format="json"
+        )
         self.assertEqual(response.status_code, 200)
         get_response = self.client.get(
             self.generate_detail_url(
@@ -92,13 +101,85 @@ class TokenCategoryAPITestCase(CareAPITestBase):
         )
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["id"], response.data["id"])
-        self.assertEqual(get_response.data["name"], self.category_data["name"])
-        self.assertEqual(
-            get_response.data["shorthand"], self.category_data["shorthand"]
-        )
+        self.assertEqual(get_response.data["name"], response.data["name"])
+        self.assertEqual(get_response.data["shorthand"], response.data["shorthand"])
 
     def test_create_token_category_as_user_without_permissions(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.post(self.base_url, self.category_data, format="json")
+        response = self.client.post(
+            self.base_url, self.generate_token_category_data(), format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Access Denied to Token Category", response.data["detail"])
+
+    # Test cases for update token categories
+
+    def test_update_token_category_as_superuser(self):
+        category = self.create_token_category(facility=self.facility)
+        self.client.force_authenticate(user=self.superuser)
+        self.generate_token_category_data(
+            name="Updated Category",
+            shorthand="UPD",
+            metadata={"description": "Updated description"},
+            resource_type=SchedulableResourceTypeOptions.healthcare_service,
+        )
+        response = self.client.put(
+            self.generate_detail_url(
+                facility=str(self.facility.external_id),
+                external_id=category.external_id,
+            ),
+            self.generate_token_category_data(
+                name="Updated Category",
+                shorthand="UPD",
+                metadata={"description": "Updated description"},
+                resource_type=SchedulableResourceTypeOptions.healthcare_service,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["name"], "Updated Category")
+        self.assertEqual(response.data["shorthand"], "UPD")
+
+    def test_update_token_category_as_user_with_permissions(self):
+        category = self.create_token_category(facility=self.facility)
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.put(
+            self.generate_detail_url(
+                facility=str(self.facility.external_id),
+                external_id=category.external_id,
+            ),
+            self.generate_token_category_data(
+                name="Updated Category",
+                shorthand="UPD",
+                metadata={"description": "Updated description"},
+                resource_type=SchedulableResourceTypeOptions.healthcare_service,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["name"], "Updated Category")
+        self.assertEqual(response.data["shorthand"], "UPD")
+
+    def test_update_token_category_as_user_without_permissions(self):
+        category = self.create_token_category(facility=self.facility)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.put(
+            self.generate_detail_url(
+                facility=str(self.facility.external_id),
+                external_id=category.external_id,
+            ),
+            self.generate_token_category_data(
+                name="Updated Category",
+                shorthand="UPD",
+                metadata={"description": "Updated description"},
+                resource_type=SchedulableResourceTypeOptions.healthcare_service,
+            ),
+            format="json",
+        )
         self.assertEqual(response.status_code, 403)
         self.assertIn("Access Denied to Token Category", response.data["detail"])
