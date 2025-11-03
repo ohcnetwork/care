@@ -54,8 +54,11 @@ class OdooConnector:
 
         try:
             response = requests.post(url, headers=headers, json=data, timeout=30)
+            logger.info("Odoo API Response Status: %s", response.status_code)
+            logger.info("Odoo API Raw Response: %s", response.text)
+
             response_json = response.json()
-            logger.info("Odoo API Response: %s", response_json)
+            logger.info("Odoo API Response JSON: %s", response_json)
 
             if not response.ok:
                 error_msg = response_json.get("message", str(response.reason))
