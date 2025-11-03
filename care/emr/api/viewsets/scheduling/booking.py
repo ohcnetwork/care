@@ -18,7 +18,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
 )
 from care.emr.api.viewsets.scheduling import lock_create_appointment
-from care.emr.api.viewsets.scheduling.schedule import get_or_create_resource
+from care.emr.api.viewsets.scheduling.schedule import get_schedulable_resource
 from care.emr.models import TokenSlot
 from care.emr.models.organization import (
     FacilityOrganization,
@@ -193,15 +193,16 @@ class TokenBookingViewSet(
                 instance.charge_item.status = ChargeItemStatusOptions.aborted.value
                 instance.charge_item.save()
             instance.save()
-        return Response(
-            TokenBookingReadSpec.serialize(instance).model_dump(exclude=["meta"])
-        )
+        return instance
 
     @action(detail=True, methods=["POST"])
     def cancel(self, request, *args, **kwargs):
         instance = self.get_object()
         self.authorize_update({}, instance)
-        return self.cancel_appointment_handler(instance, request.data, request.user)
+        appointment = self.cancel_appointment_handler(
+            instance, request.data, request.user
+        )
+        return Response(TokenBookingReadSpec.serialize(appointment).to_json())
 
     @extend_schema(
         request=RescheduleBookingSpec,
@@ -250,9 +251,7 @@ class TokenBookingViewSet(
                     request.user,
                     facility,
                 )
-            return Response(
-                TokenBookingReadSpec.serialize(appointment).model_dump(exclude=["meta"])
-            )
+            return Response(TokenBookingReadSpec.serialize(appointment).to_json())
 
     @action(detail=False, methods=["GET"])
     def available_users(self, request, *args, **kwargs):
@@ -337,7 +336,7 @@ class TokenBookingViewSet(
         return Response(TokenReadSpec.serialize(token).to_json())
 
 
-def authorize_booking_list(
+def authorize_booking_list(  # noqa PLR0912
     base_query, resource_type, organization_ids, resource_ids, user, facility
 ):
     if resource_type == SchedulableResourceTypeOptions.practitioner.value:
@@ -379,7 +378,9 @@ def authorize_booking_list(
     if resource_ids:
         resource_pk_ids = []
         for resource_id in resource_ids:
-            resource = get_or_create_resource(resource_type, resource_id, facility)
+            resource = get_schedulable_resource(resource_type, resource_id, facility)
+            if not resource:
+                raise ValidationError("No schedules found for this resource")
             if not AuthorizationController.call("can_list_booking", resource, user):
                 raise PermissionDenied("You do not have permission to list bookings")
             resource_pk_ids.append(resource.id)

@@ -5,10 +5,12 @@ from pydantic import UUID4, model_validator
 
 from care.emr.models.account import Account
 from care.emr.models.invoice import Invoice
+from care.emr.models.location import FacilityLocation
 from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.resources.account.spec import AccountReadSpec
 from care.emr.resources.base import EMRResource
 from care.emr.resources.invoice.spec import InvoiceReadSpec
+from care.emr.resources.location.spec import FacilityLocationListSpec
 
 
 class PaymentReconciliationTypeOptions(str, Enum):
@@ -83,16 +85,19 @@ class PaymentReconciliationWriteSpec(BasePaymentReconciliationSpec):
     tendered_amount: float
     returned_amount: float
     is_credit_note: bool = False
+    location: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.target_invoice:
             obj.target_invoice = Invoice.objects.get(external_id=self.target_invoice)
         obj.account = Account.objects.get(external_id=self.account)
+        if self.location:
+            obj.location = FacilityLocation.objects.get(external_id=self.location)
 
     @model_validator(mode="after")
     def check_amount_or_factor(self):
         if self.returned_amount >= self.tendered_amount:
-            raise ValueError("Retrurned amount cannot be greater than tendered amount")
+            raise ValueError("Returned amount cannot be greater than tendered amount")
         self.amount = self.tendered_amount - self.returned_amount
         return self
 
@@ -114,4 +119,16 @@ class PaymentReconciliationReadSpec(BasePaymentReconciliationSpec):
         if obj.target_invoice:
             mapping["target_invoice"] = InvoiceReadSpec.serialize(
                 obj.target_invoice
+            ).to_json()
+
+
+class PaymentReconciliationRetrieveSpec(PaymentReconciliationReadSpec):
+    location: dict | None = None
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        if obj.location:
+            mapping["location"] = FacilityLocationListSpec.serialize(
+                obj.location
             ).to_json()

@@ -5,12 +5,14 @@ Tag configs include what tags are available for a resource and their configurati
 
 from enum import Enum
 
+from django.db.models.signals import post_save
 from pydantic import UUID4, model_validator
 from rest_framework.exceptions import ValidationError
 
 from care.emr.models.organization import FacilityOrganization, Organization
 from care.emr.models.tag_config import TagConfig
-from care.emr.resources.base import EMRResource, cacheable
+from care.emr.resources.base import EMRResource, cacheable, model_string
+from care.emr.resources.tag.cache_invalidation import invalidate_tag_config_cache
 from care.facility.models.facility import Facility
 from care.utils.shortcuts import get_object_or_404
 
@@ -181,3 +183,10 @@ class TagConfigRetrieveSpec(TagConfigReadSpec):
             mapping["organization"] = OrganizationReadSpec.serialize(
                 obj.organization
             ).to_json()
+
+
+post_save.connect(
+    invalidate_tag_config_cache,
+    sender=TagConfig,
+    dispatch_uid=f"invalidate_tag_config_cache:{model_string(TagConfig)}",
+)

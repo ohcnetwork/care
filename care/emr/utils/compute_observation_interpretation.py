@@ -5,6 +5,7 @@ def compute_observation_interpretation(model_instance, metrics_cache):
     """Helper method to compute interpretation for observation instances."""
     evaluation_context = {
         "patient": model_instance.patient,
+        "encounter": model_instance.encounter,
     }
     try:
         evaluator = InterpretationEvaluator(

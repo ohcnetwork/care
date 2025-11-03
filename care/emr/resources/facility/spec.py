@@ -21,7 +21,7 @@ from care.facility.models import (
 )
 
 
-@cacheable
+@cacheable(use_base_manager=True)
 class FacilityBareMinimumSpec(EMRResource):
     __model__ = Facility
     __exclude__ = ["geo_organization"]
