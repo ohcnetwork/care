@@ -291,7 +291,9 @@ class OrganizationAPITestCase(CareAPITestBase):
             self.get_detail_url(self.root_organization.external_id)
         )
         self.assertEqual(get_response.status_code, 404)
-        self.assertContains(get_response, "Object not found", status_code=404)
+        self.assertContains(
+            get_response, "No Organization matches the given query.", status_code=404
+        )
 
     def test_delete_organization_with_org_type_as_user(self):
         """Test that a user cannot delete an organization."""
