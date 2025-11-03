@@ -57,7 +57,7 @@ class PatientViewSet(EMRModelViewSet):
         if not AuthorizationController.call(
             "can_write_patient_obj", self.request.user, model_instance
         ):
-            raise PermissionDenied("Cannot Create Patient")
+            raise PermissionDenied("Cannot Update Patient")
 
     def authorize_create(self, request_obj):
         if not AuthorizationController.call("can_create_patient", self.request.user):
@@ -119,7 +119,9 @@ class PatientViewSet(EMRModelViewSet):
             super().perform_create(instance)
             for identifier in identifiers:
                 config = get_object_or_404(
-                    PatientIdentifierConfig, external_id=identifier.config
+                    PatientIdentifierConfig,
+                    external_id=identifier.config,
+                    facility__isnull=True,
                 )
                 if config.config.get("auto_maintained"):
                     continue
@@ -146,7 +148,9 @@ class PatientViewSet(EMRModelViewSet):
             super().perform_update(instance)
             for identifier in identifiers:
                 config = get_object_or_404(
-                    PatientIdentifierConfig, external_id=identifier.config
+                    PatientIdentifierConfig,
+                    external_id=identifier.config,
+                    facility__isnull=True,
                 )
                 if config.config.get("auto_maintained"):
                     continue
@@ -195,13 +199,20 @@ class PatientViewSet(EMRModelViewSet):
             config_queryset = PatientIdentifierConfig.objects.filter(
                 external_id=request_data.config
             )
-            if request_data.facility:
-                config_queryset = config_queryset.filter(
-                    facility__external_id=request_data.facility
-                )
+
             config = config_queryset.first()
             if not config:
                 raise ValidationError("Config not found")
+
+            # Check Permission in facility
+            if config.facility and not AuthorizationController.call(
+                "can_list_facility_patient_identifier_config",
+                self.request.user,
+                config.facility,
+            ):
+                raise PermissionDenied(
+                    "Cannot search for patient identifier configs in this facility"
+                )
 
             partial_search = config.config.get("retrieve_config", {}).get(
                 "retrieve_partial_search", False
