@@ -120,6 +120,14 @@ class PaymentReconciliationViewSet(
             if invoice.facility != facility:
                 raise ValidationError("Invoice is not associated with the facility")
 
+    def authorize_update(self, request_obj, model_instance):
+        if not AuthorizationController.call(
+            "can_write_payment_reconciliation_in_facility",
+            self.request.user,
+            model_instance.facility,
+        ):
+            raise PermissionDenied("Cannot update payment reconciliation")
+
     @action(methods=["POST"], detail=True)
     def cancel_payment_reconciliation(self, request, *args, **kwargs):
         request_data = PaymentReconciliationCancelRequest(**request.data)
