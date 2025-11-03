@@ -14,6 +14,7 @@ class QuestionnaireResponseFilters(filters.FilterSet):
     subject_type = filters.CharFilter(field_name="questionnaire__subject_type")
     questionnaire = filters.UUIDFilter(field_name="questionnaire__external_id")
     questionnaire_slug = filters.CharFilter(field_name="questionnaire__slug")
+    form_submission = filters.UUIDFilter(field_name="form_submission__external_id")
 
 
 class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet):

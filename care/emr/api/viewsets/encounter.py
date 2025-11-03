@@ -28,6 +28,7 @@ from care.emr.models import (
     FacilityOrganization,
     Patient,
 )
+from care.emr.models.patient import PatientIdentifier, PatientIdentifierConfig
 from care.emr.reports import discharge_summary
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.emr.resources.encounter.spec import (
@@ -38,6 +39,10 @@ from care.emr.resources.encounter.spec import (
     EncounterUpdateSpec,
 )
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
+from care.emr.resources.patient.spec import validate_identifier_config
+from care.emr.resources.patient_identifier.default_expression_evaluator import (
+    evaluate_patient_default_expression,
+)
 from care.emr.resources.tag.config_spec import TagResource
 from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.emr.tasks.discharge_summary import generate_discharge_summary_task
@@ -314,6 +319,56 @@ class EncounterViewSet(
             {"detail": "Discharge Summary will be generated shortly"},
             status=status.HTTP_202_ACCEPTED,
         )
+
+    class EncounterFacilityIdentifierWriteSpec(BaseModel):
+        identifier: UUID4
+        value: str | None = None
+        set_default: bool = False
+
+    @action(detail=True, methods=["POST"])
+    def set_facility_idenitifier(self, request, *args, **kwargs):
+        request_data = self.EncounterFacilityIdentifierWriteSpec(**request.data)
+        encounter = self.get_object()
+        self.authorize_update({}, encounter)
+        config = get_object_or_404(
+            PatientIdentifierConfig,
+            external_id=request_data.identifier,
+            facility=encounter.facility,
+        )
+        if config.config.get("auto_maintained"):
+            raise ValidationError(
+                {"identifier": "Cannot update auto maintained identifier"},
+            )
+        patient_identifier = PatientIdentifier.objects.filter(
+            patient=encounter.patient, config=config, facility=encounter.facility
+        ).first()
+        if (
+            not request_data.value
+            and patient_identifier
+            and not request_data.set_default
+        ):
+            patient_identifier.delete()
+        if not patient_identifier:
+            patient_identifier = PatientIdentifier(
+                patient=encounter.patient, config=config, facility=encounter.facility
+            )
+        if config.config.get("default_value") and request_data.set_default:
+            patient_identifier.value = evaluate_patient_default_expression(
+                config, config.config.get("default_value")
+            )
+        elif request_data.value:
+            try:
+                validate_identifier_config(
+                    {"config": config.config, "config_obj": config},
+                    request_data.value,
+                    encounter.patient,
+                )
+            except ValueError as e:
+                raise ValidationError({"value": str(e)}) from e
+
+        patient_identifier.value = request_data.value
+        patient_identifier.save()
+        return Response({})
 
     @extend_schema(
         request=EncounterCareTeamMemberWriteSpec, responses={200: EncounterRetrieveSpec}

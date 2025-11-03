@@ -24,11 +24,30 @@ def evaluate_patient_dummy_expression(expression):
 
 
 def evaluate_patient_instance_default_values(patient):
+    from care.emr.resources.patient_identifier.spec import PatientIdentifierStatus
+
     for config in PatientIdentifierConfig.objects.filter(
-        facility=None, status="active"
+        facility=None, status=PatientIdentifierStatus.active.value
     ).exclude(id__in=PatientIdentifier.objects.filter(patient=patient).values("id")):
         if config.config.get("default_value"):
             PatientIdentifier.objects.create(
+                patient=patient,
+                config=config,
+                value=evaluate_patient_default_expression(
+                    config, config.config.get("default_value")
+                ),
+            )
+
+
+def evaluate_patient_facility_default_values(patient, facility):
+    from care.emr.resources.patient_identifier.spec import PatientIdentifierStatus
+
+    for config in PatientIdentifierConfig.objects.filter(
+        facility=facility, status=PatientIdentifierStatus.active.value
+    ).exclude(id__in=PatientIdentifier.objects.filter(patient=patient).values("id")):
+        if config.config.get("default_value"):
+            PatientIdentifier.objects.create(
+                facility=facility,
                 patient=patient,
                 config=config,
                 value=evaluate_patient_default_expression(
