@@ -1,45 +1,11 @@
 import contextlib
 
 from django.conf import settings
-from django.core.mail import EmailMessage
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
-from django.template.loader import render_to_string
 from django.utils.timezone import now
-from django_rest_passwordreset.signals import reset_password_token_created
 
 from .models import UserFacilityAllocation
-
-
-@receiver(reset_password_token_created)
-def password_reset_token_created(
-    sender, instance, reset_password_token, *args, **kwargs
-):
-    """
-    Handles password reset tokens
-    When a token is created, an e-mail needs to be sent to the user
-    """
-    # send an e-mail to the user
-    context = {
-        "current_user": reset_password_token.user,
-        "username": reset_password_token.user.username,
-        "email": reset_password_token.user.email,
-        "reset_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{reset_password_token.key}",
-    }
-
-    # render email text
-    email_html_message = render_to_string(
-        settings.USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH, context
-    )
-
-    msg = EmailMessage(
-        "Password Reset for Care",
-        email_html_message,
-        settings.DEFAULT_FROM_EMAIL,
-        (reset_password_token.user.email,),
-    )
-    msg.content_subtype = "html"  # Main content is now text/html
-    msg.send()
 
 
 @receiver(pre_save, sender=settings.AUTH_USER_MODEL)

@@ -11,7 +11,6 @@ from pydantic import BaseModel
 from rest_framework import filters as rest_framework_filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -31,6 +30,7 @@ from care.emr.resources.file_upload.spec import (
     FileUploadUpdateSpec,
 )
 from care.security.authorization import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 def file_authorizer(user, file_type, associating_id, permission):

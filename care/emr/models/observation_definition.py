@@ -1,9 +1,9 @@
 from django.db import models
 
-from care.emr.models import EMRBaseModel
+from care.emr.models.base import SlugBaseModel
 
 
-class ObservationDefinition(EMRBaseModel):
+class ObservationDefinition(SlugBaseModel):
     facility = models.ForeignKey(
         "facility.Facility",
         on_delete=models.PROTECT,
@@ -24,3 +24,4 @@ class ObservationDefinition(EMRBaseModel):
     method = models.JSONField(null=True, blank=True)
     permitted_unit = models.JSONField(null=True, blank=True)
     component = models.JSONField(null=True, blank=True)
+    qualified_ranges = models.JSONField(default=list, null=True, blank=True)

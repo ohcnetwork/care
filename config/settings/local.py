@@ -60,3 +60,8 @@ JWKS = JsonWebKey.import_key_set(
 )
 
 SMS_BACKEND = "care.utils.sms.backend.console.ConsoleBackend"
+
+
+MAINTAIN_PATIENT_NAME_IDENTIFIER = True
+
+MAINTAIN_PATIENT_PHONE_NUMBER_IDENTIFIER = True

@@ -1,5 +1,4 @@
 from django.db import transaction
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -43,8 +42,10 @@ from care.emr.resources.specimen.spec import (
 )
 from care.emr.resources.specimen_definition.specimen import convert_sd_to_specimen
 from care.emr.resources.tag.config_spec import TagResource
+from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class ServiceRequestFilters(filters.FilterSet):
@@ -56,11 +57,11 @@ class ServiceRequestFilters(filters.FilterSet):
     do_not_perform = filters.BooleanFilter()
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
-    requestor = filters.UUIDFilter(field_name="requestor__external_id")
+    requester = filters.UUIDFilter(field_name="requester__external_id")
 
 
 class ApplyActivityDefinitionRequest(BaseModel):
-    activity_definition: UUID4
+    activity_definition: str
     service_request: ServiceRequestUpdateSpec
     encounter: UUID4
 
@@ -84,7 +85,11 @@ class ServiceRequestViewSet(
     pydantic_read_model = ServiceRequestReadSpec
     pydantic_retrieve_model = ServiceRequestRetrieveSpec
     filterset_class = ServiceRequestFilters
-    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        OrderingFilter,
+        SingleFacilityTagFilter,
+    ]
     questionnaire_type = "service_request"
     questionnaire_title = "Service Request"
     questionnaire_description = "Service Request"
@@ -118,17 +123,17 @@ class ServiceRequestViewSet(
         ):
             raise ValidationError("Healthcare Service must be from the same facility")
 
-    def validate_requestor(self, instance, facility):
+    def validate_requester(self, instance, facility):
         if not FacilityOrganizationUser.objects.filter(
-            organization__facility=facility, user=instance.requestor
+            organization__facility=facility, user=instance.requester
         ).exists():
-            raise ValidationError("Requestor must be a member of the facility")
+            raise ValidationError("requester must be a member of the facility")
 
     def perform_create(self, instance):
         self.convert_external_id_to_internal_id(instance)
         instance.facility = self.get_facility_obj()
         self.validate_health_care_service(instance)
-        self.validate_requestor(instance, instance.facility)
+        self.validate_requester(instance, instance.facility)
         return super().perform_create(instance)
 
     def perform_update(self, instance):
@@ -224,11 +229,11 @@ class ServiceRequestViewSet(
         )
         activity_definition = get_object_or_404(
             ActivityDefinition,
-            external_id=request_params.activity_definition,
+            slug=request_params.activity_definition,
             facility=facility,
         )
         service_request = convert_ad_to_sr(activity_definition, encounter)
-        self.authorize_update(request_params.service_request, service_request)
+        self.authorize_update(None, service_request)
         serializer_obj = ServiceRequestUpdateSpec.model_validate(
             request_params.service_request.model_dump(mode="json")
         )

@@ -1,7 +1,6 @@
 import datetime
 
 from django.contrib.auth import get_user_model
-from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from pydantic import UUID4, BaseModel
 
@@ -12,7 +11,7 @@ from care.emr.models import (
     TokenBooking,
 )
 from care.emr.models.patient import Patient
-from care.emr.resources.base import EMRResource, PeriodSpec
+from care.emr.resources.base import EMRResource, PeriodSpec, model_from_cache
 from care.emr.resources.encounter.constants import (
     AdmitSourcesChoices,
     ClassChoices,
@@ -35,6 +34,7 @@ from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.facility.models import Facility
+from care.utils.shortcuts import get_object_or_404
 
 User = get_user_model()
 
@@ -171,11 +171,13 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
 
         care_team = []
         user_mapping = {x["user_id"]: x for x in obj.care_team}
-        for member in User.objects.filter(id__in=user_mapping.keys()):
+        user_ids = list(user_mapping.keys())
+
+        for user_id in user_ids:
             care_team.append(
                 {
-                    "member": UserSpec.serialize(member).to_json(),
-                    "role": user_mapping[member.id]["role"],
+                    "member": model_from_cache(UserSpec, id=user_id),
+                    "role": user_mapping[user_id]["role"],
                 }
             )
 

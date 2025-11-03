@@ -36,7 +36,7 @@ class ServiceRequest(EMRBaseModel):
         null=True,
         blank=True,
     )
-    requestor = models.ForeignKey(
+    requester = models.ForeignKey(
         "users.User",
         on_delete=models.CASCADE,
         default=None,

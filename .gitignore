@@ -55,6 +55,7 @@ staticfiles/
 
 # Sphinx documentation
 docs/_build/
+docs/source/generated/
 
 # PyBuilder
 target/
@@ -360,3 +361,4 @@ jwks.b64.txt
 care_db.dump
 
 typst*
+.nix-data

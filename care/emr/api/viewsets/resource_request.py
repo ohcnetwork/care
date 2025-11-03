@@ -1,7 +1,6 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -21,6 +20,7 @@ from care.emr.resources.resource_request.spec import (
     ResourceRequestListSpec,
     ResourceRequestRetrieveSpec,
 )
+from care.utils.shortcuts import get_object_or_404
 
 
 class ResourceRequestFilters(filters.FilterSet):
