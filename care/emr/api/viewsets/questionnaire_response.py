@@ -1,12 +1,12 @@
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet
 from care.emr.models import Encounter, Patient
 from care.emr.models.questionnaire import QuestionnaireResponse
 from care.emr.resources.questionnaire_response.spec import QuestionnaireResponseReadSpec
 from care.security.authorization import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class QuestionnaireResponseFilters(filters.FilterSet):
@@ -14,6 +14,7 @@ class QuestionnaireResponseFilters(filters.FilterSet):
     subject_type = filters.CharFilter(field_name="questionnaire__subject_type")
     questionnaire = filters.UUIDFilter(field_name="questionnaire__external_id")
     questionnaire_slug = filters.CharFilter(field_name="questionnaire__slug")
+    form_submission = filters.UUIDFilter(field_name="form_submission__external_id")
 
 
 class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet):

@@ -72,10 +72,11 @@ class PatientBaseSpec(EMRResource):
 
 
 def validate_identifier_config(config, value, obj=None):
-    queryset = PatientIdentifier.objects.filter(
-        config__external_id=config["id"],
-        value=value,
-    )
+    queryset = PatientIdentifier.objects.filter(value=value)
+    if "config_obj" in config:
+        queryset = queryset.filter(config=config["config_obj"])
+    else:
+        queryset = queryset.filter(config__external_id=config["id"])
     if obj:
         queryset = queryset.exclude(patient=obj)
     if config["config"]["unique"] and queryset.exists():
@@ -274,7 +275,7 @@ class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
             ]
         if kwargs.get("facility"):
             facility = kwargs.get("facility")
-            if facility:
+            if facility and obj.facility_identifiers:
                 mapping["facility_identifiers"] = [
                     {
                         "config": PatientIdentifierConfigCache.get_config(x["config"]),

@@ -1,6 +1,5 @@
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -19,6 +18,7 @@ from care.emr.resources.meta_artifact.spec import (
     MetaArtifactUpdateSpec,
 )
 from care.security.authorization import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class MetaArtifactTypeFilter(filters.CharFilter):

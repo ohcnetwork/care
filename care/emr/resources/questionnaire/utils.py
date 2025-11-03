@@ -439,11 +439,19 @@ def convert_to_observation_spec(
 def collect_and_validate_enable_when_questions(
     questions, responses, questionnaire_obj, errors, parent=None
 ):
-    """
-    Walk the questions and:
-     - If enable_when fails → check if it (or its children) were answered → error
-     - Otherwise recurse into groups and keep the question
-    Returns the filtered list of “enabled” questions.
+    """Filter questions by ``enable_when`` rules and record related errors.
+
+    Algorithm:
+
+    - If a question's ``enable_when`` evaluates to False and the question (or any
+      of its descendant questions) has answers, an ``enable_when_failed`` error
+      is appended to ``errors``.
+    - Enabled groups are traversed recursively and pruned so that only their
+      enabled descendants remain.
+
+    Returns:
+        list: The filtered list of enabled questions (with nested structure
+        preserved for groups that remain enabled).
     """
 
     def any_answered(q, resp_map):

@@ -2,22 +2,34 @@ import json
 import secrets
 import sys
 import uuid
+from datetime import timedelta
 from decimal import Decimal, localcontext
 from pathlib import Path
 
 from django.conf import settings
 from django.core.management import BaseCommand, call_command
 from django.db import transaction
+from django.utils import timezone
 from faker import Faker
 from faker.providers.geo import Provider as GeoProvider
 
-from care.emr.models import FacilityOrganization, Organization, Patient, Questionnaire
-from care.emr.models.encounter import EncounterOrganization
-from care.emr.models.location import FacilityLocationOrganization
+from care.emr.models import (
+    ChargeItemDefinition,
+    EncounterOrganization,
+    FacilityLocationOrganization,
+    FacilityOrganization,
+    InventoryItem,
+    Organization,
+    Patient,
+    Product,
+    ProductKnowledge,
+    Questionnaire,
+    QuestionnaireOrganization,
+)
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
-from care.emr.models.questionnaire import QuestionnaireOrganization
+from care.emr.models.resource_category import ResourceCategory
+from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
 from care.emr.resources.activity_definition.spec import BaseActivityDefinitionSpec
-from care.emr.resources.charge_item_definition.spec import ChargeItemDefinitionSpec
 from care.emr.resources.device.spec import DeviceCreateSpec
 from care.emr.resources.encounter.constants import (
     ClassChoices,
@@ -31,6 +43,9 @@ from care.emr.resources.facility_organization.spec import (
     FacilityOrganizationWriteSpec,
 )
 from care.emr.resources.healthcare_service.spec import BaseHealthcareServiceSpec
+from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
+    sync_inventory_item,
+)
 from care.emr.resources.location.spec import FacilityLocationWriteSpec
 from care.emr.resources.observation_definition.spec import BaseObservationDefinitionSpec
 from care.emr.resources.organization.spec import (
@@ -170,12 +185,32 @@ class Command(BaseCommand):
             )
         self.stdout.write("=" * 30)
 
-        geo_organization = self._create_geo_organization(fake, super_user)
+        geo_organization = self._create_organization(fake, super_user)
         self.geo_organization = geo_organization
         self.stdout.write(f"Created geo organization: {geo_organization.name}")
 
-        facility = self._create_facility(fake, super_user, geo_organization)
+        # create some product suppliers
+        for _ in range(2):
+            self._create_organization(
+                fake,
+                super_user,
+                org_type=OrganizationTypeChoices.product_supplier,
+                name=f"Supplier {fake.company()}",
+            )
+        self.supplier = self._create_organization(
+            fake,
+            super_user,
+            org_type=OrganizationTypeChoices.product_supplier,
+            name=f"Supplier {fake.company()}",
+        )
+
+        facility = self._create_facility(
+            fake, super_user, geo_organization, "FACILITY WITH PATIENTS"
+        )
         self.stdout.write(f"Created facility: {facility.name}")
+
+        self._create_inventory_items(facility)
+        self.stdout.write("Created inventory items for facility")
 
         external_facility_organization = self._create_facility_organization(
             fake, super_user, facility
@@ -220,7 +255,7 @@ class Command(BaseCommand):
             )
             self.stdout.write(f"Created device: {device.user_friendly_name}")
 
-        organizations = self._create_organizations(fake, super_user)
+        organizations = self._create_role_organizations(fake, super_user)
 
         for organization in organizations:
             self.stdout.write(f"Created organization: {organization.name}")
@@ -250,10 +285,16 @@ class Command(BaseCommand):
 
         self._create_questionnaires(facility, super_user)
 
-    def _create_geo_organization(self, fake, super_user):
-        org_spec = OrganizationWriteSpec(
-            active=True, org_type=OrganizationTypeChoices.govt, name=fake.state()
-        )
+    def _create_organization(self, fake, super_user, **kwargs):
+        data = {
+            "active": True,
+            "org_type": OrganizationTypeChoices.govt,
+            "name": fake.state(),
+        }
+        if kwargs:
+            data.update(kwargs)
+
+        org_spec = OrganizationWriteSpec(**data)
         org = org_spec.de_serialize()
         org.created_by = super_user
         org.updated_by = super_user
@@ -295,7 +336,7 @@ class Command(BaseCommand):
         org.save()
         return org
 
-    def _create_organizations(self, fake, super_user):
+    def _create_role_organizations(self, fake, super_user):
         orgs = []
         for role_name in ROLES_OPTIONS:
             if Organization.objects.filter(
@@ -625,7 +666,166 @@ class Command(BaseCommand):
         device.save()
         return device
 
-    def _create_lab_definition_objects_for_facility(self, facility, user=None):  # noqa: PLR0915
+    def _create_resource_category(self, facility, title, resource_type, **kwargs):
+        resource_category = ResourceCategory.objects.filter(
+            facility=facility, title=title, resource_type=resource_type
+        ).first()
+        if resource_category:
+            return resource_category
+        _data = {
+            "facility": facility,
+            "resource_type": resource_type,
+            "title": title,
+            "slug": f"{title.lower().replace(' ', '-')}-{resource_type}",
+            "created_by": facility.created_by,
+            "updated_by": facility.created_by,
+            "resource_sub_type": "other",
+        }
+        if kwargs:
+            _data.update(kwargs)
+        resource_category = ResourceCategory(**_data)
+        resource_category.slug = resource_category.calculate_slug()
+        resource_category.save()
+        return resource_category
+
+    def _create_product_knowledge(self, facility, code, base_unit, **kwargs):
+        coding = code.get("code", "")
+
+        _data = {
+            "facility": facility,
+            "product_type": "medication",
+            "status": "active",
+            "storage_guidelines": [
+                {
+                    "note": "Store in a cool, dry place away from direct sunlight.",
+                    "stability_duration": {
+                        "unit": {
+                            "code": "a",
+                            "system": "http://unitsofmeasure.org",
+                            "display": "year",
+                        },
+                        "value": 5,
+                    },
+                }
+            ],
+            "code": code,
+            "name": code.get("display", ""),
+            "base_unit": base_unit,
+            "slug": coding,
+            "alternate_identifier": coding,
+            "created_by": facility.created_by,
+            "updated_by": facility.created_by,
+            "definitional": {},
+        }
+        if kwargs:
+            _data.update(kwargs)
+        product_knowledge = ProductKnowledge(**_data)
+        product_knowledge.slug = product_knowledge.calculate_slug()
+        product_knowledge.save()
+        return product_knowledge
+
+    def _create_charge_item_definition(self, facility, title, price=None, **kwargs):
+        _data = {
+            "facility": facility,
+            "status": "active",
+            "title": title,
+            "created_by": facility.created_by,
+            "updated_by": facility.created_by,
+            "slug": title.lower().replace(" ", "-").replace(".", ""),
+            "version": 1,
+        }
+        if price:
+            _data["price_components"] = [
+                {"amount": price, "monetary_component_type": "base"}
+            ]
+        if kwargs:
+            _data.update(kwargs)
+        charge_item_definition = ChargeItemDefinition(**_data)
+        charge_item_definition.slug = charge_item_definition.calculate_slug()
+        charge_item_definition.save()
+        return charge_item_definition
+
+    def _create_product(
+        self, facility, product_knowledge, charge_item_definition, **kwargs
+    ):
+        _data = {
+            "facility": facility,
+            "product_knowledge": product_knowledge,
+            "charge_item_definition": charge_item_definition,
+            "status": "active",
+            "expiration_date": timezone.now() + timedelta(days=365),
+            "batch": {"lot_number": str(secrets.token_hex(5)).upper()},
+            "created_by": facility.created_by,
+            "updated_by": facility.created_by,
+        }
+        if kwargs:
+            _data.update(kwargs)
+        product = Product(**_data)
+        product.save()
+        return product
+
+    def _create_inventory_item(self, location, product, net_content=0):
+        return InventoryItem.objects.create(
+            location=location,
+            product=product,
+            net_content=net_content,
+            status="active",
+            created_by=location.created_by,
+            updated_by=location.created_by,
+        )
+
+    def _create_supply_delivery(
+        self,
+        status=None,
+        supplied_item_quantity=None,
+        supplied_item=None,
+        supplied_inventory_item=None,
+        supply_request=None,
+        order=None,
+    ):
+        supply_delivery = SupplyDelivery.objects.create(
+            status=status or "in_progress",
+            supplied_item_quantity=supplied_item_quantity,
+            supplied_item=supplied_item,
+            supplied_inventory_item=supplied_inventory_item,
+            supply_request=supply_request,
+            delivery_type="product",
+            order=order,
+            created_by=order.origin.created_by
+            if order.origin
+            else order.destination.created_by,
+            updated_by=order.origin.created_by
+            if order.origin
+            else order.destination.created_by,
+        )
+        if supply_delivery.order.origin:
+            sync_inventory_item(inventory_item=supply_delivery.supplied_inventory_item)
+        else:
+            sync_inventory_item(
+                location=supply_delivery.order.destination,
+                product=supply_delivery.supplied_inventory_item.product,
+            )
+        return supply_delivery
+
+    def _delivery_order(
+        self,
+        status=None,
+        origin=None,
+        destination=None,
+        supplier=None,
+        name=None,
+    ):
+        return DeliveryOrder.objects.create(
+            status=status or "in_progress",
+            origin=origin,
+            destination=destination,
+            supplier=supplier,
+            name=name,
+            created_by=origin.created_by if origin else destination.created_by,
+            updated_by=origin.created_by if origin else destination.created_by,
+        )
+
+    def _create_lab_definition_objects_for_facility(self, facility, user=None):  # noqa : PLR0915
         def __create_object(model, **kwargs):
             obj = model.de_serialize()
             obj.facility = facility
@@ -633,6 +833,8 @@ class Command(BaseCommand):
             obj.updated_by = user or facility.updated_by
             for key, value in kwargs.items():
                 setattr(obj, key, value)
+            if hasattr(obj, "calculate_slug"):
+                obj.slug = obj.calculate_slug()
             obj.save()
             return obj
 
@@ -798,7 +1000,6 @@ class Command(BaseCommand):
 
         blood_glucose_specimen_definition = __create_object(
             BaseSpecimenDefinitionSpec(
-                slug="blood-glucose-test-specimen",
                 title="Blood Glucose Test Specimen",
                 status="active",
                 description="A venous blood specimen collected for the quantitative measurement of glucose concentration in blood. Used in diagnosis and monitoring of diabetes mellitus and glucose metabolism disorders.",
@@ -821,11 +1022,11 @@ class Command(BaseCommand):
                     "requirement": "Refrigerated (2-8°C). Specimen must be centrifuged and plasma separated within 2 hours of collection if not using fluoride tube. For accurate glucose measurement, immediate processing or use of glycolysis inhibitor tubes (e.g., sodium fluoride/potassium oxalate) is recommended.",
                     "retention_time": {"unit": code_ucum_h, "value": 24},
                 },
-            )
+            ),
+            slug="blood-glucose-specimen",
         )
         cbc_specimen_definition = __create_object(
             BaseSpecimenDefinitionSpec(
-                slug="cbc-blood",
                 title="CBC Blood Specimen",
                 status="active",
                 description="Whole blood specimen collected via venipuncture for performing a Complete Blood Count (CBC) test.",
@@ -848,11 +1049,11 @@ class Command(BaseCommand):
                     "requirement": "Collected in EDTA tube to prevent clotting.\nShould be processed within 6 hours of collection.",
                     "retention_time": {"unit": code_ucum_h, "value": 6},
                 },
-            )
+            ),
+            slug="cbc-blood",
         )
         lipid_panel_specimen_definition = __create_object(
             BaseSpecimenDefinitionSpec(
-                slug="lipid-panel-blood-specimen",
                 title="Lipid Panel Blood Specimen",
                 status="active",
                 description="Venous blood specimen collected to evaluate cholesterol levels including total cholesterol, HDL, LDL, and triglycerides.",
@@ -875,11 +1076,11 @@ class Command(BaseCommand):
                     "requirement": "Refrigerated (2-8°C). Allow blood to clot at room temperature for 30 minutes. Centrifuge and separate serum promptly.",
                     "retention_time": {"unit": code_ucum_d, "value": 7},
                 },
-            )
+            ),
+            slug="lipid-panel-specimen",
         )
         urinalysis_specimen_definition = __create_object(
             BaseSpecimenDefinitionSpec(
-                slug="urinalysis-specimen",
                 title="Urinalysis Specimen",
                 status="active",
                 description="Midstream clean-catch urine specimen collected for analysis of physical, chemical, and microscopic properties.",
@@ -902,23 +1103,37 @@ class Command(BaseCommand):
                     "requirement": "Up to 24 hours refrigerated. Deliver to lab within 2 hours of collection. If delayed, refrigerate immediately.",
                     "retention_time": {"unit": code_ucum_h, "value": 2},
                 },
-            )
+            ),
+            slug="urinalysis-specimen",
         )
 
         fasting_blood_glucose_observation_definition = __create_object(
             BaseObservationDefinitionSpec(
-                slug="fasting_blood_glucose",
                 title="Fasting Blood Glucose",
                 status="active",
                 description="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
                 category="laboratory",
                 code=code_loinc_fasting_glucose,
                 permitted_data_type="quantity",
-            )
+                qualified_ranges=[
+                    {
+                        "conditions": [],
+                        "ranges": [
+                            {"interpretation": {"display": "Low"}, "max": 70},
+                            {
+                                "interpretation": {"display": "Normal"},
+                                "min": 70,
+                                "max": 99,
+                            },
+                            {"interpretation": {"display": "High"}, "min": 100},
+                        ],
+                    }
+                ],
+            ),
+            slug="fasting_blood_glucose",
         )
         cbc_observation_definition = __create_object(
             BaseObservationDefinitionSpec(
-                slug="CBC",
                 title="Complete Blood Count",
                 status="active",
                 description="A Complete Blood Count (CBC) is a common laboratory test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), white blood cells (WBC), hemoglobin, hematocrit, and platelets. This test is performed on whole blood using an automated hematology analyzer.",
@@ -930,51 +1145,176 @@ class Command(BaseCommand):
                         "code": code_loinc_hemoglobin,
                         "permitted_unit": code_ucum_g_dl,
                         "permitted_data_type": "quantity",
+                        "qualified_ranges": [
+                            {
+                                "conditions": [],
+                                "ranges": [
+                                    {
+                                        "interpretation": {"display": "Low"},
+                                        "max": 12,
+                                    },
+                                    {
+                                        "interpretation": {"display": "Normal"},
+                                        "min": 12,
+                                        "max": 16,
+                                    },
+                                    {
+                                        "interpretation": {"display": "High"},
+                                        "min": 16,
+                                    },
+                                ],
+                            },
+                            {
+                                "conditions": [],
+                                "ranges": [
+                                    {
+                                        "interpretation": {"display": "Low"},
+                                        "max": 14,
+                                    },
+                                    {
+                                        "interpretation": {"display": "Normal"},
+                                        "min": 14,
+                                        "max": 18,
+                                    },
+                                    {
+                                        "interpretation": {"display": "High"},
+                                        "min": 18,
+                                    },
+                                ],
+                            },
+                        ],
                     },
                     {
                         "code": code_loinc_hematocrit,
                         "permitted_unit": code_ucum_percent,
                         "permitted_data_type": "quantity",
+                        "qualified_ranges": [
+                            {
+                                "conditions": [],
+                                "ranges": [
+                                    {"interpretation": {"display": "Low"}, "max": 36},
+                                    {
+                                        "interpretation": {"display": "Normal"},
+                                        "min": 36,
+                                        "max": 48,
+                                    },
+                                    {"interpretation": {"display": "High"}, "min": 48},
+                                ],
+                            },
+                            {
+                                "conditions": [],
+                                "ranges": [
+                                    {"interpretation": {"display": "Low"}, "max": 40},
+                                    {
+                                        "interpretation": {"display": "Normal"},
+                                        "min": 40,
+                                        "max": 52,
+                                    },
+                                    {"interpretation": {"display": "High"}, "min": 52},
+                                ],
+                            },
+                        ],
                     },
                     {
                         "code": code_loinc_erythrocytes,
                         "permitted_unit": code_ucum_million_per_ul,
                         "permitted_data_type": "quantity",
+                        "qualified_ranges": [
+                            {
+                                "conditions": [],
+                                "ranges": [
+                                    {
+                                        "interpretation": {"display": "Low"},
+                                        "max": 4.0,
+                                    },
+                                    {
+                                        "interpretation": {"display": "Normal"},
+                                        "min": 4.0,
+                                        "max": 6.0,
+                                    },
+                                    {
+                                        "interpretation": {"display": "High"},
+                                        "min": 6.0,
+                                    },
+                                ],
+                            }
+                        ],
                     },
                     {
                         "code": code_loinc_platelets,
                         "permitted_unit": code_ucum_thousands_per_ul,
                         "permitted_data_type": "quantity",
+                        "qualified_ranges": [
+                            {
+                                "conditions": [],
+                                "ranges": [
+                                    {
+                                        "interpretation": {"display": "Low"},
+                                        "max": 150,
+                                    },
+                                    {
+                                        "interpretation": {"display": "Normal"},
+                                        "min": 150,
+                                        "max": 450,
+                                    },
+                                    {
+                                        "interpretation": {"display": "High"},
+                                        "min": 450,
+                                    },
+                                ],
+                            }
+                        ],
                     },
                 ],
                 method=code_snomed_automated_count,
                 permitted_unit=code_ucum_g_dl,
-            )
+                qualified_ranges=[],
+            ),
+            slug="complete-blood-count",
         )
+
         lipid_panel_observation_definition = __create_object(
             BaseObservationDefinitionSpec(
-                slug="lipid-panel-observation",
                 title="Lipid Panel Observation",
                 status="active",
                 description="A comprehensive blood test measuring cholesterol and triglyceride levels to assess cardiovascular health.",
                 category="laboratory",
                 code=code_loinc_lipid_panel,
                 permitted_data_type="quantity",
-            )
+                qualified_ranges=[
+                    {
+                        "conditions": [],
+                        "ranges": [
+                            {
+                                "interpretation": {"display": "Desirable"},
+                                "max": 200,
+                            },
+                            {
+                                "interpretation": {"display": "Borderline High"},
+                                "min": 200,
+                                "max": 239,
+                            },
+                            {"interpretation": {"display": "High"}, "min": 239},
+                        ],
+                    }
+                ],
+            ),
+            slug="lipid-panel-observation",
         )
+
         urinalysis_observation_definition = __create_object(
             BaseObservationDefinitionSpec(
-                slug="urinalysis-observation",
                 title="Urinalysis Observation",
                 status="active",
                 description="A diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
                 category="laboratory",
                 code=code_loinc_urine,
-                permitted_data_type="quantity",
+                permitted_data_type="choice",
                 method=code_snomed_urine_dipstick,
-            )
+                qualified_ranges=[],
+            ),
+            slug="urinalysis-observation",
         )
-
         default_price_components = [
             {
                 "code": {
@@ -1005,79 +1345,85 @@ class Command(BaseCommand):
             },
         ]
 
-        fasting_blood_glucose_charge_definition = __create_object(
-            ChargeItemDefinitionSpec(
-                status="active",
-                title="Fasting Blood Glucose Test",
-                slug="fasting-blood-glucose-test",
-                description="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
-                purpose="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
-                price_components=[
-                    {"amount": 600.0, "monetary_component_type": "base"},
-                    *default_price_components,
-                ],
-            )
+        fasting_blood_glucose_charge_definition = self._create_charge_item_definition(
+            facility,
+            title="Fasting Blood Glucose Test",
+            slug="fasting-glucose-test",
+            description="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
+            purpose="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
+            price_components=[
+                {"amount": 600.0, "monetary_component_type": "base"},
+                *default_price_components,
+            ],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="charge_item_definition"
+            ),
         )
-        cbc_charge_definition = __create_object(
-            ChargeItemDefinitionSpec(
-                status="active",
-                title="Complete Blood Count (CBC)",
-                slug="complete-blood-count",
-                description="A Complete Blood Count (CBC) is a common laboratory test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), white blood cells (WBC), hemoglobin, hematocrit, and platelets. This test is performed on whole blood using an automated hematology analyzer.",
-                purpose="A Complete Blood Count (CBC) is a common laboratory test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), white blood cells (WBC), hemoglobin, hematocrit, and platelets. This test is performed on whole blood using an automated hematology analyzer.",
-                price_components=[
-                    {"amount": 450.0, "monetary_component_type": "base"},
-                    {
-                        "code": {
-                            "code": "child",
-                            "system": "http://ohc.network/codes/monetary/discount",
-                            "display": "Child Discount",
-                        },
-                        "factor": 5.0,
-                        "monetary_component_type": "discount",
+        cbc_charge_definition = self._create_charge_item_definition(
+            facility,
+            title="Complete Blood Count (CBC) Test",
+            slug="complete-blood-count",
+            description="A Complete Blood Count (CBC) is a common laboratory test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), white blood cells (WBC), hemoglobin, hematocrit, and platelets. This test is performed on whole blood using an automated hematology analyzer.",
+            purpose="A Complete Blood Count (CBC) is a common laboratory test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), white blood cells (WBC), hemoglobin, hematocrit, and platelets. This test is performed on whole blood using an automated hematology analyzer.",
+            price_components=[
+                {"amount": 450.0, "monetary_component_type": "base"},
+                {
+                    "code": {
+                        "code": "child",
+                        "system": "http://ohc.network/codes/monetary/discount",
+                        "display": "Child Discount",
                     },
-                    *default_price_components,
-                ],
-            )
+                    "factor": 5.0,
+                    "monetary_component_type": "discount",
+                },
+                *default_price_components,
+            ],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="charge_item_definition"
+            ),
         )
-        lipid_panel_charge_definition = __create_object(
-            ChargeItemDefinitionSpec(
-                status="active",
-                title="Lipid Panel Test",
-                slug="lipid-panel-test",
-                derived_from_uri="urn:chargeitem:lipid-panel",
-                description="Comprehensive blood test measuring cholesterol and triglyceride levels to assess cardiovascular health.",
-                purpose="Billing for lipid panel diagnostic service.",
-                price_components=[
-                    {"amount": 400.0, "monetary_component_type": "base"},
-                    *default_price_components,
-                ],
-            )
+
+        lipid_panel_charge_definition = self._create_charge_item_definition(
+            facility,
+            title="Lipid Panel Test",
+            slug="lipid-panel-test",
+            derived_from_uri="urn:chargeitem:lipid-panel",
+            description="Comprehensive blood test measuring cholesterol and triglyceride levels to assess cardiovascular health.",
+            purpose="Billing for lipid panel diagnostic service.",
+            price_components=[
+                {"amount": 400.0, "monetary_component_type": "base"},
+                *default_price_components,
+            ],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="charge_item_definition"
+            ),
         )
-        urinalysis_charge_definition = __create_object(
-            ChargeItemDefinitionSpec(
-                status="active",
-                title="Urinalysis Test",
-                slug="urinalysis-test",
-                derived_from_uri="urn:chargeitem:urinalysis",
-                description="Diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
-                purpose="Billing for urinalysis diagnostic service.",
-                price_components=[
-                    {"amount": 500.0, "monetary_component_type": "base"},
-                    {"amount": 15.55, "monetary_component_type": "discount"},
-                    {
-                        "code": {
-                            "code": "cgst",
-                            "system": "http://ohc.network/codes/monetary/tax",
-                            "display": "CGST",
-                        },
-                        "factor": 3.0,
-                        "monetary_component_type": "tax",
+
+        urinalysis_charge_definition = self._create_charge_item_definition(
+            facility,
+            title="Urinalysis Test",
+            slug="urinalysis-test",
+            derived_from_uri="urn:chargeitem:urinalysis",
+            description="Diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
+            purpose="Billing for urinalysis diagnostic service.",
+            price_components=[
+                {"amount": 500.0, "monetary_component_type": "base"},
+                {"amount": 15.55, "monetary_component_type": "discount"},
+                {
+                    "code": {
+                        "code": "cgst",
+                        "system": "http://ohc.network/codes/monetary/tax",
+                        "display": "CGST",
                     },
-                    *default_price_components,
-                ],
-                version=1,
-            )
+                    "factor": 3.0,
+                    "monetary_component_type": "tax",
+                },
+                *default_price_components,
+            ],
+            version=1,
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="charge_item_definition"
+            ),
         )
 
         pathology_service = __create_object(
@@ -1092,73 +1438,298 @@ class Command(BaseCommand):
 
         __create_object(
             BaseActivityDefinitionSpec(
-                slug="fasting_glucose",
                 title="Fasting Blood Glucose",
                 status="active",
                 description="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
                 usage="Measures the concentration of glucose in plasma after 8-12 hours of fasting to screen for or monitor diabetes mellitus.",
+                classification="laboratory",
                 category="laboratory",
                 kind="service_request",
                 code=code_snomed_fasting_glucose,
                 diagnostic_report_codes=[code_loinc_fasting_glucose_serum],
             ),
+            slug="fasting_glucose",
             specimen_requirements=[blood_glucose_specimen_definition.id],
             observation_result_requirements=[
                 fasting_blood_glucose_observation_definition.id
             ],
             locations=[pathology_service.id],
             charge_item_definitions=[fasting_blood_glucose_charge_definition.id],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="activity_definition"
+            ),
         )
         __create_object(
             BaseActivityDefinitionSpec(
                 id="76c88bae-f4a4-4200-86b9-77f9a26d1a13",
-                slug="complete_blood_count",
                 title="Complete Blood Count (CBC) Panel",
                 status="active",
                 description="A Complete Blood Count (CBC) is a common laboratory test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), white blood cells (WBC), hemoglobin, hematocrit, and platelets.",
                 usage="test that evaluates the overall health status by measuring multiple components of blood including red blood cells (RBC), ",
+                classification="laboratory",
                 category="laboratory",
                 kind="service_request",
                 code=code_snomed_cbc,
                 diagnostic_report_codes=[code_loinc_cbc_panel],
             ),
+            slug="complete_blood_count",
             specimen_requirements=[cbc_specimen_definition.id],
             observation_result_requirements=[cbc_observation_definition.id],
             locations=[pathology_service.id],
             charge_item_definitions=[cbc_charge_definition.id],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="activity_definition"
+            ),
         )
         __create_object(
             BaseActivityDefinitionSpec(
-                slug="lipid_panel",
                 title="Lipid Panel",
                 status="active",
                 derived_from_uri="urn:activity:lipid-panel",
                 description="A comprehensive blood test measuring cholesterol and triglyceride levels to assess cardiovascular health.",
                 usage="A comprehensive blood test measuring cholesterol and triglyceride levels to assess cardiovascular health.",
+                classification="laboratory",
                 category="laboratory",
                 kind="service_request",
                 code=code_loinc_lipid_panel,
                 diagnostic_report_codes=[code_loinc_lipid_panel],
             ),
+            slug="lipid_panel",
             specimen_requirements=[lipid_panel_specimen_definition.id],
             observation_result_requirements=[lipid_panel_observation_definition.id],
             locations=[pathology_service.id],
             charge_item_definitions=[lipid_panel_charge_definition.id],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="activity_definition"
+            ),
         )
         __create_object(
             BaseActivityDefinitionSpec(
-                slug="urinalysis",
                 title="Urinalysis",
                 status="active",
                 description="A diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
                 usage="A diagnostic test analyzing urine's physical, chemical, and microscopic properties to detect various conditions.",
+                classification="laboratory",
                 category="laboratory",
                 kind="service_request",
                 code=code_loinc_urine,
                 diagnostic_report_codes=[code_loinc_urine],
             ),
+            slug="urinalysis",
             specimen_requirements=[urinalysis_specimen_definition.id],
             observation_result_requirements=[urinalysis_observation_definition.id],
             locations=[pathology_service.id],
             charge_item_definitions=[urinalysis_charge_definition.id],
+            category=self._create_resource_category(
+                facility, title="Lab Tests", resource_type="activity_definition"
+            ),
+        )
+
+    def _create_inventory_items(self, facility, user=None):
+        def __create_object(model, **kwargs):
+            obj = model.de_serialize()
+            obj.facility = facility
+            obj.created_by = user or facility.created_by
+            obj.updated_by = user or facility.updated_by
+            for key, value in kwargs.items():
+                setattr(obj, key, value)
+            if hasattr(obj, "calculate_slug"):
+                obj.slug = obj.calculate_slug()
+            obj.save()
+            return obj
+
+        inventory_location = self._create_location(
+            user or facility.created_by,
+            facility,
+            [facility.default_internal_organization],
+            mode="kind",
+            form="ro",
+            name="Pharmacy",
+        )
+
+        __create_object(
+            BaseHealthcareServiceSpec(
+                internal_type="pharmacy",
+                name="Main Pharmacy",
+                styling_metadata={},
+                extra_details="",
+            ),
+            locations=[inventory_location.id],
+        )
+
+        oral_tablet_definitional = {
+            "dosage_form": {
+                "code": "421026006",
+                "system": "http://snomed.info/sct",
+                "display": "Oral tablet",
+            },
+            "intended_routes": [
+                {
+                    "code": "26643006",
+                    "system": "http://snomed.info/sct",
+                    "display": "Oral route",
+                }
+            ],
+        }
+        tablet_unit = {
+            "system": "http://unitsofmeasure.org",
+            "code": "{tbl}",
+            "display": "tablets",
+        }
+
+        amoxicillin_knowledge = self._create_product_knowledge(
+            facility,
+            {
+                "code": "27658006",
+                "system": "http://snomed.info/sct",
+                "display": "Amoxicillin-containing product",
+            },
+            tablet_unit,
+            definitional=oral_tablet_definitional,
+            name="Amoxicillin",
+            category=self._create_resource_category(
+                facility, "Medications", resource_type="product_knowledge"
+            ),
+        )
+        paracetamol_knowledge = self._create_product_knowledge(
+            facility,
+            {
+                "code": "90332006",
+                "system": "http://snomed.info/sct",
+                "display": "Paracetamol-containing product",
+            },
+            tablet_unit,
+            definitional=oral_tablet_definitional,
+            name="Paracetamol",
+            category=self._create_resource_category(
+                facility, "Medications", resource_type="product_knowledge"
+            ),
+        )
+        ibuprofen_knowledge = self._create_product_knowledge(
+            facility,
+            {
+                "code": "38268001",
+                "system": "http://snomed.info/sct",
+                "display": "Ibuprofen-containing product",
+            },
+            tablet_unit,
+            definitional=oral_tablet_definitional,
+            name="Ibuprofen",
+            category=self._create_resource_category(
+                facility, "Medications", resource_type="product_knowledge"
+            ),
+        )
+        gloves = self._create_product_knowledge(
+            facility,
+            {
+                "code": "46713009",
+                "system": "http://snomed.info/sct",
+                "display": "Gloves",
+            },
+            {
+                "system": "http://unitsofmeasure.org",
+                "code": "{count}",
+                "display": "count",
+            },
+            product_type="consumable",
+            name="Gloves",
+            category=self._create_resource_category(
+                facility, "Consumables", resource_type="product_knowledge"
+            ),
+        )
+
+        amoxicillin_charge = self._create_charge_item_definition(
+            facility,
+            "Amoxicillin 500mg Capsule",
+            50.0,
+            category=self._create_resource_category(
+                facility, "Medications", resource_type="charge_item_definition"
+            ),
+        )
+        paracetamol_charge = self._create_charge_item_definition(
+            facility,
+            "Paracetamol 500mg Tablet",
+            20.0,
+            category=self._create_resource_category(
+                facility, "Medications", resource_type="charge_item_definition"
+            ),
+        )
+        ibuprofen_charge = self._create_charge_item_definition(
+            facility,
+            "Ibuprofen 400mg Tablet",
+            30.0,
+            category=self._create_resource_category(
+                facility, "Medications", resource_type="charge_item_definition"
+            ),
+        )
+        gloves_charge = self._create_charge_item_definition(
+            facility,
+            "Pair of Gloves",
+            5.0,
+            category=self._create_resource_category(
+                facility, "Consumables", resource_type="charge_item_definition"
+            ),
+        )
+
+        amoxicillin_product = self._create_product(
+            facility, amoxicillin_knowledge, amoxicillin_charge
+        )
+        paracetamol_product = self._create_product(
+            facility, paracetamol_knowledge, paracetamol_charge
+        )
+        ibuprofen_product = self._create_product(
+            facility, ibuprofen_knowledge, ibuprofen_charge
+        )
+        gloves_product = self._create_product(facility, gloves, gloves_charge)
+
+        amoxicillin_inventory_item = self._create_inventory_item(
+            inventory_location, amoxicillin_product
+        )
+        paracetamol_inventory_item = self._create_inventory_item(
+            inventory_location, paracetamol_product
+        )
+        ibuprofen_inventory_item = self._create_inventory_item(
+            inventory_location, ibuprofen_product
+        )
+        gloves_inventory_item = self._create_inventory_item(
+            inventory_location, gloves_product
+        )
+
+        purchase_order = self._delivery_order(
+            destination=inventory_location,
+            supplier=self.supplier,
+            name="Initial Stock Delivery",
+            status="completed",
+        )
+        self._create_supply_delivery(
+            supplied_item=amoxicillin_product,
+            supply_request=None,
+            order=purchase_order,
+            supplied_item_quantity=20,
+            supplied_inventory_item=amoxicillin_inventory_item,
+            status="completed",
+        )
+        self._create_supply_delivery(
+            supplied_item=paracetamol_product,
+            supply_request=None,
+            order=purchase_order,
+            supplied_item_quantity=50,
+            supplied_inventory_item=paracetamol_inventory_item,
+            status="completed",
+        )
+        self._create_supply_delivery(
+            supplied_item=ibuprofen_product,
+            supply_request=None,
+            order=purchase_order,
+            supplied_item_quantity=30,
+            supplied_inventory_item=ibuprofen_inventory_item,
+            status="completed",
+        )
+        self._create_supply_delivery(
+            supplied_item=gloves_product,
+            supply_request=None,
+            order=purchase_order,
+            supplied_item_quantity=15,
+            supplied_inventory_item=gloves_inventory_item,
+            status="completed",
         )

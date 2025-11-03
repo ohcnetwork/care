@@ -10,7 +10,6 @@ from pydantic import UUID4, BaseModel
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -29,6 +28,7 @@ from care.emr.models import (
     FacilityOrganization,
     Patient,
 )
+from care.emr.models.patient import PatientIdentifier, PatientIdentifierConfig
 from care.emr.reports import discharge_summary
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.emr.resources.encounter.spec import (
@@ -39,12 +39,18 @@ from care.emr.resources.encounter.spec import (
     EncounterUpdateSpec,
 )
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
+from care.emr.resources.patient.spec import validate_identifier_config
+from care.emr.resources.patient_identifier.default_expression_evaluator import (
+    evaluate_patient_default_expression,
+)
 from care.emr.resources.tag.config_spec import TagResource
 from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.emr.tasks.discharge_summary import generate_discharge_summary_task
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
+from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class LiveFilter(filters.CharFilter):
@@ -61,7 +67,7 @@ class LiveFilter(filters.CharFilter):
 
 class EncounterFilters(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
-    status = filters.CharFilter(field_name="status", lookup_expr="iexact")
+    status = MultiSelectFilter(field_name="status")
     encounter_class = filters.CharFilter(
         field_name="encounter_class", lookup_expr="iexact"
     )
@@ -196,7 +202,7 @@ class EncounterViewSet(
                 "can_view_patient_obj", self.request.user, patient
             ):
                 return qs.filter(patient=patient)
-            raise PermissionDenied("User Cannot access patient")
+            raise PermissionDenied("User cannot access patient")
 
         if (
             self.action in ["list"]
@@ -313,6 +319,56 @@ class EncounterViewSet(
             {"detail": "Discharge Summary will be generated shortly"},
             status=status.HTTP_202_ACCEPTED,
         )
+
+    class EncounterFacilityIdentifierWriteSpec(BaseModel):
+        identifier: UUID4
+        value: str | None = None
+        set_default: bool = False
+
+    @action(detail=True, methods=["POST"])
+    def set_facility_idenitifier(self, request, *args, **kwargs):
+        request_data = self.EncounterFacilityIdentifierWriteSpec(**request.data)
+        encounter = self.get_object()
+        self.authorize_update({}, encounter)
+        config = get_object_or_404(
+            PatientIdentifierConfig,
+            external_id=request_data.identifier,
+            facility=encounter.facility,
+        )
+        if config.config.get("auto_maintained"):
+            raise ValidationError(
+                {"identifier": "Cannot update auto maintained identifier"},
+            )
+        patient_identifier = PatientIdentifier.objects.filter(
+            patient=encounter.patient, config=config, facility=encounter.facility
+        ).first()
+        if (
+            not request_data.value
+            and patient_identifier
+            and not request_data.set_default
+        ):
+            patient_identifier.delete()
+        if not patient_identifier:
+            patient_identifier = PatientIdentifier(
+                patient=encounter.patient, config=config, facility=encounter.facility
+            )
+        if config.config.get("default_value") and request_data.set_default:
+            patient_identifier.value = evaluate_patient_default_expression(
+                config, config.config.get("default_value")
+            )
+        elif request_data.value:
+            try:
+                validate_identifier_config(
+                    {"config": config.config, "config_obj": config},
+                    request_data.value,
+                    encounter.patient,
+                )
+            except ValueError as e:
+                raise ValidationError({"value": str(e)}) from e
+
+        patient_identifier.value = request_data.value
+        patient_identifier.save()
+        return Response({})
 
     @extend_schema(
         request=EncounterCareTeamMemberWriteSpec, responses={200: EncounterRetrieveSpec}

@@ -1,11 +1,11 @@
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
     EMRCreateMixin,
+    EMRDestroyMixin,
     EMRListMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
@@ -19,6 +19,7 @@ from care.emr.resources.healthcare_service.spec import (
 )
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class HealthcareServiceFilters(filters.FilterSet):
@@ -28,7 +29,12 @@ class HealthcareServiceFilters(filters.FilterSet):
 
 
 class HealthcareServiceViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+    EMRDestroyMixin,
 ):
     database_model = HealthcareService
     pydantic_model = HealthcareServiceWriteSpec
@@ -86,6 +92,9 @@ class HealthcareServiceViewSet(
             model_instance.facility,
         ):
             raise PermissionDenied("Access Denied to Healthcare Service")
+
+    def authorize_destroy(self, instance):
+        self.authorize_update({}, instance)
 
     def get_queryset(self):
         base_queryset = super().get_queryset()
