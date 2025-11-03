@@ -103,8 +103,8 @@ class BaseProductKnowledgeSpec(EMRResource):
     code: Coding | None = None
     base_unit: ValueSetBoundCoding[CARE_UCUM_UNITS.slug]
     name: str
-    names: list[ProductName] = []
-    storage_guidelines: list[StorageGuideline] = []
+    names: list[ProductName] | None = None
+    storage_guidelines: list[StorageGuideline] | None = None
     definitional: ProductDefinitionSpec | None = None
 
 
