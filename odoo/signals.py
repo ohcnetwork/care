@@ -59,11 +59,15 @@ def sync_payment_to_odoo(sender, instance, created, **kwargs):
     """
     Signal handler to sync payment reconciliation to Odoo when created.
     """
-    if created:
-        with transaction.atomic():
-            if instance.status == PaymentReconciliationStatusOptions.active.value:
-                odoo_payment = OdooPaymentResource()
-                odoo_payment.sync_payment_to_odoo_api(instance.external_id)
+    if instance.status == PaymentReconciliationStatusOptions.active.value:
+        odoo_payment = OdooPaymentResource()
+        odoo_payment.sync_payment_to_odoo_api(instance.external_id)
+    elif instance.status in [
+        PaymentReconciliationStatusOptions.cancelled.value,
+        PaymentReconciliationStatusOptions.entered_in_error.value,
+    ]:
+        odoo_payment = OdooPaymentResource()
+        odoo_payment.sync_payment_cancel_to_odoo_api(instance.external_id)
 
 
 @receiver(post_save, sender=ChargeItemDefinition)

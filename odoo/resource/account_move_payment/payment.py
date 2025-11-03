@@ -7,6 +7,7 @@ from care.emr.resources.payment_reconciliation.spec import (
 from odoo.connector.connector import OdooConnector
 from odoo.resource.account_move_payment.spec import (
     AccountMovePaymentApiRequest,
+    AccountPaymentCancelApiRequest,
     CustomerType,
     JournalType,
     PaymentMode,
@@ -63,4 +64,26 @@ class OdooPaymentResource:
         logger.info("Odoo Payment Data: %s", data)
 
         response = OdooConnector.call_api("api/account/move/payment", data)
+        return response["payment"]["id"]
+
+    def sync_payment_cancel_to_odoo_api(self, payment_id: str) -> int | None:
+        """
+        Synchronize a cancelled Django payment reconciliation to Odoo using the custom addon API.
+
+        Args:
+            payment_id: External ID of the Django payment reconciliation
+
+        Returns:
+            Odoo payment ID if successful, None otherwise
+        """
+        payment = PaymentReconciliation.objects.get(external_id=payment_id)
+
+        data = AccountPaymentCancelApiRequest(
+            x_care_id=str(payment.external_id),
+            reason=payment.status,
+        ).model_dump()
+
+        logger.info("Odoo Payment Cancel Data: %s", data)
+
+        response = OdooConnector.call_api("api/account/move/payment/cancel", data)
         return response["payment"]["id"]

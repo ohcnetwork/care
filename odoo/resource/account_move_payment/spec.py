@@ -29,3 +29,8 @@ class AccountMovePaymentApiRequest(BaseModel):
     payment_mode: PaymentMode
     partner_data: PartnerData
     customer_type: CustomerType
+
+
+class AccountPaymentCancelApiRequest(BaseModel):
+    x_care_id: str
+    reason: str | None = None
