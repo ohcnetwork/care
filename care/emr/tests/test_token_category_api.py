@@ -319,3 +319,32 @@ class TokenCategoryAPITestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(response.data["results"][0]["id"], str(category1.external_id))
+
+    # Test case for set_default action
+
+    def test_set_default_token_category(self):
+        category1 = self.create_token_category(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.location,
+            default=False,
+        )
+        category2 = self.create_token_category(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.location,
+            default=True,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            reverse(
+                "token-category-set-default",
+                kwargs={
+                    "facility_external_id": str(self.facility.external_id),
+                    "external_id": str(category1.external_id),
+                },
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        category1.refresh_from_db()
+        category2.refresh_from_db()
+        self.assertTrue(category1.default)
+        self.assertFalse(category2.default)
