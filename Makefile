@@ -1,4 +1,4 @@
-.PHONY: logs
+.PHONY: logs reset-and-setup
 
 
 DOCKER_VERSION := $(shell docker --version 2>/dev/null)
@@ -76,6 +76,8 @@ load-db:
 reset-db:
 	docker compose exec db sh -c "dropdb -U postgres care -f"
 	docker compose exec db sh -c "createdb -U postgres care"
+
+reset-and-setup: reset-db migrate load-fixtures
 
 ruff-all:
 	ruff check .

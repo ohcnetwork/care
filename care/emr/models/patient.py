@@ -8,6 +8,7 @@ from django.template.defaultfilters import pluralize
 from django.utils import timezone
 
 from care.emr.models import EMRBaseModel
+from care.emr.resources.base import model_from_cache
 from care.users.models import User
 from care.utils.models.validators import mobile_or_landline_number_validator
 
@@ -209,10 +210,10 @@ class PatientIdentifierConfigCache:
         )
 
         return [
-            PatientIdentifierListSpec.serialize(x).to_json()
+            model_from_cache(PatientIdentifierListSpec, id=x.id)
             for x in PatientIdentifierConfig.objects.filter(
                 facility__isnull=True, status=PatientIdentifierStatus.active.value
-            )
+            ).only("id")
         ]
 
     @classmethod
@@ -223,17 +224,8 @@ class PatientIdentifierConfigCache:
         )
 
         return [
-            PatientIdentifierListSpec.serialize(x).to_json()
+            model_from_cache(PatientIdentifierListSpec, id=x.id)
             for x in PatientIdentifierConfig.objects.filter(
                 facility_id=facility_id, status=PatientIdentifierStatus.active.value
-            )
+            ).only("id")
         ]
-
-    @classmethod
-    def clear_facility_cache(cls, facility_id):
-        if cls.facility_configs:
-            cls.facility_configs.pop(facility_id, None)
-
-    @classmethod
-    def clear_instance_cache(cls):
-        cls.instance_configs = None

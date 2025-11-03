@@ -20,22 +20,28 @@ class BasePatientIdentifierConfig:
     PARTIAL_SEARCH = None
 
     @classmethod
-    def get__or_create_system_name_identifier_config(cls):
-        if cls.IDENTIFIER_SYSTEM in cls.CACHED_CONFIG:
-            return cls.CACHED_CONFIG[cls.IDENTIFIER_SYSTEM]
-        identifier = PatientIdentifierConfig.objects.filter(
-            config__system=cls.IDENTIFIER_SYSTEM,
-            facility__isnull=True,
-        ).first()
+    def get_or_create_system_name_identifier_config(cls, facility):
+        facility_key = str(facility.id) if facility else ""
+        cached_key = f"{facility_key}:{cls.IDENTIFIER_SYSTEM}"
+        if cached_key in cls.CACHED_CONFIG:
+            return cls.CACHED_CONFIG[cached_key]
+        identifiers = PatientIdentifierConfig.objects.filter(
+            config__system=cls.IDENTIFIER_SYSTEM
+        )
+        if facility:
+            identifiers = identifiers.filter(facility=facility)
+        else:
+            identifiers = identifiers.filter(facility__isnull=True)
+        identifier = identifiers.first()
         if not identifier:
-            identifier = cls.create_identifier()
-        cls.CACHED_CONFIG[cls.IDENTIFIER_SYSTEM] = identifier
-        return cls.CACHED_CONFIG[cls.IDENTIFIER_SYSTEM]
+            identifier = cls.create_identifier(facility)
+        cls.CACHED_CONFIG[cached_key] = identifier
+        return cls.CACHED_CONFIG[cached_key]
 
     @classmethod
-    def create_identifier(cls):
+    def create_identifier(cls, facility):
         return PatientIdentifierConfig.objects.create(
-            facility=None,
+            facility=facility,
             status=PatientIdentifierStatus.active.value,
             config=IdentifierConfig(
                 use=PatientIdentifierUse.secondary,
@@ -59,8 +65,8 @@ class BasePatientIdentifierConfig:
         return None
 
     @classmethod
-    def update_identifier(cls, patient):
-        identifier = cls.get__or_create_system_name_identifier_config()
+    def update_identifier(cls, patient, facility=None):
+        identifier = cls.get_or_create_system_name_identifier_config(facility)
         current_identifier = PatientIdentifier.objects.filter(
             patient=patient, config=identifier
         ).first()
