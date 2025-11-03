@@ -183,3 +183,139 @@ class TokenCategoryAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn("Access Denied to Token Category", response.data["detail"])
+
+    # Test cases for retrieve token categories
+
+    def test_retrieve_token_category_as_superuser(self):
+        category = self.create_token_category(facility=self.facility)
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.generate_detail_url(
+                facility=str(self.facility.external_id),
+                external_id=category.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(category.external_id))
+        self.assertEqual(response.data["name"], category.name)
+        self.assertEqual(response.data["shorthand"], category.shorthand)
+
+    def test_retrieve_token_category_as_user_with_permissions(self):
+        category = self.create_token_category(facility=self.facility)
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.get(
+            self.generate_detail_url(
+                facility=str(self.facility.external_id),
+                external_id=category.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(category.external_id))
+        self.assertEqual(response.data["name"], category.name)
+        self.assertEqual(response.data["shorthand"], category.shorthand)
+
+    def test_retrieve_token_category_as_user_without_permissions(self):
+        category = self.create_token_category(facility=self.facility)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.generate_detail_url(
+                facility=str(self.facility.external_id),
+                external_id=category.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Access Denied to Token Category", response.data["detail"])
+
+    # Test cases for list token categories
+
+    def test_list_token_categories_as_superuser(self):
+        category1 = self.create_token_category(facility=self.facility)
+        category2 = self.create_token_category(facility=self.facility)
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(self.base_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        returned_ids = {item["id"] for item in response.data["results"]}
+        self.assertIn(str(category1.external_id), returned_ids)
+        self.assertIn(str(category2.external_id), returned_ids)
+
+    def test_list_token_categories_as_user_with_permissions(self):
+        category1 = self.create_token_category(facility=self.facility)
+        category2 = self.create_token_category(facility=self.facility)
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.get(self.base_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        returned_ids = {item["id"] for item in response.data["results"]}
+        self.assertIn(str(category1.external_id), returned_ids)
+        self.assertIn(str(category2.external_id), returned_ids)
+
+    def test_list_token_categories_as_user_without_permissions(self):
+        self.create_token_category(facility=self.facility)
+        self.create_token_category(facility=self.facility)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.base_url)
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Access Denied to Token Category", response.data["detail"])
+
+    def test_list_token_categories_with_resource_type_filter(self):
+        category1 = self.create_token_category(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.location,
+        )
+        self.create_token_category(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            f"{self.base_url}?resource_type={SchedulableResourceTypeOptions.location.name}"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(category1.external_id))
+
+    def test_list_token_categories_with_name_filter(self):
+        category1 = self.create_token_category(
+            facility=self.facility, name="Vaccination"
+        )
+        self.create_token_category(facility=self.facility, name="General")
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(f"{self.base_url}?name=Vacci")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(category1.external_id))
+
+    def test_list_token_categories_with_shorthand_filter(self):
+        category1 = self.create_token_category(
+            facility=self.facility,
+            shorthand="VACC",
+        )
+        self.create_token_category(facility=self.facility, shorthand="GEN")
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(f"{self.base_url}?shorthand=VAC")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(category1.external_id))
+
+    def test_list_token_categories_with_default_filter(self):
+        category1 = self.create_token_category(
+            facility=self.facility,
+            default=True,
+        )
+        self.create_token_category(facility=self.facility, default=False)
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(f"{self.base_url}?default=True")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["id"], str(category1.external_id))
