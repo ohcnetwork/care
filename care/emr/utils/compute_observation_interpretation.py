@@ -18,6 +18,9 @@ def compute_observation_interpretation(model_instance, metrics_cache):
         if interpretation:
             model_instance.interpretation = interpretation
             model_instance.reference_range = ranges
+        else:
+            model_instance.interpretation = "Normal"
+            model_instance.reference_range = []
         metrics_cache = evaluator.metric_cache
         # Handle Components
         if not model_instance.observation_definition.component:
@@ -43,6 +46,9 @@ def compute_observation_interpretation(model_instance, metrics_cache):
             if interpretation:
                 component["interpretation"] = interpretation
                 component["reference_range"] = ranges
+            else:
+                component["interpretation"] = "Normal"
+                component["reference_range"] = []
             metrics_cache = evaluator.metric_cache
     except Exception as e:
         raise e

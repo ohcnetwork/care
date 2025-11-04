@@ -17,7 +17,7 @@ def apply_charge_item_definition(
         account = get_default_account(patient, facility)
     if not quantity:
         quantity = 1.0
-    context = {"patient": patient}
+    context = {"patient": patient, "facility": facility}
     if encounter:
         context["encounter"] = encounter
     selected_components = []

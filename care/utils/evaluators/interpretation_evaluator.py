@@ -107,9 +107,12 @@ class InterpretationEvaluator:
                 metric_evaluator_obj = self.metric_cache[metric]
             else:
                 metric_evaluator = EvaluatorMetricsRegistry.get_evaluator(metric)
-                metric_evaluator_obj = metric_evaluator(
-                    context.get(metric_evaluator.context)
-                )
+                if metric_evaluator.context == "tag":
+                    metric_evaluator_obj = metric_evaluator(context)
+                else:
+                    metric_evaluator_obj = metric_evaluator(
+                        context.get(metric_evaluator.context)
+                    )
                 self.metric_cache[metric] = metric_evaluator_obj
             if not metric_evaluator_obj.apply_rule(
                 condition.get("operation"), condition.get("value")
@@ -117,21 +120,22 @@ class InterpretationEvaluator:
                 return False
         return True
 
-    def get_matching_condition(self, context: dict, value: Any):
+    def get_matching_conditions(self, context: dict, value: Any):
+        matching_conditions = []
         for rule in self.rules:
             conditions = rule.get("conditions", {})
             if self.evaluate_conditions(conditions, context):
-                return rule, value
-        return None, None
+                matching_conditions.append(rule)
+        return matching_conditions
 
     def evaluate(self, context: dict, value: Any) -> str:
         """
         Evaluate an observation value against rules to determine clinical interpretation.
         """
-        rule, value = self.get_matching_condition(context, value)
-        # All required conditions are met.
-        if rule:
-            interpretation, ranges = self.get_interpretation(rule, value)
-            if interpretation:
-                return interpretation, ranges
+        matching_conditions = self.get_matching_conditions(context, value)
+        if matching_conditions:
+            for rule in matching_conditions:
+                interpretation, ranges = self.get_interpretation(rule, value)
+                if interpretation:
+                    return interpretation, ranges
         return None, []
