@@ -8,10 +8,7 @@ from django.utils import timezone
 from care.emr.models.report.report_upload import ReportUpload
 from care.emr.models.report.template import Template
 from care.emr.reports.context_builder.report_builder import ReportContextBuilder
-from care.emr.reports.renderer.generators.html_generator import HTMLGenerator
-from care.emr.reports.renderer.generators.weasyprint_generator import (
-    WeasyPrintGenerator,
-)
+from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.renderer.renderer import Renderer
 from care.emr.reports.renderer.template_engine import TemplateEngine
 
@@ -66,23 +63,24 @@ def generate_and_upload_report(  # noqa: PLR0915
 
     template_engine = TemplateEngine()
 
-    if output_format.lower() == "pdf":
-        generator = WeasyPrintGenerator()
-        file_extension = ".pdf"
-        mime_type = "application/pdf"
-    elif output_format.lower() == "html":
-        generator = HTMLGenerator()
-        file_extension = ".html"
-        mime_type = "text/html"
-    else:
-        error_msg = f"Unsupported output format: {output_format}"
+    format_lower = output_format.lower()
+    try:
+        generator_class = GeneratorRegistry.get(format_lower)
+        generator = generator_class()
+        format_config = GeneratorRegistry.get_format_config(format_lower)
+        file_extension = format_config["file_extension"]
+        mime_type = format_config["mime_type"]
+    except KeyError as e:
+        error_msg = f"Unsupported output format: {output_format}. {e!s}"
         logger.error(error_msg)
-        raise ValueError(error_msg)
+        raise ValueError(error_msg) from e
 
     logger.debug(
-        "Using output format: %s, generator: %s",
+        "Using output format: %s, generator: %s, mime: %s, ext: %s",
         output_format,
         generator.__class__.__name__,
+        mime_type,
+        file_extension,
     )
 
     renderer = Renderer(template_engine, generator)

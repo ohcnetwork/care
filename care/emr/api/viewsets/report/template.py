@@ -11,10 +11,7 @@ from rest_framework.response import Response
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models.report.template import Template
 from care.emr.reports.context_builder.report_builder import ReportContextBuilder
-from care.emr.reports.renderer.generators.html_generator import HTMLGenerator
-from care.emr.reports.renderer.generators.weasyprint_generator import (
-    WeasyPrintGenerator,
-)
+from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.renderer.renderer import Renderer
 from care.emr.reports.renderer.template_engine import TemplateEngine
 from care.emr.resources.report.template.spec import (
@@ -124,15 +121,12 @@ class TemplateViewSet(EMRModelViewSet):
 
             template_engine = TemplateEngine()
 
-            if output_format == "pdf":
-                generator = WeasyPrintGenerator()
-            elif output_format == "html":
-                generator = HTMLGenerator()
-            else:
+            try:
+                generator_class = GeneratorRegistry.get(output_format)
+                generator = generator_class()
+            except KeyError as e:
                 return Response(
-                    {
-                        "error": f"Unsupported output format: {output_format}. Use 'pdf' or 'html'"
-                    },
+                    {"error": str(e)},
                     status=status.HTTP_400_BAD_REQUEST,
                 )
 

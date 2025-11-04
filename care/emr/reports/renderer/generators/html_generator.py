@@ -1,5 +1,6 @@
 from typing import Any
 
+from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.renderer.generators.base import BaseOutputGenerator
 
 
@@ -57,3 +58,11 @@ class HTMLGenerator(BaseOutputGenerator):
             "title": {"type": "string", "default": "Report"},
             "charset": {"type": "string", "default": "utf-8"},
         }
+
+
+GeneratorRegistry.register(
+    format_type="html",
+    generator_class=HTMLGenerator,
+    mime_type="text/html",
+    file_extension=".html",
+)

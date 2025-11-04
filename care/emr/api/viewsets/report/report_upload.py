@@ -12,6 +12,7 @@ from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models.report.report_upload import ReportUpload
 from care.emr.models.report.template import Template
 from care.emr.reports import report_utils
+from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.report_type_registry import ReportTypeRegistry
 from care.emr.reports.report_type_utils import validate_associating_id
 from care.emr.resources.report.report_upload.spec import (
@@ -159,11 +160,11 @@ class ReportUploadViewSet(EMRModelViewSet):
         if context_config is None:
             context_config = template.context_config
 
-        # Validate output format
-        if output_format not in ["pdf", "html"]:
+        if not GeneratorRegistry.is_registered(output_format):
+            available_formats = ", ".join(GeneratorRegistry.get_all_formats())
             return Response(
                 {
-                    "error": f"Invalid output_format '{output_format}'. Must be 'pdf' or 'html'"
+                    "error": f"Invalid output_format '{output_format}'. Available formats: {available_formats}"
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )

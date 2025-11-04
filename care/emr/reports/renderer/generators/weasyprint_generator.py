@@ -104,3 +104,12 @@ class WeasyPrintGenerator(BaseOutputGenerator):
                 "default": [],
             },
         }
+
+
+def _register():
+    from care.emr.reports.renderer.generators.registry import GeneratorRegistry
+
+    GeneratorRegistry.register("pdf", WeasyPrintGenerator, "application/pdf", ".pdf")
+
+
+_register()
