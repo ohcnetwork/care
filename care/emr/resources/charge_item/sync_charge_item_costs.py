@@ -37,11 +37,19 @@ def sync_charge_item_costs(charge_item):
             total_price += _component.amount
             components.append(_component.model_dump(mode="json", exclude_defaults=True))
     net_price = total_price
+    _highest_discount = 0
+    _highest_discount_component = None
     for component in charge_item_price_components:
         if component.monetary_component_type == MonetaryComponentType.discount.value:
             _component = calculate_amount(component, quantity, net_price)
-            total_price -= _component.amount
-            components.append(_component.model_dump(mode="json", exclude_defaults=True))
+            if _component.amount > _highest_discount:
+                _highest_discount = _component.amount
+                _highest_discount_component = _component
+    if _highest_discount_component:
+        total_price -= _highest_discount
+        components.append(
+            _highest_discount_component.model_dump(mode="json", exclude_defaults=True)
+        )
     taxable_price = total_price
     for component in charge_item_price_components:
         if component.monetary_component_type == MonetaryComponentType.tax.value:
