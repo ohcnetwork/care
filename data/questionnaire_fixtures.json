@@ -2,7 +2,6 @@
     {
         "id": "2c2e0b28-09ee-4822-ae78-d8bc5802b506",
         "slug": "respiratory-support",
-        "version": "1.0",
         "title": "Respiratory Support record IPD",
         "description": "",
         "status": "active",
@@ -54,7 +53,6 @@
     {
         "id": "f8af46b5-a559-43e8-8b0d-a500fae6416f",
         "slug": "ongoing_medication",
-        "version": "1.0",
         "title": "Ongoing Medication",
         "description": "",
         "status": "active",
@@ -78,7 +76,6 @@
     {
         "id": "6da0dcf8-94f9-4979-bc2a-ed7dab59ee25",
         "slug": "medicine",
-        "version": "1.0",
         "title": "Medicine",
         "description": "",
         "status": "active",
@@ -116,7 +113,6 @@
     {
         "id": "3e65b2ae-0707-438d-891e-fa24705e92ee",
         "slug": "test-diagnosis",
-        "version": "1.0",
         "title": "Diagnosis",
         "description": "",
         "status": "active",
@@ -147,7 +143,6 @@
     {
         "id": "3d95fc31-85b7-42dc-aeab-4f706d9a42d7",
         "slug": "death-form-V4",
-        "version": "1.0",
         "title": "Death Form",
         "description": "",
         "status": "active",
@@ -166,7 +161,6 @@
     {
         "id": "d7e6329d-8edc-4720-8753-6bf96747fed5",
         "slug": "patient_feedback",
-        "version": "1.0",
         "title": "Feedback Form  (NCG - Patient)",
         "description": "",
         "status": "active",
@@ -212,7 +206,6 @@
     {
         "id": "3081bed6-b694-42ec-87a8-666c3fd0ae36",
         "slug": "respiratory_status-v3",
-        "version": "1.0",
         "title": "Respiratory Status",
         "description": "A form to document respiratory status, including bilateral air entry and respiratory support details.",
         "status": "active",
@@ -392,7 +385,6 @@
     {
         "id": "742aec8d-0d5e-45e0-b150-07f99e7142b6",
         "slug": "ncgdoctornotes",
-        "version": "1.0",
         "title": "Doctors Notes NCG",
         "description": "",
         "status": "active",
