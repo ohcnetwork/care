@@ -26,6 +26,7 @@ from care.emr.resources.charge_item.spec import (
     ChargeItemStatusOptions,
     ChargeItemWriteSpec,
 )
+from care.emr.resources.charge_item.sync_charge_item_costs import sync_charge_item_costs
 from care.emr.resources.charge_item_definition.spec import (
     ChargeItemDefinitionStatusOptions,
 )
@@ -1002,6 +1003,49 @@ class TestChargeItemBusinessLogicValidation(CareAPITestBase):
                     spec.unit_price_components[0].monetary_component_type,
                     component_type.value,
                 )
+
+    def test_apply_only_highest_discount(self):
+        charge_item = ChargeItem.objects.create(
+            facility=self.facility,
+            title="Test Charge Item",
+            patient=self.patient,
+            encounter=self.encounter,
+            account=self.account,
+            status=ChargeItemStatusOptions.billable.value,
+            quantity=1,
+            unit_price_components=[
+                {
+                    "monetary_component_type": "base",
+                    "amount": 100.0,
+                    "code": {
+                        "system": "http://test.system.com",
+                        "code": "test-base",
+                        "display": "Test Base",
+                    },
+                },
+                {
+                    "monetary_component_type": "discount",
+                    "amount": 10.0,
+                    "code": {
+                        "system": "http://test.system.com",
+                        "code": "test-discount-1",
+                        "display": "Test Discount 1",
+                    },
+                },
+                {
+                    "monetary_component_type": "discount",
+                    "amount": 50.0,
+                    "code": {
+                        "system": "http://test.system.com",
+                        "code": "test-discount-2",
+                        "display": "Test Code 1",
+                    },
+                },
+            ],
+            total_price_components=[],
+        )
+        sync_charge_item_costs(charge_item)
+        self.assertEqual(charge_item.total_price, Decimal("50.00"))
 
     @patch(
         "care.emr.resources.charge_item.sync_charge_item_costs.sync_charge_item_costs"
