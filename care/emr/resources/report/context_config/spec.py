@@ -42,7 +42,7 @@ class ContextConfigSpec(BaseModel):
     model_config = {"extra": "allow"}
 
     @model_validator(mode="after")
-    def validate_against_schema(self):
+    def validate_against_schema(self):  # noqa #PLR0912
         """Validate all configured builders against the dynamic schema"""
         builder = ReportContextBuilder()
         schema = builder.get_full_schema()
@@ -98,6 +98,16 @@ class ContextConfigSpec(BaseModel):
                         msg = (
                             f"Invalid field '{field_name}' for {key}. "
                             f"Valid fields are: {', '.join(sorted(valid_fields))}"
+                        )
+                        raise ValueError(msg)
+
+                allowed_filters = schema["querysets"][key].get("allowed_filters", [])
+                for filter_key in config.filters:
+                    base_filter_key = filter_key.split("__")[0]
+                    if allowed_filters and base_filter_key not in allowed_filters:
+                        msg = (
+                            f"Invalid filter '{filter_key}' for {key}. "
+                            f"Allowed filters are: {', '.join(sorted(allowed_filters))}"
                         )
                         raise ValueError(msg)
 

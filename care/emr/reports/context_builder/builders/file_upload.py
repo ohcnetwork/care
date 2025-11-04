@@ -12,6 +12,7 @@ class FileUploadContextBuilder(QuerysetContextBuilder):
         "upload_completed": True,
         "is_archived": False,
     }
+    allowed_filters = ["file_category", "file_type"]
 
     fields = [
         Field(

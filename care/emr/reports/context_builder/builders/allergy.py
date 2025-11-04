@@ -38,6 +38,12 @@ ALLERGY_INTOLERANCE_TYPE_DISPLAY = {
 
 class AllergyContextBuilder(QuerysetContextBuilder):
     model = AllergyIntolerance
+    allowed_filters = [
+        "clinical_status",
+        "verification_status",
+        "category",
+        "criticality",
+    ]
 
     fields = [
         Field(

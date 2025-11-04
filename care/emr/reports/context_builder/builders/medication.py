@@ -54,6 +54,7 @@ class MedicationContextBuilder(QuerysetContextBuilder):
     model = MedicationRequest
 
     base_filters = {}
+    allowed_filters = ["status", "intent", "priority", "authored_on"]
 
     fields = [
         Field(

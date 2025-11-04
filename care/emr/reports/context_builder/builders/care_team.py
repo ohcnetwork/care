@@ -8,6 +8,7 @@ from care.users.models import User
 class CareTeamContextBuilder(QuerysetContextBuilder):
     model = User
     base_filters = {}
+    allowed_filters = ["user_type"]
 
     fields = [
         Field(

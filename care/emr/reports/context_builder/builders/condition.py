@@ -34,6 +34,7 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
     model = Condition
 
     base_filters = {"category": "diagnosis"}
+    allowed_filters = ["clinical_status", "verification_status", "severity"]
 
     fields = [
         Field(
@@ -161,6 +162,7 @@ class SymptomContextBuilder(QuerysetContextBuilder):
     model = Condition
 
     base_filters = {"category": "symptom"}
+    allowed_filters = ["clinical_status", "verification_status", "severity"]
 
     fields = [
         Field(

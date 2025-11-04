@@ -25,6 +25,7 @@ class ObservationContextBuilder(QuerysetContextBuilder):
     model = Observation
 
     base_filters = {}
+    allowed_filters = ["status", "category"]
 
     fields = [
         Field(
