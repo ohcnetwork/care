@@ -14,6 +14,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.api.viewsets.inventory.delivery_order import DeliveryOrderFilters
 from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.location import FacilityLocation
 from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
@@ -203,8 +204,6 @@ class SupplyDeliveryViewSet(
 
     @action(detail=False, methods=["GET"])
     def delivery_orders(self, request, *args, **kwargs):
-        from care.emr.api.viewsets.inventory.delivery_order import DeliveryOrderFilters
-
         if "request_order" not in request.GET:
             raise ValidationError("request_order is required")
         queryset = self.get_queryset()
