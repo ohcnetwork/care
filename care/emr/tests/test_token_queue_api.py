@@ -506,49 +506,30 @@ class TokenQueueAPITestCase(CareAPITestBase):
     ):
         """
         Test updating a token queue with resource type be practitioner as a user outside the facility organization.
+        But the user is a part of another facility organization with write permissions.
+
         """
         another_facility = self.create_facility(user=self.superuser)
+        another_facility_organization = self.create_facility_organization(
+            facility=another_facility, org_type="root"
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=another_facility_organization,
+        )
         user_resource = self.create_schedule_resource(
-            facility=another_facility,
+            facility=self.facility,
             resource_type=SchedulableResourceTypeOptions.practitioner.value,
             user=self.user,
         )
         token_queue = self.create_token_queue(
             facility=self.facility,
+            name="Initial Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
             resource=user_resource,
-            name="Initial Token Queue",
-            date=(timezone.now() + timedelta(days=1)).date(),
             is_primary=True,
         )
-        self.client.force_authenticate(user=self.user)
-        update_data = {
-            "name": "Updated Token Queue",
-        }
-        response = self.client.put(
-            self.generate_detail_url(
-                facility_external_id=self.facility.external_id,
-                external_id=token_queue.external_id,
-            ),
-            update_data,
-            format="json",
-        )
-        self.assertEqual(response.status_code, 403)
-        self.assertIn(
-            "You do not have permission to update token queue", str(response.data)
-        )
-
-    def test_update_token_queue_as_user_outside_facility_organization(self):
-        """
-        Test updating a token queue as a user outside the facility organization.
-        """
-        token_queue = self.create_token_queue(
-            facility=self.facility,
-            name="Initial Token Queue",
-            date=(timezone.now() + timedelta(days=1)).date(),
-            resource=self.superuser_resource,
-            is_primary=True,
-        )
-        another_facility = self.create_facility(user=self.superuser)
         self.client.force_authenticate(user=self.user)
         update_data = {
             "name": "Updated Token Queue",
@@ -565,6 +546,47 @@ class TokenQueueAPITestCase(CareAPITestBase):
         self.assertIn(
             "You do not have permission to update token queue", str(response.data)
         )
+
+    def test_update_token_queue_with_resource_type_be_healthcare_as_superuser(self):
+        """
+        Test updating a token queue with resource type be healthcare service as superuser.
+        """
+        healthcare_service = self.create_healthcare_service(facility=self.facility)
+        healthcare_service_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.healthcare_service.value,
+            healthcare_service=healthcare_service,
+        )
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Initial Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=healthcare_service_resource,
+            is_primary=True,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        update_data = {
+            "name": "Updated Token Queue",
+        }
+        response = self.client.put(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            ),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["name"], update_data["name"])
+        get_response = self.client.get(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["id"], str(token_queue.external_id))
+        self.assertEqual(get_response.data["name"], update_data["name"])
 
     def test_update_token_queue_with_resource_type_be_healthcare_service_as_user_with_permissions(
         self,
@@ -648,46 +670,6 @@ class TokenQueueAPITestCase(CareAPITestBase):
         response = self.client.put(
             self.generate_detail_url(
                 facility_external_id=self.facility.external_id,
-                external_id=token_queue.external_id,
-            ),
-            update_data,
-            format="json",
-        )
-        self.assertEqual(response.status_code, 403)
-        self.assertIn(
-            "You do not have permission to update token queue", str(response.data)
-        )
-
-    def test_update_token_queue_with_resource_type_be_healthcare_service_as_user_outside_facility_organization(
-        self,
-    ):
-        """
-        Test updating a token queue with resource type be healthcare_service as a user outside the facility organization.
-        """
-        another_facility = self.create_facility(user=self.user, name="Another Facility")
-
-        healthcare_service = self.create_healthcare_service(
-            facility=self.facility, name="Healthcare Service"
-        )
-        healthcare_service_resource = self.create_schedule_resource(
-            facility=self.facility,
-            resource_type=SchedulableResourceTypeOptions.healthcare_service.value,
-            healthcare_service=healthcare_service,
-        )
-        token_queue = self.create_token_queue(
-            facility=self.facility,
-            name="Initial Token Queue",
-            date=(timezone.now() + timedelta(days=1)).date(),
-            resource=healthcare_service_resource,
-            is_primary=True,
-        )
-        self.client.force_authenticate(user=self.user)
-        update_data = {
-            "name": "Updated Token Queue",
-        }
-        response = self.client.put(
-            self.generate_detail_url(
-                facility_external_id=another_facility.external_id,
                 external_id=token_queue.external_id,
             ),
             update_data,
@@ -828,13 +810,286 @@ class TokenQueueAPITestCase(CareAPITestBase):
             "You do not have permission to update token queue", str(response.data)
         )
 
-    def test_update_token_queue_with_resource_type_be_location_as_user_outside_facility_organization(
+    #  Tests for delete token queue
+
+    def test_delete_token_queue_with_resource_type_be_practitioner_as_superuser(self):
+        """dsss
+        Test deleting a token queue with resource type be practitioner as superuser.
+        """
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Initial Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=self.superuser_resource,
+            is_primary=True,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.delete(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+        get_response = self.client.get(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(get_response.status_code, 404)
+        self.assertIn(
+            "No TokenQueue matches the given query.",
+            str(get_response.data["errors"][0]["msg"]),
+        )
+
+    def test_delete_token_queue_with_resource_type_be_practitioner_as_user_with_permissions(
         self,
     ):
         """
-        Test updating a token queue with resource type be location as a user outside the facility organization.
+        Test deleting a token queue with resource type be practitioner as a user with the required permissions.
         """
-        another_facility = self.create_facility(user=self.superuser)
+        user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Initial Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=True,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.delete(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+        get_response = self.client.get(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(get_response.status_code, 404)
+        self.assertIn(
+            "No TokenQueue matches the given query.",
+            str(get_response.data["errors"][0]["msg"]),
+        )
+
+    def test_delete_token_queue_with_resource_type_be_practitioner_as_user_without_write_permissions(
+        self,
+    ):
+        """
+        Test deleting a token queue with resource type be practitioner as a user without 'can_write_token' permissions.
+        But is a part of facility organization.
+        """
+        user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Initial Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=True,
+        )
+        role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_list_token.name,
+            ],
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user, role=role, facility_organization=self.facility_organization
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update token queue", str(response.data)
+        )
+
+    def test_delete_token_queue_with_resource_type_be_healthcare_service_as_superuser(
+        self,
+    ):
+        """
+        Test deleting a token queue with resource type be healthcare_service as superuser.
+        """
+        healthcare_service = self.create_healthcare_service(facility=self.facility)
+        healthcare_service_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.healthcare_service.value,
+            healthcare_service=healthcare_service,
+        )
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Initial Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=healthcare_service_resource,
+            is_primary=True,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.delete(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+        get_response = self.client.get(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(get_response.status_code, 404)
+        self.assertIn(
+            "No TokenQueue matches the given query.",
+            str(get_response.data["errors"][0]["msg"]),
+        )
+
+    def test_delete_token_queue_with_resource_type_be_healthcare_service_as_user_with_permissions(
+        self,
+    ):
+        """
+        Test deleting a token queue with resource type be healthcare_service as a user with the required permissions.
+        """
+        healthcare_service = self.create_healthcare_service(facility=self.facility)
+        healthcare_service_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.healthcare_service.value,
+            healthcare_service=healthcare_service,
+        )
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Initial Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=healthcare_service_resource,
+            is_primary=True,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.delete(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+        get_response = self.client.get(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(get_response.status_code, 404)
+        self.assertIn(
+            "No TokenQueue matches the given query.",
+            str(get_response.data["errors"][0]["msg"]),
+        )
+
+    def test_delete_token_queue_with_resource_type_be_healthcare_service_as_user_without_write_permissions(
+        self,
+    ):
+        """
+        Test deleting a token queue with resource type be healthcare_service as a user without 'can_write_token' permissions.
+        But is a part of facility organization.
+        """
+        healthcare_service = self.create_healthcare_service(facility=self.facility)
+        healthcare_service_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.healthcare_service.value,
+            healthcare_service=healthcare_service,
+        )
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Initial Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=healthcare_service_resource,
+            is_primary=True,
+        )
+        role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_list_token.name,
+            ],
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user, role=role, facility_organization=self.facility_organization
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update token queue", str(response.data)
+        )
+
+    def test_delete_token_queue_with_resource_type_be_location_as_superuser(self):
+        """
+        Test deleting a token queue with resource type be location as superuser.
+        """
+        location_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.location.value,
+            location=self.facility_location,
+        )
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Initial Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=location_resource,
+            is_primary=True,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.delete(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+        get_response = self.client.get(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(get_response.status_code, 404)
+        self.assertIn(
+            "No TokenQueue matches the given query.",
+            str(get_response.data["errors"][0]["msg"]),
+        )
+
+    def test_delete_token_queue_with_resource_type_be_location_as_user_with_permissions(
+        self,
+    ):
+        """
+        Test deleting a token queue with resource type be location as a user with the required permissions.
+        """
         location_resource = self.create_schedule_resource(
             facility=self.facility,
             resource_type=SchedulableResourceTypeOptions.location.value,
@@ -848,16 +1103,63 @@ class TokenQueueAPITestCase(CareAPITestBase):
             is_primary=True,
         )
         self.client.force_authenticate(user=self.user)
-        update_data = {
-            "name": "Updated Token Queue",
-        }
-        response = self.client.put(
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.delete(
             self.generate_detail_url(
-                facility_external_id=another_facility.external_id,
+                facility_external_id=self.facility.external_id,
                 external_id=token_queue.external_id,
-            ),
-            update_data,
-            format="json",
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+        get_response = self.client.get(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(get_response.status_code, 404)
+        self.assertIn(
+            "No TokenQueue matches the given query.",
+            str(get_response.data["errors"][0]["msg"]),
+        )
+
+    def test_delete_token_queue_with_resource_type_be_location_as_user_without_write_permissions(
+        self,
+    ):
+        """
+        Test deleting a token queue with resource type be location as a user without 'can_write_token' permissions.
+        But is a part of facility organization.
+        """
+        location_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.location.value,
+            location=self.facility_location,
+        )
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Initial Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=location_resource,
+            is_primary=True,
+        )
+        role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_list_token.name,
+            ],
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user, role=role, facility_organization=self.facility_organization
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.delete(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn(
