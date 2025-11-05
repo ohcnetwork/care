@@ -20,6 +20,12 @@ class CustomerType(str, Enum):
     vendor = "vendor"
 
 
+class BillCounterData(BaseModel):
+    x_care_id: str
+    cashier_id: str
+    counter_name: str
+
+
 class AccountMovePaymentApiRequest(BaseModel):
     x_care_id: str
     journal_x_care_id: str | None = None
@@ -29,6 +35,7 @@ class AccountMovePaymentApiRequest(BaseModel):
     payment_mode: PaymentMode
     partner_data: PartnerData
     customer_type: CustomerType
+    counter_data: BillCounterData
 
 
 class AccountPaymentCancelApiRequest(BaseModel):

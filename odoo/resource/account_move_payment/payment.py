@@ -8,6 +8,7 @@ from odoo.connector.connector import OdooConnector
 from odoo.resource.account_move_payment.spec import (
     AccountMovePaymentApiRequest,
     AccountPaymentCancelApiRequest,
+    BillCounterData,
     CustomerType,
     JournalType,
     PaymentMode,
@@ -59,6 +60,11 @@ class OdooPaymentResource:
             else PaymentMode.receive,
             partner_data=partner_data,
             customer_type=CustomerType.customer,
+            counter_data=BillCounterData(
+                x_care_id=str(payment.location.external_id),
+                cashier_id=str(payment.created_by.external_id),
+                counter_name=payment.location.name,
+            ),
         ).model_dump()
 
         logger.info("Odoo Payment Data: %s", data)

@@ -1,8 +1,9 @@
 from care.emr.models.charge_item_definition import ChargeItemDefinition
+from care.emr.models.product import Product
 from care.emr.resources.common.monetary_component import MonetaryComponentType
 from odoo.connector.connector import OdooConnector
 from odoo.resource.product_category.spec import CategoryData
-from odoo.resource.product_product.spec import ProductData, TaxData, TaxType
+from odoo.resource.product_product.spec import ProductData, TaxData
 
 
 class OdooProductProductResource:
@@ -39,7 +40,9 @@ class OdooProductProductResource:
                 taxes.append(item)
         return taxes
 
-    def sync_product_to_odoo_api(self, charge_item_definition) -> int | None:
+    def sync_product_to_odoo_api(
+        self, charge_item_definition, hsn: str = ""
+    ) -> int | None:
         """
         Synchronize a charge item definition to Odoo as a product.
 
@@ -57,7 +60,6 @@ class OdooProductProductResource:
         for tax in self.get_taxes(charge_item_definition):
             taxes.append(
                 TaxData(
-                    tax_type=TaxType.sale_tax,
                     tax_name=tax["code"]["display"],
                     tax_percentage=float(tax["factor"]),
                 )
@@ -75,7 +77,30 @@ class OdooProductProductResource:
                 x_care_id=str(charge_item_definition.category.external_id),
             ),
             taxes=taxes,
+            hsn=hsn,
         ).model_dump()
 
         response = OdooConnector.call_api("api/add/product", data)
         return response.get("product", {}).get("id")
+
+    def sync_product_from_product_model(self, product: Product) -> int | None:
+        """
+        Synchronize a product to Odoo if it has a charge item definition.
+
+        Args:
+            product: Product instance
+
+        Returns:
+            Odoo product ID if successful, None otherwise
+        """
+        if not product.charge_item_definition:
+            return None
+
+        hsn = (
+            product.product_knowledge.alternate_identifier
+            if product.product_knowledge
+            and product.product_knowledge.alternate_identifier
+            else ""
+        )
+
+        return self.sync_product_to_odoo_api(product.charge_item_definition, hsn)

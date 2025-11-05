@@ -6,6 +6,7 @@ from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.invoice import Invoice
 from care.emr.models.organization import Organization
 from care.emr.models.payment_reconciliation import PaymentReconciliation
+from care.emr.models.product import Product
 from care.emr.models.resource_category import ResourceCategory
 from care.emr.models.supply_delivery import DeliveryOrder
 from care.emr.resources.inventory.supply_delivery.delivery_order import (
@@ -114,3 +115,13 @@ def sync_delivery_order_to_odoo(sender, instance, created, **kwargs):
         with transaction.atomic():
             odoo_delivery_order = OdooDeliveryOrderResource()
             odoo_delivery_order.sync_delivery_order_to_odoo_api(instance.external_id)
+
+
+@receiver(post_save, sender=Product)
+def sync_product_to_odoo(sender, instance, created, **kwargs):
+    """
+    Signal handler to sync product to Odoo when it has a charge item definition.
+    """
+    with transaction.atomic():
+        odoo_product = OdooProductProductResource()
+        odoo_product.sync_product_from_product_model(instance)
