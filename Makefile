@@ -1,7 +1,12 @@
 .PHONY: logs reset-and-setup
 
 
-DOCKER_VERSION := $(shell docker --version 2>/dev/null)
+ifeq ($(OS),Windows_NT)
+    DOCKER_VERSION := $(shell docker --version 2> NUL)
+else
+    DOCKER_VERSION := $(shell docker --version 2>/dev/null)
+endif
+
 
 docker_config_file := 'docker-compose.local.yaml'
 
