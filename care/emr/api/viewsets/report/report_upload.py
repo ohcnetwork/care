@@ -12,6 +12,7 @@ from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models.report.report_upload import ReportUpload
 from care.emr.models.report.template import Template
 from care.emr.reports import report_utils
+from care.emr.reports.context_builder.report_builder import ReportContextBuilder
 from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.report_type_registry import ReportTypeRegistry
 from care.emr.reports.report_type_utils import validate_associating_id
@@ -35,11 +36,11 @@ class ReportUploadFilters(FilterSet):
 
 
 class GenerateReportRequest(BaseModel):
+    model_config = {"extra": "allow"}
+
     template_id: UUID4
     report_type: str = "discharge_summary"
     associating_id: UUID4
-    patient_id: UUID4 | None = None
-    encounter_id: UUID4 | None = None
     context_config: dict | None = None
     output_format: str = "pdf"
     options: dict = {}
@@ -128,17 +129,21 @@ class ReportUploadViewSet(EMRModelViewSet):
         template_id = str(generate_request.template_id)
         report_type = generate_request.report_type
         associating_id = str(generate_request.associating_id)
-        patient_id = (
-            str(generate_request.patient_id) if generate_request.patient_id else None
-        )
-        encounter_id = (
-            str(generate_request.encounter_id)
-            if generate_request.encounter_id
-            else None
-        )
+
+        extra_fields = {}
+        for key, value in generate_request.model_dump(exclude_unset=True).items():
+            if value is not None and key not in [
+                "template_id",
+                "associating_id",
+                "report_type",
+                "context_config",
+                "output_format",
+                "options",
+            ]:
+                extra_fields[key] = str(value)
+
         output_format = generate_request.output_format.lower()
 
-        # Validate template exists
         try:
             template = Template.objects.get(external_id=template_id)
         except Template.DoesNotExist:
@@ -147,7 +152,6 @@ class ReportUploadViewSet(EMRModelViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        # Check template status
         if template.status != "active":
             return Response(
                 {
@@ -156,9 +160,29 @@ class ReportUploadViewSet(EMRModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        context_config = generate_request.context_config
-        if context_config is None:
-            context_config = template.context_config
+        context_config = generate_request.context_config or template.context_config
+
+        builder = ReportContextBuilder()
+
+        required_context_keys = set()
+        for builder_key in context_config:
+            if builder_key in builder.single_builders:
+                builder_class = builder.single_builders[builder_key]
+                required_context_keys.update(builder_class.depends_on)
+            elif builder_key in builder.list_builders:
+                builder_class = builder.list_builders[builder_key]
+                required_context_keys.update(builder_class.depends_on)
+
+        provided_keys = set(extra_fields.keys())
+        missing_keys = required_context_keys - provided_keys
+        if missing_keys:
+            return Response(
+                {
+                    "error": f"Missing required params: {', '.join(sorted(missing_keys))}. "
+                    f"Required by builders: {provided_keys}"
+                },
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         if not GeneratorRegistry.is_registered(output_format):
             available_formats = ", ".join(GeneratorRegistry.get_all_formats())
@@ -186,11 +210,10 @@ class ReportUploadViewSet(EMRModelViewSet):
                 template_id=template_id,
                 report_type=report_type,
                 associating_id=associating_id,
-                patient_id=patient_id,
-                encounter_id=encounter_id,
                 context_config=context_config,
                 output_format=output_format,
                 options=generate_request.options,
+                **extra_fields,
             )
 
             return Response(

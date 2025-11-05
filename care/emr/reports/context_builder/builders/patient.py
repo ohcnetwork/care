@@ -25,6 +25,7 @@ GENDER_DISPLAY = {
 
 class PatientContextBuilder(SingleObjectContextBuilder):
     model = Patient
+    depends_on = ["patient_id"]
 
     fields = [
         Field(
@@ -130,14 +131,8 @@ class PatientContextBuilder(SingleObjectContextBuilder):
 
     @classmethod
     def get_object(cls, ctx: dict):
-        if "patient_id" not in ctx:
-            raise ValueError("ctx must contain 'patient_id' to fetch Patient object")
-
-        try:
-            return Patient.objects.get(external_id=ctx["patient_id"])
-        except Patient.DoesNotExist as e:
-            msg = f"Patient with id {ctx['patient_id']} not found"
-            raise ValueError(msg) from e
+        patient_id = ctx.get("patient_id")
+        return Patient.objects.get(external_id=patient_id)
 
     @classmethod
     def get_display_name(cls):

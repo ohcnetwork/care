@@ -14,6 +14,7 @@ STATUS_DISPLAY = {
 
 class EncounterContextBuilder(SingleObjectContextBuilder):
     model = Encounter
+    depends_on = ["encounter_id"]
 
     fields = [
         Field(
@@ -93,16 +94,7 @@ class EncounterContextBuilder(SingleObjectContextBuilder):
     def get_object(cls, ctx: dict):
         """Get Encounter object from ctx"""
         encounter_id = ctx.get("encounter_id")
-        if not encounter_id:
-            raise ValueError(
-                "encounter_id is required in context to fetch Encounter object"
-            )
-
-        try:
-            return Encounter.objects.get(external_id=encounter_id)
-        except Encounter.DoesNotExist as e:
-            msg = f"Encounter with id {encounter_id} not found"
-            raise ValueError(msg) from e
+        return Encounter.objects.get(external_id=encounter_id)
 
     @classmethod
     def get_display_name(cls):

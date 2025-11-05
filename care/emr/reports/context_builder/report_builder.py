@@ -1,4 +1,3 @@
-# Import all builders to trigger registration
 from care.emr.reports.context_builder.builders import (  # noqa: F401
     allergy,
     care_team,

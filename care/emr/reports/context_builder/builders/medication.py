@@ -52,6 +52,7 @@ STATUS_REASON_DISPLAY = {
 
 class MedicationContextBuilder(QuerysetContextBuilder):
     model = MedicationRequest
+    depends_on = ["encounter_id"]
 
     base_filters = {}
     allowed_filters = ["status", "intent", "priority", "authored_on"]
@@ -169,14 +170,7 @@ class MedicationContextBuilder(QuerysetContextBuilder):
     @classmethod
     def get_queryset(cls, ctx: dict):
         encounter_id = ctx.get("encounter_id")
-        if not encounter_id:
-            raise ValueError("encounter_id is required in context to build medications")
-
-        try:
-            encounter = Encounter.objects.get(external_id=encounter_id)
-        except Encounter.DoesNotExist as e:
-            msg = f"Encounter with id {encounter_id} not found"
-            raise ValueError(msg) from e
+        encounter = Encounter.objects.get(external_id=encounter_id)
 
         queryset = cls.model.objects.filter(encounter=encounter)
 

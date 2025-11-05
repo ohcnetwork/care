@@ -38,6 +38,8 @@ ALLERGY_INTOLERANCE_TYPE_DISPLAY = {
 
 class AllergyContextBuilder(QuerysetContextBuilder):
     model = AllergyIntolerance
+    depends_on = ["encounter_id"]
+
     allowed_filters = [
         "clinical_status",
         "verification_status",
@@ -157,14 +159,7 @@ class AllergyContextBuilder(QuerysetContextBuilder):
     def get_queryset(cls, ctx: dict):
         """Get allergies queryset filtered by encounter"""
         encounter_id = ctx.get("encounter_id")
-        if not encounter_id:
-            raise ValueError("encounter_id is required in context to build allergies")
-
-        try:
-            encounter = Encounter.objects.get(external_id=encounter_id)
-        except Encounter.DoesNotExist as e:
-            msg = f"Encounter with id {encounter_id} not found"
-            raise ValueError(msg) from e
+        encounter = Encounter.objects.get(external_id=encounter_id)
 
         queryset = cls.model.objects.filter(encounter=encounter)
 

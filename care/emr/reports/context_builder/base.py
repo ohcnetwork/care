@@ -53,6 +53,7 @@ class BaseContextBuilder(ABC):
     model = None
     fields: list[Field] = []
     allowed_filters: list[str] = []
+    depends_on: list[str] = []  # Context keys this builder depends on
 
     @classmethod
     def get_schema(cls):
@@ -62,6 +63,7 @@ class BaseContextBuilder(ABC):
             "description": cls.get_description(),
             "fields": [field.to_dict() for field in cls.fields],
             "allowed_filters": cls.allowed_filters,
+            "depends_on": cls.depends_on,
         }
 
     @classmethod

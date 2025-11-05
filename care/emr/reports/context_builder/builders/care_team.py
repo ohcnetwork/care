@@ -7,6 +7,8 @@ from care.users.models import User
 # Todo: Need to rewrite it, it's a special case , maybe another builder subclass will be required
 class CareTeamContextBuilder(QuerysetContextBuilder):
     model = User
+    depends_on = ["encounter_id"]
+
     base_filters = {}
     allowed_filters = ["user_type"]
 
@@ -31,8 +33,6 @@ class CareTeamContextBuilder(QuerysetContextBuilder):
     def get_queryset(cls, ctx: dict):
         """Get care team members from encounter's care_team field"""
         encounter_id = ctx.get("encounter_id")
-        # Todo: raise error if encounter_id is not present in ctx
-        # Todo: raise error if encounter not found
         encounter = Encounter.objects.get(external_id=encounter_id)
 
         user_ids = [

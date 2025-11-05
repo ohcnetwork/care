@@ -32,6 +32,7 @@ SEVERITY_DISPLAY = {
 
 class DiagnosisContextBuilder(QuerysetContextBuilder):
     model = Condition
+    depends_on = ["encounter_id"]
 
     base_filters = {"category": "diagnosis"}
     allowed_filters = ["clinical_status", "verification_status", "severity"]
@@ -133,14 +134,7 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
     def get_queryset(cls, ctx: dict):
         """Get diagnosis queryset filtered by encounter"""
         encounter_id = ctx.get("encounter_id")
-        if not encounter_id:
-            raise ValueError("encounter_id is required in context to build diagnoses")
-
-        try:
-            encounter = Encounter.objects.get(external_id=encounter_id)
-        except Encounter.DoesNotExist as e:
-            msg = f"Encounter with id {encounter_id} not found"
-            raise ValueError(msg) from e
+        encounter = Encounter.objects.get(external_id=encounter_id)
 
         queryset = cls.model.objects.filter(encounter=encounter)
 
@@ -160,6 +154,7 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
 
 class SymptomContextBuilder(QuerysetContextBuilder):
     model = Condition
+    depends_on = ["encounter_id"]
 
     base_filters = {"category": "symptom"}
     allowed_filters = ["clinical_status", "verification_status", "severity"]
@@ -269,14 +264,7 @@ class SymptomContextBuilder(QuerysetContextBuilder):
     @classmethod
     def get_queryset(cls, ctx: dict):
         encounter_id = ctx.get("encounter_id")
-        if not encounter_id:
-            raise ValueError("encounter_id is required in context to build symptoms")
-
-        try:
-            encounter = Encounter.objects.get(external_id=encounter_id)
-        except Encounter.DoesNotExist as e:
-            msg = f"Encounter with id {encounter_id} not found"
-            raise ValueError(msg) from e
+        encounter = Encounter.objects.get(external_id=encounter_id)
 
         queryset = cls.model.objects.filter(encounter=encounter)
 
