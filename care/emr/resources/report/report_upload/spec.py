@@ -114,7 +114,7 @@ class ReportUploadListSpec(ReportUploadBaseSpec):
 class ReportUploadRetrieveSpec(ReportUploadListSpec):
     signed_url: str | None = None
     read_signed_url: str | None = None
-    internal_name: str  # Not sure if this needs to be returned
+    internal_name: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

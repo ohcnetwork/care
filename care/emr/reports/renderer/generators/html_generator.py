@@ -1,7 +1,7 @@
 from typing import Any
 
-from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.renderer.generators.base import BaseOutputGenerator
+from care.emr.reports.renderer.generators.registry import GeneratorRegistry
 
 
 class HTMLGenerator(BaseOutputGenerator):

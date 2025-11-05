@@ -1,19 +1,33 @@
 from datetime import date, datetime
 
-from jinja2 import BaseLoader, Environment, TemplateSyntaxError, UndefinedError, meta
+from jinja2 import (
+    BaseLoader,
+    Environment,
+    StrictUndefined,
+    TemplateSyntaxError,
+    UndefinedError,
+    meta,
+)
 from jinja2.sandbox import SandboxedEnvironment
 
 
 class TemplateEngine:
-    def __init__(self, use_sandbox: bool = True):
+    def __init__(self, use_sandbox: bool = True, strict_undefined: bool = True):
         self.use_sandbox = use_sandbox
+        self.strict_undefined = strict_undefined
         self.env = self._setup_jinja_env()
 
     def _setup_jinja_env(self):
         env = (
-            SandboxedEnvironment(loader=BaseLoader())
+            SandboxedEnvironment(
+                loader=BaseLoader(),
+                undefined=StrictUndefined if self.strict_undefined else None,
+            )
             if self.use_sandbox
-            else Environment(loader=BaseLoader())  # noqa: S701
+            else Environment(  # noqa: S701
+                loader=BaseLoader(),
+                undefined=StrictUndefined if self.strict_undefined else None,
+            )
         )
         env.autoescape = False
         env.trim_blocks = True

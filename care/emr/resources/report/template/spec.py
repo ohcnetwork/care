@@ -34,10 +34,20 @@ class TemplateBaseSpec(EMRResource):
     id: UUID4 | None = None
     name: str
     status: TemplateStatusOptions
-    template_data: str
     template_type: TemplateTypeOptions
     format: TemplateFormatOptions
+
+
+class TemplateCreateSpec(TemplateBaseSpec):
+    facility: UUID4 | None = None
+    slug_value: SlugType
     context_config: dict = {}
+    template_data: str
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.facility:
+            obj.facility = Facility.objects.get(external_id=self.facility)
+        obj.slug = self.slug_value
 
     @field_validator("template_data")
     @classmethod
@@ -66,16 +76,6 @@ class TemplateBaseSpec(EMRResource):
         return v
 
 
-class TemplateCreateSpec(TemplateBaseSpec):
-    facility: UUID4 | None = None
-    slug_value: SlugType
-
-    def perform_extra_deserialization(self, is_update, obj):
-        if self.facility:
-            obj.facility = Facility.objects.get(external_id=self.facility)
-        obj.slug = self.slug_value
-
-
 class TemplateUpdateSpec(TemplateBaseSpec):
     slug_value: SlugType
 
@@ -95,6 +95,8 @@ class TemplateReadSpec(TemplateBaseSpec):
 
 class TemplateRetrieveSpec(TemplateReadSpec):
     facility: dict | None = None
+    template_data: str
+    context_config: dict = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

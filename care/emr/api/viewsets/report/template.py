@@ -1,3 +1,5 @@
+import re
+
 from django.http import HttpResponse
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -72,7 +74,7 @@ class TemplateViewSet(EMRModelViewSet):
         tags=["template"],
     )
     @action(detail=False, methods=["POST"])
-    def preview(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912
+    def preview(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912, PLR0915
         try:
             preview_request = PreviewTemplateRequest.model_validate(request.data)
         except Exception as e:
@@ -133,10 +135,12 @@ class TemplateViewSet(EMRModelViewSet):
             renderer = Renderer(template_engine, generator)
 
             valid, error = renderer.validate_syntax(template_data)
+            extracted_vars = renderer.extract_variables(template_data)
+
             validation_result = {
                 "syntax_valid": valid,
                 "syntax_error": error if not valid else None,
-                "variables": list(renderer.extract_variables(template_data)),
+                "variables": list(extracted_vars),
             }
 
             if not valid:
@@ -155,10 +159,18 @@ class TemplateViewSet(EMRModelViewSet):
 
             except Exception as e:
                 validation_result["render_valid"] = False
-                validation_result["render_error"] = str(e)
+                error_message = str(e)
+
+                if "has no attribute" in error_message:
+                    match = re.search(r"has no attribute '(\w+)'", error_message)
+                    if match:
+                        field_name = match.group(1)
+                        error_message = f"Field '{field_name}' does not exist or is not available in the context. Please check your template for typos or ensure this field is included in your context configuration."
+
+                validation_result["render_error"] = error_message
                 return Response(
                     {
-                        "error": f"Template rendering failed: {e!s}",
+                        "error": error_message,
                         "validation": validation_result,
                     },
                     status=status.HTTP_400_BAD_REQUEST,
