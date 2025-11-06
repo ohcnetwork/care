@@ -116,6 +116,8 @@ class ProductKnowledgeUpdateSpec(BaseProductKnowledgeSpec):
         if self.category:
             obj.category = ResourceCategory.objects.get(slug=self.category)
         obj.slug = self.slug_value
+        if self.definitional is None:
+            obj.definitional = None
 
 
 class ProductKnowledgeWriteSpec(ProductKnowledgeUpdateSpec):
