@@ -1411,3 +1411,120 @@ class TokenQueueAPITestCase(CareAPITestBase):
         self.assertEqual(
             response.data["results"][0]["id"], str(token_queue1.external_id)
         )
+
+    # Test cases for is primary field behavior
+
+    def test_create_token_queue_sets_is_primary_true_as_superuser(self):
+        """
+        Test that creating a token queue the primary queue with an existing queue as primary.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        token_queue1 = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 1",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=self.superuser_resource,
+            is_primary=True,
+        )
+        token_queue2 = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 2",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=self.superuser_resource,
+            is_primary=False,
+        )
+        self.url = reverse(
+            "token-queue-set-primary",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": token_queue2.external_id,
+            },
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 200)
+        token_queue1.refresh_from_db()
+        token_queue2.refresh_from_db()
+        self.assertFalse(token_queue1.is_primary)
+        self.assertTrue(token_queue2.is_primary)
+
+    def test_create_token_queue_sets_is_primary_true_as_user_with_permissions(self):
+        """
+        Test that creating a token queue the primary queue with an existing queue as primary by a user with permissions.
+        """
+        user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
+        token_queue1 = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 1",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=True,
+        )
+        token_queue2 = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 2",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=False,
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.url = reverse(
+            "token-queue-set-primary",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": token_queue2.external_id,
+            },
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 200)
+        token_queue1.refresh_from_db()
+        token_queue2.refresh_from_db()
+        self.assertFalse(token_queue1.is_primary)
+        self.assertTrue(token_queue2.is_primary)
+
+    def test_create_token_queue_sets_is_primary_true_as_user_without_permissions(self):
+        """
+        Test that creating a token queue the primary queue with an existing queue as primary by a user without permissions.
+        """
+        user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
+        token_queue1 = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 1",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=True,
+        )
+        token_queue2 = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 2",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=False,
+        )
+        self.url = reverse(
+            "token-queue-set-primary",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": token_queue2.external_id,
+            },
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(self.url)
+        self.assertEqual(response.status_code, 403)
+        token_queue1.refresh_from_db()
+        token_queue2.refresh_from_db()
+        self.assertTrue(token_queue1.is_primary)
+        self.assertFalse(token_queue2.is_primary)
