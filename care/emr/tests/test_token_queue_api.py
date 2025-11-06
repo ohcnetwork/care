@@ -1,4 +1,5 @@
 from datetime import timedelta
+from uuid import uuid4
 
 from django.urls import reverse
 from django.utils import timezone
@@ -6,9 +7,13 @@ from model_bakery import baker
 
 from care.emr.models.healthcare_service import HealthcareService
 from care.emr.models.scheduling.token import (
+    TokenCategory,
     TokenQueue,
 )
-from care.emr.resources.scheduling.token.spec import SchedulableResourceTypeOptions
+from care.emr.resources.scheduling.token.spec import (
+    SchedulableResourceTypeOptions,
+    TokenStatusOptions,
+)
 from care.security.permissions.token import TokenPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -1528,3 +1533,619 @@ class TokenQueueAPITestCase(CareAPITestBase):
         token_queue2.refresh_from_db()
         self.assertTrue(token_queue1.is_primary)
         self.assertFalse(token_queue2.is_primary)
+
+
+class TokenQueueAPIGenerateTokenTestCase(CareAPITestBase):
+    """
+    Test case for generating tokens via the generate token endpoint.
+
+    fields:
+    - patient: UUID4
+    - category: UUID4
+    - note: str
+    - sub_queue: UUID4
+
+    - resource_type: SchedulableResourceTypeOptions
+    - resource_id: UUID4
+    - date: date
+
+    'can_write_token' permission is required to generate tokens.
+
+    resource types supported:
+    - practitioner
+    - healthcare_service
+    - location
+
+    """
+
+    def setUp(self):
+        self.user = self.create_user(username="testuser")
+        self.superuser = self.create_super_user(username="superuser")
+        self.facility = self.create_facility(user=self.superuser)
+        self.facility_organization = self.create_facility_organization(
+            facility=self.facility, org_type="root"
+        )
+        self.facility_location = self.create_facility_location(
+            facility=self.facility, facility_organization=self.facility_organization
+        )
+        self.superuser_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.superuser,
+        )
+        self.patient = self.create_patient()
+        self.role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_list_token.name,
+                TokenPermissions.can_write_token.name,
+            ],
+        )
+
+        self.token_category = self.create_token_category(
+            name="General",
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            shorthand="GEN",
+            default=True,
+        )
+        self.base_url = reverse(
+            "token-queue-generate-token",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+
+    def create_facility_location(self, facility, facility_organization, **kwargs):
+        from care.emr.models import FacilityLocation, FacilityLocationOrganization
+
+        location = baker.make(FacilityLocation, facility=facility, **kwargs)
+        baker.make(
+            FacilityLocationOrganization,
+            location=location,
+            organization=facility_organization,
+        )
+        return location
+
+    def create_token_category(self, facility, **kwargs):
+        return baker.make(TokenCategory, facility=facility, **kwargs)
+
+    def create_schedule_resource(self, **kwargs):
+        return baker.make("emr.SchedulableResource", **kwargs)
+
+    def create_healthcare_service(self, facility, **kwargs):
+        return baker.make(HealthcareService, facility=facility, **kwargs)
+
+    def create_token_queue(self, facility, **kwargs):
+        return baker.make(TokenQueue, facility=facility, **kwargs)
+
+    def test_generate_token_for_resource_type_be_practitioner_as_superuser(self):
+        """
+        Test generating a token for resource type 'practitioner' as superuser.
+        """
+
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.superuser.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["note"], "Test token note")
+        self.assertEqual(response.data["status"], TokenStatusOptions.CREATED.value)
+        self.assertEqual(response.data["number"], 1)
+
+    def test_generate_token_for_resource_type_be_practitioner_as_user_with_permissions(
+        self,
+    ):
+        """
+        Test generating a token for resource type 'practitioner' as a user with the required permissions.
+        """
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["note"], "Test token note")
+        self.assertEqual(response.data["status"], TokenStatusOptions.CREATED.value)
+        self.assertEqual(response.data["number"], 1)
+
+    def test_generate_token_for_resource_type_be_practitioner_as_user_without_permissions(
+        self,
+    ):
+        """
+        Test generating a token for resource type 'practitioner' as a user without the 'can_write_token' permissions.
+        But the user is part of the facility organization.
+        """
+        role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_list_token.name,
+            ],
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user, role=role, facility_organization=self.facility_organization
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to create token queue", str(response.data)
+        )
+
+    def test_generate_token_for_resource_type_be_practitioner_as_user_not_in_facility_organization(
+        self,
+    ):
+        """
+        Test generating a token for resource type 'practitioner' as a user without the 'can_write_token' permissions.
+        And the user is not part of the facility organization.
+        """
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Schedule User is not part of the facility", str(response.data))
+
+    def test_generate_token_creates_primary_queue_if_not_exists(self):
+        """
+        Test that generating a token creates a primary token queue if it does not exist.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.superuser.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        token_queue_id = response.data["queue"]["id"]
+        token_queue = TokenQueue.objects.get(external_id=token_queue_id)
+        self.assertTrue(token_queue.is_primary)
+        self.assertEqual(token_queue.resource, self.superuser_resource)
+        self.assertEqual(token_queue.date, (timezone.now() + timedelta(days=1)).date())
+        self.assertEqual(token_queue.name, "System Generated")
+        self.assertTrue(token_queue.system_generated)
+
+    def test_generate_token_creates_with_primary_queue(self):
+        """
+        Test that generating a token uses the existing primary token queue.
+        """
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Primary Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=self.superuser_resource,
+            is_primary=True,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.superuser.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        queue = response.data["queue"]
+        self.assertEqual(queue["id"], str(token_queue.external_id))
+        self.assertTrue(queue["is_primary"])
+        self.assertFalse(queue["system_generated"])
+
+    def test_generate_token_assigns_incremental_token_numbers(self):
+        """
+        Test that generating multiple tokens assigns incremental token numbers within the same queue and category.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        for i in range(1, 6):
+            response = self.client.post(
+                self.base_url,
+                {
+                    "patient": str(self.patient.external_id),
+                    "category": str(self.token_category.external_id),
+                    "note": f"Test token note {i}",
+                    "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                    "resource_id": str(self.superuser.external_id),
+                    "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+                },
+                format="json",
+            )
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.data["number"], i)
+            self.assertEqual(response.data["note"], f"Test token note {i}")
+
+    def test_generate_token_with_invalid_category(self):
+        """
+        Test generating a token with an invalid category UUID.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(uuid4()),  # Invalid category
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.superuser.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("No TokenCategory matches the given query.", str(response.data))
+
+    def test_generate_token_with_invalid_patient(self):
+        """
+        Test generating a token with an invalid patient UUID.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(uuid4()),  # Invalid patient
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.superuser.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("No Patient matches the given query.", str(response.data))
+
+    def test_generate_token_for_resource_type_be_healthcare_service_as_superuser(self):
+        """
+        Test generating a token for resource type 'healthcare_service' as superuser.
+        """
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility,
+            name="Test Healthcare Service",
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.healthcare_service.value,
+                "resource_id": str(healthcare_service.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["note"], "Test token note")
+        self.assertEqual(response.data["status"], TokenStatusOptions.CREATED.value)
+        self.assertEqual(response.data["number"], 1)
+
+    def test_generate_token_for_resource_type_be_healthcare_service_as_user_with_permissions(
+        self,
+    ):
+        """
+        Test generating a token for resource type 'healthcare_service' as a user with the required permissions.
+        """
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility,
+            name="Test Healthcare Service",
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.healthcare_service.value,
+                "resource_id": str(healthcare_service.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["note"], "Test token note")
+        self.assertEqual(response.data["status"], TokenStatusOptions.CREATED.value)
+        self.assertEqual(response.data["number"], 1)
+
+    def test_generate_token_for_resource_type_be_healthcare_service_as_user_without_permissions(
+        self,
+    ):
+        """
+        Test generating a token for resource type 'healthcare_service' as a user without the 'can_write_token' permissions.
+        But the user is part of the facility organization.
+        """
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility,
+            name="Test Healthcare Service",
+        )
+        role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_list_token.name,
+            ],
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user, role=role, facility_organization=self.facility_organization
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.healthcare_service.value,
+                "resource_id": str(healthcare_service.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to create token queue", str(response.data)
+        )
+
+    def test_generate_token_for_resource_type_be_healthcare_service_as_user_not_in_facility_organization(
+        self,
+    ):
+        """
+        Test generating a token for resource type 'healthcare_service' as a user without the 'can_write_token' permissions.
+        And the user is not part of the facility organization.
+        """
+        healthcare_service = self.create_healthcare_service(
+            facility=self.facility,
+            name="Test Healthcare Service",
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.healthcare_service.value,
+                "resource_id": str(healthcare_service.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to create token queue", str(response.data)
+        )
+
+    def test_generate_token_for_resource_type_be_healthcare_service_outside_facility_as_user(
+        self,
+    ):
+        """
+        Test generating a token for resource type 'healthcare_service' with service outside the facility as user.
+        """
+        another_facility = self.create_facility(
+            user=self.superuser, name="Another Facility"
+        )
+        healthcare_service = self.create_healthcare_service(
+            facility=another_facility,
+            name="Outside Healthcare Service",
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.healthcare_service.value,
+                "resource_id": str(healthcare_service.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Healthcare Service is not part of the facility", str(response.data)
+        )
+
+    def test_generate_token_for_resource_type_be_location_as_superuser(self):
+        """
+        Test generating a token for resource type 'location' as superuser.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.location.value,
+                "resource_id": str(self.facility_location.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["note"], "Test token note")
+        self.assertEqual(response.data["status"], TokenStatusOptions.CREATED.value)
+        self.assertEqual(response.data["number"], 1)
+
+    def test_generate_token_for_resource_type_be_location_as_user_with_permissions(
+        self,
+    ):
+        """
+        Test generating a token for resource type 'location' as a user with the required permissions.
+        """
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.location.value,
+                "resource_id": str(self.facility_location.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["note"], "Test token note")
+        self.assertEqual(response.data["status"], TokenStatusOptions.CREATED.value)
+        self.assertEqual(response.data["number"], 1)
+
+    def test_generate_token_for_resource_type_be_location_as_user_without_permissions(
+        self,
+    ):
+        """
+        Test generating a token for resource type 'location' as a user without the 'can_write_token' permissions.
+        But the user is part of the facility organization.
+        """
+        role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_list_token.name,
+            ],
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user, role=role, facility_organization=self.facility_organization
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.location.value,
+                "resource_id": str(self.facility_location.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to create token queue", str(response.data)
+        )
+
+    def test_generate_token_for_resource_type_be_location_as_user_not_in_facility_organization(
+        self,
+    ):
+        """
+        Test generating a token for resource type 'location' as a user without the 'can_write_token' permissions.
+        But the user is not part of the facility organization.
+        """
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.location.value,
+                "resource_id": str(self.facility_location.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to create token queue", str(response.data)
+        )
+
+    def test_generate_token_for_resource_type_be_location_outside_facility_organization_as_user(
+        self,
+    ):
+        """
+        Test generating a token for resource type 'location' with location outside the facility organization as user.
+        """
+        another_facility = self.create_facility(
+            user=self.superuser, name="Another Facility"
+        )
+        another_facility_organization = self.create_facility_organization(
+            facility=another_facility, org_type="root"
+        )
+        location = self.create_facility_location(
+            facility=another_facility,
+            facility_organization=another_facility_organization,
+            name="Outside Location",
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.base_url,
+            {
+                "patient": str(self.patient.external_id),
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.location.value,
+                "resource_id": str(location.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Location is not part of the facility", str(response.data))
