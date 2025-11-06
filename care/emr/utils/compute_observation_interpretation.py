@@ -15,11 +15,11 @@ def compute_observation_interpretation(model_instance, metrics_cache):
         interpretation, ranges = evaluator.evaluate(
             evaluation_context, model_instance.value
         )
-        if interpretation:
+        if interpretation is not None:
             model_instance.interpretation = interpretation
             model_instance.reference_range = ranges
         else:
-            model_instance.interpretation = "Normal"
+            model_instance.interpretation = "-"
             model_instance.reference_range = []
         metrics_cache = evaluator.metric_cache
         # Handle Components
