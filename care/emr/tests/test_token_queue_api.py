@@ -98,6 +98,12 @@ class TokenQueueAPITestCase(CareAPITestBase):
     def create_healthcare_service(self, facility, **kwargs):
         return baker.make(HealthcareService, facility=facility, **kwargs)
 
+    def create_token(self, facility, **kwargs):
+        return baker.make(Token, facility=facility, **kwargs)
+
+    def create_token_category(self, facility, **kwargs):
+        return baker.make(TokenCategory, facility=facility, **kwargs)
+
     # Tests for create token queue
 
     def test_create_token_queue_with_resource_type_be_practitioner_as_superuser(self):
@@ -1535,6 +1541,191 @@ class TokenQueueAPITestCase(CareAPITestBase):
         token_queue2.refresh_from_db()
         self.assertTrue(token_queue1.is_primary)
         self.assertFalse(token_queue2.is_primary)
+
+    # Tests for generate summary endpoint
+
+    def test_generate_summary_for_token_as_superuser(self):
+        """
+        Test generating summary for tokens as superuser.
+        """
+        token_category = self.create_token_category(
+            facility=self.facility,
+            name="General",
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            shorthand="GEN",
+            default=True,
+        )
+
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 1",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=self.superuser_resource,
+            is_primary=True,
+        )
+        self.create_token(
+            facility=self.facility,
+            queue=token_queue,
+            category=token_category,
+            number=1,
+            status=TokenStatusOptions.CREATED.value,
+        )
+        self.create_token(
+            facility=self.facility,
+            queue=token_queue,
+            category=token_category,
+            number=2,
+            status=TokenStatusOptions.IN_PROGRESS.value,
+        )
+        self.create_token(
+            facility=self.facility,
+            queue=token_queue,
+            category=token_category,
+            number=3,
+            status=TokenStatusOptions.FULFILLED.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = reverse(
+            "token-queue-summary",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": token_queue.external_id,
+            },
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("General", response.data)
+        category_summary = response.data["General"]
+        self.assertEqual(category_summary["CREATED"], 1)
+        self.assertEqual(category_summary["IN_PROGRESS"], 1)
+        self.assertEqual(category_summary["FULFILLED"], 1)
+
+    def test_generate_summary_for_token_as_user_with_permission(self):
+        """
+        Test generating summary for tokens as a user with the required permissions.
+        """
+        token_category = self.create_token_category(
+            facility=self.facility,
+            name="General",
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            shorthand="GEN",
+            default=True,
+        )
+
+        user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
+
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 1",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=True,
+        )
+        self.create_token(
+            facility=self.facility,
+            queue=token_queue,
+            category=token_category,
+            number=1,
+            status=TokenStatusOptions.CREATED.value,
+        )
+        self.create_token(
+            facility=self.facility,
+            queue=token_queue,
+            category=token_category,
+            number=2,
+            status=TokenStatusOptions.IN_PROGRESS.value,
+        )
+        self.create_token(
+            facility=self.facility,
+            queue=token_queue,
+            category=token_category,
+            number=3,
+            status=TokenStatusOptions.FULFILLED.value,
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        url = reverse(
+            "token-queue-summary",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": token_queue.external_id,
+            },
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("General", response.data)
+        category_summary = response.data["General"]
+        self.assertEqual(category_summary["CREATED"], 1)
+        self.assertEqual(category_summary["IN_PROGRESS"], 1)
+        self.assertEqual(category_summary["FULFILLED"], 1)
+
+    def test_generate_summary_for_token_as_user_without_permission(self):
+        """
+        Test generating summary for tokens as a user without the required permissions.
+        """
+        token_category = self.create_token_category(
+            facility=self.facility,
+            name="General",
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            shorthand="GEN",
+            default=True,
+        )
+
+        user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
+
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 1",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=True,
+        )
+        self.create_token(
+            facility=self.facility,
+            queue=token_queue,
+            category=token_category,
+            number=1,
+            status=TokenStatusOptions.CREATED.value,
+        )
+        self.create_token(
+            facility=self.facility,
+            queue=token_queue,
+            category=token_category,
+            number=2,
+            status=TokenStatusOptions.IN_PROGRESS.value,
+        )
+        self.create_token(
+            facility=self.facility,
+            queue=token_queue,
+            category=token_category,
+            number=3,
+            status=TokenStatusOptions.FULFILLED.value,
+        )
+        self.client.force_authenticate(user=self.user)
+        url = reverse(
+            "token-queue-summary",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": token_queue.external_id,
+            },
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to list token queue", str(response.data)
+        )
 
 
 class TokenQueueAPIGenerateTokenTestCase(CareAPITestBase):
