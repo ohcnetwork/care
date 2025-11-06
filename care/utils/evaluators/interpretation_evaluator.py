@@ -10,19 +10,27 @@ from care.utils.registries.evaluation_metric import EvaluatorMetricsRegistry
 
 
 class InterpretationEvaluator:
-    def __init__(self, rules: list[dict], metric_cache=None):
+    def __init__(self, rules: list[dict], metric_cache=None, valueset_cache=None):
         self.rules = rules
         if metric_cache:
             self.metric_cache = metric_cache
         else:
             self.metric_cache = {}
+        if valueset_cache:
+            self.valueset_cache = valueset_cache
+        else:
+            self.valueset_cache = {}
 
-    def check_valueset(self, valueset, code, interpretation):
-        valueset = ValueSet.objects.get(slug=valueset)
+    def check_valueset(self, valueset_slug, code, interpretation):
+        if valueset_slug not in self.valueset_cache:
+            self.valueset_cache[valueset_slug] = ValueSet.objects.get(
+                slug=valueset_slug
+            )
+        valueset = self.valueset_cache[valueset_slug]
         lookup = valueset.lookup(code)
         if lookup:
             return interpretation
-        return False
+        return None
 
     def get_interpretation(self, rule: dict, value: Any):  # noqa PLR0911 PLR0912
         """
@@ -37,13 +45,13 @@ class InterpretationEvaluator:
                 elif "value" in value:
                     value = value["value"]
                 else:
-                    return False, False
+                    return None, []
 
             if isinstance(value, str):
                 try:
                     value = float(value)
                 except ValueError:
-                    return False, False
+                    return None, []
             for value_range in rule.get("ranges", []):
                 min_val = value_range.get("min")
                 max_val = value_range.get("max")
@@ -86,17 +94,17 @@ class InterpretationEvaluator:
                 if interpretation:
                     return interpretation, []
             for valueset_interpretation in rule.get("valueset_interpretation", []):
-                if not valueset_interpretation.get("valuset"):
+                if not valueset_interpretation.get("valueset"):
                     continue
                 interpretation = self.check_valueset(
-                    valueset_interpretation.get("valuset"),
+                    valueset_interpretation.get("valueset"),
                     value.get("coding"),
                     valueset_interpretation.get("interpretation"),
                 )
                 if interpretation:
                     return interpretation, []
 
-        return False, False
+        return None, []
 
     def evaluate_conditions(self, conditions, context):
         if not conditions:

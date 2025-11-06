@@ -7,9 +7,12 @@ def compute_observation_interpretation(model_instance, metrics_cache):
         "patient": model_instance.patient,
         "encounter": model_instance.encounter,
     }
+    valueset_cache = {}
     try:
         evaluator = InterpretationEvaluator(
-            model_instance.observation_definition.qualified_ranges, metrics_cache
+            model_instance.observation_definition.qualified_ranges,
+            metrics_cache,
+            valueset_cache,
         )
 
         interpretation, ranges = evaluator.evaluate(
@@ -19,6 +22,7 @@ def compute_observation_interpretation(model_instance, metrics_cache):
             model_instance.interpretation = interpretation
             model_instance.reference_range = ranges
         metrics_cache = evaluator.metric_cache
+        valueset_cache = evaluator.valueset_cache
         # Handle Components
         if not model_instance.observation_definition.component:
             return None
@@ -34,7 +38,9 @@ def compute_observation_interpretation(model_instance, metrics_cache):
             if not component_code or not component_definition_dict.get(component_code):
                 continue
             evaluator = InterpretationEvaluator(
-                component_definition_dict.get(component_code, [])
+                component_definition_dict.get(component_code, []),
+                metrics_cache,
+                valueset_cache,
             )
 
             interpretation, ranges = evaluator.evaluate(
@@ -44,6 +50,7 @@ def compute_observation_interpretation(model_instance, metrics_cache):
                 component["interpretation"] = interpretation
                 component["reference_range"] = ranges
             metrics_cache = evaluator.metric_cache
+            valueset_cache = evaluator.valueset_cache
     except Exception as e:
         raise e
     return metrics_cache
