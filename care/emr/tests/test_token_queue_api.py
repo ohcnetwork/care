@@ -1165,3 +1165,249 @@ class TokenQueueAPITestCase(CareAPITestBase):
         self.assertIn(
             "You do not have permission to update token queue", str(response.data)
         )
+
+    #  tests for retrieve token queue
+
+    def test_retrieve_token_queue_as_superuser(self):
+        """
+        Test retrieving a token queue as superuser.
+        """
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Initial Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=self.superuser_resource,
+            is_primary=True,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(token_queue.external_id))
+        self.assertEqual(response.data["name"], token_queue.name)
+
+    def test_retrieve_token_queue_as_user_with_permissions(self):
+        """
+        Test retrieving a token queue as a user with the required permissions.
+        """
+        user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Initial Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=True,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.get(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(token_queue.external_id))
+        self.assertEqual(response.data["name"], token_queue.name)
+
+    def test_retrieve_token_queue_as_user_without_permissions(self):
+        """
+        Test retrieving a token queue as a user without the required permissions.
+        """
+        user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Initial Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=True,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.generate_detail_url(
+                facility_external_id=self.facility.external_id,
+                external_id=token_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to list token queue", str(response.data)
+        )
+
+    # tests for list token queue
+
+    def test_list_token_queues_with_resource_type_be_practitioner_as_superuser(self):
+        """
+        Test listing token                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;make down
+        queues as superuser.
+        """
+        token_queue1 = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 1",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=self.superuser_resource,
+            is_primary=True,
+        )
+        token_queue2 = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 2",
+            date=(timezone.now() + timedelta(days=2)).date(),
+            resource=self.superuser_resource,
+            is_primary=False,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": self.superuser.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        returned_ids = {item["id"] for item in response.data["results"]}
+        self.assertIn(str(token_queue1.external_id), returned_ids)
+        self.assertIn(str(token_queue2.external_id), returned_ids)
+
+    def test_list_token_queues_as_user_with_permissions(self):
+        """
+        Test listing token queues as a user with the required permissions.
+        """
+        user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        token_queue1 = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 1",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=True,
+        )
+        token_queue2 = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 2",
+            date=(timezone.now() + timedelta(days=2)).date(),
+            resource=user_resource,
+            is_primary=False,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": self.user.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        returned_ids = {item["id"] for item in response.data["results"]}
+        self.assertIn(str(token_queue1.external_id), returned_ids)
+        self.assertIn(str(token_queue2.external_id), returned_ids)
+
+    def test_list_token_queue_with_name_filter(self):
+        """
+        Test listing token queues with a name filter.
+        """
+        user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        token_queue1 = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 1",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=True,
+        )
+        self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 2",
+            date=(timezone.now() + timedelta(days=2)).date(),
+            resource=user_resource,
+            is_primary=False,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": self.user.external_id,
+                "name": "Token Queue 1",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(token_queue1.external_id)
+        )
+
+    def test_list_token_queue_with_date_filter(self):
+        """
+        Test listing token queues with a date filter.
+        """
+        user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        token_queue1 = self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 1",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=True,
+        )
+        self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 2",
+            date=(timezone.now() + timedelta(days=2)).date(),
+            resource=user_resource,
+            is_primary=False,
+        )
+        self.client.force_authenticate(user=self.user)
+        filter_date = (timezone.now() + timedelta(days=1)).date().isoformat()
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": self.user.external_id,
+                "date": filter_date,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(token_queue1.external_id)
+        )
