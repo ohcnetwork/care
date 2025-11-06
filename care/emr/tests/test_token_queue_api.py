@@ -7,8 +7,10 @@ from model_bakery import baker
 
 from care.emr.models.healthcare_service import HealthcareService
 from care.emr.models.scheduling.token import (
+    Token,
     TokenCategory,
     TokenQueue,
+    TokenSubQueue,
 )
 from care.emr.resources.scheduling.token.spec import (
     SchedulableResourceTypeOptions,
@@ -2149,3 +2151,234 @@ class TokenQueueAPIGenerateTokenTestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn("Location is not part of the facility", str(response.data))
+
+
+class TokenQueueSetNextTokenToSubQueueTestCase(CareAPITestBase):
+    """
+    Test case for setting the next token to a sub-queue via the sub-queue next token endpoint.
+
+    fields:
+    - sub_queue: UUID4
+    - category: UUID4
+
+    'can_write_token' permission is required to set the next token to a sub-queue.
+
+    Supported resource types:
+
+    - practitioner
+    - healthcare_service
+    - location
+
+    """
+
+    def setUp(self):
+        self.user = self.create_user(username="testuser")
+        self.superuser = self.create_super_user(username="superuser")
+        self.facility = self.create_facility(user=self.superuser)
+        self.facility_organization = self.create_facility_organization(
+            facility=self.facility, org_type="root"
+        )
+        self.superuser_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.superuser,
+        )
+        self.role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_list_token.name,
+                TokenPermissions.can_write_token.name,
+            ],
+        )
+
+        self.token_category = self.create_token_category(
+            name="General",
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            shorthand="GEN",
+            default=True,
+        )
+
+    def create_token_category(self, facility, **kwargs):
+        return baker.make(TokenCategory, facility=facility, **kwargs)
+
+    def create_schedule_resource(self, **kwargs):
+        return baker.make("emr.SchedulableResource", **kwargs)
+
+    def create_token_queue(self, facility, **kwargs):
+        return baker.make(TokenQueue, facility=facility, **kwargs)
+
+    def create_token_sub_queue(self, facility, resource, **kwargs):
+        return baker.make(TokenSubQueue, facility=facility, resource=resource, **kwargs)
+
+    def create_token(self, facility, **kwargs):
+        return baker.make(Token, facility=facility, **kwargs)
+
+    def test_set_next_token_to_subqueue_as_superuser(self):
+        """
+        Test setting the next token to a sub-queue as superuser.
+
+        needs to create:
+        - token queue
+        - token sub-queue
+        - token
+        """
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Primary Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=self.superuser_resource,
+            is_primary=True,
+        )
+        sub_queue = self.create_token_sub_queue(
+            facility=self.facility,
+            resource=self.superuser_resource,
+            name="Sub Queue 1",
+            status="active",
+        )
+        token = self.create_token(
+            facility=self.facility,
+            queue=token_queue,
+            category=self.token_category,
+            number=1,
+            status=TokenStatusOptions.CREATED.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = reverse(
+            "token-queue-set-next-token-to-subqueue",
+            kwargs={
+                "facility_external_id": str(self.facility.external_id),
+                "external_id": str(token_queue.external_id),
+            },
+        )
+        response = self.client.post(
+            url,
+            {
+                "sub_queue": str(sub_queue.external_id),
+                "category": str(self.token_category.external_id),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        sub_queue.refresh_from_db()
+        token.refresh_from_db()
+        self.assertEqual(sub_queue.current_token, token)
+        self.assertEqual(token.status, TokenStatusOptions.IN_PROGRESS.value)
+
+    def test_set_next_token_to_subqueue_as_user_with_permissions(self):
+        """
+        Test setting the next token to a sub-queue as a user with the required permissions.
+
+        needs to create:
+        - token queue
+        - token sub-queue
+        - token
+        """
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Primary Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=True,
+        )
+        sub_queue = self.create_token_sub_queue(
+            facility=self.facility,
+            resource=user_resource,
+            name="Sub Queue 1",
+            status="active",
+        )
+        token = self.create_token(
+            facility=self.facility,
+            queue=token_queue,
+            category=self.token_category,
+            number=1,
+            status=TokenStatusOptions.CREATED.value,
+        )
+        self.client.force_authenticate(user=self.user)
+        url = reverse(
+            "token-queue-set-next-token-to-subqueue",
+            kwargs={
+                "facility_external_id": str(self.facility.external_id),
+                "external_id": str(token_queue.external_id),
+            },
+        )
+        response = self.client.post(
+            url,
+            {
+                "sub_queue": str(sub_queue.external_id),
+                "category": str(self.token_category.external_id),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        sub_queue.refresh_from_db()
+        token.refresh_from_db()
+        self.assertEqual(sub_queue.current_token, token)
+        self.assertEqual(token.status, TokenStatusOptions.IN_PROGRESS.value)
+
+    def test_set_next_token_to_subqueue_as_user_without_permissions(self):
+        """
+        Test setting the next token to a sub-queue as a user without the 'can_write_token' permissions.
+
+        needs to create:
+        - token queue
+        - token sub-queue
+        - token
+        """
+        role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_list_token.name,
+            ],
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user, role=role, facility_organization=self.facility_organization
+        )
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Primary Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=self.superuser_resource,
+            is_primary=True,
+        )
+        sub_queue = self.create_token_sub_queue(
+            facility=self.facility,
+            resource=self.superuser_resource,
+            name="Sub Queue 1",
+            status="active",
+        )
+        self.create_token(
+            facility=self.facility,
+            queue=token_queue,
+            category=self.token_category,
+            number=1,
+            status=TokenStatusOptions.CREATED.value,
+        )
+        self.client.force_authenticate(user=self.user)
+        url = reverse(
+            "token-queue-set-next-token-to-subqueue",
+            kwargs={
+                "facility_external_id": str(self.facility.external_id),
+                "external_id": str(token_queue.external_id),
+            },
+        )
+        response = self.client.post(
+            url,
+            {
+                "sub_queue": str(sub_queue.external_id),
+                "category": str(self.token_category.external_id),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update token queue", str(response.data)
+        )
