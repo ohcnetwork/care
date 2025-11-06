@@ -19,7 +19,7 @@ def compute_observation_interpretation(model_instance, metrics_cache):
             model_instance.interpretation = interpretation
             model_instance.reference_range = ranges
         else:
-            model_instance.interpretation = "-"
+            model_instance.interpretation = None
             model_instance.reference_range = []
         metrics_cache = evaluator.metric_cache
         # Handle Components
