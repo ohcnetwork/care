@@ -13,24 +13,24 @@ class EvaluationMetricBase:
             raise ValueError("Invalid operation")
         # TODO Check if value is the correct type for the operation
 
-    def apply_rule(self, operation, rule):
+    def apply_rule(self, operation, rule, facility=None):
         if not self.context_object:
             return False
         if operation not in self.allowed_operations or not getattr(
             self, f"evaluate_{operation}", None
         ):
             raise ValueError("Invalid operation")
-        return getattr(self, f"evaluate_{operation}")(rule)
+        return getattr(self, f"evaluate_{operation}")(rule, facility)
 
-    def evaluate_equality(self, rule):
+    def evaluate_equality(self, rule, facility=None):
         value = self.get_value()
         return value == rule
 
-    def evaluate_in_range(self, rule):
+    def evaluate_in_range(self, rule, facility=None):
         value = self.get_value()
         return value >= rule["min"] and value <= rule["max"]
 
-    def evaluate_has_tag(self, rule):
+    def evaluate_has_tag(self, rule, facility=None):
         value = self.get_value()
         rule = self.clean_rule(rule)
         return rule in value

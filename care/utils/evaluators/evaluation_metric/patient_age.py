@@ -35,14 +35,14 @@ class PatientAgeMetric(EvaluationMetricBase):
             return value.years * 365 + value.months * 30 + value.days
         raise ValueError("Invalid value type")
 
-    def evaluate_in_range(self, rule):
+    def evaluate_in_range(self, rule, facility=None):
         value = self.get_value()
         value_type = rule.get("value_type", "years")
 
         age = self.convert_value_to_units(value, value_type or "years")
         return age >= int(rule["min"]) and age <= int(rule["max"])
 
-    def evaluate_equality(self, rule):
+    def evaluate_equality(self, rule, facility=None):
         value = self.get_value()
         value_type = rule.get("value_type", "years")
         age = self.convert_value_to_units(value, value_type or "years")

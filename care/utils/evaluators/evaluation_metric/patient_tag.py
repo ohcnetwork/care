@@ -6,16 +6,16 @@ from care.utils.registries.evaluation_metric import (
 )
 
 
-class EncounterTagsMetric(EvaluationMetricBase):
-    context = "encounter"
-    name = "encounter_tag"
-    verbose_name = "Encounter Tag"
+class PatientTagsMetric(EvaluationMetricBase):
+    context = "patient"
+    name = "patient_tag"
+    verbose_name = "Patient Tag"
     allowed_operations = [
         AllowedOperations.has_tag.value,
     ]
 
     def evaluate_has_tag(self, rule, facility=None):
-        value = self.get_value()
+        value = self.get_value(facility)
         rule = self.clean_rule(rule)
         return any(tag in value for tag in rule)
 
@@ -30,9 +30,14 @@ class EncounterTagsMetric(EvaluationMetricBase):
             return -1
         return tag_config
 
-    def get_value(self):
-        encounter = self.context_object
-        return [*encounter.tags]
+    def get_value(self, facility=None):
+        patient = self.context_object
+        if not facility:
+            return []
+        facility_external_id = str(facility.external_id)
+        patient_facility_tags = patient.facility_tags.get(facility_external_id, [])
+        patient_instance_tags = patient.instance_tags
+        return [*patient_facility_tags, *patient_instance_tags]
 
 
-EvaluatorMetricsRegistry.register(EncounterTagsMetric)
+EvaluatorMetricsRegistry.register(PatientTagsMetric)

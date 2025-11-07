@@ -298,7 +298,6 @@ class ChargeItemViewSet(
                     )
                 ):
                     raise ValidationError("Invalid service resource")
-                encounter = None
                 quantity = charge_item_request.quantity
                 charge_item = apply_charge_item_definition(
                     charge_item_definition,

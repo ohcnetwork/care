@@ -98,7 +98,7 @@ class InterpretationEvaluator:
 
         return False, False
 
-    def evaluate_conditions(self, conditions, context):
+    def evaluate_conditions(self, conditions, context, facility=None):
         if not conditions:
             return True
         for condition in conditions:
@@ -112,7 +112,7 @@ class InterpretationEvaluator:
                 )
                 self.metric_cache[metric] = metric_evaluator_obj
             if not metric_evaluator_obj.apply_rule(
-                condition.get("operation"), condition.get("value")
+                condition.get("operation"), condition.get("value"), facility
             ):
                 return False
         return True
