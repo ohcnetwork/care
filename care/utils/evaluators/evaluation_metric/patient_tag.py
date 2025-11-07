@@ -14,11 +14,6 @@ class PatientTagsMetric(EvaluationMetricBase):
         AllowedOperations.has_tag.value,
     ]
 
-    def evaluate_has_tag(self, rule, facility=None):
-        value = self.get_value(facility)
-        rule = self.clean_rule(rule)
-        return any(tag in value for tag in rule)
-
     def clean_rule(self, rule):
         tag_ids = rule.split(",")
         tag_config = (

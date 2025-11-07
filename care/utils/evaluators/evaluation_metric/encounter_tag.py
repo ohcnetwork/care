@@ -14,11 +14,6 @@ class EncounterTagsMetric(EvaluationMetricBase):
         AllowedOperations.has_tag.value,
     ]
 
-    def evaluate_has_tag(self, rule, facility=None):
-        value = self.get_value()
-        rule = self.clean_rule(rule)
-        return any(tag in value for tag in rule)
-
     def clean_rule(self, rule):
         tag_ids = rule.split(",")
         tag_config = (
@@ -30,7 +25,7 @@ class EncounterTagsMetric(EvaluationMetricBase):
             return -1
         return tag_config
 
-    def get_value(self):
+    def get_value(self, facility=None):
         encounter = self.context_object
         return [*encounter.tags]
 

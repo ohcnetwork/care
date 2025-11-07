@@ -31,12 +31,12 @@ class EvaluationMetricBase:
         return value >= rule["min"] and value <= rule["max"]
 
     def evaluate_has_tag(self, rule, facility=None):
-        value = self.get_value()
+        value = self.get_value(facility)
         rule = self.clean_rule(rule)
-        return rule in value
+        return any(tag in value for tag in rule)
 
     def clean_rule(self, rule):
         return rule
 
-    def get_value(self):
+    def get_value(self, facility=None):
         return self._value
