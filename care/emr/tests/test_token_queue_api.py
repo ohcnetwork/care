@@ -386,42 +386,31 @@ class TokenQueueAPITestCase(CareAPITestBase):
             "Healthcare Service is not part of the facility", str(response.data)
         )
 
-    # Tests for update token queue
-
-    def test_update_token_queue_as_superuser(self):
+    def test_create_token_queue_with_an_existing_primary_queue(self):
         """
-        Test updating a token queue as superuser.
+        Test creating a token queue with an existing primary queue.
         """
-        token_queue = self.create_token_queue(
+        self.create_token_queue(
             facility=self.facility,
-            name="Initial Token Queue",
+            name="Token Queue 1",
             date=(timezone.now() + timedelta(days=1)).date(),
             resource=self.superuser_resource,
             is_primary=True,
         )
         self.client.force_authenticate(user=self.superuser)
-        update_data = {
-            "name": "Updated Token Queue",
-        }
-        response = self.client.put(
-            self.generate_detail_url(
-                facility_external_id=self.facility.external_id,
-                external_id=token_queue.external_id,
-            ),
-            update_data,
-            format="json",
-        )
+        data = self.generate_token_queue_data()
+        response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["name"], update_data["name"])
         get_response = self.client.get(
             self.generate_detail_url(
                 facility_external_id=self.facility.external_id,
-                external_id=token_queue.external_id,
+                external_id=response.data["id"],
             )
         )
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["id"], str(token_queue.external_id))
-        self.assertEqual(get_response.data["name"], update_data["name"])
+        self.assertEqual(get_response.data["id"], str(response.data["id"]))
+        self.assertEqual(get_response.data["name"], data["name"])
+        self.assertEqual(get_response.data["is_primary"], False)
 
     def test_update_token_queue_with_resource_type_be_practitioner_as_user_with_permissions(
         self,
@@ -1337,6 +1326,85 @@ class TokenQueueAPITestCase(CareAPITestBase):
         self.assertIn(str(token_queue1.external_id), returned_ids)
         self.assertIn(str(token_queue2.external_id), returned_ids)
 
+    def test_list_token_queues_as_user_without_permissions(self):
+        """
+        Test listing token queues as a user without the required permissions.
+        """
+        user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
+        role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_write_token.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=role,
+            facility_organization=self.facility_organization,
+        )
+
+        self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 1",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=user_resource,
+            is_primary=True,
+        )
+        self.create_token_queue(
+            facility=self.facility,
+            name="Token Queue 2",
+            date=(timezone.now() + timedelta(days=2)).date(),
+            resource=user_resource,
+            is_primary=False,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": self.user.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to list token queue", str(response.data)
+        )
+
+    def test_list_token_queues_without_resource_type_and_resource_id(self):
+        """
+        Test listing token queues without resource_type and resource_id.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(self.base_url)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "resource_type and resource_id is required",
+            str(response.data),
+        )
+
+    def test_list_token_queues_without_resource(self):
+        """
+        Test listing token queues for a resource with no token queues.
+        """
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": self.user.external_id,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 0)
+
     def test_list_token_queue_with_name_filter(self):
         """
         Test listing token queues with a name filter.
@@ -2034,6 +2102,27 @@ class TokenQueueAPIGenerateTokenTestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 404)
         self.assertIn("No Patient matches the given query.", str(response.data))
 
+    def test_generate_token_without_patient(self):
+        """
+        Test generating a token without providing a patient UUID.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            self.base_url,
+            {
+                "category": str(self.token_category.external_id),
+                "note": "Test token note",
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.superuser.external_id),
+                "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["note"], "Test token note")
+        self.assertEqual(response.data["status"], TokenStatusOptions.CREATED.value)
+        self.assertEqual(response.data["number"], 1)
+
     def test_generate_token_for_resource_type_be_healthcare_service_as_superuser(self):
         """
         Test generating a token for resource type 'healthcare_service' as superuser.
@@ -2403,6 +2492,15 @@ class TokenQueueSetNextTokenToSubQueueTestCase(CareAPITestBase):
     def create_token(self, facility, **kwargs):
         return baker.make(Token, facility=facility, **kwargs)
 
+    def generate_url(self, facility_external_id, external_id):
+        return reverse(
+            "token-queue-set-next-token-to-subqueue",
+            kwargs={
+                "facility_external_id": str(facility_external_id),
+                "external_id": str(external_id),
+            },
+        )
+
     def test_set_next_token_to_subqueue_as_superuser(self):
         """
         Test setting the next token to a sub-queue as superuser.
@@ -2433,13 +2531,7 @@ class TokenQueueSetNextTokenToSubQueueTestCase(CareAPITestBase):
             status=TokenStatusOptions.CREATED.value,
         )
         self.client.force_authenticate(user=self.superuser)
-        url = reverse(
-            "token-queue-set-next-token-to-subqueue",
-            kwargs={
-                "facility_external_id": str(self.facility.external_id),
-                "external_id": str(token_queue.external_id),
-            },
-        )
+        url = self.generate_url(self.facility.external_id, token_queue.external_id)
         response = self.client.post(
             url,
             {
@@ -2494,13 +2586,7 @@ class TokenQueueSetNextTokenToSubQueueTestCase(CareAPITestBase):
             status=TokenStatusOptions.CREATED.value,
         )
         self.client.force_authenticate(user=self.user)
-        url = reverse(
-            "token-queue-set-next-token-to-subqueue",
-            kwargs={
-                "facility_external_id": str(self.facility.external_id),
-                "external_id": str(token_queue.external_id),
-            },
-        )
+        url = self.generate_url(self.facility.external_id, token_queue.external_id)
         response = self.client.post(
             url,
             {
@@ -2553,13 +2639,7 @@ class TokenQueueSetNextTokenToSubQueueTestCase(CareAPITestBase):
             status=TokenStatusOptions.CREATED.value,
         )
         self.client.force_authenticate(user=self.user)
-        url = reverse(
-            "token-queue-set-next-token-to-subqueue",
-            kwargs={
-                "facility_external_id": str(self.facility.external_id),
-                "external_id": str(token_queue.external_id),
-            },
-        )
+        url = self.generate_url(self.facility.external_id, token_queue.external_id)
         response = self.client.post(
             url,
             {
@@ -2572,3 +2652,80 @@ class TokenQueueSetNextTokenToSubQueueTestCase(CareAPITestBase):
         self.assertIn(
             "You do not have permission to update token queue", str(response.data)
         )
+
+    def test_set_next_token_to_subqueue_with_an_category_outside_facility(self):
+        """
+        Test setting the next token to a sub-queue with category outside the facility.
+        """
+        another_facility = self.create_facility(
+            user=self.superuser, name="Another Facility"
+        )
+        token_category = self.create_token_category(
+            name="Special",
+            facility=another_facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            shorthand="SPC",
+            default=False,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Primary Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=self.superuser_resource,
+            is_primary=True,
+        )
+        sub_queue = self.create_token_sub_queue(
+            facility=self.facility,
+            resource=self.superuser_resource,
+            name="Sub Queue 1",
+            status="active",
+        )
+        self.create_token(
+            facility=self.facility,
+            queue=token_queue,
+            category=self.token_category,
+            number=1,
+            status=TokenStatusOptions.CREATED.value,
+        )
+        url = self.generate_url(self.facility.external_id, token_queue.external_id)
+        response = self.client.post(
+            url,
+            {
+                "sub_queue": str(sub_queue.external_id),
+                "category": str(token_category.external_id),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("No TokenCategory matches the given query.", str(response.data))
+
+    def test_set_next_token_to_subqueue_with_no_available_tokens(self):
+        """
+        Test setting the next token to a sub-queue when there are no available tokens in the queue for the given category.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        token_queue = self.create_token_queue(
+            facility=self.facility,
+            name="Primary Token Queue",
+            date=(timezone.now() + timedelta(days=1)).date(),
+            resource=self.superuser_resource,
+            is_primary=True,
+        )
+        sub_queue = self.create_token_sub_queue(
+            facility=self.facility,
+            resource=self.superuser_resource,
+            name="Sub Queue 1",
+            status="active",
+        )
+        url = self.generate_url(self.facility.external_id, token_queue.external_id)
+        response = self.client.post(
+            url,
+            {
+                "sub_queue": str(sub_queue.external_id),
+                "category": str(self.token_category.external_id),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("No tokens found", str(response.data))
