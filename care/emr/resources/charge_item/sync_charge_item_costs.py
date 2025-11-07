@@ -8,10 +8,17 @@ from care.emr.resources.common.monetary_component import (
 
 def calculate_amount(component, quantity, base):
     if component.amount:
+        if component.amount < 0:
+            raise ValidationError("Amount cannot be negative")
+        if component.amount > base:
+            raise ValidationError("Amount cannot be more than base amount")
         component.amount = component.amount * quantity
         return component
     if component.factor:
-        component.amount = base * component.factor / 100
+        max_factor = 100
+        if component.factor < 1 or component.factor > max_factor:
+            raise ValidationError("Factor must be between 1 and 100")
+        component.amount = base * component.factor / max_factor
         return component
     raise ValidationError("Amount or factor is required")
 
