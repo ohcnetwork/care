@@ -78,7 +78,7 @@ class ActivityDefinitionViewSet(
             )
             if not obj:
                 error_msg = (
-                    f"Specimen Definition with id {specimen_requirement} not found"
+                    f"Specimen Definition with slug {specimen_requirement} not found"
                 )
                 raise ValidationError(error_msg)
             ids.append(obj.id)
@@ -93,7 +93,7 @@ class ActivityDefinitionViewSet(
             )
             if not obj:
                 error_msg = (
-                    f"Observation Definition with id {observation_result} not found"
+                    f"Observation Definition with slug {observation_result} not found"
                 )
                 raise ValidationError(error_msg)
             ids.append(obj.id)
@@ -155,7 +155,6 @@ class ActivityDefinitionViewSet(
             get_object_or_404(
                 ResourceCategory, slug=instance.category, facility=facility
             )
-
         return super().validate_data(instance, model_obj)
 
     def perform_create(self, instance):
