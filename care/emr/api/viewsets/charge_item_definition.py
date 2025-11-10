@@ -1,3 +1,4 @@
+from django.db import transaction
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -87,13 +88,15 @@ class ChargeItemDefinitionViewSet(
         instance.slug = ChargeItemDefinition.calculate_slug_from_facility(
             instance.facility.external_id, instance.slug
         )
-        super().perform_create(instance)
+        with transaction.atomic():
+            super().perform_create(instance)
 
     def perform_update(self, instance):
         instance.slug = ChargeItemDefinition.calculate_slug_from_facility(
             instance.facility.external_id, instance.slug
         )
-        super().perform_update(instance)
+        with transaction.atomic():
+            super().perform_update(instance)
 
     def authorize_create(self, instance):
         if not AuthorizationController.call(

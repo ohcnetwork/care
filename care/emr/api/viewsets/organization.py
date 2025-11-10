@@ -153,6 +153,14 @@ class OrganizationViewSet(EMRModelViewSet):
             )
         return True
 
+    def perform_create(self, instance):
+        with transaction.atomic():
+            super().perform_create(instance)
+
+    def perform_update(self, instance):
+        with transaction.atomic():
+            super().perform_update(instance)
+
     def perform_destroy(self, instance):
         with transaction.atomic():
             OrganizationUser.objects.filter(organization=instance).delete()

@@ -1,3 +1,4 @@
+from django.db import transaction
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -58,7 +59,12 @@ class ProductViewSet(
             and instance.product_knowledge.facility != instance.facility
         ):
             raise ValidationError("Invalid Product Knowledge")
-        super().perform_create(instance)
+        with transaction.atomic():
+            super().perform_create(instance)
+
+    def perform_update(self, instance):
+        with transaction.atomic():
+            super().perform_update(instance)
 
     def authorize_create(self, instance):
         facility = self.get_facility_obj()
