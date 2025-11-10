@@ -2,6 +2,7 @@ from care.emr.models.encounter import Encounter
 from care.emr.reports.context_builder.base import Field, SingleObjectContextBuilder
 from care.emr.reports.context_builder.registry import contex_builder_registry
 from care.emr.reports.context_builder.utils import format_datetime
+from care.users.models import User
 
 STATUS_DISPLAY = {
     "planned": "Planned",
@@ -88,7 +89,47 @@ class EncounterContextBuilder(SingleObjectContextBuilder):
             preview_value="Patient advised to continue medications and follow up after 1 week.",
             description="Discharge advice and instructions",
         ),
+        Field(
+            key="care_team",
+            display="Care Team",
+            mapping=lambda e: EncounterContextBuilder._format_care_team(e),
+            preview_value=[
+                {"name": "Dr. Rajesh Kumar", "role": "Primary Physician"},
+                {"name": "Nurse Sarah", "role": "Primary Nurse"},
+            ],
+            description="Healthcare professionals involved in patient care",
+        ),
     ]
+
+    @staticmethod
+    def _format_care_team(encounter):
+        """Format care team members from encounter.care_team field"""
+        if not encounter.care_team:
+            return []
+
+        user_ids = [
+            member.get("user_id")
+            for member in encounter.care_team
+            if member.get("user_id")
+        ]
+
+        if not user_ids:
+            return []
+
+        role_map = {
+            member.get("user_id"): member.get("role", {}).get("display", "Unknown")
+            for member in encounter.care_team
+            if member.get("user_id") and member.get("role")
+        }
+
+        users = User.objects.filter(id__in=user_ids)
+        return [
+            {
+                "name": user.get_display_name(),
+                "role": role_map.get(user.id, "Unknown"),
+            }
+            for user in users
+        ]
 
     @classmethod
     def get_object(cls, ctx: dict):

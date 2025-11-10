@@ -4,6 +4,7 @@ from pydantic import UUID4, field_validator
 
 from care.emr.models.report.template import Template
 from care.emr.reports.renderer.template_engine import TemplateEngine
+from care.emr.reports.report_type_registry import ReportTypeRegistry
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.report.context_config.spec import ContextConfigSpec
@@ -15,10 +16,6 @@ class TemplateStatusOptions(str, Enum):
     draft = "draft"
     active = "active"
     retired = "retired"
-
-
-class TemplateTypeOptions(str, Enum):
-    discharge_summary = "discharge_summary"
 
 
 class TemplateFormatOptions(str, Enum):
@@ -34,8 +31,18 @@ class TemplateBaseSpec(EMRResource):
     id: UUID4 | None = None
     name: str
     status: TemplateStatusOptions
-    template_type: TemplateTypeOptions
-    format: TemplateFormatOptions
+    template_type: str
+    format: TemplateFormatOptions  # call it default_format
+
+    @field_validator("template_type")
+    @classmethod
+    def validate_template_type(cls, v):
+        """Validate that template_type is a registered report type"""
+        valid_types = ReportTypeRegistry.get_all_keys()
+        if v not in valid_types:
+            msg = f"Invalid template_type '{v}'. Valid types are: {', '.join(valid_types)}"
+            raise ValueError(msg)
+        return v
 
 
 class TemplateCreateSpec(TemplateBaseSpec):

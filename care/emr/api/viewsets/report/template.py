@@ -7,6 +7,7 @@ from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
@@ -22,6 +23,8 @@ from care.emr.resources.report.template.spec import (
     TemplateRetrieveSpec,
     TemplateUpdateSpec,
 )
+from care.facility.models.facility import Facility
+from care.utils.shortcuts import get_object_or_404
 
 
 class TemplateFilters(FilterSet):
@@ -39,6 +42,7 @@ class PreviewTemplateRequest(BaseModel):
 
 
 class TemplateViewSet(EMRModelViewSet):
+    lookup_field = "slug"
     database_model = Template
     pydantic_model = TemplateCreateSpec
     pydantic_read_model = TemplateReadSpec
@@ -48,6 +52,93 @@ class TemplateViewSet(EMRModelViewSet):
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = TemplateFilters
     ordering_fields = ["created_date", "name", "template_type"]
+
+    def recalculate_slug(self, instance):
+        if instance.facility:
+            instance.slug = Template.calculate_slug_from_facility(
+                instance.facility.external_id, instance.slug
+            )
+        else:
+            instance.slug = Template.calculate_slug_from_instance(instance.slug)
+
+    def perform_create(self, instance):
+        self.recalculate_slug(instance)
+        super().perform_create(instance)
+
+    def perform_update(self, instance):
+        self.recalculate_slug(instance)
+        return super().perform_update(instance)
+
+    def validate_data(self, instance, model_obj=None):
+        queryset = Template.objects.all()
+        facility = None
+        if model_obj:
+            queryset = queryset.exclude(id=model_obj.id)
+            facility = (
+                str(model_obj.facility.external_id) if model_obj.facility else None
+            )
+        else:
+            facility = instance.facility
+
+        if facility:
+            slug = Template.calculate_slug_from_facility(facility, instance.slug_value)
+        else:
+            slug = Template.calculate_slug_from_instance(instance.slug_value)
+
+        queryset = queryset.filter(slug__iexact=slug)
+        if queryset.exists():
+            raise ValidationError("Slug already exists.")
+
+        return super().validate_data(instance, model_obj)
+
+    # def authorize_create(self, instance):
+    #     if instance.facility:
+    #         facility = get_object_or_404(Facility, external_id=instance.facility)
+    #         if not AuthorizationController.call(
+    #             "can_write_facility_report_template",
+    #             self.request.user,
+    #             facility,
+    #         ):
+    #             raise PermissionDenied("Cannot create report template")
+    #     elif not self.request.user.is_superuser:
+    #         raise PermissionDenied("Cannot create report template")
+
+    # def authorize_update(self, request_obj, model_instance):
+    #     if model_instance.facility:
+    #         if not AuthorizationController.call(
+    #             "can_write_facility_report_template",
+    #             self.request.user,
+    #             model_instance.facility,
+    #         ):
+    #             raise PermissionDenied("Cannot update report template")
+    #     elif not self.request.user.is_superuser:
+    #         raise PermissionDenied("Cannot update report template")
+    #     return super().authorize_update(request_obj, model_instance)
+    #
+    # def authorize_retrieve(self, model_instance):
+    #     if model_instance.facility and not AuthorizationController.call(
+    #         "can_list_facility_report_template",
+    #         self.request.user,
+    #         model_instance.facility,
+    #     ):
+    #         raise PermissionDenied("Cannot read report template")
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        if self.action == "list" and "facility" in self.request.GET:
+            facility = get_object_or_404(
+                Facility, external_id=self.request.GET["facility"]
+            )
+            # if not AuthorizationController.call(
+            #     "can_list_facility_report_template",
+            #     self.request.user,
+            #     facility,
+            # ):
+            #     raise PermissionDenied("Cannot read report templates")
+            queryset = queryset.filter(facility=facility)
+        elif self.action == "list" and "facility" not in self.request.GET:
+            queryset = queryset.filter(facility__isnull=True)
+        return queryset
 
     @extend_schema(
         description="Get the complete schema for report template building",

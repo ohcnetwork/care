@@ -1,6 +1,5 @@
 from care.emr.reports.context_builder.builders import (  # noqa: F401
     allergy,
-    care_team,
     condition,
     encounter,
     file_upload,
