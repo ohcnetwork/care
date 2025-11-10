@@ -882,3 +882,119 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
         self.assertEqual(
             response.data["results"][0]["id"], str(token_sub_queue1.external_id)
         )
+
+    # Test cases for delete token sub-queue
+
+    def test_delete_token_sub_queue_as_superuser(self):
+        """
+        Test deleting a token sub-queue as superuser
+        """
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.superuser_resource
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.delete(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+        get_response = self.client.get(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(get_response.status_code, 404)
+
+    def test_delete_token_sub_queue_as_user_with_permissions(self):
+        """
+        Test deleting a token sub-queue as normal user with permissions
+        """
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.user_resource
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.delete(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+        get_response = self.client.get(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(get_response.status_code, 404)
+
+    def test_delete_token_sub_queue_as_user_without_permissions(self):
+        """
+        Test deleting a token sub-queue as normal user without permissions
+        But part of the facility organization
+        """
+        role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_list_token.name,
+            ]
+        )
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.user_resource
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=role,
+            user=self.user,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.delete(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update token sub queue",
+            response.data["detail"],
+        )
+
+    def test_delete_token_sub_queue_as_user_not_in_facility_organization(self):
+        """
+        Test deleting a token sub-queue as normal user with permissions
+        But not part of the facility organization
+        """
+
+        another_facility = self.create_facility(user=self.superuser)
+        another_facility_organization = self.create_facility_organization(
+            facility=another_facility,
+            org_type="root",
+        )
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.user_resource
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=another_facility_organization,
+        )
+        response = self.client.delete(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update token sub queue",
+            response.data["detail"],
+        )
