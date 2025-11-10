@@ -10,7 +10,9 @@ from care.emr.models import (
     FacilityLocationEncounter,
     TokenBooking,
 )
+from care.emr.models.account import Account
 from care.emr.models.patient import Patient
+from care.emr.resources.account.spec import AccountReadSpec
 from care.emr.resources.base import EMRResource, PeriodSpec, model_from_cache
 from care.emr.resources.encounter.constants import (
     AdmitSourcesChoices,
@@ -139,6 +141,7 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
     current_location: dict | None = None
     location_history: list[dict] = []
     care_team: list[dict] = []
+    account: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -146,6 +149,9 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
         mapping["patient"] = PatientRetrieveSpec.serialize(
             obj.patient, facility=obj.facility
         ).to_json()
+        account = Account.objects.filter(patient=obj.patient).first()
+        if account:
+            mapping["account"] = AccountReadSpec.serialize(account).to_json()
         mapping["facility"] = FacilityBareMinimumSpec.serialize(obj.facility).to_json()
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
         if obj.appointment:
