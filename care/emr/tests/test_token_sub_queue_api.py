@@ -35,6 +35,11 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             resource_type=SchedulableResourceTypeOptions.practitioner.value,
             user=self.superuser,
         )
+        self.user_resource = self.create_schedule_resource(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+        )
         self.patient = self.create_patient()
         self.location = self.create_facility_location(
             facility=self.facility, facility_organization=self.facility_organization
@@ -67,6 +72,7 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             "name": "General Sub Queue",
             "status": TokenSubQueueStatusOptions.active.value,
         }
+        data.update(kwargs)
         return baker.make(TokenSubQueue, facility=facility, **data)
 
     def create_schedule_resource(self, **kwargs):
@@ -113,7 +119,7 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             )
         )
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(get_response.data["id"], str(response.data["id"]))
         self.assertEqual(get_response.data["name"], response.data["name"])
         self.assertEqual(get_response.data["status"], response.data["status"])
 
@@ -138,7 +144,7 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             )
         )
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(get_response.data["id"], str(response.data["id"]))
         self.assertEqual(get_response.data["name"], response.data["name"])
         self.assertEqual(get_response.data["status"], response.data["status"])
 
@@ -213,7 +219,7 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             )
         )
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(get_response.data["id"], str(response.data["id"]))
         self.assertEqual(get_response.data["name"], response.data["name"])
         self.assertEqual(get_response.data["status"], response.data["status"])
 
@@ -242,7 +248,7 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             )
         )
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(get_response.data["id"], str(response.data["id"]))
         self.assertEqual(get_response.data["name"], response.data["name"])
         self.assertEqual(get_response.data["status"], response.data["status"])
 
@@ -344,7 +350,7 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             )
         )
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(get_response.data["id"], str(response.data["id"]))
         self.assertEqual(get_response.data["name"], response.data["name"])
         self.assertEqual(get_response.data["status"], response.data["status"])
 
@@ -372,7 +378,7 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             )
         )
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(get_response.data["id"], str(response.data["id"]))
         self.assertEqual(get_response.data["name"], response.data["name"])
         self.assertEqual(get_response.data["status"], response.data["status"])
 
@@ -465,7 +471,9 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
         """
         Test updating a token sub-queue as superuser
         """
-        token_sub_queue = self.create_token_sub_queue(facility=self.facility)
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.superuser_resource
+        )
         self.client.force_authenticate(user=self.superuser)
         payload = {
             "name": "Updated Sub Queue Name",
@@ -487,7 +495,7 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             )
         )
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["id"], token_sub_queue.external_id)
+        self.assertEqual(get_response.data["id"], str(token_sub_queue.external_id))
         self.assertEqual(get_response.data["name"], payload["name"])
         self.assertEqual(get_response.data["status"], payload["status"])
 
@@ -495,7 +503,9 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
         """
         Test updating a token sub-queue as normal user with permissions
         """
-        token_sub_queue = self.create_token_sub_queue(facility=self.facility)
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.user_resource
+        )
         self.client.force_authenticate(user=self.user)
         self.attach_role_facility_organization_user(
             user=self.user,
@@ -522,7 +532,7 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             )
         )
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["id"], token_sub_queue.external_id)
+        self.assertEqual(get_response.data["id"], str(token_sub_queue.external_id))
         self.assertEqual(get_response.data["name"], payload["name"])
         self.assertEqual(get_response.data["status"], payload["status"])
 
@@ -536,7 +546,9 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
                 TokenPermissions.can_list_token.name,
             ]
         )
-        token_sub_queue = self.create_token_sub_queue(facility=self.facility)
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.user_resource
+        )
         self.client.force_authenticate(user=self.user)
         self.attach_role_facility_organization_user(
             role=role,
@@ -572,7 +584,9 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             facility=another_facility,
             org_type="root",
         )
-        token_sub_queue = self.create_token_sub_queue(facility=self.facility)
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.user_resource
+        )
         self.client.force_authenticate(user=self.user)
         self.attach_role_facility_organization_user(
             user=self.user,
@@ -594,5 +608,115 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 403)
         self.assertIn(
             "You do not have permission to update token sub queue",
+            response.data["detail"],
+        )
+
+    # Test cases for retrieve token sub-queue
+
+    def test_retrieve_token_sub_queue_as_superuser(self):
+        """
+        Test retrieving a token sub-queue as superuser
+        """
+        self.client.force_authenticate(user=self.superuser)
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.superuser_resource
+        )
+        response = self.client.get(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(token_sub_queue.external_id))
+        self.assertEqual(response.data["name"], token_sub_queue.name)
+        self.assertEqual(response.data["status"], token_sub_queue.status)
+
+    def test_retrieve_token_sub_queue_as_user_with_permissions(self):
+        """
+        Test retrieving a token sub-queue as normal user with permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.user_resource
+        )
+        response = self.client.get(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(token_sub_queue.external_id))
+        self.assertEqual(response.data["name"], token_sub_queue.name)
+        self.assertEqual(response.data["status"], token_sub_queue.status)
+
+    def test_retrieve_token_sub_queue_as_user_without_permissions(self):
+        """
+        Test retrieving a token sub-queue as normal user without permissions
+        But part of the facility organization
+        """
+        role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_write_token.name,
+            ]
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=role,
+            user=self.user,
+            facility_organization=self.facility_organization,
+        )
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.user_resource
+        )
+
+        response = self.client.get(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to list token sub queue",
+            response.data["detail"],
+        )
+
+    def test_retrieve_token_sub_queue_as_user_not_in_facility_organization(self):
+        """
+        Test retrieving a token sub-queue as normal user with permissions
+        But not part of the facility organization
+        """
+
+        another_facility = self.create_facility(user=self.superuser)
+        another_facility_organization = self.create_facility_organization(
+            facility=another_facility,
+            org_type="root",
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=another_facility_organization,
+        )
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.superuser_resource
+        )
+
+        response = self.client.get(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to list token sub queue",
             response.data["detail"],
         )
