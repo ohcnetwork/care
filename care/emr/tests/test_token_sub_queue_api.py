@@ -720,3 +720,165 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             "You do not have permission to list token sub queue",
             response.data["detail"],
         )
+
+    def test_list_token_sub_queues_as_superuser(self):
+        """
+        Test listing token sub-queues as superuser
+        """
+        token_sub_queue1 = self.create_token_sub_queue(
+            facility=self.facility, resource=self.superuser_resource
+        )
+        token_sub_queue2 = self.create_token_sub_queue(
+            facility=self.facility, resource=self.superuser_resource
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_id": self.superuser.external_id,
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 2)
+        returned_ids = {item["id"] for item in response.data["results"]}
+        expected_ids = {
+            str(token_sub_queue1.external_id),
+            str(token_sub_queue2.external_id),
+        }
+        self.assertEqual(returned_ids, expected_ids)
+
+    def test_list_token_sub_queues_as_user_with_permissions(self):
+        """
+        Test listing token sub-queues as normal user with permissions
+        """
+        token_sub_queue1 = self.create_token_sub_queue(
+            facility=self.facility, resource=self.user_resource
+        )
+        token_sub_queue2 = self.create_token_sub_queue(
+            facility=self.facility, resource=self.user_resource
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_id": self.user.external_id,
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        returned_ids = {item["id"] for item in response.data["results"]}
+        expected_ids = {
+            str(token_sub_queue1.external_id),
+            str(token_sub_queue2.external_id),
+        }
+        self.assertEqual(returned_ids, expected_ids)
+
+    def test_list_token_sub_queues_as_user_without_permissions(self):
+        """
+        Test listing token sub-queues as normal user without permissions
+        But part of the facility organization
+        """
+        role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_write_token.name,
+            ]
+        )
+        self.create_token_sub_queue(facility=self.facility, resource=self.user_resource)
+        self.create_token_sub_queue(facility=self.facility, resource=self.user_resource)
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=role,
+            user=self.user,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_id": self.user.external_id,
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            },
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to list token sub queue",
+            response.data["detail"],
+        )
+
+    def test_list_token_sub_queues_without_resource_filter(self):
+        """
+        Test listing token sub-queues without resource filter
+        """
+        self.create_token_sub_queue(facility=self.facility, resource=self.user_resource)
+        self.create_token_sub_queue(facility=self.facility, resource=self.user_resource)
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(self.base_url)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "resource_type and resource_id is required",
+            response.data["errors"][0]["msg"],
+        )
+
+    def test_list_token_sub_queues_with_name_filter(self):
+        """
+        Test listing token sub-queues with name filter
+        """
+        token_sub_queue1 = self.create_token_sub_queue(
+            facility=self.facility,
+            resource=self.superuser_resource,
+            name="OP Room A",
+        )
+        self.create_token_sub_queue(
+            facility=self.facility,
+            resource=self.superuser_resource,
+            name="OP Room B",
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": self.superuser.external_id,
+                "name": "OP Room A",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(token_sub_queue1.external_id)
+        )
+
+    def test_list_token_sub_queues_with_status_filter(self):
+        """
+        Test listing token sub-queues with status filter
+        """
+        token_sub_queue1 = self.create_token_sub_queue(
+            facility=self.facility,
+            resource=self.superuser_resource,
+            status=TokenSubQueueStatusOptions.active.value,
+        )
+        self.create_token_sub_queue(
+            facility=self.facility,
+            resource=self.superuser_resource,
+            status=TokenSubQueueStatusOptions.inactive.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": self.superuser.external_id,
+                "status": TokenSubQueueStatusOptions.active.value,
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(token_sub_queue1.external_id)
+        )
