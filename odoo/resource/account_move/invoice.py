@@ -97,6 +97,7 @@ class OdooInvoiceResource:
                             charge_item.charge_item_definition.category.external_id
                         ),
                     ),
+                    status=charge_item.charge_item_definition.status,
                 )
 
                 item = InvoiceItem(

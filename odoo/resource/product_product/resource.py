@@ -78,6 +78,7 @@ class OdooProductProductResource:
             ),
             taxes=taxes,
             hsn=hsn,
+            status=charge_item_definition.status,
         ).model_dump()
 
         response = OdooConnector.call_api("api/add/product", data)

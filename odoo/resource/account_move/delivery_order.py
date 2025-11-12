@@ -118,6 +118,7 @@ class OdooDeliveryOrderResource:
                     mrp=float(base_price or "0"),
                     cost=float(purchase_price or base_price or "0"),
                     category=category_data,
+                    status=product.charge_item_definition.status,
                 )
 
                 item = InvoiceItem(
