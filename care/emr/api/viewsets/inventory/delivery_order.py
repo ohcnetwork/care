@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
@@ -90,7 +91,8 @@ class DeliveryOrderViewSet(
             raise PermissionDenied(
                 "Origin and destination must be in the same facility"
             )
-        return super().perform_create(instance)
+        with transaction.atomic():
+            return super().perform_create(instance)
 
     def authorize_create(self, instance):
         """

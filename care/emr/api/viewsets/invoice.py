@@ -131,41 +131,45 @@ class InvoiceViewSet(
 
     def perform_update(self, instance):
         with InvoiceLock(instance):
-            old_invoice = Invoice.objects.get(id=instance.id)
-            if old_invoice.status != instance.status:
-                if instance.status in INVOICE_CANCELLED_STATUS:
-                    raise ValidationError(
-                        "Call the cancel invoice API to cancel the invoice"
-                    )
-                if (
-                    old_invoice.status in INVOICE_CANCELLED_STATUS
-                    and instance.status not in INVOICE_CANCELLED_STATUS
-                ):
-                    raise ValidationError("Invoice is already cancelled")
-                if old_invoice.status == InvoiceStatusOptions.balanced.value:
-                    raise ValidationError("Invoice is already balanced")
-                if (
-                    old_invoice.status == InvoiceStatusOptions.issued.value
-                    and instance.status == InvoiceStatusOptions.draft.value
-                ):
-                    raise ValidationError("Invoice is already issued")
-                if (
-                    old_invoice.status == InvoiceStatusOptions.draft.value
-                    and instance.status == InvoiceStatusOptions.balanced.value
-                ):
-                    raise ValidationError("Invoice needs to be issued before balancing")
-                if (
-                    old_invoice.status == InvoiceStatusOptions.issued.value
-                    and instance.status == InvoiceStatusOptions.balanced.value
-                ):
-                    ChargeItem.objects.filter(
-                        account=instance.account,
-                        status=ChargeItemStatusOptions.billed.value,
-                        id__in=instance.charge_items,
-                    ).update(
-                        status=ChargeItemStatusOptions.paid.value, paid_invoice=instance
-                    )
-            super().perform_update(instance)
+            with transaction.atomic():
+                old_invoice = Invoice.objects.get(id=instance.id)
+                if old_invoice.status != instance.status:
+                    if instance.status in INVOICE_CANCELLED_STATUS:
+                        raise ValidationError(
+                            "Call the cancel invoice API to cancel the invoice"
+                        )
+                    if (
+                        old_invoice.status in INVOICE_CANCELLED_STATUS
+                        and instance.status not in INVOICE_CANCELLED_STATUS
+                    ):
+                        raise ValidationError("Invoice is already cancelled")
+                    if old_invoice.status == InvoiceStatusOptions.balanced.value:
+                        raise ValidationError("Invoice is already balanced")
+                    if (
+                        old_invoice.status == InvoiceStatusOptions.issued.value
+                        and instance.status == InvoiceStatusOptions.draft.value
+                    ):
+                        raise ValidationError("Invoice is already issued")
+                    if (
+                        old_invoice.status == InvoiceStatusOptions.draft.value
+                        and instance.status == InvoiceStatusOptions.balanced.value
+                    ):
+                        raise ValidationError(
+                            "Invoice needs to be issued before balancing"
+                        )
+                    if (
+                        old_invoice.status == InvoiceStatusOptions.issued.value
+                        and instance.status == InvoiceStatusOptions.balanced.value
+                    ):
+                        ChargeItem.objects.filter(
+                            account=instance.account,
+                            status=ChargeItemStatusOptions.billed.value,
+                            id__in=instance.charge_items,
+                        ).update(
+                            status=ChargeItemStatusOptions.paid.value,
+                            paid_invoice=instance,
+                        )
+                super().perform_update(instance)
             rebalance_account_task.delay(instance.account.id)
         return instance
 

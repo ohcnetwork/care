@@ -1,3 +1,4 @@
+from django.db import transaction
 from django_filters import rest_framework as filters
 from pydantic import BaseModel
 from rest_framework.decorators import action
@@ -76,7 +77,8 @@ class PaymentReconciliationViewSet(
 
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
-        super().perform_create(instance)
+        with transaction.atomic():
+            super().perform_create(instance)
         rebalance_account_task.delay(instance.account.id)
 
     def perform_update(self, instance):
@@ -88,7 +90,8 @@ class PaymentReconciliationViewSet(
             raise ValidationError(
                 "Cannot update payment reconciliation, use the cancel endpoint instead"
             )
-        super().perform_update(instance)
+        with transaction.atomic():
+            super().perform_update(instance)
         rebalance_account_task.delay(instance.account.id)
 
     def authorize_create(self, instance):
