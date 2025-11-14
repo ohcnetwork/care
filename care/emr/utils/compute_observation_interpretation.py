@@ -15,9 +15,12 @@ def compute_observation_interpretation(model_instance, metrics_cache):
         interpretation, ranges = evaluator.evaluate(
             evaluation_context, model_instance.value
         )
-        if interpretation:
+        if interpretation is not None:
             model_instance.interpretation = interpretation
             model_instance.reference_range = ranges
+        else:
+            model_instance.interpretation = None
+            model_instance.reference_range = []
         metrics_cache = evaluator.metric_cache
         # Handle Components
         if not model_instance.observation_definition.component:
@@ -40,9 +43,12 @@ def compute_observation_interpretation(model_instance, metrics_cache):
             interpretation, ranges = evaluator.evaluate(
                 evaluation_context, component.get("value")
             )
-            if interpretation:
+            if interpretation is not None:
                 component["interpretation"] = interpretation
                 component["reference_range"] = ranges
+            else:
+                component["interpretation"] = None
+                component["reference_range"] = []
             metrics_cache = evaluator.metric_cache
     except Exception as e:
         raise e
