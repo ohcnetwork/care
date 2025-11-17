@@ -1,6 +1,7 @@
 from django.urls import reverse
 from model_bakery import baker
 
+from care.emr.models import FacilityLocation, FacilityLocationOrganization
 from care.emr.models.medication_dispense import DispenseOrder
 from care.emr.resources.medication.dispense.dispense_order import (
     MedicationDispenseOrderStatusOptions,
@@ -46,8 +47,6 @@ class DispenseOrderAPITestCase(CareAPITestBase):
         )
 
     def create_facility_location(self, facility, facility_organization, **kwargs):
-        from care.emr.models import FacilityLocation, FacilityLocationOrganization
-
         location = baker.make(FacilityLocation, facility=facility, **kwargs)
         baker.make(
             FacilityLocationOrganization,
