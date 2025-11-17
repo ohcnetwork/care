@@ -5,6 +5,7 @@ from django.urls import reverse
 from django.utils import timezone
 from model_bakery import baker
 
+from care.emr.models import FacilityLocation, FacilityLocationOrganization
 from care.emr.models.healthcare_service import HealthcareService
 from care.emr.models.scheduling.token import (
     Token,
@@ -85,8 +86,6 @@ class TokenQueueAPITestCase(CareAPITestBase):
         )
 
     def create_facility_location(self, facility, facility_organization, **kwargs):
-        from care.emr.models import FacilityLocation, FacilityLocationOrganization
-
         location = baker.make(FacilityLocation, facility=facility, **kwargs)
         baker.make(
             FacilityLocationOrganization,
