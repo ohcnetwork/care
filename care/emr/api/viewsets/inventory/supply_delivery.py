@@ -207,7 +207,7 @@ class SupplyDeliveryViewSet(
         if "request_order" not in request.GET:
             raise ValidationError("request_order is required")
         queryset = self.get_queryset()
-        orders_ids = queryset.values_list("order_id", flat=True).distinct()
+        orders_ids = queryset.values_list("order_id", flat=True).distinct()[:100]
         delivery_filter = DeliveryOrderFilters(
             self.request.GET, queryset=DeliveryOrder.objects.filter(id__in=orders_ids)
         )
