@@ -68,17 +68,16 @@ class DispenseOrderViewSet(
 
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
-        if instance.location.facility != instance.facility:
-            raise ValidationError("Location must be in the same facility")
         return super().perform_create(instance)
 
     def authorize_create(self, instance):
         facility = self.get_facility_obj()
         if self.authorize_pharmacist(facility):
             return
-        if self.authorize_location_write(
-            get_object_or_404(FacilityLocation, external_id=instance.location)
-        ):
+        location = get_object_or_404(FacilityLocation, external_id=instance.location)
+        if not location.facility == facility:
+            raise ValidationError("Location must be in the same facility")
+        if self.authorize_location_write(location):
             return
         raise PermissionDenied("You do not have permission to create dispense order")
 
