@@ -1,10 +1,8 @@
 from django.urls import reverse
 from model_bakery import baker
 
-from care.emr.models.scheduling.token import (
-    Token,
-    TokenSubQueue,
-)
+from care.emr.models import FacilityLocation, FacilityLocationOrganization
+from care.emr.models.scheduling.token import Token, TokenSubQueue
 from care.emr.resources.scheduling.token.spec import SchedulableResourceTypeOptions
 from care.emr.resources.scheduling.token_sub_queue.spec import (
     TokenSubQueueStatusOptions,
@@ -82,8 +80,6 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
         return baker.make("emr.HealthcareService", **kwargs)
 
     def create_facility_location(self, facility, facility_organization, **kwargs):
-        from care.emr.models import FacilityLocation, FacilityLocationOrganization
-
         location = baker.make(FacilityLocation, facility=facility, **kwargs)
         baker.make(
             FacilityLocationOrganization,
@@ -740,7 +736,7 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             },
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(len(response.data["results"]), 2)
         returned_ids = {item["id"] for item in response.data["results"]}
         expected_ids = {
             str(token_sub_queue1.external_id),
