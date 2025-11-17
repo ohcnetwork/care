@@ -3,6 +3,7 @@ import re
 import uuid
 from enum import Enum
 
+from django.conf import settings
 from django.utils import timezone
 from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 
@@ -51,7 +52,7 @@ class PatientBaseSpec(EMRResource):
     __store_metadata__ = True
 
     id: UUID4 | None = None
-    name: str = Field(max_length=200)
+    name: str
     gender: GenderChoices
     phone_number: PhoneNumber = Field(max_length=14)
     emergency_phone_number: PhoneNumber | None = Field(None, max_length=14)
@@ -72,10 +73,11 @@ class PatientBaseSpec(EMRResource):
 
 
 def validate_identifier_config(config, value, obj=None):
-    queryset = PatientIdentifier.objects.filter(
-        config__external_id=config["id"],
-        value=value,
-    )
+    queryset = PatientIdentifier.objects.filter(value=value)
+    if "config_obj" in config:
+        queryset = queryset.filter(config=config["config_obj"])
+    else:
+        queryset = queryset.filter(config__external_id=config["id"])
     if obj:
         queryset = queryset.exclude(patient=obj)
     if config["config"]["unique"] and queryset.exists():
@@ -96,6 +98,7 @@ class PatientIdentifierConfigRequest(BaseModel):
 
 
 class PatientCreateSpec(PatientBaseSpec):
+    name: str = Field(max_length=settings.PATIENT_NAME_MAX_LENGTH)
     geo_organization: UUID4
     date_of_birth: datetime.date | None = None
 
@@ -144,7 +147,7 @@ class PatientCreateSpec(PatientBaseSpec):
 
 
 class PatientUpdateSpec(PatientBaseSpec):
-    name: str | None = Field(default=None, max_length=200)
+    name: str | None = Field(default=None, max_length=settings.PATIENT_NAME_MAX_LENGTH)
     gender: GenderChoices | None = None
     phone_number: PhoneNumber | None = Field(default=None, max_length=14)
     emergency_phone_number: PhoneNumber | None = Field(default=None, max_length=14)

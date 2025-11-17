@@ -8,10 +8,7 @@ from care.emr.api.viewsets.base import (
     EMRRetrieveMixin,
     EMRUpdateMixin,
 )
-from care.emr.models.patient import (
-    PatientIdentifierConfig,
-    PatientIdentifierConfigCache,
-)
+from care.emr.models.patient import PatientIdentifierConfig
 from care.emr.resources.patient_identifier.spec import (
     BasePatientIdentifierSpec,
     PatientIdentifierCreateSpec,
@@ -80,18 +77,7 @@ class PatientIdentifierConfigViewSet(
             retrieve_config = instance.config.get("retrieve_config", {})
             instance.config = obj.config
             instance.config["retrieve_config"] = retrieve_config
-        self.clean_cache(instance)
         return super().perform_update(instance)
-
-    def clean_cache(self, instance):
-        if instance.facility:
-            PatientIdentifierConfigCache.clear_facility_cache(instance.facility_id)
-        else:
-            PatientIdentifierConfigCache.clear_instance_cache()
-
-    def perform_create(self, instance):
-        self.clean_cache(instance)
-        return super().perform_create(instance)
 
     def validate_data(self, instance, model_obj=None):
         # Validate that the system is not present at the instance or the facility level
