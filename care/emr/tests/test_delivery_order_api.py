@@ -1,6 +1,7 @@
 from django.urls import reverse
 from model_bakery import baker
 
+from care.emr.models import FacilityLocation, FacilityLocationOrganization
 from care.emr.resources.inventory.supply_delivery.delivery_order import (
     SupplyDeliveryOrderStatusOptions,
 )
@@ -30,8 +31,6 @@ class DeliveryOrderAPITest(CareAPITestBase):
         )
 
     def create_facility_location(self, facility, **kwargs):
-        from care.emr.models import FacilityLocation, FacilityLocationOrganization
-
         location = baker.make(FacilityLocation, facility=facility, **kwargs)
         baker.make(
             FacilityLocationOrganization,

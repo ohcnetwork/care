@@ -120,15 +120,20 @@ class DeliveryOrderViewSet(
             self.authorize_location_write(model_instance.destination)
 
     def authorize_retrieve(self, model_instance):
-        allowed = False
-        if model_instance.origin:
-            allowed = allowed or self.authorize_location_read(
-                model_instance.origin, raise_error=False
+        """
+        User should have read access to either origin or destination to read the order.
+        """
+        if not (
+            (
+                model_instance.origin
+                and self.authorize_location_read(
+                    model_instance.origin, raise_error=False
+                )
             )
-        allowed = allowed or self.authorize_location_read(
-            model_instance.destination, raise_error=False
-        )
-        if not allowed:
+            or self.authorize_location_read(
+                model_instance.destination, raise_error=False
+            )
+        ):
             raise PermissionDenied("Cannot read delivery orders")
 
     def get_location_obj(self, external_id):
