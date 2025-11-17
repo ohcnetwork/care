@@ -10,15 +10,20 @@ class PermissionDeniedError(Exception):
 
 class AuthorizationHandler:
     """
-    This is the base class for Authorization Handlers
-    Authorization handler must define a list of actions that can be performed and define the methods that
-    actually perform the authorization action.
+    Base class for Authorization Handlers.
 
-    All Authz methods would be of the signature ( user, obj , **kwargs )
-    obj refers to the obj which the user is seeking permission to. obj can also be a string or any datatype as long
-    as the logic can handle the type.
+    Handlers must define a list of actions that can be performed and implement
+    the corresponding ``can_<action>()`` or ``get_<query>()`` methods that
+    perform the authorization logic.
 
-    Queries are actions that return a queryset as the response.
+    All authorization methods use the signature ``(user, obj, **kwargs)``.
+    ``obj`` refers to the target object for which permission is being
+    evaluated. It may also be a string or any other type as long as the logic
+    accounts for it.
+
+    Notes:
+    * Actions (``can_`` prefixed) return booleans.
+    * Queries (``get_`` prefixed) return querysets or collections.
     """
 
     actions = []

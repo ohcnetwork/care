@@ -1,5 +1,7 @@
 import json
 
+from django.conf import settings
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.http.response import Http404
 from drf_spectacular.utils import extend_schema
@@ -7,18 +9,24 @@ from pydantic import UUID4, BaseModel, ValidationError
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError as RestFrameworkValidationError
-from rest_framework.generics import get_object_or_404
+from rest_framework.fields import get_error_detail
 from rest_framework.response import Response
 from rest_framework.views import exception_handler as drf_exception_handler
 from rest_framework.viewsets import GenericViewSet
 
 from care.emr.models import QuestionnaireResponse
 from care.emr.models.base import EMRBaseModel
+from care.emr.models.questionnaire import FormSubmission
 from care.emr.resources.base import EMRResource
+from care.emr.resources.form_submission.spec import FormSubmissionStatusChoices
 from care.emr.tagging.base import SingleFacilityTagManager
+from care.utils.shortcuts import get_object_or_404
 
 
 def emr_exception_handler(exc, context):
+    if isinstance(exc, DjangoValidationError):
+        exc = RestFrameworkValidationError(detail={"detail": get_error_detail(exc)[0]})
+
     if isinstance(exc, ValidationError):
         return Response({"errors": json.loads(exc.json())}, status=400)
     if isinstance(exc, Http404):
@@ -27,7 +35,7 @@ def emr_exception_handler(exc, context):
                 "errors": [
                     {
                         "type": "object_not_found",
-                        "msg": "Object not found",
+                        "msg": exc.args[0] if exc.args else "Object not found",
                     }
                 ]
             },
@@ -81,6 +89,9 @@ class EMRRetrieveMixin:
 
 
 class EMRCreateMixin:
+    def get_form_submission_params(self, instance):
+        return {"patient": instance.patient, "encounter": instance.encounter}
+
     def perform_create(self, instance):
         instance.created_by = self.request.user
         instance.updated_by = self.request.user
@@ -89,6 +100,14 @@ class EMRCreateMixin:
             if getattr(self, "TAGS_ENABLED", False):
                 self.perform_set_tags(instance, self.request.data)
             if getattr(self, "CREATE_QUESTIONNAIRE_RESPONSE", False):
+                form_submission = None
+                if self.request.data.get("form_submission"):
+                    form_submission = get_object_or_404(
+                        FormSubmission,
+                        status=FormSubmissionStatusChoices.draft.value,
+                        external_id=self.request.data.get("form_submission"),
+                        **self.get_form_submission_params(instance),
+                    )
                 QuestionnaireResponse.objects.create(
                     subject_id=self.fetch_patient_from_instance(instance).external_id,
                     patient=self.fetch_patient_from_instance(instance),
@@ -102,6 +121,7 @@ class EMRCreateMixin:
                     structured_response_type=self.questionnaire_type,
                     created_by=self.request.user,
                     updated_by=self.request.user,
+                    form_submission=form_submission,
                 )
 
     def clean_create_data(self, request_data):
@@ -118,10 +138,12 @@ class EMRCreateMixin:
 
     def handle_create(self, request_data):
         clean_data = self.clean_create_data(request_data)
+        context = {"is_create": True, **self.get_serializer_create_context()}
         instance = self.pydantic_model.model_validate(
             clean_data,
-            context={"is_create": True, **self.get_serializer_create_context()},
+            context=context,
         )
+        instance._context = context  # noqa: SLF001
         self.validate_data(instance, None)
         self.authorize_create(instance)
         model_instance = instance.de_serialize()
@@ -203,14 +225,16 @@ class EMRUpdateMixin:
     def handle_update(self, instance, request_data):
         clean_data = self.clean_update_data(request_data)  # From Create
         pydantic_model = self.get_update_pydantic_model()
+        context = {
+            "is_update": True,
+            "object": instance,
+            **self.get_serializer_update_context(),
+        }
         serializer_obj = pydantic_model.model_validate(
             clean_data,
-            context={
-                "is_update": True,
-                "object": instance,
-                **self.get_serializer_update_context(),
-            },
+            context=context,
         )
+        serializer_obj._context = context  # noqa: SLF001
         self.validate_data(serializer_obj, instance)
         self.authorize_update(serializer_obj, instance)
         partial = getattr(self, "partial", False)
@@ -242,8 +266,12 @@ class EMRUpsertMixin:
     @action(detail=False, methods=["POST"])
     def upsert(self, request, *args, **kwargs):
         if type(request.data) is not dict:
-            raise ValidationError("Invalid request data")
+            raise RestFrameworkValidationError("Invalid request data")
         datapoints = request.data.get("datapoints", [])
+        if len(datapoints) == 0:
+            raise RestFrameworkValidationError("No datapoints provided")
+        if len(datapoints) > settings.MAX_DATAPOINTS_PER_UPSERT:
+            raise RestFrameworkValidationError("Too many datapoints provided")
         results = []
         errored = False
         unhandled = False
@@ -253,7 +281,8 @@ class EMRUpsertMixin:
                     try:
                         if "id" in datapoint:
                             instance = get_object_or_404(
-                                self.database_model, external_id=datapoint["id"]
+                                self.database_model,
+                                **{self.lookup_field: datapoint["id"]},
                             )
                             result = self.handle_update(instance, datapoint)
                         else:
@@ -350,6 +379,12 @@ class EMRTagMixin:
         except ValueError as e:
             raise RestFrameworkValidationError(str(e)) from e
 
+    def authorize_set_tags(self, instance):
+        return self.authorize_update({}, instance)
+
+    def authorize_remove_tags(self, instance):
+        return self.authorize_update({}, instance)
+
     @extend_schema(request=TagRequest)
     @action(detail=True, methods=["POST"])
     def set_tags(self, request, *args, **kwargs):
@@ -357,6 +392,7 @@ class EMRTagMixin:
         if not self.resource_type:
             return Response({})
         instance = self.get_object()
+        self.authorize_set_tags(instance)
         self.perform_set_tags(instance, request.data)
         return self.retrieve(request, *args, **kwargs)
 
@@ -367,6 +403,7 @@ class EMRTagMixin:
         if not self.resource_type:
             return Response({})
         instance = self.get_object()
+        self.authorize_remove_tags(instance)
         tag_request = TagRequest.model_validate(request.data)
         tag_manager = self.tag_manager()
         tag_manager.unset_tags(

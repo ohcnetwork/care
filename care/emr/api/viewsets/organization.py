@@ -4,7 +4,6 @@ from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
@@ -25,6 +24,7 @@ from care.emr.resources.organization.spec import (
 from care.security.authorization import AuthorizationController
 from care.security.models import PermissionModel, RoleModel, RolePermission
 from care.utils.pagination.care_pagination import CareLimitOffsetPagination
+from care.utils.shortcuts import get_object_or_404
 from config.patient_otp_authentication import JWTTokenPatientAuthentication
 
 
@@ -105,7 +105,7 @@ class OrganizationViewSet(EMRModelViewSet):
             "can_manage_organization_obj", self.request.user, instance
         ):
             raise PermissionDenied(
-                "User does not have the required permissions to update organizations"
+                "User does not have the required permissions to delete organizations"
             )
         # TODO delete should not be allowed if there are any children left
 

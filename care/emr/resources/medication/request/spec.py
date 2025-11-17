@@ -1,15 +1,22 @@
 from datetime import datetime
 from enum import Enum
 
-from django.shortcuts import get_object_or_404
 from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
+from rest_framework.exceptions import ValidationError
 
 from care.emr.models.encounter import Encounter
-from care.emr.models.medication_request import MedicationRequest
+from care.emr.models.medication_request import (
+    MedicationRequest,
+    MedicationRequestPrescription,
+)
 from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledgeReadSpec
+from care.emr.resources.medication.request_prescription.spec import (
+    MedicationRequestPrescriptionReadSpec,
+    MedicationRequestPrescriptionStatus,
+)
 from care.emr.resources.medication.valueset.additional_instruction import (
     CARE_ADDITIONAL_INSTRUCTION_VALUESET,
 )
@@ -25,6 +32,7 @@ from care.emr.resources.medication.valueset.route import CARE_ROUTE_VALUESET
 from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.users.models import User
+from care.utils.shortcuts import get_object_or_404
 
 
 class MedicationRequestStatus(str, Enum):
@@ -155,7 +163,13 @@ class DosageInstruction(BaseModel):
 
 class MedicationRequestResource(EMRResource):
     __model__ = MedicationRequest
-    __exclude__ = ["patient", "encounter", "requester", "requested_product"]
+    __exclude__ = [
+        "patient",
+        "encounter",
+        "requester",
+        "requested_product",
+        "prescription",
+    ]
 
 
 class BaseMedicationRequestSpec(MedicationRequestResource):
@@ -174,8 +188,6 @@ class BaseMedicationRequestSpec(MedicationRequestResource):
 
     medication: ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug] | None = None
 
-    encounter: UUID4
-
     dosage_instruction: list[DosageInstruction]
     authored_on: datetime
 
@@ -184,9 +196,24 @@ class BaseMedicationRequestSpec(MedicationRequestResource):
     dispense_status: MedicationRequestDispenseStatus | None = None
 
 
+class CreatePrescription(BaseModel):
+    name: str | None = None
+    note: str | None = None
+    alternate_identifier: str | None = None
+
+
 class MedicationRequestSpec(BaseMedicationRequestSpec):
     requester: UUID4 | None = None
     requested_product: UUID4 | None = None
+    prescription: UUID4 | None = None
+    create_prescription: CreatePrescription | None = None
+    encounter: UUID4
+
+    @model_validator(mode="after")
+    def validate_prescription(self):
+        if self.create_prescription and self.prescription:
+            raise ValueError("Cannot have both prescription and create_prescription")
+        return self
 
     @model_validator(mode="after")
     def validate_request_code(self):
@@ -220,6 +247,35 @@ class MedicationRequestSpec(BaseMedicationRequestSpec):
             ):
                 raise ValueError("Product not found in facility")
 
+        if self.prescription:
+            obj.prescription = get_object_or_404(
+                MedicationRequestPrescription.objects.only("id"),
+                external_id=self.prescription,
+                encounter=obj.encounter,
+            )
+        if self.create_prescription:
+            prescription_obj = MedicationRequestPrescription.objects.filter(
+                alternate_identifier=self.create_prescription.alternate_identifier,
+                encounter=obj.encounter,
+            ).first()
+            if (
+                prescription_obj
+                and prescription_obj.status
+                != MedicationRequestPrescriptionStatus.active
+            ):
+                raise ValidationError("Prescription is not active")
+            if not prescription_obj:
+                prescription_obj = MedicationRequestPrescription.objects.create(
+                    status=MedicationRequestPrescriptionStatus.active,
+                    alternate_identifier=self.create_prescription.alternate_identifier,
+                    encounter=obj.encounter,
+                    patient=obj.patient,
+                    name=self.create_prescription.name,
+                    note=self.create_prescription.note,
+                    prescribed_by=obj.requester,
+                )
+            obj.prescription = prescription_obj
+
 
 class MedicationRequestUpdateSpec(MedicationRequestResource):
     status: MedicationRequestStatus
@@ -227,7 +283,7 @@ class MedicationRequestUpdateSpec(MedicationRequestResource):
     dispense_status: MedicationRequestDispenseStatus | None = None
 
 
-class MedicationRequestReadSpec(BaseMedicationRequestSpec):
+class MedicationRequestReadWithoutPrescriptionSpec(BaseMedicationRequestSpec):
     created_by: UserSpec = {}
     updated_by: UserSpec = {}
     created_date: datetime
@@ -238,7 +294,6 @@ class MedicationRequestReadSpec(BaseMedicationRequestSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["encounter"] = obj.encounter.external_id
         if obj.requested_product:
             mapping["requested_product"] = ProductKnowledgeReadSpec.serialize(
                 obj.requested_product
@@ -246,3 +301,17 @@ class MedicationRequestReadSpec(BaseMedicationRequestSpec):
         if obj.requester_id:
             mapping["requester"] = model_from_cache(UserSpec, id=obj.requester_id)
         cls.serialize_audit_users(mapping, obj)
+
+
+class MedicationRequestReadSpec(MedicationRequestReadWithoutPrescriptionSpec):
+    prescription: dict | None = None
+    encounter: UUID4
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        if obj.prescription:
+            mapping["prescription"] = MedicationRequestPrescriptionReadSpec.serialize(
+                obj.prescription
+            ).to_json()
+        mapping["encounter"] = obj.encounter.external_id

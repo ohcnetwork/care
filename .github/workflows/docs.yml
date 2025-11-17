@@ -21,7 +21,10 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - name: Install dependencies
+        run: sudo apt-get install -y libpq-dev
+
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.13"
           cache: "pipenv"
@@ -30,14 +33,14 @@ jobs:
         run: pip install pipenv
 
       - name: Install dependencies
-        run: pipenv sync --categories "docs"
+        run: pipenv sync --categories "packages docs"
 
       - name: Build docs
         run: |
           make -C ./docs html
 
       - name: Upload sphinx documentation
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: sphinx-docs
           path: ./docs/_build/html
@@ -54,7 +57,7 @@ jobs:
       - uses: actions/checkout@v5
 
       - name: Download sphinx documentation
-        uses: actions/download-artifact@v5
+        uses: actions/download-artifact@v6
         with:
           name: sphinx-docs
           path: ./build

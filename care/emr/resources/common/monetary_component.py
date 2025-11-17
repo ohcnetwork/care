@@ -3,6 +3,7 @@ from enum import Enum
 from pydantic import BaseModel, RootModel, model_validator
 
 from care.emr.resources.common.coding import Coding
+from care.emr.resources.common.condition_evaluator import EvaluatorConditionSpec
 
 
 class MonetaryComponentType(str, Enum):
@@ -18,6 +19,16 @@ class MonetaryComponent(BaseModel):
     code: Coding | None = None
     factor: float | None = None
     amount: float | None = None
+    conditions: list[EvaluatorConditionSpec] = []
+
+    @model_validator(mode="after")
+    def base_no_conditions(self):
+        if (
+            self.monetary_component_type == MonetaryComponentType.base.value
+            and self.conditions
+        ):
+            raise ValueError("Base component must have no conditions.")
+        return self
 
     @model_validator(mode="after")
     def base_no_factor(self):

@@ -1,5 +1,4 @@
 from django.db.models import Q
-from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import OrderingFilter
@@ -14,6 +13,7 @@ from care.emr.resources.inventory.inventory_item.spec import (
 )
 from care.security.authorization.base import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class InventoryItemFilters(filters.FilterSet):
@@ -32,7 +32,7 @@ class InventoryItemViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
     pydantic_retrieve_model = InventoryItemRetrieveSpec
     filterset_class = InventoryItemFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
-    ordering_fields = ["created_date", "modified_date"]
+    ordering_fields = ["created_date", "modified_date", "net_content"]
 
     def get_location_obj(self):
         return get_object_or_404(

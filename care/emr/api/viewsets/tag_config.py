@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import OrderingFilter
@@ -19,26 +19,26 @@ from care.emr.resources.tag.config_spec import (
 )
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyUUIDFilter
 from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.filters.null_filter import NullFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class TagConfigFilters(filters.FilterSet):
-    facility = filters.UUIDFilter(
-        lookup_expr="exact", field_name="facility__external_id"
-    )
+    facility = DummyUUIDFilter()
+    facility_only = DummyBooleanFilter()
     facility_organization = filters.UUIDFilter(
         lookup_expr="exact", field_name="facility_organization__external_id"
     )
     organization = filters.UUIDFilter(
         lookup_expr="exact", field_name="organization__external_id"
     )
-    slug = filters.CharFilter(lookup_expr="icontains")
     status = filters.CharFilter(lookup_expr="iexact")
     display = filters.CharFilter(lookup_expr="icontains")
     category = filters.CharFilter(lookup_expr="iexact")
     parent = filters.UUIDFilter(lookup_expr="exact", field_name="parent__external_id")
-    resource = filters.CharFilter(lookup_expr="iexact")
+    resource = MultiSelectFilter()
     parent_is_null = NullFilter(field_name="parent")
     ids = MultiSelectFilter(field_name="external_id")
 
@@ -94,7 +94,12 @@ class TagConfigViewSet(
                     raise PermissionDenied(
                         "You do not have permission to read tag configs"
                     )
-                queryset = queryset.filter(facility=facility)
+                if self.request.GET.get("facility_only", "false").lower() == "true":
+                    queryset = queryset.filter(facility=facility)
+                else:
+                    queryset = queryset.filter(
+                        Q(facility=facility) | Q(facility__isnull=True)
+                    )
             else:
                 queryset = queryset.filter(facility__isnull=True)
         return queryset

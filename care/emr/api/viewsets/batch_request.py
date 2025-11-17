@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, Field
@@ -16,7 +17,9 @@ class Request(BaseModel):
 
 
 class BatchRequest(BaseModel):
-    requests: list[Request] = Field(..., min_length=1, max_length=20)
+    requests: list[Request] = Field(
+        ..., min_length=1, max_length=settings.MAX_REQUESTS_PER_BATCH_REQUEST
+    )
 
 
 class HandledError(Exception):
