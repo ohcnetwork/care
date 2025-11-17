@@ -115,8 +115,12 @@ class RequestOrderViewSet(
     def authorize_retrieve(self, model_instance):
         allowed = False
         if model_instance.origin:
-            allowed = allowed or self.authorize_location_read(model_instance.origin)
-        allowed = allowed or self.authorize_location_read(model_instance.destination)
+            allowed = allowed or self.authorize_location_read(
+                model_instance.origin, raise_error=False
+            )
+        allowed = allowed or self.authorize_location_read(
+            model_instance.destination, raise_error=False
+        )
         if not allowed:
             raise PermissionDenied("Cannot read request orders")
 
