@@ -6,6 +6,24 @@ from odoo.resource.product_product.spec import ProductData
 from odoo.resource.res_partner.spec import PartnerData
 
 
+class DiscountGroup(BaseModel):
+    x_care_id: str
+    name: str
+
+
+class DiscountType(str, Enum):
+    amount = "amount"
+    factor = "factor"
+
+
+class InvoiceDiscounts(BaseModel):
+    name: str
+    discount_group: DiscountGroup
+    discount_type: DiscountType
+    rate: float = 0.0
+    disc_amt: float = 0.0
+
+
 class AgentData(BaseModel):
     x_care_id: str
 
@@ -16,6 +34,7 @@ class InvoiceItem(BaseModel):
     sale_price: str = Field(default="0.0")
     x_care_id: str
     agent_id: str | None = None
+    discounts: InvoiceDiscounts | None = None
 
 
 class BillType(str, Enum):

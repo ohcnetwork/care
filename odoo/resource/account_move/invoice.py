@@ -12,6 +12,9 @@ from odoo.resource.account_move.spec import (
     AccountMoveApiRequest,
     AccountMoveReturnApiRequest,
     BillType,
+    DiscountGroup,
+    DiscountType,
+    InvoiceDiscounts,
     InvoiceItem,
 )
 from odoo.resource.product_category.spec import CategoryData
@@ -47,6 +50,59 @@ class OdooInvoiceResource:
             ):
                 return item["amount"]
         return None
+
+    def get_first_discount(self, charge_item: ChargeItem) -> InvoiceDiscounts | None:
+        """Extract the first discount from unit and total price components."""
+        if not charge_item.unit_price_components:
+            return None
+
+        # Find the first discount in unit_price_components to get type and rate
+        unit_discount = None
+        for component in charge_item.unit_price_components:
+            if (
+                component.get("monetary_component_type")
+                == MonetaryComponentType.discount.value
+            ):
+                unit_discount = component
+                break
+
+        if not unit_discount:
+            return None
+
+        code = unit_discount.get("code", {})
+        discount_name = code.get("display")
+        discount_code = code.get("code")
+
+        # Create discount group
+        discount_group = DiscountGroup(x_care_id=discount_code, name=discount_name)
+
+        # Get discount type and rate from unit_price_components
+        if unit_discount.get("factor") is not None:
+            discount_type = DiscountType.factor
+            rate = float(unit_discount.get("factor", 0.0))
+        else:
+            discount_type = DiscountType.amount
+            rate = float(unit_discount.get("amount", 0.0))
+
+        # Get discount amount from total_price_components
+        disc_amt = 0.0
+        if charge_item.total_price_components:
+            for component in charge_item.total_price_components:
+                if (
+                    component.get("monetary_component_type")
+                    == MonetaryComponentType.discount.value
+                    and component.get("code", {}).get("code") == discount_code
+                ):
+                    disc_amt = float(component.get("amount", 0.0))
+                    break
+
+        return InvoiceDiscounts(
+            name=discount_name,
+            discount_group=discount_group,
+            discount_type=discount_type,
+            rate=rate,
+            disc_amt=disc_amt,
+        )
 
     def sync_invoice_to_odoo_api(self, invoice_id: str) -> int | None:
         """
@@ -100,11 +156,15 @@ class OdooInvoiceResource:
                     status=charge_item.charge_item_definition.status,
                 )
 
+                # Get the first discount if available
+                discount = self.get_first_discount(charge_item)
+
                 item = InvoiceItem(
                     product_data=product_data,
                     quantity=str(charge_item.quantity),
                     sale_price=str(base_price),
                     x_care_id=str(charge_item.external_id),
+                    discounts=discount,
                 )
 
                 if (
