@@ -77,7 +77,8 @@ class MedicationRequestPrescriptionViewSet(
             raise PermissionDenied("Access Denied to prescription")
         old_obj = self.database_model.objects.get(id=model_instance.id)
         if (
-            old_obj.status != request_obj.status
+            getattr(request_obj, "status", None)
+            and old_obj.status != request_obj.status
             and request_obj.status
             not in MEDICATION_PRESCRIPTION_PHARMACIST_ALLOWED_STATUS
         ):
