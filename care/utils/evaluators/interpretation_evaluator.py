@@ -108,7 +108,7 @@ class InterpretationEvaluator:
             else:
                 metric_evaluator = EvaluatorMetricsRegistry.get_evaluator(metric)
                 metric_evaluator_obj = metric_evaluator(
-                    context.get(metric_evaluator.context)
+                    context.get(metric_evaluator.context), context
                 )
                 self.metric_cache[metric] = metric_evaluator_obj
             if not metric_evaluator_obj.apply_rule(
