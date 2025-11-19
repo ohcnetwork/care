@@ -47,7 +47,7 @@ DISTRICT_CHOICES = [
     (11, "Kozhikode"),
     (12, "Wayanad"),
     (13, "Kannur"),
-    (14, "Kasargode"),
+    (14, "Kasargod"),
 ]
 
 
