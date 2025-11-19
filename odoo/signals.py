@@ -7,6 +7,10 @@ from care.emr.models.organization import Organization
 from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.models.product import Product
 from care.emr.models.resource_category import ResourceCategory
+from care.emr.models.supply_delivery import DeliveryOrder
+from care.emr.resources.inventory.supply_delivery.delivery_order import (
+    SupplyDeliveryOrderStatusOptions,
+)
 from care.emr.resources.invoice.spec import (
     INVOICE_CANCELLED_STATUS,
     InvoiceStatusOptions,
@@ -19,6 +23,7 @@ from care.emr.resources.resource_category.spec import (
     ResourceCategoryResourceTypeOptions,
 )
 from care.users.models import User
+from odoo.resource.account_move.delivery_order import OdooDeliveryOrderResource
 from odoo.resource.account_move.invoice import OdooInvoiceResource
 from odoo.resource.account_move_payment.payment import OdooPaymentResource
 from odoo.resource.product_category.category import OdooCategoryResource
@@ -96,17 +101,17 @@ def sync_organization_to_odoo(sender, instance, created, **kwargs):
         odoo_partner.sync_partner_to_odoo_api(instance)
 
 
-# @receiver(post_save, sender=DeliveryOrder)
-# def sync_delivery_order_to_odoo(sender, instance, created, **kwargs):
-#     """
-#     Signal handler to sync delivery order to Odoo as a vendor bill when completed.
-#     """
-#     if (
-#         instance.status == SupplyDeliveryOrderStatusOptions.completed.value
-#         and not instance.origin
-#     ):
-#         odoo_delivery_order = OdooDeliveryOrderResource()
-#         odoo_delivery_order.sync_delivery_order_to_odoo_api(instance.external_id)
+@receiver(post_save, sender=DeliveryOrder)
+def sync_delivery_order_to_odoo(sender, instance, created, **kwargs):
+    """
+    Signal handler to sync delivery order to Odoo as a vendor bill when completed.
+    """
+    if (
+        instance.status == SupplyDeliveryOrderStatusOptions.completed.value
+        and not instance.origin
+    ):
+        odoo_delivery_order = OdooDeliveryOrderResource()
+        odoo_delivery_order.sync_delivery_order_to_odoo_api(instance.external_id)
 
 
 @receiver(post_save, sender=Product)
