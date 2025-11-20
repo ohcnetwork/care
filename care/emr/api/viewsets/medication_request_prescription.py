@@ -93,8 +93,21 @@ class MedicationRequestPrescriptionViewSet(
         else:
             super().perform_update(instance)
 
+    def authorize_retrieve(self, instance):
+        encounter_access = AuthorizationController.call(
+            "can_view_encounter_obj", self.request.user, instance.encounter
+        )
+        if encounter_access:
+            return
+        pharmacist_access = self.authorize_for_pharmacist_facility(
+            instance.encounter.facility
+        )
+        if not pharmacist_access:
+            raise PermissionDenied("Access Denied to prescription")
+
     def get_queryset(self):
-        self.authorize_read_for_medication()
+        if self.action == "list":
+            self.authorize_read_for_medication()
         return (
             super()
             .get_queryset()

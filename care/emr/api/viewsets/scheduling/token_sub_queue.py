@@ -67,7 +67,9 @@ class TokenSubQueueViewSet(EMRModelViewSet):
             resource,
             self.request.user,
         ):
-            raise PermissionDenied("You do not have permission to create token queue")
+            raise PermissionDenied(
+                "You do not have permission to create token sub queue"
+            )
 
     def authorize_update(self, request_obj, model_instance):
         resource = model_instance.resource
@@ -76,7 +78,9 @@ class TokenSubQueueViewSet(EMRModelViewSet):
             resource,
             self.request.user,
         ):
-            raise PermissionDenied("You do not have permission to create token queue")
+            raise PermissionDenied(
+                "You do not have permission to update token sub queue"
+            )
 
     def authorize_destroy(self, instance):
         self.authorize_update({}, instance)
@@ -91,7 +95,7 @@ class TokenSubQueueViewSet(EMRModelViewSet):
             resource_obj,
             self.request.user,
         ):
-            raise PermissionDenied("You do not have permission to list token queue")
+            raise PermissionDenied("You do not have permission to list token sub queue")
 
     def authorize_retrieve(self, model_instance):
         resource_obj = model_instance.resource
