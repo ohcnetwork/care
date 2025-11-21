@@ -41,7 +41,7 @@ FACILITY_ADMIN_ROLE = Role(
 )
 ADMIN_ROLE = Role(
     name="Admin",
-    description="Administrator",
+    description="Admin",
 )
 
 
