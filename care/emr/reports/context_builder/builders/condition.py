@@ -1,7 +1,7 @@
 from care.emr.models import Encounter
 from care.emr.models.condition import Condition
 from care.emr.reports.context_builder.base import Field, QuerysetContextBuilder
-from care.emr.reports.context_builder.registry import contex_builder_registry
+from care.emr.reports.context_builder.registry import context_builder_registry
 from care.emr.reports.context_builder.utils import format_date
 
 CLINICAL_STATUS_DISPLAY = {
@@ -308,5 +308,5 @@ class SymptomContextBuilder(QuerysetContextBuilder):
         return "Patient reported symptoms"
 
 
-contex_builder_registry.register("diagnoses", DiagnosisContextBuilder)
-contex_builder_registry.register("symptoms", SymptomContextBuilder)
+context_builder_registry.register("diagnoses", DiagnosisContextBuilder)
+context_builder_registry.register("symptoms", SymptomContextBuilder)

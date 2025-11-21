@@ -1,6 +1,6 @@
 from care.emr.models.encounter import Encounter
 from care.emr.reports.context_builder.base import Field, SingleObjectContextBuilder
-from care.emr.reports.context_builder.registry import contex_builder_registry
+from care.emr.reports.context_builder.registry import context_builder_registry
 from care.emr.reports.context_builder.utils import format_datetime
 from care.users.models import User
 
@@ -153,4 +153,4 @@ class EncounterContextBuilder(SingleObjectContextBuilder):
         return "Encounter details"
 
 
-contex_builder_registry.register("encounter", EncounterContextBuilder)
+context_builder_registry.register("encounter", EncounterContextBuilder)

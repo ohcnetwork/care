@@ -1,7 +1,7 @@
 from care.emr.models import Encounter
 from care.emr.models.medication_request import MedicationRequest
 from care.emr.reports.context_builder.base import Field, QuerysetContextBuilder
-from care.emr.reports.context_builder.registry import contex_builder_registry
+from care.emr.reports.context_builder.registry import context_builder_registry
 from care.emr.reports.context_builder.utils import format_datetime
 
 STATUS_DISPLAY = {
@@ -234,4 +234,4 @@ class MedicationContextBuilder(QuerysetContextBuilder):
         return instructions
 
 
-contex_builder_registry.register("medications", MedicationContextBuilder)
+context_builder_registry.register("medications", MedicationContextBuilder)

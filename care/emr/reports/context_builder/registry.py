@@ -49,7 +49,7 @@ class ContextBuilderRegistry:
         Get a specific single builder by key
         """
         if key not in self._single_builders:
-            msg = f"Single builder '{key}' not found in contex_builder_registry"
+            msg = f"Single builder '{key}' not found in context_builder_registry"
             raise KeyError(msg)
         return self._single_builders[key]
 
@@ -58,7 +58,7 @@ class ContextBuilderRegistry:
         Get a specific queryset builder by key.
         """
         if key not in self._queryset_builders:
-            msg = f"Queryset builder '{key}' not found in contex_builder_registry"
+            msg = f"Queryset builder '{key}' not found in context_builder_registry"
             raise KeyError(msg)
         return self._queryset_builders[key]
 
@@ -75,4 +75,4 @@ class ContextBuilderRegistry:
         self._queryset_builders.clear()
 
 
-contex_builder_registry = ContextBuilderRegistry()
+context_builder_registry = ContextBuilderRegistry()

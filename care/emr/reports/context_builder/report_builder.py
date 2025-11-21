@@ -7,13 +7,13 @@ from care.emr.reports.context_builder.builders import (  # noqa: F401
     observation,
     patient,
 )
-from care.emr.reports.context_builder.registry import contex_builder_registry
+from care.emr.reports.context_builder.registry import context_builder_registry
 
 
 class ReportContextBuilder:
     def __init__(self):
-        self.single_builders = contex_builder_registry.get_single_builders()
-        self.list_builders = contex_builder_registry.get_queryset_builders()
+        self.single_builders = context_builder_registry.get_single_builders()
+        self.list_builders = context_builder_registry.get_queryset_builders()
 
     def get_full_schema(self):
         schema = {

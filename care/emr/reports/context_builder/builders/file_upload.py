@@ -1,7 +1,7 @@
 from care.emr.models import Encounter
 from care.emr.models.file_upload import FileUpload
 from care.emr.reports.context_builder.base import Field, QuerysetContextBuilder
-from care.emr.reports.context_builder.registry import contex_builder_registry
+from care.emr.reports.context_builder.registry import context_builder_registry
 from care.emr.reports.context_builder.utils import format_datetime
 
 
@@ -86,4 +86,4 @@ class FileUploadContextBuilder(QuerysetContextBuilder):
         return "Documents and files uploaded for the encounter"
 
 
-contex_builder_registry.register("file_uploads", FileUploadContextBuilder)
+context_builder_registry.register("file_uploads", FileUploadContextBuilder)

@@ -1,7 +1,7 @@
 from care.emr.models import Encounter
 from care.emr.models.allergy_intolerance import AllergyIntolerance
 from care.emr.reports.context_builder.base import Field, QuerysetContextBuilder
-from care.emr.reports.context_builder.registry import contex_builder_registry
+from care.emr.reports.context_builder.registry import context_builder_registry
 from care.emr.reports.context_builder.utils import format_date, format_datetime
 
 CLINICAL_STATUS_DISPLAY = {
@@ -177,4 +177,4 @@ class AllergyContextBuilder(QuerysetContextBuilder):
         return "Patient allergies and intolerances"
 
 
-contex_builder_registry.register("allergies", AllergyContextBuilder)
+context_builder_registry.register("allergies", AllergyContextBuilder)

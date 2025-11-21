@@ -1,3 +1,4 @@
+import logging
 import re
 
 from django.http import HttpResponse
@@ -25,6 +26,8 @@ from care.emr.resources.report.template.spec import (
 )
 from care.facility.models.facility import Facility
 from care.utils.shortcuts import get_object_or_404
+
+logger = logging.getLogger(__name__)
 
 
 class TemplateFilters(FilterSet):
@@ -122,8 +125,9 @@ class TemplateViewSet(EMRModelViewSet):
             return Response(schema)
 
         except Exception as e:
+            logger.exception("Failed to generate schema: %s", e)
             return Response(
-                {"error": f"Failed to generate schema: {e!s}"},
+                {"error": "Failed to generate schema"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -134,12 +138,13 @@ class TemplateViewSet(EMRModelViewSet):
         tags=["template"],
     )
     @action(detail=False, methods=["POST"])
-    def preview(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912
+    def preview(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912, PLR0915
         try:
             preview_request = PreviewTemplateRequest.model_validate(request.data)
         except Exception as e:
+            logger.exception("Invalid request data for template preview: %s", e)
             return Response(
-                {"error": f"Invalid request data: {e!s}"},
+                {"error": "Invalid request data"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -247,7 +252,8 @@ class TemplateViewSet(EMRModelViewSet):
             return response
 
         except Exception as e:
+            logger.exception("Preview generation failed: %s", e)
             return Response(
-                {"error": f"Preview generation failed: {e!s}"},
+                {"error": "Preview generation failed"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )

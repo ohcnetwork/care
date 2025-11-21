@@ -1,7 +1,7 @@
 from care.emr.models import Encounter
 from care.emr.models.observation import Observation
 from care.emr.reports.context_builder.base import Field, QuerysetContextBuilder
-from care.emr.reports.context_builder.registry import contex_builder_registry
+from care.emr.reports.context_builder.registry import context_builder_registry
 from care.emr.reports.context_builder.utils import format_datetime
 
 STATUS_DISPLAY = {
@@ -160,4 +160,4 @@ class ObservationContextBuilder(QuerysetContextBuilder):
         return "Clinical observations and vital signs"
 
 
-contex_builder_registry.register("observations", ObservationContextBuilder)
+context_builder_registry.register("observations", ObservationContextBuilder)

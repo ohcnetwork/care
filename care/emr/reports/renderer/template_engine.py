@@ -21,14 +21,15 @@ class TemplateEngine:
             SandboxedEnvironment(
                 loader=BaseLoader(),
                 undefined=StrictUndefined if self.strict_undefined else None,
+                autoescape=True,
             )
             if self.use_sandbox
-            else Environment(  # noqa: S701
+            else Environment(
                 loader=BaseLoader(),
                 undefined=StrictUndefined if self.strict_undefined else None,
+                autoescape=True,
             )
         )
-        env.autoescape = False
         env.trim_blocks = True
         env.lstrip_blocks = True
 

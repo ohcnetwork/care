@@ -1,3 +1,5 @@
+import logging
+
 from django.utils import timezone
 from django_filters import BooleanFilter, CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -23,6 +25,8 @@ from care.emr.resources.report.report_upload.spec import (
     ReportUploadUpdateSpec,
 )
 from care.emr.tasks.report_generation import generate_report_task
+
+logger = logging.getLogger(__name__)
 
 LOCK_DURATION = 2 * 60
 
@@ -102,8 +106,9 @@ class ReportUploadViewSet(EMRModelViewSet):
             schema = ReportTypeRegistry.get_schema()
             return Response(schema)
         except Exception as e:
+            logger.exception("Failed to get report types schema: %s", e)
             return Response(
-                {"error": f"Failed to get report types: {e!s}"},
+                {"error": "Failed to get report types"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -118,8 +123,9 @@ class ReportUploadViewSet(EMRModelViewSet):
         try:
             generate_request = GenerateReportRequest.model_validate(request.data)
         except Exception as e:
+            logger.exception("Invalid request data for report generation: %s", e)
             return Response(
-                {"error": f"Invalid request data: {e!s}"},
+                {"error": "Invalid request data"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -189,7 +195,7 @@ class ReportUploadViewSet(EMRModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        lock_key = f"{report_type}_report_{associating_id}"
+        lock_key = f"{report_type}_{associating_id}"
         if current_progress := report_utils.get_progress(lock_key):
             return Response(
                 {
@@ -214,13 +220,14 @@ class ReportUploadViewSet(EMRModelViewSet):
 
             return Response(
                 {
-                    "detail": "Report generation started. You will receive a notification when complete.",
+                    "detail": "Report generation started.",
                 },
                 status=status.HTTP_200_OK,
             )
         except Exception as e:
+            logger.exception("Failed to start report generation: %s", e)
             return Response(
-                {"error": f"Failed to start report generation: {e!s}"},
+                {"error": "Failed to start report generation"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 

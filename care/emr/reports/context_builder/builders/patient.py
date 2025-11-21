@@ -1,6 +1,6 @@
 from care.emr.models.patient import Patient
 from care.emr.reports.context_builder.base import Field, SingleObjectContextBuilder
-from care.emr.reports.context_builder.registry import contex_builder_registry
+from care.emr.reports.context_builder.registry import context_builder_registry
 from care.emr.reports.context_builder.utils import format_date, format_phone_number
 
 BLOOD_GROUP_DISPLAY = {
@@ -143,4 +143,4 @@ class PatientContextBuilder(SingleObjectContextBuilder):
         return "Basic patient demographics and contact information"
 
 
-contex_builder_registry.register("patient", PatientContextBuilder)
+context_builder_registry.register("patient", PatientContextBuilder)
