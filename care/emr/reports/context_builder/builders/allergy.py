@@ -40,7 +40,6 @@ class AllergyContextBuilder(QuerysetContextBuilder):
     model = AllergyIntolerance
     depends_on = ["encounter_id"]
 
-    # Using Django field objects for automatic validation
     allowed_filters = [
         AllergyIntolerance.clinical_status,
         AllergyIntolerance.verification_status,

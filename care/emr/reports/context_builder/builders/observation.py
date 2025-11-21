@@ -26,7 +26,6 @@ class ObservationContextBuilder(QuerysetContextBuilder):
     depends_on = ["encounter_id"]
 
     base_filters = {}
-    # Using Django field objects for automatic validation
     allowed_filters = [
         Observation.status,
         Observation.category,

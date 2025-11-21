@@ -13,7 +13,6 @@ class FileUploadContextBuilder(QuerysetContextBuilder):
         "upload_completed": True,
         "is_archived": False,
     }
-    # Using Django field objects for automatic validation
     allowed_filters = [
         FileUpload.file_category,
         FileUpload.file_type,
