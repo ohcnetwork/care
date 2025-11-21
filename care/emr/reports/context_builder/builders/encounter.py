@@ -92,6 +92,7 @@ class EncounterContextBuilder(SingleObjectContextBuilder):
         Field(
             key="care_team",
             display="Care Team",
+            field_type="list[CareTeamMember]",
             mapping=lambda e: EncounterContextBuilder._format_care_team(e),
             preview_value=[
                 {"name": "Dr. Rajesh Kumar", "role": "Primary Physician"},
@@ -103,14 +104,21 @@ class EncounterContextBuilder(SingleObjectContextBuilder):
 
     @staticmethod
     def _format_care_team(encounter):
-        """Format care team members from encounter.care_team field"""
-        if not encounter.care_team:
+        care_team = encounter.care_team
+
+        if not care_team:
+            return []
+
+        if isinstance(care_team, dict):
+            return []
+
+        if not isinstance(care_team, list):
             return []
 
         user_ids = [
             member.get("user_id")
-            for member in encounter.care_team
-            if member.get("user_id")
+            for member in care_team
+            if isinstance(member, dict) and member.get("user_id")
         ]
 
         if not user_ids:
@@ -118,14 +126,14 @@ class EncounterContextBuilder(SingleObjectContextBuilder):
 
         role_map = {
             member.get("user_id"): member.get("role", {}).get("display", "Unknown")
-            for member in encounter.care_team
-            if member.get("user_id") and member.get("role")
+            for member in care_team
+            if isinstance(member, dict) and member.get("user_id") and member.get("role")
         }
 
         users = User.objects.filter(id__in=user_ids)
         return [
             {
-                "name": user.get_display_name(),
+                "name": user.full_name or "Unknown",
                 "role": role_map.get(user.id, "Unknown"),
             }
             for user in users
@@ -133,7 +141,6 @@ class EncounterContextBuilder(SingleObjectContextBuilder):
 
     @classmethod
     def get_object(cls, ctx: dict):
-        """Get Encounter object from ctx"""
         encounter_id = ctx.get("encounter_id")
         return Encounter.objects.get(external_id=encounter_id)
 

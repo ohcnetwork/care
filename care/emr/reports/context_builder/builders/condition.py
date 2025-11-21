@@ -2,7 +2,7 @@ from care.emr.models import Encounter
 from care.emr.models.condition import Condition
 from care.emr.reports.context_builder.base import Field, QuerysetContextBuilder
 from care.emr.reports.context_builder.registry import contex_builder_registry
-from care.emr.reports.context_builder.utils import format_date, format_datetime
+from care.emr.reports.context_builder.utils import format_date
 
 CLINICAL_STATUS_DISPLAY = {
     "active": "Active",
@@ -34,8 +34,12 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
     model = Condition
     depends_on = ["encounter_id"]
 
-    base_filters = {"category": "diagnosis"}
-    allowed_filters = ["clinical_status", "verification_status", "severity"]
+    base_filters = {"category": "encounter_diagnosis"}
+    allowed_filters = [
+        Condition.clinical_status,
+        Condition.verification_status,
+        Condition.severity,
+    ]
 
     fields = [
         Field(
@@ -90,7 +94,7 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
         Field(
             key="recorded_date",
             display="Recorded Date",
-            mapping=lambda c: format_date(c.recorded_date) if c.recorded_date else "",
+            mapping=lambda c: format_date(c.recorded_date or c.created_date),
             preview_value="10/01/2024",
             description="Date when diagnosis was recorded",
         ),
@@ -98,8 +102,8 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
             key="onset_date",
             display="Onset Date",
             mapping=lambda c: (
-                format_datetime(c.onset.get("dateTime"))
-                if isinstance(c.onset, dict) and c.onset.get("dateTime")
+                format_date(c.onset.get("onset_datetime"))
+                if isinstance(c.onset, dict) and c.onset.get("onset_datetime")
                 else ""
             ),
             preview_value="08/01/2024",
@@ -124,7 +128,7 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
         Field(
             key="logged_by",
             display="Logged By",
-            mapping=lambda c: c.created_by.get_display_name() if c.created_by else "",
+            mapping=lambda c: c.created_by.full_name if c.created_by else "",
             preview_value="Dr. Arjun Sharma",
             description="Person who logged this diagnosis",
         ),
@@ -132,7 +136,6 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
 
     @classmethod
     def get_queryset(cls, ctx: dict):
-        """Get diagnosis queryset filtered by encounter"""
         encounter_id = ctx.get("encounter_id")
         encounter = Encounter.objects.get(external_id=encounter_id)
 
@@ -156,8 +159,12 @@ class SymptomContextBuilder(QuerysetContextBuilder):
     model = Condition
     depends_on = ["encounter_id"]
 
-    base_filters = {"category": "symptom"}
-    allowed_filters = ["clinical_status", "verification_status", "severity"]
+    base_filters = {"category": "problem_list_item"}
+    allowed_filters = [
+        Condition.clinical_status,
+        Condition.verification_status,
+        Condition.severity,
+    ]
 
     fields = [
         Field(
@@ -193,8 +200,8 @@ class SymptomContextBuilder(QuerysetContextBuilder):
             key="onset_date",
             display="Onset Date",
             mapping=lambda c: (
-                format_datetime(c.onset.get("dateTime"))
-                if isinstance(c.onset, dict) and c.onset.get("dateTime")
+                format_date(c.onset.get("onset_datetime"))
+                if isinstance(c.onset, dict) and c.onset.get("onset_datetime")
                 else ""
             ),
             preview_value="10/01/2024",
@@ -204,8 +211,9 @@ class SymptomContextBuilder(QuerysetContextBuilder):
             key="abatement_date",
             display="Resolution Date",
             mapping=lambda c: (
-                format_datetime(c.abatement.get("dateTime"))
-                if isinstance(c.abatement, dict) and c.abatement.get("dateTime")
+                format_date(c.abatement.get("abatement_datetime"))
+                if isinstance(c.abatement, dict)
+                and c.abatement.get("abatement_datetime")
                 else ""
             ),
             preview_value="15/01/2024",
@@ -223,14 +231,7 @@ class SymptomContextBuilder(QuerysetContextBuilder):
         Field(
             key="duration",
             display="Duration",
-            mapping=lambda c: (
-                f"{(c.abatement.get('dateTime') - c.onset.get('dateTime')).days} days"
-                if isinstance(c.onset, dict)
-                and isinstance(c.abatement, dict)
-                and c.onset.get("dateTime")
-                and c.abatement.get("dateTime")
-                else "Ongoing"
-            ),
+            mapping=lambda c: SymptomContextBuilder._calculate_duration(c),
             preview_value="5 days",
             description="Duration of the symptom",
         ),
@@ -244,7 +245,7 @@ class SymptomContextBuilder(QuerysetContextBuilder):
         Field(
             key="logged_by",
             display="Logged By",
-            mapping=lambda c: c.created_by.get_display_name() if c.created_by else "",
+            mapping=lambda c: c.created_by.full_name if c.created_by else "",
             preview_value="Dr. Priya Patel",
             description="Person who logged this symptom",
         ),
@@ -272,6 +273,31 @@ class SymptomContextBuilder(QuerysetContextBuilder):
             queryset = queryset.filter(**cls.base_filters)
 
         return queryset
+
+    @staticmethod
+    def _calculate_duration(condition):
+        from datetime import datetime
+
+        if not isinstance(condition.onset, dict) or not isinstance(
+            condition.abatement, dict
+        ):
+            return "Ongoing"
+
+        onset_dt_str = condition.onset.get("onset_datetime")
+        abatement_dt_str = condition.abatement.get("abatement_datetime")
+
+        if not onset_dt_str or not abatement_dt_str:
+            return "Ongoing"
+
+        try:
+            onset_dt = datetime.fromisoformat(onset_dt_str.replace("Z", "+00:00"))
+            abatement_dt = datetime.fromisoformat(
+                abatement_dt_str.replace("Z", "+00:00")
+            )
+            days = (abatement_dt - onset_dt).days
+            return f"{days} days" if days > 0 else "Less than a day"
+        except (ValueError, AttributeError):
+            return "Ongoing"
 
     @classmethod
     def get_display_name(cls):

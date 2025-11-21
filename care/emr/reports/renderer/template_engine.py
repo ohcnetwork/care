@@ -6,7 +6,6 @@ from jinja2 import (
     StrictUndefined,
     TemplateSyntaxError,
     UndefinedError,
-    meta,
 )
 from jinja2.sandbox import SandboxedEnvironment
 
@@ -161,8 +160,39 @@ class TemplateEngine:
 
     def extract_variables(self, template_string: str) -> set[str]:
         try:
+            from jinja2 import nodes
+
             ast = self.env.parse(template_string)
-            return meta.find_undeclared_variables(ast)
+            variables = set()
+
+            def visit_node(node):
+                if isinstance(node, nodes.Name):
+                    variables.add(node.name)
+                elif isinstance(node, nodes.Getattr):
+                    # Handle dotted access like patient.name
+                    path_parts = []
+                    current = node
+
+                    while isinstance(current, nodes.Getattr):
+                        path_parts.insert(0, current.attr)
+                        current = current.node
+
+                    if isinstance(current, nodes.Name):
+                        path_parts.insert(0, current.name)
+                        variables.add(".".join(path_parts))
+                elif isinstance(node, nodes.Getitem):
+                    # Handle indexed access like medications.0.name
+                    if isinstance(node.node, nodes.Name):
+                        variables.add(node.node.name)
+                    elif isinstance(node.node, nodes.Getattr):
+                        visit_node(node.node)
+
+                # Recursively visit child nodes
+                for child in node.iter_child_nodes():
+                    visit_node(child)
+
+            visit_node(ast)
+            return variables
         except Exception:
             return set()
 

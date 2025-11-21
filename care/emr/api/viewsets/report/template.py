@@ -36,7 +36,6 @@ class TemplateFilters(FilterSet):
 
 class PreviewTemplateRequest(BaseModel):
     template_data: str
-    context_config: dict = {}
     output_format: str = "html"
     options: dict = {}
 
@@ -91,50 +90,13 @@ class TemplateViewSet(EMRModelViewSet):
 
         return super().validate_data(instance, model_obj)
 
-    # def authorize_create(self, instance):
-    #     if instance.facility:
-    #         facility = get_object_or_404(Facility, external_id=instance.facility)
-    #         if not AuthorizationController.call(
-    #             "can_write_facility_report_template",
-    #             self.request.user,
-    #             facility,
-    #         ):
-    #             raise PermissionDenied("Cannot create report template")
-    #     elif not self.request.user.is_superuser:
-    #         raise PermissionDenied("Cannot create report template")
-
-    # def authorize_update(self, request_obj, model_instance):
-    #     if model_instance.facility:
-    #         if not AuthorizationController.call(
-    #             "can_write_facility_report_template",
-    #             self.request.user,
-    #             model_instance.facility,
-    #         ):
-    #             raise PermissionDenied("Cannot update report template")
-    #     elif not self.request.user.is_superuser:
-    #         raise PermissionDenied("Cannot update report template")
-    #     return super().authorize_update(request_obj, model_instance)
-    #
-    # def authorize_retrieve(self, model_instance):
-    #     if model_instance.facility and not AuthorizationController.call(
-    #         "can_list_facility_report_template",
-    #         self.request.user,
-    #         model_instance.facility,
-    #     ):
-    #         raise PermissionDenied("Cannot read report template")
-
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.action == "list" and "facility" in self.request.GET:
             facility = get_object_or_404(
                 Facility, external_id=self.request.GET["facility"]
             )
-            # if not AuthorizationController.call(
-            #     "can_list_facility_report_template",
-            #     self.request.user,
-            #     facility,
-            # ):
-            #     raise PermissionDenied("Cannot read report templates")
+
             queryset = queryset.filter(facility=facility)
         elif self.action == "list" and "facility" not in self.request.GET:
             queryset = queryset.filter(facility__isnull=True)
@@ -148,8 +110,15 @@ class TemplateViewSet(EMRModelViewSet):
     @action(detail=False, methods=["GET"], url_path="schema")
     def get_schema(self, request, *args, **kwargs):
         try:
+            from care.emr.reports.context_builder import types  # noqa
+            from care.emr.reports.context_builder.type_registry import FieldTypeRegistry
+
             builder = ReportContextBuilder()
             schema = builder.get_full_schema()
+
+            # Add registered type definitions
+            schema["types"] = FieldTypeRegistry.get_all()
+
             return Response(schema)
 
         except Exception as e:
@@ -165,7 +134,7 @@ class TemplateViewSet(EMRModelViewSet):
         tags=["template"],
     )
     @action(detail=False, methods=["POST"])
-    def preview(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912, PLR0915
+    def preview(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912
         try:
             preview_request = PreviewTemplateRequest.model_validate(request.data)
         except Exception as e:
@@ -175,44 +144,43 @@ class TemplateViewSet(EMRModelViewSet):
             )
 
         template_data = preview_request.template_data
-        context_config = preview_request.context_config
         output_format = preview_request.output_format.lower()
         options = preview_request.options
 
         try:
+            template_engine = TemplateEngine()
+
+            extracted_vars = template_engine.extract_variables(template_data)
             context_builder = ReportContextBuilder()
             schema = context_builder.get_full_schema()
 
+            def is_builder_referenced(builder_key):
+                for var in extracted_vars:
+                    if var in [
+                        "loop",
+                        "current_date",
+                        "current_datetime",
+                        "current_time",
+                    ]:
+                        continue
+                    parts = var.split(".")
+                    if parts and parts[0] == builder_key:
+                        return True
+                return False
+
             preview_context = {}
 
-            for obj_key in ["patient", "encounter"]:
-                if obj_key in context_config:
-                    requested_fields = context_config[obj_key].get("fields", [])
-                    if requested_fields:
-                        preview_context[obj_key] = {}
-                        builder_schema = schema["single_objects"].get(obj_key, {})
-                        for field in builder_schema.get("fields", []):
-                            if field["key"] in requested_fields:
-                                preview_context[obj_key][field["key"]] = field[
-                                    "preview_value"
-                                ]
+            for obj_key in schema["single_objects"]:
+                if is_builder_referenced(obj_key):
+                    preview_context[obj_key] = {}
+                    builder_schema = schema["single_objects"][obj_key]
+                    for field in builder_schema.get("fields", []):
+                        preview_context[obj_key][field["key"]] = field["preview_value"]
 
-            for qs_key, qs_data in schema.get("querysets", {}).items():
-                if qs_key in context_config:
-                    requested_fields = context_config[qs_key].get("fields", [])
-                    if requested_fields:
-                        preview_items = qs_data.get("preview_value", [])
-
-                        filtered_items = []
-                        for item in preview_items:
-                            filtered_item = {
-                                k: v for k, v in item.items() if k in requested_fields
-                            }
-                            filtered_items.append(filtered_item)
-
-                        preview_context[qs_key] = filtered_items
-
-            template_engine = TemplateEngine()
+            for qs_key in schema["querysets"]:
+                if is_builder_referenced(qs_key):
+                    qs_data = schema["querysets"][qs_key]
+                    preview_context[qs_key] = qs_data.get("preview_value", [])
 
             try:
                 generator_class = GeneratorRegistry.get(output_format)
@@ -226,12 +194,10 @@ class TemplateViewSet(EMRModelViewSet):
             renderer = Renderer(template_engine, generator)
 
             valid, error = renderer.validate_syntax(template_data)
-            extracted_vars = renderer.extract_variables(template_data)
 
             validation_result = {
                 "syntax_valid": valid,
                 "syntax_error": error if not valid else None,
-                "variables": list(extracted_vars),
             }
 
             if not valid:

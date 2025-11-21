@@ -3,6 +3,7 @@ from enum import Enum
 from pydantic import UUID4, field_validator
 
 from care.emr.models.report.template import Template
+from care.emr.reports.context_builder.report_builder import ReportContextBuilder
 from care.emr.reports.renderer.template_engine import TemplateEngine
 from care.emr.reports.report_type_registry import ReportTypeRegistry
 from care.emr.resources.base import EMRResource
@@ -32,12 +33,11 @@ class TemplateBaseSpec(EMRResource):
     name: str
     status: TemplateStatusOptions
     template_type: str
-    format: TemplateFormatOptions  # call it default_format
+    default_format: TemplateFormatOptions
 
     @field_validator("template_type")
     @classmethod
     def validate_template_type(cls, v):
-        """Validate that template_type is a registered report type"""
         valid_types = ReportTypeRegistry.get_all_keys()
         if v not in valid_types:
             msg = f"Invalid template_type '{v}'. Valid types are: {', '.join(valid_types)}"
@@ -59,18 +59,78 @@ class TemplateCreateSpec(TemplateBaseSpec):
     @field_validator("template_data")
     @classmethod
     def validate_template_syntax(cls, v):
-        """Validate Jinja2 template syntax before saving"""
         template_engine = TemplateEngine()
+
         valid, error = template_engine.validate_syntax(v)
         if not valid:
             msg = f"Template syntax validation failed: {error}"
             raise ValueError(msg)
+
+        cls._validate_template_fields(v, template_engine)
+
         return v
+
+    @classmethod
+    def _validate_template_fields(
+        cls, template_data: str, template_engine: TemplateEngine
+    ):
+        variables = template_engine.extract_variables(template_data)
+
+        if not variables:
+            return
+
+        builder = ReportContextBuilder()
+        schema = builder.get_full_schema()
+
+        available_fields = {}
+
+        for builder_key, builder_schema in schema["single_objects"].items():
+            available_fields[builder_key] = {
+                field["key"] for field in builder_schema["fields"]
+            }
+
+        for builder_key, builder_schema in schema["querysets"].items():
+            available_fields[builder_key] = {
+                field["key"] for field in builder_schema["fields"]
+            }
+
+        invalid_refs = []
+        for var in variables:
+            if var in ["loop", "current_date", "current_datetime", "current_time"]:
+                continue
+
+            parts = var.split(".")
+            if len(parts) < 2:  # noqa: PLR2004
+                continue
+
+            builder_key = parts[0]
+
+            if builder_key not in available_fields:
+                continue
+
+            # Checks for key.0.field as well
+            field_key = (
+                parts[1]
+                if len(parts) >= 2 and not parts[1].isdigit()  # noqa: PLR2004
+                else (parts[2] if len(parts) >= 3 else None)  # noqa: PLR2004
+            )
+
+            if field_key and field_key not in available_fields[builder_key]:
+                available = ", ".join(sorted(available_fields[builder_key]))
+                invalid_refs.append(
+                    f"{var} (field '{field_key}' not found in '{builder_key}'. "
+                    f"Available fields: {available})"
+                )
+
+        if invalid_refs:
+            msg = "Invalid field references in template:\n  - " + "\n  - ".join(
+                invalid_refs
+            )
+            raise ValueError(msg)
 
     @field_validator("context_config")
     @classmethod
     def validate_context_config(cls, v):
-        """Validate context_config structure and field names"""
         if not v:
             return v
 

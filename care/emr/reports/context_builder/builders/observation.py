@@ -26,7 +26,11 @@ class ObservationContextBuilder(QuerysetContextBuilder):
     depends_on = ["encounter_id"]
 
     base_filters = {}
-    allowed_filters = ["status", "category"]
+    # Using Django field objects for automatic validation
+    allowed_filters = [
+        Observation.status,
+        Observation.category,
+    ]
 
     fields = [
         Field(
@@ -129,9 +133,7 @@ class ObservationContextBuilder(QuerysetContextBuilder):
         Field(
             key="logged_by",
             display="Logged By",
-            mapping=lambda o: o.data_entered_by.get_display_name()
-            if o.data_entered_by
-            else "",
+            mapping=lambda o: o.data_entered_by.full_name if o.data_entered_by else "",
             preview_value="Nurse Anjali Verma",
             description="Person who recorded this observation",
         ),

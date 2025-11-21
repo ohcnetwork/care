@@ -11,10 +11,6 @@ from care.emr.reports.context_builder.registry import contex_builder_registry
 
 
 class ReportContextBuilder:
-    """
-    Main orchestrator for building report context.
-    """
-
     def __init__(self):
         self.single_builders = contex_builder_registry.get_single_builders()
         self.list_builders = contex_builder_registry.get_queryset_builders()
@@ -38,24 +34,28 @@ class ReportContextBuilder:
 
         return schema
 
-    def build_context(self, ctx: dict, config: dict):
+    def build_context(
+        self, ctx: dict, config: dict, requested_fields: dict | None = None
+    ):
         context = {}
+        requested_fields = requested_fields or {}
 
         for single_key, builder_class in self.single_builders.items():
             if single_key in config:
-                single_config = config[single_key]
+                fields_to_fetch = requested_fields.get(single_key)
                 context[single_key] = builder_class.get_context(
-                    ctx=ctx, requested_fields=single_config.get("fields")
+                    ctx=ctx, requested_fields=fields_to_fetch
                 )
 
         for list_key, builder_class in self.list_builders.items():
             if list_key in config:
                 list_config = config[list_key]
+                fields_to_fetch = requested_fields.get(list_key)
                 context[list_key] = builder_class.build_list_context(
                     ctx=ctx,
                     filters=list_config.get("filters"),
                     limit=list_config.get("limit"),
-                    requested_fields=list_config.get("fields"),
+                    requested_fields=fields_to_fetch,
                 )
 
         return context

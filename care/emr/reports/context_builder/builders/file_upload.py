@@ -13,7 +13,11 @@ class FileUploadContextBuilder(QuerysetContextBuilder):
         "upload_completed": True,
         "is_archived": False,
     }
-    allowed_filters = ["file_category", "file_type"]
+    # Using Django field objects for automatic validation
+    allowed_filters = [
+        FileUpload.file_category,
+        FileUpload.file_type,
+    ]
 
     fields = [
         Field(
@@ -49,7 +53,7 @@ class FileUploadContextBuilder(QuerysetContextBuilder):
         Field(
             key="uploaded_by",
             display="Uploaded By",
-            mapping=lambda f: f.uploaded_by.get_display_name() if f.uploaded_by else "",
+            mapping=lambda f: f.uploaded_by.full_name if f.uploaded_by else "",
             preview_value="Dr. Suresh Reddy",
             description="Person who uploaded the file",
         ),

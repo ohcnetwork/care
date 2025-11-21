@@ -40,11 +40,12 @@ class AllergyContextBuilder(QuerysetContextBuilder):
     model = AllergyIntolerance
     depends_on = ["encounter_id"]
 
+    # Using Django field objects for automatic validation
     allowed_filters = [
-        "clinical_status",
-        "verification_status",
-        "category",
-        "criticality",
+        AllergyIntolerance.clinical_status,
+        AllergyIntolerance.verification_status,
+        AllergyIntolerance.category,
+        AllergyIntolerance.criticality,
     ]
 
     fields = [
@@ -149,7 +150,7 @@ class AllergyContextBuilder(QuerysetContextBuilder):
         Field(
             key="logged_by",
             display="Logged By",
-            mapping=lambda a: a.created_by.get_display_name() if a.created_by else "",
+            mapping=lambda a: a.created_by.full_name if a.created_by else "",
             preview_value="Dr. Meera Iyer",
             description="Person who logged this allergy",
         ),
@@ -157,7 +158,6 @@ class AllergyContextBuilder(QuerysetContextBuilder):
 
     @classmethod
     def get_queryset(cls, ctx: dict):
-        """Get allergies queryset filtered by encounter"""
         encounter_id = ctx.get("encounter_id")
         encounter = Encounter.objects.get(external_id=encounter_id)
 

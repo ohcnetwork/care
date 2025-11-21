@@ -48,7 +48,6 @@ class GenerateReportRequest(BaseModel):
     @field_validator("report_type")
     @classmethod
     def validate_report_type(cls, v):
-        """Validate that report_type is registered"""
         valid_types = ReportTypeRegistry.get_all_keys()
         if v not in valid_types:
             msg = (
@@ -59,7 +58,6 @@ class GenerateReportRequest(BaseModel):
 
     @model_validator(mode="after")
     def validate_report_type_and_associating_id(self):
-        """Validate that associating_id matches the expected model for report_type"""
         try:
             config = ReportTypeRegistry.get(self.report_type)
 
@@ -100,7 +98,6 @@ class ReportUploadViewSet(EMRModelViewSet):
     )
     @action(detail=False, methods=["GET"])
     def get_report_types(self, request, *args, **kwargs):
-        """Get all available report types with their configurations"""
         try:
             schema = ReportTypeRegistry.get_schema()
             return Response(schema)
@@ -178,8 +175,7 @@ class ReportUploadViewSet(EMRModelViewSet):
         if missing_keys:
             return Response(
                 {
-                    "error": f"Missing required params: {', '.join(sorted(missing_keys))}. "
-                    f"Required by builders: {provided_keys}"
+                    "error": f"Missing required params: {', '.join(sorted(missing_keys))}"
                 },
                 status=status.HTTP_400_BAD_REQUEST,
             )
@@ -259,9 +255,6 @@ class ReportUploadViewSet(EMRModelViewSet):
     )
     @action(detail=True, methods=["POST"])
     def unarchive(self, request, *args, **kwargs):
-        """
-        Unarchive a report.
-        """
         instance = self.get_object()
 
         if not instance.is_archived:
@@ -286,9 +279,6 @@ class ReportUploadViewSet(EMRModelViewSet):
     )
     @action(detail=True, methods=["GET"])
     def download(self, request, *args, **kwargs):
-        """
-        Returns a signed URL
-        """
         instance = self.get_object()
 
         if not instance.upload_completed:

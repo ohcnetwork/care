@@ -59,17 +59,12 @@ Create a new report template.
   "name": "Standard Discharge Summary",
   "status": "active",
   "template_type": "discharge_summary",
-  "format": "pdf",
+  "default_format": "pdf",
   "template_data": "<h1>Discharge Summary</h1><p>Patient: {{ patient.name }}</p>",
   "context_config": {
-    "patient": {
-      "fields": ["name", "age", "gender", "phone"]
-    },
-    "encounter": {
-      "fields": ["admission_date", "discharge_date", "facility_name", "care_team"]
-    },
+    "patient": {},
+    "encounter": {},
     "medications": {
-      "fields": ["medication_name", "dosage", "frequency"],
       "filters": {"status": "active"},
       "limit": 50
     }
@@ -81,8 +76,11 @@ Create a new report template.
 - `facility`: null for instance-level, UUID for facility-scoped
 - `slug_value`: Unique identifier (system adds prefix: `f-{facility_id}-{slug}` or `i-{slug}`)
 - `status`: draft/active/retired (only "active" templates can generate reports)
-- `format`: pdf/html
-- `context_config`: Defines what data to fetch for the template
+- `default_format`: pdf/html (default output format for this template)
+- `context_config`: Defines which data points to include and their query configuration
+  - Single objects (patient, encounter): Must use empty dict `{}`
+  - Querysets (medications, allergies, etc.): Can specify `filters` and/or `limit`
+  - Fields are auto-detected from template_data, no need to list them
 
 ---
 
@@ -113,20 +111,34 @@ Update template metadata (name, status, etc.).
 **POST** `/template/preview/`
 Preview a template with sample data before saving.
 
+**✨ Auto-Detection**: Fields are automatically detected from template - no need to specify context_config!
+
 ```json
 {
-  "template_data": "<h1>{{ patient.name }}</h1>",
-  "context_config": {
-    "patient": {
-      "fields": ["name", "age"]
-    }
-  },
+  "template_data": "<h1>{{ patient.name }}</h1><p>Age: {{ patient.age }}</p>",
   "output_format": "html",
   "options": {}
 }
 ```
 
 **Response**: Returns rendered HTML or PDF with validation results.
+
+```json
+{
+  "html": "<h1>Ramesh Kumar</h1><p>Age: 45 years</p>",
+  "validation": {
+    "syntax_valid": true,
+    "syntax_error": null,
+    "render_valid": true,
+    "render_error": null
+  }
+}
+```
+
+**Notes**:
+- System automatically detects which data sources are used in the template
+- All fields from detected builders are available in preview
+- Invalid field references are caught during validation
 
 ---
 
@@ -260,17 +272,12 @@ POST /template/
   "name": "Discharge Summary v1",
   "status": "active",
   "template_type": "discharge_summary",
-  "format": "pdf",
+  "default_format": "pdf",
   "template_data": "<h1>Discharge Summary</h1><p>Patient: {{ patient.name }}</p><p>Age: {{ patient.age }}</p><h2>Medications</h2><ul>{% for med in medications %}<li>{{ med.medication_name }}</li>{% endfor %}</ul>",
   "context_config": {
-    "patient": {
-      "fields": ["name", "age", "gender"]
-    },
-    "encounter": {
-      "fields": ["admission_date", "discharge_date", "care_team"]
-    },
+    "patient": {},
+    "encounter": {},
     "medications": {
-      "fields": ["medication_name", "dosage", "frequency"],
       "filters": {"status": "active"},
       "limit": 20
     }
