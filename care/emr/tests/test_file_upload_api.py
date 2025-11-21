@@ -1,15 +1,18 @@
 import base64
 import io
 from datetime import timedelta
+from unittest.mock import patch
 
 import requests
 from botocore.exceptions import ClientError
 from django.conf import settings
 from django.test import override_settings
 from django.urls import reverse
+from model_bakery import baker
 from PIL import Image
 
 from care.emr.models.file_upload import FileUpload
+from care.emr.resources.file_upload.spec import FileTypeChoices
 from care.emr.tasks.cleanup_incomplete_file_uploads import (
     cleanup_incomplete_file_uploads,
 )
@@ -24,6 +27,23 @@ class FileUploadTestCase(CareAPITestBase):
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
         self.patient = self.create_patient()
+        self.encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.organization.organization,
+        )
+        self.service_request = self.create_service_request(
+            patient=self.patient,
+            facility=self.facility,
+            encounter=self.encounter,
+        )
+        self.diagnostic_report = baker.make(
+            "emr.DiagnosticReport",
+            patient=self.patient,
+            encounter=self.encounter,
+            service_request=self.service_request,
+            status="final",
+        )
 
         self.file = io.BytesIO()
         image = Image.new("RGB", (800, 800))
@@ -182,3 +202,131 @@ class FileUploadTestCase(CareAPITestBase):
 
         with self.assertRaises(FileUpload.DoesNotExist):
             file_obj.refresh_from_db()
+
+    def test_service_request_file_upload_requires_authorization(self):
+        url = reverse("files-list")
+        with patch(
+            "care.emr.api.viewsets.file_upload.AuthorizationController.call"
+        ) as mock_auth:
+
+            def side_effect(method_name, *args, **kwargs):
+                if method_name == "can_write_service_request":
+                    return False
+                return True
+
+            mock_auth.side_effect = side_effect
+            response = self.client.post(
+                url,
+                {
+                    "name": "file",
+                    "original_name": "file.jpg",
+                    "file_type": FileTypeChoices.service_request.value,
+                    "file_category": "unspecified",
+                    "associating_id": str(self.service_request.external_id),
+                    "mime_type": self.file_mime_type,
+                },
+                format="json",
+            )
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(
+            any(
+                call.args[0] == "can_write_service_request"
+                for call in mock_auth.call_args_list
+            )
+        )
+
+    def test_diagnostic_report_file_upload_requires_authorization(self):
+        url = reverse("files-list")
+        with patch(
+            "care.emr.api.viewsets.file_upload.AuthorizationController.call"
+        ) as mock_auth:
+
+            def side_effect(method_name, *args, **kwargs):
+                if method_name == "can_write_diagnostic_report":
+                    return False
+                return True
+
+            mock_auth.side_effect = side_effect
+            response = self.client.post(
+                url,
+                {
+                    "name": "file",
+                    "original_name": "file.jpg",
+                    "file_type": FileTypeChoices.diagnostic_report.value,
+                    "file_category": "unspecified",
+                    "associating_id": str(self.diagnostic_report.external_id),
+                    "mime_type": self.file_mime_type,
+                },
+                format="json",
+            )
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(
+            any(
+                call.args[0] == "can_write_diagnostic_report"
+                for call in mock_auth.call_args_list
+            )
+        )
+
+    def test_service_request_file_download_requires_authorization(self):
+        file_upload = baker.make(
+            FileUpload,
+            file_type=FileTypeChoices.service_request.value,
+            associating_id=str(self.service_request.external_id),
+            file_category="unspecified",
+            name="sr_file",
+            internal_name="sr_file.txt",
+            upload_completed=True,
+        )
+        with patch(
+            "care.emr.api.viewsets.file_upload.AuthorizationController.call"
+        ) as mock_auth:
+
+            def side_effect(method_name, *args, **kwargs):
+                if method_name == "can_read_service_request":
+                    return False
+                return True
+
+            mock_auth.side_effect = side_effect
+            response = self.client.get(
+                reverse("files-detail", args=[file_upload.external_id]),
+                format="json",
+            )
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(
+            any(
+                call.args[0] == "can_read_service_request"
+                for call in mock_auth.call_args_list
+            )
+        )
+
+    def test_diagnostic_report_file_download_requires_authorization(self):
+        file_upload = baker.make(
+            FileUpload,
+            file_type=FileTypeChoices.diagnostic_report.value,
+            associating_id=str(self.diagnostic_report.external_id),
+            file_category="unspecified",
+            name="dr_file",
+            internal_name="dr_file.txt",
+            upload_completed=True,
+        )
+        with patch(
+            "care.emr.api.viewsets.file_upload.AuthorizationController.call"
+        ) as mock_auth:
+
+            def side_effect(method_name, *args, **kwargs):
+                if method_name == "can_read_diagnostic_report":
+                    return False
+                return True
+
+            mock_auth.side_effect = side_effect
+            response = self.client.get(
+                reverse("files-detail", args=[file_upload.external_id]),
+                format="json",
+            )
+        self.assertEqual(response.status_code, 403)
+        self.assertTrue(
+            any(
+                call.args[0] == "can_read_diagnostic_report"
+                for call in mock_auth.call_args_list
+            )
+        )

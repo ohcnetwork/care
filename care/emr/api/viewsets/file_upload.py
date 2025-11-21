@@ -20,7 +20,7 @@ from care.emr.api.viewsets.base import (
     EMRRetrieveMixin,
     EMRUpdateMixin,
 )
-from care.emr.models import Encounter, FileUpload, Patient
+from care.emr.models import DiagnosticReport, Encounter, FileUpload, Patient, ServiceRequest
 from care.emr.models.consent import Consent
 from care.emr.resources.file_upload.spec import (
     FileTypeChoices,
@@ -69,12 +69,31 @@ def file_authorizer(user, file_type, associating_id, permission):
             allowed = AuthorizationController.call(
                 "can_update_encounter_obj", user, encounter_obj
             )
-    elif file_type in [
-        FileTypeChoices.diagnostic_report.value,
-        FileTypeChoices.service_request.value,
-    ]:
-        # TODO : AuthZ Pending
-        allowed = True
+    elif file_type == FileTypeChoices.service_request.value:
+        service_request_obj = get_object_or_404(
+            ServiceRequest, external_id=associating_id
+        )
+        if permission == "read":
+            allowed = AuthorizationController.call(
+                "can_read_service_request", user, service_request_obj
+            )
+        elif permission == "write":
+            allowed = AuthorizationController.call(
+                "can_write_service_request", user, service_request_obj
+            )
+    elif file_type == FileTypeChoices.diagnostic_report.value:
+        diagnostic_report_obj = get_object_or_404(
+            DiagnosticReport, external_id=associating_id
+        )
+        service_request_obj = diagnostic_report_obj.service_request
+        if permission == "read":
+            allowed = AuthorizationController.call(
+                "can_read_diagnostic_report", user, service_request_obj
+            )
+        elif permission == "write":
+            allowed = AuthorizationController.call(
+                "can_write_diagnostic_report", user, service_request_obj
+            )
     if not allowed:
         raise PermissionDenied("Cannot View File")
 
