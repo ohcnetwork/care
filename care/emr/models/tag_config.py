@@ -84,7 +84,9 @@ class TagConfig(EMRBaseModel):
                     timezone.now() + timedelta(days=self.cache_expiry_days)
                 ),
             }
-            self.save(update_fields=["cached_parent_json"])
+            TagConfig.objects.filter(id=self.id).update(
+                cached_parent_json=self.cached_parent_json
+            )
             return self.cached_parent_json
         return {}
 
