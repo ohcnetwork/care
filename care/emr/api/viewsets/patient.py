@@ -267,7 +267,9 @@ class PatientViewSet(EMRModelViewSet):
             if str(patient.external_id)[:5] == request_data.partial_id:
                 context = self.get_serializer_retrieve_context()
                 return Response(
-                    PatientRetrieveSpec.serialize(patient, **context).to_json()
+                    PatientRetrieveSpec.serialize(
+                        patient, self.request.user, **context
+                    ).to_json()
                 )
         raise PermissionDenied("No valid patients found")
 
