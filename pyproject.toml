@@ -1,15 +1,10 @@
 [tool.coverage.run]
 branch = true
 source = ["care", "config", "plugs"]
-# parallel = true
-# concurrency = ["multiprocessing"]
+parallel = true
+concurrency = ["multiprocessing"]
 # relative_files = true
-omit = [
- "care/facility/**",
- "care/users/**",
- "*/tests/**",
- "*/migrations/**"
-]
+omit = ["care/facility/**", "care/users/**", "*/tests/**", "*/migrations/**"]
 
 
 [tool.coverage.report]
@@ -23,12 +18,7 @@ exclude_also = [
   'if TYPE_CHECKING:',
 ]
 ignore_errors = true
-omit = [
- "care/facility/**",
- "care/users/**",
- "*/tests/**",
- "*/migrations*/**"
-]
+omit = ["care/facility/**", "care/users/**", "*/tests/**", "*/migrations*/**"]
 
 
 [tool.ruff]
@@ -72,7 +62,7 @@ select = [
   "TCH", # flake8-todo
   "INT", # flake8-gettext
   # "ARG",  # flake8-unused-arguments
-  "PTH",  # flake8-use-pathlib
+  "PTH", # flake8-use-pathlib
   # "TD",   # flake8-todo # disabling this for now
   "ERA",  # eradicate
   "PL",   # pylint
@@ -95,9 +85,9 @@ ignore = [
   "FBT001",  # why not!
   "S106",
   "S105",
-  "UP038",    # this results in slower code
-  "EM101", # Why not!
-  "ERA001" # Lots of commented out code until the big merge!
+  "UP038",   # this results in slower code
+  "EM101",   # Why not!
+  "ERA001",  # Lots of commented out code until the big merge!
 ]
 
 
