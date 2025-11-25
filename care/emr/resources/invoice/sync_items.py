@@ -1,5 +1,5 @@
 import json
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 
 from django.core.serializers.json import DjangoJSONEncoder
 
@@ -43,8 +43,12 @@ def update_amount(price_component, total_price_components):
 def sync_invoice_items(invoice: Invoice):
     charge_items = ChargeItem.objects.filter(id__in=invoice.charge_items)
     summary = calculate_charge_items_summary(charge_items)
-    invoice.total_net = Decimal(round(summary["net"], 2))
-    invoice.total_gross = Decimal(round(summary["gross"], 2))
+    invoice.total_net = Decimal(summary["net"]).quantize(
+        Decimal("0.01"), rounding=ROUND_HALF_UP
+    )
+    invoice.total_gross = Decimal(summary["gross"]).quantize(
+        Decimal("0.01"), rounding=ROUND_HALF_UP
+    )
     invoice.total_price_components = json.loads(
         json.dumps(
             summary["total_price_components"],
