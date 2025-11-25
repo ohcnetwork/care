@@ -5,6 +5,7 @@ from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
+from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models.scheduling.token import Token, TokenQueue, TokenSubQueue
@@ -175,7 +176,7 @@ class TokenViewSet(EMRModelViewSet):
         obj = self.get_object()
         request_obj = SetCurrentTokenRequest(**request.data)
         queue = obj.queue
-        self.authorize_update(None, None)
+        self.authorize_update(None, obj)
         with transaction.atomic():
             sub_queue = get_object_or_404(
                 TokenSubQueue,
@@ -186,4 +187,4 @@ class TokenViewSet(EMRModelViewSet):
             sub_queue.save()
             obj.status = TokenStatusOptions.IN_PROGRESS.value
             obj.save()
-        return self.get_retrieve_pydantic_model().serialize(obj).to_json()
+        return Response(self.get_retrieve_pydantic_model().serialize(obj).to_json())

@@ -741,3 +741,127 @@ class TokenAPITests(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["id"], str(token2.external_id))
+
+    #  Test cases for set next endpoint
+
+    def test_set_next_token_as_superuser(self):
+        """Test setting next token as a superuser."""
+        self.client.force_authenticate(user=self.superuser)
+        subqueue = self.create_subqueue(
+            facility=self.facility,
+            resource=self.schedule_resource,
+            name="Sub Queue 1",
+        )
+        token1 = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        response = self.client.post(
+            reverse(
+                "queue-set-next",
+                kwargs={
+                    "facility_external_id": str(self.facility.external_id),
+                    "token_queue_external_id": str(self.token_queue.external_id),
+                    "external_id": str(token1.external_id),
+                },
+            ),
+            {"sub_queue": str(subqueue.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(token1.external_id))
+        token1.refresh_from_db()
+        self.assertEqual(token1.status, TokenStatusOptions.IN_PROGRESS)
+
+    def test_set_next_token_as_user_with_permission(self):
+        """Test setting next token as a user with permission."""
+        self.client.force_authenticate(user=self.user)
+        subqueue = self.create_subqueue(
+            facility=self.facility,
+            resource=self.schedule_resource,
+            name="Sub Queue 1",
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        token1 = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        response = self.client.post(
+            reverse(
+                "queue-set-next",
+                kwargs={
+                    "facility_external_id": str(self.facility.external_id),
+                    "token_queue_external_id": str(self.token_queue.external_id),
+                    "external_id": str(token1.external_id),
+                },
+            ),
+            {"sub_queue": str(subqueue.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(token1.external_id))
+        token1.refresh_from_db()
+        self.assertEqual(token1.status, TokenStatusOptions.IN_PROGRESS)
+
+    def test_set_next_token_as_user_without_permission(self):
+        """Test setting next token as a user without permission."""
+        self.client.force_authenticate(user=self.user)
+        subqueue = self.create_subqueue(
+            facility=self.facility,
+            resource=self.schedule_resource,
+            name="Sub Queue 1",
+        )
+        token = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        response = self.client.post(
+            reverse(
+                "queue-set-next",
+                kwargs={
+                    "facility_external_id": str(self.facility.external_id),
+                    "token_queue_external_id": str(self.token_queue.external_id),
+                    "external_id": str(token.external_id),
+                },
+            ),
+            {"sub_queue": str(subqueue.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update token", response.data["detail"]
+        )
