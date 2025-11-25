@@ -143,11 +143,8 @@ class TemplateCreateSpec(TemplateBaseSpec):
         return v
 
 
-class TemplateUpdateSpec(TemplateBaseSpec):
-    slug_value: SlugType
-
-    def perform_extra_deserialization(self, is_update, obj):
-        obj.slug = self.slug_value
+class TemplateUpdateSpec(TemplateCreateSpec):
+    pass
 
 
 class TemplateReadSpec(TemplateBaseSpec):
