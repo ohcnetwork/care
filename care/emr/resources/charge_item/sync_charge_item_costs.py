@@ -5,8 +5,6 @@ from care.emr.resources.common.monetary_component import (
     MonetaryComponentType,
 )
 
-MAX_FACTOR_PERCENTAGE = 100
-
 
 def calculate_amount(component, quantity, base):
     if component.amount:
@@ -41,10 +39,16 @@ def sync_charge_item_costs(charge_item):
     net_price = total_price
     for component in charge_item_price_components:
         if component.monetary_component_type == MonetaryComponentType.discount.value:
-            if component.amount < 0:
-                raise ValidationError("Amount cannot be negative")
-            if component.factor < 1 or component.factor > MAX_FACTOR_PERCENTAGE:
-                raise ValidationError("Factor must be between 1 and 100")
+            if component.amount is not None and component.amount < 0:
+                raise ValidationError("Discount amount cannot be negative")
+            if component.amount is not None and component.amount > net_price:
+                raise ValidationError(
+                    "Discount amount cannot be greater than net price"
+                )
+            if component.factor is not None and (
+                component.factor < 1 or component.factor > 100  # noqa: PLR2004
+            ):
+                raise ValidationError("Discount factor must be between 1 and 100")
             _component = calculate_amount(component, quantity, net_price)
             total_price -= _component.amount
             components.append(_component.model_dump(mode="json", exclude_defaults=True))
