@@ -865,3 +865,74 @@ class TokenAPITests(CareAPITestBase):
         self.assertIn(
             "You do not have permission to update token", response.data["detail"]
         )
+
+    # Tests for Token Deletion
+
+    def test_delete_token_as_superuser(self):
+        """Test deleting a token as a superuser."""
+        self.client.force_authenticate(user=self.superuser)
+        token = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        response = self.client.delete(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(self.token_queue.external_id),
+                str(token.external_id),
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+        token.refresh_from_db()
+        self.assertEqual(token.status, TokenStatusOptions.ENTERED_IN_ERROR)
+
+    def test_delete_token_as_user_with_permission(self):
+        """Test deleting a token as a user with permission."""
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        token = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        response = self.client.delete(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(self.token_queue.external_id),
+                str(token.external_id),
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+        token.refresh_from_db()
+        self.assertEqual(token.status, TokenStatusOptions.ENTERED_IN_ERROR)
+
+    def test_delete_token_as_user_without_permission(self):
+        """Test deleting a token as a user without permission."""
+        self.client.force_authenticate(user=self.user)
+        token = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        response = self.client.delete(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(self.token_queue.external_id),
+                str(token.external_id),
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update token", response.data["detail"]
+        )
