@@ -31,7 +31,7 @@ class AccountFilters(filters.FilterSet):
     name = filters.CharFilter(lookup_expr="icontains")
     billing_status = filters.CharFilter(lookup_expr="iexact")
     patient = filters.UUIDFilter(field_name="patient__external_id")
-    created_date = filters.DateRangeFilter(field_name="created_date")
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
 
 
 class AccountViewSet(
