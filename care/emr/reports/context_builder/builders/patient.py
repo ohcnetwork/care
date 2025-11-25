@@ -1,7 +1,11 @@
 from care.emr.models.patient import Patient
 from care.emr.reports.context_builder.base import Field, SingleObjectContextBuilder
 from care.emr.reports.context_builder.registry import context_builder_registry
-from care.emr.reports.context_builder.utils import format_date, format_phone_number
+from care.emr.reports.context_builder.utils import (
+    format_date,
+    format_datetime,
+    format_phone_number,
+)
 
 BLOOD_GROUP_DISPLAY = {
     "A_positive": "A+",
@@ -123,7 +127,9 @@ class PatientContextBuilder(SingleObjectContextBuilder):
         Field(
             key="deceased_datetime",
             display="Deceased Date/Time",
-            mapping=lambda p: str(p.deceased_datetime) if p.deceased_datetime else "",
+            mapping=lambda p: format_datetime(p.deceased_datetime)
+            if p.deceased_datetime
+            else "",
             preview_value="",
             description="Date and time of death (if applicable)",
         ),
