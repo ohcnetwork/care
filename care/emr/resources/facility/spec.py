@@ -1,7 +1,9 @@
 from decimal import Decimal
 
 from django.conf import settings
+from django.db.models.functions import Lower, Trim
 from pydantic import UUID4, BaseModel, field_validator, model_validator
+from pydantic_core.core_schema import ValidationInfo
 
 from care.emr.models import Organization
 from care.emr.models.patient import PatientIdentifierConfigCache
@@ -63,6 +65,30 @@ class FacilityInvoiceExpressionSpec(BaseModel):
 class FacilityCreateSpec(FacilityBaseSpec):
     geo_organization: UUID4
     features: list[int]
+
+    @field_validator("name")
+    @classmethod
+    def validate_name_uniqueness(cls, v, info: ValidationInfo):
+        if not v:
+            return v
+
+        normalized_name = v.strip().lower()
+        context = info.context or {}
+        is_update = context.get("is_update", False)
+        obj = context.get("object")
+
+        qs = Facility.objects.annotate(normalized_name=Lower(Trim("name"))).filter(
+            normalized_name=normalized_name
+        )
+
+        if is_update and obj:
+            qs = qs.exclude(id=obj.id)
+
+        if qs.exists():
+            err = "A facility with this name already exists"
+            raise ValueError(err)
+
+        return v
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.geo_organization = Organization.objects.filter(
