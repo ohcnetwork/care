@@ -430,6 +430,87 @@ class TokenAPITests(CareAPITestBase):
             response.data["errors"][0]["msg"],
         )
 
+    def test_update_token_with_existing_sub_queue_with_different_resource_than_sub_queue(
+        self,
+    ):
+        """Test updating a token with different resource for existing subqueue and subqueue."""
+        self.client.force_authenticate(user=self.superuser)
+        another_user = self.create_user()
+        token = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+        )
+        another_resource = self.create_schedule_resource(
+            facility=self.facility, user=another_user
+        )
+        subqueue1 = self.create_subqueue(
+            facility=self.facility,
+            resource=another_resource,
+            name="Sub Queue 1",
+        )
+        token.sub_queue = subqueue1
+        token.save(update_fields=["sub_queue"])
+        subqueue2 = self.create_subqueue(
+            facility=self.facility,
+            resource=self.schedule_resource,
+            name="Sub Queue 2",
+        )
+        token_data = {
+            "sub_queue": subqueue2.external_id,
+        }
+        response = self.client.put(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(self.token_queue.external_id),
+                str(token.external_id),
+            ),
+            data=token_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Sub Queue and Queue are not in the same resource",
+            response.data["errors"][0]["msg"],
+        )
+
+    def test_update_token_with_same_resource_for_new_subqueue(self):
+        """Test updating a token with same resource for new subqueue."""
+        self.client.force_authenticate(user=self.superuser)
+        token = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+        )
+        subqueue1 = self.create_subqueue(
+            facility=self.facility,
+            resource=self.schedule_resource,
+            name="Sub Queue 1",
+        )
+        token.sub_queue = subqueue1
+        token.save(update_fields=["sub_queue"])
+        subqueue2 = self.create_subqueue(
+            facility=self.facility,
+            resource=self.schedule_resource,
+            name="Sub Queue 2",
+        )
+        token_data = {
+            "sub_queue": subqueue2.external_id,
+        }
+        response = self.client.put(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(self.token_queue.external_id),
+                str(token.external_id),
+            ),
+            data=token_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["sub_queue"]["id"], str(subqueue2.external_id))
+
     def test_update_token_with_existing_current_token_in_subqueue(self):
         """Test updating a token with existing current token in subqueue."""
         self.client.force_authenticate(user=self.superuser)
@@ -469,6 +550,41 @@ class TokenAPITests(CareAPITestBase):
             "Sub Queue already has a current token",
             response.data["errors"][0]["msg"],
         )
+
+    def test_update_token_with_current_token_as_null_in_subqueue(self):
+        """Test updating a token with current token as null in subqueue."""
+        self.client.force_authenticate(user=self.superuser)
+        token = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+        )
+        subqueue1 = self.create_subqueue(
+            facility=self.facility,
+            resource=self.schedule_resource,
+            name="Sub Queue 1",
+            current_token=None,
+        )
+        token.sub_queue = subqueue1
+        token.save(update_fields=["sub_queue"])
+        subqueue2 = self.create_subqueue(
+            facility=self.facility, resource=self.schedule_resource, name="Sub Queue 2"
+        )
+        token_data = {
+            "sub_queue": subqueue2.external_id,
+        }
+        response = self.client.put(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(self.token_queue.external_id),
+                str(token.external_id),
+            ),
+            data=token_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["sub_queue"]["id"], str(subqueue2.external_id))
 
     # Tests for Token Retrieval
 
