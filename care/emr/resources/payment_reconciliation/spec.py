@@ -111,6 +111,8 @@ class PaymentReconciliationReadSpec(BasePaymentReconciliationSpec):
     tendered_amount: float
     returned_amount: float
     is_credit_note: bool
+    created_date: datetime
+    modified_date: datetime
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -125,6 +127,9 @@ class PaymentReconciliationReadSpec(BasePaymentReconciliationSpec):
 class PaymentReconciliationRetrieveSpec(PaymentReconciliationReadSpec):
     location: dict | None = None
 
+    created_by: dict | None
+    updated_by: dict | None
+
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
@@ -132,3 +137,4 @@ class PaymentReconciliationRetrieveSpec(PaymentReconciliationReadSpec):
             mapping["location"] = FacilityLocationListSpec.serialize(
                 obj.location
             ).to_json()
+        cls.serialize_audit_users(mapping, obj)
