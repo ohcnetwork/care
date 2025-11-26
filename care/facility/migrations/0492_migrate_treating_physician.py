@@ -37,6 +37,7 @@ def migrate_treating_physician(apps, schema_editor):
         bulk = []
         for consultation in consultations:
             encounter = encounters.get(consultation.migrated_emr_encounter_id)
+            print(consultation.migrated_emr_encounter_id, consultation.treating_physician_id)
             if encounter:
                 encounter.care_team = [
                     {"user_id": consultation.treating_physician_id, "role": default_role_code}
