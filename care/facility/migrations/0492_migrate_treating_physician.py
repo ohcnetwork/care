@@ -7,7 +7,7 @@ from django.core.paginator import Paginator
 logger = logging.getLogger(__name__)
 
 def migrate_treating_physician(apps, schema_editor):
-    Encoutner = apps.get_model("emr", "Encounter")
+    Encounter = apps.get_model("emr", "Encounter")
     PatientConsultation = apps.get_model("facility", "PatientConsultation")
 
     default_role_code = {"code":"158965000","display":"Medical practitioner","system":"http://snomed.info/sct"}
@@ -17,29 +17,38 @@ def migrate_treating_physician(apps, schema_editor):
             migrated_emr_encounter_id__isnull=False,
             treating_physician_id__isnull=False,
             deleted=False,
-        )
+        ).only("migrated_emr_encounter_id", "treating_physician_id")
         .order_by("id"),
         2000,
     )
-    bulk = []
+
     for page_number in paginator.page_range:
-        for consultation in paginator.page(page_number).object_list:
-            try:
-                encounter = Encoutner.objects.get(
-                    id=consultation.migrated_emr_encounter_id
-                )
+        consultations = paginator.page(page_number).object_list
+
+        # Get all encounter IDs for this page
+        encounter_ids = [c.migrated_emr_encounter_id for c in consultations]
+
+        # Fetch all encounters in one query
+        encounters = {
+            e.id: e for e in Encounter.objects.filter(id__in=encounter_ids).only("id", "care_team")
+        }
+
+        # Build bulk update list
+        bulk = []
+        for consultation in consultations:
+            encounter = encounters.get(consultation.migrated_emr_encounter_id)
+            if encounter:
                 encounter.care_team = [
                     {"user_id": consultation.treating_physician_id, "role": default_role_code}
                 ]
                 bulk.append(encounter)
-            except Encoutner.DoesNotExist:
+            else:
                 logger.warning(
                     f"Encounter with id {consultation.migrated_emr_encounter_id} does not exist"
                 )
-        Encoutner.objects.bulk_update(
-            bulk,
-            ["care_team"],
-        )
+
+        if bulk:
+            Encounter.objects.bulk_update(bulk, ["care_team"])
 
 class Migration(migrations.Migration):
 
