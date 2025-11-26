@@ -34,7 +34,6 @@ def migrate_treating_physician(apps, schema_editor):
         }
 
         # Build bulk update list
-        bulk = []
         for consultation in consultations:
             encounter = encounters.get(consultation.migrated_emr_encounter_id)
             print(consultation.migrated_emr_encounter_id, consultation.treating_physician_id)
@@ -42,14 +41,12 @@ def migrate_treating_physician(apps, schema_editor):
                 encounter.care_team = [
                     {"user_id": consultation.treating_physician_id, "role": default_role_code}
                 ]
-                bulk.append(encounter)
+                encounter.save()
             else:
                 logger.warning(
                     f"Encounter with id {consultation.migrated_emr_encounter_id} does not exist"
                 )
 
-        if bulk:
-            Encounter.objects.bulk_update(bulk, ["care_team"])
 
 class Migration(migrations.Migration):
 
