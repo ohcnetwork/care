@@ -10,10 +10,17 @@ from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.base import (
+    EMRBaseViewSet,
+    EMRCreateMixin,
+    EMRListMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+)
 from care.emr.models.report.report_upload import ReportUpload
 from care.emr.models.report.template import Template
 from care.emr.reports import report_utils
+from care.emr.reports.authorizers import report_authorizer
 from care.emr.reports.context_builder.report_builder import ReportContextBuilder
 from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.report_type_registry import ReportTypeRegistry
@@ -25,6 +32,7 @@ from care.emr.resources.report.report_upload.spec import (
     ReportUploadUpdateSpec,
 )
 from care.emr.tasks.report_generation import generate_report_task
+from care.utils.shortcuts import get_object_or_404
 
 logger = logging.getLogger(__name__)
 
@@ -78,7 +86,9 @@ class GenerateReportRequest(BaseModel):
         return self
 
 
-class ReportUploadViewSet(EMRModelViewSet):
+class ReportUploadViewSet(
+    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+):
     database_model = ReportUpload
     pydantic_model = ReportUploadCreateSpec
     pydantic_read_model = ReportUploadListSpec
@@ -90,10 +100,43 @@ class ReportUploadViewSet(EMRModelViewSet):
     ordering_fields = ["created_date", "name"]
 
     def get_queryset(self):
-        queryset = super().get_queryset()
-        if self.request.query_params.get("include_archived") != "true":
-            queryset = queryset.filter(is_archived=False)
-        return queryset
+        if self.action == "list":
+            if (
+                "report_type" not in self.request.GET
+                and "associating_id" not in self.request.GET
+            ):
+                raise PermissionError("Cannot filter Reports")
+
+            report_authorizer(
+                self.request.user,
+                self.request.GET.get("report_type"),
+                self.request.GET.get("associating_id"),
+                "read",
+            )
+            return (
+                super()
+                .get_queryset()
+                .filter(
+                    report_type=self.request.GET.get("report_type"),
+                    associating_id=self.request.GET.get("associating_id"),
+                    upload_completed=True,
+                )
+            )
+        obj = get_object_or_404(ReportUpload, external_id=self.kwargs["external_id"])
+        report_authorizer(
+            self.request.user, obj.report_type, obj.associating_id, "read"
+        )
+        return super().get_queryset()
+
+    def authorize_create(self, instance):
+        report_authorizer(
+            self.request.user, instance.report_type, instance.associating_id, "write"
+        )
+
+    def authorize_update(self, request_obj, instance):
+        report_authorizer(
+            self.request.user, instance.report_type, instance.associating_id, "write"
+        )
 
     @extend_schema(
         description="Get schema of available report types",
@@ -111,6 +154,15 @@ class ReportUploadViewSet(EMRModelViewSet):
                 {"error": "Failed to get report types"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
+
+    @extend_schema(responses={200: ReportUploadListSpec})
+    @action(detail=True, methods=["POST"])
+    def mark_upload_completed(self, request, *args, **kwargs):
+        obj = self.get_object()
+        report_authorizer(request.user, obj.report_type, obj.associating_id, "write")
+        obj.upload_completed = True
+        obj.save(update_fields=["upload_completed"])
+        return Response(ReportUploadListSpec.serialize(obj).to_json())
 
     @extend_schema(
         description="Generate a report from a template with patient/encounter data",
@@ -169,6 +221,8 @@ class ReportUploadViewSet(EMRModelViewSet):
                 extra_fields[key] = str(value)
 
         output_format = generate_request.output_format.lower()
+
+        report_authorizer(request.user, report_type, associating_id, "write")
 
         try:
             template = Template.objects.get(external_id=template_id)
@@ -255,53 +309,28 @@ class ReportUploadViewSet(EMRModelViewSet):
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
-    @extend_schema(
-        description="Archive a report", responses={200: "Success"}, tags=["report"]
-    )
+    class ArchiveRequestSpec(BaseModel):
+        archive_reason: str
+
+    @extend_schema(request=ArchiveRequestSpec, responses={200: ReportUploadListSpec})
     @action(detail=True, methods=["POST"])
     def archive(self, request, *args, **kwargs):
-        instance = self.get_object()
-
-        if instance.is_archived:
-            return Response(
-                {"error": "Report is already archived"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        archive_reason = request.data.get("archive_reason", "")
-
-        instance.is_archived = True
-        instance.archive_reason = archive_reason
-        instance.archived_by = request.user
-        instance.archived_datetime = timezone.now()
-        instance.save()
-
-        data = self.pydantic_retrieve_model.serialize(instance, request.user).to_json()
-        return Response(data)
-
-    @extend_schema(
-        description="Unarchive a report",
-        responses={200: "Report unarchived successfully"},
-        tags=["report"],
-    )
-    @action(detail=True, methods=["POST"])
-    def unarchive(self, request, *args, **kwargs):
-        instance = self.get_object()
-
-        if not instance.is_archived:
-            return Response(
-                {"error": "Report is not archived"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        instance.is_archived = False
-        instance.archive_reason = ""
-        instance.archived_by = None
-        instance.archived_datetime = None
-        instance.save()
-
-        data = self.pydantic_retrieve_model.serialize(instance, request.user).to_json()
-        return Response(data)
+        obj = self.get_object()
+        request_data = self.ArchiveRequestSpec(**request.data)
+        report_authorizer(request.user, obj.report_type, obj.associating_id, "write")
+        obj.is_archived = True
+        obj.archive_reason = request_data.archive_reason
+        obj.archived_datetime = timezone.now()
+        obj.archived_by = request.user
+        obj.save(
+            update_fields=[
+                "is_archived",
+                "archive_reason",
+                "archived_datetime",
+                "archived_by",
+            ]
+        )
+        return Response(ReportUploadListSpec.serialize(obj).to_json())
 
     @extend_schema(
         description="Get download URL for the report",
