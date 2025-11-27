@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -36,6 +37,7 @@ class ProductKnowledgeFilters(filters.FilterSet):
     alternate_identifier = filters.CharFilter(lookup_expr="iexact")
     category = DummyCharFilter()
     include_children = DummyBooleanFilter()
+    include_instance = DummyBooleanFilter()
 
 
 class ProductKnowledgeViewSet(
@@ -137,6 +139,9 @@ class ProductKnowledgeViewSet(
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.action == "list" and "facility" in self.request.GET:
+            include_instance = (
+                self.request.GET.get("include_instance", "False").lower() == "true"
+            )
             facility = get_object_or_404(
                 Facility, external_id=self.request.GET["facility"]
             )
@@ -146,8 +151,12 @@ class ProductKnowledgeViewSet(
                 facility,
             ):
                 raise PermissionDenied("Cannot read product knowledge")
-
-            queryset = queryset.filter(facility=facility)
+            if include_instance:
+                queryset = queryset.filter(
+                    Q(facility__isnull=True) | Q(facility=facility)
+                )
+            else:
+                queryset = queryset.filter(facility=facility)
             if self.request.GET.get("category"):
                 category = get_object_or_404(
                     ResourceCategory.objects.only("id"),
