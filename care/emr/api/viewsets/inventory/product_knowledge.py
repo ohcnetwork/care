@@ -23,14 +23,18 @@ from care.emr.resources.inventory.product_knowledge.spec import (
 )
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
-from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyCharFilter
+from care.utils.filters.dummy_filter import (
+    DummyBooleanFilter,
+    DummyCharFilter,
+    DummyUUIDFilter,
+)
 from care.utils.filters.null_filter import NullFilter
 from care.utils.shortcuts import get_object_or_404
 
 
 class ProductKnowledgeFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
-    facility = filters.UUIDFilter(field_name="facility__external_id")
+    facility = DummyUUIDFilter()
     name = filters.CharFilter(lookup_expr="icontains")  # TODO : Need better searching
     product_type = filters.CharFilter(lookup_expr="iexact")
     facility_is_null = NullFilter(field_name="facility")
