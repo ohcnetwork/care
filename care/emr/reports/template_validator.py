@@ -8,7 +8,7 @@ def get_referenced_builders(template_data: str) -> set[str]:
 
     variables = template_engine.extract_variables(template_data)
     all_builders = set(builder.single_builders.keys()) | set(
-        builder.list_builders.keys()
+        builder.queryset_builders.keys()
     )
 
     referenced_builders = set()

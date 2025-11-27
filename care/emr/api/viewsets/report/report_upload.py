@@ -195,8 +195,8 @@ class ReportUploadViewSet(EMRModelViewSet):
             if builder_key in builder.single_builders:
                 builder_class = builder.single_builders[builder_key]
                 required_context_keys.update(builder_class.depends_on)
-            elif builder_key in builder.list_builders:
-                builder_class = builder.list_builders[builder_key]
+            elif builder_key in builder.queryset_builders:
+                builder_class = builder.queryset_builders[builder_key]
                 required_context_keys.update(builder_class.depends_on)
 
         provided_keys = set(extra_fields.keys())
