@@ -26,7 +26,7 @@ class Field:
         self.target_context = target_context
         self.preview_fn = preview_fn
 
-    def get_value(self, parent_context, parent_attribute, is_preview):
+    def get_value(self, parent_context, parent_attribute, is_preview):  # noqa PLR0911
         if self.target_context:
             return self.target_context(
                 parent_context, parent_attribute, is_preview=is_preview
@@ -95,7 +95,8 @@ class ContextBuilderBase:
         if self.is_preview:
             limit = kwargs.get("limit", 4)
             return [
-                self.__class__(is_preview=True) for c in range(random.randint(1, limit))
+                self.__class__(is_preview=True)
+                for c in range(random.randint(1, limit))  # noqa S311
             ]
         return self._filter(**kwargs)
 
