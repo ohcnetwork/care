@@ -4,7 +4,7 @@ from django.utils import timezone
 from django_filters import BooleanFilter, CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
-from pydantic import UUID4, BaseModel, field_validator, model_validator
+from pydantic import UUID4, BaseModel, ValidationError, field_validator, model_validator
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.filters import OrderingFilter
@@ -119,11 +119,34 @@ class ReportUploadViewSet(EMRModelViewSet):
         tags=["report"],
     )
     @action(detail=False, methods=["POST"])
-    def generate(self, request, *args, **kwargs):  # noqa: PLR0911
+    def generate(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912
         try:
             generate_request = GenerateReportRequest.model_validate(request.data)
+        except ValidationError as e:
+            errors = e.errors()
+            if errors:
+                error = errors[0]
+                error_msg = error.get("msg", str(e))
+                if "Value error," in error_msg:
+                    error_msg = error_msg.replace("Value error, ", "")
+                logger.warning("Validation error for report generation: %s", error_msg)
+                return Response(
+                    {"error": error_msg},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            logger.exception("Validation error for report generation: %s", e)
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except ValueError as e:
+            logger.exception("Value error in report generation: %s", e)
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         except Exception as e:
-            logger.exception("Invalid request data for report generation: %s", e)
+            logger.exception("Unexpected error validating request data: %s", e)
             return Response(
                 {"error": "Invalid request data"},
                 status=status.HTTP_400_BAD_REQUEST,

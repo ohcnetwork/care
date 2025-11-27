@@ -11,8 +11,8 @@ class ContextBuilderRegistry:
     """
 
     def __init__(self):
-        self._single_builders: dict[str, type[BaseContextBuilder]] = {}
-        self._queryset_builders: dict[str, type[BaseContextBuilder]] = {}
+        self._single_builders: dict[str, type[SingleObjectContextBuilder]] = {}
+        self._queryset_builders: dict[str, type[QuerysetContextBuilder]] = {}
 
     def register(self, key: str, builder_class: type[BaseContextBuilder]):
         """

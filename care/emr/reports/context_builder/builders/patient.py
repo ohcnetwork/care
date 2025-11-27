@@ -109,15 +109,6 @@ class PatientContextBuilder(SingleObjectContextBuilder):
             description="Pincode of current address",
         ),
         Field(
-            key="marital_status",
-            display="Marital Status",
-            mapping=lambda p: p.marital_status.replace("_", " ").title()
-            if p.marital_status
-            else "",
-            preview_value="Married",
-            description="Marital status of the patient",
-        ),
-        Field(
             key="year_of_birth",
             display="Year of Birth",
             mapping=lambda p: str(p.year_of_birth) if p.year_of_birth else "",
