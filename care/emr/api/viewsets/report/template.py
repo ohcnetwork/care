@@ -14,10 +14,13 @@ from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models.report.template import Template
+from care.emr.reports.context_builder import types  # noqa
 from care.emr.reports.context_builder.report_builder import ReportContextBuilder
+from care.emr.reports.context_builder.type_registry import FieldTypeRegistry
 from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.renderer.renderer import Renderer
 from care.emr.reports.renderer.template_engine import TemplateEngine
+from care.emr.reports.template_validator import get_referenced_builders
 from care.emr.resources.report.template.spec import (
     TemplateCreateSpec,
     TemplateReadSpec,
@@ -113,9 +116,6 @@ class TemplateViewSet(EMRModelViewSet):
     @action(detail=False, methods=["GET"], url_path="schema")
     def get_schema(self, request, *args, **kwargs):
         try:
-            from care.emr.reports.context_builder import types  # noqa
-            from care.emr.reports.context_builder.type_registry import FieldTypeRegistry
-
             builder = ReportContextBuilder()
             schema = builder.get_full_schema()
 
@@ -154,8 +154,6 @@ class TemplateViewSet(EMRModelViewSet):
 
         try:
             template_engine = TemplateEngine()
-
-            from care.emr.reports.template_validator import get_referenced_builders
 
             referenced_builders = get_referenced_builders(template_data)
             context_builder = ReportContextBuilder()
