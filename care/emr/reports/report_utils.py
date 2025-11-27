@@ -11,6 +11,7 @@ from care.emr.reports.context_builder.report_builder import ReportContextBuilder
 from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.renderer.renderer import Renderer
 from care.emr.reports.renderer.template_engine import TemplateEngine
+from care.users.models import User
 
 logger = logging.getLogger(__name__)
 
@@ -123,8 +124,6 @@ def generate_and_upload_report(  # noqa: PLR0915
     )
 
     if user_id:
-        from care.users.models import User
-
         try:
             report_upload.created_by = User.objects.get(id=user_id)
         except User.DoesNotExist:
