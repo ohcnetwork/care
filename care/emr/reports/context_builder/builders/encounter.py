@@ -12,6 +12,15 @@ STATUS_DISPLAY = {
     "entered_in_error": "Entered in Error",
 }
 
+ENCOUNTER_CLASS_DISPLAY = {
+    "imp": "Inpatient",
+    "amb": "Ambulatory",
+    "obsenc": "Observation",
+    "emer": "Emergency",
+    "vr": "Virtual",
+    "hh": "Home Health",
+}
+
 
 class EncounterContextBuilder(SingleObjectContextBuilder):
     model = Encounter
@@ -30,11 +39,12 @@ class EncounterContextBuilder(SingleObjectContextBuilder):
         Field(
             key="encounter_class",
             display="Encounter Type",
-            mapping=lambda e: e.encounter_class.replace("_", " ").title()
-            if e.encounter_class
-            else "",
+            mapping=lambda e: ENCOUNTER_CLASS_DISPLAY.get(
+                e.encounter_class,
+                e.encounter_class.title() if e.encounter_class else "",
+            ),
             preview_value="Inpatient",
-            description="Type of encounter (Outpatient/Inpatient/Emergency)",
+            description="Type of encounter (Ambulatory/Inpatient/Emergency/Virtual/etc.)",
         ),
         Field(
             key="admission_date",
