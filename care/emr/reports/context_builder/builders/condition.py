@@ -110,15 +110,6 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
             description="When the condition started",
         ),
         Field(
-            key="body_site",
-            display="Body Site",
-            mapping=lambda c: c.body_site.get("display", "")
-            if isinstance(c.body_site, dict)
-            else "",
-            preview_value="Pancreas",
-            description="Anatomical location",
-        ),
-        Field(
             key="note",
             display="Notes",
             mapping="note",
