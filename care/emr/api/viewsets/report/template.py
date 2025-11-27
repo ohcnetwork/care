@@ -138,7 +138,7 @@ class TemplateViewSet(EMRModelViewSet):
         tags=["template"],
     )
     @action(detail=False, methods=["POST"])
-    def preview(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912, PLR0915
+    def preview(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912
         try:
             preview_request = PreviewTemplateRequest.model_validate(request.data)
         except Exception as e:
@@ -155,35 +155,23 @@ class TemplateViewSet(EMRModelViewSet):
         try:
             template_engine = TemplateEngine()
 
-            extracted_vars = template_engine.extract_variables(template_data)
+            from care.emr.reports.template_validator import get_referenced_builders
+
+            referenced_builders = get_referenced_builders(template_data)
             context_builder = ReportContextBuilder()
             schema = context_builder.get_full_schema()
-
-            def is_builder_referenced(builder_key):
-                for var in extracted_vars:
-                    if var in [
-                        "loop",
-                        "current_date",
-                        "current_datetime",
-                        "current_time",
-                    ]:
-                        continue
-                    parts = var.split(".")
-                    if parts and parts[0] == builder_key:
-                        return True
-                return False
 
             preview_context = {}
 
             for obj_key in schema["single_objects"]:
-                if is_builder_referenced(obj_key):
+                if obj_key in referenced_builders:
                     preview_context[obj_key] = {}
                     builder_schema = schema["single_objects"][obj_key]
                     for field in builder_schema.get("fields", []):
                         preview_context[obj_key][field["key"]] = field["preview_value"]
 
             for qs_key in schema["querysets"]:
-                if is_builder_referenced(qs_key):
+                if qs_key in referenced_builders:
                     qs_data = schema["querysets"][qs_key]
                     preview_context[qs_key] = qs_data.get("preview_value", [])
 

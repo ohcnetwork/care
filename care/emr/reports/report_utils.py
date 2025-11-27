@@ -111,6 +111,8 @@ def generate_and_upload_report(  # noqa: PLR0915
         internal_name,
     )
 
+    user_id = kwargs.get("user_id")
+
     report_upload = ReportUpload(
         template=template,
         name=report_name,
@@ -119,6 +121,16 @@ def generate_and_upload_report(  # noqa: PLR0915
         report_type=report_type,
         upload_completed=False,
     )
+
+    if user_id:
+        from care.users.models import User
+
+        try:
+            report_upload.created_by = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            logger.warning(
+                "User with id %s not found, report will have no created_by", user_id
+            )
 
     report_upload.meta["mime_type"] = mime_type
     report_upload.meta["generated_at"] = current_date.isoformat()

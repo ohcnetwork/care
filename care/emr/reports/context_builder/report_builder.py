@@ -6,6 +6,7 @@ from care.emr.reports.context_builder.builders import (  # noqa: F401
     medication,
     observation,
     patient,
+    service_request,
 )
 from care.emr.reports.context_builder.registry import context_builder_registry
 

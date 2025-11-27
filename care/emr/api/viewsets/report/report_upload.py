@@ -215,6 +215,7 @@ class ReportUploadViewSet(EMRModelViewSet):
                 context_config=context_config,
                 output_format=output_format,
                 options=generate_request.options,
+                user_id=request.user.id,
                 **extra_fields,
             )
 

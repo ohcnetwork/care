@@ -1,11 +1,14 @@
 from enum import Enum
 
-from pydantic import UUID4, field_validator
+from pydantic import UUID4, field_validator, model_validator
 
 from care.emr.models.report.template import Template
-from care.emr.reports.context_builder.report_builder import ReportContextBuilder
 from care.emr.reports.renderer.template_engine import TemplateEngine
 from care.emr.reports.report_type_registry import ReportTypeRegistry
+from care.emr.reports.template_validator import (
+    validate_context_config_completeness,
+    validate_template_fields,
+)
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.report.context_config.spec import ContextConfigSpec
@@ -66,67 +69,11 @@ class TemplateCreateSpec(TemplateBaseSpec):
             msg = f"Template syntax validation failed: {error}"
             raise ValueError(msg)
 
-        cls._validate_template_fields(v, template_engine)
+        valid, error = validate_template_fields(v)
+        if not valid:
+            raise ValueError(error)
 
         return v
-
-    @classmethod
-    def _validate_template_fields(
-        cls, template_data: str, template_engine: TemplateEngine
-    ):
-        variables = template_engine.extract_variables(template_data)
-
-        if not variables:
-            return
-
-        builder = ReportContextBuilder()
-        schema = builder.get_full_schema()
-
-        available_fields = {}
-
-        for builder_key, builder_schema in schema["single_objects"].items():
-            available_fields[builder_key] = {
-                field["key"] for field in builder_schema["fields"]
-            }
-
-        for builder_key, builder_schema in schema["querysets"].items():
-            available_fields[builder_key] = {
-                field["key"] for field in builder_schema["fields"]
-            }
-
-        invalid_refs = []
-        for var in variables:
-            if var in ["loop", "current_date", "current_datetime", "current_time"]:
-                continue
-
-            parts = var.split(".")
-            if len(parts) < 2:  # noqa: PLR2004
-                continue
-
-            builder_key = parts[0]
-
-            if builder_key not in available_fields:
-                continue
-
-            # Checks for key.0.field as well
-            field_key = (
-                parts[1]
-                if len(parts) >= 2 and not parts[1].isdigit()  # noqa: PLR2004
-                else (parts[2] if len(parts) >= 3 else None)  # noqa: PLR2004
-            )
-
-            if field_key and field_key not in available_fields[builder_key]:
-                available = ", ".join(sorted(available_fields[builder_key]))
-                invalid_refs.append(
-                    f"{var} (field '{field_key}' not found in '{builder_key}'. "
-                    f"Available fields: {available})"
-                )
-
-        if invalid_refs:
-            msg = "Invalid field references in template:\n  - " + "\n  - ".join(
-                invalid_refs
-            )
-            raise ValueError(msg)
 
     @field_validator("context_config")
     @classmethod
@@ -136,11 +83,22 @@ class TemplateCreateSpec(TemplateBaseSpec):
 
         try:
             ContextConfigSpec.model_validate(v)
+        except ValueError as e:
+            raise ValueError(str(e)) from e
         except Exception as e:
-            msg = f"Invalid context_config: {e!s}"
-            raise ValueError(msg) from e
+            raise ValueError("Invalid context_config") from e
 
         return v
+
+    @model_validator(mode="after")
+    def validate_template_and_context_config(self):
+        valid, error = validate_context_config_completeness(
+            self.template_data, self.context_config
+        )
+        if not valid:
+            raise ValueError(error)
+
+        return self
 
 
 class TemplateUpdateSpec(TemplateCreateSpec):

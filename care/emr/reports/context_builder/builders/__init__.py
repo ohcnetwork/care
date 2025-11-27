@@ -14,6 +14,9 @@ from care.emr.reports.context_builder.builders.observation import (
     ObservationContextBuilder,
 )
 from care.emr.reports.context_builder.builders.patient import PatientContextBuilder
+from care.emr.reports.context_builder.builders.service_request import (
+    ServiceRequestContextBuilder,
+)
 
 __all__ = [
     "AllergyContextBuilder",
@@ -23,6 +26,7 @@ __all__ = [
     "MedicationContextBuilder",
     "ObservationContextBuilder",
     "PatientContextBuilder",
+    "ServiceRequestContextBuilder",
     "SymptomContextBuilder",
 ]
 # to avoid circular imports
