@@ -1,9 +1,0 @@
-- Change the format to default_format
-- remove fields from context_config, allow all fields to be used
-- For preview, fetch data point using template type
-- make fields in builder pluggable ( follow AuthorizationController )
-- report for patient listing all the encounter with medication
-- allowed_filters make it a pydantic model (or django filters)
-- Dosage Instructions to list (same similar)
-- Give code type for fields like dosage instrctuion , array or json or code etc. Also register the types with a registry
-- Find a way to refer to context in jinja with patient.encounter (nesting context) [not need to be . or a function or anything]
