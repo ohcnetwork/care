@@ -1,14 +1,9 @@
 from enum import Enum
 
-from pydantic import UUID4, field_validator, model_validator
+from pydantic import UUID4, field_validator
 
 from care.emr.models.report.template import Template
-from care.emr.reports.renderer.template_engine import TemplateEngine
 from care.emr.reports.report_type_registry import ReportTypeRegistry
-from care.emr.reports.template_validator import (
-    validate_context_config_completeness,
-    validate_template_fields,
-)
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.report.context_config.spec import ContextConfigSpec
@@ -59,22 +54,6 @@ class TemplateCreateSpec(TemplateBaseSpec):
             obj.facility = Facility.objects.get(external_id=self.facility)
         obj.slug = self.slug_value
 
-    @field_validator("template_data")
-    @classmethod
-    def validate_template_syntax(cls, v):
-        template_engine = TemplateEngine()
-
-        valid, error = template_engine.validate_syntax(v)
-        if not valid:
-            msg = f"Template syntax validation failed: {error}"
-            raise ValueError(msg)
-
-        valid, error = validate_template_fields(v)
-        if not valid:
-            raise ValueError(error)
-
-        return v
-
     @field_validator("context_config")
     @classmethod
     def validate_context_config(cls, v):
@@ -89,16 +68,6 @@ class TemplateCreateSpec(TemplateBaseSpec):
             raise ValueError("Invalid context_config") from e
 
         return v
-
-    @model_validator(mode="after")
-    def validate_template_and_context_config(self):
-        valid, error = validate_context_config_completeness(
-            self.template_data, self.context_config
-        )
-        if not valid:
-            raise ValueError(error)
-
-        return self
 
 
 class TemplateUpdateSpec(TemplateCreateSpec):

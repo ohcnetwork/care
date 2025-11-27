@@ -1,5 +1,4 @@
 import logging
-import re
 
 from django.http import HttpResponse
 from django_filters import CharFilter, FilterSet
@@ -15,12 +14,9 @@ from rest_framework.response import Response
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models.report.template import Template
 from care.emr.reports.context_builder import types  # noqa
-from care.emr.reports.context_builder.report_builder import ReportContextBuilder
-from care.emr.reports.context_builder.type_registry import FieldTypeRegistry
+from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.renderer.renderer import Renderer
-from care.emr.reports.renderer.template_engine import TemplateEngine
-from care.emr.reports.template_validator import get_referenced_builders
 from care.emr.resources.report.template.spec import (
     TemplateCreateSpec,
     TemplateReadSpec,
@@ -43,7 +39,7 @@ class TemplateFilters(FilterSet):
 class PreviewTemplateRequest(BaseModel):
     template_data: str
     output_format: str = "html"
-    options: dict = {}
+    context: str
 
 
 class TemplateViewSet(EMRModelViewSet):
@@ -115,21 +111,7 @@ class TemplateViewSet(EMRModelViewSet):
     )
     @action(detail=False, methods=["GET"], url_path="schema")
     def get_schema(self, request, *args, **kwargs):
-        try:
-            builder = ReportContextBuilder()
-            schema = builder.get_full_schema()
-
-            # Add registered type definitions
-            schema["types"] = FieldTypeRegistry.get_all()
-
-            return Response(schema)
-
-        except Exception as e:
-            logger.exception("Failed to generate schema: %s", e)
-            return Response(
-                {"error": "Failed to generate schema"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        return Response({})
 
     @extend_schema(
         description="Preview a template with sample data",
@@ -138,108 +120,33 @@ class TemplateViewSet(EMRModelViewSet):
         tags=["template"],
     )
     @action(detail=False, methods=["POST"])
-    def preview(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912
-        try:
-            preview_request = PreviewTemplateRequest.model_validate(request.data)
-        except Exception as e:
-            logger.exception("Invalid request data for template preview: %s", e)
+    def preview(self, request, *args, **kwargs):
+        request_data = PreviewTemplateRequest.model_validate(request.data)
+
+        generator_class = GeneratorRegistry.get(request_data.output_format)
+        generator = generator_class()
+
+        context = DataPointRegistry.get(request_data.context)
+        preview_context = context(is_preview=True)
+        context_dict = {context.context_key: preview_context}
+
+        rendered_content = Renderer(generator).render(
+            request_data.template_data, context_dict
+        )
+
+        if request_data.output_format == "html":
             return Response(
-                {"error": "Invalid request data"},
-                status=status.HTTP_400_BAD_REQUEST,
+                rendered_content,
+                content_type="text/html",
+                status=status.HTTP_200_OK,
             )
-
-        template_data = preview_request.template_data
-        output_format = preview_request.output_format.lower()
-        options = preview_request.options
-
-        try:
-            template_engine = TemplateEngine()
-
-            referenced_builders = get_referenced_builders(template_data)
-            context_builder = ReportContextBuilder()
-            schema = context_builder.get_full_schema()
-
-            preview_context = {}
-
-            for obj_key in schema["single_objects"]:
-                if obj_key in referenced_builders:
-                    preview_context[obj_key] = {}
-                    builder_schema = schema["single_objects"][obj_key]
-                    for field in builder_schema.get("fields", []):
-                        preview_context[obj_key][field["key"]] = field["preview_value"]
-
-            for qs_key in schema["querysets"]:
-                if qs_key in referenced_builders:
-                    qs_data = schema["querysets"][qs_key]
-                    preview_context[qs_key] = qs_data.get("preview_value", [])
-
-            try:
-                generator_class = GeneratorRegistry.get(output_format)
-                generator = generator_class()
-            except KeyError as e:
-                return Response(
-                    {"error": str(e)},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            renderer = Renderer(template_engine, generator)
-
-            valid, error = renderer.validate_syntax(template_data)
-
-            validation_result = {
-                "syntax_valid": valid,
-                "syntax_error": error if not valid else None,
-            }
-
-            if not valid:
-                return Response(
-                    {
-                        "error": f"Template validation failed: {error}",
-                        "validation": validation_result,
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            try:
-                output_bytes = renderer.render(template_data, preview_context, options)
-                validation_result["render_valid"] = True
-                validation_result["render_error"] = None
-
-            except Exception as e:
-                validation_result["render_valid"] = False
-                error_message = str(e)
-
-                if "has no attribute" in error_message:
-                    match = re.search(r"has no attribute '(\w+)'", error_message)
-                    if match:
-                        field_name = match.group(1)
-                        error_message = f"Field '{field_name}' does not exist or is not available in the context. Please check your template for typos or ensure this field is included in your context configuration."
-
-                validation_result["render_error"] = error_message
-                return Response(
-                    {
-                        "error": error_message,
-                        "validation": validation_result,
-                    },
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-
-            if output_format == "html":
-                return Response(
-                    {
-                        "html": output_bytes.decode("utf-8"),
-                        "validation": validation_result,
-                    }
-                )
-            response = HttpResponse(output_bytes, content_type="application/pdf")
+        if request_data.output_format == "pdf":
+            response = HttpResponse(rendered_content, content_type="application/pdf")
             response["Content-Disposition"] = (
                 'attachment; filename="template_preview.pdf"'
             )
             return response
-
-        except Exception as e:
-            logger.exception("Preview generation failed: %s", e)
-            return Response(
-                {"error": "Preview generation failed"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        return Response(
+            {"error": "Invalid output format"},
+            status=status.HTTP_400_BAD_REQUEST,
+        )

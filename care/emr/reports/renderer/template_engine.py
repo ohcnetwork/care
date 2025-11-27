@@ -159,44 +159,6 @@ class TemplateEngine:
         except Exception as e:
             return False, f"Template validation error: {e!s}"
 
-    def extract_variables(self, template_string: str) -> set[str]:
-        try:
-            from jinja2 import nodes
-
-            ast = self.env.parse(template_string)
-            variables = set()
-
-            def visit_node(node):
-                if isinstance(node, nodes.Name):
-                    variables.add(node.name)
-                elif isinstance(node, nodes.Getattr):
-                    # Handle dotted access like patient.name
-                    path_parts = []
-                    current = node
-
-                    while isinstance(current, nodes.Getattr):
-                        path_parts.insert(0, current.attr)
-                        current = current.node
-
-                    if isinstance(current, nodes.Name):
-                        path_parts.insert(0, current.name)
-                        variables.add(".".join(path_parts))
-                elif isinstance(node, nodes.Getitem):
-                    # Handle indexed access like medications.0.name
-                    if isinstance(node.node, nodes.Name):
-                        variables.add(node.node.name)
-                    elif isinstance(node.node, nodes.Getattr):
-                        visit_node(node.node)
-
-                # Recursively visit child nodes
-                for child in node.iter_child_nodes():
-                    visit_node(child)
-
-            visit_node(ast)
-            return variables
-        except Exception:
-            return set()
-
     def render(self, template_string: str, context: dict) -> str:
         try:
             template = self.env.from_string(template_string)
@@ -208,5 +170,4 @@ class TemplateEngine:
             msg = f"Undefined variable in template: {e!s}"
             raise UndefinedError(msg) from e
         except Exception as e:
-            msg = f"Template rendering error: {e!s}"
-            raise Exception(msg) from e
+            raise e
