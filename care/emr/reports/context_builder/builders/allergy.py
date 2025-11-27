@@ -2,7 +2,7 @@ from care.emr.models import Encounter
 from care.emr.models.allergy_intolerance import AllergyIntolerance
 from care.emr.reports.context_builder.base import Field, QuerysetContextBuilder
 from care.emr.reports.context_builder.registry import context_builder_registry
-from care.emr.reports.context_builder.utils import format_date, format_datetime
+from care.emr.reports.context_builder.utils import format_datetime
 
 CLINICAL_STATUS_DISPLAY = {
     "active": "Active",
@@ -15,13 +15,6 @@ VERIFICATION_STATUS_DISPLAY = {
     "confirmed": "Confirmed",
     "refuted": "Refuted",
     "entered_in_error": "Entered in Error",
-}
-
-CATEGORY_DISPLAY = {
-    "food": "Food",
-    "medication": "Medication",
-    "environment": "Environment",
-    "biologic": "Biologic",
 }
 
 CRITICALITY_DISPLAY = {
@@ -56,15 +49,6 @@ class AllergyContextBuilder(QuerysetContextBuilder):
             else "",
             preview_value="Penicillin",
             description="Name of the allergen",
-        ),
-        Field(
-            key="category",
-            display="Category",
-            mapping=lambda a: CATEGORY_DISPLAY.get(
-                a.category, a.category.replace("_", " ").title() if a.category else ""
-            ),
-            preview_value="Medication",
-            description="Category of allergy",
         ),
         Field(
             key="criticality",
@@ -113,29 +97,11 @@ class AllergyContextBuilder(QuerysetContextBuilder):
             description="Allergy or Intolerance",
         ),
         Field(
-            key="recorded_date",
-            display="Recorded Date",
-            mapping=lambda a: format_date(a.recorded_date) if a.recorded_date else "",
-            preview_value="05/01/2024",
-            description="Date when allergy was recorded",
-        ),
-        Field(
             key="note",
             display="Notes",
             mapping="note",
             preview_value="Patient reports rash and itching",
             description="Additional information",
-        ),
-        Field(
-            key="onset",
-            display="Onset Date",
-            mapping=lambda a: (
-                format_datetime(a.onset.get("onset_datetime"))
-                if isinstance(a.onset, dict) and a.onset.get("onset_datetime")
-                else ""
-            ),
-            preview_value="01/01/2020 08:30 AM",
-            description="When the allergy first occurred",
         ),
         Field(
             key="last_occurrence",

@@ -33,22 +33,6 @@ PRIORITY_DISPLAY = {
     "stat": "STAT",
 }
 
-STATUS_REASON_DISPLAY = {
-    "altchoice": "Alternative Choice",
-    "clarif": "Clarification Needed",
-    "drughigh": "Drug Level Too High",
-    "hospadm": "Hospital Admission",
-    "labint": "Lab Interference Issues",
-    "non_avail": "Patient Not Available",
-    "preg": "Pregnancy",
-    "salg": "Allergy",
-    "sddi": "Drug Interacts with Another Drug",
-    "sdupther": "Duplicate Therapy",
-    "sintol": "Suspected Intolerance",
-    "surg": "Patient Scheduled for Surgery",
-    "washout": "Washout Period",
-}
-
 
 class MedicationContextBuilder(QuerysetContextBuilder):
     model = MedicationRequest
@@ -139,16 +123,6 @@ class MedicationContextBuilder(QuerysetContextBuilder):
             mapping="note",
             preview_value="Take with food",
             description="Additional instructions",
-        ),
-        Field(
-            key="status_reason",
-            display="Status Reason",
-            mapping=lambda m: STATUS_REASON_DISPLAY.get(
-                m.status_reason,
-                m.status_reason.replace("_", " ").title() if m.status_reason else "",
-            ),
-            preview_value="",
-            description="Reason for the medication status",
         ),
         Field(
             key="logged_by",

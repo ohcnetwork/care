@@ -52,15 +52,6 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
             description="Name of the diagnosis",
         ),
         Field(
-            key="diagnosis_code",
-            display="Diagnosis Code",
-            mapping=lambda c: c.code.get("code", "")
-            if isinstance(c.code, dict)
-            else "",
-            preview_value="5A11",
-            description="Medical code for the diagnosis",
-        ),
-        Field(
             key="clinical_status",
             display="Clinical Status",
             mapping=lambda c: CLINICAL_STATUS_DISPLAY.get(
@@ -90,13 +81,6 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
             ),
             preview_value="Moderate",
             description="Severity of the condition",
-        ),
-        Field(
-            key="recorded_date",
-            display="Recorded Date",
-            mapping=lambda c: format_date(c.recorded_date or c.created_date),
-            preview_value="10/01/2024",
-            description="Date when diagnosis was recorded",
         ),
         Field(
             key="onset_date",
@@ -199,34 +183,6 @@ class SymptomContextBuilder(QuerysetContextBuilder):
             description="When the symptom started",
         ),
         Field(
-            key="abatement_date",
-            display="Resolution Date",
-            mapping=lambda c: (
-                format_date(c.abatement.get("abatement_datetime"))
-                if isinstance(c.abatement, dict)
-                and c.abatement.get("abatement_datetime")
-                else ""
-            ),
-            preview_value="15/01/2024",
-            description="When the symptom resolved",
-        ),
-        Field(
-            key="body_site",
-            display="Body Site",
-            mapping=lambda c: c.body_site.get("display", "")
-            if isinstance(c.body_site, dict)
-            else "",
-            preview_value="Throat",
-            description="Anatomical location of symptom",
-        ),
-        Field(
-            key="duration",
-            display="Duration",
-            mapping=lambda c: SymptomContextBuilder._calculate_duration(c),
-            preview_value="5 days",
-            description="Duration of the symptom",
-        ),
-        Field(
             key="note",
             display="Notes",
             mapping="note",
@@ -264,31 +220,6 @@ class SymptomContextBuilder(QuerysetContextBuilder):
             queryset = queryset.filter(**cls.base_filters)
 
         return queryset
-
-    @staticmethod
-    def _calculate_duration(condition):
-        from datetime import datetime
-
-        if not isinstance(condition.onset, dict) or not isinstance(
-            condition.abatement, dict
-        ):
-            return "Ongoing"
-
-        onset_dt_str = condition.onset.get("onset_datetime")
-        abatement_dt_str = condition.abatement.get("abatement_datetime")
-
-        if not onset_dt_str or not abatement_dt_str:
-            return "Ongoing"
-
-        try:
-            onset_dt = datetime.fromisoformat(onset_dt_str.replace("Z", "+00:00"))
-            abatement_dt = datetime.fromisoformat(
-                abatement_dt_str.replace("Z", "+00:00")
-            )
-            days = (abatement_dt - onset_dt).days
-            return f"{days} days" if days > 0 else "Less than a day"
-        except (ValueError, AttributeError):
-            return "Ongoing"
 
     @classmethod
     def get_display_name(cls):
