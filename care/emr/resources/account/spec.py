@@ -7,6 +7,9 @@ from pydantic import UUID4
 from care.emr.models import Account
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PeriodSpec
+from care.emr.resources.user.spec import (
+    UserSpec
+)
 from care.emr.resources.patient.spec import PatientListSpec
 from care.utils.shortcuts import get_object_or_404
 
@@ -61,8 +64,8 @@ class AccountReadSpec(AccountSpec):
     total_balance: Decimal
     calculated_at: datetime.datetime
     created_date: datetime.datetime
-    created_by: UserSpec = {}
     modified_date: datetime.datetime
+    created_by: UserSpec = {}
     updated_by: UserSpec = {}
 
     @classmethod
