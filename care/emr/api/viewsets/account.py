@@ -79,7 +79,7 @@ class AccountViewSet(
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
         instance.save()
-        return instance
+        super().perform_create(instance)
 
     def authorize_create(self, instance):
         if not AuthorizationController.call(
