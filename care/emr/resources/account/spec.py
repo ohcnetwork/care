@@ -61,12 +61,19 @@ class AccountReadSpec(AccountSpec):
     total_balance: Decimal
     calculated_at: datetime.datetime
     created_date: datetime.datetime
+    created_by: UserSpec = {}
     modified_date: datetime.datetime
+    updated_by: UserSpec = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["patient"] = PatientListSpec.serialize(obj.patient)
+
+        if obj.created_by:
+            mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
+        if obj.updated_by:
+            mapping["updated_by"] = UserSpec.serialize(obj.updated_by).to_json()
 
 
 class AccountRetrieveSpec(AccountReadSpec):
