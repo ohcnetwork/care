@@ -59,6 +59,8 @@ class InvoiceReadSpec(BaseInvoiceSpec):
 
     total_net: Decimal
     total_gross: Decimal
+    created_date: datetime.datetime
+    modified_date: datetime.datetime
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -71,6 +73,8 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
     charge_items: list[dict]
     total_price_components: list[dict]
     account: dict
+    created_by: dict | None
+    updated_by: dict | None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -85,3 +89,4 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
         else:
             mapping["charge_items"] = obj.charge_items_copy
         mapping["account"] = AccountReadSpec.serialize(obj.account).to_json()
+        cls.serialize_audit_users(mapping, obj)

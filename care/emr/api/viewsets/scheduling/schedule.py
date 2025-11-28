@@ -39,7 +39,7 @@ from care.utils.shortcuts import get_object_or_404
 
 
 class ChargeItemDefinitionSetSpec(BaseModel):
-    charge_item_definition: str
+    charge_item_definition: str | None
     re_visit_allowed_days: int
     re_visit_charge_item_definition: str | None
 
@@ -266,12 +266,15 @@ class ScheduleViewSet(EMRModelViewSet):
             raise PermissionDenied(
                 "You do not have permission to set charge item definition"
             )
-        charge_item_definition = get_object_or_404(
-            ChargeItemDefinition.objects.only("id"),
-            slug=request_data.charge_item_definition,
-            facility=schedule.resource.facility,
-        )
-        schedule.charge_item_definition = charge_item_definition
+        if request_data.charge_item_definition:
+            charge_item_definition = get_object_or_404(
+                ChargeItemDefinition.objects.only("id"),
+                slug=request_data.charge_item_definition,
+                facility=schedule.resource.facility,
+            )
+            schedule.charge_item_definition = charge_item_definition
+        else:
+            schedule.charge_item_definition = None
         schedule.revisit_allowed_days = request_data.re_visit_allowed_days
         if request_data.re_visit_charge_item_definition:
             revisit_charge_item_definition = get_object_or_404(
@@ -280,6 +283,8 @@ class ScheduleViewSet(EMRModelViewSet):
                 facility=schedule.resource.facility,
             )
             schedule.revisit_charge_item_definition = revisit_charge_item_definition
+        else:
+            schedule.revisit_charge_item_definition = None
         schedule.save()
         return Response(ScheduleReadSpec.serialize(schedule).to_json())
 
