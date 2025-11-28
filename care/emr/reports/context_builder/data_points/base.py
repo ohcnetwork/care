@@ -117,6 +117,8 @@ class QuerysetContextBuilder(ContextBuilderBase):
             qs = filterset_class().filter_queryset(
                 SimpleNamespace(query_params=kwargs), qs, self
             )
+        if "limit" in kwargs:
+            qs = qs[: kwargs["limit"]]
         return self.get_iterable(qs)
 
 
