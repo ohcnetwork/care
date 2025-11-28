@@ -1,5 +1,6 @@
 import random
 from collections.abc import Callable
+from types import SimpleNamespace
 from typing import Any
 
 
@@ -104,8 +105,19 @@ class ContextBuilderBase:
 class QuerysetContextBuilder(ContextBuilderBase):
     __context_type__ = "queryset"
 
+    filterset_class = None
+    __filterset_backends__ = []
+
     def __iter__(self):
         return self.get_iterable(self.context)
+
+    def _filter(self, **kwargs):
+        qs = self.context
+        for filterset_class in self.__filterset_backends__:
+            qs = filterset_class().filter_queryset(
+                SimpleNamespace(query_params=kwargs), qs, self
+            )
+        return self.get_iterable(qs)
 
 
 class SingleObjectContextBuilder(ContextBuilderBase):

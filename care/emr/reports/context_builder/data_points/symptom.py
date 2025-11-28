@@ -1,3 +1,5 @@
+from django_filters import rest_framework as filters
+
 from care.emr.models.condition import Condition
 from care.emr.reports.context_builder.data_points.base import (
     Field,
@@ -8,7 +10,15 @@ from care.emr.reports.context_builder.data_points.user import (
 )
 
 
+class SymptomsReportFilter(filters.FilterSet):
+    clinical_status = filters.CharFilter(lookup_expr="iexact")
+    verification_status = filters.CharFilter(lookup_expr="iexact")
+
+
 class SymptomsContextBuilder(QuerysetContextBuilder):
+    filterset_class = SymptomsReportFilter
+    __filterset_backends__ = [filters.DjangoFilterBackend]
+
     clinical_status = Field(
         key="clinical_status",
         display="Clinical Status",
@@ -38,11 +48,3 @@ class SymptomsContextBuilder(QuerysetContextBuilder):
 
     def get_context(self) -> dict:
         return Condition.objects.filter(encounter=self.parent_context)
-
-    def _filter(self, **kwargs):
-        qs = self.context
-        if "verification_status" in kwargs:
-            qs = qs.filter(verification_status=kwargs["verification_status"])
-        if "clinical_status" in kwargs:
-            qs = qs.filter(clinical_status=kwargs["clinical_status"])
-        return self.get_iterable(qs)
