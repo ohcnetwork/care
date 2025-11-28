@@ -15,7 +15,6 @@ class QuestionnaireResponsesContextBuilder(SingleObjectContextBuilder):
         return self.parent_context.render_responses()
 
     question = Field(
-        key="question",
         display="Question",
         preview_value={
             "code": {
@@ -34,7 +33,6 @@ class QuestionnaireResponsesContextBuilder(SingleObjectContextBuilder):
         description="Question of the questionnaire response",
     )
     answer = Field(
-        key="answer",
         display="Answer",
         preview_value={"values": [{"value": "123"}]},
         description="Value of the response",
@@ -53,21 +51,18 @@ class QuestionnaireResponsesContextBuilder(SingleObjectContextBuilder):
 
 class QuestionnaireContextBuilder(QuerysetContextBuilder):
     title = Field(
-        key="title",
         display="Title",
         mapping=lambda obj: obj.questionnaire.title,
         preview_fn=lambda: Faker().catch_phrase(),
         description="Title of the questionnaire",
     )
     description = Field(
-        key="description",
         display="Description",
         mapping=lambda obj: obj.questionnaire.description,
         preview_fn=lambda: Faker().catch_phrase(),
         description="Description of the questionnaire",
     )
     responses = Field(
-        key="responses",
         target_context=QuestionnaireResponsesContextBuilder,
         display="Responses",
         preview_value="",
@@ -81,5 +76,4 @@ class QuestionnaireContextBuilder(QuerysetContextBuilder):
         if "slug" not in kwargs:
             raise ValueError("slug is required")
         questionnaire = Questionnaire.objects.get(slug=kwargs["slug"])
-        qs = qs.filter(questionnaire=questionnaire)
-        return qs
+        return qs.filter(questionnaire=questionnaire)

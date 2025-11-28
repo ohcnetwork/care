@@ -9,8 +9,7 @@ class Field:
 
     def __init__(
         self,
-        key: str,
-        display: str,
+        display: str = "",
         preview_value: Any = None,
         preview_fn: Callable | None = None,
         mapping: Callable | None = None,
@@ -18,7 +17,6 @@ class Field:
         description: str = "",
         field_type: str = "string",
     ):
-        self.key = key
         self.display = display
         self.mapping = mapping
         self.preview_value = preview_value

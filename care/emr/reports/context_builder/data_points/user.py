@@ -12,14 +12,12 @@ class SingleUserRelatedContextBuilder(SingleObjectContextBuilder):
         return getattr(self.parent_context, self.parent_attribute)
 
     full_name = Field(
-        key="full_name",
         display="Full Name",
         mapping="full_name",
         preview_fn=lambda: Faker().name(),
         description="Full name of the user",
     )
     id = Field(
-        key="id",
         display="ID",
         mapping="id",
         preview_value="",

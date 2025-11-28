@@ -20,26 +20,22 @@ class SymptomsContextBuilder(QuerysetContextBuilder):
     __filterset_backends__ = [filters.DjangoFilterBackend]
 
     clinical_status = Field(
-        key="clinical_status",
         display="Clinical Status",
         preview_value="Active",
         description="Clinical status of the condition",
     )
     verification_status = Field(
-        key="verification_status",
         display="Verification Status",
         preview_value="Confirmed",
         description="Verification status of the condition",
     )
     created_by = Field(
-        key="created_by",
         display="Created By",
         target_context=SingleUserRelatedContextBuilder,
         preview_value="",
         description="User who created the condition",
     )
     updated_by = Field(
-        key="updated_by",
         display="Updated By",
         target_context=SingleUserRelatedContextBuilder,
         preview_value="",

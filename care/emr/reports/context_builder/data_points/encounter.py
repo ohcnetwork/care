@@ -26,14 +26,12 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
         return self.parent_context.care_team
 
     user = Field(
-        key="user",
         display="User",
         target_context=SingleUserIdContextBuilder,
         preview_value="",
         description="User who is part of the encounter care team",
     )
     role = Field(
-        key="role",
         display="Role",
         preview_value={
             "code": "12334",
@@ -58,7 +56,6 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
     context_key = "encounter"
 
     status = Field(
-        key="status",
         display="Encounter Status",
         mapping=lambda e: STATUS_DISPLAY.get(
             e.status, e.status.title() if e.status else ""
@@ -67,21 +64,18 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         description="Current status of the encounter",
     )
     symptoms = Field(
-        key="symptoms",
         target_context=SymptomsContextBuilder,
         display="Symptoms",
         preview_value="",
         description="Symptoms of the encounter",
     )
     care_team = Field(
-        key="care_team",
         target_context=EncounterCareTeamContextBuilder,
         display="Care Team",
         preview_value="",
         description="Care team of the encounter",
     )
     questionnaire_responses = Field(
-        key="questionnaire_responses",
         target_context=QuestionnaireContextBuilder,
         display="Questionnaire Responses",
         preview_value="",
