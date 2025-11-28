@@ -89,10 +89,6 @@ class ContextBuilderBase:
         return iter(self.__class__(context=c) for c in qs)
 
     def filter(self, **kwargs):
-        import logging
-
-        logging.info("is preview: %s", self.is_preview)
-
         if self.is_preview:
             limit = kwargs.get("limit", 4)
             return [
@@ -111,12 +107,16 @@ class QuerysetContextBuilder(ContextBuilderBase):
     def __iter__(self):
         return self.get_iterable(self.context)
 
+    def perform_extra_filters(self, qs, **kwargs):
+        return qs
+
     def _filter(self, **kwargs):
         qs = self.context
         for filterset_class in self.__filterset_backends__:
             qs = filterset_class().filter_queryset(
                 SimpleNamespace(query_params=kwargs), qs, self
             )
+        qs = self.perform_extra_filters(qs, **kwargs)
         if "limit" in kwargs:
             qs = qs[: kwargs["limit"]]
         return self.get_iterable(qs)

@@ -6,6 +6,9 @@ from care.emr.reports.context_builder.data_points.base import (
     QuerysetContextBuilder,
     SingleObjectContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.questionnaire import (
+    QuestionnaireContextBuilder,
+)
 from care.emr.reports.context_builder.data_points.symptom import SymptomsContextBuilder
 from care.emr.reports.context_builder.data_points.user import SingleUserIdContextBuilder
 
@@ -76,6 +79,13 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         display="Care Team",
         preview_value="",
         description="Care team of the encounter",
+    )
+    questionnaire_responses = Field(
+        key="questionnaire_responses",
+        target_context=QuestionnaireContextBuilder,
+        display="Questionnaire Responses",
+        preview_value="",
+        description="Questionnaire responses of the encounter",
     )
 
 

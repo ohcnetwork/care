@@ -1,0 +1,85 @@
+from types import SimpleNamespace
+
+from faker import Faker
+
+from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
+from care.emr.reports.context_builder.data_points.base import (
+    Field,
+    QuerysetContextBuilder,
+    SingleObjectContextBuilder,
+)
+
+
+class QuestionnaireResponsesContextBuilder(SingleObjectContextBuilder):
+    def get_context(self) -> dict:
+        return self.parent_context.render_responses()
+
+    question = Field(
+        key="question",
+        display="Question",
+        preview_value={
+            "code": {
+                "code": "8480-6",
+                "system": "http://loinc.org",
+                "display": "Systolic blood pressure",
+            },
+            "text": "Systolic Blood Pressure",
+            "type": "decimal",
+            "unit": {
+                "code": "[degF]",
+                "system": "http://unitsofmeasure.org",
+                "display": "degrees Fahrenheit",
+            },
+        },
+        description="Question of the questionnaire response",
+    )
+    answer = Field(
+        key="answer",
+        display="Answer",
+        preview_value={"values": [{"value": "123"}]},
+        description="Value of the response",
+    )
+
+    def __iter__(self):
+        if self.is_preview:
+            return iter(self.__class__(is_preview=True) for c in range(3))
+        return iter(
+            self.__class__(
+                context=SimpleNamespace(answer=c["answer"], question=c["question"])
+            )
+            for c in self.context
+        )
+
+
+class QuestionnaireContextBuilder(QuerysetContextBuilder):
+    title = Field(
+        key="title",
+        display="Title",
+        mapping=lambda obj: obj.questionnaire.title,
+        preview_fn=lambda: Faker().catch_phrase(),
+        description="Title of the questionnaire",
+    )
+    description = Field(
+        key="description",
+        display="Description",
+        mapping=lambda obj: obj.questionnaire.description,
+        preview_fn=lambda: Faker().catch_phrase(),
+        description="Description of the questionnaire",
+    )
+    responses = Field(
+        key="responses",
+        target_context=QuestionnaireResponsesContextBuilder,
+        display="Responses",
+        preview_value="",
+        description="Responses of the questionnaire",
+    )
+
+    def get_context(self) -> dict:
+        return QuestionnaireResponse.objects.filter(encounter=self.parent_context)
+
+    def perform_extra_filters(self, qs, **kwargs):
+        if "slug" not in kwargs:
+            raise ValueError("slug is required")
+        questionnaire = Questionnaire.objects.get(slug=kwargs["slug"])
+        qs = qs.filter(questionnaire=questionnaire)
+        return qs

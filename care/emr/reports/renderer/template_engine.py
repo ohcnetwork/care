@@ -1,12 +1,6 @@
 from datetime import date, datetime
 
-from jinja2 import (
-    BaseLoader,
-    Environment,
-    StrictUndefined,
-    TemplateSyntaxError,
-    UndefinedError,
-)
+from jinja2 import BaseLoader, Environment, StrictUndefined, TemplateSyntaxError
 from jinja2.sandbox import SandboxedEnvironment
 
 
@@ -166,8 +160,5 @@ class TemplateEngine:
         except TemplateSyntaxError as e:
             msg = f"Template syntax error at line {e.lineno}: {e.message}"
             raise TemplateSyntaxError(msg, e.lineno) from e
-        except UndefinedError as e:
-            msg = f"Undefined variable in template: {e!s}"
-            raise UndefinedError(msg) from e
         except Exception as e:
             raise e
