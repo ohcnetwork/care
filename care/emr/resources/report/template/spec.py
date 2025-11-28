@@ -3,10 +3,10 @@ from enum import Enum
 from pydantic import UUID4, field_validator
 
 from care.emr.models.report.template import Template
+from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.report_type_registry import ReportTypeRegistry
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
-from care.emr.resources.report.context_config.spec import ContextConfigSpec
 from care.emr.utils.slug_type import SlugType
 from care.facility.models.facility import Facility
 
@@ -32,6 +32,7 @@ class TemplateBaseSpec(EMRResource):
     status: TemplateStatusOptions
     template_type: str
     default_format: TemplateFormatOptions
+    description: str = ""
 
     @field_validator("template_type")
     @classmethod
@@ -46,7 +47,7 @@ class TemplateBaseSpec(EMRResource):
 class TemplateCreateSpec(TemplateBaseSpec):
     facility: UUID4 | None = None
     slug_value: SlugType
-    context_config: dict = {}
+    context: str
     template_data: str
 
     def perform_extra_deserialization(self, is_update, obj):
@@ -54,18 +55,17 @@ class TemplateCreateSpec(TemplateBaseSpec):
             obj.facility = Facility.objects.get(external_id=self.facility)
         obj.slug = self.slug_value
 
-    @field_validator("context_config")
+    @field_validator("context")
     @classmethod
-    def validate_context_config(cls, v):
+    def validate_context(cls, v):
         if not v:
-            return v
+            msg = "context is required"
+            raise ValueError(msg)
 
-        try:
-            ContextConfigSpec.model_validate(v)
-        except ValueError as e:
-            raise ValueError(str(e)) from e
-        except Exception as e:
-            raise ValueError("Invalid context_config") from e
+        available_contexts = list(DataPointRegistry.get_all().keys())
+        if v not in available_contexts:
+            msg = f"Invalid context '{v}'. Available contexts: {', '.join(available_contexts)}"
+            raise ValueError(msg)
 
         return v
 
@@ -87,7 +87,7 @@ class TemplateReadSpec(TemplateBaseSpec):
 class TemplateRetrieveSpec(TemplateReadSpec):
     facility: dict | None = None
     template_data: str
-    context_config: dict = {}
+    context: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

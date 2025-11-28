@@ -16,4 +16,5 @@ class Template(SlugBaseModel):
     template_data = models.TextField()
     template_type = models.CharField(max_length=255)
     default_format = models.CharField(max_length=255)
-    context_config = models.JSONField(default=dict, blank=True)
+    context = models.CharField(max_length=100, default="encounter_base")
+    description = models.TextField(blank=True, default="")

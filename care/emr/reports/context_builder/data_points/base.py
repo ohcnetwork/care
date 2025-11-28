@@ -109,6 +109,11 @@ class QuerysetContextBuilder(ContextBuilderBase):
     __filterset_backends__ = []
 
     def __iter__(self):
+        if self.is_preview:
+            return iter(
+                self.__class__(is_preview=True)
+                for _ in range(random.randint(1, 4))  # noqa: S311
+            )
         return self.get_iterable(self.context)
 
     def _filter(self, **kwargs):

@@ -1,5 +1,3 @@
-from logging import Logger
-
 from botocore.exceptions import ClientError
 from celery import shared_task
 from celery.utils.log import get_task_logger
@@ -8,7 +6,7 @@ from care.emr.models.report.template import Template
 from care.emr.reports import report_utils
 from care.utils.exceptions import CeleryTaskError
 
-logger: Logger = get_task_logger(__name__)
+logger = get_task_logger(__name__)
 
 
 @shared_task(
@@ -18,7 +16,6 @@ def generate_report_task(
     template_id: str,
     report_type: str,
     associating_id: str,
-    context_config: dict,
     output_format: str = "pdf",
     options: dict | None = None,
     **kwargs,
@@ -53,13 +50,12 @@ def generate_report_task(
         report_utils.set_lock(lock_key, 30)
 
         logger.info(
-            "Generating report - template: %s, context_config keys: %s",
+            "Generating report - template: %s, context: %s",
             template.name,
-            list(context_config.keys()) if context_config else [],
+            template.context,
         )
         report_upload = report_utils.generate_and_upload_report(
             template=template,
-            context_config=context_config or {},
             output_format=output_format,
             options=options,
             report_type=report_type,
