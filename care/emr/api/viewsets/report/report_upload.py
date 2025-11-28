@@ -14,7 +14,7 @@ from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models.report.report_upload import ReportUpload
 from care.emr.models.report.template import Template
 from care.emr.reports import report_utils
-from care.emr.reports.context_builder.report_builder import ReportContextBuilder
+from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.report_type_registry import ReportTypeRegistry
 from care.emr.reports.report_type_utils import validate_associating_id
@@ -27,8 +27,6 @@ from care.emr.resources.report.report_upload.spec import (
 from care.emr.tasks.report_generation import generate_report_task
 
 logger = logging.getLogger(__name__)
-
-LOCK_DURATION = 2 * 60
 
 
 class ReportUploadFilters(FilterSet):
@@ -45,7 +43,6 @@ class GenerateReportRequest(BaseModel):
     template_id: UUID4
     report_type: str = "discharge_summary"
     associating_id: UUID4
-    context_config: dict | None = None
     output_format: str = "pdf"
     options: dict = {}
 
@@ -162,7 +159,6 @@ class ReportUploadViewSet(EMRModelViewSet):
                 "template_id",
                 "associating_id",
                 "report_type",
-                "context_config",
                 "output_format",
                 "options",
             ]:
@@ -186,26 +182,10 @@ class ReportUploadViewSet(EMRModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
-        context_config = generate_request.context_config or template.context_config
-
-        builder = ReportContextBuilder()
-
-        required_context_keys = set()
-        for builder_key in context_config:
-            if builder_key in builder.single_builders:
-                builder_class = builder.single_builders[builder_key]
-                required_context_keys.update(builder_class.depends_on)
-            elif builder_key in builder.queryset_builders:
-                builder_class = builder.queryset_builders[builder_key]
-                required_context_keys.update(builder_class.depends_on)
-
-        provided_keys = set(extra_fields.keys())
-        missing_keys = required_context_keys - provided_keys
-        if missing_keys:
+        context = DataPointRegistry.get(template.context)
+        if not context:
             return Response(
-                {
-                    "error": f"Missing required params: {', '.join(sorted(missing_keys))}"
-                },
+                {"error": f"Invalid context '{template.context}' in template"},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
@@ -235,7 +215,6 @@ class ReportUploadViewSet(EMRModelViewSet):
                 template_id=template_id,
                 report_type=report_type,
                 associating_id=associating_id,
-                context_config=context_config,
                 output_format=output_format,
                 options=generate_request.options,
                 user_id=request.user.id,

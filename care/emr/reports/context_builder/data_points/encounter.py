@@ -1,5 +1,6 @@
 from types import SimpleNamespace
 
+from care.emr.models.encounter import Encounter
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.context_builder.data_points.base import (
     Field,
@@ -53,6 +54,9 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
 class EncounterReportContextBase(SingleObjectContextBuilder):
     standalone_context = True
     __slug__ = "encounter_base"
+    __associating_model__ = Encounter
+    __display_name__ = "Encounter Report"
+    __description__ = "Report context for encounter-based reports"
     context_key = "encounter"
 
     status = Field(

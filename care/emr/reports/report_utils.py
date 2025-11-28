@@ -7,14 +7,15 @@ from django.utils import timezone
 
 from care.emr.models.report.report_upload import ReportUpload
 from care.emr.models.report.template import Template
-from care.emr.reports.context_builder.report_builder import ReportContextBuilder
+from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.renderer.renderer import Renderer
 from care.emr.reports.renderer.template_engine import TemplateEngine
+from care.emr.reports.report_type_registry import ReportTypeRegistry
+from care.emr.reports.report_type_utils import validate_associating_id
 from care.users.models import User
 
 logger = logging.getLogger(__name__)
-
 LOCK_DURATION = 2 * 60
 
 
@@ -37,7 +38,6 @@ def generate_and_upload_report(  # noqa: PLR0915
     template: Template,
     report_type: str,
     associating_id: str,
-    context_config: dict,
     output_format: str = "pdf",
     options: dict | None = None,
     **kwargs,
@@ -50,17 +50,62 @@ def generate_and_upload_report(  # noqa: PLR0915
     )
 
     options = options or {}
-    context_builder = ReportContextBuilder()
 
-    ctx = {}
-    ctx.update(**kwargs)
+    # Get and validate context class from template
+    context_class = DataPointRegistry.get(template.context)
+    if not context_class:
+        error_msg = f"Context '{template.context}' not found in DataPointRegistry"
+        logger.error(error_msg)
+        raise ValueError(error_msg)
 
-    logger.debug("Building context with config keys: %s", list(context_config.keys()))
-    context = context_builder.build_context(
-        ctx=ctx,
-        config=context_config,
+    # Get report type configuration
+    try:
+        report_type_config = ReportTypeRegistry.get(report_type)
+    except KeyError as e:
+        error_msg = f"Report type '{report_type}' not found in ReportTypeRegistry"
+        logger.error(error_msg)
+        raise ValueError(error_msg) from e
+
+    # Validate and fetch the associating object (e.g., Encounter, Patient)
+    logger.debug(
+        "Fetching associating object - model: %s, id: %s",
+        report_type_config.associating_model.__name__,
+        associating_id,
     )
-    logger.info("Context built successfully with %s top-level keys", len(context))
+    try:
+        associating_object = validate_associating_id(
+            associating_model=report_type_config.associating_model,
+            associating_id=associating_id,
+            report_type_key=report_type,
+        )
+    except ValueError as e:
+        logger.error("Failed to fetch associating object: %s", e)
+        raise
+
+    logger.info(
+        "Associating object fetched: %s (id: %s)",
+        report_type_config.associating_model.__name__,
+        associating_id,
+    )
+
+    # Validate context compatibility with report type (optional but recommended)
+    if hasattr(context_class, "__associating_model__"):
+        expected_model = context_class.__associating_model__
+        if expected_model != report_type_config.associating_model:
+            error_msg = (
+                f"Template context '{template.context}' expects {expected_model.__name__} "
+                f"but report type '{report_type}' requires {report_type_config.associating_model.__name__}"
+            )
+            logger.error(error_msg)
+            raise ValueError(error_msg)
+
+    # Build context with the actual model instance
+    logger.debug("Building context with root context: %s", template.context)
+    context_key = context_class.context_key or template.context
+
+    # Pass the actual associating object as the context
+    context = {context_key: context_class(context=associating_object)}
+    logger.info("Context built successfully with root context: %s", template.context)
 
     template_engine = TemplateEngine()
 
@@ -84,15 +129,15 @@ def generate_and_upload_report(  # noqa: PLR0915
         file_extension,
     )
 
-    renderer = Renderer(template_engine, generator)
-
     logger.debug("Validating template syntax")
-    valid, error = renderer.validate_syntax(template.template_data)
+    valid, error = template_engine.validate_syntax(template.template_data)
     if not valid:
         error_msg = f"Template validation failed: {error}"
         logger.error(error_msg)
         raise ValueError(error_msg)
     logger.debug("Template syntax validation successful")
+
+    renderer = Renderer(generator, template_engine)
 
     logger.info("Rendering template with context")
     output_bytes = renderer.render(template.template_data, context, options)
