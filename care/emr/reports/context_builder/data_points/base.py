@@ -84,7 +84,7 @@ class ContextBuilderBase:
         return val
 
     def get_iterable(self, qs):
-        return iter(self.__class__(context=c) for c in qs)
+        return iter(self.__class__(context=c, is_preview=self.is_preview) for c in qs)
 
     def filter(self, **kwargs):
         if self.is_preview:
