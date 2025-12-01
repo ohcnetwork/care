@@ -1,6 +1,7 @@
 from django.db import models
 
 from care.emr.reports.authorizers.base import BaseReportAuthorizer
+from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 
 
 class ReportTypeConfig:
@@ -70,7 +71,9 @@ class ReportTypeRegistry:
             schema[key] = {
                 "display_name": config.display_name,
                 "description": config.description,
-                "supported_contexts": "",
+                "supported_contexts": DataPointRegistry.get_contexts_by_model(
+                    config.associating_model
+                ),
             }
         return schema
 

@@ -171,28 +171,3 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
             ]
         )
         return Response(ReportUploadListSpec.serialize(obj).to_json())
-
-    @extend_schema(
-        description="Get download URL for the report",
-        responses={200: "Download URL generated successfully"},
-        tags=["report"],
-    )
-    @action(detail=True, methods=["GET"])
-    def download(self, request, *args, **kwargs):
-        instance = self.get_object()
-        read_report_authorizer(
-            request.user, instance.report_type, instance.associating_id
-        )
-
-        if not instance.upload_completed:
-            return ValidationError("Report upload not complete")
-
-        signed_url = instance.files_manager.read_signed_url(instance)
-
-        return Response(
-            {
-                "download_url": signed_url,
-                "file_name": instance.name,
-                "mime_type": instance.meta.get("mime_type"),
-            }
-        )
