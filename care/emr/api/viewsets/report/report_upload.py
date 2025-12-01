@@ -11,13 +11,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import (
-    EMRBaseViewSet,
-    EMRCreateMixin,
-    EMRListMixin,
-    EMRRetrieveMixin,
-    EMRUpdateMixin,
-)
+from care.emr.api.viewsets.base import EMRBaseViewSet, EMRListMixin, EMRRetrieveMixin
 from care.emr.models.report.report_upload import ReportUpload
 from care.emr.models.report.template import Template
 from care.emr.reports import report_utils
@@ -28,10 +22,8 @@ from care.emr.reports.authorizers.utils import (
 )
 from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.resources.report.report_upload.spec import (
-    ReportUploadCreateSpec,
     ReportUploadListSpec,
     ReportUploadRetrieveSpec,
-    ReportUploadUpdateSpec,
 )
 from care.emr.tasks.report_generation import generate_report_task
 from care.security.authorization.base import AuthorizationController
@@ -62,13 +54,9 @@ class GenerateReportRequest(BaseModel):
         return v
 
 
-class ReportUploadViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
-):
+class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
     database_model = ReportUpload
-    pydantic_model = ReportUploadCreateSpec
     pydantic_read_model = ReportUploadListSpec
-    pydantic_update_model = ReportUploadUpdateSpec
     pydantic_retrieve_model = ReportUploadRetrieveSpec
 
     filter_backends = [DjangoFilterBackend, OrderingFilter]
@@ -82,7 +70,7 @@ class ReportUploadViewSet(
                 "report_type" not in self.request.GET
                 and "associating_id" not in self.request.GET
             ):
-                raise PermissionDenied("Cannot filter Reports")
+                raise PermissionDenied("report_type and associating_id are required")
             report_type = self.request.GET.get("report_type")
             associating_id = self.request.GET.get("associating_id")
             read_report_authorizer(self.request.user, report_type, associating_id)
@@ -100,11 +88,6 @@ class ReportUploadViewSet(
         )
         return super().authorize_retrieve(model_instance)
 
-    def authorize_create(self, instance):
-        write_report_authorizer(
-            self.request.user, instance.report_type, instance.associating_id
-        )
-
     def authorize_update(self, request_obj, model_instance):
         write_report_authorizer(
             self.request.user, model_instance.report_type, model_instance.associating_id
@@ -121,14 +104,13 @@ class ReportUploadViewSet(
         request_data = GenerateReportRequest.model_validate(request.data)
 
         template_id = request_data.template_id
-        report_type = request_data.report_type
         associating_id = request_data.associating_id
 
         template = get_object_or_404(Template, external_id=template_id)
 
         output_format = request_data.output_format or template.default_format
 
-        report_authorizer(request.user, report_type, associating_id, "write")
+        report_authorizer(request.user, template.template_type, associating_id, "write")
 
         if template.facility and not AuthorizationController.call(
             "can_generate_report_from_template", request.user, template.facility
@@ -138,7 +120,7 @@ class ReportUploadViewSet(
         if template.status != "active":
             raise ValidationError("Template is not active")
 
-        lock_key = f"{report_type}_{associating_id}"
+        lock_key = f"{template.template_type}_{associating_id}"
 
         if request_data.force:
             report_utils.clear_lock(lock_key)
@@ -156,7 +138,7 @@ class ReportUploadViewSet(
 
         generate_report_task.delay(
             template_id=template_id,
-            report_type=report_type,
+            report_type=template.template_type,
             associating_id=associating_id,
             output_format=output_format,
             options={},
