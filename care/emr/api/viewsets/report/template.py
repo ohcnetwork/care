@@ -122,7 +122,6 @@ class TemplateViewSet(EMRModelViewSet):
                 attr = getattr(context_class, attr_name)
                 if isinstance(attr, Field):
                     field_schema = {
-                        "key": attr.key,
                         "display": attr.display,
                         "description": attr.description,
                         "type": attr.type,
