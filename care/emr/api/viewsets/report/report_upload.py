@@ -7,6 +7,7 @@ from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel, ValidationError, field_validator, model_validator
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
@@ -104,7 +105,7 @@ class ReportUploadViewSet(
                 "report_type" not in self.request.GET
                 and "associating_id" not in self.request.GET
             ):
-                raise PermissionError("Cannot filter Reports")
+                raise PermissionDenied("Cannot filter Reports")
 
             report_authorizer(
                 self.request.user,
@@ -126,6 +127,28 @@ class ReportUploadViewSet(
             self.request.user, obj.report_type, obj.associating_id, "read"
         )
         return super().get_queryset()
+
+    def _is_admin(self):
+        """Check if user is admin or facility admin"""
+        from care.emr.models.organization import FacilityOrganizationUser
+
+        # Get roles for the permissions
+        from care.security.models import RolePermission
+        from care.security.permissions.template import TemplatePermissions
+
+        admin_roles = list(
+            set(
+                RolePermission.objects.filter(
+                    permission__slug__in=[
+                        TemplatePermissions.can_read_template.name,
+                    ]
+                ).values_list("role_id", flat=True)
+            )
+        )
+
+        return FacilityOrganizationUser.objects.filter(
+            user=self.request.user, role_id__in=admin_roles
+        ).exists()
 
     def authorize_create(self, instance):
         report_authorizer(
