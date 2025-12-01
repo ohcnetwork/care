@@ -51,7 +51,6 @@ phonenumberslite = "==8.13.54"
 python-magic = {version = "==0.4.28", index = "python-magic-bin"}
 django-import-export = "==4.3.7"
 evalidate = "==2.0.5"
-htmlgenerator = "*"
 weasyprint = "*"
 
 [dev-packages]

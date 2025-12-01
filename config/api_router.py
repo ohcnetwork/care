@@ -485,7 +485,6 @@ thread_nested_router.register(
     basename="note",
 )
 
-# Register Report ViewSets (must be before urlpatterns)
 router.register("template", TemplateViewSet, basename="template")
 router.register("report", ReportUploadViewSet, basename="report")
 
