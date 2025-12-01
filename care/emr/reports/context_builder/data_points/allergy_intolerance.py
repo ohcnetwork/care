@@ -5,9 +5,6 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
-from care.emr.reports.context_builder.data_points.user import (
-    SingleUserRelatedContextBuilder,
-)
 
 
 class AllergyIntoleranceReportFilter(filters.FilterSet):
@@ -50,17 +47,15 @@ class AllergyIntoleranceContextBuilder(QuerysetContextBuilder):
         preview_value="Patient reports severe reaction to peanuts.",
         description="Additional notes about the allergy or intolerance",
     )
-    created_by = Field(
-        display="Created By",
-        target_context=SingleUserRelatedContextBuilder,
-        preview_value="",
-        description="User who created the allergy or intolerance record",
+    last_occurrence = Field(
+        display="Occurrence",
+        preview_value="2025-12-01",
+        description="The last occurrence date and time of the allergy or intolerance",
     )
-    updated_by = Field(
-        display="Updated By",
-        target_context=SingleUserRelatedContextBuilder,
-        preview_value="",
-        description="User who updated the allergy or intolerance record",
+    onset = Field(
+        display="Onset",
+        preview_value={"onset_datetime": "2025-11-24T00:00:00+05:30"},
+        description="The onset date of the allergy or intolerance",
     )
 
     def get_context(self) -> dict:
