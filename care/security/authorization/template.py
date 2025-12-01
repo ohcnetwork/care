@@ -27,46 +27,32 @@ class TemplateAccess(AuthorizationHandler):
             root=True,
         )
 
-    def can_preview_facility_template(self, user, facility):
-        """
-        Check if the user has permission to preview templates in the facility
-        """
-        return self.check_permission_in_facility_organization(
-            [TemplatePermissions.can_preview_template.name],
-            user,
-            facility=facility,
-        )
-
-    def can_view_facility_template_schema(self, user, facility):
-        """
-        Check if the user has permission to view template schema in the facility
-        """
-        return self.check_permission_in_facility_organization(
-            [TemplatePermissions.can_view_template_schema.name],
-            user,
-            facility=facility,
-        )
-
     def can_preview_template(self, user, facility):
         """
-        Authorize user to preview templates
+        Authorize user to preview templates - allows superuser, admin and facility admin
         """
         if user.is_superuser:
             return True
 
-        if facility and self.can_preview_facility_template(user, facility):
+        if self.check_permission_in_facility_organization(
+            [TemplatePermissions.can_preview_template.name],
+            user,
+        ):
             return True
 
         raise PermissionDenied("You do not have permission to preview templates")
 
     def can_view_template_schema(self, user, facility):
         """
-        Authorize user to view template schema
+        Authorize user to view template schema - allows superuser, admin and facility admin
         """
         if user.is_superuser:
             return True
 
-        if facility and self.can_view_facility_template_schema(user, facility):
+        if self.check_permission_in_facility_organization(
+            [TemplatePermissions.can_view_template_schema.name],
+            user,
+        ):
             return True
 
         raise PermissionDenied("You do not have permission to access template schema")

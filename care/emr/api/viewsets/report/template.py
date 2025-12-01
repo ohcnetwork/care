@@ -161,7 +161,7 @@ class TemplateViewSet(EMRModelViewSet):
                 attr = getattr(context_class, attr_name)
                 if isinstance(attr, Field):
                     field_schema = {
-                        "key": attr.key,
+                        "key": attr_name,
                         "display": attr.display,
                         "description": attr.description,
                         "type": attr.type,
@@ -249,7 +249,9 @@ class TemplateViewSet(EMRModelViewSet):
         facility = None
         if "facility" in request.GET:
             facility = get_object_or_404(Facility, external_id=request.GET["facility"])
+
         AuthorizationController.call("can_preview_template", request.user, facility)
+
         try:
             request_data = PreviewTemplateRequest.model_validate(request.data)
         except Exception as e:
