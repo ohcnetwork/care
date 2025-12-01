@@ -12,8 +12,8 @@ class Field:
         display: str = "",
         preview_value: Any = None,
         preview_fn: Callable | None = None,
-        mapping: Callable | None = None,
-        target_context: str | None = None,
+        mapping=None,
+        target_context=None,
         description: str = "",
         field_type: str = "string",
     ):
