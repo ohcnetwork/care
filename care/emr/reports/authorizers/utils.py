@@ -1,6 +1,5 @@
 from rest_framework.exceptions import PermissionDenied
 
-from care.emr.reports.report_authorizer_registry import ReportAuthorizerRegistry
 from care.emr.reports.report_type_registry import ReportTypeRegistry
 
 
@@ -18,18 +17,12 @@ def report_authorizer(user, report_type: str, associating_id: str, permission: s
         PermissionDenied: If user doesn't have permission
     """
     try:
-        ReportTypeRegistry.get(report_type)
+        config = ReportTypeRegistry.get(report_type)
     except KeyError:
         msg = f"Invalid report type: {report_type}"
         raise PermissionDenied(msg) from KeyError
 
-    try:
-        authorizer_class = ReportAuthorizerRegistry.get(report_type)
-    except KeyError:
-        msg = f"No authorizer configured for report type: {report_type}"
-        raise PermissionDenied(msg) from KeyError
-
-    authorizer = authorizer_class()
+    authorizer = config.authorizer_class()
 
     if permission == "read":
         allowed = authorizer.authorize_read(user, associating_id)
