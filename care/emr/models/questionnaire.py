@@ -116,6 +116,8 @@ class QuestionnaireResponse(EMRBaseModel):
         structured_responses = []
         if not responses:
             return structured_responses
+        if not self.questionnaire:
+            return structured_responses
         questions_by_id = self.questionnaire.get_questions_by_id()
         for response in responses:
             if response["question_id"] not in questions_by_id:
