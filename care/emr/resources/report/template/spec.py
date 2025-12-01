@@ -51,8 +51,9 @@ class TemplateCreateSpec(TemplateBaseSpec):
     def validate_report_type_and_context(self):
         report_type = ReportTypeRegistry.get(self.template_type)
         context = DataPointRegistry.get(self.context)
-        if report_type.__associating_model__ != context.associating_model:
+        if report_type.associating_model != context.__associating_model__:
             raise ValueError("Report Type and Context are not compatible")
+        return self
 
     @field_validator("template_type")
     @classmethod

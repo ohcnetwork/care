@@ -55,10 +55,11 @@ class GenerateReportRequest(BaseModel):
     force: bool = False
 
     @field_validator("output_format")
-    def validate_output_format(self, value):
-        if value and not GeneratorRegistry.is_registered(value):
+    @classmethod
+    def validate_output_format(cls, v):
+        if v and not GeneratorRegistry.is_registered(v):
             raise ValueError("Invalid output format")
-        return value
+        return v
 
 
 class ReportUploadViewSet(
