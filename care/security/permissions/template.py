@@ -1,7 +1,16 @@
 import enum
 
 from care.security.permissions.constants import Permission, PermissionContext
-from care.security.roles.role import ADMIN_ROLE, FACILITY_ADMIN_ROLE
+from care.security.roles.role import (
+    ADMIN_ROLE,
+    ADMINISTRATOR,
+    DOCTOR_ROLE,
+    FACILITY_ADMIN_ROLE,
+    NURSE_ROLE,
+    PHARMACIST_ROLE,
+    STAFF_ROLE,
+    VOLUNTEER_ROLE,
+)
 
 
 class TemplatePermissions(enum.Enum):
@@ -15,7 +24,16 @@ class TemplatePermissions(enum.Enum):
         "Can Read Template",
         "",
         PermissionContext.FACILITY,
-        [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
+        [
+            FACILITY_ADMIN_ROLE,
+            ADMINISTRATOR,
+            ADMIN_ROLE,
+            STAFF_ROLE,
+            DOCTOR_ROLE,
+            NURSE_ROLE,
+            VOLUNTEER_ROLE,
+            PHARMACIST_ROLE,
+        ],
     )
     can_preview_template = Permission(
         "Can Preview Template",
@@ -28,4 +46,19 @@ class TemplatePermissions(enum.Enum):
         "",
         PermissionContext.FACILITY,
         [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
+    )
+    can_generate_report_from_template = Permission(
+        "Can generate report from template",
+        "",
+        PermissionContext.FACILITY,
+        [
+            FACILITY_ADMIN_ROLE,
+            ADMINISTRATOR,
+            ADMIN_ROLE,
+            STAFF_ROLE,
+            DOCTOR_ROLE,
+            NURSE_ROLE,
+            VOLUNTEER_ROLE,
+            PHARMACIST_ROLE,
+        ],
     )
