@@ -129,7 +129,7 @@ class FileUploadViewSet(
                 "file_type" not in self.request.GET
                 and "associating_id" not in self.request.GET
             ):
-                raise PermissionError("Cannot filter files")
+                raise PermissionDenied("Cannot filter files")
             file_authorizer(
                 self.request.user,
                 self.request.GET.get("file_type"),
