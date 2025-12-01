@@ -1,5 +1,3 @@
-from rest_framework.exceptions import PermissionDenied
-
 from care.security.authorization import AuthorizationController
 from care.security.authorization.base import AuthorizationHandler
 from care.security.permissions.template import TemplatePermissions
@@ -27,35 +25,33 @@ class TemplateAccess(AuthorizationHandler):
             root=True,
         )
 
-    def can_preview_template(self, user, facility):
+    def can_preview_template(self, user):
         """
         Authorize user to preview templates - allows superuser, admin and facility admin
         """
-        if user.is_superuser:
-            return True
-
-        if self.check_permission_in_facility_organization(
+        return self.check_permission_in_facility_organization(
             [TemplatePermissions.can_preview_template.name],
             user,
-        ):
-            return True
+        )
 
-        raise PermissionDenied("You do not have permission to preview templates")
-
-    def can_view_template_schema(self, user, facility):
+    def can_view_template_schema(self, user):
         """
         Authorize user to view template schema - allows superuser, admin and facility admin
         """
-        if user.is_superuser:
-            return True
-
-        if self.check_permission_in_facility_organization(
+        return self.check_permission_in_facility_organization(
             [TemplatePermissions.can_view_template_schema.name],
             user,
-        ):
-            return True
+        )
 
-        raise PermissionDenied("You do not have permission to access template schema")
+    def can_generate_report_from_template(self, user, facility):
+        """
+        Check if the user has permission to generate reports from templates
+        """
+        return self.check_permission_in_facility_organization(
+            [TemplatePermissions.can_generate_report_from_template.name],
+            user,
+            facility=facility,
+        )
 
 
 AuthorizationController.register_internal_controller(TemplateAccess)

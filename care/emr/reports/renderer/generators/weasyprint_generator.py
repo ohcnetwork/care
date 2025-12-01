@@ -1,6 +1,8 @@
 import logging
 from typing import Any
 
+from django.http import HttpResponse
+
 from care.emr.reports.renderer.generators.base import BaseOutputGenerator
 
 logger = logging.getLogger(__name__)
@@ -104,6 +106,11 @@ class WeasyPrintGenerator(BaseOutputGenerator):
                 "default": [],
             },
         }
+
+    def get_http_response(self, content):
+        response = HttpResponse(content, content_type="application/pdf")
+        response["Content-Disposition"] = 'attachment; filename="template_preview.pdf"'
+        return response
 
 
 def _register():

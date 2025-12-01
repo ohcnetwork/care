@@ -35,3 +35,11 @@ def report_authorizer(user, report_type: str, associating_id: str, permission: s
     if not allowed:
         msg = f"Cannot {permission} report of type {report_type}"
         raise PermissionDenied(msg)
+
+
+def read_report_authorizer(user, report_type: str, associating_id: str):
+    return report_authorizer(user, report_type, associating_id, "read")
+
+
+def write_report_authorizer(user, report_type: str, associating_id: str):
+    return report_authorizer(user, report_type, associating_id, "write")

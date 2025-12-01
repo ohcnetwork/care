@@ -1,5 +1,7 @@
 from typing import Any
 
+from django.http import HttpResponse
+
 from care.emr.reports.renderer.generators.base import BaseOutputGenerator
 from care.emr.reports.renderer.generators.registry import GeneratorRegistry
 
@@ -58,6 +60,9 @@ class HTMLGenerator(BaseOutputGenerator):
             "title": {"type": "string", "default": "Report"},
             "charset": {"type": "string", "default": "utf-8"},
         }
+
+    def get_http_response(self, content):
+        return HttpResponse(content, content_type="text/html")
 
 
 GeneratorRegistry.register(

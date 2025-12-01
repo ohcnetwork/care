@@ -1,5 +1,6 @@
 class DataPointRegistry:
     _data_points: dict[str, dict] = {}
+    _model_mapping: dict[str, dict] = {}
 
     @classmethod
     def register(cls, data_point):

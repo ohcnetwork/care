@@ -51,11 +51,8 @@ class ReportTypeRegistry:
     @classmethod
     def get(cls, key: str) -> ReportTypeConfig:
         if key not in cls._registry:
-            msg = (
-                f"Report type '{key}' not found. "
-                f"Available types: {', '.join(cls.get_all_keys())}"
-            )
-            raise KeyError(msg)
+            err = f"Report type '{key}' not found"
+            raise KeyError(err)
         return cls._registry[key]
 
     @classmethod
@@ -73,8 +70,7 @@ class ReportTypeRegistry:
             schema[key] = {
                 "display_name": config.display_name,
                 "description": config.description,
-                "associating_model": config.associating_model.__name__,
-                "authorizer": config.authorizer_class.__name__,
+                "supported_contexts": "",
             }
         return schema
 
