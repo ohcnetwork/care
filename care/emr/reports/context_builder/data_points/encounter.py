@@ -10,6 +10,9 @@ from care.emr.reports.context_builder.data_points.base import (
     QuerysetContextBuilder,
     SingleObjectContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.diagnosis import (
+    DiagnosisContextBuilder,
+)
 from care.emr.reports.context_builder.data_points.questionnaire import (
     QuestionnaireContextBuilder,
 )
@@ -81,6 +84,12 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         display="Allergy Intolerances",
         preview_value="",
         description="Allergy intolerances of the encounter",
+    )
+    diagnoses = Field(
+        target_context=DiagnosisContextBuilder,
+        display="Diagnoses",
+        preview_value="",
+        description="Diagnoses of the encounter",
     )
     care_team = Field(
         target_context=EncounterCareTeamContextBuilder,
