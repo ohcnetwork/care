@@ -1,5 +1,6 @@
 import logging
 
+from django.db.models import Q
 from django.http import HttpResponse
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -7,7 +8,7 @@ from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
@@ -25,6 +26,8 @@ from care.emr.resources.report.template.spec import (
     TemplateUpdateSpec,
 )
 from care.facility.models.facility import Facility
+from care.security.authorization.base import AuthorizationController
+from care.utils.filters.dummy_filter import DummyBooleanFilter
 from care.utils.shortcuts import get_object_or_404
 
 logger = logging.getLogger(__name__)
@@ -35,6 +38,7 @@ class TemplateFilters(FilterSet):
     template_type = CharFilter(field_name="template_type", lookup_expr="exact")
     status = CharFilter(field_name="status", lookup_expr="exact")
     facility = CharFilter(field_name="facility__external_id", lookup_expr="exact")
+    facility_only = DummyBooleanFilter()
 
 
 class PreviewTemplateRequest(BaseModel):
@@ -54,6 +58,30 @@ class TemplateViewSet(EMRModelViewSet):
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = TemplateFilters
     ordering_fields = ["created_date", "name", "template_type"]
+
+    def authorize_retrieve(self, model_instance):
+        if model_instance.facility and not AuthorizationController.call(
+            "can_list_facility_template", self.request.user, model_instance.facility
+        ):
+            raise PermissionDenied("You do not have permission to read templates")
+
+    def authorize_update(self, request_obj, model_instance):
+        if model_instance.facility and not AuthorizationController.call(
+            "can_write_facility_template", self.request.user, model_instance.facility
+        ):
+            raise PermissionDenied("You do not have permission to write templates")
+        if not model_instance.facility and not self.request.user.is_superuser:
+            raise PermissionDenied("You do not have permission to write templates")
+
+    def authorize_create(self, instance):
+        if instance.facility:
+            facility = get_object_or_404(Facility, external_id=instance.facility)
+            if not AuthorizationController.call(
+                "can_write_facility_template", self.request.user, facility
+            ):
+                raise PermissionDenied("You do not have permission to write templates")
+        if not instance.facility and not self.request.user.is_superuser:
+            raise PermissionDenied("You do not have permission to write templates")
 
     def recalculate_slug(self, instance):
         if instance.facility:
@@ -95,14 +123,25 @@ class TemplateViewSet(EMRModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.action == "list" and "facility" in self.request.GET:
-            facility = get_object_or_404(
-                Facility, external_id=self.request.GET["facility"]
-            )
-
-            queryset = queryset.filter(facility=facility)
-        elif self.action == "list" and "facility" not in self.request.GET:
-            queryset = queryset.filter(facility__isnull=True)
+        if self.action == "list":
+            if "facility" in self.request.GET:
+                facility = get_object_or_404(
+                    Facility, external_id=self.request.GET["facility"]
+                )
+                if not AuthorizationController.call(
+                    "can_list_facility_template", self.request.user, facility
+                ):
+                    raise PermissionDenied(
+                        "You do not have permission to read templates"
+                    )
+                if self.request.GET.get("facility_only", "false").lower() == "true":
+                    queryset = queryset.filter(facility=facility)
+                else:
+                    queryset = queryset.filter(
+                        Q(facility=facility) | Q(facility__isnull=True)
+                    )
+            else:
+                queryset = queryset.filter(facility__isnull=True)
         return queryset
 
     def _extract_fields_from_context(self, context_class, visited=None):  # noqa: PLR0912
@@ -160,6 +199,10 @@ class TemplateViewSet(EMRModelViewSet):
     @extend_schema(responses={200: "Success"}, tags=["template"])
     @action(detail=False, methods=["GET"], url_path="schema")
     def get_schema(self, request, *args, **kwargs):
+        facility = None
+        if "facility" in request.GET:
+            facility = get_object_or_404(Facility, external_id=request.GET["facility"])
+        AuthorizationController.call("can_view_template_schema", request.user, facility)
         try:
             all_data_points = DataPointRegistry.get_all()
             contexts = {}
@@ -203,6 +246,10 @@ class TemplateViewSet(EMRModelViewSet):
     )
     @action(detail=False, methods=["POST"])
     def preview(self, request, *args, **kwargs):  # noqa: PLR0911
+        facility = None
+        if "facility" in request.GET:
+            facility = get_object_or_404(Facility, external_id=request.GET["facility"])
+        AuthorizationController.call("can_preview_template", request.user, facility)
         try:
             request_data = PreviewTemplateRequest.model_validate(request.data)
         except Exception as e:
