@@ -2,6 +2,9 @@ from types import SimpleNamespace
 
 from care.emr.models.encounter import Encounter
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
+from care.emr.reports.context_builder.data_points.allergy_intolerance import (
+    AllergyIntoleranceContextBuilder,
+)
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
@@ -72,6 +75,12 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         display="Symptoms",
         preview_value="",
         description="Symptoms of the encounter",
+    )
+    allergy_intolerances = Field(
+        target_context=AllergyIntoleranceContextBuilder,
+        display="Allergy Intolerances",
+        preview_value="",
+        description="Allergy intolerances of the encounter",
     )
     care_team = Field(
         target_context=EncounterCareTeamContextBuilder,
