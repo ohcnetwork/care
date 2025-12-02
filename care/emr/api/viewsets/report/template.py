@@ -142,7 +142,7 @@ class TemplateViewSet(EMRModelViewSet):
                     if attr.target_context:
                         field_schema["is_nested_context"] = True
                         field_schema["nested_context_type"] = (
-                            attr.target_context.__name__
+                            attr.target_context.__context_type__
                         )
                         nested_fields = self._extract_fields_from_context(
                             attr.target_context, visited.copy()
