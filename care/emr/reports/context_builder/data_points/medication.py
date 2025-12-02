@@ -1,9 +1,11 @@
 from django_filters import rest_framework as filters
 
+from care.emr.models.medication_request import MedicationRequest
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
+from care.emr.reports.context_builder.utils import format_datetime
 
 
 class MedicationReportFilter(filters.FilterSet):
@@ -68,3 +70,50 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
         preview_value="Peritumoural route",
         description="Route of administration for the medication",
     )
+
+
+class MedicationRequestContextBuilder(QuerysetContextBuilder):
+    filterset_class = MedicationReportFilter
+    __filterset_backends__ = [filters.DjangoFilterBackend]
+
+    medication = Field(
+        display="Medication",
+        preview_value="Morphine sulfate 60 mg oral tablet",
+        mapping=lambda m: m.medication.display if m.medication else "",
+        description="Details of the medication",
+    )
+    status = Field(
+        display="Status",
+        preview_value="active",
+        description="Status of the medication",
+    )
+    intent = Field(
+        display="Intent",
+        preview_value="order",
+        description="Intent of the medication",
+    )
+    priority = Field(
+        display="Priority",
+        preview_value="routine",
+        description="Priority of the medication",
+    )
+    authored_on = Field(
+        display="Authored On",
+        mapping=lambda m: format_datetime(m.authored_on) if m.authored_on else "",
+        preview_value="10/01/2024 10:30 AM",
+        description="Date when the medication was authored",
+    )
+    dosage_instructions = Field(
+        display="Dosage Instructions",
+        preview_value="",
+        description="Dosage instructions for the medication",
+        target_context=DosageInstructionContextBuilder,
+    )
+    note = Field(
+        display="Note",
+        preview_value="",
+        description="Additional notes about the medication",
+    )
+
+    def get_context(self) -> dict:
+        return MedicationRequest.objects.filter(encounter=self.parent_context)
