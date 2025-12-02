@@ -1,17 +1,27 @@
 from django_filters import rest_framework as filters
 
-from care.emr.models.medication_request import MedicationRequest
+from care.emr.models.medication_request import (
+    MedicationRequest,
+    MedicationRequestPrescription,
+)
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.user import (
+    SingleUserRelatedContextBuilder,
+)
 from care.emr.reports.context_builder.utils import format_datetime
 
 
-class MedicationReportFilter(filters.FilterSet):
+class MedicationRequestReportFilter(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     intent = filters.CharFilter(lookup_expr="iexact")
     priority = filters.CharFilter(lookup_expr="iexact")
+
+
+class MedicationPrescriptionReportFilter(filters.FilterSet):
+    status = filters.CharFilter(lookup_expr="iexact")
 
 
 class DosageInstructionContextBuilder(QuerysetContextBuilder):
@@ -73,7 +83,7 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
 
 
 class MedicationRequestContextBuilder(QuerysetContextBuilder):
-    filterset_class = MedicationReportFilter
+    filterset_class = MedicationRequestReportFilter
     __filterset_backends__ = [filters.DjangoFilterBackend]
 
     medication = Field(
@@ -116,4 +126,32 @@ class MedicationRequestContextBuilder(QuerysetContextBuilder):
     )
 
     def get_context(self) -> dict:
-        return MedicationRequest.objects.filter(encounter=self.parent_context)
+        return MedicationRequest.objects.filter(prescription=self.parent_context)
+
+
+class MedicationPrescriptionContextBuilder(QuerysetContextBuilder):
+    filterset_class = MedicationPrescriptionReportFilter
+    __filterset_backends__ = [filters.DjangoFilterBackend]
+
+    medications = Field(
+        display="Medication",
+        preview_value="",
+        target_context=MedicationRequestContextBuilder,
+        description="Details of the medication prescription",
+    )
+    status = Field(
+        display="Status",
+        preview_value="active",
+        description="Status of the medication prescription",
+    )
+    prescribed_by = Field(
+        display="Prescribed By",
+        preview_value="",
+        target_context=SingleUserRelatedContextBuilder,
+        description="Details of the prescriber",
+    )
+
+    def get_context(self) -> dict:
+        return MedicationRequestPrescription.objects.filter(
+            encounter=self.parent_context
+        )

@@ -13,6 +13,9 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.diagnosis import (
     DiagnosisContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.medication import (
+    MedicationPrescriptionContextBuilder,
+)
 from care.emr.reports.context_builder.data_points.questionnaire import (
     QuestionnaireContextBuilder,
 )
@@ -102,6 +105,13 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         display="Questionnaire Responses",
         preview_value="",
         description="Questionnaire responses of the encounter",
+    )
+
+    medication_prescriptions = Field(
+        display="Medication Prescriptions",
+        target_context=MedicationPrescriptionContextBuilder,
+        preview_value="",
+        description="Medication prescriptions of the encounter",
     )
 
 
