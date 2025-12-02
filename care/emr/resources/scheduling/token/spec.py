@@ -68,6 +68,12 @@ class TokenMinimalSpec(TokenBaseSpec):
     note: str
     number: int
     status: TokenStatusOptions
+    category: dict
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = obj.external_id
+        mapping["category"] = TokenCategoryReadSpec.serialize(obj.category).to_json()
 
 
 class TokenReadSpec(TokenBaseSpec):
