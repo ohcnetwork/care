@@ -54,5 +54,5 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
     def get_context(self) -> dict:
         return Condition.objects.filter(
             encounter=self.parent_context,
-            category=CategoryChoices.chronic_condition.value,
+            category=CategoryChoices.encounter_diagnosis.value,
         )
