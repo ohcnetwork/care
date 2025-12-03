@@ -33,11 +33,11 @@ RUN python -m venv $APP_HOME/.venv
 COPY Pipfile Pipfile.lock $APP_HOME/
 RUN pipenv install --deploy --categories "packages"
 
-ARG ADDITIONAL_PLUGS=""
-ENV ADDITIONAL_PLUGS=$ADDITIONAL_PLUGS
-
 COPY plugs/ $APP_HOME/plugs/
 COPY install_plugins.py plug_config.py $APP_HOME/
+
+ARG ADDITIONAL_PLUGS=""
+ENV ADDITIONAL_PLUGS=$ADDITIONAL_PLUGS
 RUN python3 $APP_HOME/install_plugins.py
 
 # ---
