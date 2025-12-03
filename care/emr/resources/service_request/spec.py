@@ -101,13 +101,13 @@ class ServiceRequestWriteSpec(BaseServiceRequestSpec):
 
         locations_set = set(self.locations)
         if obj.healthcare_service:
-            hcs_locations = [
+            healthcare_service_location_external_ids = [
                 loc.external_id
                 for loc in FacilityLocation.objects.filter(
                     id__in=obj.healthcare_service.locations
                 )
             ]
-            locations_set.update(hcs_locations)
+            locations_set.update(healthcare_service_location_external_ids)
 
         obj._locations = list(locations_set)  # noqa SLF001
 
