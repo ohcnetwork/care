@@ -124,10 +124,10 @@ class PatientCreateSpec(PatientBaseSpec):
         for identifier_config in instance_identifier_configs:
             if str(identifier_config["id"]) in configs:
                 value = configs[str(identifier_config["id"])].value
+                if identifier_config["config"]["required"] and not value:
+                    err = f"Identifier config {identifier_config['config']['system']} is required"
+                    raise ValueError(err)
                 validate_identifier_config(identifier_config, value)
-            elif identifier_config["config"]["required"]:
-                err = f"Identifier config {identifier_config['config']['system']} is required"
-                raise ValueError(err)
         return self
 
     def perform_extra_deserialization(self, is_update, obj):
@@ -195,12 +195,12 @@ class PatientUpdateSpec(PatientBaseSpec):
         for identifier_config in instance_identifier_configs:
             if str(identifier_config["id"]) in configs:
                 value = configs[str(identifier_config["id"])].value
+                if identifier_config["config"]["required"] and not value:
+                    err = f"Identifier config {identifier_config['config']['system']} is required"
+                    raise ValueError(err)
                 validate_identifier_config(
                     identifier_config, value, info.context.get("object")
                 )
-            elif identifier_config["config"]["required"]:
-                err = f"Identifier config {identifier_config['config']['system']} is required"
-                raise ValueError(err)
         return identifiers
 
 
