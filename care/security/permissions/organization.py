@@ -72,5 +72,5 @@ class OrganizationPermissions(enum.Enum):
         "Is Geo Admin",
         "Geo Admins can manage facilities in their organization",
         PermissionContext.ORGANIZATION,
-        [ADMIN_ROLE],
+        [],
     )
