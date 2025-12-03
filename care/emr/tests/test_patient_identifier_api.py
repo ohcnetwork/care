@@ -546,6 +546,73 @@ class TestPatientIdentifierConfigAPI(CareAPITestBase):
             status_code=400,
         )
 
+    def test_update_global_config_with_facility_specific_config_having_same_system(
+        self,
+    ):
+        self.client.force_authenticate(user=self.superuser)
+
+        global_config = self.create_patient_identifier_config(
+            config=self.generate_config(system="http://example.com/patient-name")
+        )
+
+        self.create_patient_identifier_config(
+            facility=self.facility,
+            config=self.generate_config(system="http://example.com/patient-name"),
+        )
+
+        update_data = self.generate_patient_identifier_config_data(
+            status=PatientIdentifierStatus.inactive,
+            config=self.generate_config(system="http://example.com/patient-name"),
+        )
+
+        response = self.client.put(
+            self.get_detail_url(global_config.external_id), update_data, format="json"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["status"], PatientIdentifierStatus.inactive.value
+        )
+
+        get_response = self.client.get(
+            self.get_detail_url(global_config.external_id), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(
+            get_response.data["status"], PatientIdentifierStatus.inactive.value
+        )
+
+    def test_update_facility_config_with_another_facility_having_same_system(self):
+        self.client.force_authenticate(user=self.superuser)
+
+        facility2 = self.create_facility(name="Test Facility 2", user=self.superuser)
+
+        facility1_config = self.create_patient_identifier_config(
+            facility=self.facility,
+            config=self.generate_config(system="http://example.com/mrn"),
+        )
+
+        self.create_patient_identifier_config(
+            facility=facility2,
+            config=self.generate_config(system="http://example.com/mrn"),
+        )
+
+        update_data = self.generate_patient_identifier_config_data(
+            status=PatientIdentifierStatus.inactive,
+            config=self.generate_config(system="http://example.com/mrn"),
+        )
+
+        response = self.client.put(
+            self.get_detail_url(facility1_config.external_id),
+            update_data,
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["status"], PatientIdentifierStatus.inactive.value
+        )
+
         # Test cases for patient identifier config lists
 
     def test_list_patient_identifier_configs_as_superuser(self):

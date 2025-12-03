@@ -91,12 +91,16 @@ class PatientIdentifierConfigViewSet(
             )
         if model_obj and model_obj.facility:
             queryset = queryset.filter(facility=model_obj.facility)
+            if queryset.exists():
+                raise ValidationError(
+                    "A patient identifier config with this system already exists in this facility"
+                )
         elif getattr(instance, "facility", None):
             queryset = queryset.filter(facility__external_id=instance.facility)
-        if queryset.exists():
-            raise ValidationError(
-                "A patient identifier config with this system already exists in this facility"
-            )
+            if queryset.exists():
+                raise ValidationError(
+                    "A patient identifier config with this system already exists in this facility"
+                )
 
     def authorize_retrieve(self, model_instance):
         if model_instance.facility and not AuthorizationController.call(
