@@ -98,7 +98,19 @@ class ServiceRequestWriteSpec(BaseServiceRequestSpec):
             obj.healthcare_service = HealthcareService.objects.get(
                 external_id=self.healthcare_service
             )
-        obj._locations = self.locations  # noqa SLF001
+
+        locations_set = set(self.locations)
+        if obj.healthcare_service:
+            hcs_locations = [
+                loc.external_id
+                for loc in FacilityLocation.objects.filter(
+                    id__in=obj.healthcare_service.locations
+                )
+            ]
+            locations_set.update(hcs_locations)
+
+        obj._locations = list(locations_set)  # noqa SLF001
+
         if self.requester:
             obj.requester = get_object_or_404(User, external_id=self.requester)
 
