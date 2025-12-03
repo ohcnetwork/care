@@ -4,27 +4,30 @@ from django.utils import timezone
 from django_filters import BooleanFilter, CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
-from pydantic import UUID4, BaseModel, ValidationError, field_validator, model_validator
+from pydantic import UUID4, BaseModel, field_validator
 from rest_framework import status
 from rest_framework.decorators import action
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.base import EMRBaseViewSet, EMRListMixin, EMRRetrieveMixin
 from care.emr.models.report.report_upload import ReportUpload
 from care.emr.models.report.template import Template
 from care.emr.reports import report_utils
-from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
+from care.emr.reports.authorizers import report_authorizer
+from care.emr.reports.authorizers.utils import (
+    read_report_authorizer,
+    write_report_authorizer,
+)
 from care.emr.reports.renderer.generators import GeneratorRegistry
-from care.emr.reports.report_type_registry import ReportTypeRegistry
-from care.emr.reports.report_type_utils import validate_associating_id
 from care.emr.resources.report.report_upload.spec import (
-    ReportUploadCreateSpec,
     ReportUploadListSpec,
     ReportUploadRetrieveSpec,
-    ReportUploadUpdateSpec,
 )
 from care.emr.tasks.report_generation import generate_report_task
+from care.security.authorization.base import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 logger = logging.getLogger(__name__)
 
@@ -38,48 +41,22 @@ class ReportUploadFilters(FilterSet):
 
 
 class GenerateReportRequest(BaseModel):
-    model_config = {"extra": "allow"}
-
     template_id: UUID4
-    report_type: str = "discharge_summary"
     associating_id: UUID4
-    output_format: str = "pdf"
-    options: dict = {}
+    output_format: str | None = None
+    force: bool = False
 
-    @field_validator("report_type")
+    @field_validator("output_format")
     @classmethod
-    def validate_report_type(cls, v):
-        valid_types = ReportTypeRegistry.get_all_keys()
-        if v not in valid_types:
-            msg = (
-                f"Invalid report_type '{v}'. Valid types are: {', '.join(valid_types)}"
-            )
-            raise ValueError(msg)
+    def validate_output_format(cls, v):
+        if v and not GeneratorRegistry.is_registered(v):
+            raise ValueError("Invalid output format")
         return v
 
-    @model_validator(mode="after")
-    def validate_report_type_and_associating_id(self):
-        try:
-            config = ReportTypeRegistry.get(self.report_type)
 
-            validate_associating_id(
-                associating_model=config.associating_model,
-                associating_id=str(self.associating_id),
-                report_type_key=self.report_type,
-            )
-        except KeyError as e:
-            raise ValueError(str(e)) from e
-        except ValueError as e:
-            raise ValueError(str(e)) from e
-
-        return self
-
-
-class ReportUploadViewSet(EMRModelViewSet):
+class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
     database_model = ReportUpload
-    pydantic_model = ReportUploadCreateSpec
     pydantic_read_model = ReportUploadListSpec
-    pydantic_update_model = ReportUploadUpdateSpec
     pydantic_retrieve_model = ReportUploadRetrieveSpec
 
     filter_backends = [DjangoFilterBackend, OrderingFilter]
@@ -88,26 +65,33 @@ class ReportUploadViewSet(EMRModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.request.query_params.get("include_archived") != "true":
-            queryset = queryset.filter(is_archived=False)
+        if self.action == "list":
+            if (
+                "report_type" not in self.request.GET
+                and "associating_id" not in self.request.GET
+            ):
+                raise PermissionDenied("report_type and associating_id are required")
+            report_type = self.request.GET.get("report_type")
+            associating_id = self.request.GET.get("associating_id")
+            read_report_authorizer(self.request.user, report_type, associating_id)
+            return queryset.filter(
+                report_type=report_type,
+                associating_id=associating_id,
+            )
         return queryset
 
-    @extend_schema(
-        description="Get schema of available report types",
-        responses={200: "Success"},
-        tags=["report"],
-    )
-    @action(detail=False, methods=["GET"])
-    def get_report_types(self, request, *args, **kwargs):
-        try:
-            schema = ReportTypeRegistry.get_schema()
-            return Response(schema)
-        except Exception as e:
-            logger.exception("Failed to get report types schema: %s", e)
-            return Response(
-                {"error": "Failed to get report types"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+    def authorize_retrieve(self, model_instance):
+        read_report_authorizer(
+            self.request.user,
+            model_instance.report_type,
+            model_instance.associating_id,
+        )
+        return super().authorize_retrieve(model_instance)
+
+    def authorize_update(self, request_obj, model_instance):
+        write_report_authorizer(
+            self.request.user, model_instance.report_type, model_instance.associating_id
+        )
 
     @extend_schema(
         description="Generate a report from a template with patient/encounter data",
@@ -116,89 +100,31 @@ class ReportUploadViewSet(EMRModelViewSet):
         tags=["report"],
     )
     @action(detail=False, methods=["POST"])
-    def generate(self, request, *args, **kwargs):  # noqa: PLR0911, PLR0912
-        try:
-            generate_request = GenerateReportRequest.model_validate(request.data)
-        except ValidationError as e:
-            errors = e.errors()
-            if errors:
-                error = errors[0]
-                error_msg = error.get("msg", str(e))
-                if "Value error," in error_msg:
-                    error_msg = error_msg.replace("Value error, ", "")
-                logger.warning("Validation error for report generation: %s", error_msg)
-                return Response(
-                    {"error": error_msg},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            logger.exception("Validation error for report generation: %s", e)
-            return Response(
-                {"error": str(e)},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except ValueError as e:
-            logger.exception("Value error in report generation: %s", e)
-            return Response(
-                {"error": str(e)},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        except Exception as e:
-            logger.exception("Unexpected error validating request data: %s", e)
-            return Response(
-                {"error": "Invalid request data"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+    def generate(self, request, *args, **kwargs):
+        request_data = GenerateReportRequest.model_validate(request.data)
 
-        template_id = str(generate_request.template_id)
-        report_type = generate_request.report_type
-        associating_id = str(generate_request.associating_id)
+        template_id = request_data.template_id
+        associating_id = request_data.associating_id
 
-        extra_fields = {}
-        for key, value in generate_request.model_dump(exclude_unset=True).items():
-            if value is not None and key not in [
-                "template_id",
-                "associating_id",
-                "report_type",
-                "output_format",
-                "options",
-            ]:
-                extra_fields[key] = str(value)
+        template = get_object_or_404(Template, external_id=template_id)
 
-        output_format = generate_request.output_format.lower()
+        output_format = request_data.output_format or template.default_format
 
-        try:
-            template = Template.objects.get(external_id=template_id)
-        except Template.DoesNotExist:
-            return Response(
-                {"error": f"Template with id '{template_id}' not found"},
-                status=status.HTTP_404_NOT_FOUND,
-            )
+        report_authorizer(request.user, template.template_type, associating_id, "write")
+
+        if template.facility and not AuthorizationController.call(
+            "can_generate_report_from_template", request.user, template.facility
+        ):
+            raise PermissionDenied("You are not authorized to generate reports")
 
         if template.status != "active":
-            return Response(
-                {
-                    "error": f"Template is not active (current status: {template.status})"
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError("Template is not active")
 
-        context = DataPointRegistry.get(template.context)
-        if not context:
-            return Response(
-                {"error": f"Invalid context '{template.context}' in template"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        lock_key = f"{template.template_type}_{associating_id}"
 
-        if not GeneratorRegistry.is_registered(output_format):
-            available_formats = ", ".join(GeneratorRegistry.get_all_formats())
-            return Response(
-                {
-                    "error": f"Invalid output_format '{output_format}'. Available formats: {available_formats}"
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+        if request_data.force:
+            report_utils.clear_lock(lock_key)
 
-        lock_key = f"{report_type}_{associating_id}"
         if current_progress := report_utils.get_progress(lock_key):
             return Response(
                 {
@@ -210,106 +136,38 @@ class ReportUploadViewSet(EMRModelViewSet):
                 status=status.HTTP_409_CONFLICT,
             )
 
-        try:
-            generate_report_task.delay(
-                template_id=template_id,
-                report_type=report_type,
-                associating_id=associating_id,
-                output_format=output_format,
-                options=generate_request.options,
-                user_id=request.user.id,
-                **extra_fields,
-            )
+        generate_report_task.delay(
+            template_id=template_id,
+            report_type=template.template_type,
+            associating_id=associating_id,
+            output_format=output_format,
+            options={},
+            user_id=request.user.id,
+        )
 
-            return Response(
-                {
-                    "detail": "Report generation started.",
-                },
-                status=status.HTTP_200_OK,
-            )
-        except Exception as e:
-            logger.exception("Failed to start report generation: %s", e)
-            return Response(
-                {"error": "Failed to start report generation"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        return Response(
+            status=status.HTTP_201_CREATED,
+        )
 
-    @extend_schema(
-        description="Archive a report", responses={200: "Success"}, tags=["report"]
-    )
+    class ArchiveRequestSpec(BaseModel):
+        archive_reason: str
+
+    @extend_schema(request=ArchiveRequestSpec, responses={200: ReportUploadListSpec})
     @action(detail=True, methods=["POST"])
     def archive(self, request, *args, **kwargs):
-        instance = self.get_object()
-
-        if instance.is_archived:
-            return Response(
-                {"error": "Report is already archived"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        archive_reason = request.data.get("archive_reason", "")
-
-        instance.is_archived = True
-        instance.archive_reason = archive_reason
-        instance.archived_by = request.user
-        instance.archived_datetime = timezone.now()
-        instance.save()
-
-        data = self.pydantic_retrieve_model.serialize(instance, request.user).to_json()
-        return Response(data)
-
-    @extend_schema(
-        description="Unarchive a report",
-        responses={200: "Report unarchived successfully"},
-        tags=["report"],
-    )
-    @action(detail=True, methods=["POST"])
-    def unarchive(self, request, *args, **kwargs):
-        instance = self.get_object()
-
-        if not instance.is_archived:
-            return Response(
-                {"error": "Report is not archived"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        instance.is_archived = False
-        instance.archive_reason = ""
-        instance.archived_by = None
-        instance.archived_datetime = None
-        instance.save()
-
-        data = self.pydantic_retrieve_model.serialize(instance, request.user).to_json()
-        return Response(data)
-
-    @extend_schema(
-        description="Get download URL for the report",
-        responses={200: "Download URL generated successfully"},
-        tags=["report"],
-    )
-    @action(detail=True, methods=["GET"])
-    def download(self, request, *args, **kwargs):
-        instance = self.get_object()
-
-        if not instance.upload_completed:
-            return Response(
-                {"error": "Report upload not completed"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        try:
-            signed_url = instance.files_manager.read_signed_url(instance)
-
-            return Response(
-                {
-                    "download_url": signed_url,
-                    "file_name": instance.name,
-                    "mime_type": instance.meta.get("mime_type"),
-                }
-            )
-
-        except Exception as e:
-            return Response(
-                {"error": f"Failed to generate download URL: {e!s}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+        obj = self.get_object()
+        request_data = self.ArchiveRequestSpec(**request.data)
+        report_authorizer(request.user, obj.report_type, obj.associating_id, "write")
+        obj.is_archived = True
+        obj.archive_reason = request_data.archive_reason
+        obj.archived_datetime = timezone.now()
+        obj.archived_by = request.user
+        obj.save(
+            update_fields=[
+                "is_archived",
+                "archive_reason",
+                "archived_datetime",
+                "archived_by",
+            ]
+        )
+        return Response(ReportUploadListSpec.serialize(obj).to_json())

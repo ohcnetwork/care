@@ -1,13 +1,14 @@
 import logging
 
-from django.http import HttpResponse
+from django.conf import settings
+from django.db.models import Q
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
 from rest_framework import status
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
@@ -15,7 +16,7 @@ from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models.report.template import Template
 from care.emr.reports.context_builder import Field, types  # noqa
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
-from care.emr.reports.context_builder.type_registry import FieldTypeRegistry
+from care.emr.reports.context_builder.data_points.utils import build_schema
 from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.renderer.renderer import Renderer
 from care.emr.resources.report.template.spec import (
@@ -25,6 +26,8 @@ from care.emr.resources.report.template.spec import (
     TemplateUpdateSpec,
 )
 from care.facility.models.facility import Facility
+from care.security.authorization.base import AuthorizationController
+from care.utils.filters.dummy_filter import DummyBooleanFilter
 from care.utils.shortcuts import get_object_or_404
 
 logger = logging.getLogger(__name__)
@@ -35,6 +38,7 @@ class TemplateFilters(FilterSet):
     template_type = CharFilter(field_name="template_type", lookup_expr="exact")
     status = CharFilter(field_name="status", lookup_expr="exact")
     facility = CharFilter(field_name="facility__external_id", lookup_expr="exact")
+    facility_only = DummyBooleanFilter()
 
 
 class PreviewTemplateRequest(BaseModel):
@@ -54,6 +58,30 @@ class TemplateViewSet(EMRModelViewSet):
     filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_class = TemplateFilters
     ordering_fields = ["created_date", "name", "template_type"]
+
+    def authorize_retrieve(self, model_instance):
+        if model_instance.facility and not AuthorizationController.call(
+            "can_list_facility_template", self.request.user, model_instance.facility
+        ):
+            raise PermissionDenied("You do not have permission to read templates")
+
+    def authorize_update(self, request_obj, model_instance):
+        if model_instance.facility and not AuthorizationController.call(
+            "can_write_facility_template", self.request.user, model_instance.facility
+        ):
+            raise PermissionDenied("You do not have permission to write templates")
+        if not model_instance.facility and not self.request.user.is_superuser:
+            raise PermissionDenied("You do not have permission to write templates")
+
+    def authorize_create(self, instance):
+        if instance.facility:
+            facility = get_object_or_404(Facility, external_id=instance.facility)
+            if not AuthorizationController.call(
+                "can_write_facility_template", self.request.user, facility
+            ):
+                raise PermissionDenied("You do not have permission to write templates")
+        if not instance.facility and not self.request.user.is_superuser:
+            raise PermissionDenied("You do not have permission to write templates")
 
     def recalculate_slug(self, instance):
         if instance.facility:
@@ -95,14 +123,25 @@ class TemplateViewSet(EMRModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset()
-        if self.action == "list" and "facility" in self.request.GET:
-            facility = get_object_or_404(
-                Facility, external_id=self.request.GET["facility"]
-            )
-
-            queryset = queryset.filter(facility=facility)
-        elif self.action == "list" and "facility" not in self.request.GET:
-            queryset = queryset.filter(facility__isnull=True)
+        if self.action == "list":
+            if "facility" in self.request.GET:
+                facility = get_object_or_404(
+                    Facility, external_id=self.request.GET["facility"]
+                )
+                if not AuthorizationController.call(
+                    "can_list_facility_template", self.request.user, facility
+                ):
+                    raise PermissionDenied(
+                        "You do not have permission to read templates"
+                    )
+                if self.request.GET.get("facility_only", "false").lower() == "true":
+                    queryset = queryset.filter(facility=facility)
+                else:
+                    queryset = queryset.filter(
+                        Q(facility=facility) | Q(facility__isnull=True)
+                    )
+            else:
+                queryset = queryset.filter(facility__isnull=True)
         return queryset
 
     def _extract_fields_from_context(self, context_class, visited=None):  # noqa: PLR0912
@@ -159,41 +198,16 @@ class TemplateViewSet(EMRModelViewSet):
     @extend_schema(responses={200: "Success"}, tags=["template"])
     @action(detail=False, methods=["GET"], url_path="schema")
     def get_schema(self, request, *args, **kwargs):
+        if not AuthorizationController.call("can_view_template_schema", request.user):
+            raise PermissionDenied(
+                "You do not have permission to access template schema"
+            )
         try:
-            all_data_points = DataPointRegistry.get_all()
-            contexts = {}
-
-            for slug, context_class in all_data_points.items():
-                fields = self._extract_fields_from_context(context_class)
-                contexts[slug] = {
-                    "slug": slug,
-                    "display_name": getattr(
-                        context_class,
-                        "__display_name__",
-                        slug.replace("_", " ").title(),
-                    ),
-                    "description": getattr(context_class, "__description__", ""),
-                    "context_type": getattr(context_class, "__context_type__", ""),
-                    "context_key": getattr(context_class, "context_key", slug),
-                    "standalone": getattr(context_class, "standalone_context", False),
-                    "fields": fields,
-                }
-
-            output_formats = GeneratorRegistry.get_schema()
-            custom_types = FieldTypeRegistry.get_all()
-
-            schema = {
-                "contexts": contexts,
-                "output_formats": output_formats,
-                "custom_types": custom_types,
-            }
-
-            return Response(schema)
-
+            return Response(build_schema())
         except Exception as e:
             logger.exception("Failed to generate schema: %s", e)
             return Response(
-                {"error": "Failed to generate schema", "details": str(e)},
+                {"error": "Failed to generate schema"},
                 status=status.HTTP_500_INTERNAL_SERVER_ERROR,
             )
 
@@ -201,35 +215,16 @@ class TemplateViewSet(EMRModelViewSet):
         request=PreviewTemplateRequest, responses={200: "Success"}, tags=["template"]
     )
     @action(detail=False, methods=["POST"])
-    def preview(self, request, *args, **kwargs):  # noqa: PLR0911
-        try:
-            request_data = PreviewTemplateRequest.model_validate(request.data)
-        except Exception as e:
-            logger.exception("Invalid request data for template preview: %s", e)
-            return Response(
-                {"error": f"Invalid request data: {e!s}"},
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+    def preview(self, request, *args, **kwargs):
+        AuthorizationController.call("can_preview_template", request.user)
+
+        request_data = PreviewTemplateRequest.model_validate(request.data)
 
         if not GeneratorRegistry.is_registered(request_data.output_format):
-            available_formats = GeneratorRegistry.get_all_formats()
-            return Response(
-                {
-                    "error": f"Invalid output format '{request_data.output_format}'",
-                    "available_formats": available_formats,
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError("Invalid output format")
 
         if not DataPointRegistry.is_registered(request_data.context):
-            available_contexts = list(DataPointRegistry.get_all().keys())
-            return Response(
-                {
-                    "error": f"Invalid context '{request_data.context}'",
-                    "available_contexts": available_contexts,
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
+            raise ValidationError("Invalid context")
 
         try:
             generator_class = GeneratorRegistry.get(request_data.output_format)
@@ -243,38 +238,9 @@ class TemplateViewSet(EMRModelViewSet):
                 request_data.template_data, context_dict
             )
 
-            if request_data.output_format == "html":
-                return Response(
-                    rendered_content,
-                    content_type="text/html",
-                    status=status.HTTP_200_OK,
-                )
-            if request_data.output_format == "pdf":
-                response = HttpResponse(
-                    rendered_content, content_type="application/pdf"
-                )
-                response["Content-Disposition"] = (
-                    'attachment; filename="template_preview.pdf"'
-                )
-                return response
-
-            format_config = GeneratorRegistry.get_format_config(
-                request_data.output_format
-            )
-            response = HttpResponse(
-                rendered_content, content_type=format_config["mime_type"]
-            )
-            response["Content-Disposition"] = (
-                f'attachment; filename="preview{format_config["file_extension"]}"'
-            )
-            return response
+            return generator.get_http_response(rendered_content)
 
         except Exception as e:
-            logger.exception("Preview generation failed: %s", e)
-            return Response(
-                {
-                    "error": "Failed to generate preview",
-                    "details": str(e),
-                },
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            )
+            if settings.DEBUG:
+                raise e
+            raise ValidationError("Preview generation failed") from e

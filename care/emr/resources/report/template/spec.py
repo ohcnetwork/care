@@ -1,6 +1,6 @@
 from enum import Enum
 
-from pydantic import UUID4, field_validator
+from pydantic import UUID4, field_validator, model_validator
 
 from care.emr.models.report.template import Template
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
@@ -9,6 +9,7 @@ from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.utils.slug_type import SlugType
 from care.facility.models.facility import Facility
+from care.utils.shortcuts import get_object_or_404
 
 
 class TemplateStatusOptions(str, Enum):
@@ -30,43 +31,52 @@ class TemplateBaseSpec(EMRResource):
     id: UUID4 | None = None
     name: str
     status: TemplateStatusOptions
-    template_type: str
     default_format: TemplateFormatOptions
     description: str = ""
-
-    @field_validator("template_type")
-    @classmethod
-    def validate_template_type(cls, v):
-        valid_types = ReportTypeRegistry.get_all_keys()
-        if v not in valid_types:
-            msg = f"Invalid template_type '{v}'. Valid types are: {', '.join(valid_types)}"
-            raise ValueError(msg)
-        return v
 
 
 class TemplateCreateSpec(TemplateBaseSpec):
     facility: UUID4 | None = None
     slug_value: SlugType
-    context: str
     template_data: str
+    template_type: str
+    context: str
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.facility:
-            obj.facility = Facility.objects.get(external_id=self.facility)
+            obj.facility = get_object_or_404(Facility, external_id=self.facility)
         obj.slug = self.slug_value
+
+    @model_validator(mode="after")
+    def validate_report_type_and_context(self):
+        report_type = ReportTypeRegistry.get(self.template_type)
+        context = DataPointRegistry.get(self.context)
+        if report_type.associating_model != context.__associating_model__:
+            raise ValueError("Report Type and Context are not compatible")
+        return self
+
+    @field_validator("template_type")
+    @classmethod
+    def validate_report_type(cls, v):
+        if not v:
+            msg = "Report Type is required"
+            raise ValueError(msg)
+        try:
+            ReportTypeRegistry.get(v)
+        except KeyError as e:
+            raise ValueError("Invalid report type") from e
+        return v
 
     @field_validator("context")
     @classmethod
     def validate_context(cls, v):
         if not v:
-            msg = "context is required"
+            msg = "Report Type is required"
             raise ValueError(msg)
-
-        available_contexts = list(DataPointRegistry.get_all().keys())
-        if v not in available_contexts:
-            msg = f"Invalid context '{v}'. Available contexts: {', '.join(available_contexts)}"
-            raise ValueError(msg)
-
+        try:
+            DataPointRegistry.get(v)
+        except KeyError as e:
+            raise ValueError("Invalid Context type") from e
         return v
 
 
@@ -77,6 +87,8 @@ class TemplateUpdateSpec(TemplateCreateSpec):
 class TemplateReadSpec(TemplateBaseSpec):
     slug_config: dict
     slug: str
+    report_type: str
+    context: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -87,7 +99,6 @@ class TemplateReadSpec(TemplateBaseSpec):
 class TemplateRetrieveSpec(TemplateReadSpec):
     facility: dict | None = None
     template_data: str
-    context: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

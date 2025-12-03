@@ -79,14 +79,6 @@ class Questionnaire(EMRBaseModel):
         self._questions_by_id_cache = questions_dict
         return questions_dict
 
-    def clear_questions_cache(self):
-        """
-        Clear the cached questions_by_id dictionary.
-        Call this method if the questions field is modified to ensure fresh data.
-        """
-        if hasattr(self, "_questions_by_id_cache"):
-            delattr(self, "_questions_by_id_cache")
-
 
 class FormSubmission(EMRBaseModel):
     questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
@@ -123,6 +115,8 @@ class QuestionnaireResponse(EMRBaseModel):
         responses = self.responses
         structured_responses = []
         if not responses:
+            return structured_responses
+        if not self.questionnaire:
             return structured_responses
         questions_by_id = self.questionnaire.get_questions_by_id()
         for response in responses:

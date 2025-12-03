@@ -38,9 +38,6 @@ def generate_report_task(
         try:
             logger.debug("Fetching template with external_id: %s", template_id)
             template = Template.objects.get(external_id=template_id)
-            logger.info(
-                "Template found: %s (status: %s)", template.name, template.status
-            )
         except Template.DoesNotExist as e:
             logger.error("Template not found: %s", template_id)
             msg = f"Template {template_id} does not exist"
@@ -49,11 +46,6 @@ def generate_report_task(
         logger.debug("Updating lock for %s to 30%% progress", lock_key)
         report_utils.set_lock(lock_key, 30)
 
-        logger.info(
-            "Generating report - template: %s, context: %s",
-            template.name,
-            template.context,
-        )
         report_upload = report_utils.generate_and_upload_report(
             template=template,
             output_format=output_format,
@@ -70,16 +62,6 @@ def generate_report_task(
             raise CeleryTaskError("Unable to generate report")
 
         logger.info(
-            "Report generated successfully - report_upload_id: %s, name: %s, upload_completed: %s",
-            report_upload.external_id,
-            report_upload.name,
-            report_upload.upload_completed,
-        )
-
-        logger.debug("Setting final lock for %s to 100%% progress", lock_key)
-        report_utils.set_lock(lock_key, 100)
-
-        logger.info(
             "Report generation task completed - external_id: %s",
             report_upload.external_id,
         )
@@ -92,6 +74,7 @@ def generate_report_task(
         logger.exception(
             "Unexpected error in report generation task for %s: %s", lock_key, e
         )
+        raise e
     finally:
         logger.debug("Clearing lock for %s", lock_key)
         report_utils.clear_lock(lock_key)

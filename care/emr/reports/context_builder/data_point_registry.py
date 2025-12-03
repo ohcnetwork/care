@@ -1,5 +1,6 @@
 class DataPointRegistry:
     _data_points: dict[str, dict] = {}
+    _model_mapping: dict[str, dict] = {}
 
     @classmethod
     def register(cls, data_point):
@@ -20,3 +21,11 @@ class DataPointRegistry:
     @classmethod
     def clear(cls):
         cls._data_points.clear()
+
+    @classmethod
+    def get_contexts_by_model(cls, model):
+        return [
+            context.__slug__
+            for context in cls._data_points.values()
+            if context.__associating_model__ == model
+        ]

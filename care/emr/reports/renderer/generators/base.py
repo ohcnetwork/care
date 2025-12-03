@@ -13,3 +13,7 @@ class BaseOutputGenerator(ABC):
 
     def get_supported_options(self) -> dict[str, Any]:
         return {}
+
+    @abstractmethod
+    def get_http_response(self, response):
+        pass

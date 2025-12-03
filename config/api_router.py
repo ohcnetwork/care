@@ -486,7 +486,7 @@ thread_nested_router.register(
 )
 
 router.register("template", TemplateViewSet, basename="template")
-router.register("report", ReportUploadViewSet, basename="report")
+router.register("template_reports", ReportUploadViewSet, basename="template-reports")
 
 app_name = "api"
 urlpatterns = [

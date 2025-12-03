@@ -1,5 +1,8 @@
 from django.db import models
 
+from care.emr.reports.authorizers.base import BaseReportAuthorizer
+from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
+
 
 class ReportTypeConfig:
     def __init__(
@@ -7,11 +10,13 @@ class ReportTypeConfig:
         key: str,
         display_name: str,
         associating_model: type[models.Model],
+        authorizer_class: type[BaseReportAuthorizer],
         description: str = "",
     ):
         self.key = key
         self.display_name = display_name
         self.associating_model = associating_model
+        self.authorizer_class = authorizer_class
         self.description = description
 
 
@@ -24,16 +29,22 @@ class ReportTypeRegistry:
         key: str,
         display_name: str,
         associating_model: type[models.Model],
+        authorizer_class: type[BaseReportAuthorizer],
         description: str = "",
     ) -> None:
         if key in cls._registry:
             msg = f"Report type '{key}' is already registered"
             raise ValueError(msg)
 
+        if not issubclass(authorizer_class, BaseReportAuthorizer):
+            msg = "Authorizer must be a subclass of BaseReportAuthorizer"
+            raise ValueError(msg)
+
         config = ReportTypeConfig(
             key=key,
             display_name=display_name,
             associating_model=associating_model,
+            authorizer_class=authorizer_class,
             description=description,
         )
         cls._registry[key] = config
@@ -41,11 +52,8 @@ class ReportTypeRegistry:
     @classmethod
     def get(cls, key: str) -> ReportTypeConfig:
         if key not in cls._registry:
-            msg = (
-                f"Report type '{key}' not found. "
-                f"Available types: {', '.join(cls.get_all_keys())}"
-            )
-            raise KeyError(msg)
+            err = f"Report type '{key}' not found"
+            raise KeyError(err)
         return cls._registry[key]
 
     @classmethod
@@ -63,7 +71,9 @@ class ReportTypeRegistry:
             schema[key] = {
                 "display_name": config.display_name,
                 "description": config.description,
-                "associating_model": config.associating_model.__name__,
+                "supported_contexts": DataPointRegistry.get_contexts_by_model(
+                    config.associating_model
+                ),
             }
         return schema
 

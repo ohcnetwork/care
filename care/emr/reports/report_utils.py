@@ -19,6 +19,10 @@ logger = logging.getLogger(__name__)
 LOCK_DURATION = 2 * 60
 
 
+def get_lock_key(report_type: str, associating_id: str) -> str:
+    return f"{report_type}_{associating_id}"
+
+
 def set_lock(key: str, progress: int, timeout: int = LOCK_DURATION) -> None:
     cache_key = f"report_generation_lock:{key}"
     cache.set(cache_key, progress, timeout)
@@ -34,7 +38,7 @@ def clear_lock(key: str) -> None:
     cache.delete(cache_key)
 
 
-def generate_and_upload_report(  # noqa: PLR0915
+def generate_and_upload_report(
     template: Template,
     report_type: str,
     associating_id: str,
@@ -42,120 +46,47 @@ def generate_and_upload_report(  # noqa: PLR0915
     options: dict | None = None,
     **kwargs,
 ) -> ReportUpload:
-    logger.info(
-        "Starting report generation and upload - report_type: %s, associating_id: %s, output_format: %s",
-        report_type,
-        associating_id,
-        output_format,
-    )
-
     options = options or {}
 
-    # Get and validate context class from template
     context_class = DataPointRegistry.get(template.context)
     if not context_class:
         error_msg = f"Context '{template.context}' not found in DataPointRegistry"
-        logger.error(error_msg)
         raise ValueError(error_msg)
 
-    # Get report type configuration
     try:
         report_type_config = ReportTypeRegistry.get(report_type)
     except KeyError as e:
-        error_msg = f"Report type '{report_type}' not found in ReportTypeRegistry"
-        logger.error(error_msg)
         raise ValueError(error_msg) from e
 
-    # Validate and fetch the associating object (e.g., Encounter, Patient)
-    logger.debug(
-        "Fetching associating object - model: %s, id: %s",
-        report_type_config.associating_model.__name__,
-        associating_id,
-    )
-    try:
-        associating_object = validate_associating_id(
-            associating_model=report_type_config.associating_model,
-            associating_id=associating_id,
-            report_type_key=report_type,
-        )
-    except ValueError as e:
-        logger.error("Failed to fetch associating object: %s", e)
-        raise
-
-    logger.info(
-        "Associating object fetched: %s (id: %s)",
-        report_type_config.associating_model.__name__,
-        associating_id,
+    associating_object = validate_associating_id(
+        associating_model=report_type_config.associating_model,
+        associating_id=associating_id,
+        report_type_key=report_type,
     )
 
-    # Validate context compatibility with report type (optional but recommended)
-    if hasattr(context_class, "__associating_model__"):
-        expected_model = context_class.__associating_model__
-        if expected_model != report_type_config.associating_model:
-            error_msg = (
-                f"Template context '{template.context}' expects {expected_model.__name__} "
-                f"but report type '{report_type}' requires {report_type_config.associating_model.__name__}"
-            )
-            logger.error(error_msg)
-            raise ValueError(error_msg)
-
-    # Build context with the actual model instance
-    logger.debug("Building context with root context: %s", template.context)
     context_key = context_class.context_key or template.context
 
-    # Pass the actual associating object as the context
     context = {context_key: context_class(context=associating_object)}
-    logger.info("Context built successfully with root context: %s", template.context)
 
     template_engine = TemplateEngine()
 
     format_lower = output_format.lower()
-    try:
-        generator_class = GeneratorRegistry.get(format_lower)
-        generator = generator_class()
-        format_config = GeneratorRegistry.get_format_config(format_lower)
-        file_extension = format_config["file_extension"]
-        mime_type = format_config["mime_type"]
-    except KeyError as e:
-        error_msg = f"Unsupported output format: {output_format}. {e!s}"
-        logger.error(error_msg)
-        raise ValueError(error_msg) from e
 
-    logger.debug(
-        "Using output format: %s, generator: %s, mime: %s, ext: %s",
-        output_format,
-        generator.__class__.__name__,
-        mime_type,
-        file_extension,
-    )
-
-    logger.debug("Validating template syntax")
-    valid, error = template_engine.validate_syntax(template.template_data)
-    if not valid:
-        error_msg = f"Template validation failed: {error}"
-        logger.error(error_msg)
-        raise ValueError(error_msg)
-    logger.debug("Template syntax validation successful")
+    generator_class = GeneratorRegistry.get(format_lower)
+    generator = generator_class()
+    format_config = GeneratorRegistry.get_format_config(format_lower)
+    file_extension = format_config["file_extension"]
+    mime_type = format_config["mime_type"]
 
     renderer = Renderer(generator, template_engine)
 
-    logger.info("Rendering template with context")
     output_bytes = renderer.render(template.template_data, context, options)
-    logger.info(
-        "Template rendered successfully, output size: %s bytes", len(output_bytes)
-    )
 
     current_date = timezone.now()
     timestamp = int(current_date.timestamp() * 1000)
 
     report_name = f"{report_type}-{associating_id}-{timestamp}"
     internal_name = f"{uuid4()}{int(time.time())}{file_extension}"
-
-    logger.debug(
-        "Creating ReportUpload record - name: %s, internal_name: %s",
-        report_name,
-        internal_name,
-    )
 
     user_id = kwargs.get("user_id")
 
@@ -182,40 +113,15 @@ def generate_and_upload_report(  # noqa: PLR0915
     report_upload.meta["output_format"] = output_format
 
     report_upload.save(skip_internal_name=True)
-    logger.info(
-        "ReportUpload record created with external_id: %s", report_upload.external_id
-    )
 
     try:
-        logger.info(
-            "Uploading report to S3 - size: %s bytes, mime_type: %s",
-            len(output_bytes),
-            mime_type,
-        )
         report_upload.files_manager.put_object(
             report_upload, output_bytes, ContentType=mime_type
         )
         report_upload.upload_completed = True
         report_upload.save()
-        logger.info(
-            "Report uploaded successfully to S3 - external_id: %s",
-            report_upload.external_id,
-        )
     except Exception as e:
-        logger.exception(
-            "Failed to upload report to S3 - external_id: %s, error: %s",
-            report_upload.external_id,
-            e,
-        )
-        logger.info(
-            "Deleting failed ReportUpload record: %s", report_upload.external_id
-        )
         report_upload.delete()
-        raise
+        raise e
 
-    logger.info(
-        "Report generation and upload completed successfully - external_id: %s, name: %s",
-        report_upload.external_id,
-        report_upload.name,
-    )
     return report_upload
