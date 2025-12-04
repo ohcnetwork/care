@@ -1,3 +1,5 @@
+from email.utils import format_datetime
+
 from django_filters import rest_framework as filters
 
 from care.emr.models.condition import Condition
@@ -27,21 +29,17 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
         preview_value="Confirmed",
         description="Verification status of the condition",
     )
-    code = Field(
-        display="Code",
-        preview_value={
-            "code": {
-                "display": "Gastroptosis",
-                "system": "http://snomed.info/sct",
-                "code": "1208004",
-            }
-        },
-        description="Code of the diagnosis",
+    name = Field(
+        display="Name",
+        mapping=lambda c: c.code.display if c.code else "",
+        preview_value="Gastroptosis",
+        description="Name of the diagnosis",
     )
 
     onset = Field(
         display="Onset",
-        preview_value={"onset_datetime": "2025-11-24T00:00:00+05:30"},
+        mapping=lambda c: format_datetime(c.onset.onset_datetime) if c.onset else "",
+        preview_value="10/01/2024 10:30 AM",
         description="The onset date of the diagnosis",
     )
 

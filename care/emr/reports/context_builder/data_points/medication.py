@@ -86,11 +86,13 @@ class MedicationRequestContextBuilder(QuerysetContextBuilder):
     filterset_class = MedicationRequestReportFilter
     __filterset_backends__ = [filters.DjangoFilterBackend]
 
-    medication = Field(
+    name = Field(
         display="Medication",
         preview_value="Morphine sulfate 60 mg oral tablet",
-        mapping=lambda m: m.medication.display if m.medication else "",
-        description="Details of the medication",
+        mapping=lambda m: m.medication.display
+        if m.medication
+        else (m.requested_medication.name if m.requested_medication else ""),
+        description="Name of the medication",
     )
     status = Field(
         display="Status",
