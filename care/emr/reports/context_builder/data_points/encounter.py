@@ -21,6 +21,7 @@ from care.emr.reports.context_builder.data_points.questionnaire import (
 )
 from care.emr.reports.context_builder.data_points.symptom import SymptomsContextBuilder
 from care.emr.reports.context_builder.data_points.user import SingleUserIdContextBuilder
+from care.emr.templatetags.data_formatting_extras import field_name_to_label
 
 STATUS_DISPLAY = {
     "planned": "Planned",
@@ -43,11 +44,8 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
     )
     role = Field(
         display="Role",
-        preview_value={
-            "code": "12334",
-            "system": "http://careterms.info/terms",
-            "display": "Test Role",
-        },
+        mapping=lambda r: r.role.display if r.role else "",
+        preview_value="Test Role",
         description="Role of the user in the encounter care team",
     )
 
@@ -58,6 +56,30 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
             self.__class__(context=SimpleNamespace(user=c["user_id"], role=c["role"]))
             for c in self.context
         )
+
+
+class EncounterPatientContextBuilder(SingleObjectContextBuilder):
+    def get_context(self) -> dict:
+        return self.parent_context.patient
+
+    name = Field(
+        display="Patient Name",
+        preview_value="John Doe",
+        description="Full name of the patient",
+    )
+    age = Field(
+        display="Patient Age",
+        mapping=lambda p: p.get_age(),
+        preview_value="30 Y",
+        description="Age of the patient",
+    )
+
+    gender = Field(
+        display="Patient Gender",
+        mapping=lambda p: field_name_to_label(p.gender),
+        preview_value="Male",
+        description="Gender of the patient",
+    )
 
 
 class EncounterReportContextBase(SingleObjectContextBuilder):
@@ -112,6 +134,12 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         target_context=MedicationPrescriptionContextBuilder,
         preview_value="",
         description="Medication prescriptions of the encounter",
+    )
+    patient = Field(
+        display="Patient Details",
+        target_context=EncounterPatientContextBuilder,
+        preview_value="",
+        description="Details of the patient associated with the encounter",
     )
 
 
