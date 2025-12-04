@@ -34,7 +34,7 @@ class AllergyIntoleranceContextBuilder(QuerysetContextBuilder):
     )
     name = Field(
         display="Name",
-        mapping=lambda a: a.code.display if a.code else "",
+        mapping=lambda a: a.code.display if a.code and a.code.display else "",
         preview_value="Fezolinetant",
         description="Name representing the allergy or intolerance",
     )
@@ -50,7 +50,9 @@ class AllergyIntoleranceContextBuilder(QuerysetContextBuilder):
     )
     onset = Field(
         display="Onset",
-        mapping=lambda a: format_datetime(a.onset.onset_datetime) if a.onset else "",
+        mapping=lambda a: format_datetime(a.onset.onset_datetime)
+        if a.onset and a.onset.onset_datetime
+        else "",
         preview_value="10/01/2024 10:30 AM",
         description="The onset date of the allergy or intolerance",
     )

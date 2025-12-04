@@ -31,14 +31,16 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
     )
     name = Field(
         display="Name",
-        mapping=lambda c: c.code.display if c.code else "",
+        mapping=lambda c: c.code.display if c.code and c.code.display else "",
         preview_value="Gastroptosis",
         description="Name of the diagnosis",
     )
 
     onset = Field(
         display="Onset",
-        mapping=lambda c: format_datetime(c.onset.onset_datetime) if c.onset else "",
+        mapping=lambda c: format_datetime(c.onset.onset_datetime)
+        if c.onset and c.onset.onset_datetime
+        else "",
         preview_value="10/01/2024 10:30 AM",
         description="The onset date of the diagnosis",
     )
