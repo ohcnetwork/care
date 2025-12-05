@@ -1,3 +1,5 @@
+from email.utils import format_datetime
+
 from django_filters import rest_framework as filters
 
 from care.emr.models.condition import Condition
@@ -5,17 +7,16 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
-from care.emr.reports.context_builder.utils import format_datetime
 from care.emr.resources.condition.spec import CategoryChoices
 
 
-class SymptomsReportFilter(filters.FilterSet):
+class DiagnosisReportFilter(filters.FilterSet):
     clinical_status = filters.CharFilter(lookup_expr="iexact")
     verification_status = filters.CharFilter(lookup_expr="iexact")
 
 
-class SymptomsContextBuilder(QuerysetContextBuilder):
-    filterset_class = SymptomsReportFilter
+class DiagnosisContextBuilder(QuerysetContextBuilder):
+    filterset_class = DiagnosisReportFilter
     __filterset_backends__ = [filters.DjangoFilterBackend]
 
     clinical_status = Field(
@@ -30,28 +31,28 @@ class SymptomsContextBuilder(QuerysetContextBuilder):
     )
     name = Field(
         display="Name",
-        mapping=lambda c: c.code.get("display") if c.code else "",
-        preview_value="Fever",
-        description="Name of the symptom",
+        mapping=lambda c: c.code.get("display", "") if c.code else "",
+        preview_value="Gastroptosis",
+        description="Name of the diagnosis",
     )
 
     onset = Field(
         display="Onset",
-        mapping=lambda c: format_datetime(c.onset.get("onset_datetime"))
+        mapping=lambda c: format_datetime(c.onset.get("onset_datetime", ""))
         if c.onset
         else "",
         preview_value="10/01/2024 10:30 AM",
-        description="The onset date of the symptom",
+        description="The onset date of the diagnosis",
     )
 
     note = Field(
         display="Note",
         preview_value="",
-        description="Additional notes about the symptom",
+        description="Additional notes about the diagnosis",
     )
 
     def get_context(self) -> dict:
         return Condition.objects.filter(
             encounter=self.parent_context,
-            category=CategoryChoices.problem_list_item.value,
+            category=CategoryChoices.encounter_diagnosis.value,
         )

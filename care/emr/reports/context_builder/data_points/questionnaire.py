@@ -6,11 +6,10 @@ from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
-    SingleObjectContextBuilder,
 )
 
 
-class QuestionnaireResponsesContextBuilder(SingleObjectContextBuilder):
+class QuestionnaireResponsesContextBuilder(QuerysetContextBuilder):
     def get_context(self) -> dict:
         return self.parent_context.render_responses()
 

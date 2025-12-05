@@ -42,7 +42,9 @@ def _extract_fields_from_context(context_class, visited=None):  # noqa: PLR0912
 
                 if attr.target_context:
                     field_schema["is_nested_context"] = True
-                    field_schema["nested_context_type"] = attr.target_context.__name__
+                    field_schema["nested_context_type"] = (
+                        attr.target_context.__context_type__
+                    )
                     nested_fields = _extract_fields_from_context(
                         attr.target_context, visited.copy()
                     )
