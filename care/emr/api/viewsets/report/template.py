@@ -144,57 +144,6 @@ class TemplateViewSet(EMRModelViewSet):
                 queryset = queryset.filter(facility__isnull=True)
         return queryset
 
-    def _extract_fields_from_context(self, context_class, visited=None):  # noqa: PLR0912
-        if visited is None:
-            visited = set()
-
-        class_name = context_class.__name__
-        if class_name in visited:
-            return []
-        visited.add(class_name)
-
-        fields = []
-        for attr_name in dir(context_class):
-            if attr_name.startswith("_"):
-                continue
-            try:
-                attr = getattr(context_class, attr_name)
-                if isinstance(attr, Field):
-                    field_schema = {
-                        "display": attr.display,
-                        "description": attr.description,
-                        "type": attr.type,
-                    }
-
-                    if attr.preview_value is not None:
-                        if isinstance(attr.preview_value, (list, dict)):
-                            field_schema["preview_value"] = attr.preview_value
-                        else:
-                            field_schema["preview_value"] = str(attr.preview_value)
-                    elif attr.preview_fn:
-                        try:
-                            sample = attr.preview_fn()
-                            field_schema["preview_value"] = str(sample)
-                        except Exception:
-                            field_schema["preview_value"] = ""
-
-                    if attr.target_context:
-                        field_schema["is_nested_context"] = True
-                        field_schema["nested_context_type"] = (
-                            attr.target_context.__context_type__
-                        )
-                        nested_fields = self._extract_fields_from_context(
-                            attr.target_context, visited.copy()
-                        )
-                        if nested_fields:
-                            field_schema["fields"] = nested_fields
-
-                    fields.append(field_schema)
-            except Exception:  # noqa: S112
-                continue
-
-        return fields
-
     @extend_schema(responses={200: "Success"}, tags=["template"])
     @action(detail=False, methods=["GET"], url_path="schema")
     def get_schema(self, request, *args, **kwargs):

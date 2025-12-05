@@ -31,8 +31,8 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
     dosage = Field(
         display="Dosage",
         mapping=lambda d: (
-            f"{d.dosa_and_rate.get('dose_quantity', {}).get('value', '')} {d.dosa_and_rate.get('dose_quantity', {}).get('unit', {}).get('display', '')}"
-            if d.dosa_and_rate and d.dosa_and_rate.get("dose_quantity")
+            f"{d.dose_and_rate.get('dose_quantity', {}).get('value', '')} {d.dose_and_rate.get('dose_quantity', {}).get('unit', {}).get('display', '')}"
+            if d.dose_and_rate and d.dose_and_rate.get("dose_quantity")
             else ""
         ),
         preview_value="2 tablet",
@@ -45,7 +45,7 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
         if d.timing and d.timing.get("code")
         else "",
         preview_value="3 times every 1 day",
-        description="Frequency of the medication dosage",
+        description="Frequency of the medication dosege",
     )
 
     duration = Field(
