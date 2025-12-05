@@ -21,7 +21,6 @@ from care.emr.reports.context_builder.data_points.questionnaire import (
 )
 from care.emr.reports.context_builder.data_points.symptom import SymptomsContextBuilder
 from care.emr.reports.context_builder.data_points.user import SingleUserIdContextBuilder
-from care.emr.templatetags.data_formatting_extras import field_name_to_label
 
 STATUS_DISPLAY = {
     "planned": "Planned",
@@ -44,7 +43,7 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
     )
     role = Field(
         display="Role",
-        mapping=lambda r: r.get("role", {}).get("display", "") if r.get("role") else "",
+        mapping=lambda r: r.role.get("display", "") if r.role else "",
         preview_value="Test Role",
         description="Role of the user in the encounter care team",
     )
@@ -76,7 +75,7 @@ class EncounterPatientContextBuilder(SingleObjectContextBuilder):
 
     gender = Field(
         display="Patient Gender",
-        mapping=lambda p: field_name_to_label(p.get("gender", "")),
+        mapping=lambda p: p.gender,
         preview_value="Male",
         description="Gender of the patient",
     )
