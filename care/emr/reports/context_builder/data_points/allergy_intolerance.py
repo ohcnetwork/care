@@ -5,7 +5,6 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
-from care.emr.reports.context_builder.utils import format_datetime
 
 
 class AllergyIntoleranceReportFilter(filters.FilterSet):
@@ -47,14 +46,6 @@ class AllergyIntoleranceContextBuilder(QuerysetContextBuilder):
         display="Occurrence",
         preview_value="2025-12-01",
         description="The last occurrence date and time of the allergy or intolerance",
-    )
-    onset = Field(
-        display="Onset",
-        mapping=lambda a: format_datetime(a.onset.get("onset_datetime"))
-        if a.onset
-        else "",
-        preview_value="10/01/2024 10:30 AM",
-        description="The onset date of the allergy or intolerance",
     )
 
     def get_context(self) -> dict:

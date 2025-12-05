@@ -1,5 +1,3 @@
-from email.utils import format_datetime
-
 from django_filters import rest_framework as filters
 
 from care.emr.models.condition import Condition
@@ -7,6 +5,7 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
+from care.emr.reports.context_builder.utils import format_datetime
 from care.emr.resources.condition.spec import CategoryChoices
 
 

@@ -31,10 +31,12 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
     dosage = Field(
         display="Dosage",
         mapping=lambda d: (
-            f"{d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', '')} {d.get('dose_and_rate', {}).get('dose_quantity', {}).get('unit', {}).get('display', '')}"
-            if d.get("dose_and_rate") and d.get("dose_and_rate").get("dose_quantity")
+            f"{int(d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', 0)) if d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', 0) % 1 == 0 else d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', '')} "
+            f"{d.get('dose_and_rate', {}).get('dose_quantity', {}).get('unit', {}).get('display', '')}"
+            if d.get("dose_and_rate")
+            and d.get("dose_and_rate", {}).get("dose_quantity")
             else ""
-        ),
+        ).strip(),
         preview_value="2 tablet",
         description="Dose quantity for the medication",
     )
@@ -51,12 +53,11 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
     duration = Field(
         display="Duration",
         mapping=lambda d: (
-            f"{d.get('timing', {}).get('repeat', {}).get('bound_duration', {}).get('unit', '')} {d.get('timing', {}).get('repeat', {}).get('bound_duration', {}).get('value', '')}"
-            if d.get("timing")
-            and d.get("timing").get("repeat")
-            and d.get("timing").get("repeat").get("bound_duration")
+            f"{int(d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', 0)) if d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', 0) % 1 == 0 else d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', '')} "
+            f"{d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('unit', '')}"
+            if d.get("timing", {}).get("repeat", {}).get("bounds_duration")
             else ""
-        ),
+        ).strip(),
         preview_value="2 d",
         description="Duration for which the medication is to be taken",
     )
@@ -93,9 +94,11 @@ class MedicationRequestContextBuilder(QuerysetContextBuilder):
     name = Field(
         display="Medication",
         preview_value="Morphine sulfate 60 mg oral tablet",
-        mapping=lambda m: m.medication.get("display", "")
-        if m.medication
-        else (m.requested_medication.get("name", "") if m.requested_medication else ""),
+        mapping=lambda m: (
+            m.medication.get("display", "")
+            if m.medication
+            else (m.requested_product.name if m.requested_product else "")
+        ),
         description="Name of the medication",
     )
     status = Field(

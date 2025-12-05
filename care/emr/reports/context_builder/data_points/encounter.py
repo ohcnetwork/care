@@ -44,7 +44,7 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
     )
     role = Field(
         display="Role",
-        mapping=lambda r: r.role.get("display", "") if r.role else "",
+        mapping=lambda r: r.get("role", {}).get("display", "") if r.get("role") else "",
         preview_value="Test Role",
         description="Role of the user in the encounter care team",
     )
@@ -76,7 +76,7 @@ class EncounterPatientContextBuilder(SingleObjectContextBuilder):
 
     gender = Field(
         display="Patient Gender",
-        mapping=lambda p: field_name_to_label(p.gender),
+        mapping=lambda p: field_name_to_label(p.get("gender", "")),
         preview_value="Male",
         description="Gender of the patient",
     )

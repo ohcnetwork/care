@@ -69,7 +69,9 @@ class QuestionnaireContextBuilder(QuerysetContextBuilder):
     )
 
     def get_context(self) -> dict:
-        return QuestionnaireResponse.objects.filter(encounter=self.parent_context)
+        return QuestionnaireResponse.objects.filter(
+            encounter=self.parent_context, questionnaire__isnull=False
+        )
 
     def perform_extra_filters(self, qs, **kwargs):
         if "slug" not in kwargs:
