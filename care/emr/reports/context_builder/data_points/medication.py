@@ -6,6 +6,7 @@ from care.emr.models.medication_request import (
 )
 from care.emr.reports.context_builder.data_points.base import (
     Field,
+    ListContextBuilder,
     QuerysetContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.user import (
@@ -24,15 +25,15 @@ class MedicationPrescriptionReportFilter(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
 
 
-class DosageInstructionContextBuilder(QuerysetContextBuilder):
-    def get_context(self) -> dict:
-        return self.parent_context.dosage_instructions
+class DosageInstructionContextBuilder(ListContextBuilder):
+    def get_context(self) -> list:
+        return self.parent_context.dosage_instruction
 
     dosage = Field(
         display="Dosage",
         mapping=lambda d: (
-            f"{d.dose_and_rate.get('dose_quantity', {}).get('value', '')} {d.dose_and_rate.get('dose_quantity', {}).get('unit', {}).get('display', '')}"
-            if d.dose_and_rate and d.dose_and_rate.get("dose_quantity")
+            f"{d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', '')} {d.get('dose_and_rate', {}).get('dose_quantity', {}).get('unit', {}).get('display', '')}"
+            if d.get("dose_and_rate") and d.get("dose_and_rate").get("dose_quantity")
             else ""
         ),
         preview_value="2 tablet",
@@ -41,8 +42,8 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
 
     frequency = Field(
         display="Frequency",
-        mapping=lambda d: f"{d.timing.get('code', {}).get('display', '')}"
-        if d.timing and d.timing.get("code")
+        mapping=lambda d: f"{d.get('timing', {}).get('code', {}).get('display', '')}"
+        if d.get("timing") and d.get("timing").get("code")
         else "",
         preview_value="3 times every 1 day",
         description="Frequency of the medication dosege",
@@ -51,10 +52,10 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
     duration = Field(
         display="Duration",
         mapping=lambda d: (
-            f"{d.timing.get('repeat', {}).get('duration', {}).get('unit', '')} {d.timing.get('repeat', {}).get('duration', {}).get('value', '')}"
-            if d.timing
-            and d.timing.get("repeat")
-            and d.timing.get("repeat").get("duration")
+            f"{d.get('timing', {}).get('repeat', {}).get('bound_duration', {}).get('unit', '')} {d.get('timing', {}).get('repeat', {}).get('bound_duration', {}).get('value', '')}"
+            if d.get("timing")
+            and d.get("timing").get("repeat")
+            and d.get("timing").get("repeat").get("bound_duration")
             else ""
         ),
         preview_value="2 d",
@@ -63,20 +64,24 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
 
     site = Field(
         display="Site",
-        mapping=lambda d: d.site.get("display", "") if d.site else "",
+        mapping=lambda d: d.get("site", {}).get("display", "") if d.get("site") else "",
         preview_value="Structure of product of conception of ectopic pregnancy",
         description="Site of administration for the medication",
     )
 
     method = Field(
         display="Method",
-        mapping=lambda d: d.method.get("display", "") if d.method else "",
+        mapping=lambda d: d.get("method", {}).get("display", "")
+        if d.get("method")
+        else "",
         preview_value="Injection",
         description="Method of administration for the medication",
     )
     route = Field(
         display="Route",
-        mapping=lambda d: d.route.get("display", "") if d.route else "",
+        mapping=lambda d: d.get("route", {}).get("display", "")
+        if d.get("route")
+        else "",
         preview_value="Peritumoural route",
         description="Route of administration for the medication",
     )
