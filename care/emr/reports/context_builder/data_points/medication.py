@@ -6,7 +6,6 @@ from care.emr.models.medication_request import (
 )
 from care.emr.reports.context_builder.data_points.base import (
     Field,
-    ListContextBuilder,
     QuerysetContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.user import (
@@ -25,8 +24,8 @@ class MedicationPrescriptionReportFilter(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
 
 
-class DosageInstructionContextBuilder(ListContextBuilder):
-    def get_context(self) -> list:
+class DosageInstructionContextBuilder(QuerysetContextBuilder):
+    def get_context(self) -> dict:
         return self.parent_context.dosage_instruction
 
     dosage = Field(
