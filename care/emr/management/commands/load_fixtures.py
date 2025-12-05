@@ -982,6 +982,16 @@ class Command(BaseCommand):
             "system": "http://loinc.org",
             "display": "Platelets",
         }
+        code_snomed_lipid_panel = {
+            "code": "16254007",
+            "system": "http://snomed.info/sct",
+            "display": "Lipid panel",
+        }
+        code_snomed_urine = {
+            "code": "442564008",
+            "system": "http://snomed.info/sct",
+            "display": "Evaluation of urine specimen",
+        }
         code_loinc_lipid_panel = {
             "code": "LP97557-0",
             "system": "http://loinc.org",
@@ -1491,7 +1501,7 @@ class Command(BaseCommand):
                 classification="laboratory",
                 category="laboratory",
                 kind="service_request",
-                code=code_loinc_lipid_panel,
+                code=code_snomed_lipid_panel,
                 diagnostic_report_codes=[code_loinc_lipid_panel],
             ),
             slug="lipid_panel",
@@ -1512,7 +1522,7 @@ class Command(BaseCommand):
                 classification="laboratory",
                 category="laboratory",
                 kind="service_request",
-                code=code_loinc_urine,
+                code=code_snomed_urine,
                 diagnostic_report_codes=[code_loinc_urine],
             ),
             slug="urinalysis",

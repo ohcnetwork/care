@@ -114,6 +114,11 @@ class ServiceRequestViewSet(
                 error_msg = f"Location with id {location} not found"
                 raise ValidationError(error_msg)
             ids.append(obj.id)
+
+        if instance.healthcare_service:
+            for loc in instance.healthcare_service.locations:
+                if loc not in ids:
+                    ids.append(loc)
         instance.locations = ids
 
     def validate_health_care_service(self, instance):
