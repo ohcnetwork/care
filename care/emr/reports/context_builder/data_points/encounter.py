@@ -44,7 +44,7 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
     )
     role = Field(
         display="Role",
-        mapping=lambda r: r.role.display if r.role else "",
+        mapping=lambda r: r.role.get("display", "") if r.role else "",
         preview_value="Test Role",
         description="Role of the user in the encounter care team",
     )

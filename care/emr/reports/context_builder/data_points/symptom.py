@@ -30,15 +30,15 @@ class SymptomsContextBuilder(QuerysetContextBuilder):
     )
     name = Field(
         display="Name",
-        mapping=lambda c: c.code.display if c.code else "",
+        mapping=lambda c: c.code.get("display") if c.code else "",
         preview_value="Fever",
         description="Name of the symptom",
     )
 
     onset = Field(
         display="Onset",
-        mapping=lambda c: format_datetime(c.onset.onset_datetime)
-        if c.onset and c.onset.onset_datetime
+        mapping=lambda c: format_datetime(c.onset.get("onset_datetime"))
+        if c.onset
         else "",
         preview_value="10/01/2024 10:30 AM",
         description="The onset date of the symptom",
