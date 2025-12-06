@@ -45,6 +45,9 @@ def _extract_fields_from_context(context_class, visited=None):  # noqa: PLR0912
                     field_schema["nested_context_type"] = (
                         attr.target_context.__context_type__
                     )
+                    field_schema["nested_context_filters"] = (
+                        _extract_filters_from_context(attr.target_context)
+                    )
                     nested_fields = _extract_fields_from_context(
                         attr.target_context, visited.copy()
                     )
@@ -56,6 +59,20 @@ def _extract_fields_from_context(context_class, visited=None):  # noqa: PLR0912
             continue
 
     return fields
+
+
+def _extract_filters_from_context(context_class):
+    filters = []
+    if hasattr(context_class, "filterset_class") and context_class.filterset_class:
+        for _, filter_obj in context_class.filterset_class.base_filters.items():
+            filters.append(
+                {
+                    "field_name": filter_obj.field_name,
+                    "lookup_expr": getattr(filter_obj, "lookup_expr", "exact"),
+                }
+            )
+
+    return filters
 
 
 def build_schema():
