@@ -6,7 +6,30 @@ from care.emr.reports.context_builder.data_points.base import (
     QuerysetContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.user import SingleUserIdContextBuilder
-from care.emr.reports.context_builder.utils import format_datetime
+
+STATUS_CHOICE = {
+    "draft": "Draft",
+    "active": "Active",
+    "on_hold": "On Hold",
+    "entered_in_error": "Entered in Error",
+    "ended": "Ended",
+    "completed": "Completed",
+    "revoked": "Revoked",
+}
+
+INTENT_CHOICE = {
+    "proposal": "Proposal",
+    "plan": "Plan",
+    "directive": "Directive",
+    "order": "Order",
+}
+
+CATEGORY_CHOICE = {
+    "laboratory": "Laboratory",
+    "imaging": "Imaging",
+    "counselling": "Counselling",
+    "surgical_procedure": "Surgical Procedure",
+}
 
 
 class ServiceRequestReportFilterSet(filters.FilterSet):
@@ -27,24 +50,32 @@ class ServiceRequestDataPointBuilder(QuerysetContextBuilder):
     )
     status = Field(
         display="Status",
-        preview_value="active",
+        preview_value="Active",
+        mapping=lambda sr: STATUS_CHOICE.get(sr.status, sr.status.title())
+        if sr.status
+        else "",
         description="Current status of the service request",
     )
     intent = Field(
         display="Intent",
-        preview_value="order",
+        preview_value="Order",
+        mapping=lambda sr: INTENT_CHOICE.get(sr.intent, sr.intent.title())
+        if sr.intent
+        else "",
         description="Intent of the service request",
     )
     category = Field(
         display="Category",
-        preview_value="laboratory",
+        preview_value="Laboratory",
+        mapping=lambda sr: CATEGORY_CHOICE.get(sr.category, sr.category.title())
+        if sr.category
+        else "",
         description="Category of the service request",
     )
 
     occurance = Field(
         display="Occurrence",
-        mapping=lambda sr: format_datetime(sr.occurance) if sr.occurance else "",
-        preview_value="2023-01-01 10:00 AM",
+        preview_value="2025-11-30T18:30:00Z",
         description="Date and time when the service is to occur",
     )
 

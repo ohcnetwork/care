@@ -11,7 +11,35 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.user import (
     SingleUserRelatedContextBuilder,
 )
-from care.emr.reports.context_builder.utils import format_datetime
+
+STATUS_DISPLAY = {
+    "active": "Active",
+    "on_hold": "On Hold",
+    "cancelled": "Cancelled",
+    "completed": "Completed",
+    "entered_in_error": "Entered in Error",
+    "stopped": "Stopped",
+    "draft": "Draft",
+    "unknown": "Unknown",
+}
+
+INTENT_DISPLAY = {
+    "proposal": "Proposal",
+    "plan": "Plan",
+    "order": "Order",
+    "original_order": "Original Order",
+    "reflex_order": "Reflex Order",
+    "filler_order": "Filler Order",
+    "instance_order": "Instance Order",
+    "option": "Option",
+}
+
+PRIORITY_DISPLAY = {
+    "routine": "Routine",
+    "urgent": "Urgent",
+    "asap": "ASAP",
+    "stat": "STAT",
+}
 
 
 class MedicationRequestReportFilter(filters.FilterSet):
@@ -103,23 +131,31 @@ class MedicationRequestContextBuilder(QuerysetContextBuilder):
     )
     status = Field(
         display="Status",
-        preview_value="active",
+        preview_value="Active",
+        mapping=lambda m: STATUS_DISPLAY.get(m.status, m.status.title())
+        if m.status
+        else "",
         description="Status of the medication",
     )
     intent = Field(
         display="Intent",
-        preview_value="order",
+        preview_value="Order",
+        mapping=lambda m: INTENT_DISPLAY.get(m.intent, m.intent.title())
+        if m.intent
+        else "",
         description="Intent of the medication",
     )
     priority = Field(
         display="Priority",
-        preview_value="routine",
+        preview_value="Routine",
+        mapping=lambda m: PRIORITY_DISPLAY.get(m.priority, m.priority.title())
+        if m.priority
+        else "",
         description="Priority of the medication",
     )
     authored_on = Field(
         display="Authored On",
-        mapping=lambda m: format_datetime(m.authored_on) if m.authored_on else "",
-        preview_value="10/01/2024 10:30 AM",
+        preview_value="2025-11-30T18:30:00Z",
         description="Date when the medication was authored",
     )
     dosage_instructions = Field(
