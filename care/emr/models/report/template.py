@@ -18,3 +18,4 @@ class Template(SlugBaseModel):
     default_format = models.CharField(max_length=255)
     context = models.CharField(max_length=100, default="encounter_base")
     description = models.TextField(blank=True, default="")
+    options = models.JSONField(default=dict)

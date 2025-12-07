@@ -4,6 +4,7 @@ from pydantic import UUID4, field_validator, model_validator
 
 from care.emr.models.report.template import Template
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
+from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.report_type_registry import ReportTypeRegistry
 from care.emr.resources.base import EMRResource
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
@@ -33,6 +34,7 @@ class TemplateBaseSpec(EMRResource):
     status: TemplateStatusOptions
     default_format: TemplateFormatOptions
     description: str = ""
+    options: dict = {}
 
 
 class TemplateCreateSpec(TemplateBaseSpec):
@@ -53,6 +55,23 @@ class TemplateCreateSpec(TemplateBaseSpec):
         context = DataPointRegistry.get(self.context)
         if report_type.associating_model != context.__associating_model__:
             raise ValueError("Report Type and Context are not compatible")
+
+        generator_class = GeneratorRegistry.get(self.default_format)
+        generator = generator_class()
+
+        supported_options = generator.get_supported_options()
+
+        unsupported_options = self.options.keys() - supported_options.keys()
+        if unsupported_options:
+            err = f"Unsupported option(s) {",".join(unsupported_options)}"
+            raise ValueError(err)
+
+        for option, value in self.options.items():
+            if available_options := supported_options[option].get("options"):  # noqa SIM102
+                if value not in available_options:
+                    err = f"Value: {value} is not a valid for option {option}"
+                    raise ValueError(err)
+
         return self
 
     @field_validator("template_type")
