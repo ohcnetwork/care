@@ -5,7 +5,9 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
-from care.emr.reports.context_builder.data_points.user import SingleUserIdContextBuilder
+from care.emr.reports.context_builder.data_points.user import (
+    SingleUserRelatedContextBuilder,
+)
 
 STATUS_CHOICE = {
     "draft": "Draft",
@@ -81,7 +83,7 @@ class ServiceRequestDataPointBuilder(QuerysetContextBuilder):
 
     requester = Field(
         display="Requester",
-        target_context=SingleUserIdContextBuilder,
+        target_context=SingleUserRelatedContextBuilder,
         preview_value="",
         description="User who requested the service",
     )
