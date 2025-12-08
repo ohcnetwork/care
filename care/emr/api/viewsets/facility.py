@@ -4,11 +4,11 @@ from django.utils.decorators import method_decorator
 from django_filters import CharFilter, FilterSet, NumberFilter
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters
 from rest_framework import serializers
 from rest_framework.decorators import action, parser_classes
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import get_object_or_404
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
@@ -21,17 +21,20 @@ from care.emr.api.viewsets.base import (
     EMRModelViewSet,
     EMRRetrieveMixin,
 )
-from care.emr.models import Organization, SchedulableUserResource
+from care.emr.models import Organization, SchedulableResource
 from care.emr.models.facility import FacilityFlag
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.resources.facility.spec import (
     FacilityCreateSpec,
     FacilityFlagCreateSpec,
     FacilityFlagReadSpec,
+    FacilityInvoiceExpressionSpec,
+    FacilityMinimalReadSpec,
+    FacilityMonetaryCodeSpec,
     FacilityReadSpec,
     FacilityRetrieveSpec,
 )
-from care.emr.resources.user.spec import PublicUserReadSpec, UserSpec
+from care.emr.resources.user.spec import PublicUserReadSpec, UserRetrieveSpec, UserSpec
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
@@ -41,6 +44,7 @@ from care.utils.models.validators import (
     custom_image_extension_validator,
 )
 from care.utils.registries.feature_flag import FlagNotFoundError, FlagRegistry, FlagType
+from care.utils.shortcuts import get_object_or_404
 
 
 class FacilityImageUploadSerializer(serializers.ModelSerializer):
@@ -144,6 +148,41 @@ class FacilityViewSet(EMRModelViewSet):
             return Response(status=204)
         return Response({"detail": "Method not allowed"}, status=405)
 
+    @extend_schema(
+        request=FacilityMonetaryCodeSpec,
+    )
+    @action(methods=["POST"], detail=True)
+    def set_monetary_codes(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.authorize_update({}, instance)
+        serializer_obj = FacilityMonetaryCodeSpec.model_validate(
+            request.data,
+            context={
+                "is_update": True,
+                "object": instance,
+                **self.get_serializer_update_context(),
+            },
+        )
+        model_instance = serializer_obj.de_serialize(obj=instance)
+        self.perform_update(model_instance)
+        return Response(
+            self.get_retrieve_pydantic_model().serialize(model_instance).to_json()
+        )
+
+    @extend_schema(
+        request=FacilityInvoiceExpressionSpec,
+    )
+    @action(methods=["POST"], detail=True)
+    def set_invoice_expression(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.authorize_update({}, instance)
+        request_params = FacilityInvoiceExpressionSpec(**request.data)
+        instance.invoice_number_expression = request_params.invoice_number_expression
+        self.perform_update(instance)
+        return Response(
+            self.get_retrieve_pydantic_model().serialize(instance).to_json()
+        )
+
 
 class FacilitySchedulableUsersViewSet(EMRModelReadOnlyViewSet):
     database_model = User
@@ -153,7 +192,7 @@ class FacilitySchedulableUsersViewSet(EMRModelReadOnlyViewSet):
 
     def get_queryset(self):
         return User.objects.filter(
-            id__in=SchedulableUserResource.objects.filter(
+            id__in=SchedulableResource.objects.filter(
                 facility__external_id=self.kwargs["facility_external_id"]
             ).values("user_id")
         )
@@ -166,6 +205,7 @@ class FacilityUserFilter(FilterSet):
 class FacilityUsersViewSet(EMRModelReadOnlyViewSet):
     database_model = User
     pydantic_read_model = UserSpec
+    pydantic_retrieve_model = UserRetrieveSpec
     filterset_class = FacilityUserFilter
     filter_backends = [DjangoFilterBackend, drf_filters.SearchFilter]
     search_fields = ["first_name", "last_name", "username"]
@@ -183,9 +223,7 @@ class AllFacilityViewSet(EMRModelReadOnlyViewSet):
     authentication_classes = ()
 
     database_model = Facility
-    pydantic_model = FacilityCreateSpec
-    pydantic_read_model = FacilityReadSpec
-    pydantic_retrieve_model = FacilityRetrieveSpec
+    pydantic_read_model = FacilityMinimalReadSpec
     filterset_class = FacilityFilters
     filter_backends = (filters.DjangoFilterBackend, drf_filters.SearchFilter)
     lookup_field = "external_id"

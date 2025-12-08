@@ -6,7 +6,7 @@
   "configurations": [
     {
       "name": "Docker: Django",
-      "type": "python",
+      "type": "debugpy",
       "request": "attach",
       "pathMappings": [
         {
@@ -14,26 +14,58 @@
           "remoteRoot": "/app"
         }
       ],
-      "port": 9876,
-      "host": "127.0.0.1",
+      "connect": {
+        "port": 9876,
+        "host": "127.0.0.1",
+      },
     },
     {
       "name": "Python: Django",
-      "type": "python",
+      "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
-      "args": ["runserver"],
+      "args": [
+        "runserver_plus",
+        "9000",
+        "--print-sql"
+      ],
+      "envFile": "${workspaceFolder}/.env",
       "django": true,
       "justMyCode": false
     },
     {
-      "name": "Python: Django test",
-      "type": "python",
+      "name": "Python: Django Make Migrations",
+      "type": "debugpy",
       "request": "launch",
       "program": "${workspaceFolder}/manage.py",
-      "args": ["test", "--keepdb"],
+      "args": [
+        "makemigrations"
+      ],
+      "envFile": "${workspaceFolder}/.env",
       "django": true,
       "justMyCode": false
     },
+    {
+      "name": "Python: Django Migrate",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/manage.py",
+      "args": [
+        "migrate"
+      ],
+      "envFile": "${workspaceFolder}/.env",
+      "django": true,
+      "justMyCode": false
+    },
+    {
+      "name": "Python: Debug Tests",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${file}",
+      "envFile": "${workspaceFolder}/.env",
+      "purpose": ["debug-test"],
+      "console": "integratedTerminal",
+      "justMyCode": false
+    }
   ]
 }

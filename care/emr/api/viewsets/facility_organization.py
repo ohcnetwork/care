@@ -1,11 +1,11 @@
 from django.conf import settings
+from django.db import transaction
 from django.db.models import Q
 from django.db.models.expressions import Subquery
 from django_filters import rest_framework as filters
 from rest_framework import filters as drf_filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
@@ -28,6 +28,7 @@ from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.security.roles.role import FACILITY_ADMIN_ROLE
 from care.users.models import User
+from care.utils.shortcuts import get_object_or_404
 
 
 class FacilityOrganizationFilter(filters.FilterSet):
@@ -55,8 +56,12 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         )
 
     def validate_data(self, instance, model_obj=None):
+        if model_obj is not None and model_obj.org_type == "root":
+            raise PermissionDenied("Cannot update root organization")
+
         if instance.org_type == "root":
             raise PermissionDenied("Cannot create root organization")
+
         if instance.parent:
             parent = get_object_or_404(
                 FacilityOrganization, external_id=instance.parent
@@ -166,6 +171,10 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         request_data["facility"] = self.kwargs["facility_external_id"]
         return request_data
 
+    def clean_update_data(self, request_data, keep_fields: set | None = None):
+        request_data["facility"] = self.kwargs["facility_external_id"]
+        return request_data
+
     def get_queryset(self):
         facility = self.get_facility_obj()
         queryset = (
@@ -185,9 +194,17 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         )
 
     def perform_destroy(self, instance):
-        FacilityOrganizationUser.objects.filter(organization=instance).delete()
-        instance.deleted = True
-        instance.save(update_fields=["deleted"])
+        with transaction.atomic():
+            FacilityOrganizationUser.objects.filter(organization=instance).delete()
+            instance.deleted = True
+            instance.save(update_fields=["deleted"])
+
+            parent = instance.parent
+            if parent:
+                parent.has_children = FacilityOrganization.objects.filter(
+                    parent=parent
+                ).exists()
+                parent.save(update_fields=["has_children"])
 
     @action(detail=False, methods=["GET"])
     def mine(self, request, *args, **kwargs):

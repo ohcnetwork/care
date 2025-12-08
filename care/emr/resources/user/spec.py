@@ -3,13 +3,15 @@ from enum import Enum
 
 from django.contrib.auth.password_validation import validate_password
 from django.core.validators import validate_email
-from pydantic import UUID4, Field, field_validator, model_validator
-from rest_framework.generics import get_object_or_404
+from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 
 from care.emr.models import Organization
+from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.models.user import UserFlag
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, cacheable, model_from_cache
 from care.emr.resources.patient.spec import GenderChoices
+from care.facility.models.facility import Facility
+from care.security.models import RolePermission
 from care.security.roles.role import (
     ADMINISTRATOR,
     DOCTOR_ROLE,
@@ -19,6 +21,7 @@ from care.security.roles.role import (
 )
 from care.users.models import User
 from care.utils.registries.feature_flag import FlagName, FlagNotFoundError
+from care.utils.shortcuts import get_object_or_404
 
 
 def is_valid_username(username):
@@ -52,8 +55,8 @@ class UserBaseSpec(EMRResource):
     last_name: str
     phone_number: str = Field(max_length=14)
 
-    prefix: str | None = None
-    suffix: str | None = None
+    prefix: str | None = Field(None, max_length=10)
+    suffix: str | None = Field(None, max_length=50)
 
 
 class UserUpdateSpec(UserBaseSpec):
@@ -118,6 +121,7 @@ class UserCreateSpec(UserUpdateSpec):
         obj.set_password(self.password)
 
 
+@cacheable(use_base_manager=True)
 class UserSpec(UserBaseSpec):
     last_login: str
     profile_picture_url: str
@@ -137,7 +141,7 @@ class UserSpec(UserBaseSpec):
 
 class UserRetrieveSpec(UserSpec):
     geo_organization: dict
-    created_by: dict
+    created_by: UserSpec
     email: str
     flags: list[str] = []
 
@@ -146,13 +150,68 @@ class UserRetrieveSpec(UserSpec):
         from care.emr.resources.organization.spec import OrganizationReadSpec
 
         super().perform_extra_serialization(mapping, obj)
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
+        if obj.created_by_id:
+            mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
             ).to_json()
         mapping["flags"] = obj.get_all_flags()
+
+
+class CurrentUserRetrieveSpec(UserRetrieveSpec):
+    is_superuser: bool
+    qualification: str | None
+    doctor_experience_commenced_on: str | None
+    doctor_medical_council_registration: str | None
+    weekly_working_hours: str | None
+    alt_phone_number: str | None
+    date_of_birth: str | None
+    verified: bool
+    pf_endpoint: str | None
+    pf_p256dh: str | None
+    pf_auth: str | None
+    organizations: list[dict]
+    facilities: list[dict]
+    permissions: list[str]
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj: User) -> None:
+        from care.emr.resources.facility.spec import FacilityBareMinimumSpec
+        from care.emr.resources.organization.spec import OrganizationReadSpec
+
+        super().perform_extra_serialization(mapping, obj)
+
+        if obj.is_superuser:
+            organizations = Organization.objects.filter(parent__isnull=True)
+        else:
+            organizations = Organization.objects.filter(
+                id__in=OrganizationUser.objects.filter(user=obj).values_list(
+                    "organization_id", flat=True
+                )
+            )
+        mapping["organizations"] = [
+            OrganizationReadSpec.serialize(obj).to_json() for obj in organizations
+        ]
+
+        user_facilities = Facility.objects.filter(
+            id__in=FacilityOrganizationUser.objects.filter(
+                user=obj, organization__facility__deleted=False
+            ).values_list("organization__facility_id", flat=True)
+        )
+        mapping["facilities"] = [
+            FacilityBareMinimumSpec.serialize(obj).to_json() for obj in user_facilities
+        ]
+
+        mapping["permissions"] = list(
+            RolePermission.objects.filter(
+                role_id__in=OrganizationUser.objects.filter(user=obj).values_list(
+                    "role_id", flat=True
+                )
+            )
+            .select_related("permission")
+            .values_list("permission__slug", flat=True)
+        )
 
 
 class PublicUserReadSpec(UserBaseSpec):
@@ -204,3 +263,20 @@ class UserFlagReadSpec(UserFlagBaseSpec):
         mapping["user"] = UserRetrieveSpec.serialize(obj.user).to_json()
         mapping["flag"] = obj.flag
         mapping["id"] = obj.external_id
+
+
+class ResetPasswordCheckRequest(BaseModel):
+    token: str
+
+
+class ResetPasswordConfirmRequest(BaseModel):
+    token: str
+    password: str
+
+
+class ResetPasswordResponse(BaseModel):
+    detail: str
+
+
+class ResetPasswordRequestTokenRequest(BaseModel):
+    username: str

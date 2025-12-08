@@ -8,6 +8,7 @@ from django.template.defaultfilters import pluralize
 from django.utils import timezone
 
 from care.emr.models import EMRBaseModel
+from care.emr.resources.base import model_from_cache
 from care.utils.models.validators import mobile_or_landline_number_validator
 
 
@@ -43,6 +44,12 @@ class Patient(EMRBaseModel):
 
     users_cache = ArrayField(models.IntegerField(), default=list)
 
+    instance_identifiers = models.JSONField(default=list, null=True, blank=True)
+    facility_identifiers = models.JSONField(default=dict, null=True, blank=True)
+
+    instance_tags = ArrayField(models.IntegerField(), default=list)
+    facility_tags = models.JSONField(default=dict, null=True, blank=True)
+
     def get_age(self) -> str:
         start = self.date_of_birth or date(self.year_of_birth, 1, 1)
         end = (self.deceased_datetime or timezone.now()).date()
@@ -64,6 +71,13 @@ class Patient(EMRBaseModel):
             return f"{delta.days} day{pluralize(delta.days)}"
 
         return "0 days"
+
+    @property
+    def age(self) -> int:
+        start = self.date_of_birth or date(self.year_of_birth, 1, 1)
+        end = (self.deceased_datetime or timezone.now()).date()
+        delta = relativedelta(end, start)
+        return delta.years
 
     def rebuild_organization_cache(self):
         organization_parents = []
@@ -90,6 +104,22 @@ class Patient(EMRBaseModel):
             )
             self.users_cache = users
 
+    def build_instance_identifiers(self):
+        self.instance_identifiers = [
+            {"config": str(x.config.external_id), "value": x.value}
+            for x in PatientIdentifier.objects.filter(patient=self)
+        ]
+
+    def build_facility_identifiers(self, facility_id):
+        if not self.facility_identifiers:
+            self.facility_identifiers = {}
+        self.facility_identifiers[facility_id] = [
+            {"config": str(x.config.external_id), "value": x.value}
+            for x in PatientIdentifier.objects.filter(
+                patient=self, config__facility_id=facility_id
+            )
+        ]
+
     def save(self, *args, **kwargs) -> None:
         if self.date_of_birth and not self.year_of_birth:
             self.year_of_birth = self.date_of_birth.year
@@ -97,6 +127,9 @@ class Patient(EMRBaseModel):
         self.rebuild_organization_cache()
         self.rebuild_users_cache()
         super().save(update_fields=["organization_cache", "users_cache"])
+
+    def __str__(self):
+        return self.name
 
 
 class PatientOrganization(EMRBaseModel):
@@ -121,3 +154,77 @@ class PatientUser(EMRBaseModel):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.patient.save()
+
+
+class PatientIdentifierConfig(EMRBaseModel):
+    status = models.CharField(max_length=255)
+    facility = models.ForeignKey(
+        "facility.Facility", on_delete=models.CASCADE, null=True, blank=True
+    )
+    config = models.JSONField(default=dict, null=True, blank=True)
+
+
+class PatientIdentifier(EMRBaseModel):
+    facility = models.ForeignKey(
+        "facility.Facility", on_delete=models.CASCADE, null=True, blank=True
+    )
+    patient = models.ForeignKey(Patient, on_delete=models.CASCADE)
+    config = models.ForeignKey(PatientIdentifierConfig, on_delete=models.CASCADE)
+    value = models.CharField(max_length=1024, db_index=True)
+
+
+class PatientIdentifierConfigCache:
+    """
+    Configs can be cached because it changes very rarely,
+    Redis based alternative for this class can be implemented later if needed.
+    """
+
+    # TODO : Switch to Redis
+    configs = {}
+    instance_configs = None
+    facility_configs = {}
+
+    @classmethod
+    def get_config(cls, config_id) -> PatientIdentifierConfig:
+        from care.emr.resources.patient_identifier.spec import PatientIdentifierListSpec
+
+        if config_id not in cls.configs:
+            cls.configs[config_id] = PatientIdentifierListSpec.serialize(
+                PatientIdentifierConfig.objects.get(external_id=config_id)
+            ).to_json()
+        return cls.configs[config_id]
+
+    @classmethod
+    def clear_cache(cls, config_id: int | None = None):
+        if config_id is None:
+            cls.configs = {}
+        else:
+            cls.configs.pop(config_id, None)
+
+    @classmethod
+    def get_instance_config(cls) -> list[dict]:
+        from care.emr.resources.patient_identifier.spec import (
+            PatientIdentifierListSpec,
+            PatientIdentifierStatus,
+        )
+
+        return [
+            model_from_cache(PatientIdentifierListSpec, id=x.id)
+            for x in PatientIdentifierConfig.objects.filter(
+                facility__isnull=True, status=PatientIdentifierStatus.active.value
+            ).only("id")
+        ]
+
+    @classmethod
+    def get_facility_config(cls, facility_id):
+        from care.emr.resources.patient_identifier.spec import (
+            PatientIdentifierListSpec,
+            PatientIdentifierStatus,
+        )
+
+        return [
+            model_from_cache(PatientIdentifierListSpec, id=x.id)
+            for x in PatientIdentifierConfig.objects.filter(
+                facility_id=facility_id, status=PatientIdentifierStatus.active.value
+            ).only("id")
+        ]

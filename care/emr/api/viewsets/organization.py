@@ -1,9 +1,9 @@
 from django.conf import settings
+from django.db import transaction
 from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 from rest_framework.settings import api_settings
 
@@ -24,6 +24,7 @@ from care.emr.resources.organization.spec import (
 from care.security.authorization import AuthorizationController
 from care.security.models import PermissionModel, RoleModel, RolePermission
 from care.utils.pagination.care_pagination import CareLimitOffsetPagination
+from care.utils.shortcuts import get_object_or_404
 from config.patient_otp_authentication import JWTTokenPatientAuthentication
 
 
@@ -79,7 +80,7 @@ class OrganizationViewSet(EMRModelViewSet):
         ):
             raise ValidationError("Organization already exists with same name")
 
-        if instance.parent and model_obj is None:
+        if model_obj is None and instance.parent:
             parent = get_object_or_404(Organization, external_id=instance.parent)
 
             # Validate Depth
@@ -104,7 +105,7 @@ class OrganizationViewSet(EMRModelViewSet):
             "can_manage_organization_obj", self.request.user, instance
         ):
             raise PermissionDenied(
-                "User does not have the required permissions to update organizations"
+                "User does not have the required permissions to delete organizations"
             )
         # TODO delete should not be allowed if there are any children left
 
@@ -151,6 +152,19 @@ class OrganizationViewSet(EMRModelViewSet):
                 "User does not have the required permissions to create organizations"
             )
         return True
+
+    def perform_destroy(self, instance):
+        with transaction.atomic():
+            OrganizationUser.objects.filter(organization=instance).delete()
+            instance.deleted = True
+            instance.save(update_fields=["deleted"])
+
+            parent = instance.parent
+            if parent:
+                parent.has_children = Organization.objects.filter(
+                    parent=parent
+                ).exists()
+                parent.save(update_fields=["has_children"])
 
     def get_queryset(self):
         queryset = (

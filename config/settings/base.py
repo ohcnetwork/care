@@ -18,7 +18,7 @@ from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 from care.utils.csp import config as csp_config
 from plug_config import manager
 
-from .custom_limits import *  # noqa F403
+from .config import *  # noqa F403
 
 warnings.filterwarnings("ignore", category=UserWarning)
 
@@ -27,6 +27,7 @@ logger = logging.getLogger(__name__)
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "care"
 env = environ.Env()
+
 
 if READ_DOT_ENV_FILE := env.bool("DJANGO_READ_DOT_ENV_FILE", default=False):
     # OS environment variables take precedence over variables from .env
@@ -129,8 +130,8 @@ THIRD_PARTY_APPS = [
     "djangoql",
     "maintenance_mode",
     "django.contrib.postgres",
-    "django_rest_passwordreset",
     "healthy_django",
+    "import_export",
 ]
 LOCAL_APPS = [
     "care.security",
@@ -384,6 +385,9 @@ REST_FRAMEWORK = {
     "SEARCH_PARAM": "search_text",
     "DEFAULT_SCHEMA_CLASS": "care.utils.swagger.schema.AutoSchema",
     "EXCEPTION_HANDLER": "config.exception_handler.exception_handler",
+    "DEFAULT_RENDERER_CLASSES": [
+        "rest_framework.renderers.JSONRenderer",
+    ],
 }
 
 # drf-spectacular (schema generation)

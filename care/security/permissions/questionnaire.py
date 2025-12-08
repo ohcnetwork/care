@@ -7,6 +7,7 @@ from care.security.roles.role import (
     DOCTOR_ROLE,
     FACILITY_ADMIN_ROLE,
     NURSE_ROLE,
+    PHARMACIST_ROLE,
     STAFF_ROLE,
     VOLUNTEER_ROLE,
 )
@@ -37,6 +38,7 @@ class QuestionnairePermissions(enum.Enum):
             STAFF_ROLE,
             FACILITY_ADMIN_ROLE,
             VOLUNTEER_ROLE,
+            PHARMACIST_ROLE,
         ],
     )
     can_submit_questionnaire = Permission(

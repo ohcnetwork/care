@@ -8,9 +8,9 @@ from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
+from rest_framework import filters as rest_framework_filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -22,6 +22,8 @@ from care.emr.api.viewsets.base import (
 )
 from care.emr.models import Encounter, FileUpload, Patient
 from care.emr.models.consent import Consent
+from care.emr.models.diagnostic_report import DiagnosticReport
+from care.emr.models.service_request import ServiceRequest
 from care.emr.resources.file_upload.spec import (
     FileTypeChoices,
     FileUploadCreateSpec,
@@ -30,9 +32,10 @@ from care.emr.resources.file_upload.spec import (
     FileUploadUpdateSpec,
 )
 from care.security.authorization import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
-def file_authorizer(user, file_type, associating_id, permission):
+def file_authorizer(user, file_type, associating_id, permission):  # noqa PLR0912
     allowed = False
     if file_type == FileTypeChoices.patient.value:
         patient_obj = get_object_or_404(Patient, external_id=associating_id)
@@ -68,7 +71,34 @@ def file_authorizer(user, file_type, associating_id, permission):
             allowed = AuthorizationController.call(
                 "can_update_encounter_obj", user, encounter_obj
             )
-
+    elif file_type == FileTypeChoices.diagnostic_report.value:
+        diagnostic_report_obj = get_object_or_404(
+            DiagnosticReport, external_id=associating_id
+        )
+        if permission == "read":
+            allowed = AuthorizationController.call(
+                "can_read_diagnostic_report",
+                user,
+                diagnostic_report_obj.service_request,
+            )
+        elif permission == "write":
+            allowed = AuthorizationController.call(
+                "can_write_diagnostic_report",
+                user,
+                diagnostic_report_obj.service_request,
+            )
+    elif file_type == FileTypeChoices.service_request.value:
+        service_request_obj = get_object_or_404(
+            ServiceRequest, external_id=associating_id
+        )
+        if permission == "read":
+            allowed = AuthorizationController.call(
+                "can_read_service_request", user, service_request_obj
+            )
+        elif permission == "write":
+            allowed = AuthorizationController.call(
+                "can_write_service_request", user, service_request_obj
+            )
     if not allowed:
         raise PermissionDenied("Cannot View File")
 
@@ -95,7 +125,11 @@ class FileUploadViewSet(
     pydantic_update_model = FileUploadUpdateSpec
     pydantic_read_model = FileUploadListSpec
     filterset_class = FileUploadFilter
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        rest_framework_filters.OrderingFilter,
+    ]
+    ordering_fields = ["created_date", "modified_date"]
 
     def authorize_create(self, instance):
         file_authorizer(

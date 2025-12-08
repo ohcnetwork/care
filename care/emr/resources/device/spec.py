@@ -74,8 +74,13 @@ class DeviceListSpec(DeviceCreateSpec):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         if obj.care_type:
-            care_device_class = DeviceTypeRegistry.get_care_device_class(obj.care_type)
-            mapping["care_metadata"] = care_device_class().list(obj)
+            try:
+                care_device_class = DeviceTypeRegistry.get_care_device_class(
+                    obj.care_type
+                )
+                mapping["care_metadata"] = care_device_class().list(obj)
+            except ValueError:
+                mapping["care_metadata"] = {}
 
 
 class DeviceRetrieveSpec(DeviceListSpec):

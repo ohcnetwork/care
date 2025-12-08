@@ -1,7 +1,11 @@
 from django.contrib.postgres.fields import ArrayField
-from django.db import models
+from django.db import models, transaction
 
-from care.emr.models import EMRBaseModel, FacilityOrganization, TokenBooking
+from care.emr.models.base import EMRBaseModel
+from care.emr.models.scheduling.booking import TokenBooking
+from care.emr.resources.patient_identifier.default_expression_evaluator import (
+    evaluate_patient_facility_default_values,
+)
 
 
 class Encounter(EMRBaseModel):
@@ -30,6 +34,8 @@ class Encounter(EMRBaseModel):
 
     discharge_summary_advice = models.TextField(null=True, blank=True)
 
+    tags = ArrayField(models.IntegerField(), default=list)
+
     def sync_organization_cache(self):
         orgs = set()
         for encounter_organization in EncounterOrganization.objects.filter(
@@ -42,17 +48,20 @@ class Encounter(EMRBaseModel):
                 }
             )
 
-        facility_root_org = FacilityOrganization.objects.filter(
-            org_type="root", facility=self.facility
-        ).first()
-        if facility_root_org:
-            orgs = orgs.union({facility_root_org.id})
+        orgs = orgs.union({self.facility.default_internal_organization_id})
 
         self.facility_organization_cache = list(orgs)
         super().save(update_fields=["facility_organization_cache"])
 
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        created = False
+        if not self.pk:
+            # Generate Facility identifiers for this encounter
+            created = True
+        with transaction.atomic():
+            super().save(*args, **kwargs)
+            if created:
+                evaluate_patient_facility_default_values(self.patient, self.facility)
         self.sync_organization_cache()
 
 

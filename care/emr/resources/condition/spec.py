@@ -3,7 +3,6 @@ from enum import Enum
 
 from django.utils.timezone import is_aware, make_aware
 from pydantic import UUID4, field_validator
-from rest_framework.generics import get_object_or_404
 
 from care.emr.models.condition import Condition
 from care.emr.models.encounter import Encounter
@@ -12,6 +11,7 @@ from care.emr.resources.common.coding import Coding
 from care.emr.resources.condition.valueset import CARE_CODITION_CODE_VALUESET
 from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
+from care.utils.shortcuts import get_object_or_404
 from care.utils.time_util import care_now
 
 
@@ -117,10 +117,10 @@ class ConditionReadSpec(BaseConditionSpec):
     severity: str
     code: Coding
     encounter: UUID4
-    onset: ConditionOnSetSpec = dict
-    abatement: ConditionAbatementSpec = dict
-    created_by: UserSpec = dict
-    updated_by: UserSpec = dict
+    onset: ConditionOnSetSpec = {}
+    abatement: ConditionAbatementSpec = {}
+    created_by: UserSpec = {}
+    updated_by: UserSpec = {}
     note: str | None = None
     created_date: datetime.datetime
     modified_date: datetime.datetime

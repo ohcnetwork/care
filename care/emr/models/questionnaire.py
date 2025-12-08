@@ -56,6 +56,16 @@ class Questionnaire(EMRBaseModel):
     tags = ArrayField(models.IntegerField(), default=list)
 
 
+class FormSubmission(EMRBaseModel):
+    questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
+    patient = models.ForeignKey("emr.Patient", on_delete=models.CASCADE)
+    encounter = models.ForeignKey(
+        "emr.Encounter", on_delete=models.CASCADE, null=True, blank=True
+    )
+    status = models.CharField(max_length=255)
+    response_dump = models.JSONField(default=dict)
+
+
 class QuestionnaireResponse(EMRBaseModel):
     questionnaire = models.ForeignKey(
         Questionnaire, on_delete=models.CASCADE, null=True, blank=True
@@ -68,7 +78,9 @@ class QuestionnaireResponse(EMRBaseModel):
     encounter = models.ForeignKey(
         "emr.Encounter", on_delete=models.CASCADE, null=True, blank=True
     )
-
+    form_submission = models.ForeignKey(
+        FormSubmission, on_delete=models.CASCADE, null=True, blank=True
+    )
     # TODO : Add index for subject_id and subject_type in descending order
 
 

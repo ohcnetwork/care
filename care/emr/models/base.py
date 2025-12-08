@@ -1,3 +1,5 @@
+import uuid
+
 from django.core.cache import cache
 from django.db import models
 
@@ -94,3 +96,38 @@ class BaseFlag(EMRBaseModel):
             cls.cache_key_template.format(entity_id=entity_id, flag_name=flag_name)
         )
         cache.delete(cls.all_flags_cache_key_template.format(entity_id=entity_id))
+
+
+class SlugBaseModel(EMRBaseModel):
+    FACILITY_SCOPED = True
+
+    class Meta:
+        abstract = True
+
+    @classmethod
+    def calculate_slug_from_facility(cls, facility_external_id, slug):
+        return f"f-{facility_external_id}-{slug}"
+
+    @classmethod
+    def calculate_slug_from_instance(cls, slug):
+        return f"i-{slug}"
+
+    def calculate_slug(self):
+        if self.FACILITY_SCOPED and self.facility:
+            return f"f-{self.facility.external_id}-{self.slug}"
+        return f"i-{self.slug}"
+
+    def parse_slug(self, slug):
+        if len(slug) <= 2:  # noqa PLR2004
+            raise ValueError("Invalid slug")
+        if slug.startswith("f-") and self.FACILITY_SCOPED:
+            # Facility Scoped slug
+            facility_id = slug[2:38]
+            uuid.UUID(facility_id)  # Validate UUID
+            slug_value = slug[39:]
+            return {"facility": facility_id, "slug_value": slug_value}
+        if slug.startswith("i-"):
+            # instance scoped slug
+            slug_value = slug[2:]
+            return {"slug_value": slug_value}
+        raise ValueError("Invalid slug")

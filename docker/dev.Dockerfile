@@ -24,6 +24,9 @@ RUN --mount=type=cache,target=/root/.cache/pip pip install pipenv==2024.4.0
 COPY Pipfile Pipfile.lock $APP_HOME/
 RUN --mount=type=cache,target=/root/.cache/pip pipenv  install --system --categories "packages dev-packages docs"
 
+ARG ADDITIONAL_PLUGS=""
+ENV ADDITIONAL_PLUGS=$ADDITIONAL_PLUGS
+
 COPY . $APP_HOME/
 
 RUN --mount=type=cache,target=/root/.cache/pip python3 $APP_HOME/install_plugins.py

@@ -1,7 +1,6 @@
 from django_filters import rest_framework as filters
 from rest_framework import filters as rest_framework_filters
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import get_object_or_404
 
 from care.emr.api.viewsets.base import EMRModelViewSet, EMRQuestionnaireResponseMixin
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
@@ -18,20 +17,26 @@ from care.emr.resources.medication.request.spec import (
 from care.emr.resources.questionnaire.spec import SubjectType
 from care.security.authorization import AuthorizationController
 from care.users.models import User
-
-
-class StatusFilter(filters.CharFilter):
-    def filter(self, qs, value):
-        if value:
-            statuses = value.split(",")
-            return qs.filter(status__in=statuses)
-        return qs
+from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.filters.null_filter import NullFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class MedicationRequestFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
-    status = StatusFilter()
+    status = MultiSelectFilter(field_name="status")
     name = filters.CharFilter(field_name="medication__display", lookup_expr="icontains")
+    encounter_class = filters.CharFilter(
+        field_name="encounter__class", lookup_expr="iexact"
+    )
+    priority = filters.CharFilter(lookup_expr="iexact")
+    dispense_status = MultiSelectFilter(field_name="dispense_status")
+    exclude_dispense_status = MultiSelectFilter(
+        field_name="dispense_status", exclude=True
+    )
+    dispense_status_isnull = NullFilter(field_name="dispense_status")
+    facility = filters.UUIDFilter(field_name="encounter__facility__external_id")
+    prescription = filters.UUIDFilter(field_name="prescription__external_id")
 
 
 class MedicationRequestViewSet(
@@ -53,7 +58,7 @@ class MedicationRequestViewSet(
     ordering_fields = ["created_date", "modified_date"]
 
     def get_queryset(self):
-        self.authorize_read_encounter()
+        self.authorize_read_for_medication()
         return (
             super()
             .get_queryset()

@@ -27,6 +27,10 @@ STAFF_ROLE = Role(
     name="Staff",
     description="Staff at some facility",
 )
+PHARMACIST_ROLE = Role(
+    name="Pharmacist",
+    description="Pharmacist at some facility",
+)
 ADMINISTRATOR = Role(
     name="Administrator",
     description="Administrator at a given boundary",
@@ -37,7 +41,7 @@ FACILITY_ADMIN_ROLE = Role(
 )
 ADMIN_ROLE = Role(
     name="Admin",
-    description="Administrator",
+    description="Admin",
 )
 
 
@@ -52,6 +56,7 @@ class RoleController:
         FACILITY_ADMIN_ROLE,
         ADMIN_ROLE,
         VOLUNTEER_ROLE,
+        PHARMACIST_ROLE,
     ]
 
     @classmethod

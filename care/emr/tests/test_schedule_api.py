@@ -7,17 +7,20 @@ from rest_framework import status
 
 from care.emr.models import (
     Availability,
-    SchedulableUserResource,
+    SchedulableResource,
     Schedule,
     TokenBooking,
     TokenSlot,
 )
-from care.emr.resources.scheduling.schedule.spec import SlotTypeOptions
+from care.emr.resources.scheduling.schedule.spec import (
+    SchedulableResourceTypeOptions,
+    SlotTypeOptions,
+)
 from care.emr.resources.scheduling.slot.spec import (
     CANCELLED_STATUS_CHOICES,
     BookingStatusChoices,
 )
-from care.security.permissions.user_schedule import UserSchedulePermissions
+from care.security.permissions.schedule import SchedulePermissions
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -28,7 +31,8 @@ class TestScheduleViewSet(CareAPITestBase):
         self.user = self.create_user()
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
-        self.resource = SchedulableUserResource.objects.create(
+        self.resource = SchedulableResource.objects.create(
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
             user=self.user,
             facility=self.facility,
         )
@@ -118,7 +122,8 @@ class TestScheduleViewSet(CareAPITestBase):
         valid_to = (datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None)
 
         return {
-            "user": str(self.user.external_id),
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": str(self.user.external_id),
             "name": "Test Schedule",
             "valid_from": valid_from.isoformat(),
             "valid_to": valid_to.isoformat(),
@@ -145,21 +150,76 @@ class TestScheduleViewSet(CareAPITestBase):
     # LIST TESTS
     def test_list_schedule_with_permissions(self):
         """Users with can_list_user_schedule permission can list schedules."""
-        permissions = [UserSchedulePermissions.can_list_user_schedule.name]
+        permissions = [SchedulePermissions.can_list_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        response = self.client.get(self.base_url)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_schedule_without_permissions(self):
         """Users without can_list_user_schedule permission cannot list schedules."""
-        response = self.client.get(self.base_url)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_list_schedule_filtered_by_month_range(self):
+        """Test various valid_from and valid_to edge cases"""
+
+        permissions = [SchedulePermissions.can_list_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        filter_from = datetime(2025, 6, 1, 0, 0, tzinfo=UTC)
+        filter_to = filter_from + timedelta(days=29)
+
+        within_range = self.create_schedule(valid_from=filter_from, valid_to=filter_to)
+
+        left_overlap = self.create_schedule(
+            valid_from=filter_from - timedelta(days=5), valid_to=filter_to
+        )
+
+        right_overlap = self.create_schedule(
+            valid_from=filter_from, valid_to=filter_to + timedelta(days=5)
+        )
+
+        outside_range = self.create_schedule(
+            valid_from=filter_to + timedelta(days=2),
+            valid_to=filter_to + timedelta(days=20),
+        )
+
+        response = self.client.get(
+            self.base_url,
+            {
+                "valid_from": filter_from.isoformat(),
+                "valid_to": filter_to.isoformat(),
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+            },
+            format="json",
+        )
+
+        self.assertContains(response, str(within_range.external_id), status_code=200)
+        self.assertContains(response, str(left_overlap.external_id), status_code=200)
+        self.assertContains(response, str(right_overlap.external_id), status_code=200)
+        self.assertNotContains(
+            response, str(outside_range.external_id), status_code=200
+        )
 
     def test_create_schedule_with_permissions(self):
         """Users with can_write_user_schedule permission can create schedules."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -180,7 +240,7 @@ class TestScheduleViewSet(CareAPITestBase):
 
     def test_create_schedule_with_overlapping_availability(self):
         """Schedule creation fails when availability sessions overlap"""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -225,13 +285,13 @@ class TestScheduleViewSet(CareAPITestBase):
 
     def test_create_schedule_with_user_not_part_of_facility(self):
         """Users cannot write schedules for user not belonging to the facility."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         user = self.create_user()
         schedule_data = self.generate_schedule_data(
-            user=user.external_id,
+            resource_id=user.external_id,
             valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
@@ -241,7 +301,7 @@ class TestScheduleViewSet(CareAPITestBase):
 
     def test_create_schedule_with_valid_from_date_less_than_current_date(self):
         """Users cannot create schedule with valid_from date less than now date"""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -257,7 +317,7 @@ class TestScheduleViewSet(CareAPITestBase):
 
     def test_create_schedule_with_valid_to_date_less_than_current_date(self):
         """Users cannot create schedule with valid_to date less than now date"""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -273,7 +333,7 @@ class TestScheduleViewSet(CareAPITestBase):
 
     def test_create_schedule_with_valid_to_date_less_than_valid_from_date(self):
         """Users cannot create schedule with valid_to date less than valid_from date"""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -291,8 +351,8 @@ class TestScheduleViewSet(CareAPITestBase):
     def test_update_schedule_with_permissions(self):
         """Users with can_write_user_schedule permission can update schedules."""
         permissions = [
-            UserSchedulePermissions.can_write_user_schedule.name,
-            UserSchedulePermissions.can_list_user_schedule.name,
+            SchedulePermissions.can_write_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -311,7 +371,7 @@ class TestScheduleViewSet(CareAPITestBase):
         """Users without can_write_user_schedule permission cannot update schedules."""
         # First create a schedule with permissions
         permissions = [
-            UserSchedulePermissions.can_list_user_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -329,8 +389,8 @@ class TestScheduleViewSet(CareAPITestBase):
     def test_delete_schedule_with_permissions(self):
         """Users with can_write_user_schedule permission can delete schedules."""
         permissions = [
-            UserSchedulePermissions.can_write_user_schedule.name,
-            UserSchedulePermissions.can_list_user_schedule.name,
+            SchedulePermissions.can_write_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -349,7 +409,7 @@ class TestScheduleViewSet(CareAPITestBase):
         """Users without can_write_user_schedule permission cannot delete schedules."""
         # First create a schedule with permissions
         permissions = [
-            UserSchedulePermissions.can_list_user_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -361,8 +421,8 @@ class TestScheduleViewSet(CareAPITestBase):
     def test_update_schedule_validity_with_booking_within_new_validity(self):
         """Test that schedule validity can be updated when bookings fall within the new validity period."""
         permissions = [
-            UserSchedulePermissions.can_write_user_schedule.name,
-            UserSchedulePermissions.can_list_user_schedule.name,
+            SchedulePermissions.can_write_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -380,8 +440,8 @@ class TestScheduleViewSet(CareAPITestBase):
     def test_update_schedule_validity_with_booking_outside_new_validity(self):
         """Test that schedule validity cannot be updated when bookings fall outside the new validity period."""
         permissions = [
-            UserSchedulePermissions.can_write_user_schedule.name,
-            UserSchedulePermissions.can_list_user_schedule.name,
+            SchedulePermissions.can_write_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -408,8 +468,8 @@ class TestScheduleViewSet(CareAPITestBase):
     def test_delete_schedule_with_future_bookings(self):
         """Users cannot delete schedules with bookings present in the future."""
         permissions = [
-            UserSchedulePermissions.can_write_user_schedule.name,
-            UserSchedulePermissions.can_list_user_schedule.name,
+            SchedulePermissions.can_write_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -431,8 +491,8 @@ class TestScheduleViewSet(CareAPITestBase):
     def test_delete_schedule_with_future_cancelled_bookings(self):
         """Users cannot delete schedules with bookings present in the future."""
         permissions = [
-            UserSchedulePermissions.can_write_user_schedule.name,
-            UserSchedulePermissions.can_list_user_schedule.name,
+            SchedulePermissions.can_write_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -456,7 +516,8 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         self.user = self.create_user()
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
-        self.resource = SchedulableUserResource.objects.create(
+        self.resource = SchedulableResource.objects.create(
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
             user=self.user,
             facility=self.facility,
         )
@@ -480,8 +541,10 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
     def create_exception(self, **kwargs):
         from care.emr.models import AvailabilityException
 
-        valid_from = datetime.now(UTC).date()
-        valid_to = (datetime.now(UTC) + timedelta(days=1)).date()
+        valid_from = kwargs.get("valid_from", datetime.now(UTC).date())
+        valid_to = kwargs.get(
+            "valid_to", (datetime.now(UTC) + timedelta(days=1)).date()
+        )
         return AvailabilityException.objects.create(
             resource=self.resource,
             valid_from=valid_from,
@@ -497,7 +560,8 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
         valid_to = (datetime.now(UTC) + timedelta(days=1)).date()
 
         return {
-            "user": str(self.user.external_id),
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": str(self.user.external_id),
             "reason": "Out of office",
             "valid_from": valid_from.isoformat(),
             "valid_to": valid_to.isoformat(),
@@ -508,21 +572,78 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
 
     def test_list_exceptions_with_permissions(self):
         """Users with can_list_user_schedule permission can list exceptions."""
-        permissions = [UserSchedulePermissions.can_list_user_schedule.name]
+        permissions = [SchedulePermissions.can_list_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        response = self.client.get(self.base_url)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_list_exceptions_without_permissions(self):
         """Users without can_list_user_schedule permission cannot list exceptions."""
-        response = self.client.get(self.base_url)
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+            },
+        )
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_list_exceptions_filtered_by_month_range(self):
+        """Test various valid_from and valid_to edge cases"""
+
+        permissions = [SchedulePermissions.can_list_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        filter_from = datetime(2025, 6, 1).date()
+        filter_to = filter_from + timedelta(days=29)
+
+        within_range = self.create_exception(valid_from=filter_from, valid_to=filter_to)
+
+        left_overlap = self.create_exception(
+            valid_from=filter_from - timedelta(days=5),
+            valid_to=filter_to,
+        )
+
+        right_overlap = self.create_exception(
+            valid_from=filter_from,
+            valid_to=filter_to + timedelta(days=5),
+        )
+
+        outside_range = self.create_exception(
+            valid_from=filter_to + timedelta(days=5),
+            valid_to=filter_to + timedelta(days=25),
+        )
+
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+                "valid_from": filter_from.isoformat(),
+                "valid_to": filter_to.isoformat(),
+            },
+            format="json",
+        )
+
+        self.assertContains(response, str(within_range.external_id), status_code=200)
+        self.assertContains(response, str(left_overlap.external_id), status_code=200)
+        self.assertContains(response, str(right_overlap.external_id), status_code=200)
+        self.assertNotContains(
+            response, str(outside_range.external_id), status_code=200
+        )
 
     def test_create_exception_with_permissions(self):
         """Users with can_write_user_schedule permission can create exceptions."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -539,20 +660,23 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
 
     def test_create_exception_with_invalid_user_resource(self):
         """Users with can_write_user_schedule permission can create exceptions."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        # Resource doesn't exist
-        self.resource.delete()
+        user = self.create_user()
+        facility = self.create_facility(user=user)
+        organization = self.create_facility_organization(facility=facility)
+        self.attach_role_facility_organization_user(organization, user, role)
 
-        exception_data = self.generate_exception_data()
+        exception_data = self.generate_exception_data(resource_id=user.external_id)
         response = self.client.post(self.base_url, exception_data, format="json")
-        self.assertContains(response, "Object does not exist", status_code=400)
+        self.assertContains(
+            response, "Schedule User is not part of the facility", status_code=400
+        )
 
     def test_create_exception_with_valid_from_date_less_than_current_date(self):
         """Users cannot create exception with valid_from date less than now date"""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -568,7 +692,7 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
 
     def test_create_exception_with_valid_to_date_less_than_current_date(self):
         """Users cannot create exception with valid_to date less than now date"""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -584,7 +708,7 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
 
     def test_create_exception_with_valid_to_date_less_than_valid_from_date(self):
         """Users cannot create exception with valid_to date less than now valid_from date"""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -599,58 +723,11 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
             status_code=400,
         )
 
-    def test_update_exception_with_permissions(self):
-        """Users with can_write_user_schedule permission can update exceptions."""
-        permissions = [
-            UserSchedulePermissions.can_write_user_schedule.name,
-            UserSchedulePermissions.can_list_user_schedule.name,
-        ]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        # First create an exception
-        exception = self.create_exception()
-
-        # Then update it
-        updated_data = {
-            "user": str(self.user.external_id),
-            "reason": "Updated reason",
-            "valid_from": exception.valid_from,
-            "valid_to": exception.valid_to,
-            "start_time": "09:00:00",
-            "end_time": "17:00:00",
-        }
-        update_url = self._get_exception_url(exception.external_id)
-        response = self.client.put(update_url, updated_data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["reason"], "Updated reason")
-
-    def test_update_exception_without_permissions(self):
-        """Users without can_write_user_schedule permission cannot update exceptions."""
-        permissions = [UserSchedulePermissions.can_list_user_schedule.name]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        # First create an exception
-        exception = self.create_exception()
-
-        updated_data = {
-            "user": str(self.user.external_id),
-            "reason": "Updated reason",
-            "valid_from": exception.valid_from,
-            "valid_to": exception.valid_to,
-            "start_time": "09:00:00",
-            "end_time": "17:00:00",
-        }
-        update_url = self._get_exception_url(exception.external_id)
-        response = self.client.put(update_url, updated_data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
-
     def test_delete_exception_with_permissions(self):
         """Users with can_write_user_schedule permission can delete exceptions."""
         permissions = [
-            UserSchedulePermissions.can_write_user_schedule.name,
-            UserSchedulePermissions.can_list_user_schedule.name,
+            SchedulePermissions.can_write_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -665,9 +742,7 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
 
     def test_delete_exception_without_permissions(self):
         """Users without can_write_user_schedule permission cannot delete exceptions."""
-        # First create an exception with permissions
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
-        role = self.create_role_with_permissions(permissions)
+        role = self.create_role_with_permissions([])
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         exception = self.create_exception()
@@ -678,7 +753,7 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
 
     def test_create_exception_with_bookings(self):
         """Test that creating an exception fails when there are conflicting bookings."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -754,10 +829,8 @@ class TestAvailabilityViewSet(CareAPITestBase):
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
         self.client.force_authenticate(user=self.user)
-        self.resource = SchedulableUserResource.objects.create(
-            user=self.user, facility=self.facility
-        )
-        self.resource = SchedulableUserResource.objects.create(
+        self.resource = SchedulableResource.objects.create(
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
             user=self.user,
             facility=self.facility,
         )
@@ -852,7 +925,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
 
     def test_create_availability_with_permissions(self):
         """Users with can_write_user_schedule permission can create availability."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -863,7 +936,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
 
     def test_create_availability_overlapping_with_existing_availabilities(self):
         """Users cannot create availability that overlaps with existing availabilities."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -881,7 +954,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
 
     def test_create_availability_not_overlapping_with_existing_availabilities(self):
         """Users can create availability that does not overlap with existing availabilities."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -904,8 +977,8 @@ class TestAvailabilityViewSet(CareAPITestBase):
     def test_delete_availability_with_permissions(self):
         """Users with can_write_user_schedule permission can delete availability."""
         permissions = [
-            UserSchedulePermissions.can_list_user_schedule.name,
-            UserSchedulePermissions.can_write_user_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
+            SchedulePermissions.can_write_schedule.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -922,7 +995,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
 
     def test_delete_availability_without_permissions(self):
         """Users without can_write_user_schedule permission cannot delete availability."""
-        permissions = [UserSchedulePermissions.can_list_user_schedule.name]
+        permissions = [SchedulePermissions.can_list_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -939,8 +1012,8 @@ class TestAvailabilityViewSet(CareAPITestBase):
     def test_delete_availability_with_future_bookings(self):
         """Users cannot delete availability with future bookings."""
         permissions = [
-            UserSchedulePermissions.can_list_user_schedule.name,
-            UserSchedulePermissions.can_write_user_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
+            SchedulePermissions.can_write_schedule.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -968,7 +1041,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
 
     def test_create_availability_validate_availability(self):
         """Test validation rules for overlapping time ranges when creating availability slots."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -1033,7 +1106,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
         self,
     ):
         """Test validation rules for ensuring availability duration is multiple of slot size in minutes."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -1056,7 +1129,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
 
     def test_create_availability_start_time_greater_than_end_time(self):
         """Test validation rules for ensuring start time is before end time."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -1079,7 +1152,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
 
     def test_create_availability_total_slots_greater_than_max_slots(self):
         """Test validation rules for ensuring total_slots is not greater than maximum slots."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -1103,7 +1176,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
 
     def test_create_availability_total_slots_equal_to_max_slots(self):
         """Test validation rules for ensuring total_slots is equal to maximum slots."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -1122,7 +1195,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
 
     def test_create_availability_total_slots_less_than_to_max_slots(self):
         """Test validation rules for ensuring total_slots is equal to maximum slots."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -1141,7 +1214,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
 
     def test_create_availability_validate_slot_type(self):
         """Test validation rules for different slot types when creating availability slots."""
-        permissions = [UserSchedulePermissions.can_write_user_schedule.name]
+        permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 

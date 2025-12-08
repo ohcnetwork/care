@@ -5,7 +5,6 @@ from pydantic import UUID4, BaseModel
 from rest_framework import filters as drf_filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
-from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -43,6 +42,7 @@ from care.emr.resources.device.spec import (
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class DeviceFilters(filters.FilterSet):
@@ -115,16 +115,19 @@ class DeviceViewSet(EMRModelViewSet):
         When Location is specified, Location permission is checked (or) organization filters are applied
         If location is not specified the organization cache is used
         """
-        queryset = Device.objects.all()
-
-        if self.request.user.is_superuser:
-            return queryset
+        queryset = super().get_queryset()
 
         facility = self.get_facility_obj()
+        facility_organizations = FacilityOrganization.objects.filter(
+            facility=facility
+        ).values_list("id", flat=True)
 
-        users_facility_organizations = FacilityOrganizationUser.objects.filter(
-            organization__facility=facility, user=self.request.user
-        ).values_list("organization_id", flat=True)
+        if self.request.user.is_superuser:
+            users_facility_organizations = facility_organizations
+        else:
+            users_facility_organizations = FacilityOrganizationUser.objects.filter(
+                organization_id__in=facility_organizations, user=self.request.user
+            ).values_list("organization_id", flat=True)
 
         if "location" in self.request.GET:
             location = get_object_or_404(

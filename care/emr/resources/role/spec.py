@@ -2,6 +2,7 @@ from pydantic import UUID4, model_validator
 from pydantic_core.core_schema import ValidationInfo
 
 from care.emr.resources.base import EMRResource
+from care.emr.utils.slug_type import SlugType
 from care.security.models import PermissionModel, RoleModel
 from care.security.permissions.base import PermissionController
 
@@ -10,7 +11,7 @@ class PermissionSpec(EMRResource):
     __model__ = PermissionModel
     name: str
     description: str
-    slug: str
+    slug: SlugType
     context: str
 
 
@@ -22,10 +23,11 @@ class RoleBaseSpec(EMRResource):
     name: str | None = None
     description: str | None = None
     is_system: bool | None = False
+    is_archived: bool | None = False
 
 
 class RoleCreateSpec(RoleBaseSpec):
-    permissions: list[PermissionController.get_enum()] | None = []
+    permissions: list[PermissionController.get_enum()] = []
 
     @model_validator(mode="after")
     def validate_role(self, info: ValidationInfo):
@@ -48,8 +50,10 @@ class RoleCreateSpec(RoleBaseSpec):
         if self.is_system:
             raise ValueError("Cannot create system roles")
 
-        if self.permissions:
-            self.permissions = list(set(self.permissions))
+        if not self.permissions:
+            raise ValueError("At least one permission must be assigned to the role")
+
+        self.permissions = list(set(self.permissions))
 
         return self
 
@@ -57,7 +61,7 @@ class RoleCreateSpec(RoleBaseSpec):
         if self.permissions:
             obj.permissions = self.permissions
         else:
-            obj.permissions = None
+            obj.permissions = []
 
 
 class RoleReadSpec(RoleBaseSpec):

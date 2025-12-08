@@ -1,3 +1,4 @@
+import html
 import logging
 import subprocess
 import tempfile
@@ -152,19 +153,22 @@ def compile_typ(output_file, data):
             / "staticfiles"
             / "images"
             / "logos"
-            / "black-logo.svg"
+            / "logo-light.svg"
         )
 
-        data["logo_path"] = "black-logo.svg"
+        data["logo_path"] = "logo-light.svg"
         with tempfile.TemporaryDirectory() as tmpdir:
             template = Path(tmpdir) / "template.typ"
             template.write_text(
-                render_to_string(
-                    "reports/patient_discharge_summary_pdf_template.typ", context=data
+                html.unescape(
+                    render_to_string(
+                        "reports/patient_discharge_summary_pdf_template.typ",
+                        context=data,
+                    )
                 )
             )
 
-            logo_dest = Path(tmpdir) / "black-logo.svg"
+            logo_dest = Path(tmpdir) / "logo-light.svg"
             logo_dest.write_text(logo_path.read_text())
 
             subprocess.run(  # noqa: S603

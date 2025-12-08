@@ -36,7 +36,10 @@ class FacilityAccess(AuthorizationHandler):
             user,
             orgs=facility.geo_organization_cache,
         ) or self.check_permission_in_facility_organization(
-            [FacilityPermissions.can_update_facility.name], user, facility=facility
+            [FacilityPermissions.can_update_facility.name],
+            user,
+            facility=facility,
+            root=True,
         )
 
 

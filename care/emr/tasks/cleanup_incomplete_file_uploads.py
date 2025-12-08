@@ -40,7 +40,10 @@ def cleanup_incomplete_file_uploads():
                     raise e
                 ids_to_delete.append(file.id)
 
-        deleted_count = FileUpload.objects.filter(id__in=ids_to_delete).delete()
+        if ids_to_delete:
+            deleted_count, _ = FileUpload.objects.filter(id__in=ids_to_delete).delete()
+        else:
+            deleted_count = 0
 
         logger.info("Deleted %d incomplete file uploads", deleted_count)
 
