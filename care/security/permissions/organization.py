@@ -68,3 +68,9 @@ class OrganizationPermissions(enum.Enum):
             PHARMACIST_ROLE,
         ],
     )
+    is_geo_admin = Permission(
+        "Is Geo Admin",
+        "Geo Admins can manage facilities in their organization",
+        PermissionContext.ORGANIZATION,
+        [],
+    )

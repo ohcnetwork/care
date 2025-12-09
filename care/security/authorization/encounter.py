@@ -1,7 +1,7 @@
 from django.db.models import Q
 
 from care.emr.models.organization import FacilityOrganizationUser
-from care.emr.resources.encounter.constants import COMPLETED_CHOICES
+from care.emr.resources.encounter.constants import COMPLETED_CHOICES, ERROR_CHOICES
 from care.security.authorization.base import (
     AuthorizationController,
     AuthorizationHandler,
@@ -118,8 +118,8 @@ class EncounterAccess(AuthorizationHandler):
         """
         Check if the user has permission to create service request under this encounter
         """
-        if encounter.status in COMPLETED_CHOICES:
-            # Cannot write to a closed encounter
+        if encounter.status in ERROR_CHOICES:
+            # Cannot write to an errored encounter
             return False
         return self.check_permission_in_encounter(
             user, encounter, ServiceRequestPermissions.can_write_service_request.name

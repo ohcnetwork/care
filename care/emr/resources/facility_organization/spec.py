@@ -42,7 +42,7 @@ class FacilityOrganizationWriteSpec(FacilityOrganizationBaseSpec):
     @classmethod
     def validate_encounter_exists(cls, facility):
         if not Facility.objects.filter(external_id=facility).exists():
-            err = "Faciltiy not found"
+            err = "Facility not found"
             raise ValueError(err)
         return facility
 
