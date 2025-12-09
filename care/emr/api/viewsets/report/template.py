@@ -45,6 +45,7 @@ class PreviewTemplateRequest(BaseModel):
     template_data: str
     output_format: str = "html"
     context: str
+    options: dict = {}
 
 
 class TemplateViewSet(EMRModelViewSet):
@@ -179,12 +180,15 @@ class TemplateViewSet(EMRModelViewSet):
             generator_class = GeneratorRegistry.get(request_data.output_format)
             generator = generator_class()
 
+            options_model = generator_class.options_model
+            validated_options = options_model.model_validate(request_data.options)
+
             context_class = DataPointRegistry.get(request_data.context)
             preview_context = context_class(is_preview=True)
             context_dict = {context_class.context_key: preview_context}
 
             rendered_content = Renderer(generator).render(
-                request_data.template_data, context_dict
+                request_data.template_data, context_dict, validated_options
             )
 
             return generator.get_http_response(rendered_content)

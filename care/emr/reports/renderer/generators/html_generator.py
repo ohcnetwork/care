@@ -1,21 +1,32 @@
 from typing import Any
 
 from django.http import HttpResponse
+from pydantic import Field
 
-from care.emr.reports.renderer.generators.base import BaseOutputGenerator
+from care.emr.reports.renderer.generators.base import BaseOptions, BaseOutputGenerator
 from care.emr.reports.renderer.generators.registry import GeneratorRegistry
 
 
+class HTMLGeneratorOptions(BaseOptions):
+    wrap_document: bool = Field(default=False)
+    title: str = Field(default="Report")
+    charset: str = Field(default="utf-8")
+
+
 class HTMLGenerator(BaseOutputGenerator):
-    def generate(self, html: str, options: dict[str, Any] | None = None) -> bytes:
-        options = options or {}
-        if options.get("wrap_document", False) and "<html" not in html.lower():
+    options_model = HTMLGeneratorOptions
+
+    def generate(self, html: str, options: HTMLGeneratorOptions | None = None) -> bytes:
+        options = options or HTMLGeneratorOptions()
+        if options.wrap_document and "<html" not in html.lower():
             html = self._wrap_html_document(html, options)
         return html.encode("utf-8")
 
-    def _wrap_html_document(self, html_fragment: str, options: dict[str, Any]) -> str:
-        title = options.get("title", "Report")
-        charset = options.get("charset", "utf-8")
+    def _wrap_html_document(
+        self, html_fragment: str, options: HTMLGeneratorOptions
+    ) -> str:
+        title = options.title
+        charset = options.charset
 
         return f"""<!DOCTYPE html>
 <html lang="en">
@@ -55,11 +66,7 @@ class HTMLGenerator(BaseOutputGenerator):
         return "html"
 
     def get_supported_options(self) -> dict[str, Any]:
-        return {
-            "wrap_document": {"type": "boolean", "default": False},
-            "title": {"type": "string", "default": "Report"},
-            "charset": {"type": "string", "default": "utf-8"},
-        }
+        return HTMLGeneratorOptions().model_dump()
 
     def get_http_response(self, content):
         return HttpResponse(content, content_type="text/html")
