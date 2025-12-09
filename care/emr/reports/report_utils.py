@@ -43,11 +43,8 @@ def generate_and_upload_report(
     report_type: str,
     associating_id: str,
     output_format: str = "pdf",
-    options: dict | None = None,
     **kwargs,
 ) -> ReportUpload:
-    options = options or {}
-
     context_class = DataPointRegistry.get(template.context)
     if not context_class:
         error_msg = f"Context '{template.context}' not found in DataPointRegistry"
@@ -56,6 +53,7 @@ def generate_and_upload_report(
     try:
         report_type_config = ReportTypeRegistry.get(report_type)
     except KeyError as e:
+        error_msg = f"Report Type '{report_type}' not found in ReportTypeRegistry"
         raise ValueError(error_msg) from e
 
     associating_object = validate_associating_id(
@@ -80,7 +78,8 @@ def generate_and_upload_report(
 
     renderer = Renderer(generator, template_engine)
 
-    output_bytes = renderer.render(template.template_data, context, options)
+    validated_options = generator.options_model.model_validate(template.options)
+    output_bytes = renderer.render(template.template_data, context, validated_options)
 
     current_date = timezone.now()
     timestamp = int(current_date.timestamp() * 1000)

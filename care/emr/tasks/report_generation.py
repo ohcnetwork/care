@@ -17,7 +17,6 @@ def generate_report_task(
     report_type: str,
     associating_id: str,
     output_format: str = "pdf",
-    options: dict | None = None,
     **kwargs,
 ):
     lock_key = f"{report_type}_{associating_id}"
@@ -49,7 +48,6 @@ def generate_report_task(
         report_upload = report_utils.generate_and_upload_report(
             template=template,
             output_format=output_format,
-            options=options,
             report_type=report_type,
             associating_id=associating_id,
             **kwargs,
