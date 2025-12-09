@@ -75,12 +75,6 @@ class ServiceRequestDataPointBuilder(QuerysetContextBuilder):
         description="Category of the service request",
     )
 
-    occurance = Field(
-        display="Occurrence",
-        preview_value="2025-11-30T18:30:00Z",
-        description="Date and time when the service is to occur",
-    )
-
     requester = Field(
         display="Requester",
         target_context=SingleUserRelatedContextBuilder,
