@@ -57,20 +57,9 @@ class TemplateCreateSpec(TemplateBaseSpec):
             raise ValueError("Report Type and Context are not compatible")
 
         generator_class = GeneratorRegistry.get(self.default_format)
-        generator = generator_class()
 
-        supported_options = generator.get_supported_options()
-
-        unsupported_options = self.options.keys() - supported_options.keys()
-        if unsupported_options:
-            err = f"Unsupported option(s) {",".join(unsupported_options)}"
-            raise ValueError(err)
-
-        for option, value in self.options.items():
-            if available_options := supported_options[option].get("options"):  # noqa SIM102
-                if value not in available_options:
-                    err = f"Value: {value} is not a valid for option {option}"
-                    raise ValueError(err)
+        options_model = generator_class.options_model
+        options_model.model_validate(self.options)
 
         return self
 

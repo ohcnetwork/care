@@ -1,32 +1,43 @@
 import logging
-from typing import Any
+from typing import Any, Literal
 
 from django.http import HttpResponse
+from pydantic import Field
+from weasyprint import CSS, HTML
 
-from care.emr.reports.renderer.generators.base import BaseOutputGenerator
+from care.emr.reports.renderer.generators.base import BaseOptions, BaseOutputGenerator
 
 logger = logging.getLogger(__name__)
 
 
+class WeasyPrintGeneratorOptions(BaseOptions):
+    page_size: Literal["A4", "A3", "A5", "Letter", "Legal"] = Field(default="A4")
+    margin: str = Field(default="1cm")
+    orientation: Literal["portrait", "landscape"] = Field(default="portrait")
+    stylesheets: list[str] = Field(default=[])
+
+
 class WeasyPrintGenerator(BaseOutputGenerator):
+    options_model = WeasyPrintGeneratorOptions
+
     def __init__(self):
         try:
-            from weasyprint import CSS, HTML
-
             self.HTML = HTML
             self.CSS = CSS
         except ImportError as e:
             msg = "WeasyPrint is not installed. Install it with: pip install weasyprint"
             raise ImportError(msg) from e
 
-    def generate(self, html: str, options: dict[str, Any] | None = None) -> bytes:
-        options = options or {}
+    def generate(
+        self, html: str, options: WeasyPrintGeneratorOptions | None = None
+    ) -> bytes:
+        options = options or WeasyPrintGeneratorOptions()
         try:
             html_obj = self.HTML(string=html)
             stylesheets = []
 
-            if options.get("stylesheets"):
-                for css_string in options["stylesheets"]:
+            if options.stylesheets:
+                for css_string in options.stylesheets:
                     stylesheets.append(self.CSS(string=css_string))
             else:
                 stylesheets.append(self.CSS(string=self._get_default_css(options)))
@@ -37,10 +48,10 @@ class WeasyPrintGenerator(BaseOutputGenerator):
             msg = f"Failed to generate PDF: {e!s}"
             raise Exception(msg) from e
 
-    def _get_default_css(self, options: dict[str, Any]) -> str:
-        page_size = options.get("page_size", "A4")
-        margin = options.get("margin", "1cm")
-        orientation = options.get("orientation", "portrait")
+    def _get_default_css(self, options: WeasyPrintGeneratorOptions) -> str:
+        page_size = options.page_size
+        margin = options.margin
+        orientation = options.orientation
 
         return f"""
         @page {{
@@ -86,26 +97,7 @@ class WeasyPrintGenerator(BaseOutputGenerator):
         return "pdf"
 
     def get_supported_options(self) -> dict[str, Any]:
-        return {
-            "page_size": {
-                "type": "string",
-                "default": "A4",
-                "options": ["A4", "A3", "A5", "Letter", "Legal"],
-            },
-            "margin": {
-                "type": "string",
-                "default": "1cm",
-            },
-            "orientation": {
-                "type": "string",
-                "default": "portrait",
-                "options": ["portrait", "landscape"],
-            },
-            "stylesheets": {
-                "type": "array",
-                "default": [],
-            },
-        }
+        return WeasyPrintGeneratorOptions().model_dump()
 
     def get_http_response(self, content):
         response = HttpResponse(content, content_type="application/pdf")

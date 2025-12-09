@@ -180,24 +180,15 @@ class TemplateViewSet(EMRModelViewSet):
             generator_class = GeneratorRegistry.get(request_data.output_format)
             generator = generator_class()
 
-            supported_options = generator.get_supported_options()
-
-            unsupported_options = request_data.options.keys() - supported_options.keys()
-            if unsupported_options:
-                err = f"Unsupported option(s): {",".join(unsupported_options)}"
-                raise ValidationError(err)
-            for option, value in request_data.options.items():
-                if available_options := supported_options[option].get("options"):  # noqa SIM102
-                    if value not in available_options:
-                        err = f"Value:{value} is not a valid for option {option}"
-                        raise ValidationError(err)
+            options_model = generator_class.options_model
+            validated_options = options_model.model_validate(request_data.options)
 
             context_class = DataPointRegistry.get(request_data.context)
             preview_context = context_class(is_preview=True)
             context_dict = {context_class.context_key: preview_context}
 
             rendered_content = Renderer(generator).render(
-                request_data.template_data, context_dict, request_data.options
+                request_data.template_data, context_dict, validated_options
             )
 
             return generator.get_http_response(rendered_content)
