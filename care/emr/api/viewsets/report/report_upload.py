@@ -141,7 +141,6 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
             report_type=template.template_type,
             associating_id=associating_id,
             output_format=output_format,
-            options=template.options or {},
             user_id=request.user.id,
         )
 
