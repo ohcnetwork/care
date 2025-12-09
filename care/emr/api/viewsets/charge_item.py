@@ -91,7 +91,6 @@ class ApplyMultipleChargeItemDefinitionRequest(BaseModel):
 def validate_service_resource(
     facility, service_resource, service_resource_id, patient, encounter=None
 ):
-    # TODO Validate with Patient and Encounter
     try:
         if service_resource == ChargeItemResourceOptions.service_request.value:
             qs = ServiceRequest.objects.filter(

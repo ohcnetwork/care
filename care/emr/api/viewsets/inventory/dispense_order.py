@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -20,7 +21,7 @@ from care.emr.resources.medication.dispense.dispense_order import (
 )
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
-from care.utils.filters.dummy_filter import DummyUUIDFilter
+from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyUUIDFilter
 
 
 class DispenseOrderFilters(filters.FilterSet):
@@ -28,6 +29,7 @@ class DispenseOrderFilters(filters.FilterSet):
     created_date = filters.DateRangeFilter()
     patient = filters.UUIDFilter(field_name="patient__external_id")
     location = DummyUUIDFilter()
+    include_children = DummyBooleanFilter()
 
 
 class DispenseOrderViewSet(
@@ -112,7 +114,16 @@ class DispenseOrderViewSet(
                     raise PermissionDenied(
                         "You do not have permission to read dispense order"
                     )
-                queryset = queryset.filter(location=location)
+                include_children = (
+                    self.request.GET.get("include_children", "false").lower() == "true"
+                )
+                if include_children:
+                    queryset = queryset.filter(
+                        Q(location=location)
+                        | Q(location__parent_cache__overlap=[location.id])
+                    )
+                else:
+                    queryset = queryset.filter(location=location)
             else:
                 raise ValidationError("Location is required for non-pharmacists")
         return queryset
