@@ -194,6 +194,7 @@ class InvoiceViewSet(
                     charge_items.values_list("id", flat=True)
                 )
                 sync_invoice_items(invoice)
+                invoice.updated_by = self.request.user
                 invoice.save()
                 charge_items.update(
                     status=ChargeItemStatusOptions.billed.value, paid_invoice=invoice
@@ -219,6 +220,7 @@ class InvoiceViewSet(
                 with transaction.atomic():
                     invoice.charge_items.remove(charge_item.id)
                     sync_invoice_items(invoice)
+                    invoice.updated_by = self.request.user
                     invoice.save()
                     charge_item.status = ChargeItemStatusOptions.billable.value
                     charge_item.paid_invoice = None
@@ -241,6 +243,7 @@ class InvoiceViewSet(
                 )
                 invoice.charge_items = charge_items.values_list("id", flat=True)
                 sync_invoice_items(invoice)
+                invoice.updated_by = self.request.user
                 invoice.save()
                 charge_items.update(
                     status=ChargeItemStatusOptions.billed.value, paid_invoice=invoice
@@ -268,5 +271,6 @@ class InvoiceViewSet(
                 ).update(
                     status=ChargeItemStatusOptions.billable.value, paid_invoice=None
                 )
+                invoice.updated_by = self.request.user
                 invoice.save()
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
