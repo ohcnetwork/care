@@ -53,6 +53,7 @@ def generate_and_upload_report(
     try:
         report_type_config = ReportTypeRegistry.get(report_type)
     except KeyError as e:
+        error_msg = f"Report Type '{report_type}' not found in ReportTypeRegistry"
         raise ValueError(error_msg) from e
 
     associating_object = validate_associating_id(
