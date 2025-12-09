@@ -21,12 +21,6 @@ class WeasyPrintGenerator(BaseOutputGenerator):
     options_model = WeasyPrintGeneratorOptions
 
     def __init__(self):
-        try:
-            self.HTML = HTML
-            self.CSS = CSS
-        except ImportError as e:
-            msg = "WeasyPrint is not installed. Install it with: pip install weasyprint"
-            raise ImportError(msg) from e
         self.HTML = HTML
         self.CSS = CSS
 
