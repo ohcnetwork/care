@@ -6,8 +6,6 @@ import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
 
-import care.utils.event_utils
-
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -68,13 +66,13 @@ class Migration(migrations.Migration):
                 (
                     "meta",
                     models.JSONField(
-                        default=dict, encoder=care.utils.event_utils.CustomJSONEncoder
+                        default=dict
                     ),
                 ),
                 (
                     "value",
                     models.JSONField(
-                        default=dict, encoder=care.utils.event_utils.CustomJSONEncoder
+                        default=dict
                     ),
                 ),
                 (
