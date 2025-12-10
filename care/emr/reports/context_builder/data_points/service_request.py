@@ -82,5 +82,5 @@ class ServiceRequestDataPointBuilder(QuerysetContextBuilder):
         description="User who requested the service",
     )
 
-    def get_context(self) -> dict:
+    def get_context(self):
         return ServiceRequest.objects.filter(encounter=self.parent_context)

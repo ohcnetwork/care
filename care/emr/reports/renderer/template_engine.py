@@ -3,6 +3,8 @@ from datetime import date, datetime
 from jinja2 import BaseLoader, Environment, StrictUndefined, TemplateSyntaxError
 from jinja2.sandbox import SandboxedEnvironment
 
+from care.utils.time_util import care_now
+
 
 class TemplateEngine:
     def __init__(self, use_sandbox: bool = True, strict_undefined: bool = True):
@@ -134,15 +136,15 @@ class TemplateEngine:
 
     @staticmethod
     def _current_date(format_str: str = "%d/%m/%Y") -> str:
-        return datetime.now().strftime(format_str)  # noqa: DTZ005
+        return care_now().strftime(format_str)
 
     @staticmethod
     def _current_datetime(format_str: str = "%d/%m/%Y %I:%M %p") -> str:
-        return datetime.now().strftime(format_str)  # noqa: DTZ005
+        return care_now().strftime(format_str)
 
     @staticmethod
     def _current_time(format_str: str = "%I:%M %p") -> str:
-        return datetime.now().strftime(format_str)  # noqa: DTZ005
+        return care_now().strftime(format_str)
 
     def validate_syntax(self, template_string: str) -> tuple[bool, str]:
         try:

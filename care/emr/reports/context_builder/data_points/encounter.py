@@ -35,7 +35,7 @@ STATUS_DISPLAY = {
 
 
 class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
-    def get_context(self) -> dict:
+    def get_context(self):
         return self.parent_context.care_team
 
     user = Field(
@@ -46,8 +46,7 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
     )
     role = Field(
         display="Role",
-        mapping=lambda r: r.role.get("display", "") if r.role else "",
-        preview_value="Test Role",
+        preview_value={"display": "Test Role"},
         description="Role of the user in the encounter care team",
     )
 
@@ -61,7 +60,7 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
 
 
 class EncounterPatientContextBuilder(SingleObjectContextBuilder):
-    def get_context(self) -> dict:
+    def get_context(self):
         return self.parent_context.patient
 
     name = Field(

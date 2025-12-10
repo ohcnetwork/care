@@ -5,6 +5,7 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.user import SingleUserIdContextBuilder
 from care.emr.resources.condition.spec import CategoryChoices
 from care.utils.filters.multiselect import MultiSelectFilter
 
@@ -82,8 +83,20 @@ class SymptomsContextBuilder(QuerysetContextBuilder):
         preview_value="",
         description="Additional notes about the symptom",
     )
+    created_by = Field(
+        display="Created By",
+        target_context=SingleUserIdContextBuilder,
+        preview_value="",
+        description="User who created the symptom",
+    )
+    updated_by = Field(
+        display="Updated By",
+        target_context=SingleUserIdContextBuilder,
+        preview_value="",
+        description="User who updated the symptom",
+    )
 
-    def get_context(self) -> dict:
+    def get_context(self):
         return Condition.objects.filter(
             encounter=self.parent_context,
             category=CategoryChoices.problem_list_item.value,

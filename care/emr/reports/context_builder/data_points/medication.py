@@ -53,7 +53,7 @@ class MedicationPrescriptionReportFilter(filters.FilterSet):
 
 
 class DosageInstructionContextBuilder(QuerysetContextBuilder):
-    def get_context(self) -> dict:
+    def get_context(self):
         return self.parent_context.dosage_instruction
 
     dosage = Field(
@@ -75,7 +75,7 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
         if d.get("timing") and d.get("timing").get("code")
         else "",
         preview_value="3 times every 1 day",
-        description="Frequency of the medication dosege",
+        description="Frequency of the medication dosage",
     )
 
     duration = Field(
@@ -170,7 +170,7 @@ class MedicationRequestContextBuilder(QuerysetContextBuilder):
         description="Additional notes about the medication",
     )
 
-    def get_context(self) -> dict:
+    def get_context(self):
         return MedicationRequest.objects.filter(prescription=self.parent_context)
 
 
@@ -196,7 +196,7 @@ class MedicationPrescriptionContextBuilder(QuerysetContextBuilder):
         description="Details of the prescriber",
     )
 
-    def get_context(self) -> dict:
+    def get_context(self):
         return MedicationRequestPrescription.objects.filter(
             encounter=self.parent_context
         )

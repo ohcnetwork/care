@@ -8,7 +8,7 @@ from care.users.models import User
 
 
 class SingleUserRelatedContextBuilder(SingleObjectContextBuilder):
-    def get_context(self) -> dict:
+    def get_context(self):
         return getattr(self.parent_context, self.parent_attribute)
 
     full_name = Field(
@@ -26,5 +26,5 @@ class SingleUserRelatedContextBuilder(SingleObjectContextBuilder):
 
 
 class SingleUserIdContextBuilder(SingleUserRelatedContextBuilder):
-    def get_context(self) -> dict:
+    def get_context(self):
         return User.objects.get(id=getattr(self.parent_context, self.parent_attribute))

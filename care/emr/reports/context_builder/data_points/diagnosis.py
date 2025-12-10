@@ -83,7 +83,7 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
         description="Additional notes about the diagnosis",
     )
 
-    def get_context(self) -> dict:
+    def get_context(self):
         return Condition.objects.filter(
             encounter=self.parent_context,
             category=CategoryChoices.encounter_diagnosis.value,

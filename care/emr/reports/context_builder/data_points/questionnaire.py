@@ -10,7 +10,7 @@ from care.emr.reports.context_builder.data_points.base import (
 
 
 class QuestionnaireResponsesContextBuilder(QuerysetContextBuilder):
-    def get_context(self) -> dict:
+    def get_context(self):
         return self.parent_context.render_responses()
 
     question = Field(
@@ -68,7 +68,7 @@ class QuestionnaireContextBuilder(QuerysetContextBuilder):
         description="Responses of the questionnaire",
     )
 
-    def get_context(self) -> dict:
+    def get_context(self):
         return QuestionnaireResponse.objects.filter(
             encounter=self.parent_context, questionnaire__isnull=False
         )

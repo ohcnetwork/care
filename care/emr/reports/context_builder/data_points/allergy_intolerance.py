@@ -87,5 +87,5 @@ class AllergyIntoleranceContextBuilder(QuerysetContextBuilder):
         description="The last occurrence date and time of the allergy or intolerance",
     )
 
-    def get_context(self) -> dict:
+    def get_context(self):
         return AllergyIntolerance.objects.filter(encounter=self.parent_context)

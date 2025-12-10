@@ -74,7 +74,7 @@ class ContextBuilderBase:
         self.context = context
         self.is_preview = bool(is_preview)
 
-    def get_context(self) -> dict:
+    def get_context(self):
         return self.parent_context
 
     def __getattribute__(self, name: str) -> Any:

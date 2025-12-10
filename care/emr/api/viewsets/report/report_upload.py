@@ -68,7 +68,7 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
         if self.action == "list":
             if (
                 "report_type" not in self.request.GET
-                and "associating_id" not in self.request.GET
+                or "associating_id" not in self.request.GET
             ):
                 raise PermissionDenied("report_type and associating_id are required")
             report_type = self.request.GET.get("report_type")
@@ -96,7 +96,7 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
     @extend_schema(
         description="Generate a report from a template with patient/encounter data",
         request=GenerateReportRequest,
-        responses={200: "Report generation started"},
+        responses={201: "Report generation started"},
         tags=["report"],
     )
     @action(detail=False, methods=["POST"])
