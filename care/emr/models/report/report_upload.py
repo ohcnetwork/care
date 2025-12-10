@@ -40,7 +40,7 @@ class ReportUpload(EMRBaseModel):
 
     def get_extension(self):
         extensions = parse_file_extension(self.internal_name)
-        return f".{".".join(extensions)}" if extensions else ""
+        return f".{'.'.join(extensions)}" if extensions else ""
 
     def save(self, *args, **kwargs):
         """

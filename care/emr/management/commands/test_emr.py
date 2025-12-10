@@ -1,6 +1,10 @@
-# ruff : noqa : T201 F841
+# ruff: noqa: T201
 
 from django.core.management.base import BaseCommand
+from django.db import transaction
+
+from care.emr.models import Organization, Patient
+from care.facility.models import Facility
 
 
 class Command(BaseCommand):
@@ -9,11 +13,6 @@ class Command(BaseCommand):
     help = ""
 
     def handle(self, *args, **options):
-        from django.db import transaction
-
-        from care.emr.models import Organization, Patient
-        from care.facility.models import Facility
-
         with transaction.atomic():
             districts = Organization.objects.filter(level_cache=1)
             for district in districts:
