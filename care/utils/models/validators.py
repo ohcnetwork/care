@@ -337,9 +337,9 @@ class ImageSizeValidator:
         byte_size = 1024.0
         for unit in ["B", "KB"]:
             if size < byte_size:
-                return f"{f"{size:.2f}".rstrip(".0")} {unit}"
+                return f"{f'{size:.2f}'.rstrip('.0')} {unit}"
             size /= byte_size
-        return f"{f"{size:.2f}".rstrip(".0")} MB"
+        return f"{f'{size:.2f}'.rstrip('.0')} MB"
 
 
 cover_image_validator = ImageSizeValidator(

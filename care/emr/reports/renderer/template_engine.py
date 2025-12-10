@@ -47,7 +47,7 @@ class TemplateEngine:
             return ""
         if isinstance(value, str):
             try:
-                value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+                value = datetime.fromisoformat(value)
             except (ValueError, AttributeError):
                 return value
         if isinstance(value, (datetime, date)):
@@ -62,7 +62,7 @@ class TemplateEngine:
             return ""
         if isinstance(value, str):
             try:
-                value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+                value = datetime.fromisoformat(value)
             except (ValueError, AttributeError):
                 return value
         if isinstance(value, datetime):
@@ -75,7 +75,7 @@ class TemplateEngine:
             return ""
         if isinstance(value, str):
             try:
-                value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+                value = datetime.fromisoformat(value)
             except (ValueError, AttributeError):
                 return value
         if isinstance(value, datetime):
@@ -94,7 +94,7 @@ class TemplateEngine:
         negative = amount < 0
         amount = abs(amount)
         rupees = int(amount)
-        paise = int(round((amount - rupees) * 100))
+        paise = round((amount - rupees) * 100)
 
         rupees_str = str(rupees)
         if len(rupees_str) <= 3:  # noqa: PLR2004

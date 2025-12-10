@@ -28,7 +28,7 @@ COPY --chmod=0755 scripts/install_typst.sh $APP_HOME
 RUN TYPST_VERSION=${TYPST_VERSION} $APP_HOME/install_typst.sh
 
 # use pipenv to manage virtualenv
-RUN pip install pipenv==2024.4.0
+RUN pip install pipenv==2025.1.1
 
 RUN python -m venv $APP_HOME/.venv
 COPY Pipfile Pipfile.lock $APP_HOME/

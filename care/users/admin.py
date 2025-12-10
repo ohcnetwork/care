@@ -2,7 +2,6 @@ from django import forms
 from django.contrib import admin
 from django.contrib.auth import admin as auth_admin
 from django.contrib.auth import get_user_model
-from djqscsv import render_to_csv_response
 
 from care.users.forms import UserChangeForm, UserCreationForm
 from care.users.models import (
@@ -19,21 +18,8 @@ from care.utils.registries.feature_flag import FlagRegistry, FlagType
 User = get_user_model()
 
 
-class ExportCsvMixin:
-    @admin.action(description="Export Selected")
-    def export_as_csv(self, request, queryset):
-        queryset = User.objects.filter(is_superuser=False).values(
-            *User.CSV_MAPPING.keys()
-        )
-        return render_to_csv_response(
-            queryset,
-            field_header_map=User.CSV_MAPPING,
-            field_serializer_map=User.CSV_MAKE_PRETTY,
-        )
-
-
 @admin.register(User)
-class UserAdmin(auth_admin.UserAdmin, ExportCsvMixin):
+class UserAdmin(auth_admin.UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
     actions = ["export_as_csv"]

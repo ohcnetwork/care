@@ -11,7 +11,6 @@ from django.db.models.functions import Coalesce, Now
 from django.template.defaultfilters import pluralize
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
-from simple_history.models import HistoricalRecords
 
 from care.facility.models import (
     DISEASE_CHOICES,
@@ -447,7 +446,7 @@ class PatientRegistration(PatientBaseModel, PatientPermissionMixin):
 
     organization_cache = ArrayField(models.IntegerField(), default=list)
 
-    history = HistoricalRecords(excluded_fields=["meta_info"])
+    history = None
 
     objects = BaseManager()
 

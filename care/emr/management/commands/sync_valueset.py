@@ -1,5 +1,3 @@
-# ruff : noqa : T201 F841
-
 from django.core.management.base import BaseCommand
 
 from care.emr.models import ValueSet

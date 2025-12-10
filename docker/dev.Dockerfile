@@ -20,7 +20,7 @@ RUN TYPST_VERSION=${TYPST_VERSION} $APP_HOME/install_typst.sh
 # use pipenv to manage virtualenv
 ENV PATH=/.venv/bin:$PATH
 RUN python -m venv /.venv
-RUN --mount=type=cache,target=/root/.cache/pip pip install pipenv==2024.4.0
+RUN --mount=type=cache,target=/root/.cache/pip pip install pipenv==2025.1.1
 
 COPY Pipfile Pipfile.lock $APP_HOME/
 RUN --mount=type=cache,target=/root/.cache/pip pipenv  install --system --categories "packages dev-packages docs"

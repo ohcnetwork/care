@@ -7,7 +7,6 @@ from django.db.models import IntegerChoices
 from django.db.models.constraints import CheckConstraint, UniqueConstraint
 from django.utils.translation import gettext_lazy as _
 from rest_framework import serializers
-from simple_history.models import HistoricalRecords
 
 from care.emr.models import FacilityOrganization
 from care.emr.models.organization import FacilityOrganizationUser
@@ -428,7 +427,7 @@ class FacilityHubSpoke(BaseModel, FacilityRelatedPermissionMixin):
         constraints = [
             # Ensure hub and spoke are not the same
             CheckConstraint(
-                check=~models.Q(hub=models.F("spoke")),
+                condition=~models.Q(hub=models.F("spoke")),
                 name="hub_and_spoke_not_same",
             ),
             # bidirectional uniqueness
@@ -533,7 +532,7 @@ class FacilityCapacity(FacilityBaseModel, FacilityRelatedPermissionMixin):
     total_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
     current_capacity = models.IntegerField(default=0, validators=[MinValueValidator(0)])
 
-    history = HistoricalRecords()
+    history = None
 
     class Meta:
         constraints = [

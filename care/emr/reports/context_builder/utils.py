@@ -6,7 +6,7 @@ def format_date(value, format_str="%d/%m/%Y"):
         return ""
     if isinstance(value, str):
         try:
-            value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            value = datetime.fromisoformat(value)
         except ValueError:
             return value
     if isinstance(value, (datetime, date)):
@@ -19,7 +19,7 @@ def format_datetime(value, format_str="%d/%m/%Y %I:%M %p"):
         return ""
     if isinstance(value, str):
         try:
-            value = datetime.fromisoformat(value.replace("Z", "+00:00"))
+            value = datetime.fromisoformat(value)
         except ValueError:
             return value
     if isinstance(value, datetime):

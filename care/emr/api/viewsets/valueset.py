@@ -144,7 +144,7 @@ class ValueSetViewSet(EMRModelViewSet):
         if not valueset.lookup(code_obj):
             raise ValidationError("Invalid code value")
 
-        pref, created = UserValueSetPreference.objects.get_or_create(
+        pref, _ = UserValueSetPreference.objects.get_or_create(
             user=user, valueset=valueset, defaults={"favorite_codes": []}
         )
         favs = pref.favorite_codes
