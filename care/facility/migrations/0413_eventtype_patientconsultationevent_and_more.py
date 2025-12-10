@@ -6,8 +6,6 @@ import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
 
-import care.utils.event_utils
-
 
 class Migration(migrations.Migration):
     dependencies = [
