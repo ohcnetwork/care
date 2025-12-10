@@ -68,13 +68,13 @@ class Migration(migrations.Migration):
                 (
                     "meta",
                     models.JSONField(
-                        default=dict, encoder=care.utils.event_utils.CustomJSONEncoder
+                        default=dict
                     ),
                 ),
                 (
                     "value",
                     models.JSONField(
-                        default=dict, encoder=care.utils.event_utils.CustomJSONEncoder
+                        default=dict
                     ),
                 ),
                 (

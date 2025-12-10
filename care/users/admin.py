@@ -4,15 +4,7 @@ from django.contrib.auth import admin as auth_admin
 from django.contrib.auth import get_user_model
 
 from care.users.forms import UserChangeForm, UserCreationForm
-from care.users.models import (
-    District,
-    LocalBody,
-    Skill,
-    State,
-    UserFlag,
-    UserSkill,
-    Ward,
-)
+from care.users.models import UserFlag
 from care.utils.registries.feature_flag import FlagRegistry, FlagType
 
 User = get_user_model()
@@ -52,29 +44,6 @@ class UserAdmin(auth_admin.UserAdmin):
         return qs
 
 
-@admin.register(State)
-class StateAdmin(admin.ModelAdmin):
-    search_fields = ["name"]
-
-
-@admin.register(District)
-class DistrictAdmin(admin.ModelAdmin):
-    search_fields = ["name"]
-    autocomplete_fields = ["state"]
-
-
-@admin.register(LocalBody)
-class LocalBodyAdmin(admin.ModelAdmin):
-    search_fields = ["name"]
-    autocomplete_fields = ["district"]
-
-
-@admin.register(Ward)
-class WardAdmin(admin.ModelAdmin):
-    search_fields = ["name"]
-    autocomplete_fields = ["local_body"]
-
-
 @admin.register(UserFlag)
 class UserFlagAdmin(admin.ModelAdmin):
     class UserFlagForm(forms.ModelForm):
@@ -90,7 +59,3 @@ class UserFlagAdmin(admin.ModelAdmin):
             model = UserFlag
 
     form = UserFlagForm
-
-
-admin.site.register(Skill)
-admin.site.register(UserSkill)

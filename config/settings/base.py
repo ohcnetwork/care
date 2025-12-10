@@ -124,7 +124,6 @@ THIRD_PARTY_APPS = [
     "drf_spectacular",
     "django_filters",
     "django_ratelimit",
-    "dry_rest_permissions",
     "corsheaders",
     "djangoql",
     "maintenance_mode",
