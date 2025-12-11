@@ -256,7 +256,7 @@ class ServiceRequestViewSet(
         self.authorize_update({}, instance)
         if instance.status in SERVICE_REQUEST_CANCELLED_CHOICES:
             raise ValidationError("Service request is already in a cancelled state")
-        if str(request_params.status) not in SERVICE_REQUEST_CANCELLED_CHOICES:
+        if request_params.status.value not in SERVICE_REQUEST_CANCELLED_CHOICES:
             raise ValidationError("Invalid status")
         instance.status = request_params.status
         instance.updated_by = self.request.user
