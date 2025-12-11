@@ -130,7 +130,7 @@ class AllergyIntoleranceViewSet(
 
             # Check for encounter access
             if not encounter or not AuthorizationController.call(
-                "can_view_encounter_obj", self.request.user, encounter
+                "can_view_encounter_clinical_data", self.request.user, encounter
             ):
                 raise PermissionDenied("Permission denied to user")
             queryset = queryset.filter(encounter=encounter)

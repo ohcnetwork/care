@@ -46,6 +46,20 @@ class EncounterAccess(AuthorizationHandler):
             orgs=orgs,
         )
 
+    def can_view_encounter_clinical_data(self, user, encounter):
+        """
+        Check if the user has permission to read encounter under this facility
+        """
+        orgs = [*encounter.facility_organization_cache]
+        if encounter.current_location:
+            orgs.extend(encounter.current_location.facility_organization_cache)
+
+        return self.check_permission_in_facility_organization(
+            [EncounterPermissions.can_read_encounter_clinical_data.name],
+            user,
+            orgs=orgs,
+        )
+
     def can_view_as_pharmacist(self, user, facility):
         return self.check_permission_in_facility_organization(
             [MedicationPermissions.is_pharmacist.name], user, facility=facility

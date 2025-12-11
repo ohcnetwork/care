@@ -70,7 +70,7 @@ class NoteThreadApiTestCase(CareAPITestBase):
         role = self.create_role_with_permissions(
             permissions=[
                 PatientPermissions.can_view_clinical_data.name,
-                EncounterPermissions.can_read_encounter.name,
+                EncounterPermissions.can_read_encounter_clinical_data.name,
             ]
         )
         self.attach_role_facility_organization_user(
@@ -265,7 +265,7 @@ class NoteMessageApiTestCase(CareAPITestBase):
         role = self.create_role_with_permissions(
             permissions=[
                 PatientPermissions.can_view_clinical_data.name,
-                EncounterPermissions.can_read_encounter.name,
+                EncounterPermissions.can_read_encounter_clinical_data.name,
             ]
         )
         self.attach_role_facility_organization_user(

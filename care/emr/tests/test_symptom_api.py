@@ -145,7 +145,7 @@ class TestSymptomViewSet(CareAPITestBase):
         """
         Users with `can_read_encounter` can list symptoms for that encounter (HTTP 200).
         """
-        permissions = [EncounterPermissions.can_read_encounter.name]
+        permissions = [EncounterPermissions.can_read_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -166,7 +166,7 @@ class TestSymptomViewSet(CareAPITestBase):
         """
         Users with `can_read_encounter` on a completed encounter can still list symptoms (HTTP 200).
         """
-        permissions = [EncounterPermissions.can_read_encounter.name]
+        permissions = [EncounterPermissions.can_read_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -437,7 +437,7 @@ class TestSymptomViewSet(CareAPITestBase):
         """
         Users with `can_read_encounter` => (HTTP 200).
         """
-        permissions = [EncounterPermissions.can_read_encounter.name]
+        permissions = [EncounterPermissions.can_read_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -521,7 +521,7 @@ class TestSymptomViewSet(CareAPITestBase):
         """
         permissions = [
             EncounterPermissions.can_write_encounter.name,
-            EncounterPermissions.can_read_encounter.name,
+            EncounterPermissions.can_read_encounter_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -654,7 +654,7 @@ class TestSymptomViewSet(CareAPITestBase):
         """
         permissions = [
             EncounterPermissions.can_write_encounter.name,
-            EncounterPermissions.can_read_encounter.name,
+            EncounterPermissions.can_read_encounter_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)

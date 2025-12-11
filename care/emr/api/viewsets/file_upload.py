@@ -53,7 +53,7 @@ def file_authorizer(user, file_type, associating_id, permission):  # noqa PLR091
             allowed = AuthorizationController.call(
                 "can_view_clinical_data", user, encounter_obj.patient
             ) or AuthorizationController.call(
-                "can_view_encounter_obj", user, encounter_obj
+                "can_view_encounter_clinical_data", user, encounter_obj
             )
         elif permission == "write":
             allowed = AuthorizationController.call(
@@ -65,7 +65,7 @@ def file_authorizer(user, file_type, associating_id, permission):  # noqa PLR091
             allowed = AuthorizationController.call(
                 "can_view_clinical_data", user, encounter_obj.patient
             ) or AuthorizationController.call(
-                "can_view_encounter_obj", user, encounter_obj
+                "can_view_encounter_clinical_data", user, encounter_obj
             )
         elif permission == "write":
             allowed = AuthorizationController.call(
