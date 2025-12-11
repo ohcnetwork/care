@@ -80,7 +80,7 @@ class InvoiceViewSet(
         )
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().select_related("account")
         facility = self.get_facility_obj()
         if not AuthorizationController.call(
             "can_read_invoice_in_facility", self.request.user, facility
