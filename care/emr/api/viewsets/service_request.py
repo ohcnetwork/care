@@ -30,7 +30,9 @@ from care.emr.resources.activity_definition.service_request import (
     apply_ad_charge_definitions,
     convert_ad_to_sr,
 )
-from care.emr.resources.charge_item import handle_charge_item_cancel
+from care.emr.resources.charge_item.handle_charge_item_cancel import (
+    handle_charge_item_cancel,
+)
 from care.emr.resources.charge_item.spec import (
     ChargeItemResourceOptions,
     ChargeItemStatusOptions,
@@ -246,7 +248,7 @@ class ServiceRequestViewSet(
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=["POST"], detail=True)
-    def cance(self, request, *args, **kwargs):
+    def cancel(self, request, *args, **kwargs):
         instance = self.get_object()
         request_params = CancelServiceRequestRequest(**request.data)
         self.authorize_update({}, instance)
