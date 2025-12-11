@@ -228,7 +228,11 @@ class EncounterViewSet(
         Moves the encounter to from a completed state to an in progress state
         """
         instance = self.get_object()
-        self.authorize_update({}, instance)
+        if not AuthorizationController.call(
+            "can_restart_encounter_obj", self.request.user, instance
+        ):
+            raise PermissionDenied("You do not have permission to update encounter")
+
         if instance.status not in COMPLETED_CHOICES:
             raise ValidationError("Encounter is not in a completed state")
         if instance.modified_date < care_now() - timedelta(

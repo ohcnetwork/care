@@ -90,6 +90,17 @@ class EncounterAccess(AuthorizationHandler):
             user, encounter, EncounterPermissions.can_write_encounter.name
         )
 
+    def can_restart_encounter_obj(self, user, encounter):
+        """
+        Check if the user has permission to create encounter under this facility
+        """
+        if encounter.status not in COMPLETED_CHOICES:
+            # Cannot write to a closed encounter
+            return False
+        return self.check_permission_in_encounter(
+            user, encounter, EncounterPermissions.can_write_encounter.name
+        )
+
     def can_view_service_request_for_encounter(self, user, encounter):
         """
         Check if the user has permission to read service request under this encounter
