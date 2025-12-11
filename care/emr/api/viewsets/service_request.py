@@ -235,7 +235,18 @@ class ServiceRequestViewSet(
         raise ValidationError("Location or encounter is required")
 
     @action(methods=["POST"], detail=True)
-    def cancel_service_request(self, request, *args, **kwargs):
+    def complete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.authorize_update({}, instance)
+        if instance.status in SERVICE_REQUEST_CANCELLED_CHOICES:
+            raise ValidationError("Service request is cancelled")
+        instance.status = ServiceRequestStatusChoices.completed.value
+        instance.updated_by = self.request.user
+        instance.save(update_fields=["status", "updated_by"])
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=["POST"], detail=True)
+    def cance(self, request, *args, **kwargs):
         instance = self.get_object()
         request_params = CancelServiceRequestRequest(**request.data)
         self.authorize_update({}, instance)
