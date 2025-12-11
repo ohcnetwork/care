@@ -157,14 +157,19 @@ class ServiceRequestViewSet(
         return super().perform_create(instance)
 
     def perform_update(self, instance):
-        old_status = ServiceRequest.objects.only("status").get(id=instance.id)
-        if old_status.status in SERVICE_REQUEST_CANCELLED_CHOICES:
-            raise ValidationError("Cannot update a cancelled service request")
-        if (
-            old_status.status != instance.status
-            and instance.status in SERVICE_REQUEST_CANCELLED_CHOICES
-        ):
-            raise ValidationError("Use the cancel API to cancel the service request")
+        if instance.id:
+            old_status = ServiceRequest.objects.only("status").get(id=instance.id)
+            if old_status.status == ServiceRequestStatusChoices.completed.value:
+                raise ValidationError("Service request is completed")
+            if old_status.status in SERVICE_REQUEST_CANCELLED_CHOICES:
+                raise ValidationError("Cannot update a cancelled service request")
+            if (
+                old_status.status != instance.status
+                and instance.status in SERVICE_REQUEST_CANCELLED_CHOICES
+            ):
+                raise ValidationError(
+                    "Use the cancel API to cancel the service request"
+                )
         self.convert_external_id_to_internal_id(instance)
         self.validate_health_care_service(instance)
         return super().perform_update(instance)
@@ -248,6 +253,8 @@ class ServiceRequestViewSet(
     def complete(self, request, *args, **kwargs):
         instance = self.get_object()
         self.authorize_update({}, instance)
+        if instance.status == ServiceRequestStatusChoices.completed.value:
+            raise ValidationError("Service request is completed")
         if instance.status in SERVICE_REQUEST_CANCELLED_CHOICES:
             raise ValidationError("Service request is cancelled")
         instance.status = ServiceRequestStatusChoices.completed.value
@@ -260,6 +267,8 @@ class ServiceRequestViewSet(
         instance = self.get_object()
         request_params = CancelServiceRequestRequest(**request.data)
         self.authorize_update({}, instance)
+        if instance.status == ServiceRequestStatusChoices.completed.value:
+            raise ValidationError("Service request is completed")
         if instance.status in SERVICE_REQUEST_CANCELLED_CHOICES:
             raise ValidationError("Service request is already in a cancelled state")
         if request_params.status.value not in SERVICE_REQUEST_CANCELLED_CHOICES:
