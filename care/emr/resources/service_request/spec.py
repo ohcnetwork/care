@@ -49,6 +49,11 @@ SERVICE_REQUEST_COMPLETED_CHOICES = [
     ServiceRequestStatusChoices.entered_in_error,
 ]
 
+SERVICE_REQUEST_CANCELLED_CHOICES = [
+    ServiceRequestStatusChoices.revoked,
+    ServiceRequestStatusChoices.entered_in_error,
+]
+
 
 class ServiceRequestIntentChoices(str, Enum):
     """Intent values for service requests"""

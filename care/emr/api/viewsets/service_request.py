@@ -2,6 +2,7 @@ from django.db import transaction
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -16,6 +17,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
 )
 from care.emr.models.activity_definition import ActivityDefinition
+from care.emr.models.charge_item import ChargeItem
 from care.emr.models.encounter import Encounter
 from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import FacilityOrganizationUser
@@ -28,11 +30,18 @@ from care.emr.resources.activity_definition.service_request import (
     apply_ad_charge_definitions,
     convert_ad_to_sr,
 )
+from care.emr.resources.charge_item import handle_charge_item_cancel
+from care.emr.resources.charge_item.spec import (
+    ChargeItemResourceOptions,
+    ChargeItemStatusOptions,
+)
 from care.emr.resources.questionnaire.spec import SubjectType
 from care.emr.resources.service_request.spec import (
+    SERVICE_REQUEST_CANCELLED_CHOICES,
     ServiceRequestCreateSpec,
     ServiceRequestReadSpec,
     ServiceRequestRetrieveSpec,
+    ServiceRequestStatusChoices,
     ServiceRequestUpdateSpec,
 )
 from care.emr.resources.specimen.spec import (
@@ -69,6 +78,10 @@ class ApplyActivityDefinitionRequest(BaseModel):
 class ApplySpecimenDefinitionRequest(BaseModel):
     specimen_definition: UUID4
     specimen: SpecimenUpdateSpec
+
+
+class CancelServiceRequestRequest(BaseModel):
+    status: ServiceRequestStatusChoices
 
 
 class ServiceRequestViewSet(
@@ -220,6 +233,28 @@ class ServiceRequestViewSet(
                 )
             return queryset.filter(encounter=encounter)
         raise ValidationError("Location or encounter is required")
+
+    @action(methods=["POST"], detail=True)
+    def cancel_service_request(self, request, *args, **kwargs):
+        instance = self.get_object()
+        request_params = CancelServiceRequestRequest(**request.data)
+        self.authorize_update({}, instance)
+        if instance.status in SERVICE_REQUEST_CANCELLED_CHOICES:
+            raise ValidationError("Service request is already in a cancelled state")
+        if request_params.status not in SERVICE_REQUEST_CANCELLED_CHOICES:
+            raise ValidationError("Invalid status")
+        instance.status = request_params.status
+        instance.updated_by = self.request.user
+        with transaction.atomic():
+            for charge_item in ChargeItem.objects.filter(
+                service_resource_id=str(instance.external_id),
+                service_resource=ChargeItemResourceOptions.service_request.value,
+            ):
+                handle_charge_item_cancel(charge_item)
+                instance.charge_item.status = ChargeItemStatusOptions.aborted.value
+                instance.charge_item.save()
+            instance.save(update_fields=["status", "updated_by"])
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @extend_schema(
         request=ApplyActivityDefinitionRequest,
