@@ -50,8 +50,8 @@ SERVICE_REQUEST_COMPLETED_CHOICES = [
 ]
 
 SERVICE_REQUEST_CANCELLED_CHOICES = [
-    ServiceRequestStatusChoices.revoked,
-    ServiceRequestStatusChoices.entered_in_error,
+    ServiceRequestStatusChoices.revoked.value,
+    ServiceRequestStatusChoices.entered_in_error.value,
 ]
 
 
