@@ -27,6 +27,9 @@ class ProductFilters(filters.FilterSet):
     product_knowledge = filters.CharFilter(
         lookup_expr="iexact", field_name="product_knowledge__slug"
     )
+    batch_number = filters.CharFilter(
+        lookup_expr="iexact", field_name="batch__lot_number"
+    )
 
 
 class ProductViewSet(
