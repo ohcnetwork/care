@@ -157,8 +157,14 @@ class ServiceRequestViewSet(
         return super().perform_create(instance)
 
     def perform_update(self, instance):
-        if instance.status in SERVICE_REQUEST_CANCELLED_CHOICES:
+        old_status = ServiceRequest.objects.only("status").get(id=instance.id)
+        if old_status.status in SERVICE_REQUEST_CANCELLED_CHOICES:
             raise ValidationError("Cannot update a cancelled service request")
+        if (
+            old_status.status != instance.status
+            and instance.status in SERVICE_REQUEST_CANCELLED_CHOICES
+        ):
+            raise ValidationError("Use the cancel API to cancel the service request")
         self.convert_external_id_to_internal_id(instance)
         self.validate_health_care_service(instance)
         return super().perform_update(instance)
