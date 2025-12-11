@@ -238,9 +238,8 @@ class EncounterViewSet(
         if instance.modified_date < care_now() - timedelta(
             hours=settings.ENCOUNTER_RESTART_TIME_LIMIT_HOURS
         ):
-            raise ValidationError(
-                "Encounter cannot be restarted within the last 10 minutes"
-            )
+            err = f"Encounter cannot be restarted after {settings.ENCOUNTER_RESTART_TIME_LIMIT_HOURS} hours"
+            raise ValidationError(err)
         instance.status = StatusChoices.in_progress.value
         instance.save(update_fields=["status"])
 
