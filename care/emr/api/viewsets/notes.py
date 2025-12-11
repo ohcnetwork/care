@@ -55,7 +55,7 @@ class NoteThreadViewSet(
         if instance.encounter:
             encounter = get_object_or_404(Encounter, external_id=instance.encounter)
             allowed = AuthorizationController.call(
-                "can_update_encounter_obj", self.request.user, encounter
+                "can_update_encounter_clinical_data", self.request.user, encounter
             )
         else:
             allowed = AuthorizationController.call(
@@ -68,7 +68,9 @@ class NoteThreadViewSet(
         patient = model_instance.patient
         if model_instance.encounter:
             allowed = AuthorizationController.call(
-                "can_update_encounter_obj", self.request.user, model_instance.encounter
+                "can_update_encounter_clinical_data",
+                self.request.user,
+                model_instance.encounter,
             )
         else:
             allowed = AuthorizationController.call(
@@ -141,7 +143,9 @@ class NoteMessageViewSet(
         )
         if thread.encounter:
             allowed = AuthorizationController.call(
-                "can_update_encounter_obj", self.request.user, thread.encounter
+                "can_update_encounter_clinical_data",
+                self.request.user,
+                thread.encounter,
             )
         else:
             allowed = AuthorizationController.call(

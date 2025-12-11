@@ -93,6 +93,19 @@ class EncounterAccess(AuthorizationHandler):
             orgs=orgs,
         )
 
+    def can_update_encounter_clinical_data(self, user, encounter):
+        """
+        Check if the user has permission to create encounter under this facility
+        """
+        if encounter.status in COMPLETED_CHOICES:
+            # Cannot write to a closed encounter
+            return False
+        return self.check_permission_in_encounter(
+            user,
+            encounter,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
+        )
+
     def can_update_encounter_obj(self, user, encounter):
         """
         Check if the user has permission to create encounter under this facility

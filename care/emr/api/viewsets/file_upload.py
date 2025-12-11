@@ -57,7 +57,7 @@ def file_authorizer(user, file_type, associating_id, permission):  # noqa PLR091
             )
         elif permission == "write":
             allowed = AuthorizationController.call(
-                "can_update_encounter_obj", user, encounter_obj
+                "can_update_encounter_clinical_data", user, encounter_obj
             )
     elif file_type == FileTypeChoices.consent.value:
         encounter_obj = get_object_or_404(Consent, external_id=associating_id).encounter
@@ -69,7 +69,7 @@ def file_authorizer(user, file_type, associating_id, permission):  # noqa PLR091
             )
         elif permission == "write":
             allowed = AuthorizationController.call(
-                "can_update_encounter_obj", user, encounter_obj
+                "can_update_encounter_clinical_data", user, encounter_obj
             )
     elif file_type == FileTypeChoices.diagnostic_report.value:
         diagnostic_report_obj = get_object_or_404(
