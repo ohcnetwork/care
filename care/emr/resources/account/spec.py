@@ -58,6 +58,7 @@ class AccountMinimalReadSpec(AccountSpec):
     total_gross: Decimal
     total_paid: Decimal
     total_balance: Decimal
+    total_billable_charge_items: Decimal
     calculated_at: datetime.datetime
     created_date: datetime.datetime
     modified_date: datetime.datetime
