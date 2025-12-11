@@ -222,7 +222,7 @@ class EncounterViewSet(
             raise PermissionDenied("Cannot access encounters")
         return qs  # Authz Exists separately for update and deletes
 
-    @action(detail=True, methods=["GET"])
+    @action(detail=True, methods=["POST"])
     def restart(self, request, *args, **kwargs):
         """
         Moves the encounter to from a completed state to an in progress state
