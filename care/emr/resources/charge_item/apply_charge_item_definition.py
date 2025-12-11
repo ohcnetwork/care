@@ -1,5 +1,3 @@
-from rest_framework.exceptions import ValidationError
-
 from care.emr.models.charge_item import ChargeItem
 from care.emr.resources.account.default_account import get_default_account
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
@@ -49,6 +47,4 @@ def apply_charge_item_definition(
         unit_price_components=selected_components,
     )
     sync_charge_item_costs(charge_item)
-    if charge_item.total_price <= 0:
-        raise ValidationError("Total price is less than or equal to 0")
     return charge_item
