@@ -390,12 +390,7 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
             raise ValidationError("End Datetime should be greater than Start Datetime")
         # Completed, reserved or planned status should have end_datetime
         if (
-            status
-            in (
-                LocationEncounterAvailabilityStatusChoices.completed.value,
-                LocationEncounterAvailabilityStatusChoices.reserved.value,
-                LocationEncounterAvailabilityStatusChoices.planned.value,
-            )
+            status in (LocationEncounterAvailabilityStatusChoices.completed.value,)
             and not end_datetime
         ):
             raise ValidationError("End Datetime is required for completed status")
