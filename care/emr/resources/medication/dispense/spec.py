@@ -157,7 +157,7 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
             obj.order = get_object_or_404(
                 DispenseOrder.objects.only("id").filter(external_id=self.order)
             )
-        else:
+        elif self.create_dispense_order is not None:
             dispense_order_obj = DispenseOrder.objects.filter(
                 alternate_identifier=self.create_dispense_order.alternate_identifier,
                 patient=obj.patient,
