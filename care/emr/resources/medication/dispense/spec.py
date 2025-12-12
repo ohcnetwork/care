@@ -174,6 +174,7 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
                     alternate_identifier=self.create_dispense_order.alternate_identifier,
                     patient=obj.patient,
                     location=obj.location,
+                    facility=obj.encounter.facility,
                     name=self.create_dispense_order.name,
                     note=self.create_dispense_order.note,
                 )
