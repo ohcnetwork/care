@@ -25,12 +25,14 @@ class HealthcareServiceAPITest(CareAPITestBase):
             "service_type": {"code": "test_code", "display": "Test Code"},
             "internal_type": HealthcareServiceInternalType.pharmacy,
             "extra_details": "Some extra details about the service.",
+            "managing_organization": None,
         }
         self.update_data = {
             "name": "Updated Healthcare Service",
             "service_type": {"code": "updated_code", "display": "Updated Code"},
             "internal_type": HealthcareServiceInternalType.lab,
             "extra_details": "Updated extra details about the service.",
+            "managing_organization": None,
         }
         self.role = self.create_role_with_permissions(
             permissions=[

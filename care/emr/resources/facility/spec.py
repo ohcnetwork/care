@@ -157,6 +157,12 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
         mapping["product_additional_metadata_json_schema"] = (
             settings.PRODUCT_ADDITIONAL_METADATA_JSON_SCHEMA
         )
+        mapping["supply_delivery_additional_metadata_json_schema"] = (
+            settings.SUPPLY_DELIVERY_ADDITIONAL_METADATA_JSON_SCHEMA
+        )
+        mapping["supply_delivery_order_additional_metadata_json_schema"] = (
+            settings.SUPPLY_DELIVERY_ORDER_ADDITIONAL_METADATA_JSON_SCHEMA
+        )
 
 
 class FacilityMonetaryCodeSpec(EMRResource):
