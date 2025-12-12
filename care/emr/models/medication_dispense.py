@@ -36,7 +36,7 @@ class MedicationDispense(EMRBaseModel):
 
 
 class DispenseOrder(EMRBaseModel):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=255)
     note = models.TextField(null=True, blank=True)
     location = models.ForeignKey("emr.FacilityLocation", on_delete=models.CASCADE)
