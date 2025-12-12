@@ -51,14 +51,14 @@ class AccountCreateSpec(AccountSpec):
         obj.patient = get_object_or_404(Patient, external_id=self.patient)
 
 
-class AccountReadSpec(AccountSpec):
+class AccountMinimalReadSpec(AccountSpec):
     """Account read specification"""
 
-    patient: dict
     total_net: Decimal
     total_gross: Decimal
     total_paid: Decimal
     total_balance: Decimal
+    total_billable_charge_items: Decimal
     calculated_at: datetime.datetime
     created_date: datetime.datetime
     modified_date: datetime.datetime
@@ -66,6 +66,16 @@ class AccountReadSpec(AccountSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+
+
+class AccountReadSpec(AccountMinimalReadSpec):
+    """Account read specification"""
+
+    patient: dict
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
         mapping["patient"] = PatientListSpec.serialize(obj.patient)
 
 

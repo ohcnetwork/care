@@ -56,7 +56,13 @@ class CareAPITestBase(APITestCase):
         return baker.make(RoleModel, **kwargs)
 
     def create_role_with_permissions(self, permissions, role_name=None):
+        from django.core.cache import cache
+
         from care.security.models import PermissionModel, RoleModel, RolePermission
+        from care.security.models.role import (
+            ROLE_PERMISSION_SK_CACHE_KEY,
+            ROLE_PERMISSIONS_CACHE_KEY,
+        )
 
         role = baker.make(RoleModel, name=role_name or self.fake.name())
 
@@ -68,6 +74,10 @@ class CareAPITestBase(APITestCase):
             )
             bulk.append(RolePermission(role=role, permission=permission_obj))
         RolePermission.objects.bulk_create(bulk)
+
+        # bulk_create wasn't triggering post_save, so manually clearing cache
+        cache.delete(ROLE_PERMISSIONS_CACHE_KEY.format(role.id))
+        cache.delete(ROLE_PERMISSION_SK_CACHE_KEY.format(role.id))
         return role
 
     def create_patient(self, **kwargs):

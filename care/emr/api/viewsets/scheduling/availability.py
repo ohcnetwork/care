@@ -19,7 +19,10 @@ from care.emr.models.scheduling.schedule import Availability
 from care.emr.resources.charge_item.apply_charge_item_definition import (
     apply_charge_item_definition,
 )
-from care.emr.resources.charge_item.spec import ChargeItemResourceOptions
+from care.emr.resources.charge_item.spec import (
+    ChargeItemResourceOptions,
+    ChargeItemStatusOptions,
+)
 from care.emr.resources.scheduling.schedule.spec import (
     SchedulableResourceTypeOptions,
     SlotTypeOptions,
@@ -151,20 +154,24 @@ def lock_create_appointment(token_slot, patient, created_by, note):
                 patient=patient,
                 token_slot__availability__schedule=schedule,
                 charge_item__isnull=False,
+                charge_item__status=ChargeItemStatusOptions.paid.value,
                 token_slot__start_datetime__lte=token_slot.start_datetime,
             )
             .order_by("-token_slot__start_datetime")
         ).first()
         if last_booking:
-            booking_start_time = last_booking.token_slot.start_datetime
-            current_time = timezone.now()
-            diff_days = (booking_start_time - current_time).days
+            booking_start_time = last_booking.charge_item.paid_on
+            if not booking_start_time:
+                diff_days = None
+            else:
+                new_booking_start_time = token_slot.start_datetime
+                diff_days = (booking_start_time - new_booking_start_time).days
         else:
-            diff_days = -1
+            diff_days = None
         if (
             schedule.revisit_allowed_days
-            and diff_days != -1
-            and diff_days <= schedule.revisit_allowed_days
+            and diff_days is not None
+            and abs(diff_days) <= schedule.revisit_allowed_days
         ):
             charge_item_definition = schedule.revisit_charge_item_definition
         else:

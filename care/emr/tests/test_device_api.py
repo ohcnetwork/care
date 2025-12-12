@@ -4,7 +4,7 @@ from uuid import uuid4
 
 from django.urls import reverse
 
-from care.emr.models import Device
+from care.emr.models import Device, FacilityLocation
 from care.emr.resources.device.spec import (
     DeviceAvailabilityStatusChoices,
     DeviceStatusChoices,
@@ -14,6 +14,7 @@ from care.emr.resources.encounter.constants import (
     EncounterPriorityChoices,
     StatusChoices,
 )
+from care.emr.resources.location.spec import FacilityLocationModeChoices
 from care.emr.tests.test_location_api import FacilityLocationMixin
 from care.security.permissions.device import DevicePermissions
 from care.security.permissions.encounter import EncounterPermissions
@@ -571,6 +572,62 @@ class TestDeviceViewSet(DeviceBaseTest):
             response.json()["detail"],
             "You do not have permission to manage facility organization",
         )
+
+    def test_list_device_with_include_children_filter(self):
+        self.add_permissions(
+            [
+                DevicePermissions.can_list_devices.name,
+                DevicePermissions.can_manage_devices.name,
+                FacilityLocationPermissions.can_write_facility_locations.name,
+            ]
+        )
+
+        parent_location = self.create_facility_location(
+            name="Parent Location", mode=FacilityLocationModeChoices.kind.value
+        )
+
+        child_location = self.create_facility_location(
+            name="Child Location", parent=parent_location["id"]
+        )
+
+        device_at_parent = self.create_device(registered_name="Device at Parent")
+        device_at_child = self.create_device(registered_name="Device at Child")
+
+        parent_obj = FacilityLocation.objects.get(external_id=parent_location["id"])
+        child_obj = FacilityLocation.objects.get(external_id=child_location["id"])
+
+        Device.objects.filter(external_id=device_at_parent["id"]).update(
+            current_location=parent_obj
+        )
+        Device.objects.filter(external_id=device_at_child["id"]).update(
+            current_location=child_obj
+        )
+
+        response = self.client.get(self.base_url + f"?location={parent_location['id']}")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 1)
+
+        response = self.client.get(
+            self.base_url + f"?location={parent_location['id']}&include_children=false"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 1)
+
+        response = self.client.get(
+            self.base_url + f"?location={parent_location['id']}&include_children=true"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 2)
+        results = response.json()["results"]
+        device_names = [d["registered_name"] for d in results]
+        self.assertIn("Device at Parent", device_names)
+        self.assertIn("Device at Child", device_names)
+
+        response = self.client.get(
+            self.base_url + f"?location={parent_location['id']}&include_children=TRUE"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 2)
 
 
 class TestDeviceLocationHistoryViewSet(DeviceBaseTest):

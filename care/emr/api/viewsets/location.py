@@ -390,12 +390,7 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
             raise ValidationError("End Datetime should be greater than Start Datetime")
         # Completed, reserved or planned status should have end_datetime
         if (
-            status
-            in (
-                LocationEncounterAvailabilityStatusChoices.completed.value,
-                LocationEncounterAvailabilityStatusChoices.reserved.value,
-                LocationEncounterAvailabilityStatusChoices.planned.value,
-            )
+            status in (LocationEncounterAvailabilityStatusChoices.completed.value,)
             and not end_datetime
         ):
             raise ValidationError("End Datetime is required for completed status")
@@ -405,14 +400,25 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
             if (
                 base_qs.filter(location=location)
                 .filter(
-                    start_datetime__lte=end_datetime, end_datetime__gte=start_datetime
+                    status__in=[
+                        LocationEncounterAvailabilityStatusChoices.active.value,
+                        LocationEncounterAvailabilityStatusChoices.planned.value,
+                    ],
+                    start_datetime__lte=end_datetime,
+                    end_datetime__gte=start_datetime,
                 )
                 .exists()
             ):
                 raise ValidationError("Conflict in schedule")
         elif (
             base_qs.filter(location=location)
-            .filter(start_datetime__gte=start_datetime)
+            .filter(
+                start_datetime__gte=start_datetime,
+                status__in=[
+                    LocationEncounterAvailabilityStatusChoices.active.value,
+                    LocationEncounterAvailabilityStatusChoices.planned.value,
+                ],
+            )
             .exists()
         ):
             raise ValidationError("Conflict in schedule")

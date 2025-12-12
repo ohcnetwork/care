@@ -9,7 +9,6 @@ from care.emr.models.location import FacilityLocation
 from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.resources.account.spec import AccountReadSpec
 from care.emr.resources.base import EMRResource
-from care.emr.resources.invoice.spec import InvoiceReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
 
 
@@ -102,11 +101,7 @@ class PaymentReconciliationWriteSpec(BasePaymentReconciliationSpec):
         return self
 
 
-class PaymentReconciliationReadSpec(BasePaymentReconciliationSpec):
-    """Invoice read specification"""
-
-    account: dict
-    target_invoice: dict | None = None
+class PaymentReconciliationMinimalReadSpec(BasePaymentReconciliationSpec):
     amount: float | None = None
     tendered_amount: float
     returned_amount: float
@@ -117,6 +112,19 @@ class PaymentReconciliationReadSpec(BasePaymentReconciliationSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+
+
+class PaymentReconciliationReadSpec(PaymentReconciliationMinimalReadSpec):
+    """Invoice read specification"""
+
+    account: dict
+    target_invoice: dict | None = None
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.invoice.spec import InvoiceReadSpec
+
+        super().perform_extra_serialization(mapping, obj)
         mapping["account"] = AccountReadSpec.serialize(obj.account).to_json()
         if obj.target_invoice:
             mapping["target_invoice"] = InvoiceReadSpec.serialize(

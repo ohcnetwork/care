@@ -5,23 +5,6 @@ from django.db import migrations
 from care.users.models import User
 
 
-def migrate_staff_to_nurse(apps, schema_editor):
-    User.objects.filter(user_type=User.TYPE_VALUE_MAP["Staff"]).update(
-        user_type=User.TYPE_VALUE_MAP["Nurse"]
-    )
-    User.objects.filter(user_type=User.TYPE_VALUE_MAP["StaffReadOnly"]).update(
-        user_type=User.TYPE_VALUE_MAP["NurseReadOnly"]
-    )
-
-
-def migrate_nurse_to_staff(apps, schema_editor):
-    User.objects.filter(user_type=User.TYPE_VALUE_MAP["Nurse"]).update(
-        user_type=User.TYPE_VALUE_MAP["Staff"]
-    )
-    User.objects.filter(user_type=User.TYPE_VALUE_MAP["NurseReadOnly"]).update(
-        user_type=User.TYPE_VALUE_MAP["StaffReadOnly"]
-    )
-
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -29,5 +12,4 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(migrate_staff_to_nurse, migrate_nurse_to_staff),
     ]

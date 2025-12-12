@@ -55,6 +55,30 @@ class Questionnaire(EMRBaseModel):
     internal_organization_cache = ArrayField(models.IntegerField(), default=list)
     tags = ArrayField(models.IntegerField(), default=list)
 
+    def get_questions_by_id(self) -> dict:
+        cached_result = getattr(self, "_questions_by_id_cache", None)
+        if cached_result is not None:
+            return cached_result
+
+        questions_dict = {}
+
+        def process_question(question: dict):
+            question_id = question.get("id")
+            if question_id:
+                questions_dict[str(question_id)] = question
+
+            nested_questions = question.get("questions", [])
+            if nested_questions:
+                for nested_question in nested_questions:
+                    process_question(nested_question)
+
+        questions_list = self.questions if isinstance(self.questions, list) else []
+        for question in questions_list:
+            process_question(question)
+
+        self._questions_by_id_cache = questions_dict
+        return questions_dict
+
 
 class FormSubmission(EMRBaseModel):
     questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
@@ -82,6 +106,29 @@ class QuestionnaireResponse(EMRBaseModel):
         FormSubmission, on_delete=models.CASCADE, null=True, blank=True
     )
     # TODO : Add index for subject_id and subject_type in descending order
+
+    def render_responses(self):
+        """
+        Convert the responses into a human understandable JSON
+        with current questionnaire data
+        """
+        responses = self.responses
+        structured_responses = []
+        if not responses:
+            return structured_responses
+        if not self.questionnaire:
+            return structured_responses
+        questions_by_id = self.questionnaire.get_questions_by_id()
+        for response in responses:
+            if response["question_id"] not in questions_by_id:
+                continue
+            structured_responses.append(
+                {
+                    "answer": response,
+                    "question": questions_by_id[response["question_id"]],
+                }
+            )
+        return structured_responses
 
 
 class QuestionnaireOrganization(EMRBaseModel):

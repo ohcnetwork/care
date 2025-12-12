@@ -131,6 +131,11 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     patient_instance_identifier_configs: list[dict] = []
     patient_facility_identifier_configs: list[dict] = []
 
+    # Product
+    extensions_schema_product: dict = {}
+    extensions_schema_supply_delivery: dict = {}
+    extensions_schema_supply_delivery_order: dict = {}
+
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
@@ -150,6 +155,14 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
             PatientIdentifierConfigCache.get_facility_config(obj.id)
         )
         mapping["instance_informational_codes"] = settings.INFORMATIONAL_MONETARY_CODES
+
+        mapping["extensions_schema_product"] = settings.PRODUCT_EXTENSIONS_JSON_SCHEMA
+        mapping["extensions_schema_supply_delivery"] = (
+            settings.SUPPLY_DELIVERY_EXTENSIONS_JSON_SCHEMA
+        )
+        mapping["extensions_schema_supply_delivery_order"] = (
+            settings.SUPPLY_DELIVERY_ORDER_EXTENSIONS_JSON_SCHEMA
+        )
 
 
 class FacilityMonetaryCodeSpec(EMRResource):

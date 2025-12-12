@@ -1,7 +1,9 @@
 import datetime
 from enum import Enum
 
-from pydantic import UUID4, model_validator
+from django.conf import settings
+from jsonschema import validate
+from pydantic import UUID4, field_validator, model_validator
 
 from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.product import Product
@@ -46,6 +48,16 @@ class BaseSupplyDeliverySpec(EMRResource):
 
     status: SupplyDeliveryStatusOptions
     supplied_item_condition: SupplyDeliveryConditionOptions | None = None
+    extensions: dict
+
+    @field_validator("extensions")
+    @classmethod
+    def validate_extensions(cls, v):
+        try:
+            validate(v, settings.SUPPLY_DELIVERY_EXTENSIONS_JSON_SCHEMA)
+        except Exception as e:
+            raise ValueError("Invalid additional metadata") from e
+        return v
 
 
 class SupplyDeliveryUpdateSpec(BaseSupplyDeliverySpec):

@@ -124,7 +124,7 @@ class FacilityLocation(EMRBaseModel):
         self.sync_organization_cache()
 
     def cascade_changes(self):
-        handle_cascade.delay(self.id)
+        handle_cascade(self.id)
 
 
 class FacilityLocationOrganization(EMRBaseModel):
