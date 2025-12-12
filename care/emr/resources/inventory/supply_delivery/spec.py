@@ -48,13 +48,13 @@ class BaseSupplyDeliverySpec(EMRResource):
 
     status: SupplyDeliveryStatusOptions
     supplied_item_condition: SupplyDeliveryConditionOptions | None = None
-    additional_metadata: dict
+    extensions: dict
 
-    @field_validator("additional_metadata")
+    @field_validator("extensions")
     @classmethod
-    def validate_additional_metadata(cls, v):
+    def validate_extensions(cls, v):
         try:
-            validate(v, settings.SUPPLY_DELIVERY_ADDITIONAL_METADATA_JSON_SCHEMA)
+            validate(v, settings.SUPPLY_DELIVERY_EXTENSIONS_JSON_SCHEMA)
         except Exception as e:
             raise ValueError("Invalid additional metadata") from e
         return v

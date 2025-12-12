@@ -132,7 +132,9 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     patient_facility_identifier_configs: list[dict] = []
 
     # Product
-    product_additional_metadata_json_schema: dict = {}
+    extensions_schema_product: dict = {}
+    extensions_schema_supply_delivery: dict = {}
+    extensions_schema_supply_delivery_order: dict = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -154,14 +156,12 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
         )
         mapping["instance_informational_codes"] = settings.INFORMATIONAL_MONETARY_CODES
 
-        mapping["product_additional_metadata_json_schema"] = (
-            settings.PRODUCT_ADDITIONAL_METADATA_JSON_SCHEMA
+        mapping["extensions_schema_product"] = settings.PRODUCT_EXTENSIONS_JSON_SCHEMA
+        mapping["extensions_schema_supply_delivery"] = (
+            settings.SUPPLY_DELIVERY_EXTENSIONS_JSON_SCHEMA
         )
-        mapping["supply_delivery_additional_metadata_json_schema"] = (
-            settings.SUPPLY_DELIVERY_ADDITIONAL_METADATA_JSON_SCHEMA
-        )
-        mapping["supply_delivery_order_additional_metadata_json_schema"] = (
-            settings.SUPPLY_DELIVERY_ORDER_ADDITIONAL_METADATA_JSON_SCHEMA
+        mapping["extensions_schema_supply_delivery_order"] = (
+            settings.SUPPLY_DELIVERY_ORDER_EXTENSIONS_JSON_SCHEMA
         )
 
 

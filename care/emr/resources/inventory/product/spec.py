@@ -34,13 +34,13 @@ class BaseProductSpec(EMRResource):
     status: ProductStatusOptions
     batch: ProductBatch | None = None
     expiration_date: datetime.datetime | None = None
-    additional_metadata: dict
+    extensions: dict
 
-    @field_validator("additional_metadata")
+    @field_validator("extensions")
     @classmethod
-    def validate_additional_metadata(cls, v):
+    def validate_extensions(cls, v):
         try:
-            validate(v, settings.PRODUCT_ADDITIONAL_METADATA_JSON_SCHEMA)
+            validate(v, settings.PRODUCT_EXTENSIONS_JSON_SCHEMA)
         except Exception as e:
             raise ValueError("Invalid additional metadata") from e
         return v
