@@ -400,14 +400,25 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
             if (
                 base_qs.filter(location=location)
                 .filter(
-                    start_datetime__lte=end_datetime, end_datetime__gte=start_datetime
+                    status__in=[
+                        LocationEncounterAvailabilityStatusChoices.active.value,
+                        LocationEncounterAvailabilityStatusChoices.planned.value,
+                    ],
+                    start_datetime__lte=end_datetime,
+                    end_datetime__gte=start_datetime,
                 )
                 .exists()
             ):
                 raise ValidationError("Conflict in schedule")
         elif (
             base_qs.filter(location=location)
-            .filter(start_datetime__gte=start_datetime)
+            .filter(
+                start_datetime__gte=start_datetime,
+                status__in=[
+                    LocationEncounterAvailabilityStatusChoices.active.value,
+                    LocationEncounterAvailabilityStatusChoices.planned.value,
+                ],
+            )
             .exists()
         ):
             raise ValidationError("Conflict in schedule")
