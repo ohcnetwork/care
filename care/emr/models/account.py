@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from care.emr.models.base import EMRBaseModel
@@ -24,3 +25,4 @@ class Account(EMRBaseModel):
     total_billable_charge_items = models.DecimalField(
         default=0, max_digits=10, decimal_places=2
     )
+    tags = ArrayField(models.IntegerField(), default=list)
