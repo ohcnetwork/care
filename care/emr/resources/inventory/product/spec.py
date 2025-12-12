@@ -1,7 +1,9 @@
 import datetime
 from enum import Enum
 
-from pydantic import UUID4, BaseModel
+from django.conf import settings
+from jsonschema import validate
+from pydantic import UUID4, BaseModel, field_validator
 
 from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.product import Product
@@ -32,6 +34,16 @@ class BaseProductSpec(EMRResource):
     status: ProductStatusOptions
     batch: ProductBatch | None = None
     expiration_date: datetime.datetime | None = None
+    additional_metadata: dict
+
+    @field_validator("additional_metadata")
+    @classmethod
+    def validate_additional_metadata(cls, v):
+        try:
+            validate(v, settings.PRODUCT_ADDITIONAL_METADATA_JSON_SCHEMA)
+        except Exception as e:
+            raise ValueError("Invalid additional metadata") from e
+        return v
 
 
 class ProductWriteSpec(BaseProductSpec):

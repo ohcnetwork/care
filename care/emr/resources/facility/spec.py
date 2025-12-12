@@ -131,6 +131,9 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     patient_instance_identifier_configs: list[dict] = []
     patient_facility_identifier_configs: list[dict] = []
 
+    # Product
+    product_additional_metadata_json_schema: dict = {}
+
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
@@ -150,6 +153,10 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
             PatientIdentifierConfigCache.get_facility_config(obj.id)
         )
         mapping["instance_informational_codes"] = settings.INFORMATIONAL_MONETARY_CODES
+
+        mapping["product_additional_metadata_json_schema"] = (
+            settings.PRODUCT_ADDITIONAL_METADATA_JSON_SCHEMA
+        )
 
 
 class FacilityMonetaryCodeSpec(EMRResource):
