@@ -1,7 +1,8 @@
 from datetime import datetime
 from enum import Enum
 
-from pydantic import UUID4, BaseModel
+from pydantic import UUID4, BaseModel, model_validator
+from rest_framework.exceptions import ValidationError
 
 from care.emr.models.encounter import Encounter
 from care.emr.models.inventory_item import InventoryItem
@@ -12,6 +13,9 @@ from care.emr.resources.base import EMRResource
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
 from care.emr.resources.inventory.inventory_item.spec import InventoryItemReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
+from care.emr.resources.medication.dispense.dispense_order import (
+    MedicationDispenseOrderStatusOptions,
+)
 from care.emr.resources.medication.request.spec import (
     DosageInstruction,
     MedicationRequestReadSpec,
@@ -101,6 +105,12 @@ class BaseMedicationDispenseSpec(EMRResource):
     substitution: MedicationDispenseSubstitution | None = None
 
 
+class CreateDispenseOrder(BaseModel):
+    name: str | None = None
+    note: str | None = None
+    alternate_identifier: str
+
+
 class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
     encounter: UUID4
     location: UUID4
@@ -110,6 +120,15 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
     days_supply: float | None = None
     fully_dispensed: bool | None = None
     order: UUID4 | None = None
+    create_dispense_order: CreateDispenseOrder | None = None
+
+    @model_validator(mode="after")
+    def validate_prescription(self):
+        if self.create_dispense_order and self.order:
+            raise ValueError(
+                "Cannot have both dispense order and create_dispense_order"
+            )
+        return self
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.encounter = get_object_or_404(
@@ -138,6 +157,27 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
             obj.order = get_object_or_404(
                 DispenseOrder.objects.only("id").filter(external_id=self.order)
             )
+        else:
+            dispense_order_obj = DispenseOrder.objects.filter(
+                alternate_identifier=self.create_dispense_order.alternate_identifier,
+                patient=obj.patient,
+                location=obj.location,
+            ).first()
+            if dispense_order_obj and dispense_order_obj.status not in [
+                MedicationDispenseOrderStatusOptions.draft.value,
+                MedicationDispenseOrderStatusOptions.in_progress.value,
+            ]:
+                raise ValidationError("Prescription is not active")
+            if not dispense_order_obj:
+                dispense_order_obj = DispenseOrder.objects.create(
+                    status=MedicationDispenseOrderStatusOptions.draft.value,
+                    alternate_identifier=self.create_dispense_order.alternate_identifier,
+                    patient=obj.patient,
+                    location=obj.location,
+                    name=self.create_dispense_order.name,
+                    note=self.create_dispense_order.note,
+                )
+            obj.order = dispense_order_obj
 
 
 class MedicationDispenseUpdateSpec(BaseMedicationDispenseSpec):
