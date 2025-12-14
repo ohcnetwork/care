@@ -190,7 +190,7 @@ class ServiceRequestRetrieveSpec(ServiceRequestReadSpec):
             DiagnosticReportListSpec.serialize(diagnostic_report).to_json()
             for diagnostic_report in diagnostic_reports
         ]
-        mapping["patient"] = PatientRetrieveSpec.serialize(
+        mapping["encounter"]["patient"] = PatientRetrieveSpec.serialize(
             obj.encounter.patient, facility=obj.facility
         ).to_json()
 
