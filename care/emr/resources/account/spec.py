@@ -7,7 +7,7 @@ from pydantic import UUID4
 from care.emr.models import Account
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PeriodSpec
-from care.emr.resources.patient.spec import PatientListSpec
+from care.emr.resources.patient.spec import PatientListSpec, PatientRetrieveSpec
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -79,8 +79,14 @@ class AccountReadSpec(AccountMinimalReadSpec):
         mapping["patient"] = PatientListSpec.serialize(obj.patient)
 
 
-class AccountRetrieveSpec(AccountReadSpec):
+class AccountRetrieveSpec(AccountMinimalReadSpec):
     """Account retrieve specification"""
 
+    patient: dict
     cached_items: list = []
     total_price_components: dict
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        mapping["patient"] = PatientRetrieveSpec.serialize(obj.patient)
