@@ -54,7 +54,7 @@ class TagConfigBaseSpec(EMRResource):
     id: UUID4 | None = None
     display: str
     category: TagCategoryChoices
-    description: str = ""
+    description: str | None
     priority: int = 100
     status: TagStatus
 
