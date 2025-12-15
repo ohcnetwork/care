@@ -9,7 +9,7 @@ ENV PIPENV_CACHE_DIR=/root/.cache/pip
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
   build-essential libjpeg-dev zlib1g-dev libgmp-dev \
-  libpq-dev gettext wget curl gnupg git \
+  libpq-dev libpangoft2-1.0-0 gettext wget curl gnupg git \
   libpango-1.0-0 libharfbuzz0b libpangoft2-1.0-0 libharfbuzz-subset0 libffi-dev libjpeg-dev libopenjp2-7-dev \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
