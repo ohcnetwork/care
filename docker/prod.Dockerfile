@@ -20,6 +20,7 @@ FROM base AS builder
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
   build-essential libjpeg-dev zlib1g-dev libgmp-dev libpq-dev git wget \
+  libpango-1.0-0 libharfbuzz0b libpangoft2-1.0-0 libharfbuzz-subset0 libffi-dev libopenjp2-7-dev \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
@@ -27,17 +28,17 @@ COPY --chmod=0755 scripts/install_typst.sh $APP_HOME
 RUN TYPST_VERSION=${TYPST_VERSION} $APP_HOME/install_typst.sh
 
 # use pipenv to manage virtualenv
-RUN pip install pipenv==2024.4.0
+RUN pip install pipenv==2025.1.1
 
 RUN python -m venv $APP_HOME/.venv
 COPY Pipfile Pipfile.lock $APP_HOME/
 RUN pipenv install --deploy --categories "packages"
 
-ARG ADDITIONAL_PLUGS=""
-ENV ADDITIONAL_PLUGS=$ADDITIONAL_PLUGS
-
 COPY plugs/ $APP_HOME/plugs/
 COPY install_plugins.py plug_config.py $APP_HOME/
+
+ARG ADDITIONAL_PLUGS=""
+ENV ADDITIONAL_PLUGS=$ADDITIONAL_PLUGS
 RUN python3 $APP_HOME/install_plugins.py
 
 # ---

@@ -199,7 +199,7 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
     return all(results) if behavior == "all" else any(results)
 
 
-def validate_question_result(  # noqa : PLR0912
+def validate_question_result(  # noqa: PLR0911, PLR0912
     questionnaire, responses, errors, parent, questionnaire_mapping
 ):
     questionnaire["parent"] = parent

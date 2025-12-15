@@ -35,6 +35,7 @@ from care.emr.resources.invoice.sync_items import sync_invoice_items
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.shortcuts import get_object_or_404
+from care.utils.time_util import care_now
 
 
 class InvoiceFilters(filters.FilterSet):
@@ -80,7 +81,7 @@ class InvoiceViewSet(
         )
 
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().select_related("account")
         facility = self.get_facility_obj()
         if not AuthorizationController.call(
             "can_read_invoice_in_facility", self.request.user, facility
@@ -163,7 +164,9 @@ class InvoiceViewSet(
                         status=ChargeItemStatusOptions.billed.value,
                         id__in=instance.charge_items,
                     ).update(
-                        status=ChargeItemStatusOptions.paid.value, paid_invoice=instance
+                        status=ChargeItemStatusOptions.paid.value,
+                        paid_invoice=instance,
+                        paid_on=care_now(),
                     )
             super().perform_update(instance)
             rebalance_account_task.delay(instance.account.id)
@@ -194,6 +197,7 @@ class InvoiceViewSet(
                     charge_items.values_list("id", flat=True)
                 )
                 sync_invoice_items(invoice)
+                invoice.updated_by = self.request.user
                 invoice.save()
                 charge_items.update(
                     status=ChargeItemStatusOptions.billed.value, paid_invoice=invoice
@@ -219,9 +223,11 @@ class InvoiceViewSet(
                 with transaction.atomic():
                     invoice.charge_items.remove(charge_item.id)
                     sync_invoice_items(invoice)
+                    invoice.updated_by = self.request.user
                     invoice.save()
                     charge_item.status = ChargeItemStatusOptions.billable.value
                     charge_item.paid_invoice = None
+                    charge_item.paid_on = None
                     charge_item.save()
             except ValueError as e:
                 raise ValidationError("Charge item not found in invoice") from e
@@ -241,6 +247,7 @@ class InvoiceViewSet(
                 )
                 invoice.charge_items = charge_items.values_list("id", flat=True)
                 sync_invoice_items(invoice)
+                invoice.updated_by = self.request.user
                 invoice.save()
                 charge_items.update(
                     status=ChargeItemStatusOptions.billed.value, paid_invoice=invoice
@@ -266,7 +273,10 @@ class InvoiceViewSet(
                     account=invoice.account,
                     id__in=invoice.charge_items,
                 ).update(
-                    status=ChargeItemStatusOptions.billable.value, paid_invoice=None
+                    status=ChargeItemStatusOptions.billable.value,
+                    paid_invoice=None,
+                    paid_on=None,
                 )
+                invoice.updated_by = self.request.user
                 invoice.save()
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())

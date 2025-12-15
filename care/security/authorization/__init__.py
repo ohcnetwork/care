@@ -28,5 +28,6 @@ from .specimen_definition import *  # noqa
 from .supply_delivery import *  # noqa
 from .supply_request import *  # noqa
 from .tag_config import *  # noqa
+from .template import *  # noqa
 from .token import *  # noqa
 from .user import *  # noqa

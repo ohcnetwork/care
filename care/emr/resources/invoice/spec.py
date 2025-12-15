@@ -7,9 +7,13 @@ from pydantic import UUID4
 from care.emr.models.account import Account
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.invoice import Invoice
-from care.emr.resources.account.spec import AccountReadSpec
+from care.emr.models.payment_reconciliation import PaymentReconciliation
+from care.emr.resources.account.spec import AccountMinimalReadSpec, AccountReadSpec
 from care.emr.resources.base import EMRResource
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
+from care.emr.resources.payment_reconciliation.spec import (
+    PaymentReconciliationMinimalReadSpec,
+)
 
 
 class InvoiceStatusOptions(str, Enum):
@@ -59,10 +63,14 @@ class InvoiceReadSpec(BaseInvoiceSpec):
 
     total_net: Decimal
     total_gross: Decimal
+    created_date: datetime.datetime
+    modified_date: datetime.datetime
+    account: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+        mapping["account"] = AccountMinimalReadSpec.serialize(obj.account).to_json()
 
 
 class InvoiceRetrieveSpec(InvoiceReadSpec):
@@ -70,7 +78,10 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
 
     charge_items: list[dict]
     total_price_components: list[dict]
-    account: dict
+    created_by: dict | None
+    updated_by: dict | None
+    payments: list[dict]
+    total_payments: Decimal
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -85,3 +96,13 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
         else:
             mapping["charge_items"] = obj.charge_items_copy
         mapping["account"] = AccountReadSpec.serialize(obj.account).to_json()
+        cls.serialize_audit_users(mapping, obj)
+        payments = []
+        total_payments = Decimal(0)
+        for payment in PaymentReconciliation.objects.filter(target_invoice=obj):
+            payments.append(
+                PaymentReconciliationMinimalReadSpec.serialize(payment).to_json()
+            )
+            total_payments += payment.amount
+        mapping["total_payments"] = total_payments
+        mapping["payments"] = payments

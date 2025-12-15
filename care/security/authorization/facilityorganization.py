@@ -46,6 +46,10 @@ class FacilityOrganizationAccess(AuthorizationHandler):
                 [FacilityOrganizationPermissions.can_create_facility_organization.name],
                 user,
                 [*organization.parent_cache, organization.id, root_organization.id],
+            ) or self.check_permission_in_organization(
+                [OrganizationPermissions.is_geo_admin.name],
+                user,
+                orgs=facility.geo_organization_cache,
             )
         return self.check_permission_in_facility_organization(
             [FacilityOrganizationPermissions.can_create_facility_organization.name],
@@ -64,10 +68,17 @@ class FacilityOrganizationAccess(AuthorizationHandler):
         root_organization = FacilityOrganization.objects.get(
             facility=organization.facility, org_type="root"
         )
-        return self.check_permission_in_facility_organization(
+        if self.check_permission_in_facility_organization(
             [FacilityOrganizationPermissions.can_manage_facility_organization.name],
             user,
             [*organization.parent_cache, organization.id, root_organization.id],
+        ):
+            return True
+        # Check permission via geo organizations
+        return self.check_permission_in_organization(
+            [OrganizationPermissions.is_geo_admin.name],
+            user,
+            orgs=organization.facility.geo_organization_cache,
         )
 
     def can_delete_facility_organization(self, user, organization):

@@ -72,7 +72,7 @@ class MedicationRequestViewSet(
             encounter = get_object_or_404(Encounter, external_id=instance.encounter)
             requester = get_object_or_404(User, external_id=instance.requester)
             if not AuthorizationController.call(
-                "can_update_encounter_obj", requester, encounter
+                "can_update_encounter_clinical_data", requester, encounter
             ):
                 raise PermissionDenied(
                     "Requester does not have permission to update encounter"
