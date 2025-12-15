@@ -40,6 +40,7 @@ from care.security.permissions.specimen_definition import SpecimenDefinitionPerm
 from care.security.permissions.supply_delivery import SupplyDeliveryPermissions
 from care.security.permissions.supply_request import SupplyRequestPermissions
 from care.security.permissions.tag_config import TagConfigPermissions
+from care.security.permissions.template import TemplatePermissions
 from care.security.permissions.token import TokenPermissions
 from care.security.permissions.user import UserPermissions
 
@@ -86,6 +87,7 @@ class PermissionController:
         SupplyRequestPermissions,
         InventoryItemPermissions,
         TagConfigPermissions,
+        TemplatePermissions,
         PatientIdentifierConfigPermissions,
         MedicationPermissions,
         TokenPermissions,

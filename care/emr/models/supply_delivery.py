@@ -24,6 +24,7 @@ class SupplyDelivery(EMRBaseModel):
         null=True,
         blank=True,
     )
+    extensions = models.JSONField(default=dict)
 
 
 class DeliveryOrder(EMRBaseModel):
@@ -46,3 +47,4 @@ class DeliveryOrder(EMRBaseModel):
         related_name="destination_delivery_orders",
         on_delete=models.CASCADE,
     )
+    extensions = models.JSONField(default=dict)

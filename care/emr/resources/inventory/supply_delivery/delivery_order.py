@@ -1,6 +1,8 @@
 from enum import Enum
 
-from pydantic import UUID4
+from django.conf import settings
+from jsonschema import validate
+from pydantic import UUID4, field_validator
 
 from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import Organization
@@ -45,6 +47,16 @@ class SupplyDeliveryOrderWriteSpec(BaseSupplyDeliveryOrderSpec):
     supplier: UUID4 | None = None
     origin: UUID4 | None = None
     destination: UUID4
+    extensions: dict
+
+    @field_validator("extensions")
+    @classmethod
+    def validate_extensions(cls, v):
+        try:
+            validate(v, settings.SUPPLY_DELIVERY_ORDER_EXTENSIONS_JSON_SCHEMA)
+        except Exception as e:
+            raise ValueError("Invalid additional metadata") from e
+        return v
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.destination = get_object_or_404(

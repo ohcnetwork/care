@@ -3,6 +3,7 @@ from model_bakery import baker
 
 from care.emr.models import FacilityLocation, FacilityLocationOrganization
 from care.emr.models.medication_dispense import DispenseOrder
+from care.emr.resources.location.spec import FacilityLocationModeChoices
 from care.emr.resources.medication.dispense.dispense_order import (
     MedicationDispenseOrderStatusOptions,
 )
@@ -544,3 +545,91 @@ class DispenseOrderAPITestCase(CareAPITestBase):
         self.assertEqual(
             response.data["results"][0]["id"], str(dispense_order2.external_id)
         )
+
+    def test_list_dispense_orders_with_include_children_filter(self):
+        parent_location = baker.make(
+            FacilityLocation,
+            facility=self.facility,
+            name="Parent Location",
+            mode=FacilityLocationModeChoices.kind.value,
+        )
+        baker.make(
+            FacilityLocationOrganization,
+            location=parent_location,
+            organization=self.facility_organization,
+        )
+
+        child_location = baker.make(
+            FacilityLocation,
+            facility=self.facility,
+            name="Child Location",
+            parent=parent_location,
+        )
+        baker.make(
+            FacilityLocationOrganization,
+            location=child_location,
+            organization=self.facility_organization,
+        )
+
+        order_at_parent = self.create_dispense_order(
+            location=parent_location,
+            patient=self.patient,
+            name="Order at Parent",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        order_at_child = self.create_dispense_order(
+            location=child_location,
+            patient=self.patient,
+            name="Order at Child",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.user)
+
+        response = self.client.get(
+            self.generate_base_url(self.facility.external_id),
+            {"location": str(parent_location.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(order_at_parent.external_id)
+        )
+
+        response = self.client.get(
+            self.generate_base_url(self.facility.external_id),
+            {
+                "location": str(parent_location.external_id),
+                "include_children": "false",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+
+        response = self.client.get(
+            self.generate_base_url(self.facility.external_id),
+            {"location": str(parent_location.external_id), "include_children": "true"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        order_ids = [result["id"] for result in response.data["results"]]
+        self.assertIn(str(order_at_parent.external_id), order_ids)
+        self.assertIn(str(order_at_child.external_id), order_ids)
+
+        response = self.client.get(
+            self.generate_base_url(self.facility.external_id),
+            {"location": str(parent_location.external_id), "include_children": "TRUE"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)

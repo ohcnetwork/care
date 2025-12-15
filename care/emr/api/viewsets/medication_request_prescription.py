@@ -66,7 +66,9 @@ class MedicationRequestPrescriptionViewSet(
 
     def authorize_update(self, request_obj, model_instance):
         encounter_access = AuthorizationController.call(
-            "can_update_encounter_obj", self.request.user, model_instance.encounter
+            "can_update_encounter_clinical_data",
+            self.request.user,
+            model_instance.encounter,
         )
         if encounter_access:
             return

@@ -122,12 +122,12 @@ class PatientCreateSpec(PatientBaseSpec):
         instance_identifier_configs = PatientIdentifierConfigCache.get_instance_config()
         configs = {str(x.config): x for x in self.identifiers}
         for identifier_config in instance_identifier_configs:
-            if identifier_config["id"] in configs:
-                value = configs[identifier_config["id"]].value
+            if str(identifier_config["id"]) in configs:
+                value = configs[str(identifier_config["id"])].value
+                if identifier_config["config"]["required"] and not value:
+                    err = f"Identifier config {identifier_config['config']['system']} is required"
+                    raise ValueError(err)
                 validate_identifier_config(identifier_config, value)
-            elif identifier_config["config"]["required"]:
-                err = f"Identifier config {identifier_config['config']['system']} is required"
-                raise ValueError(err)
         return self
 
     def perform_extra_deserialization(self, is_update, obj):
@@ -193,14 +193,14 @@ class PatientUpdateSpec(PatientBaseSpec):
         instance_identifier_configs = PatientIdentifierConfigCache.get_instance_config()
         configs = {str(x.config): x for x in identifiers}
         for identifier_config in instance_identifier_configs:
-            if identifier_config["id"] in configs:
-                value = configs[identifier_config["id"]].value
+            if str(identifier_config["id"]) in configs:
+                value = configs[str(identifier_config["id"])].value
+                if identifier_config["config"]["required"] and not value:
+                    err = f"Identifier config {identifier_config['config']['system']} is required"
+                    raise ValueError(err)
                 validate_identifier_config(
                     identifier_config, value, info.context.get("object")
                 )
-            elif identifier_config["config"]["required"]:
-                err = f"Identifier config {identifier_config['config']['system']} is required"
-                raise ValueError(err)
         return identifiers
 
 

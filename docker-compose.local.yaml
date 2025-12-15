@@ -1,15 +1,16 @@
-
 services:
   backend:
     image: care_local
     build:
       context: .
       dockerfile: docker/dev.Dockerfile
+      args:
+        ADDITIONAL_PLUGS: ${ADDITIONAL_PLUGS:-}
     env_file:
       - ./docker/.local.env
     volumes:
       - .:/app
-    entrypoint: [ "bash", "scripts/start-dev.sh" ]
+    entrypoint: ["bash", "scripts/start-dev.sh"]
     ports:
       - "9000:9000"
       - "9876:9876" #debugpy
@@ -26,7 +27,7 @@ services:
     image: care_local
     env_file:
       - ./docker/.local.env
-    entrypoint: [ "bash", "scripts/celery-dev.sh" ]
+    entrypoint: ["bash", "scripts/celery-dev.sh"]
     restart: unless-stopped
     depends_on:
       - db

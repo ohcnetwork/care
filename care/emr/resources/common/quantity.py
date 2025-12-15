@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from care.emr.resources.common import Coding  # noqa TCH001
+from care.emr.resources.common import Coding
 
 
 class Quantity(BaseModel):

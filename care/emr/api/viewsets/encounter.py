@@ -1,4 +1,5 @@
 import tempfile
+from datetime import timedelta
 
 from django.conf import settings
 from django.db import transaction
@@ -30,7 +31,7 @@ from care.emr.models import (
 )
 from care.emr.models.patient import PatientIdentifier, PatientIdentifierConfig
 from care.emr.reports import discharge_summary
-from care.emr.resources.encounter.constants import COMPLETED_CHOICES
+from care.emr.resources.encounter.constants import COMPLETED_CHOICES, StatusChoices
 from care.emr.resources.encounter.spec import (
     EncounterCareTeamMemberWriteSpec,
     EncounterCreateSpec,
@@ -51,6 +52,7 @@ from care.security.authorization import AuthorizationController
 from care.users.models import User
 from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.shortcuts import get_object_or_404
+from care.utils.time_util import care_now
 
 
 class LiveFilter(filters.CharFilter):
@@ -219,6 +221,29 @@ class EncounterViewSet(
         if self.action in ["list"]:
             raise PermissionDenied("Cannot access encounters")
         return qs  # Authz Exists separately for update and deletes
+
+    @action(detail=True, methods=["POST"])
+    def restart(self, request, *args, **kwargs):
+        """
+        Moves the encounter to from a completed state to an in progress state
+        """
+        instance = self.get_object()
+        if not AuthorizationController.call(
+            "can_restart_encounter_obj", self.request.user, instance
+        ):
+            raise PermissionDenied("You do not have permission to update encounter")
+
+        if instance.status not in COMPLETED_CHOICES:
+            raise ValidationError("Encounter is not in a completed state")
+        if instance.modified_date < care_now() - timedelta(
+            hours=settings.ENCOUNTER_RESTART_TIME_LIMIT_HOURS
+        ):
+            err = f"Encounter cannot be restarted after {settings.ENCOUNTER_RESTART_TIME_LIMIT_HOURS} hours"
+            raise ValidationError(err)
+        instance.status = StatusChoices.in_progress.value
+        instance.save(update_fields=["status"])
+
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=["GET"])
     def organizations(self, request, *args, **kwargs):

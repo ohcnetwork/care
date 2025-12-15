@@ -70,7 +70,7 @@ class NoteThreadApiTestCase(CareAPITestBase):
         role = self.create_role_with_permissions(
             permissions=[
                 PatientPermissions.can_view_clinical_data.name,
-                EncounterPermissions.can_read_encounter.name,
+                EncounterPermissions.can_read_encounter_clinical_data.name,
             ]
         )
         self.attach_role_facility_organization_user(
@@ -106,7 +106,7 @@ class NoteThreadApiTestCase(CareAPITestBase):
 
     def test_create_thread_on_encounter_with_permission(self):
         role = self.create_role_with_permissions(
-            permissions=[EncounterPermissions.can_write_encounter.name]
+            permissions=[EncounterPermissions.can_write_encounter_clinical_data.name]
         )
         self.attach_role_facility_organization_user(
             self.facility_organization, self.user, role
@@ -134,7 +134,7 @@ class NoteThreadApiTestCase(CareAPITestBase):
 
     def test_create_thread_on_encounter_with_patient_mismatch(self):
         role = self.create_role_with_permissions(
-            permissions=[EncounterPermissions.can_write_encounter.name]
+            permissions=[EncounterPermissions.can_write_encounter_clinical_data.name]
         )
         self.attach_role_facility_organization_user(
             self.facility_organization, self.user, role
@@ -265,7 +265,7 @@ class NoteMessageApiTestCase(CareAPITestBase):
         role = self.create_role_with_permissions(
             permissions=[
                 PatientPermissions.can_view_clinical_data.name,
-                EncounterPermissions.can_read_encounter.name,
+                EncounterPermissions.can_read_encounter_clinical_data.name,
             ]
         )
         self.attach_role_facility_organization_user(
@@ -280,7 +280,7 @@ class NoteMessageApiTestCase(CareAPITestBase):
 
     def test_create_note_on_encounter_with_permission(self):
         role = self.create_role_with_permissions(
-            permissions=[EncounterPermissions.can_write_encounter.name]
+            permissions=[EncounterPermissions.can_write_encounter_clinical_data.name]
         )
         self.attach_role_facility_organization_user(
             self.facility_organization, self.user, role
@@ -305,7 +305,7 @@ class NoteMessageApiTestCase(CareAPITestBase):
     def test_create_note_on_encounter_with_patient_mismatch(self):
         role = self.create_role_with_permissions(
             permissions=[
-                EncounterPermissions.can_write_encounter.name,
+                EncounterPermissions.can_write_encounter_clinical_data.name,
                 PatientPermissions.can_write_patient.name,
             ]
         )
@@ -392,7 +392,7 @@ class NoteMessageApiTestCase(CareAPITestBase):
         )
         role = self.create_role_with_permissions(
             permissions=[
-                EncounterPermissions.can_write_encounter.name,
+                EncounterPermissions.can_write_encounter_clinical_data.name,
                 PatientPermissions.can_write_patient.name,
             ]
         )

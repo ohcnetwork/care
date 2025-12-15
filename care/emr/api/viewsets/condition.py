@@ -143,7 +143,9 @@ class DiagnosisViewSet(
                     "You do not have permission to update chronic condition"
                 )
         elif not AuthorizationController.call(
-            "can_update_encounter_obj", self.request.user, model_instance.encounter
+            "can_update_encounter_clinical_data",
+            self.request.user,
+            model_instance.encounter,
         ):
             raise PermissionDenied("You do not have permission to update encounter")
 
