@@ -89,4 +89,6 @@ class AccountRetrieveSpec(AccountMinimalReadSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        mapping["patient"] = PatientRetrieveSpec.serialize(obj.patient)
+        mapping["patient"] = PatientRetrieveSpec.serialize(
+            obj.patient, facility=obj.facility
+        )
