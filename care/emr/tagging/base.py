@@ -121,7 +121,7 @@ class PatientInstanceTagManager(SingleFacilityTagManager):
 
 class PatientFacilityTagManager(SingleFacilityTagManager):
     def __init__(self, facility) -> None:
-        if isinstance(facility, UUID):
+        if isinstance(facility, (str, UUID)):
             facility = get_object_or_404(Facility, external_id=facility)
         self.facility = facility
 
