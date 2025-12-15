@@ -49,7 +49,7 @@ RUN addgroup --system django \
   && adduser --system --ingroup django django
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-  libpq-dev libgmp-dev libglib2.0 libpangoft2-1.0-0 gettext wget curl gnupg \
+  libpq-dev libgmp-dev libpangoft2-1.0-0 gettext wget curl gnupg \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
