@@ -100,8 +100,8 @@ class ServiceRequestWriteSpec(BaseServiceRequestSpec):
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.healthcare_service:
-            obj.healthcare_service = HealthcareService.objects.get(
-                external_id=self.healthcare_service
+            obj.healthcare_service = get_object_or_404(
+                HealthcareService, external_id=self.healthcare_service
             )
         obj._locations = self.locations  # noqa SLF001
         if self.requester:
