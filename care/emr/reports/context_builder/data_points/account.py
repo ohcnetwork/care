@@ -3,7 +3,10 @@ from django_filters import rest_framework as filters
 from care.emr.models.account import Account
 from care.emr.reports.context_builder.data_points.base import (
     Field,
-    QuerysetContextBuilder,
+    SingleObjectContextBuilder,
+)
+from care.emr.reports.context_builder.data_points.invoice import (
+    InvoiceContextBuilder,
 )
 
 STATUS_DISPLAY = {
@@ -30,7 +33,10 @@ class AccountReportFilter(filters.FilterSet):
     created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
 
 
-class AccountContextBuilder(QuerysetContextBuilder):
+class AccountContextBuilder(SingleObjectContextBuilder):
+    filterset_class = AccountReportFilter
+    __filterset_backends__ = [filters.DjangoFilterBackend]
+
     name = Field(
         display="Account Title",
         preview_value="General Checkup Account",
@@ -79,6 +85,32 @@ class AccountContextBuilder(QuerysetContextBuilder):
         preview_value="80.00",
         description="Total balance amount remaining for the account",
     )
+    invoices = Field(
+        display="Associated Invoices",
+        preview_value="",
+        target_context=InvoiceContextBuilder,
+        description="Invoices linked to the account",
+    )
+    charge_items = Field(
+        display="Billable Charge Items",
+        preview_value="",
+        description="Chargeable items associated with the account",
+    )
+    payment_reconciations = Field(
+        display="Payment Reconciliations",
+        preview_value="",
+        description="Payment reconciliations for the account",
+    )
+    created_date = Field(
+        display="Account Created Date",
+        preview_value="2023-01-15T10:30:00Z",
+        description="Date when the account was created",
+    )
+    calculated_at = Field(
+        display="Account Calculated At",
+        preview_value="2023-01-20T15:45:00Z",
+        description="Date when the account totals were last calculated",
+    )
 
     def get_context(self):
-        return Account.objects.filter(patient=self.parent_context)
+        return Account.objects.filter(patient=self.parent_context, status="active")
