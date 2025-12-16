@@ -6,6 +6,14 @@ from care.emr.reports.context_builder.data_points.base import (
     QuerysetContextBuilder,
 )
 
+STATUS_DISPLAY = {
+    "draft": "Draft",
+    "issued": "Issued",
+    "balanced": "Balanced",
+    "cancelled": "Cancelled",
+    "entered_in_error": "Entered in Error",
+}
+
 
 class InvoiceReportFilter(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
@@ -24,7 +32,10 @@ class InvoiceContextBuilder(QuerysetContextBuilder):
     )
     status = Field(
         display="Invoice Status",
-        preview_value="Paid",
+        preview_value="Issued",
+        mapping=lambda i: STATUS_DISPLAY.get(i.status, i.status.title())
+        if i.status
+        else "",
         description="Current status of the invoice",
     )
     number = Field(
