@@ -121,4 +121,5 @@ class AccountContextBuilder(SingleObjectContextBuilder):
     )
 
     def get_context(self):
-        return Account.objects.filter(patient=self.parent_context, status="active")
+        accounts = Account.objects.filter(patient=self.parent_context)
+        return accounts.first()

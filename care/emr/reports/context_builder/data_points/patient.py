@@ -9,7 +9,7 @@ from care.emr.reports.context_builder.data_points.base import (
 )
 
 
-class PatientContextBuilder(SingleObjectContextBuilder):
+class PatientContextBuilderBase(SingleObjectContextBuilder):
     standalone_context = True
     __slug__ = "patient_base"
     __associating_model__ = Patient
@@ -19,7 +19,7 @@ class PatientContextBuilder(SingleObjectContextBuilder):
 
     name = Field(
         display="Patient Name",
-        preview_value="Jane Doe",
+        preview_value="John Doe",
         description="Full name of the patient",
     )
 
@@ -34,7 +34,6 @@ class PatientContextBuilder(SingleObjectContextBuilder):
         preview_value="45 Y",
         description="Age of the patient",
     )
-
     accounts = Field(
         display="Patient Accounts",
         target_context=AccountContextBuilder,
@@ -43,4 +42,4 @@ class PatientContextBuilder(SingleObjectContextBuilder):
     )
 
 
-DataPointRegistry.register(PatientContextBuilder)
+DataPointRegistry.register(PatientContextBuilderBase)
