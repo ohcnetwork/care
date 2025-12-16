@@ -131,9 +131,4 @@ class PaymentReconciliationContextBuilder(QuerysetContextBuilder):
     )
 
     def get_context(self):
-        return PaymentReconciliation.objects.filter(patient=self.parent_context)
-
-
-class AccountPaymentReconciliationContextBuilder(PaymentReconciliationContextBuilder):
-    def get_context(self):
         return PaymentReconciliation.objects.filter(account=self.parent_context)

@@ -12,7 +12,7 @@ from care.emr.reports.context_builder.data_points.invoice import (
     AccountInvoiceContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.payment_reconcilation import (
-    AccountPaymentReconciliationContextBuilder,
+    PaymentReconciliationContextBuilder,
 )
 
 STATUS_DISPLAY = {
@@ -106,7 +106,7 @@ class AccountContextBuilder(SingleObjectContextBuilder):
     payment_reconciliations = Field(
         display="Payment Reconciliations",
         preview_value="",
-        target_context=AccountPaymentReconciliationContextBuilder,
+        target_context=PaymentReconciliationContextBuilder,
         description="Payment reconciliations for the account",
     )
     created_date = Field(
