@@ -6,6 +6,44 @@ from care.emr.reports.context_builder.data_points.base import (
     QuerysetContextBuilder,
 )
 
+PAYMENT_RECONCILATION_STATUS = {
+    "active": "Active",
+    "cancelled": "Cancelled",
+    "draft": "Draft",
+    "entered_in_error": "Entered in Error",
+}
+
+PAYMENT_RECONCILATION_TYPE = {
+    "payment": "Payment",
+    "adjustment": "Adjustment",
+    "advance": "Advance",
+}
+PAYMENT_RECONCILATION_KIND = {
+    "deposit": "Deposit",
+    "periodic_payment": "Periodic Payment",
+    "online": "Online",
+    "kiosk": "Kiosk",
+}
+PAYMENT_RECONCILATION_ISSUER_TYPE = {
+    "patient": "Patient",
+    "insurer": "Insurer",
+}
+PAYMENT_RECONCILATION_OUTCOME = {
+    "queued": "Queued",
+    "complete": "Complete",
+    "error": "Error",
+    "partial": "Partial",
+}
+PAYMENT_RECONCILATION_PAYMENT_METHOD = {
+    "cash": "Cash",
+    "ccca": "Credit Card",
+    "cchk": "Credit Check",
+    "cdac": "Credit Account",
+    "chck": "Check",
+    "ddpo": "Direct Deposit",
+    "debc": "Debit Card",
+}
+
 
 class PaymentReconciliationReportFilter(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
@@ -21,12 +59,20 @@ class PaymentReconciliationContextBuilder(QuerysetContextBuilder):
 
     status = Field(
         display="Payment Reconciliation Status",
-        preview_value="Completed",
-        description="Current status of the payment reconciliation",
+        preview_value="Active",
+        mapping=lambda p: PAYMENT_RECONCILATION_STATUS.get(p.status, p.status.title())
+        if p.status
+        else "",
+        description="Status of the payment reconciliation",
     )
     reconciliation_type = Field(
         display="Reconciliation Type",
         preview_value="Payment",
+        mapping=lambda p: PAYMENT_RECONCILATION_TYPE.get(
+            p.reconciliation_type, p.reconciliation_type.title()
+        )
+        if p.reconciliation_type
+        else "",
         description="Type of the payment reconciliation",
     )
     amount = Field(
@@ -42,6 +88,9 @@ class PaymentReconciliationContextBuilder(QuerysetContextBuilder):
     kind = Field(
         display="Kind",
         preview_value="Credit",
+        mapping=lambda p: PAYMENT_RECONCILATION_KIND.get(p.kind, p.kind.title())
+        if p.kind
+        else "",
         description="Kind of payment reconciliation",
     )
 
@@ -53,16 +102,31 @@ class PaymentReconciliationContextBuilder(QuerysetContextBuilder):
     issuer_type = Field(
         display="Issuer Type",
         preview_value="Patient",
+        mapping=lambda p: PAYMENT_RECONCILATION_ISSUER_TYPE.get(
+            p.issuer_type, p.issuer_type.title()
+        )
+        if p.issuer_type
+        else "",
         description="Type of the issuer for the payment reconciliation",
     )
     outcome = Field(
         display="Outcome",
         preview_value="Success",
+        mapping=lambda p: PAYMENT_RECONCILATION_OUTCOME.get(
+            p.outcome, p.outcome.title()
+        )
+        if p.outcome
+        else "",
         description="Outcome of the payment reconciliation process",
     )
     method = Field(
         display="Payment Method",
         preview_value="Credit Card",
+        mapping=lambda p: PAYMENT_RECONCILATION_PAYMENT_METHOD.get(
+            p.method, p.method.title()
+        )
+        if p.method
+        else "",
         description="Method used for the payment reconciliation",
     )
 
