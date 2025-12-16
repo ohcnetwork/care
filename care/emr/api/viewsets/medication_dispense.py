@@ -34,6 +34,7 @@ from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
 from care.emr.resources.medication.dispense.spec import (
     MEDICATION_DISPENSE_CANCELLED_STATUSES,
     MedicationDispenseReadSpec,
+    MedicationDispenseRetrieveSpec,
     MedicationDispenseUpdateSpec,
     MedicationDispenseWriteSpec,
 )
@@ -75,6 +76,7 @@ class MedicationDispenseViewSet(
     pydantic_model = MedicationDispenseWriteSpec
     pydantic_update_model = MedicationDispenseUpdateSpec
     pydantic_read_model = MedicationDispenseReadSpec
+    pydantic_retrieve_model = MedicationDispenseRetrieveSpec
     filterset_class = MedicationDispenseFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date"]
