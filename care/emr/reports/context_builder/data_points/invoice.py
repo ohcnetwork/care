@@ -55,4 +55,9 @@ class InvoiceContextBuilder(QuerysetContextBuilder):
     )
 
     def get_context(self):
+        return Invoice.objects.filter(patient=self.parent_context)
+
+
+class AccountInvoiceContextBuilder(InvoiceContextBuilder):
+    def get_context(self):
         return Invoice.objects.filter(account=self.parent_context)

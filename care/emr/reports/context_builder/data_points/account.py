@@ -5,8 +5,14 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     SingleObjectContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.charge_items import (
+    AccountChargeItemContextBuilder,
+)
 from care.emr.reports.context_builder.data_points.invoice import (
-    InvoiceContextBuilder,
+    AccountInvoiceContextBuilder,
+)
+from care.emr.reports.context_builder.data_points.payment_reconcilation import (
+    AccountPaymentReconciliationContextBuilder,
 )
 
 STATUS_DISPLAY = {
@@ -88,17 +94,19 @@ class AccountContextBuilder(SingleObjectContextBuilder):
     invoices = Field(
         display="Associated Invoices",
         preview_value="",
-        target_context=InvoiceContextBuilder,
+        target_context=AccountInvoiceContextBuilder,
         description="Invoices linked to the account",
     )
     charge_items = Field(
         display="Billable Charge Items",
         preview_value="",
+        target_context=AccountChargeItemContextBuilder,
         description="Chargeable items associated with the account",
     )
-    payment_reconciations = Field(
+    payment_reconciliations = Field(
         display="Payment Reconciliations",
         preview_value="",
+        target_context=AccountPaymentReconciliationContextBuilder,
         description="Payment reconciliations for the account",
     )
     created_date = Field(
