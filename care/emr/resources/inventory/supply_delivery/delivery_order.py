@@ -83,6 +83,7 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
     destination: dict
     supplier: dict | None = None
     tags: list[dict] = []
+    extensions: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
