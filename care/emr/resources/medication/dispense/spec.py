@@ -14,6 +14,7 @@ from care.emr.resources.charge_item.spec import ChargeItemReadSpec
 from care.emr.resources.inventory.inventory_item.spec import InventoryItemReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
 from care.emr.resources.medication.dispense.dispense_order import (
+    MedicationDispenseOrderReadSpec,
     MedicationDispenseOrderStatusOptions,
 )
 from care.emr.resources.medication.request.spec import (
@@ -214,4 +215,16 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
         if obj.authorizing_request:
             mapping["authorizing_request"] = MedicationRequestReadSpec.serialize(
                 obj.authorizing_request
+            ).to_json()
+
+
+class MedicationDispenseRetrieveSpec(BaseMedicationDispenseSpec):
+    order: dict | None = None
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        if obj.order:
+            mapping["order"] = MedicationDispenseOrderReadSpec.serialize(
+                obj.order
             ).to_json()
