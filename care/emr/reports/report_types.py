@@ -14,8 +14,8 @@ ReportTypeRegistry.register(
     description="Discharge summary generated for an encounter",
 )
 ReportTypeRegistry.register(
-    key="discharge_bill",
-    display_name="Discharge Bill ",
+    key="patient_bill_summary",
+    display_name="Discharge Bill",
     associating_model=Patient,
     authorizer_class=DischargeBillReportAuthorizer,
     description="Patient bill summary generated for a patient",

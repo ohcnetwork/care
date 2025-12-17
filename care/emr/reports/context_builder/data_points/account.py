@@ -11,7 +11,7 @@ from care.emr.reports.context_builder.data_points.charge_items import (
 from care.emr.reports.context_builder.data_points.invoice import (
     AccountInvoiceContextBuilder,
 )
-from care.emr.reports.context_builder.data_points.payment_reconcilation import (
+from care.emr.reports.context_builder.data_points.payment_reconciliation import (
     PaymentReconciliationContextBuilder,
 )
 
