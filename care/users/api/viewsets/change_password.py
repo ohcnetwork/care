@@ -8,12 +8,12 @@ User = get_user_model()
 
 
 class ChangePasswordSerializer(serializers.Serializer):
-    """
-    Serializer for password change endpoint.
-    """
-
     old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(
+        required=True,
+        min_length=8,
+        help_text="Password must be at least 8 characters long.",
+    )
 
 
 @extend_schema_view(
