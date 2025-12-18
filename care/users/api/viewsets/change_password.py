@@ -13,12 +13,14 @@ class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True, max_length=128)
 
-    def validate_new_password(self, value):
-        try:
-            validate_password(value)
-        except DjangoValidationError as e:
-            raise serializers.ValidationError(e.messages)
-        return value
+
+def validate_new_password(self, value):
+    user = self.context["request"].user
+    try:
+        validate_password(value, user=user)
+    except DjangoValidationError as e:
+        raise serializers.ValidationError(e.messages) from e
+    return value
 
 
 @extend_schema_view(
