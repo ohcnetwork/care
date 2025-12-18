@@ -1,9 +1,9 @@
 from care.emr.models.encounter import Encounter
 from care.emr.models.patient import Patient
 from care.emr.reports.authorizers.discharge_summary import (
-    DischargeBillReportAuthorizer,
     DischargeSummaryReportAuthorizer,
 )
+from care.emr.reports.authorizers.patient import PatientReportAuthorizer
 from care.emr.reports.report_type_registry import ReportTypeRegistry
 
 ReportTypeRegistry.register(
@@ -14,9 +14,9 @@ ReportTypeRegistry.register(
     description="Discharge summary generated for an encounter",
 )
 ReportTypeRegistry.register(
-    key="patient_bill_summary",
-    display_name="Discharge Bill",
+    key="patient_summary",
+    display_name="Patient Summary",
     associating_model=Patient,
-    authorizer_class=DischargeBillReportAuthorizer,
-    description="Patient bill summary generated for a patient",
+    authorizer_class=PatientReportAuthorizer,
+    description="Patient summary generated for a patient",
 )

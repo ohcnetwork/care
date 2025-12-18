@@ -5,6 +5,10 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.monetary_component import (
+    MonetaryComponentContextBuilder,
+    UnitPriceMonetaryComponentContextBuilder,
+)
 
 CHARGE_ITEM_RESOURCE_DISPLAY = {
     "service_request": "Service Request",
@@ -63,11 +67,24 @@ class ChargeItemContextBuilder(QuerysetContextBuilder):
         preview_value="5",
         description="Quantity of the charge item",
     )
+    unit_price_components = Field(
+        display="Unit Price Components",
+        preview_value="",
+        target_context=UnitPriceMonetaryComponentContextBuilder,
+        description="Unit price components of the charge item",
+    )
     total_price = Field(
         display="Total Price",
         preview_value="100.00",
         description="Total price of the charge item",
     )
+    total_price_components = Field(
+        display="Total Price Components",
+        preview_value="",
+        target_context=MonetaryComponentContextBuilder,
+        description="Breakdown of total price components of the charge item",
+    )
+
     paid_on = Field(
         display="Paid On",
         preview_value="2024-01-15T10:30:00Z",

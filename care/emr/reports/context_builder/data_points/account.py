@@ -1,5 +1,3 @@
-from django_filters import rest_framework as filters
-
 from care.emr.models.account import Account
 from care.emr.reports.context_builder.data_points.base import (
     Field,
@@ -10,6 +8,9 @@ from care.emr.reports.context_builder.data_points.charge_items import (
 )
 from care.emr.reports.context_builder.data_points.invoice import (
     AccountInvoiceContextBuilder,
+)
+from care.emr.reports.context_builder.data_points.monetary_component import (
+    MonetaryComponentContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.payment_reconciliation import (
     PaymentReconciliationContextBuilder,
@@ -32,17 +33,7 @@ BILLING_STATUS_DISPLAY = {
 }
 
 
-class AccountReportFilter(filters.FilterSet):
-    status = filters.CharFilter(lookup_expr="iexact")
-    name = filters.CharFilter(lookup_expr="icontains")
-    billing_status = filters.CharFilter(lookup_expr="iexact")
-    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
-
-
 class AccountContextBuilder(SingleObjectContextBuilder):
-    filterset_class = AccountReportFilter
-    __filterset_backends__ = [filters.DjangoFilterBackend]
-
     name = Field(
         display="Account Title",
         preview_value="General Checkup Account",
@@ -90,6 +81,12 @@ class AccountContextBuilder(SingleObjectContextBuilder):
         display="Total Balance Amount",
         preview_value="80.00",
         description="Total balance amount remaining for the account",
+    )
+    total_price_components = Field(
+        display="Total Price Components",
+        preview_value="",
+        target_context=MonetaryComponentContextBuilder,
+        description="Breakdown of total price components for the account",
     )
     invoices = Field(
         display="Associated Invoices",

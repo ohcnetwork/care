@@ -5,6 +5,9 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.monetary_component import (
+    MonetaryComponentContextBuilder,
+)
 
 STATUS_DISPLAY = {
     "draft": "Draft",
@@ -52,6 +55,12 @@ class InvoiceContextBuilder(QuerysetContextBuilder):
         display="Total Gross Amount",
         preview_value="180.00",
         description="Total gross amount of the invoice",
+    )
+    total_price_components = Field(
+        display="Total Price Components",
+        preview_value="",
+        target_context=MonetaryComponentContextBuilder,
+        description="Breakdown of total price components of the invoice",
     )
 
     def get_context(self):
