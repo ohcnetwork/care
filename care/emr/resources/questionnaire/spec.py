@@ -5,8 +5,11 @@ from typing import Any
 from pydantic import UUID4, UUID5, ConfigDict, Field, field_validator, model_validator
 
 from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
+from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common.coding import Coding
 from care.emr.resources.observation.valueset import (
+    CARE_BODY_SITE_VALUESET,
     CARE_OBSERVATION_VALUSET,
     CARE_UCUM_UNITS,
 )
@@ -72,6 +75,12 @@ class SubjectType(str, Enum):
     encounter = "encounter"
 
 
+class CodeSystem(str, Enum):
+    loinc = "http://loinc.org"
+    snomed = "http://snomed.info/sct"
+    ucum = "http://unitsofmeasure.org"
+
+
 class QuestionnaireBaseSpec(EMRResource):
     __model__ = Questionnaire
 
@@ -114,7 +123,7 @@ class Question(QuestionnaireBaseSpec):
     id: UUID4 | UUID5 = Field(
         description="Unique machine provided UUID", default_factory=uuid.uuid4
     )
-    code: ValueSetBoundCoding[CARE_OBSERVATION_VALUSET.slug] | None = None
+    code: Coding | None = None
     collect_time: bool = Field(
         default=False, description="Whether to collect timestamp"
     )
@@ -176,6 +185,24 @@ class Question(QuestionnaireBaseSpec):
             raise ValueError("Group type questions must have at least one sub-question")
 
         return self
+
+    @field_validator("code", mode="after")
+    @classmethod
+    def validate_code(cls, code):
+        if code:
+            system = code.system
+            valueset_slug = None
+
+            if system == CodeSystem.loinc.value:
+                valueset_slug = CARE_OBSERVATION_VALUSET.slug
+            elif system == CodeSystem.ucum.value:
+                valueset_slug = CARE_UCUM_UNITS.slug
+            elif system == CodeSystem.snomed.value:
+                valueset_slug = CARE_BODY_SITE_VALUESET.slug
+
+            if valueset_slug:
+                validate_valueset("code", valueset_slug, code)
+        return code
 
 
 class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
