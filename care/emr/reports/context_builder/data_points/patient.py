@@ -1,7 +1,7 @@
 from care.emr.models.patient import Patient
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.context_builder.data_points.account import (
-    AccountContextBuilder,
+    PatientAccountContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.base import (
     Field,
@@ -36,7 +36,7 @@ class PatientContextBuilderBase(SingleObjectContextBuilder):
     )
     accounts = Field(
         display="Patient Accounts",
-        target_context=AccountContextBuilder,
+        target_context=PatientAccountContextBuilder,
         preview_value="",
         description="Accounts associated with the patient",
     )

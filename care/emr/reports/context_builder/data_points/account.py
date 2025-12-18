@@ -1,4 +1,5 @@
 from care.emr.models.account import Account
+from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     SingleObjectContextBuilder,
@@ -33,7 +34,7 @@ BILLING_STATUS_DISPLAY = {
 }
 
 
-class AccountContextBuilder(SingleObjectContextBuilder):
+class BaseAccountContextBuilder(SingleObjectContextBuilder):
     name = Field(
         display="Account Title",
         preview_value="General Checkup Account",
@@ -117,6 +118,20 @@ class AccountContextBuilder(SingleObjectContextBuilder):
         description="Date when the account totals were last calculated",
     )
 
+
+class PatientAccountContextBuilder(BaseAccountContextBuilder):
     def get_context(self):
         accounts = Account.objects.filter(patient=self.parent_context)
         return accounts.first()
+
+
+class AccountContextBuilder(BaseAccountContextBuilder):
+    standalone_context = True
+    __slug__ = "account_base"
+    __associating_model__ = Account
+    __display_name__ = "Account Report"
+    __description__ = "Report context for account-based reports"
+    context_key = "account"
+
+
+DataPointRegistry.register(AccountContextBuilder)

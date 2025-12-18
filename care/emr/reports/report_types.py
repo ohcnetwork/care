@@ -1,5 +1,7 @@
+from care.emr.models.account import Account
 from care.emr.models.encounter import Encounter
 from care.emr.models.patient import Patient
+from care.emr.reports.authorizers.account import AccountReportAuthorizer
 from care.emr.reports.authorizers.discharge_summary import (
     DischargeSummaryReportAuthorizer,
 )
@@ -19,4 +21,12 @@ ReportTypeRegistry.register(
     associating_model=Patient,
     authorizer_class=PatientReportAuthorizer,
     description="Patient summary generated for a patient",
+)
+
+ReportTypeRegistry.register(
+    key="account_report",
+    display_name="Account Report",
+    associating_model=Account,
+    authorizer_class=AccountReportAuthorizer,
+    description="Account report generated for an account",
 )
