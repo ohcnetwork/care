@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from django.db.models import Q
 from rest_framework.exceptions import PermissionDenied, ValidationError
 
@@ -119,12 +121,12 @@ class PatientInstanceTagManager(SingleFacilityTagManager):
 
 class PatientFacilityTagManager(SingleFacilityTagManager):
     def __init__(self, facility) -> None:
-        if isinstance(facility, str):
+        if isinstance(facility, (str, UUID)):
             facility = get_object_or_404(Facility, external_id=facility)
         self.facility = facility
 
     def get_resource_tag(self, resource):
-        return (resource.facility_tags or {}).get(self.facility.id, [])
+        return (resource.facility_tags or {}).get(str(self.facility.id), [])
 
     def set_instance_tag(self, instance, tags):
         facility_tags = instance.facility_tags or {}
