@@ -216,6 +216,10 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
             mapping["authorizing_request"] = MedicationRequestReadSpec.serialize(
                 obj.authorizing_request
             ).to_json()
+        if obj.order:
+            mapping["order"] = MedicationDispenseOrderReadSpec.serialize(
+                obj.order
+            ).to_json()
 
 
 class MedicationDispenseRetrieveSpec(BaseMedicationDispenseSpec):
