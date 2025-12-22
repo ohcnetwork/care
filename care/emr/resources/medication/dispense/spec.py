@@ -202,6 +202,7 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
     location: dict
     quantity: float
     authorizing_request: dict | None = None
+    order: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -224,6 +225,7 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
 
 class MedicationDispenseRetrieveSpec(BaseMedicationDispenseSpec):
     order: dict | None = None
+    charge_item: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -231,4 +233,8 @@ class MedicationDispenseRetrieveSpec(BaseMedicationDispenseSpec):
         if obj.order:
             mapping["order"] = MedicationDispenseOrderReadSpec.serialize(
                 obj.order
+            ).to_json()
+        if obj.charge_item:
+            mapping["charge_item"] = ChargeItemReadSpec.serialize(
+                obj.charge_item
             ).to_json()
