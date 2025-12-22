@@ -32,7 +32,7 @@ class BaseMedicationDispenseOrderSpec(EMRResource):
     id: UUID4 | None = None
 
     status: MedicationDispenseOrderStatusOptions
-    name: str
+    name: str | None = None
     note: str | None = None
 
 
