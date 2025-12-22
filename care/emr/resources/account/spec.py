@@ -8,6 +8,7 @@ from care.emr.models import Account
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PeriodSpec
 from care.emr.resources.patient.spec import PatientListSpec
+from care.emr.tagging.base import SingleFacilityTagManager
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -72,11 +73,13 @@ class AccountReadSpec(AccountMinimalReadSpec):
     """Account read specification"""
 
     patient: dict
+    tags: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        mapping["patient"] = PatientListSpec.serialize(obj.patient)
+        mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
+        mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
 
 
 class AccountRetrieveSpec(AccountReadSpec):

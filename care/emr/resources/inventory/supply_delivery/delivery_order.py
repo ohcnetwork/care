@@ -41,12 +41,6 @@ class BaseSupplyDeliveryOrderSpec(EMRResource):
     status: SupplyDeliveryOrderStatusOptions
     name: str
     note: str | None = None
-
-
-class SupplyDeliveryOrderWriteSpec(BaseSupplyDeliveryOrderSpec):
-    supplier: UUID4 | None = None
-    origin: UUID4 | None = None
-    destination: UUID4
     extensions: dict
 
     @field_validator("extensions")
@@ -57,6 +51,12 @@ class SupplyDeliveryOrderWriteSpec(BaseSupplyDeliveryOrderSpec):
         except Exception as e:
             raise ValueError("Invalid additional metadata") from e
         return v
+
+
+class SupplyDeliveryOrderWriteSpec(BaseSupplyDeliveryOrderSpec):
+    supplier: UUID4 | None = None
+    origin: UUID4 | None = None
+    destination: UUID4
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.destination = get_object_or_404(
