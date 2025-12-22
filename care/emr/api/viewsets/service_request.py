@@ -281,8 +281,8 @@ class ServiceRequestViewSet(
                 service_resource=ChargeItemResourceOptions.service_request.value,
             ):
                 handle_charge_item_cancel(charge_item)
-                instance.charge_item.status = ChargeItemStatusOptions.aborted.value
-                instance.charge_item.save()
+                charge_item.status = ChargeItemStatusOptions.aborted.value
+                charge_item.save()
             instance.save(update_fields=["status", "updated_by"])
         return Response(status=status.HTTP_204_NO_CONTENT)
 
