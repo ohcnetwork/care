@@ -19,7 +19,7 @@ class PlugConfigViewset(
     def list(self, request, *args, **kwargs):
         # Cache data and return
         response = cache.get(self.cache_key)
-        if not response:
+        if response is None: # cache miss; allow cached empty list
             serializer = self.get_serializer(self.get_queryset(), many=True)
             response = serializer.data
             cache.set(self.cache_key, response)
