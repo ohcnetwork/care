@@ -37,7 +37,6 @@ from care.emr.resources.invoice.spec import (
 from care.emr.resources.invoice.sync_items import sync_invoice_items
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
-from care.utils.filters.dummy_filter import DummyBooleanFilter
 from care.utils.shortcuts import get_object_or_404
 from care.utils.time_util import care_now
 
@@ -49,7 +48,7 @@ class InvoiceFilters(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
     number = filters.CharFilter(lookup_expr="icontains")
-    locked = DummyBooleanFilter()
+    locked = filters.BooleanFilter()
 
 
 class AttachChargeItemToInvoiceRequest(BaseModel):
