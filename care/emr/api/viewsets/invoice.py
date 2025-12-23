@@ -34,6 +34,7 @@ from care.emr.resources.invoice.spec import (
 from care.emr.resources.invoice.sync_items import sync_invoice_items
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.filters.dummy_filter import DummyBooleanFilter
 from care.utils.shortcuts import get_object_or_404
 from care.utils.time_util import care_now
 
@@ -45,6 +46,7 @@ class InvoiceFilters(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
     number = filters.CharFilter(lookup_expr="icontains")
+    locked = DummyBooleanFilter()
 
 
 class AttachChargeItemToInvoiceRequest(BaseModel):
@@ -79,6 +81,10 @@ class InvoiceViewSet(
         return get_object_or_404(
             Facility, external_id=self.kwargs["facility_external_id"]
         )
+
+    def authorize_retrieve(self, instance):
+        if instance.locked:
+            self.check_invoice_lock_permission(instance)
 
     def get_queryset(self):
         queryset = super().get_queryset().select_related("account")
@@ -279,4 +285,46 @@ class InvoiceViewSet(
                 )
                 invoice.updated_by = self.request.user
                 invoice.save()
+        return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
+
+    def check_invoice_lock_permission(self, invoice):
+        if not AuthorizationController.call(
+            "can_manage_locked_invoice_in_facility", self.request.user, invoice.facility
+        ):
+            raise PermissionDenied("Locked invoice permission denied.")
+
+    @action(methods=["POST"], detail=True)
+    def lock(self, request, *args, **kwargs):
+        invoice = self.get_object()
+        self.check_invoice_lock_permission(invoice)
+        if invoice.locked:
+            raise ValidationError("Invoice is already locked")
+        invoice.locked = True
+        invoice.lock_history.append(
+            {
+                "user": self.request.user.id,
+                "timestamp": str(care_now()),
+                "action": "lock",
+            }
+        )
+        invoice.updated_by = self.request.user
+        invoice.save()
+        return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
+
+    @action(methods=["POST"], detail=True)
+    def unlock(self, request, *args, **kwargs):
+        invoice = self.get_object()
+        self.check_invoice_lock_permission(invoice)
+        if not invoice.locked:
+            raise ValidationError("Invoice is not locked")
+        invoice.locked = False
+        invoice.lock_history.append(
+            {
+                "user": self.request.user.id,
+                "timestamp": str(care_now()),
+                "action": "unlock",
+            }
+        )
+        invoice.updated_by = self.request.user
+        invoice.save()
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
