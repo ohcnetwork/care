@@ -56,6 +56,7 @@ class EMRFavoritesMixin:
                 favorite_lists_cache_key(user, self.FAVORITE_RESOURCE, facility),
                 favorite_list_obj,
             )
+            favorite_lists = favorite_list_obj
         return Response({"lists": favorite_lists})
 
     @action(detail=True, methods=["POST"])
