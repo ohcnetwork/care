@@ -13,14 +13,13 @@ class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True, max_length=128)
 
-
-def validate_new_password(self, value):
-    user = self.context["request"].user
-    try:
-        validate_password(value, user=user)
-    except DjangoValidationError as e:
-        raise serializers.ValidationError(e.messages) from e
-    return value
+    def validate_new_password(self, value):
+        user = self.context["request"].user
+        try:
+            validate_password(value, user=user)
+        except DjangoValidationError as e:
+            raise serializers.ValidationError(e.messages) from e
+        return value
 
 
 @extend_schema_view(
@@ -50,7 +49,7 @@ class ChangePasswordView(UpdateAPIView):
                     },
                     status=status.HTTP_400_BAD_REQUEST,
                 )
-            self.object.set_password(serializer.data.get("new_password"))
+            self.object.set_password(serializer.validated_data.get("new_password"))
             self.object.save()
             return Response({"message": "Password updated successfully"})
 
