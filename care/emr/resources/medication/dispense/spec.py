@@ -106,11 +106,16 @@ class BaseMedicationDispenseSpec(EMRResource):
     substitution: MedicationDispenseSubstitution | None = None
 
 
+class CreateDispenseOrderStatusOptions(str, Enum):
+    draft = "draft"
+    in_progress = "in_progress"
+
+
 class CreateDispenseOrder(BaseModel):
     name: str | None = None
     note: str | None = None
     alternate_identifier: str
-    status: MedicationDispenseOrderStatusOptions | None
+    status: CreateDispenseOrderStatusOptions | None
 
 
 class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
@@ -171,20 +176,9 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
             ]:
                 raise ValidationError("Prescription is not active")
             if not dispense_order_obj:
-                if (
-                    self.create_dispense_order.status is not None
-                    and self.create_dispense_order.status
-                    in [
-                        MedicationDispenseOrderStatusOptions.draft.value,
-                        MedicationDispenseOrderStatusOptions.in_progress.value,
-                    ]
-                ):
-                    raise ValidationError(
-                        "Prescription status must be draft or in_progress"
-                    )
                 dispense_order_obj = DispenseOrder.objects.create(
                     status=self.create_dispense_order.status
-                    or MedicationDispenseOrderStatusOptions.draft.value,
+                    or CreateDispenseOrderStatusOptions.draft.value,
                     alternate_identifier=self.create_dispense_order.alternate_identifier,
                     patient=obj.patient,
                     location=obj.location,
