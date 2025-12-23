@@ -1,3 +1,6 @@
+from datetime import timedelta
+
+from django.conf import settings
 from django.db import transaction
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -264,10 +267,17 @@ class InvoiceViewSet(
     def cancel_invoice(self, request, *args, **kwargs):
         invoice = self.get_object()
         with InvoiceLock(invoice):
-            if not AuthorizationController.call(
+            if invoice.created_date >= care_now() - timedelta(
+                minutes=settings.INVOICE_FREE_CANCEL_PERIOD_MINUTES
+            ):
+                if not AuthorizationController.call(
+                    "can_write_invoice_in_facility", self.request.user, invoice.facility
+                ):
+                    raise PermissionDenied("Cannot cancel invoice")
+            elif not AuthorizationController.call(
                 "can_destroy_invoice_in_facility", self.request.user, invoice.facility
             ):
-                raise PermissionDenied("Cannot write invoice")
+                raise PermissionDenied("Cannot cancel invoice")
             if invoice.status in INVOICE_CANCELLED_STATUS:
                 raise ValidationError("Invoice is already cancelled")
             request_params = InvoiceCancelReasonRequest(**request.data)
