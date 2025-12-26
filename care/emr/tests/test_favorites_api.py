@@ -238,6 +238,16 @@ class TestFavorites(CareAPITestBase):
                 "another_list",
             )
         )
+    def test_favorite_lists_returns_list_on_first_call(self):
+        # Ensure cache is empty
+        cache.delete(self.favorite_list_cache_key)
+
+        response = self.client.get(self.base_url + "favorite_lists/")
+
+        self.assertEqual(response.status_code, 200, response.content)
+        self.assertIn("lists", response.data)
+        self.assertIsNotNone(response.data["lists"])
+        self.assertIsInstance(response.data["lists"], list)
 
     def test_list_ordered_by_favorites(self):
         charge_item = self.create_charge_item_definition()
