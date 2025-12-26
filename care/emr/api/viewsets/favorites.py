@@ -27,6 +27,13 @@ class EMRFavoritesMixin:
 
     @action(detail=False, methods=["GET"])
     def favorite_lists(self, request, *args, **kwargs):
+        """
+        Return the list of favorite list names for the current user.
+
+        Ensures that on cache miss the computed favorite lists are returned
+        immediately instead of returning a null response.
+        """
+
         user = self.request.user
 
         facility = kwargs.get("facility_external_id") or request.query_params.get(
