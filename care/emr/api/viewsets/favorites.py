@@ -1,3 +1,10 @@
+"""
+API views and helpers for managing EMR user favorites.
+
+Includes endpoints for listing, adding, and removing favorites with
+correct cache handling and regression protection.
+"""
+
 from django.conf import settings
 from django.core.cache import cache
 from pydantic import BaseModel
@@ -16,11 +23,21 @@ from care.utils.shortcuts import get_object_or_404
 
 
 class FavoriteRequest(BaseModel):
+    """
+    Request schema for favorite list operations.
+    """
+
     favorite_list: str = DEFAULT_FAVORITE_LIST
+    """Name of the favorite list to operate on."""
 
 
 class EMRFavoritesMixin:
+    """
+    Mixin providing favorite list management actions for EMR resources.
+    """
+
     FAVORITE_RESOURCE = None
+    """Resource type identifier used to scope favorites."""
 
     def retrieve_facility_obj(self, obj):
         """
