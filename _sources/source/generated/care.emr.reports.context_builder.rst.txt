@@ -1,0 +1,26 @@
+care.emr.reports.context\_builder package
+=========================================
+
+.. automodule:: care.emr.reports.context_builder
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.reports.context_builder.data_points
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.reports.context_builder.data_point_registry
+   care.emr.reports.context_builder.type_registry
+   care.emr.reports.context_builder.types
+   care.emr.reports.context_builder.utils

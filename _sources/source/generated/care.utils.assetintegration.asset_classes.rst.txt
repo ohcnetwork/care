@@ -1,7 +1,0 @@
-care.utils.assetintegration.asset\_classes module
-=================================================
-
-.. automodule:: care.utils.assetintegration.asset_classes
-   :members:
-   :show-inheritance:
-   :undoc-members:

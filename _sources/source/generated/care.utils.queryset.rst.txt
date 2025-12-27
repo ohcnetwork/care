@@ -12,11 +12,4 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   care.utils.queryset.asset_bed
-   care.utils.queryset.asset_location
-   care.utils.queryset.consultation
-   care.utils.queryset.facility
    care.utils.queryset.filters
-   care.utils.queryset.patient
-   care.utils.queryset.shifting
-   care.utils.queryset.user

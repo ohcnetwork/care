@@ -1,0 +1,7 @@
+care.emr.signals.patient.facility\_name\_identifier module
+==========================================================
+
+.. automodule:: care.emr.signals.patient.facility_name_identifier
+   :members:
+   :show-inheritance:
+   :undoc-members:

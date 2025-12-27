@@ -1,0 +1,7 @@
+care.users.management.commands.generate\_jwks module
+====================================================
+
+.. automodule:: care.users.management.commands.generate_jwks
+   :members:
+   :show-inheritance:
+   :undoc-members:

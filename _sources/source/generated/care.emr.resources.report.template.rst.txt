@@ -1,0 +1,15 @@
+care.emr.resources.report.template package
+==========================================
+
+.. automodule:: care.emr.resources.report.template
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.report.template.spec

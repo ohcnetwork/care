@@ -1,0 +1,7 @@
+care.emr.reports.context\_builder.data\_point\_registry module
+==============================================================
+
+.. automodule:: care.emr.reports.context_builder.data_point_registry
+   :members:
+   :show-inheritance:
+   :undoc-members:

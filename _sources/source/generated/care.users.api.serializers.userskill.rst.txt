@@ -1,7 +1,0 @@
-care.users.api.serializers.userskill module
-===========================================
-
-.. automodule:: care.users.api.serializers.userskill
-   :members:
-   :show-inheritance:
-   :undoc-members:

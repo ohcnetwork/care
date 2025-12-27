@@ -1,7 +1,0 @@
-care.utils.ulid.serializers module
-==================================
-
-.. automodule:: care.utils.ulid.serializers
-   :members:
-   :show-inheritance:
-   :undoc-members:

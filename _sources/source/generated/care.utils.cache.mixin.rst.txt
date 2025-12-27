@@ -1,7 +1,0 @@
-care.utils.cache.mixin module
-=============================
-
-.. automodule:: care.utils.cache.mixin
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -12,4 +12,5 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   care.emr.resources.tag.cache_invalidation
    care.emr.resources.tag.config_spec

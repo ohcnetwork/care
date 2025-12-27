@@ -1,7 +1,0 @@
-care.facility.models.patient\_icmr module
-=========================================
-
-.. automodule:: care.facility.models.patient_icmr
-   :members:
-   :show-inheritance:
-   :undoc-members:

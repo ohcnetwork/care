@@ -1,7 +1,0 @@
-care.utils.context\_processors module
-=====================================
-
-.. automodule:: care.utils.context_processors
-   :members:
-   :show-inheritance:
-   :undoc-members:

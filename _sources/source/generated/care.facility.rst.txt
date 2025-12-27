@@ -12,9 +12,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   care.facility.management
    care.facility.models
-   care.facility.tasks
 
 Submodules
 ----------
@@ -22,5 +20,4 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   care.facility.admin
    care.facility.apps

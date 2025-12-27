@@ -1,0 +1,7 @@
+care.emr.resources.report.report\_upload.spec module
+====================================================
+
+.. automodule:: care.emr.resources.report.report_upload.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

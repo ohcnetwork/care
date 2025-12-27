@@ -1,7 +1,0 @@
-care.utils.assetintegration.ventilator module
-=============================================
-
-.. automodule:: care.utils.assetintegration.ventilator
-   :members:
-   :show-inheritance:
-   :undoc-members:

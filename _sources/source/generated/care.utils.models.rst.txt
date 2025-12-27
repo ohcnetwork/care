@@ -13,4 +13,5 @@ Submodules
    :maxdepth: 4
 
    care.utils.models.base
+   care.utils.models.choices
    care.utils.models.validators

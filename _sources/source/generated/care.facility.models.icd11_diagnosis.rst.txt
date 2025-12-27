@@ -1,7 +1,0 @@
-care.facility.models.icd11\_diagnosis module
-============================================
-
-.. automodule:: care.facility.models.icd11_diagnosis
-   :members:
-   :show-inheritance:
-   :undoc-members:

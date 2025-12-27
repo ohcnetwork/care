@@ -16,3 +16,4 @@ Submodules
    care.utils.evaluators.evaluation_metric.encounter_tag
    care.utils.evaluators.evaluation_metric.patient_age
    care.utils.evaluators.evaluation_metric.patient_gender
+   care.utils.evaluators.evaluation_metric.patient_tag

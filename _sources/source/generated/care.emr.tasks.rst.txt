@@ -15,4 +15,5 @@ Submodules
    care.emr.tasks.cleanup_expired_token_slots
    care.emr.tasks.cleanup_incomplete_file_uploads
    care.emr.tasks.discharge_summary
+   care.emr.tasks.report_generation
    care.emr.tasks.totp

@@ -1,0 +1,7 @@
+care.emr.reports.renderer.generators.registry module
+====================================================
+
+.. automodule:: care.emr.reports.renderer.generators.registry
+   :members:
+   :show-inheritance:
+   :undoc-members:

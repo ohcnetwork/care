@@ -1,0 +1,24 @@
+care.emr.reports.renderer package
+=================================
+
+.. automodule:: care.emr.reports.renderer
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.reports.renderer.generators
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.reports.renderer.renderer
+   care.emr.reports.renderer.template_engine

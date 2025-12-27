@@ -1,0 +1,7 @@
+care.emr.tasks.report\_generation module
+========================================
+
+.. automodule:: care.emr.tasks.report_generation
+   :members:
+   :show-inheritance:
+   :undoc-members:

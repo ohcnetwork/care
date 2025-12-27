@@ -1,7 +1,0 @@
-care.facility.models.bed module
-===============================
-
-.. automodule:: care.facility.models.bed
-   :members:
-   :show-inheritance:
-   :undoc-members:

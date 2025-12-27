@@ -1,7 +1,0 @@
-care.facility.management.commands.generate\_jwks module
-=======================================================
-
-.. automodule:: care.facility.management.commands.generate_jwks
-   :members:
-   :show-inheritance:
-   :undoc-members:

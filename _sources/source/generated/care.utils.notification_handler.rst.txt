@@ -1,7 +1,0 @@
-care.utils.notification\_handler module
-=======================================
-
-.. automodule:: care.utils.notification_handler
-   :members:
-   :show-inheritance:
-   :undoc-members:

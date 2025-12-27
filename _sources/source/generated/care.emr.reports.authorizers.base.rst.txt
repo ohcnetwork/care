@@ -1,0 +1,7 @@
+care.emr.reports.authorizers.base module
+========================================
+
+.. automodule:: care.emr.reports.authorizers.base
+   :members:
+   :show-inheritance:
+   :undoc-members:

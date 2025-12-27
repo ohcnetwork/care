@@ -1,0 +1,15 @@
+care.emr.resources.form\_submission package
+===========================================
+
+.. automodule:: care.emr.resources.form_submission
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.form_submission.spec

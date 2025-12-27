@@ -13,6 +13,7 @@ Subpackages
    :maxdepth: 4
 
    care.emr.api.viewsets.inventory
+   care.emr.api.viewsets.report
    care.emr.api.viewsets.scheduling
 
 Submodules
@@ -38,6 +39,7 @@ Submodules
    care.emr.api.viewsets.facility_organization
    care.emr.api.viewsets.favorites
    care.emr.api.viewsets.file_upload
+   care.emr.api.viewsets.form_submission
    care.emr.api.viewsets.healthcare_service
    care.emr.api.viewsets.invoice
    care.emr.api.viewsets.location

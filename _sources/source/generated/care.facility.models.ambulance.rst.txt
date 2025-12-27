@@ -1,7 +1,0 @@
-care.facility.models.ambulance module
-=====================================
-
-.. automodule:: care.facility.models.ambulance
-   :members:
-   :show-inheritance:
-   :undoc-members:

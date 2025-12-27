@@ -1,0 +1,16 @@
+care.emr.api.viewsets.report package
+====================================
+
+.. automodule:: care.emr.api.viewsets.report
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.api.viewsets.report.report_upload
+   care.emr.api.viewsets.report.template

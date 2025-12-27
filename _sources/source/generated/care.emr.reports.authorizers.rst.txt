@@ -1,0 +1,18 @@
+care.emr.reports.authorizers package
+====================================
+
+.. automodule:: care.emr.reports.authorizers
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.reports.authorizers.base
+   care.emr.reports.authorizers.discharge_summary
+   care.emr.reports.authorizers.encounter
+   care.emr.reports.authorizers.utils

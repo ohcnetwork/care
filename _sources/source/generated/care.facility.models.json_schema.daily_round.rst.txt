@@ -1,7 +1,0 @@
-care.facility.models.json\_schema.daily\_round module
-=====================================================
-
-.. automodule:: care.facility.models.json_schema.daily_round
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -1,7 +1,0 @@
-care.utils.assetintegration.schema module
-=========================================
-
-.. automodule:: care.utils.assetintegration.schema
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -1,0 +1,7 @@
+care.emr.models.report.report\_upload module
+============================================
+
+.. automodule:: care.emr.models.report.report_upload
+   :members:
+   :show-inheritance:
+   :undoc-members:

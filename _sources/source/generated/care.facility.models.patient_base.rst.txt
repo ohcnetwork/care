@@ -1,7 +1,0 @@
-care.facility.models.patient\_base module
-=========================================
-
-.. automodule:: care.facility.models.patient_base
-   :members:
-   :show-inheritance:
-   :undoc-members:

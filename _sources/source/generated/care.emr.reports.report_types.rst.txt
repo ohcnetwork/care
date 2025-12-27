@@ -1,0 +1,7 @@
+care.emr.reports.report\_types module
+=====================================
+
+.. automodule:: care.emr.reports.report_types
+   :members:
+   :show-inheritance:
+   :undoc-members:

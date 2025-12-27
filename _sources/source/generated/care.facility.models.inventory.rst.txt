@@ -1,7 +1,0 @@
-care.facility.models.inventory module
-=====================================
-
-.. automodule:: care.facility.models.inventory
-   :members:
-   :show-inheritance:
-   :undoc-members:

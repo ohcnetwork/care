@@ -6,6 +6,16 @@ care.emr.reports package
    :show-inheritance:
    :undoc-members:
 
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.reports.authorizers
+   care.emr.reports.context_builder
+   care.emr.reports.renderer
+
 Submodules
 ----------
 
@@ -13,3 +23,7 @@ Submodules
    :maxdepth: 4
 
    care.emr.reports.discharge_summary
+   care.emr.reports.report_type_registry
+   care.emr.reports.report_type_utils
+   care.emr.reports.report_types
+   care.emr.reports.report_utils

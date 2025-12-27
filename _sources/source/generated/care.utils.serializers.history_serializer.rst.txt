@@ -1,7 +1,0 @@
-care.utils.serializers.history\_serializer module
-=================================================
-
-.. automodule:: care.utils.serializers.history_serializer
-   :members:
-   :show-inheritance:
-   :undoc-members:

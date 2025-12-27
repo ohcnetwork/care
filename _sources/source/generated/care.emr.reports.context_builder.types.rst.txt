@@ -1,0 +1,7 @@
+care.emr.reports.context\_builder.types module
+==============================================
+
+.. automodule:: care.emr.reports.context_builder.types
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,7 +1,0 @@
-care.facility.models.daily\_round module
-========================================
-
-.. automodule:: care.facility.models.daily_round
-   :members:
-   :show-inheritance:
-   :undoc-members:

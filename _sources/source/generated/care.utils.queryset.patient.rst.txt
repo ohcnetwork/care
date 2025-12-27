@@ -1,7 +1,0 @@
-care.utils.queryset.patient module
-==================================
-
-.. automodule:: care.utils.queryset.patient
-   :members:
-   :show-inheritance:
-   :undoc-members:

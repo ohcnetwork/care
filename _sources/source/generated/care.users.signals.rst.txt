@@ -1,7 +1,0 @@
-care.users.signals module
-=========================
-
-.. automodule:: care.users.signals
-   :members:
-   :show-inheritance:
-   :undoc-members:

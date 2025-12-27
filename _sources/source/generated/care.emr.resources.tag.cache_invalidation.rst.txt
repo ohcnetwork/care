@@ -1,0 +1,7 @@
+care.emr.resources.tag.cache\_invalidation module
+=================================================
+
+.. automodule:: care.emr.resources.tag.cache_invalidation
+   :members:
+   :show-inheritance:
+   :undoc-members:

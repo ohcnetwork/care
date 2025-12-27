@@ -1,7 +1,0 @@
-care.facility.models.json\_schema.common module
-===============================================
-
-.. automodule:: care.facility.models.json_schema.common
-   :members:
-   :show-inheritance:
-   :undoc-members:

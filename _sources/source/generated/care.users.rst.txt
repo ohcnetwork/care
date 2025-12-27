@@ -26,4 +26,3 @@ Submodules
    care.users.forms
    care.users.models
    care.users.reset_password_views
-   care.users.signals

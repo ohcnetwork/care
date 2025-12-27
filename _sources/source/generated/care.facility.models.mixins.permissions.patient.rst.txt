@@ -1,7 +1,0 @@
-care.facility.models.mixins.permissions.patient module
-======================================================
-
-.. automodule:: care.facility.models.mixins.permissions.patient
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -1,0 +1,7 @@
+care.utils.evaluators.evaluation\_metric.patient\_tag module
+============================================================
+
+.. automodule:: care.utils.evaluators.evaluation_metric.patient_tag
+   :members:
+   :show-inheritance:
+   :undoc-members:

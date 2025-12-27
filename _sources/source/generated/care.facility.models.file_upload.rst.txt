@@ -1,7 +1,0 @@
-care.facility.models.file\_upload module
-========================================
-
-.. automodule:: care.facility.models.file_upload
-   :members:
-   :show-inheritance:
-   :undoc-members:

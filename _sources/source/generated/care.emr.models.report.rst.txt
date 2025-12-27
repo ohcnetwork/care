@@ -1,0 +1,16 @@
+care.emr.models.report package
+==============================
+
+.. automodule:: care.emr.models.report
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.models.report.report_upload
+   care.emr.models.report.template

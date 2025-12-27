@@ -1,0 +1,7 @@
+care.emr.resources.form\_submission.spec module
+===============================================
+
+.. automodule:: care.emr.resources.form_submission.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

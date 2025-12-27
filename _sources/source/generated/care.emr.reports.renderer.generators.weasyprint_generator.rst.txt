@@ -1,0 +1,7 @@
+care.emr.reports.renderer.generators.weasyprint\_generator module
+=================================================================
+
+.. automodule:: care.emr.reports.renderer.generators.weasyprint_generator
+   :members:
+   :show-inheritance:
+   :undoc-members:

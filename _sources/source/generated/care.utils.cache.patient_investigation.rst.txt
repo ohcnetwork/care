@@ -1,7 +1,0 @@
-care.utils.cache.patient\_investigation module
-==============================================
-
-.. automodule:: care.utils.cache.patient_investigation
-   :members:
-   :show-inheritance:
-   :undoc-members:

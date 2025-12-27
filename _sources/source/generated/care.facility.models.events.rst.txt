@@ -1,7 +1,0 @@
-care.facility.models.events module
-==================================
-
-.. automodule:: care.facility.models.events
-   :members:
-   :show-inheritance:
-   :undoc-members:

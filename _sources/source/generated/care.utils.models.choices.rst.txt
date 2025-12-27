@@ -1,0 +1,7 @@
+care.utils.models.choices module
+================================
+
+.. automodule:: care.utils.models.choices
+   :members:
+   :show-inheritance:
+   :undoc-members:

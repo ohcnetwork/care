@@ -1,0 +1,7 @@
+care.security.authorization.template module
+===========================================
+
+.. automodule:: care.security.authorization.template
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -1,7 +1,0 @@
-care.facility.models.encounter\_symptom module
-==============================================
-
-.. automodule:: care.facility.models.encounter_symptom
-   :members:
-   :show-inheritance:
-   :undoc-members:

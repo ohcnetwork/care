@@ -1,0 +1,24 @@
+care.emr.reports.context\_builder.data\_points package
+======================================================
+
+.. automodule:: care.emr.reports.context_builder.data_points
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.reports.context_builder.data_points.allergy_intolerance
+   care.emr.reports.context_builder.data_points.base
+   care.emr.reports.context_builder.data_points.diagnosis
+   care.emr.reports.context_builder.data_points.encounter
+   care.emr.reports.context_builder.data_points.medication
+   care.emr.reports.context_builder.data_points.questionnaire
+   care.emr.reports.context_builder.data_points.service_request
+   care.emr.reports.context_builder.data_points.symptom
+   care.emr.reports.context_builder.data_points.user
+   care.emr.reports.context_builder.data_points.utils

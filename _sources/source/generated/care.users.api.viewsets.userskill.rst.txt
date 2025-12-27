@@ -1,7 +1,0 @@
-care.users.api.viewsets.userskill module
-========================================
-
-.. automodule:: care.users.api.viewsets.userskill
-   :members:
-   :show-inheritance:
-   :undoc-members:

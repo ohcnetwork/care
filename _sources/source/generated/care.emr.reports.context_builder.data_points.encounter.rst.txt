@@ -1,0 +1,7 @@
+care.emr.reports.context\_builder.data\_points.encounter module
+===============================================================
+
+.. automodule:: care.emr.reports.context_builder.data_points.encounter
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -5,3 +5,11 @@ care.users.management.commands package
    :members:
    :show-inheritance:
    :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.users.management.commands.generate_jwks

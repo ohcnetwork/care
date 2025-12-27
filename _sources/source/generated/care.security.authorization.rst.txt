@@ -42,5 +42,6 @@ Submodules
    care.security.authorization.supply_delivery
    care.security.authorization.supply_request
    care.security.authorization.tag_config
+   care.security.authorization.template
    care.security.authorization.token
    care.security.authorization.user

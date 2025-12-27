@@ -13,5 +13,6 @@ Submodules
    :maxdepth: 4
 
    care.emr.signals.patient.base
+   care.emr.signals.patient.facility_name_identifier
    care.emr.signals.patient.name_identifier
    care.emr.signals.patient.phone_number_identifier

@@ -1,7 +1,0 @@
-care.utils.queryset.facility module
-===================================
-
-.. automodule:: care.utils.queryset.facility
-   :members:
-   :show-inheritance:
-   :undoc-members:

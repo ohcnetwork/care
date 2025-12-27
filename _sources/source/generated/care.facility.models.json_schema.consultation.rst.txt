@@ -1,7 +1,0 @@
-care.facility.models.json\_schema.consultation module
-=====================================================
-
-.. automodule:: care.facility.models.json_schema.consultation
-   :members:
-   :show-inheritance:
-   :undoc-members:

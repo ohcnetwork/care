@@ -1,7 +1,0 @@
-care.utils.inverse\_choices module
-==================================
-
-.. automodule:: care.utils.inverse_choices
-   :members:
-   :show-inheritance:
-   :undoc-members:

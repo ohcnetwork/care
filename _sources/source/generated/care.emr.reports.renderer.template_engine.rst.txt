@@ -1,0 +1,7 @@
+care.emr.reports.renderer.template\_engine module
+=================================================
+
+.. automodule:: care.emr.reports.renderer.template_engine
+   :members:
+   :show-inheritance:
+   :undoc-members:

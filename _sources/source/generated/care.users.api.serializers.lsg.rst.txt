@@ -1,7 +1,0 @@
-care.users.api.serializers.lsg module
-=====================================
-
-.. automodule:: care.users.api.serializers.lsg
-   :members:
-   :show-inheritance:
-   :undoc-members:

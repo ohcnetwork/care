@@ -12,6 +12,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   care.emr.models.report
    care.emr.models.scheduling
 
 Submodules

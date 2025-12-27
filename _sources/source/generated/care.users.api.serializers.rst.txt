@@ -12,7 +12,4 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   care.users.api.serializers.lsg
    care.users.api.serializers.plug_config
-   care.users.api.serializers.skill
-   care.users.api.serializers.userskill

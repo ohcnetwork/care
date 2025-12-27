@@ -1,0 +1,16 @@
+care.emr.resources.report package
+=================================
+
+.. automodule:: care.emr.resources.report
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.resources.report.report_upload
+   care.emr.resources.report.template

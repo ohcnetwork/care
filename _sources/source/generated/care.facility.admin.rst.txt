@@ -1,7 +1,0 @@
-care.facility.admin module
-==========================
-
-.. automodule:: care.facility.admin
-   :members:
-   :show-inheritance:
-   :undoc-members:

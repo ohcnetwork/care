@@ -1,0 +1,18 @@
+care.emr.reports.renderer.generators package
+============================================
+
+.. automodule:: care.emr.reports.renderer.generators
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.reports.renderer.generators.base
+   care.emr.reports.renderer.generators.html_generator
+   care.emr.reports.renderer.generators.registry
+   care.emr.reports.renderer.generators.weasyprint_generator

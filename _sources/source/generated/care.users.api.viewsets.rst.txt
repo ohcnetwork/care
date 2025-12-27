@@ -13,7 +13,4 @@ Submodules
    :maxdepth: 4
 
    care.users.api.viewsets.change_password
-   care.users.api.viewsets.lsg
    care.users.api.viewsets.plug_config
-   care.users.api.viewsets.skill
-   care.users.api.viewsets.userskill

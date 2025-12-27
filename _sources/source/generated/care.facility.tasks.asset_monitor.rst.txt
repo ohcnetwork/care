@@ -1,7 +1,0 @@
-care.facility.tasks.asset\_monitor module
-=========================================
-
-.. automodule:: care.facility.tasks.asset_monitor
-   :members:
-   :show-inheritance:
-   :undoc-members:

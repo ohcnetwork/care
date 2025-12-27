@@ -1,7 +1,0 @@
-care.utils.queryset.user module
-===============================
-
-.. automodule:: care.utils.queryset.user
-   :members:
-   :show-inheritance:
-   :undoc-members:

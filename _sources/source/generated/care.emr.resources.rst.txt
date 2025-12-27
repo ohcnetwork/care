@@ -27,6 +27,7 @@ Subpackages
    care.emr.resources.facility_organization
    care.emr.resources.favorites
    care.emr.resources.file_upload
+   care.emr.resources.form_submission
    care.emr.resources.healthcare_service
    care.emr.resources.inventory
    care.emr.resources.invoice
@@ -43,6 +44,7 @@ Subpackages
    care.emr.resources.payment_reconciliation
    care.emr.resources.questionnaire
    care.emr.resources.questionnaire_response
+   care.emr.resources.report
    care.emr.resources.resource_category
    care.emr.resources.resource_request
    care.emr.resources.role

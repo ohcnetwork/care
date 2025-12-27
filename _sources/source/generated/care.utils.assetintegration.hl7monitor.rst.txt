@@ -1,7 +1,0 @@
-care.utils.assetintegration.hl7monitor module
-=============================================
-
-.. automodule:: care.utils.assetintegration.hl7monitor
-   :members:
-   :show-inheritance:
-   :undoc-members:

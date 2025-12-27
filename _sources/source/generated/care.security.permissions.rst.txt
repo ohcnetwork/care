@@ -44,5 +44,6 @@ Submodules
    care.security.permissions.supply_delivery
    care.security.permissions.supply_request
    care.security.permissions.tag_config
+   care.security.permissions.template
    care.security.permissions.token
    care.security.permissions.user

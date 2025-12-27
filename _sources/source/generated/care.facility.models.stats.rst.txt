@@ -1,7 +1,0 @@
-care.facility.models.stats module
-=================================
-
-.. automodule:: care.facility.models.stats
-   :members:
-   :show-inheritance:
-   :undoc-members:

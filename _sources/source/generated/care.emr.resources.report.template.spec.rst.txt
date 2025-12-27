@@ -1,0 +1,7 @@
+care.emr.resources.report.template.spec module
+==============================================
+
+.. automodule:: care.emr.resources.report.template.spec
+   :members:
+   :show-inheritance:
+   :undoc-members:

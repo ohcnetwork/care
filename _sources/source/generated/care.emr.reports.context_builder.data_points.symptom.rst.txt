@@ -1,0 +1,7 @@
+care.emr.reports.context\_builder.data\_points.symptom module
+=============================================================
+
+.. automodule:: care.emr.reports.context_builder.data_points.symptom
+   :members:
+   :show-inheritance:
+   :undoc-members:
