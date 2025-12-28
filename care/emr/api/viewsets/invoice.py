@@ -151,6 +151,11 @@ class InvoiceViewSet(
                     and instance.status not in INVOICE_CANCELLED_STATUS
                 ):
                     raise ValidationError("Invoice is already cancelled")
+                if (
+                    instance.status == InvoiceStatusOptions.issued.value
+                    and len(instance.charge_items) == 0
+                ):
+                    raise ValidationError("Invoice must have at least one charge item")
                 if old_invoice.status == InvoiceStatusOptions.balanced.value:
                     raise ValidationError("Invoice is already balanced")
                 if (
