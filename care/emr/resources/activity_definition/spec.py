@@ -83,6 +83,8 @@ class ActivityDefinitionWriteSpec(BaseActivityDefinitionSpec):
             obj.healthcare_service = HealthcareService.objects.only("id").get(
                 external_id=self.healthcare_service
             )
+        else:
+            obj.healthcare_service = None
         if self.category:
             obj.category = ResourceCategory.objects.get(slug=self.category)
         obj.slug = self.slug_value
