@@ -7,7 +7,7 @@ from pydantic_core.core_schema import ValidationInfo
 
 from care.emr.models import Organization
 from care.emr.models.patient import PatientIdentifierConfigCache
-from care.emr.resources.base import EMRResource, cacheable
+from care.emr.resources.base import EMRResource, cacheable, model_from_cache
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.monetary_component import MonetaryComponentDefinition
 from care.emr.resources.invoice.default_expression_evaluator import (
@@ -111,7 +111,7 @@ class FacilityReadSpec(FacilityBaseSpec):
         mapping["id"] = obj.external_id
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
+            mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(

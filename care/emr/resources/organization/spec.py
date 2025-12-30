@@ -67,12 +67,7 @@ class OrganizationRetrieveSpec(OrganizationReadSpec):
 
     @classmethod
     def perform_extra_user_serialization(cls, mapping, obj, user):
-        from care.emr.resources.user.spec import UserSpec
-
         mapping["permissions"] = AuthorizationController.call(
             "get_permission_on_organization", obj, user
         )
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        cls.serialize_audit_users(mapping, obj)
