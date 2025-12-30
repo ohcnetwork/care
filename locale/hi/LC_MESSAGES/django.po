@@ -110,10 +110,6 @@ msgstr "सुविधा के भीतर आंतरिक स्था�
 msgid "(Unknown)"
 msgstr "(अज्ञात)"
 
-#: care/hcx/apps.py:7
-msgid "HCX Integration"
-msgstr "HCX एकीकरण"
-
 #: care/templates/pages/home.html:8
 msgid "Open Healthcare Network"
 msgstr "ओपन हेल्थकेयर नेटवर्क"
