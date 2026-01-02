@@ -225,6 +225,17 @@ class UserViewSet(EMRModelViewSet):
             status=201,
         )
 
+    @action(detail=False, methods=["GET"])
+    def get_service_accounts(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied("Only superusers can list service accounts")
+        return Response(
+            User.objects.get_entire_queryset()
+            .filter(is_service_account=True, deleted=False)
+            .values("external_id", "username"),
+            status=200,
+        )
+
     @action(detail=True, methods=["POST"])
     def generate_service_account_token(self, request, *args, **kwargs):
         if not request.user.is_superuser:

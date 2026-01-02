@@ -30,7 +30,7 @@ REVERSE_GENDER_CHOICES = reverse_choices(GENDER_CHOICES)
 class CustomUserManager(UserManager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(deleted=False)
+        return qs.filter(deleted=False, is_service_account=False)
 
     def get_entire_queryset(self):
         return super().get_queryset()
