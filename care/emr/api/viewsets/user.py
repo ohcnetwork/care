@@ -1,3 +1,7 @@
+import uuid
+
+from django.core.exceptions import ValidationError
+from django.core.validators import validate_email
 from django.db import IntegrityError, transaction
 from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
@@ -205,8 +209,13 @@ class UserViewSet(EMRModelViewSet):
         if not username:
             return Response({"error": "username is required"}, status=400)
 
-        if not email:
-            return Response({"error": "email is required"}, status=400)
+        if email is None:
+            email = username + str(uuid.uuid4())[:5] + "@service.local"
+        else:
+            try:
+                validate_email(email)
+            except ValidationError:
+                return Response({"error": "Invalid email format"})
 
         if User.check_username_exists(username):
             return Response({"error": "Username already exists"}, status=400)
@@ -220,7 +229,6 @@ class UserViewSet(EMRModelViewSet):
                 "id": str(service_account.external_id),
                 "username": service_account.username,
                 "is_service_account": True,
-                "message": "Service account created successfully.",
             },
             status=201,
         )
