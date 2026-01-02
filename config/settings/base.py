@@ -368,10 +368,10 @@ REST_FRAMEWORK = {
         # "rest_framework.authentication.BasicAuthentication",
         # Primary api authentication
         # "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "rest_framework.authentication.TokenAuthentication",
         "config.authentication.CustomJWTAuthentication",
         "config.authentication.CustomBasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
