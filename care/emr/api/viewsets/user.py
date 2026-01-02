@@ -4,6 +4,7 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action, parser_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser
@@ -192,3 +193,69 @@ class UserViewSet(EMRModelViewSet):
                 setattr(user, field, request.data[field])
         user.save()
         return Response({})
+
+    @action(detail=False, methods=["POST"])
+    def create_service_account(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied("Only superusers can create service accounts")
+
+        username = request.data.get("username")
+        email = request.data.get("email")
+
+        if not username:
+            return Response({"error": "username is required"}, status=400)
+
+        if not email:
+            return Response({"error": "email is required"}, status=400)
+
+        if User.check_username_exists(username):
+            return Response({"error": "Username already exists"}, status=400)
+
+        service_account = User.objects.create_service_account(
+            username=username, email=email
+        )
+
+        return Response(
+            {
+                "id": str(service_account.external_id),
+                "username": service_account.username,
+                "is_service_account": True,
+                "message": "Service account created successfully.",
+            },
+            status=201,
+        )
+
+    @action(detail=True, methods=["POST"])
+    def generate_service_account_token(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied("Only superusers can generate tokens")
+
+        user = self.get_object()
+
+        if not user.is_service_account:
+            return Response({"error": "Only service accounts allowed"}, status=400)
+
+        Token.objects.filter(user=user).delete()
+        token = Token.objects.create(user=user)
+
+        return Response(
+            {
+                "token": token.key,
+                "user": user.username,
+                "created": token.created.isoformat(),
+            }
+        )
+
+    @action(detail=True, methods=["DELETE"])
+    def revoke_service_account_token(self, request, *args, **kwargs):
+        if not request.user.is_superuser:
+            raise PermissionDenied("Only superusers can revoke tokens")
+
+        user = self.get_object()
+
+        if not user.is_service_account:
+            return Response({"error": "Not a service account"}, status=400)
+
+        Token.objects.filter(user=user).delete()
+
+        return Response({"message": "Token revoked successfully"})
