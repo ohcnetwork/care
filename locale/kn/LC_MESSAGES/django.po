@@ -110,10 +110,6 @@ msgstr "ಸೌಲಭ್ಯದೊಳಗೆ ಆಂತರಿಕ ವರ್ಗಾವ�
 msgid "(Unknown)"
 msgstr "(ಅಜ್ಞಾತ)"
 
-#: care/hcx/apps.py:7
-msgid "HCX Integration"
-msgstr "HCX ಇಂಟಿಗ್ರೇಷನ್"
-
 #: care/templates/pages/home.html:8
 msgid "Open Healthcare Network"
 msgstr "ಹೆಲ್ತ್‌ಕೇರ್ ನೆಟ್‌ವರ್ಕ್ ತೆರೆಯಿರಿ"
