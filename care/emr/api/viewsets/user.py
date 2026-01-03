@@ -84,7 +84,7 @@ class UserViewSet(EMRModelViewSet):
     search_fields = ["first_name", "last_name", "username"]
 
     def get_queryset(self):
-        return super().get_queryset().filter(deleted=False)
+        return super().get_queryset().filter(deleted=False, is_service_account=False)
 
     def perform_create(self, instance):
         with transaction.atomic():
@@ -200,8 +200,12 @@ class UserViewSet(EMRModelViewSet):
 
     @action(detail=False, methods=["POST"])
     def create_service_account(self, request, *args, **kwargs):
-        if not request.user.is_superuser:
-            raise PermissionDenied("Only superusers can create service accounts")
+        if not AuthorizationController.call(
+            "can_create_service_account", self.request.user
+        ):
+            raise PermissionDenied(
+                "You do not have permission to create service accounts"
+            )
 
         username = request.data.get("username")
         email = request.data.get("email")
@@ -235,8 +239,13 @@ class UserViewSet(EMRModelViewSet):
 
     @action(detail=False, methods=["GET"])
     def get_service_accounts(self, request, *args, **kwargs):
-        if not request.user.is_superuser:
-            raise PermissionDenied("Only superusers can list service accounts")
+        if not AuthorizationController.call(
+            "can_list_service_account", self.request.user
+        ):
+            raise PermissionDenied(
+                "You do not have permission to list service accounts"
+            )
+
         return Response(
             User.objects.get_entire_queryset()
             .filter(is_service_account=True, deleted=False)
@@ -246,8 +255,12 @@ class UserViewSet(EMRModelViewSet):
 
     @action(detail=True, methods=["POST"])
     def generate_service_account_token(self, request, *args, **kwargs):
-        if not request.user.is_superuser:
-            raise PermissionDenied("Only superusers can generate tokens")
+        if not AuthorizationController.call(
+            "can_manage_service_account_token", self.request.user
+        ):
+            raise PermissionDenied(
+                "You do not have permission to update token for service account"
+            )
 
         user = self.get_object()
 
@@ -267,8 +280,12 @@ class UserViewSet(EMRModelViewSet):
 
     @action(detail=True, methods=["DELETE"])
     def revoke_service_account_token(self, request, *args, **kwargs):
-        if not request.user.is_superuser:
-            raise PermissionDenied("Only superusers can revoke tokens")
+        if not AuthorizationController.call(
+            "can_manage_service_account_token", self.request.user
+        ):
+            raise PermissionDenied(
+                "You do not have permission to update token for service account"
+            )
 
         user = self.get_object()
 
