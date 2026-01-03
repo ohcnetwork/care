@@ -219,7 +219,7 @@ class UserViewSet(EMRModelViewSet):
             try:
                 validate_email(email)
             except ValidationError:
-                return Response({"error": "Invalid email format"})
+                return Response({"error": "Invalid email format"}, status=400)
 
         if User.check_username_exists(username):
             return Response({"error": "Username already exists"}, status=400)

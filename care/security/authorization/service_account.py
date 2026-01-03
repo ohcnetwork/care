@@ -30,7 +30,7 @@ class ServiceAccountAccess(AuthorizationHandler):
         if user.is_superuser:
             return True
         roles = self.get_role_from_permissions(
-            [ServiceAccountPermissions.can_create_service_account.name]
+            [ServiceAccountPermissions.can_list_service_account.name]
         )
         return (
             OrganizationUser.objects.filter(user=user, role_id__in=roles).exists()
