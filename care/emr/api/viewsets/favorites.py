@@ -42,7 +42,7 @@ class EMRFavoritesMixin:
         )
         if favorite_lists is None:
             favorite_lists = list(
-                set(
+                dict.fromkeys(
                     UserResourceFavorites.objects.filter(
                         user=user,
                         resource_type=self.FAVORITE_RESOURCE,
