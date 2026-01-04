@@ -1,10 +1,3 @@
-"""
-API views and helpers for managing EMR user favorites.
-
-Includes endpoints for listing, adding, and removing favorites with
-correct cache handling and regression protection.
-"""
-
 from django.conf import settings
 from django.core.cache import cache
 from pydantic import BaseModel
@@ -23,36 +16,17 @@ from care.utils.shortcuts import get_object_or_404
 
 
 class FavoriteRequest(BaseModel):
-    """
-    Request schema for favorite list operations.
-    """
-
     favorite_list: str = DEFAULT_FAVORITE_LIST
-    """Name of the favorite list to operate on."""
 
 
 class EMRFavoritesMixin:
-    """
-    Mixin providing favorite list management actions for EMR resources.
-    """
-
     FAVORITE_RESOURCE = None
-    """Resource type identifier used to scope favorites."""
 
     def retrieve_facility_obj(self, obj):
-        """
-        Return the facility associated with the given object.
-        """
         return obj.facility
 
     @action(detail=False, methods=["GET"])
     def favorite_lists(self, request, *args, **kwargs):
-        """
-        Return the list of favorite list names for the current user.
-
-        Ensures that on cache miss the computed favorite lists are returned
-        immediately instead of returning a null response.
-        """
         user = self.request.user
 
         facility = kwargs.get("facility_external_id") or request.query_params.get(
@@ -67,7 +41,7 @@ class EMRFavoritesMixin:
             favorite_lists_cache_key(user, self.FAVORITE_RESOURCE, facility)
         )
         if favorite_lists is None:
-            favorite_list_obj = list(
+            favorite_lists = list(
                 set(
                     UserResourceFavorites.objects.filter(
                         user=user,
@@ -80,30 +54,25 @@ class EMRFavoritesMixin:
             )
             cache.set(
                 favorite_lists_cache_key(user, self.FAVORITE_RESOURCE, facility),
-                favorite_list_obj,
+                favorite_lists,
             )
-            favorite_lists = favorite_list_obj
 
         return Response({"lists": favorite_lists})
 
     @action(detail=True, methods=["POST"])
     def add_favorite(self, request, *args, **kwargs):
-        """
-        Add the current object to the user's favorite list.
-
-        Inserts the object at the beginning of the list, trims the list
-        to the maximum allowed size, and updates the cache accordingly.
-        """
         request_data = FavoriteRequest(**request.data)
         favorite_list = request_data.favorite_list
         obj = self.get_object()
         user = self.request.user
+
         favorite_list_obj, _ = UserResourceFavorites.objects.get_or_create(
             user=user,
             favorite_list=favorite_list,
             resource_type=self.FAVORITE_RESOURCE,
             facility=self.retrieve_facility_obj(obj),
         )
+
         favorite_list_obj.favorites.insert(0, obj.id)
         favorite_list_obj.favorites = list(dict.fromkeys(favorite_list_obj.favorites))[
             : settings.MAX_FAVORITES_PER_LIST
@@ -113,28 +82,25 @@ class EMRFavoritesMixin:
 
     @action(detail=True, methods=["POST"])
     def remove_favorite(self, request, *args, **kwargs):
-        """
-        Remove the current object from the user's favorite list.
-
-        Deletes the favorite list entirely when it becomes empty and
-        clears all related cache entries.
-        """
         request_data = FavoriteRequest(**request.data)
         favorite_list = request_data.favorite_list
         obj = self.get_object()
         user = self.request.user
         facility = self.retrieve_facility_obj(obj)
+
         favorite_list_obj = UserResourceFavorites.objects.filter(
             user=user,
             favorite_list=favorite_list,
             resource_type=self.FAVORITE_RESOURCE,
             facility=facility,
         ).first()
+
         if not favorite_list_obj:
             raise ValidationError("Favorite List not found")
 
         favorite_list_obj_favorites = dict.fromkeys(favorite_list_obj.favorites)
         favorite_list_obj_favorites.pop(obj.id, None)
+
         if len(favorite_list_obj_favorites) == 0:
             cache.delete(
                 favorite_lists_cache_key(user, self.FAVORITE_RESOURCE, facility)
