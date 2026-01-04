@@ -110,10 +110,6 @@ msgstr "வசதிக்குள் உள் பரிமாற்றம்"
 msgid "(Unknown)"
 msgstr "(தெரியாது)"
 
-#: care/hcx/apps.py:7
-msgid "HCX Integration"
-msgstr "HCX ஒருங்கிணைப்பு"
-
 #: care/templates/pages/home.html:8
 msgid "Open Healthcare Network"
 msgstr "ஹெல்த்கேர் நெட்வொர்க்கைத் திறக்கவும்"

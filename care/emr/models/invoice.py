@@ -29,3 +29,5 @@ class Invoice(EMRBaseModel):
     total_gross = models.DecimalField(default=0, max_digits=10, decimal_places=2)
     issue_date = models.DateTimeField(null=True, blank=True, default=None)
     number = models.CharField(max_length=1000, null=True, blank=True, default=None)
+    locked = models.BooleanField(default=False)
+    lock_history = models.JSONField(default=list)

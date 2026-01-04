@@ -265,7 +265,12 @@ class PatientViewSet(EMRModelViewSet):
         queryset = queryset.filter(year_of_birth=request_data.year_of_birth)
         for patient in queryset:
             if str(patient.external_id)[:5] == request_data.partial_id:
-                return Response(PatientRetrieveSpec.serialize(patient).to_json())
+                context = self.get_serializer_retrieve_context()
+                return Response(
+                    PatientRetrieveSpec.serialize(
+                        patient, self.request.user, **context
+                    ).to_json()
+                )
         raise PermissionDenied("No valid patients found")
 
     @action(detail=True, methods=["GET"])
@@ -484,7 +489,9 @@ class PatientViewSet(EMRModelViewSet):
         return self.get_serializer_list_context()
 
     def get_serializer_list_context(self):
-        facility = self.request.GET.get("facility", None)
+        facility = getattr(self.request, "data", {}).get("facility") or getattr(
+            self.request, "GET", {}
+        ).get("facility")
         if facility:
             facility = get_object_or_404(Facility, external_id=facility)
             if not AuthorizationController.call(

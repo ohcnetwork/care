@@ -65,8 +65,8 @@ class FacilityOrganizationPermissions(enum.Enum):
         ],
     )
     can_manage_facility_organization_users = Permission(
-        "Can Manage Users in an Organizations",
-        "",
+        "Can Manage Users in a Facility Organization",
+        "Add, remove, and assign roles to users in a facility organization",
         PermissionContext.FACILITY_ORGANIZATION,
         [FACILITY_ADMIN_ROLE, ADMINISTRATOR],
     )
