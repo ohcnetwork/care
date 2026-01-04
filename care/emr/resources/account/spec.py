@@ -94,4 +94,4 @@ class AccountRetrieveSpec(AccountMinimalReadSpec):
         super().perform_extra_serialization(mapping, obj)
         mapping["patient"] = PatientRetrieveSpec.serialize(
             obj.patient, facility=obj.facility
-        )
+        ).to_json()
