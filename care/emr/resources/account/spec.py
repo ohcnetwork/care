@@ -2,7 +2,9 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 
-from pydantic import UUID4
+from django.conf import settings
+from jsonschema import validate
+from pydantic import UUID4, field_validator
 
 from care.emr.models import Account
 from care.emr.models.patient import Patient
@@ -41,6 +43,16 @@ class AccountSpec(EMRResource):
     name: str
     service_period: PeriodSpec
     description: str | None = None
+    extensions: dict
+
+    @field_validator("extensions")
+    @classmethod
+    def validate_extensions(cls, v):
+        try:
+            validate(v, settings.ACCOUNT_EXTENSIONS_JSON_SCHEMA)
+        except Exception as e:
+            raise ValueError("Invalid additional metadata") from e
+        return v
 
 
 class AccountCreateSpec(AccountSpec):
