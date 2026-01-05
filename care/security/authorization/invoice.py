@@ -25,5 +25,12 @@ class InvoiceAccess(AuthorizationHandler):
             facility=facility,
         )
 
+    def can_manage_locked_invoice_in_facility(self, user, facility):
+        return self.check_permission_in_facility_organization(
+            [InvoicePermissions.can_manage_locked_invoice.name],
+            user,
+            facility=facility,
+        )
+
 
 AuthorizationController.register_internal_controller(InvoiceAccess)
