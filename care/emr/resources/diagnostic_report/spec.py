@@ -79,7 +79,5 @@ class DiagnosticReportRetrieveSpec(DiagnosticReportListSpec):
             for observation in observations
         ]
         mapping["encounter"] = EncounterListSpec.serialize(obj.encounter).to_json()
-        if obj.service_request:
-            mapping["requester"] = (
-                model_from_cache(UserSpec, id=obj.service_request.requester_id),
-            )
+        if obj.service_request_id:
+            mapping["requester"] = model_from_cache(UserSpec, id=obj.service_request.requester_id)
