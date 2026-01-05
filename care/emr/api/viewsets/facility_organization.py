@@ -237,12 +237,17 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         return Response({"count": len(data), "results": data})
 
 
+class FacilityOrganizationUsersFilter(filters.FilterSet):
+    is_service_account = filters.BooleanFilter(field_name="user__is_service_account")
+
+
 class FacilityOrganizationUsersViewSet(EMRModelViewSet):
     database_model = FacilityOrganizationUser
     pydantic_model = FacilityOrganizationUserWriteSpec
     pydantic_read_model = FacilityOrganizationUserReadSpec
     pydantic_update_model = FacilityOrganizationUserUpdateSpec
-    filter_backends = [drf_filters.SearchFilter]
+    filterset_class = FacilityOrganizationUsersFilter
+    filter_backends = [filters.DjangoFilterBackend, drf_filters.SearchFilter]
     search_fields = ["user__first_name", "user__last_name", "user__username"]
 
     def get_organization_obj(self):
@@ -371,6 +376,11 @@ class FacilityOrganizationUsersViewSet(EMRModelViewSet):
             raise PermissionDenied(
                 "User does not have the required permissions to list users"
             )
-        return FacilityOrganizationUser.objects.filter(
+        queryset = FacilityOrganizationUser.objects.filter(
             organization=organization
         ).select_related("organization", "user", "role")
+
+        if "is_service_account" not in self.request.query_params:
+            queryset = queryset.filter(user__is_service_account=False)
+
+        return queryset
