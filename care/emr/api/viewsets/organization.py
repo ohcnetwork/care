@@ -225,6 +225,7 @@ class OrganizationUserFilter(filters.FilterSet):
         field_name="user__phone_number", lookup_expr="iexact"
     )
     username = filters.CharFilter(field_name="user__username", lookup_expr="icontains")
+    is_service_account = filters.BooleanFilter(field_name="user__is_service_account")
 
 
 class OrganizationUsersViewSet(EMRModelViewSet):
@@ -321,4 +322,7 @@ class OrganizationUsersViewSet(EMRModelViewSet):
             raise PermissionDenied(
                 "User does not have the required permissions to list users"
             )
-        return OrganizationUser.objects.filter(organization=organization)
+        queryset = OrganizationUser.objects.filter(organization=organization)
+        if "is_service_account" not in self.request.query_params:
+            queryset = queryset.filter(user__is_service_account=False)
+        return queryset
