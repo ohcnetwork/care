@@ -36,6 +36,7 @@ from care.utils.models.validators import (
     cover_image_validator,
     custom_image_extension_validator,
 )
+from care.utils.shortcuts import get_object_or_404
 
 
 class UserImageUploadSerializer(serializers.ModelSerializer):
@@ -70,6 +71,7 @@ class UserFilter(filters.FilterSet):
     )
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
     user_type = filters.CharFilter(field_name="user_type", lookup_expr="iexact")
+    is_service_account = filters.BooleanFilter(field_name="is_service_account")
 
 
 class UserViewSet(EMRModelViewSet):
@@ -84,7 +86,10 @@ class UserViewSet(EMRModelViewSet):
     search_fields = ["first_name", "last_name", "username"]
 
     def get_queryset(self):
-        return super().get_queryset().filter(deleted=False, is_service_account=False)
+        queryset = super().get_queryset().filter(deleted=False)
+        if "is_service_account" not in self.request.query_params:
+            queryset = queryset.filter(is_service_account=False)
+        return queryset
 
     def perform_create(self, instance):
         with transaction.atomic():
@@ -237,35 +242,25 @@ class UserViewSet(EMRModelViewSet):
             status=201,
         )
 
-    @action(detail=False, methods=["GET"])
-    def get_service_accounts(self, request, *args, **kwargs):
-        if not AuthorizationController.call(
-            "can_list_service_account", self.request.user
-        ):
-            raise PermissionDenied(
-                "You do not have permission to list service accounts"
-            )
-
-        return Response(
-            User.objects.get_entire_queryset()
-            .filter(is_service_account=True, deleted=False)
-            .values("external_id", "username"),
-            status=200,
-        )
-
     @action(detail=True, methods=["POST"])
     def generate_service_account_token(self, request, *args, **kwargs):
-        if not AuthorizationController.call(
-            "can_manage_service_account_token", self.request.user
-        ):
-            raise PermissionDenied(
-                "You do not have permission to update token for service account"
-            )
-
-        user = self.get_object()
+        user = get_object_or_404(
+            User.objects.filter(deleted=False),
+            **{self.lookup_field: self.kwargs[self.lookup_field]},
+        )
 
         if not user.is_service_account:
             return Response({"error": "Only service accounts allowed"}, status=400)
+
+        has_permission = AuthorizationController.call(
+            "can_manage_service_account_token", self.request.user
+        )
+        is_own_account = self.request.user.id == user.id
+
+        if not (has_permission or is_own_account):
+            raise PermissionDenied(
+                "You do not have permission to update token for service account"
+            )
 
         Token.objects.filter(user=user).delete()
         token = Token.objects.create(user=user)
@@ -280,17 +275,23 @@ class UserViewSet(EMRModelViewSet):
 
     @action(detail=True, methods=["DELETE"])
     def revoke_service_account_token(self, request, *args, **kwargs):
-        if not AuthorizationController.call(
-            "can_manage_service_account_token", self.request.user
-        ):
-            raise PermissionDenied(
-                "You do not have permission to update token for service account"
-            )
-
-        user = self.get_object()
+        user = get_object_or_404(
+            User.objects.filter(deleted=False),
+            **{self.lookup_field: self.kwargs[self.lookup_field]},
+        )
 
         if not user.is_service_account:
             return Response({"error": "Not a service account"}, status=400)
+
+        has_permission = AuthorizationController.call(
+            "can_manage_service_account_token", self.request.user
+        )
+        is_own_account = self.request.user.id == user.id
+
+        if not (has_permission or is_own_account):
+            raise PermissionDenied(
+                "You do not have permission to update token for service account"
+            )
 
         Token.objects.filter(user=user).delete()
 

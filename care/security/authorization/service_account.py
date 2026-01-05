@@ -23,22 +23,6 @@ class ServiceAccountAccess(AuthorizationHandler):
             ).exists()
         )
 
-    def can_list_service_account(self, user):
-        """
-        Check if the user has permission to list service account
-        """
-        if user.is_superuser:
-            return True
-        roles = self.get_role_from_permissions(
-            [ServiceAccountPermissions.can_list_service_account.name]
-        )
-        return (
-            OrganizationUser.objects.filter(user=user, role_id__in=roles).exists()
-            or FacilityOrganizationUser.objects.filter(
-                user=user, role_id__in=roles
-            ).exists()
-        )
-
     def can_manage_service_account_token(self, user):
         """
         Check if the user has permission to manage a service account token
