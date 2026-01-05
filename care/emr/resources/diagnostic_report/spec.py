@@ -13,6 +13,7 @@ from care.emr.resources.diagnostic_report.valueset import (
 from care.emr.resources.encounter.spec import EncounterListSpec
 from care.emr.resources.observation.spec import ObservationRetrieveSpec
 from care.emr.resources.observation.valueset import CARE_OBSERVATION_VALUSET
+from care.emr.resources.patient.spec import PatientRetrieveSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.utils.shortcuts import get_object_or_404
 
@@ -77,3 +78,6 @@ class DiagnosticReportRetrieveSpec(DiagnosticReportListSpec):
             for observation in observations
         ]
         mapping["encounter"] = EncounterListSpec.serialize(obj.encounter).to_json()
+        mapping["encounter"]["patient"] = PatientRetrieveSpec.serialize(
+            obj.encounter.patient, facility=obj.facility
+        ).to_json()
