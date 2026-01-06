@@ -45,7 +45,6 @@ class InvoiceFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     title = filters.CharFilter(lookup_expr="icontains")
     account = filters.UUIDFilter(field_name="account__external_id")
-    encounter = filters.UUIDFilter(field_name="encounter__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
     number = filters.CharFilter(lookup_expr="icontains")
     locked = filters.BooleanFilter()
@@ -151,6 +150,11 @@ class InvoiceViewSet(
                     and instance.status not in INVOICE_CANCELLED_STATUS
                 ):
                     raise ValidationError("Invoice is already cancelled")
+                if (
+                    instance.status == InvoiceStatusOptions.issued.value
+                    and len(instance.charge_items) == 0
+                ):
+                    raise ValidationError("Invoice must have at least one charge item")
                 if old_invoice.status == InvoiceStatusOptions.balanced.value:
                     raise ValidationError("Invoice is already balanced")
                 if (
