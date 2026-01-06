@@ -238,6 +238,7 @@ class TestFavorites(CareAPITestBase):
                 "another_list",
             )
         )
+
     def test_favorite_lists_returns_list_on_first_call(self):
         # Ensure cache is empty
         cache.delete(self.favorite_list_cache_key)
