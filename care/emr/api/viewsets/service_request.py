@@ -67,6 +67,9 @@ class ServiceRequestFilters(filters.FilterSet):
     intent = filters.CharFilter(lookup_expr="iexact")
     do_not_perform = filters.BooleanFilter()
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
+    encounter_class = filters.CharFilter(
+        field_name="encounter__encounter_class", lookup_expr="iexact"
+    )
     patient = filters.UUIDFilter(field_name="patient__external_id")
     requester = filters.UUIDFilter(field_name="requester__external_id")
 
