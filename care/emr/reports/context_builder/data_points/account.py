@@ -34,6 +34,30 @@ BILLING_STATUS_DISPLAY = {
 }
 
 
+class AccountPatientContextBuilder(SingleObjectContextBuilder):
+    def get_context(self):
+        return self.parent_context.patient
+
+    name = Field(
+        display="Patient Name",
+        preview_value="John Doe",
+        description="Full name of the patient",
+    )
+    age = Field(
+        display="Patient Age",
+        mapping=lambda p: p.get_age(),
+        preview_value="30 Y",
+        description="Age of the patient",
+    )
+
+    gender = Field(
+        display="Patient Gender",
+        mapping=lambda p: p.gender,
+        preview_value="Male",
+        description="Gender of the patient",
+    )
+
+
 class BaseAccountContextBuilder(SingleObjectContextBuilder):
     name = Field(
         display="Account Title",
@@ -132,6 +156,13 @@ class AccountContextBuilder(BaseAccountContextBuilder):
     __display_name__ = "Account Report"
     __description__ = "Report context for account-based reports"
     context_key = "account"
+
+    patient = Field(
+        display="Patient Details",
+        target_context=AccountPatientContextBuilder,
+        preview_value="",
+        description="Details of the patient associated with the account",
+    )
 
 
 DataPointRegistry.register(AccountContextBuilder)
