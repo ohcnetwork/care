@@ -248,8 +248,8 @@ class TestFavorites(CareAPITestBase):
         self.assertIn("lists", response.data)
         self.assertEqual(response.data["lists"], [])
 
-        cached = cache.get(self.favorite_list_cache_key)
-        self.assertEqual(cached, [])
+        data = cache.get(self.favorite_list_cache_key)
+        self.assertEqual(data, [])
 
     def test_list_ordered_by_favorites(self):
         charge_item = self.create_charge_item_definition()
