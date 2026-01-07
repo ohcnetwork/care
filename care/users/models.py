@@ -41,17 +41,6 @@ class CustomUserManager(UserManager):
         extra_fields["user_type"] = 40
         return super().create_superuser(username, email, password, **extra_fields)
 
-    def create_service_account(self, username, email, **extra_fields):
-        extra_fields["is_service_account"] = True
-        extra_fields["phone_number"] = "+919696969696"
-        extra_fields["gender"] = 3
-        extra_fields["email"] = email
-
-        user = self.model(username=username, **extra_fields)
-        user.set_unusable_password()
-        user.save(using=self._db)
-        return user
-
     def make_random_password(
         self,
         length: int = 10,

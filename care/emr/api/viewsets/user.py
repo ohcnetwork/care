@@ -1,7 +1,3 @@
-import uuid
-
-from django.core.exceptions import ValidationError
-from django.core.validators import validate_email
 from django.db import IntegrityError, transaction
 from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
@@ -131,7 +127,14 @@ class UserViewSet(EMRModelViewSet):
             raise PermissionDenied("You do not have permission to update this user")
 
     def authorize_create(self, instance):
-        if not AuthorizationController.call("can_create_user", self.request.user):
+        if instance.is_service_account:
+            if not AuthorizationController.call(
+                "can_create_service_account", self.request.user
+            ):
+                raise PermissionDenied(
+                    "You do not have permission to create service accounts"
+                )
+        elif not AuthorizationController.call("can_create_user", self.request.user):
             raise PermissionDenied("You do not have permission to create Users")
 
     def perform_destroy(self, instance):
@@ -203,45 +206,6 @@ class UserViewSet(EMRModelViewSet):
         user.save()
         return Response({})
 
-    @action(detail=False, methods=["POST"])
-    def create_service_account(self, request, *args, **kwargs):
-        if not AuthorizationController.call(
-            "can_create_service_account", self.request.user
-        ):
-            raise PermissionDenied(
-                "You do not have permission to create service accounts"
-            )
-
-        username = request.data.get("username")
-        email = request.data.get("email")
-
-        if not username:
-            return Response({"error": "username is required"}, status=400)
-
-        if email is None:
-            email = username + str(uuid.uuid4())[:5] + "@service.local"
-        else:
-            try:
-                validate_email(email)
-            except ValidationError:
-                return Response({"error": "Invalid email format"}, status=400)
-
-        if User.check_username_exists(username):
-            return Response({"error": "Username already exists"}, status=400)
-
-        service_account = User.objects.create_service_account(
-            username=username, email=email
-        )
-
-        return Response(
-            {
-                "id": str(service_account.external_id),
-                "username": service_account.username,
-                "is_service_account": True,
-            },
-            status=201,
-        )
-
     @action(detail=True, methods=["POST"])
     def generate_service_account_token(self, request, *args, **kwargs):
         user = get_object_or_404(
@@ -250,7 +214,9 @@ class UserViewSet(EMRModelViewSet):
         )
 
         if not user.is_service_account:
-            return Response({"error": "Only service accounts allowed"}, status=400)
+            return Response(
+                {"error": "Only service accounts can generate token"}, status=400
+            )
 
         has_permission = AuthorizationController.call(
             "can_manage_service_account_token", self.request.user

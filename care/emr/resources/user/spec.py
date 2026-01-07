@@ -75,6 +75,7 @@ class UserCreateSpec(UserUpdateSpec):
     password: str | None = None
     username: str
     email: str
+    is_service_account: bool = False
 
     @field_validator("username")
     @classmethod
