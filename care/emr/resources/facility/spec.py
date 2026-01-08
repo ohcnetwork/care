@@ -135,6 +135,7 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     extensions_schema_product: dict = {}
     extensions_schema_supply_delivery: dict = {}
     extensions_schema_supply_delivery_order: dict = {}
+    extensions_schema_account: dict = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -163,6 +164,7 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
         mapping["extensions_schema_supply_delivery_order"] = (
             settings.SUPPLY_DELIVERY_ORDER_EXTENSIONS_JSON_SCHEMA
         )
+        mapping["extensions_schema_account"] = settings.ACCOUNT_EXTENSIONS_JSON_SCHEMA
 
 
 class FacilityMonetaryCodeSpec(EMRResource):

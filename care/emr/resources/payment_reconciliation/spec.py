@@ -10,6 +10,7 @@ from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.resources.account.spec import AccountReadSpec
 from care.emr.resources.base import EMRResource
 from care.emr.resources.location.spec import FacilityLocationListSpec
+from care.emr.resources.patient.spec import PatientRetrieveSpec
 
 
 class PaymentReconciliationTypeOptions(str, Enum):
@@ -141,6 +142,9 @@ class PaymentReconciliationRetrieveSpec(PaymentReconciliationReadSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
+        mapping["account"]["patient"] = PatientRetrieveSpec.serialize(
+            obj.account.patient, facility=obj.account.facility
+        ).to_json()
         if obj.location:
             mapping["location"] = FacilityLocationListSpec.serialize(
                 obj.location
