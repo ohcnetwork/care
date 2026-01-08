@@ -290,6 +290,11 @@ def cacheable(_model: EMRResource = None, use_base_manager=False) -> EMRResource
 
         db_model: models.Model = model.__model__
 
+        if not hasattr(db_model, "__cached_model_names__"):
+            db_model.__cached_model_names__ = []
+        if model.__name__ not in db_model.__cached_model_names__:
+            db_model.__cached_model_names__.append(model.__name__)
+
         post_save.connect(
             delete_model_cache,
             sender=db_model,
@@ -310,4 +315,10 @@ def delete_model_cache(sender, instance, **kwargs) -> None:
     Signal handler to delete the cache for a model instance when it is saved or deleted.
     """
     sender_model_string = model_string(sender)
-    cache.delete(model_cache_key(sender_model_string, pk=instance.id))
+    if hasattr(sender, "__cached_model_names__"):
+        for model_name in getattr(sender, "__cached_model_names__", []):
+            cache.delete(
+                model_cache_key(sender_model_string, model_name, pk=instance.id)
+            )
+    else:
+        cache.delete(model_cache_key(sender_model_string, pk=instance.id))
