@@ -1,18 +1,27 @@
 import json
+import random
 import secrets
 import sys
 import uuid
-from datetime import timedelta
+import warnings
+from datetime import datetime, timedelta
 from decimal import Decimal, localcontext
 from pathlib import Path
 
 from django.conf import settings
 from django.core.management import BaseCommand, call_command
 from django.db import transaction
+from django.db.models import DateTimeField, Model
 from django.utils import timezone
 from faker import Faker
 from faker.providers.geo import Provider as GeoProvider
+from pydantic import ValidationError
 
+from care.emr.api.viewsets.scheduling.availability import (
+    convert_availability_and_exceptions_to_slots,
+    create_appointment,
+)
+from care.emr.api.viewsets.scheduling.schedule import get_or_create_resource
 from care.emr.models import (
     ChargeItemDefinition,
     EncounterOrganization,
@@ -26,8 +35,17 @@ from care.emr.models import (
     Questionnaire,
     QuestionnaireOrganization,
 )
+from care.emr.models.healthcare_service import HealthcareService
+from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.models.resource_category import ResourceCategory
+from care.emr.models.scheduling.booking import TokenBooking, TokenSlot
+from care.emr.models.scheduling.schedule import (
+    Availability,
+    AvailabilityException,
+    Schedule,
+)
+from care.emr.models.scheduling.token import TokenCategory, TokenQueue, TokenSubQueue
 from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
 from care.emr.resources.activity_definition.spec import BaseActivityDefinitionSpec
 from care.emr.resources.device.spec import DeviceCreateSpec
@@ -42,7 +60,6 @@ from care.emr.resources.facility_organization.spec import (
     FacilityOrganizationTypeChoices,
     FacilityOrganizationWriteSpec,
 )
-from care.emr.resources.healthcare_service.spec import BaseHealthcareServiceSpec
 from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
     sync_inventory_item,
 )
@@ -58,8 +75,13 @@ from care.emr.resources.patient.spec import (
     PatientCreateSpec,
 )
 from care.emr.resources.questionnaire.spec import QuestionnaireSpec
+from care.emr.resources.scheduling.schedule.spec import (
+    SchedulableResourceTypeOptions,
+    SlotTypeOptions,
+)
 from care.emr.resources.specimen_definition.spec import BaseSpecimenDefinitionSpec
 from care.emr.resources.user.spec import UserCreateSpec
+from care.facility.models.facility import Facility
 from care.security.models import RoleModel
 from care.users.models import User
 
@@ -69,6 +91,18 @@ import care.emr.utils.valueset_coding_type  # noqa  # isort:skip
 sys.modules["care.emr.utils.valueset_coding_type"].validate_valueset = (
     lambda _, __, code: code
 )
+
+
+def disable_auto_time(*_models: Model):
+    for model in _models:
+        for field in model._meta.fields:  # noqa: SLF001
+            if isinstance(field, DateTimeField):
+                field.auto_now_add = False
+                field.auto_now = False
+                field.default = timezone.now
+
+
+disable_auto_time(TokenBooking)
 
 
 def safe_coordinate(self, center=None, radius=0.001):
@@ -115,7 +149,7 @@ class Command(BaseCommand):
             "--users", type=int, default=1, help="Number of each type of users"
         )
         parser.add_argument(
-            "--patients", type=int, default=10, help="Number of patients"
+            "--patients", type=int, default=20, help="Number of patients"
         )
         parser.add_argument(
             "--encounter", type=int, default=1, help="Number of encounters per patient"
@@ -156,13 +190,14 @@ class Command(BaseCommand):
             )
             raise
 
-    def _generate_fixtures(self, options):
+    def _generate_fixtures(self, options):  # noqa: PLR0915
         """Generate all the fixture data within a transaction context."""
         fake = Faker("en_IN")
         self.fake = fake
 
         super_user, created = User.objects.get_or_create(
             username="admin",
+            external_id="2a15ed98-9eea-4671-badd-65a4fc332afb",
             defaults={
                 "user_type": "admin",
                 "is_superuser": True,
@@ -204,16 +239,29 @@ class Command(BaseCommand):
             name=f"Supplier {fake.company()}",
         )
 
-        facility = self._create_facility(
-            fake, super_user, geo_organization, "FACILITY WITH PATIENTS"
-        )
+        try:
+            facility = self._create_facility(
+                fake, super_user, geo_organization, "FACILITY WITH PATIENTS"
+            )
+        except ValidationError:
+            self.stdout.write(
+                self.style.WARNING(
+                    "Facility with name 'FACILITY WITH PATIENTS' already exists, renaming the old one."
+                )
+            )
+            Facility.objects.filter(name="FACILITY WITH PATIENTS").update(
+                name="OLD FACILITY WITH PATIENTS"
+            )
+            facility = self._create_facility(
+                fake, super_user, geo_organization, "FACILITY WITH PATIENTS"
+            )
         self.stdout.write(f"Created facility: {facility.name}")
 
         self._create_inventory_items(facility)
         self.stdout.write("Created inventory items for facility")
 
         external_facility_organization = self._create_facility_organization(
-            fake, super_user, facility
+            fake, facility, name="General Department"
         )
         self.stdout.write(
             f"Created facility organization (dept): {external_facility_organization.name}"
@@ -223,20 +271,27 @@ class Command(BaseCommand):
         self.stdout.write("Created resource facility")
 
         location = self._create_location(
-            super_user,
             facility,
             [external_facility_organization],
             mode="kind",
             form="wa",
+            name="General Location",
         )
+        self._create_schedules_queues_for_resource(facility, location)
+        general_healthcare_service = self._create_healthcare_service(
+            facility,
+            "General Healthcare Service",
+            internal_type="pharmacy",
+            locations=[location.id],
+        )
+        self._create_schedules_queues_for_resource(facility, general_healthcare_service)
         self.stdout.write(f"Created location: {location.name}")
 
-        self._create_lab_definition_objects_for_facility(facility, super_user)
+        self._create_lab_definition_objects_for_facility(facility)
         self.stdout.write("Created lab objects for facility")
 
         for i in range(1, 6):
             bed = self._create_location(
-                super_user,
                 facility,
                 [external_facility_organization],
                 mode="instance",
@@ -273,6 +328,8 @@ class Command(BaseCommand):
         patients = self._create_patients(
             fake, super_user, geo_organization, options["patients"]
         )
+
+        self._create_tokens(facility, patients)
 
         self._create_encounters(
             fake,
@@ -322,17 +379,20 @@ class Command(BaseCommand):
         facility.save()
         return facility
 
-    def _create_facility_organization(self, fake, super_user, facility):
-        org_spec = FacilityOrganizationWriteSpec(
-            active=True,
-            name=fake.company(),
-            description=fake.text(max_nb_chars=200),
-            facility=facility.external_id,
-            org_type=FacilityOrganizationTypeChoices.dept,
-        )
+    def _create_facility_organization(self, fake, facility, **kwargs):
+        data = {
+            "active": True,
+            "name": fake.company(),
+            "description": fake.text(max_nb_chars=200),
+            "facility": facility.external_id,
+            "org_type": FacilityOrganizationTypeChoices.dept,
+        }
+        if kwargs:
+            data.update(kwargs)
+        org_spec = FacilityOrganizationWriteSpec(**data)
         org = org_spec.de_serialize()
-        org.created_by = super_user
-        org.updated_by = super_user
+        org.created_by = facility.created_by
+        org.updated_by = facility.created_by
         org.save()
         return org
 
@@ -369,6 +429,183 @@ class Command(BaseCommand):
         return FacilityOrganizationUser.objects.create(
             organization=facility_organization, user=user, role=role
         )
+
+    def _create_schedule(
+        self, resource, valid_from=None, valid_to=None, availabilities=None, **kwargs
+    ):
+        if not availabilities:
+            availabilities = [
+                {
+                    "name": "Default Availability",
+                    "slot_type": "appointment",
+                    "slot_size_in_minutes": 18,
+                    "tokens_per_slot": 3,
+                    "reason": "",
+                    "availability": [
+                        {"day_of_week": 0, "start_time": "09:30", "end_time": "18:30"},
+                        {"day_of_week": 1, "start_time": "09:30", "end_time": "18:30"},
+                        {"day_of_week": 2, "start_time": "09:30", "end_time": "18:30"},
+                        {"day_of_week": 3, "start_time": "09:30", "end_time": "18:30"},
+                        {"day_of_week": 4, "start_time": "09:30", "end_time": "18:30"},
+                        {"day_of_week": 5, "start_time": "09:30", "end_time": "18:30"},
+                        {"day_of_week": 6, "start_time": "09:30", "end_time": "18:30"},
+                    ],
+                }
+            ]
+
+        valid_from = (valid_from or (timezone.now() - timedelta(days=4))).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        )
+        data = {
+            "resource": resource,
+            "name": "Default Availability Template",
+            "valid_from": valid_from,
+            "valid_to": valid_to or (valid_from + timedelta(days=7)),
+        }
+        if kwargs:
+            data.update(kwargs)
+        schedule = Schedule.objects.create(**data)
+        for availability in availabilities:
+            _availability = Availability.objects.create(
+                schedule=schedule, **availability
+            )
+        return schedule
+
+    def _create_token_slots(self, resource, valid_from=None, valid_to=None):
+        with warnings.catch_warnings(category=RuntimeWarning):
+            warnings.filterwarnings(
+                "ignore",
+                category=RuntimeWarning,
+                message=r".*received a naive datetime.*",
+            )
+            valid_from = (valid_from or (timezone.now() - timedelta(days=4))).replace(
+                hour=0, minute=0, second=0, microsecond=0
+            )
+            valid_to = valid_to or (valid_from + timedelta(days=7))
+            availabilities = Availability.objects.filter(
+                slot_type=SlotTypeOptions.appointment.value,
+                schedule__resource=resource,
+                schedule__valid_from__lte=valid_to,
+                schedule__valid_to__gte=valid_from,
+            )
+            exceptions = AvailabilityException.objects.filter(
+                resource=resource,
+                valid_from__lte=valid_to,
+                valid_to__gte=valid_from,
+            )
+            # generate slots for all days of the week
+            calculated_dow_availabilities = [[], [], [], [], [], [], []]
+            for schedule_availability in availabilities:
+                for day_availability in schedule_availability.availability:
+                    calculated_dow_availabilities[
+                        day_availability["day_of_week"]
+                    ].append(
+                        {
+                            "availability": day_availability,
+                            "slot_size_in_minutes": schedule_availability.slot_size_in_minutes,
+                            "availability_id": schedule_availability.id,
+                        }
+                    )
+
+            for day in range((valid_to - valid_from).days + 1):
+                current_date = valid_from + timedelta(days=day)
+                dow = current_date.weekday()
+                slots = convert_availability_and_exceptions_to_slots(
+                    calculated_dow_availabilities[dow], exceptions, current_date
+                )
+                created_slots = TokenSlot.objects.filter(
+                    start_datetime__date=current_date,
+                    end_datetime__date=current_date,
+                    resource=resource,
+                )
+                for slot in created_slots:
+                    slot_key = f"{timezone.make_naive(slot.start_datetime).time()}-{timezone.make_naive(slot.end_datetime).time()}"
+                    if (
+                        slot_key in slots
+                        and slots[slot_key]["availability_id"] == slot.availability.id
+                    ):
+                        slots.pop(slot_key)
+                for _, slot in slots.items():
+                    end_datetime = datetime.combine(
+                        current_date, slot["end_time"], tzinfo=None
+                    )
+                    TokenSlot.objects.create(
+                        resource=resource,
+                        start_datetime=datetime.combine(
+                            current_date, slot["start_time"], tzinfo=None
+                        ),
+                        end_datetime=end_datetime,
+                        availability_id=slot["availability_id"],
+                    )
+            self.stdout.write(f"Created token slot for resource {resource}")
+
+    def _create_queue(self, facility, resource, date=None, **kwargs):
+        date = date or timezone.now().date()
+        data = {
+            "facility": facility,
+            "resource": resource,
+            "date": date,
+            "name": "Default Queue",
+            "is_primary": not TokenQueue.objects.filter(
+                facility=facility,
+                resource=resource,
+                date=date,
+            ).exists(),
+        }
+        if kwargs:
+            data.update(kwargs)
+        return TokenQueue.objects.create(**data)
+
+    def _create_sub_queue(self, facility, resource, **kwargs):
+        data = {
+            "facility": facility,
+            "resource": resource,
+            "name": "Default Service Point",
+            "status": "active",
+        }
+        if kwargs:
+            data.update(kwargs)
+        return TokenSubQueue.objects.create(**data)
+
+    def _create_schedules_queues_for_resource(self, facility, resource):
+        if isinstance(resource, User):
+            resource_type = SchedulableResourceTypeOptions.practitioner.value
+        elif isinstance(resource, HealthcareService):
+            resource_type = SchedulableResourceTypeOptions.healthcare_service.value
+        elif isinstance(resource, FacilityLocation):
+            resource_type = SchedulableResourceTypeOptions.location.value
+        resource = get_or_create_resource(
+            resource_type=resource_type,
+            resource_id=resource.external_id,
+            facility=facility,
+        )
+        self._create_schedule(resource)
+        self._create_queue(facility, resource)
+        self._create_sub_queue(facility, resource)
+        TokenCategory.objects.get_or_create(
+            facility=facility,
+            resource_type=resource_type,
+            name=f"{resource_type.capitalize()} Token Category",
+            shorthand=resource_type[:5].upper(),
+            default=True,
+        )
+        self.stdout.write(f"Created schedules and queues for resource {resource}")
+        return resource
+
+    def _create_tokens(self, facility, patients):
+        slots = list(TokenSlot.objects.filter(resource__facility=facility))
+        for patient in patients:
+            token_slot = random.choice(slots)  # noqa: S311
+            create_appointment(
+                token_slot=token_slot,
+                patient=patient,
+                created_by=patient.created_by,
+                note="Auto-booked during fixture generation",
+                booked_on=token_slot.start_datetime,
+            )
+            self.stdout.write(
+                f"Created token booking for patient {patient} on slot {token_slot.start_datetime}"
+            )
 
     def _create_user(
         self,
@@ -407,6 +644,16 @@ class Command(BaseCommand):
                     user=user,
                     role=role,
                 )
+                if role.name == "Doctor":
+                    resource = get_or_create_resource(
+                        resource_type="practitioner",
+                        resource_id=user.external_id,
+                        facility=facility_organization.facility,
+                    )
+                    self._create_schedules_queues_for_resource(
+                        facility_organization.facility, user
+                    )
+                    self._create_token_slots(resource)
                 if (
                     user.user_type == "administrator"
                     and facility_organization.facility.default_internal_organization
@@ -612,7 +859,6 @@ class Command(BaseCommand):
 
     def _create_location(
         self,
-        super_user,
         facility,
         organizations,
         mode,
@@ -632,8 +878,8 @@ class Command(BaseCommand):
         )
         location = location_spec.de_serialize()
         location.facility = facility
-        location.created_by = super_user
-        location.updated_by = super_user
+        location.created_by = facility.created_by
+        location.updated_by = facility.created_by
         location.save()
 
         for organization in organizations:
@@ -687,6 +933,25 @@ class Command(BaseCommand):
         resource_category.slug = resource_category.calculate_slug()
         resource_category.save()
         return resource_category
+
+    def _create_healthcare_service(
+        self, facility, name, internal_type="lab", locations=None, **kwargs
+    ):
+        _data = {
+            "facility": facility,
+            "internal_type": internal_type,
+            "name": name,
+            "styling_metadata": {},
+            "extra_details": "",
+            "created_by": facility.created_by,
+            "updated_by": facility.created_by,
+            "locations": locations or [],
+        }
+        if kwargs:
+            _data.update(kwargs)
+        healthcare_service = HealthcareService(**_data)
+        healthcare_service.save()
+        return healthcare_service
 
     def _create_product_knowledge(self, facility, code, base_unit, **kwargs):
         coding = code.get("code", "")
@@ -807,7 +1072,7 @@ class Command(BaseCommand):
             )
         return supply_delivery
 
-    def _delivery_order(
+    def _create_delivery_order(
         self,
         status=None,
         origin=None,
@@ -825,12 +1090,12 @@ class Command(BaseCommand):
             updated_by=origin.created_by if origin else destination.created_by,
         )
 
-    def _create_lab_definition_objects_for_facility(self, facility, user=None):  # noqa : PLR0915
+    def _create_lab_definition_objects_for_facility(self, facility):  # noqa : PLR0915
         def __create_object(model, **kwargs):
             obj = model.de_serialize()
             obj.facility = facility
-            obj.created_by = user or facility.created_by
-            obj.updated_by = user or facility.updated_by
+            obj.created_by = facility.created_by
+            obj.updated_by = facility.updated_by
             for key, value in kwargs.items():
                 setattr(obj, key, value)
             if hasattr(obj, "calculate_slug"):
@@ -839,12 +1104,15 @@ class Command(BaseCommand):
             return obj
 
         bio_chemistry_lab_location = self._create_location(
-            user or facility.created_by,
             facility,
             [facility.default_internal_organization],
             mode="kind",
             form="ro",
             name="Bio-Chemistry Lab",
+        )
+        self._create_schedules_queues_for_resource(
+            facility,
+            bio_chemistry_lab_location,
         )
 
         code_ucum_ml = {
@@ -1436,14 +1704,16 @@ class Command(BaseCommand):
             ),
         )
 
-        __create_object(
-            BaseHealthcareServiceSpec(
-                internal_type="lab",
-                name="Pathology Lab",
-                styling_metadata={"careIcon": "microscope"},
-                extra_details="",
-            ),
+        pathology_service = self._create_healthcare_service(
+            facility,
+            "Pathology Lab",
+            internal_type="lab",
             locations=[bio_chemistry_lab_location.id],
+            styling_metadata={"careIcon": "microscope"},
+        )
+        self._create_schedules_queues_for_resource(
+            facility,
+            pathology_service,
         )
 
         __create_object(
@@ -1536,35 +1806,27 @@ class Command(BaseCommand):
         )
 
     def _create_inventory_items(self, facility, user=None):
-        def __create_object(model, **kwargs):
-            obj = model.de_serialize()
-            obj.facility = facility
-            obj.created_by = user or facility.created_by
-            obj.updated_by = user or facility.updated_by
-            for key, value in kwargs.items():
-                setattr(obj, key, value)
-            if hasattr(obj, "calculate_slug"):
-                obj.slug = obj.calculate_slug()
-            obj.save()
-            return obj
-
         inventory_location = self._create_location(
-            user or facility.created_by,
             facility,
             [facility.default_internal_organization],
             mode="kind",
             form="ro",
             name="Pharmacy",
         )
+        self._create_schedules_queues_for_resource(
+            facility,
+            inventory_location,
+        )
 
-        __create_object(
-            BaseHealthcareServiceSpec(
-                internal_type="pharmacy",
-                name="Main Pharmacy",
-                styling_metadata={},
-                extra_details="",
-            ),
+        pharmacy_service = self._create_healthcare_service(
+            facility,
+            "Main Pharmacy",
+            internal_type="pharmacy",
             locations=[inventory_location.id],
+        )
+        self._create_schedules_queues_for_resource(
+            facility,
+            pharmacy_service,
         )
 
         oral_tablet_definitional = {
@@ -1705,7 +1967,7 @@ class Command(BaseCommand):
             inventory_location, gloves_product
         )
 
-        purchase_order = self._delivery_order(
+        purchase_order = self._create_delivery_order(
             destination=inventory_location,
             supplier=self.supplier,
             name="Initial Stock Delivery",

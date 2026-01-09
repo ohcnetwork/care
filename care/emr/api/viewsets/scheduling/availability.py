@@ -123,6 +123,64 @@ def convert_availability_and_exceptions_to_slots(availabilities, exceptions, day
     return slots
 
 
+def create_appointment(token_slot, patient, created_by, note, booked_on=None):
+    token_slot.allocated += 1
+    token_slot.save()
+    booking = TokenBooking.objects.create(
+        token_slot=token_slot,
+        patient=patient,
+        booked_by=created_by,
+        created_by=created_by,
+        updated_by=created_by,
+        booked_on=booked_on or timezone.now(),
+        note=note,
+        status="booked",
+    )
+    # Generate Charge Item
+    schedule = booking.token_slot.availability.schedule
+    last_booking = (
+        TokenBooking.objects.exclude(status__in=CANCELLED_STATUS_CHOICES)
+        .filter(
+            patient=patient,
+            token_slot__availability__schedule=schedule,
+            charge_item__isnull=False,
+            charge_item__status=ChargeItemStatusOptions.paid.value,
+            token_slot__start_datetime__lte=token_slot.start_datetime,
+        )
+        .order_by("-token_slot__start_datetime")
+    ).first()
+    if last_booking:
+        booking_start_time = last_booking.charge_item.paid_on
+        if not booking_start_time:
+            diff_days = None
+        else:
+            new_booking_start_time = token_slot.start_datetime
+            diff_days = (booking_start_time - new_booking_start_time).days
+    else:
+        diff_days = None
+    if (
+        schedule.revisit_allowed_days
+        and diff_days is not None
+        and abs(diff_days) <= schedule.revisit_allowed_days
+    ):
+        charge_item_definition = schedule.revisit_charge_item_definition
+    else:
+        charge_item_definition = schedule.charge_item_definition
+    if charge_item_definition:
+        charge_item = apply_charge_item_definition(
+            charge_item_definition,
+            patient,
+            token_slot.resource.facility,
+            quantity=1,
+        )
+        charge_item.service_resource = ChargeItemResourceOptions.appointment.value
+        charge_item.service_resource_id = str(booking.external_id)
+        charge_item.save()
+        booking.charge_item = charge_item
+        booking.save(update_fields=["charge_item"])
+    return booking
+
+
 def lock_create_appointment(token_slot, patient, created_by, note):
     with Lock(f"booking:resource:{token_slot.resource.id}"), transaction.atomic():
         if token_slot.end_datetime < timezone.now():
@@ -135,60 +193,7 @@ def lock_create_appointment(token_slot, patient, created_by, note):
             .exists()
         ):
             raise ValidationError("Patient already has a booking for this slot")
-        token_slot.allocated += 1
-        token_slot.save()
-        booking = TokenBooking.objects.create(
-            token_slot=token_slot,
-            patient=patient,
-            booked_by=created_by,
-            created_by=created_by,
-            updated_by=created_by,
-            note=note,
-            status="booked",
-        )
-        # Generate Charge Item
-        schedule = booking.token_slot.availability.schedule
-        last_booking = (
-            TokenBooking.objects.exclude(status__in=CANCELLED_STATUS_CHOICES)
-            .filter(
-                patient=patient,
-                token_slot__availability__schedule=schedule,
-                charge_item__isnull=False,
-                charge_item__status=ChargeItemStatusOptions.paid.value,
-                token_slot__start_datetime__lte=token_slot.start_datetime,
-            )
-            .order_by("-token_slot__start_datetime")
-        ).first()
-        if last_booking:
-            booking_start_time = last_booking.charge_item.paid_on
-            if not booking_start_time:
-                diff_days = None
-            else:
-                new_booking_start_time = token_slot.start_datetime
-                diff_days = (booking_start_time - new_booking_start_time).days
-        else:
-            diff_days = None
-        if (
-            schedule.revisit_allowed_days
-            and diff_days is not None
-            and abs(diff_days) <= schedule.revisit_allowed_days
-        ):
-            charge_item_definition = schedule.revisit_charge_item_definition
-        else:
-            charge_item_definition = schedule.charge_item_definition
-        if charge_item_definition:
-            charge_item = apply_charge_item_definition(
-                charge_item_definition,
-                patient,
-                token_slot.resource.facility,
-                quantity=1,
-            )
-            charge_item.service_resource = ChargeItemResourceOptions.appointment.value
-            charge_item.service_resource_id = str(booking.external_id)
-            charge_item.save()
-            booking.charge_item = charge_item
-            booking.save(update_fields=["charge_item"])
-        return booking
+        return create_appointment(token_slot, patient, created_by, note)
 
 
 class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
