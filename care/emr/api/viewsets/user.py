@@ -83,7 +83,10 @@ class UserViewSet(EMRModelViewSet):
 
     def get_queryset(self):
         queryset = super().get_queryset().filter(deleted=False)
-        if "is_service_account" not in self.request.query_params:
+        if (
+            self.action == "list"
+            and "is_service_account" not in self.request.query_params
+        ):
             queryset = queryset.filter(is_service_account=False)
         return queryset
 

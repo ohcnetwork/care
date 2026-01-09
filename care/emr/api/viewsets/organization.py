@@ -323,6 +323,9 @@ class OrganizationUsersViewSet(EMRModelViewSet):
                 "User does not have the required permissions to list users"
             )
         queryset = OrganizationUser.objects.filter(organization=organization)
-        if "is_service_account" not in self.request.query_params:
+        if (
+            self.action == "list"
+            and "is_service_account" not in self.request.query_params
+        ):
             queryset = queryset.filter(user__is_service_account=False)
         return queryset
