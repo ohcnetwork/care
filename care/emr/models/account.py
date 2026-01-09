@@ -26,3 +26,4 @@ class Account(EMRBaseModel):
         default=0, max_digits=10, decimal_places=2
     )
     tags = ArrayField(models.IntegerField(), default=list)
+    extensions = models.JSONField(default=dict)
