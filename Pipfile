@@ -50,6 +50,7 @@ python-magic = {version = "==0.4.28", index = "python-magic-bin"}
 django-import-export = "==4.3.14"
 evalidate = "==2.1.1"
 weasyprint = "==67.0"
+pip = "==25.3"
 
 [dev-packages]
 boto3-stubs = { extras = ["s3", "boto3"], version = "*" }
