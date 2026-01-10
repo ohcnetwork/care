@@ -34,6 +34,7 @@ CHARGE_ITEM_STATUS_DISPLAY = {
     "paid": "Paid",
     "entered_in_error": "Entered in Error",
 }
+ACTIVE_CHARGE_ITEM_STATUSES = ["billable", "billed", "paid"]
 
 
 class ChargeItemReportFilter(filters.FilterSet):
@@ -136,7 +137,9 @@ class AccountChargeItemCategoryContextBuilder(QuerysetContextBuilder):
         summary = []
         for category in categories:
             charge_items = ChargeItem.objects.filter(
-                account_id=account.id, charge_item_definition__category=category
+                account_id=account.id,
+                charge_item_definition__category=category,
+                status__in=ACTIVE_CHARGE_ITEM_STATUSES,
             )
             if not charge_items.exists():
                 continue

@@ -6,18 +6,26 @@ from care.emr.reports.context_builder.data_points.base import (
     SingleObjectContextBuilder,
 )
 
-GenderChoices = {
+GENDER_CHOICES = {
     "male": "Male",
     "female": "Female",
     "non_binary": "Non binary",
     "transgender": "Transgender",
 }
 
+IDENTIFIER_USE_OPTIONS = {
+    "official": "Official",
+    "usual": "Usual",
+    "temp": "Temporary",
+    "secondary": "Secondary",
+    "old": "Old",
+}
+
 
 class IdentifierConfigContextBuilder(SingleObjectContextBuilder):
     def get_context(self):
         return PatientIdentifierConfig.objects.get(
-            external_id=self.parent_context.get("config")
+            external_id=self.parent_context.get("config"), status="active"
         )
 
     display = Field(
@@ -25,6 +33,26 @@ class IdentifierConfigContextBuilder(SingleObjectContextBuilder):
         preview_value="Patient ID",
         mapping=lambda ic: ic.config.get("display") if ic.config else "",
         description="Display of the identifier configuration",
+    )
+
+    use = Field(
+        display="Use",
+        preview_value="Official",
+        mapping=lambda ic: IDENTIFIER_USE_OPTIONS.get(
+            ic.config.get("use"), ic.config.get("use").title()
+        )
+        if ic.config
+        else "",
+        description="Use of the identifier configuration",
+    )
+
+    auto_maintained = Field(
+        display="Auto Maintained",
+        preview_value="False",
+        mapping=lambda ic: ic.config.get("auto_maintained", False)
+        if ic.config
+        else False,
+        description="Whether the identifier is auto maintained",
     )
 
 
@@ -64,7 +92,7 @@ class BasePatientContextBuilder(SingleObjectContextBuilder):
     gender = Field(
         display="Patient Gender",
         preview_value="Male",
-        mapping=lambda p: GenderChoices.get(p.gender, p.gender.title())
+        mapping=lambda p: GENDER_CHOICES.get(p.gender, p.gender.title())
         if p.gender
         else "",
         description="Gender of the patient",
