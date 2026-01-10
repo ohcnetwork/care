@@ -75,7 +75,7 @@ class AccountInvoiceContextBuilder(InvoiceContextBuilder):
 
 class ChargeItemInvoiceContextBuilder(SingleObjectContextBuilder):
     def get_context(self):
-        return Invoice.objects.get(id=self.parent_context.paid_invoice_id)
+        return getattr(self.parent_context, self.parent_attribute)
 
     title = Field(
         display="Invoice Title",
