@@ -8,6 +8,9 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.invoice import (
+    ChargeItemInvoiceContextBuilder,
+)
 from care.emr.reports.context_builder.data_points.monetary_component import (
     MonetaryComponentContextBuilder,
     UnitPriceMonetaryComponentContextBuilder,
@@ -95,6 +98,18 @@ class ChargeItemContextBuilder(QuerysetContextBuilder):
         display="Paid On",
         preview_value="2024-01-15T10:30:00Z",
         description="Date and time when the charge item was paid",
+    )
+
+    paid_invoice = Field(
+        display="Paid Invoice",
+        preview_value="",
+        target_context=ChargeItemInvoiceContextBuilder,
+        description="Invoice associated with the payment of the charge item",
+    )
+    created_date = Field(
+        display="Created Date",
+        preview_value="2024-01-10T09:00:00Z",
+        description="Date and time when the charge item was created",
     )
 
     def get_context(self):
