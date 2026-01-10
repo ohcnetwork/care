@@ -127,14 +127,16 @@ class CategoryChargeItemContextBuilder(ChargeItemContextBuilder):
 
 
 class AccountChargeItemCategoryContextBuilder(QuerysetContextBuilder):
-    def get_category_charge_items_summary(self, account_id):
+    def get_category_charge_items_summary(self, account):
         categories = ResourceCategory.objects.filter(
-            resource_type="charge_item_definition"
+            resource_type="charge_item_definition",
+            facility_id=self.parent_context.facility_id,
+            parent_id__isnull=True,
         )
         summary = []
         for category in categories:
             charge_items = ChargeItem.objects.filter(
-                account_id=account_id, charge_item_definition__category=category
+                account_id=account.id, charge_item_definition__category=category
             )
             if not charge_items.exists():
                 continue
@@ -151,7 +153,7 @@ class AccountChargeItemCategoryContextBuilder(QuerysetContextBuilder):
         return summary
 
     def get_context(self):
-        return self.get_category_charge_items_summary(self.parent_context.id)
+        return self.get_category_charge_items_summary(self.parent_context)
 
     category = Field(
         display="Charge Item Category",
