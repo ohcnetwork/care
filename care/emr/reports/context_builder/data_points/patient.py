@@ -54,10 +54,7 @@ class PatientFacilityIdentifiersContextBuilder(IdentifiersContextBuilder):
         return self.parent_context.facility_identifiers
 
 
-class PatientMinimumContextBuilder(SingleObjectContextBuilder):
-    def get_context(self):
-        return Patient.objects.get(id=self.parent_context.id)
-
+class BasePatientContextBuilder(SingleObjectContextBuilder):
     name = Field(
         display="Patient Name",
         preview_value="John Doe",
@@ -125,20 +122,18 @@ class PatientMinimumContextBuilder(SingleObjectContextBuilder):
     )
 
 
-class PatientContextBuilderBase(SingleObjectContextBuilder):
+class PatientMinimumContextBuilder(BasePatientContextBuilder):
+    def get_context(self):
+        return getattr(self.parent_context, self.parent_attribute)
+
+
+class PatientContextBuilderBase(BasePatientContextBuilder):
     standalone_context = True
     __slug__ = "patient_base"
     __associating_model__ = Patient
     __display_name__ = "Patient Report"
     __description__ = "Report context for patient-based reports"
     context_key = "patient"
-
-    patient = Field(
-        display="Patient Details",
-        target_context=PatientMinimumContextBuilder,
-        preview_value="",
-        description="Details of the patient",
-    )
 
 
 DataPointRegistry.register(PatientContextBuilderBase)

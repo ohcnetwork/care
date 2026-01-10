@@ -16,6 +16,9 @@ from care.emr.reports.context_builder.data_points.diagnosis import (
 from care.emr.reports.context_builder.data_points.medication import (
     MedicationPrescriptionContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.patient import (
+    PatientMinimumContextBuilder,
+)
 from care.emr.reports.context_builder.data_points.questionnaire import (
     QuestionnaireContextBuilder,
 )
@@ -57,30 +60,6 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
             self.__class__(context=SimpleNamespace(user=c["user_id"], role=c["role"]))
             for c in self.context
         )
-
-
-class EncounterPatientContextBuilder(SingleObjectContextBuilder):
-    def get_context(self):
-        return self.parent_context.patient
-
-    name = Field(
-        display="Patient Name",
-        preview_value="John Doe",
-        description="Full name of the patient",
-    )
-    age = Field(
-        display="Patient Age",
-        mapping=lambda p: p.get_age(),
-        preview_value="30 Y",
-        description="Age of the patient",
-    )
-
-    gender = Field(
-        display="Patient Gender",
-        mapping=lambda p: p.gender,
-        preview_value="Male",
-        description="Gender of the patient",
-    )
 
 
 class EncounterReportContextBase(SingleObjectContextBuilder):
@@ -138,7 +117,7 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
     )
     patient = Field(
         display="Patient Details",
-        target_context=EncounterPatientContextBuilder,
+        target_context=PatientMinimumContextBuilder,
         preview_value="",
         description="Details of the patient associated with the encounter",
     )
