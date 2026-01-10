@@ -5,6 +5,7 @@ from care.emr.reports.context_builder.data_points.base import (
     SingleObjectContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.charge_items import (
+    AccountChargeItemCategoryContextBuilder,
     AccountChargeItemContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.invoice import (
@@ -12,6 +13,9 @@ from care.emr.reports.context_builder.data_points.invoice import (
 )
 from care.emr.reports.context_builder.data_points.monetary_component import (
     MonetaryComponentContextBuilder,
+)
+from care.emr.reports.context_builder.data_points.patient import (
+    PatientMinimumContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.payment_reconciliation import (
     PaymentReconciliationContextBuilder,
@@ -32,30 +36,6 @@ BILLING_STATUS_DISPLAY = {
     "closed_completed": "Closed Completed",
     "closed_combined": "Closed Combined",
 }
-
-
-class AccountPatientContextBuilder(SingleObjectContextBuilder):
-    def get_context(self):
-        return self.parent_context.patient
-
-    name = Field(
-        display="Patient Name",
-        preview_value="John Doe",
-        description="Full name of the patient",
-    )
-    age = Field(
-        display="Patient Age",
-        mapping=lambda p: p.get_age(),
-        preview_value="30 Y",
-        description="Age of the patient",
-    )
-
-    gender = Field(
-        display="Patient Gender",
-        mapping=lambda p: p.gender,
-        preview_value="Male",
-        description="Gender of the patient",
-    )
 
 
 class BaseAccountContextBuilder(SingleObjectContextBuilder):
@@ -125,6 +105,12 @@ class BaseAccountContextBuilder(SingleObjectContextBuilder):
         target_context=AccountChargeItemContextBuilder,
         description="Chargeable items associated with the account",
     )
+    category_charge_items = Field(
+        display="Category-wise Charge Items",
+        preview_value="",
+        target_context=AccountChargeItemCategoryContextBuilder,
+        description="Charge items categorized by their types for the account",
+    )
     payment_reconciliations = Field(
         display="Payment Reconciliations",
         preview_value="",
@@ -143,12 +129,6 @@ class BaseAccountContextBuilder(SingleObjectContextBuilder):
     )
 
 
-class PatientAccountContextBuilder(BaseAccountContextBuilder):
-    def get_context(self):
-        accounts = Account.objects.filter(patient=self.parent_context)
-        return accounts.first()
-
-
 class AccountContextBuilder(BaseAccountContextBuilder):
     standalone_context = True
     __slug__ = "account_base"
@@ -159,7 +139,7 @@ class AccountContextBuilder(BaseAccountContextBuilder):
 
     patient = Field(
         display="Patient Details",
-        target_context=AccountPatientContextBuilder,
+        target_context=PatientMinimumContextBuilder,
         preview_value="",
         description="Details of the patient associated with the account",
     )
