@@ -185,6 +185,8 @@ def lock_create_appointment(token_slot, patient, created_by, note):
             )
             charge_item.service_resource = ChargeItemResourceOptions.appointment.value
             charge_item.service_resource_id = str(booking.external_id)
+            charge_item.created_by = created_by
+            charge_item.updated_by = created_by
             charge_item.save()
             booking.charge_item = charge_item
             booking.save(update_fields=["charge_item"])

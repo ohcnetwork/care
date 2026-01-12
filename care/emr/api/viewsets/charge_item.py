@@ -311,6 +311,8 @@ class ChargeItemViewSet(
                     charge_item.service_resource_id = (
                         charge_item_request.service_resource_id
                     )
+                charge_item.created_by = request.user
+                charge_item.updated_by = request.user
                 charge_item.save()
         return Response({})
 
