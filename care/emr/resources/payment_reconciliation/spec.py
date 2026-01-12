@@ -9,8 +9,8 @@ from care.emr.models.location import FacilityLocation
 from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.resources.account.spec import AccountReadSpec
 from care.emr.resources.base import EMRResource
-from care.emr.resources.invoice.spec import InvoiceReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
+from care.emr.resources.patient.spec import PatientRetrieveSpec
 
 
 class PaymentReconciliationTypeOptions(str, Enum):
@@ -102,19 +102,30 @@ class PaymentReconciliationWriteSpec(BasePaymentReconciliationSpec):
         return self
 
 
-class PaymentReconciliationReadSpec(BasePaymentReconciliationSpec):
-    """Invoice read specification"""
-
-    account: dict
-    target_invoice: dict | None = None
+class PaymentReconciliationMinimalReadSpec(BasePaymentReconciliationSpec):
     amount: float | None = None
     tendered_amount: float
     returned_amount: float
     is_credit_note: bool
+    created_date: datetime
+    modified_date: datetime
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+
+
+class PaymentReconciliationReadSpec(PaymentReconciliationMinimalReadSpec):
+    """Invoice read specification"""
+
+    account: dict
+    target_invoice: dict | None = None
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.invoice.spec import InvoiceReadSpec
+
+        super().perform_extra_serialization(mapping, obj)
         mapping["account"] = AccountReadSpec.serialize(obj.account).to_json()
         if obj.target_invoice:
             mapping["target_invoice"] = InvoiceReadSpec.serialize(
@@ -125,10 +136,17 @@ class PaymentReconciliationReadSpec(BasePaymentReconciliationSpec):
 class PaymentReconciliationRetrieveSpec(PaymentReconciliationReadSpec):
     location: dict | None = None
 
+    created_by: dict | None
+    updated_by: dict | None
+
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
+        mapping["account"]["patient"] = PatientRetrieveSpec.serialize(
+            obj.account.patient, facility=obj.account.facility
+        ).to_json()
         if obj.location:
             mapping["location"] = FacilityLocationListSpec.serialize(
                 obj.location
             ).to_json()
+        cls.serialize_audit_users(mapping, obj)

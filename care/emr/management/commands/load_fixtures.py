@@ -982,6 +982,16 @@ class Command(BaseCommand):
             "system": "http://loinc.org",
             "display": "Platelets",
         }
+        code_snomed_lipid_panel = {
+            "code": "16254007",
+            "system": "http://snomed.info/sct",
+            "display": "Lipid panel",
+        }
+        code_snomed_urine = {
+            "code": "442564008",
+            "system": "http://snomed.info/sct",
+            "display": "Evaluation of urine specimen",
+        }
         code_loinc_lipid_panel = {
             "code": "LP97557-0",
             "system": "http://loinc.org",
@@ -1426,7 +1436,7 @@ class Command(BaseCommand):
             ),
         )
 
-        pathology_service = __create_object(
+        __create_object(
             BaseHealthcareServiceSpec(
                 internal_type="lab",
                 name="Pathology Lab",
@@ -1453,7 +1463,7 @@ class Command(BaseCommand):
             observation_result_requirements=[
                 fasting_blood_glucose_observation_definition.id
             ],
-            locations=[pathology_service.id],
+            locations=[bio_chemistry_lab_location.id],
             charge_item_definitions=[fasting_blood_glucose_charge_definition.id],
             category=self._create_resource_category(
                 facility, title="Lab Tests", resource_type="activity_definition"
@@ -1475,7 +1485,7 @@ class Command(BaseCommand):
             slug="complete_blood_count",
             specimen_requirements=[cbc_specimen_definition.id],
             observation_result_requirements=[cbc_observation_definition.id],
-            locations=[pathology_service.id],
+            locations=[bio_chemistry_lab_location.id],
             charge_item_definitions=[cbc_charge_definition.id],
             category=self._create_resource_category(
                 facility, title="Lab Tests", resource_type="activity_definition"
@@ -1491,13 +1501,13 @@ class Command(BaseCommand):
                 classification="laboratory",
                 category="laboratory",
                 kind="service_request",
-                code=code_loinc_lipid_panel,
+                code=code_snomed_lipid_panel,
                 diagnostic_report_codes=[code_loinc_lipid_panel],
             ),
             slug="lipid_panel",
             specimen_requirements=[lipid_panel_specimen_definition.id],
             observation_result_requirements=[lipid_panel_observation_definition.id],
-            locations=[pathology_service.id],
+            locations=[bio_chemistry_lab_location.id],
             charge_item_definitions=[lipid_panel_charge_definition.id],
             category=self._create_resource_category(
                 facility, title="Lab Tests", resource_type="activity_definition"
@@ -1512,13 +1522,13 @@ class Command(BaseCommand):
                 classification="laboratory",
                 category="laboratory",
                 kind="service_request",
-                code=code_loinc_urine,
+                code=code_snomed_urine,
                 diagnostic_report_codes=[code_loinc_urine],
             ),
             slug="urinalysis",
             specimen_requirements=[urinalysis_specimen_definition.id],
             observation_result_requirements=[urinalysis_observation_definition.id],
-            locations=[pathology_service.id],
+            locations=[bio_chemistry_lab_location.id],
             charge_item_definitions=[urinalysis_charge_definition.id],
             category=self._create_resource_category(
                 facility, title="Lab Tests", resource_type="activity_definition"

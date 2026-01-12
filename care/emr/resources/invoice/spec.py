@@ -7,9 +7,14 @@ from pydantic import UUID4
 from care.emr.models.account import Account
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.invoice import Invoice
-from care.emr.resources.account.spec import AccountReadSpec
-from care.emr.resources.base import EMRResource
+from care.emr.models.payment_reconciliation import PaymentReconciliation
+from care.emr.resources.account.spec import AccountMinimalReadSpec, AccountReadSpec
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
+from care.emr.resources.payment_reconciliation.spec import (
+    PaymentReconciliationMinimalReadSpec,
+)
+from care.emr.resources.user.spec import UserSpec
 
 
 class InvoiceStatusOptions(str, Enum):
@@ -59,10 +64,18 @@ class InvoiceReadSpec(BaseInvoiceSpec):
 
     total_net: Decimal
     total_gross: Decimal
+    locked: bool
+    created_date: datetime.datetime
+    modified_date: datetime.datetime
+    account: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+        mapping["account"] = AccountMinimalReadSpec.serialize(obj.account).to_json()
+        if obj.locked:
+            mapping["total_net"] = 0
+            mapping["total_gross"] = 0
 
 
 class InvoiceRetrieveSpec(InvoiceReadSpec):
@@ -70,11 +83,16 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
 
     charge_items: list[dict]
     total_price_components: list[dict]
-    account: dict
+    created_by: dict | None
+    updated_by: dict | None
+    payments: list[dict]
+    total_payments: Decimal
+    lock_history: list[dict]
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
-        super().perform_extra_serialization(mapping, obj)
+        mapping["id"] = obj.external_id
+        mapping["account"] = AccountMinimalReadSpec.serialize(obj.account).to_json()
         if obj.status in (InvoiceStatusOptions.draft.value,):
             mapping["charge_items"] = [
                 ChargeItemReadSpec.serialize(charge_item)
@@ -85,3 +103,19 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
         else:
             mapping["charge_items"] = obj.charge_items_copy
         mapping["account"] = AccountReadSpec.serialize(obj.account).to_json()
+        cls.serialize_audit_users(mapping, obj)
+        payments = []
+        total_payments = Decimal(0)
+        for payment in PaymentReconciliation.objects.filter(target_invoice=obj):
+            payments.append(
+                PaymentReconciliationMinimalReadSpec.serialize(payment).to_json()
+            )
+            total_payments += payment.amount
+        mapping["total_payments"] = total_payments
+        mapping["payments"] = payments
+        lock_history = []
+        for history in obj.lock_history:
+            user = history.get("user")
+            history["user"] = model_from_cache(UserSpec, id=user)
+            lock_history.append(history)
+        mapping["lock_history"] = lock_history

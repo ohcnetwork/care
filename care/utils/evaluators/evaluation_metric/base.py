@@ -3,9 +3,13 @@ class EvaluationMetricBase:
     name = None
     allowed_operations = None
 
-    def __init__(self, context_object):
+    def __init__(self, context_object, context=None):
         self._value = None
         self.context_object = context_object
+        if context:
+            self.context = context
+        else:
+            self.context = {}
 
     @classmethod
     def validate_rule(cls, operation, value):

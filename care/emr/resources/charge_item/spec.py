@@ -1,3 +1,4 @@
+import datetime
 from enum import Enum
 
 from pydantic import UUID4, BaseModel, model_validator
@@ -132,6 +133,9 @@ class ChargeItemReadSpec(ChargeItemSpec):
     tags: list[dict] = []
     service_resource: ChargeItemResourceOptions | None = None
     service_resource_id: str | None = None
+    created_date: datetime.datetime
+    modified_date: datetime.datetime
+    paid_on: datetime.datetime | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

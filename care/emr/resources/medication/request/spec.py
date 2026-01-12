@@ -199,7 +199,7 @@ class BaseMedicationRequestSpec(MedicationRequestResource):
 class CreatePrescription(BaseModel):
     name: str | None = None
     note: str | None = None
-    alternate_identifier: str | None = None
+    alternate_identifier: str
 
 
 class MedicationRequestSpec(BaseMedicationRequestSpec):

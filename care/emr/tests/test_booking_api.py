@@ -912,6 +912,27 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             kwargs={"facility_external_id": facility_id or self.facility.external_id},
         )
 
+    def _get_create_appointment_url(self, slot_id):
+        """Helper to get the detail URL for a specific booking."""
+        return reverse(
+            "slot-create-appointment",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": slot_id,
+            },
+        )
+
+    def create_appointment(self, slot_id: str):
+        return self.client.post(
+            self._get_create_appointment_url(slot_id),
+            {
+                "tags": [],
+                "note": "",
+                "patient": self.patient.external_id,
+            },
+            format="json",
+        )
+
     def test_get_slots_for_day(self):
         """Users can get available slots for a specific day."""
         data = {
@@ -1167,12 +1188,35 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         self,
     ):
         """Availability heatmap slot counts should match individual day slot counts when there are no exceptions."""
-        permissions = [SchedulePermissions.can_list_booking.name]
+        permissions = [
+            SchedulePermissions.can_list_booking.name,
+            SchedulePermissions.can_write_booking.name,
+        ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         from_date = datetime.now(UTC).date() + timedelta(days=1)
         end_date = from_date + timedelta(days=7)
+
+        # create appointment for each day
+        date = from_date
+        while date <= end_date:
+            # hit the get_slots_for_day API so that slots are generated in-order for appointments to be created
+            data = {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": self.user.external_id,
+                "day": date.strftime("%Y-%m-%d"),
+            }
+            slots_for_day_response = self.client.post(
+                self._get_slot_for_day_url(), data, format="json"
+            )
+
+            slot_id = slots_for_day_response.data["results"][0]["id"]
+            appointment_response = self.create_appointment(slot_id)
+            self.assertEqual(appointment_response.status_code, 200)
+
+            date += timedelta(days=1)
+
         data = {
             "resource_type": SchedulableResourceTypeOptions.practitioner.value,
             "resource_id": self.user.external_id,

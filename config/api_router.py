@@ -76,6 +76,8 @@ from care.emr.api.viewsets.questionnaire import (
     QuestionnaireViewSet,
 )
 from care.emr.api.viewsets.questionnaire_response import QuestionnaireResponseViewSet
+from care.emr.api.viewsets.report.report_upload import ReportUploadViewSet
+from care.emr.api.viewsets.report.template import TemplateViewSet
 from care.emr.api.viewsets.resource_category import ResourceCategoryViewSet
 from care.emr.api.viewsets.resource_request import (
     ResourceRequestCommentViewSet,
@@ -103,10 +105,13 @@ from care.emr.api.viewsets.user import UserViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
 from care.security.api.viewsets.permissions import PermissionViewSet
 from care.security.api.viewsets.roles import RoleViewSet
+from care.users.api.viewsets.plug_config import PlugConfigViewset
 
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 
 router.register("users", UserViewSet, basename="users")
+
+router.register("plug_config", PlugConfigViewset, basename="plug_configs")
 
 user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
 
@@ -482,6 +487,9 @@ thread_nested_router.register(
     NoteMessageViewSet,
     basename="note",
 )
+
+router.register("template", TemplateViewSet, basename="template")
+router.register("template_reports", ReportUploadViewSet, basename="template-reports")
 
 app_name = "api"
 urlpatterns = [

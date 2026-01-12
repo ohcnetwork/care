@@ -3,67 +3,7 @@
 import uuid
 
 import django.db.models.deletion
-from django.core.exceptions import ObjectDoesNotExist
-from django.core.paginator import Paginator
 from django.db import migrations, models
-
-from care.facility.models.asset import Asset
-
-
-def forwards_func(apps, schema_editor):
-    AssetAvailabilityRecord = apps.get_model("facility", "AssetAvailabilityRecord")
-    AvailabilityRecord = apps.get_model("facility", "AvailabilityRecord")
-    ContentType = apps.get_model("contenttypes", "ContentType")
-
-    asset_content_type = ContentType.objects.get_for_model(Asset)
-
-    aar_records = AssetAvailabilityRecord.objects.all().order_by("pk")
-
-    paginator = Paginator(aar_records, 1000)
-    for page_number in paginator.page_range:
-        availability_records = []
-        for aar in paginator.page(page_number).object_list:
-            availability_record = AvailabilityRecord(
-                content_type=asset_content_type,
-                object_external_id=aar.asset.external_id,
-                status=aar.status,
-                timestamp=aar.timestamp,
-            )
-            availability_records.append(availability_record)
-
-        AvailabilityRecord.objects.bulk_create(availability_records)
-
-
-def backwards_func(apps, schema_editor):
-    AssetAvailabilityRecord = apps.get_model("facility", "AssetAvailabilityRecord")
-    AvailabilityRecord = apps.get_model("facility", "AvailabilityRecord")
-    ContentType = apps.get_model("contenttypes", "ContentType")
-
-    asset_content_type = ContentType.objects.get_for_model(Asset)
-
-    ar_records = AvailabilityRecord.objects.filter(
-        content_type=asset_content_type
-    ).order_by("pk")
-
-    paginator = Paginator(ar_records, 1000)
-    for page_number in paginator.page_range:
-        asset_availability_records = []
-        for ar in paginator.page(page_number).object_list:
-            try:
-                AssetObject = Asset.objects.get(external_id=ar.object_external_id)
-                asset_availability_record = AssetAvailabilityRecord(
-                    asset_id=AssetObject.id,
-                    status=ar.status,
-                    timestamp=ar.timestamp,
-                )
-                asset_availability_records.append(asset_availability_record)
-            except ObjectDoesNotExist:
-                continue  # Skip if the asset was deleted
-
-        AssetAvailabilityRecord.objects.bulk_create(asset_availability_records)
-        AvailabilityRecord.objects.filter(
-            id__in=[ar.id for ar in paginator.page(page_number).object_list]
-        ).delete()
 
 
 class Migration(migrations.Migration):
@@ -132,7 +72,6 @@ class Migration(migrations.Migration):
                 name="facility_av_content_ad9eff_idx",
             ),
         ),
-        migrations.RunPython(forwards_func, backwards_func),
         migrations.DeleteModel(
             name="AssetAvailabilityRecord",
         ),

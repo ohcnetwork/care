@@ -66,7 +66,9 @@ class MedicationRequestPrescriptionViewSet(
 
     def authorize_update(self, request_obj, model_instance):
         encounter_access = AuthorizationController.call(
-            "can_update_encounter_obj", self.request.user, model_instance.encounter
+            "can_update_encounter_clinical_data",
+            self.request.user,
+            model_instance.encounter,
         )
         if encounter_access:
             return
@@ -77,7 +79,8 @@ class MedicationRequestPrescriptionViewSet(
             raise PermissionDenied("Access Denied to prescription")
         old_obj = self.database_model.objects.get(id=model_instance.id)
         if (
-            old_obj.status != request_obj.status
+            getattr(request_obj, "status", None)
+            and old_obj.status != request_obj.status
             and request_obj.status
             not in MEDICATION_PRESCRIPTION_PHARMACIST_ALLOWED_STATUS
         ):
@@ -92,8 +95,21 @@ class MedicationRequestPrescriptionViewSet(
         else:
             super().perform_update(instance)
 
+    def authorize_retrieve(self, instance):
+        encounter_access = AuthorizationController.call(
+            "can_view_encounter_obj", self.request.user, instance.encounter
+        )
+        if encounter_access:
+            return
+        pharmacist_access = self.authorize_for_pharmacist_facility(
+            instance.encounter.facility
+        )
+        if not pharmacist_access:
+            raise PermissionDenied("Access Denied to prescription")
+
     def get_queryset(self):
-        self.authorize_read_for_medication()
+        if self.action == "list":
+            self.authorize_read_for_medication()
         return (
             super()
             .get_queryset()

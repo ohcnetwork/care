@@ -44,4 +44,5 @@ class ChargeItem(EMRBaseModel):
         blank=True,
         default=None,
     )
+    paid_on = models.DateTimeField(null=True, blank=True, default=None)
     tags = ArrayField(models.IntegerField(), default=list)

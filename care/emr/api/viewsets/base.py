@@ -379,6 +379,12 @@ class EMRTagMixin:
         except ValueError as e:
             raise RestFrameworkValidationError(str(e)) from e
 
+    def authorize_set_tags(self, instance):
+        return self.authorize_update({}, instance)
+
+    def authorize_remove_tags(self, instance):
+        return self.authorize_update({}, instance)
+
     @extend_schema(request=TagRequest)
     @action(detail=True, methods=["POST"])
     def set_tags(self, request, *args, **kwargs):
@@ -386,6 +392,7 @@ class EMRTagMixin:
         if not self.resource_type:
             return Response({})
         instance = self.get_object()
+        self.authorize_set_tags(instance)
         self.perform_set_tags(instance, request.data)
         return self.retrieve(request, *args, **kwargs)
 
@@ -396,6 +403,7 @@ class EMRTagMixin:
         if not self.resource_type:
             return Response({})
         instance = self.get_object()
+        self.authorize_remove_tags(instance)
         tag_request = TagRequest.model_validate(request.data)
         tag_manager = self.tag_manager()
         tag_manager.unset_tags(

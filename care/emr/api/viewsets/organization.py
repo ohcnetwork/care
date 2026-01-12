@@ -105,9 +105,8 @@ class OrganizationViewSet(EMRModelViewSet):
             "can_manage_organization_obj", self.request.user, instance
         ):
             raise PermissionDenied(
-                "User does not have the required permissions to update organizations"
+                "User does not have the required permissions to delete organizations"
             )
-        # TODO delete should not be allowed if there are any children left
 
     def authorize_update(self, request_obj, model_instance):
         if self.request.user.is_superuser:
