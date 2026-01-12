@@ -2,12 +2,14 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 
-from pydantic import UUID4
+from django.conf import settings
+from jsonschema import validate
+from pydantic import UUID4, field_validator
 
 from care.emr.models import Account
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PeriodSpec
-from care.emr.resources.patient.spec import PatientListSpec
+from care.emr.resources.patient.spec import PatientListSpec, PatientRetrieveSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.utils.shortcuts import get_object_or_404
 
@@ -41,6 +43,16 @@ class AccountSpec(EMRResource):
     name: str
     service_period: PeriodSpec
     description: str | None = None
+    extensions: dict
+
+    @field_validator("extensions")
+    @classmethod
+    def validate_extensions(cls, v):
+        try:
+            validate(v, settings.ACCOUNT_EXTENSIONS_JSON_SCHEMA)
+        except Exception as e:
+            raise ValueError("Invalid additional metadata") from e
+        return v
 
 
 class AccountCreateSpec(AccountSpec):
@@ -82,8 +94,16 @@ class AccountReadSpec(AccountMinimalReadSpec):
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
 
 
-class AccountRetrieveSpec(AccountReadSpec):
+class AccountRetrieveSpec(AccountMinimalReadSpec):
     """Account retrieve specification"""
 
+    patient: dict
     cached_items: list = []
     total_price_components: dict
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        mapping["patient"] = PatientRetrieveSpec.serialize(
+            obj.patient, facility=obj.facility
+        ).to_json()
