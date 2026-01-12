@@ -40,6 +40,8 @@ class PaymentReconciliationFilters(filters.FilterSet):
     account = filters.UUIDFilter(field_name="account__external_id")
     is_credit_note = filters.BooleanFilter(field_name="is_credit_note")
     location = filters.UUIDFilter(field_name="location__external_id")
+    method = filters.CharFilter(lookup_expr="iexact")
+    created_by = filters.UUIDFilter(field_name="created_by__external_id")
 
 
 class PaymentReconciliationViewSet(
