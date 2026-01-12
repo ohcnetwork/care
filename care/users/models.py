@@ -37,8 +37,8 @@ class CustomUserManager(UserManager):
 
     def create_superuser(self, username, email, password, **extra_fields):
         extra_fields["phone_number"] = "+919696969696"
-        extra_fields["gender"] = 3
-        extra_fields["user_type"] = 40
+        extra_fields["gender"] = "non_binary"
+        extra_fields["user_type"] = "administrator"
         return super().create_superuser(username, email, password, **extra_fields)
 
     def make_random_password(
