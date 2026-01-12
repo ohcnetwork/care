@@ -144,6 +144,7 @@ class UserRetrieveSpec(UserSpec):
     created_by: UserSpec
     email: str
     flags: list[str] = []
+    is_service_account: bool
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User):
