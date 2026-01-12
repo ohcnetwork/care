@@ -18,8 +18,8 @@ from care.emr.resources.account.spec import (
     AccountCreateSpec,
     AccountReadSpec,
     AccountRetrieveSpec,
-    AccountSpec,
     AccountStatusOptions,
+    AccountUpdateSpec,
 )
 from care.emr.resources.account.sync_items import sync_account_items
 from care.emr.resources.tag.config_spec import TagResource
@@ -47,7 +47,7 @@ class AccountViewSet(
 ):
     database_model = Account
     pydantic_model = AccountCreateSpec
-    pydantic_update_model = AccountSpec
+    pydantic_update_model = AccountUpdateSpec
     pydantic_read_model = AccountReadSpec
     pydantic_retrieve_model = AccountRetrieveSpec
     filterset_class = AccountFilters

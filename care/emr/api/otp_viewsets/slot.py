@@ -40,6 +40,11 @@ class OTPSlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     database_model = TokenSlot
     pydantic_read_model = TokenSlotBaseSpec
 
+    def get_queryset(self):
+        return TokenSlot.objects.filter(
+            availability__schedule__is_public=True,
+        )
+
     @extend_schema(
         request=SlotsForDayRequestSpec,
     )
@@ -47,7 +52,7 @@ class OTPSlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     def get_slots_for_day(self, request, *args, **kwargs):
         request_data = SlotsForDayRequestSpec(**request.data)
         return SlotViewSet.get_slots_for_day_handler(
-            request_data.facility, request.data
+            request_data.facility, request.data, is_public=True
         )
 
     @extend_schema(
