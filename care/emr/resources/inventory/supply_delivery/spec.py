@@ -142,6 +142,7 @@ class SupplyDeliveryReadSpec(BaseSupplyDeliverySpec):
     supply_request: dict | None = None
     supplied_item_pack_quantity: int | None = None
     supplied_item_pack_size: int | None = None
+    extensions: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -165,7 +166,6 @@ class SupplyDeliveryRetrieveSpec(SupplyDeliveryReadSpec):
 
     created_by: UserSpec = {}
     updated_by: UserSpec = {}
-    extensions: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
