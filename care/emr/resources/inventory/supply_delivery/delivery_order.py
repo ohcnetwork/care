@@ -1,9 +1,9 @@
 from enum import Enum
 
-from django.conf import settings
-from jsonschema import validate
-from pydantic import UUID4, field_validator
+from pydantic import UUID4
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import ExtensionValidator
 from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import Organization
 from care.emr.models.supply_delivery import DeliveryOrder
@@ -33,24 +33,14 @@ SUPPLY_DELIVERY_ORDER_COMPLETED_STATUSES = [
 ]
 
 
-class BaseSupplyDeliveryOrderSpec(EMRResource):
+class BaseSupplyDeliveryOrderSpec(ExtensionValidator, EMRResource):
     __model__ = DeliveryOrder
-
+    ___extension_resource_type__ = ExtensionResource.supply_delivery_order
     id: UUID4 | None = None
 
     status: SupplyDeliveryOrderStatusOptions
     name: str
     note: str | None = None
-    extensions: dict
-
-    @field_validator("extensions")
-    @classmethod
-    def validate_extensions(cls, v):
-        try:
-            validate(v, settings.SUPPLY_DELIVERY_ORDER_EXTENSIONS_JSON_SCHEMA)
-        except Exception as e:
-            raise ValueError("Invalid additional metadata") from e
-        return v
 
 
 class SupplyDeliveryOrderWriteSpec(BaseSupplyDeliveryOrderSpec):

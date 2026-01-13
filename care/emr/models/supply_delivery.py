@@ -6,6 +6,10 @@ from care.emr.models import EMRBaseModel
 
 class SupplyDelivery(EMRBaseModel):
     status = models.CharField(max_length=255)
+    supplied_item_pack_quantity = models.IntegerField(
+        null=True, blank=True, default=None
+    )
+    supplied_item_pack_size = models.IntegerField(null=True, blank=True, default=None)
     supplied_item_quantity = models.FloatField(null=True, blank=True)
     supplied_item = models.ForeignKey(
         "emr.Product", on_delete=models.CASCADE, null=True, blank=True

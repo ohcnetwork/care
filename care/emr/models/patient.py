@@ -33,8 +33,6 @@ class Patient(EMRBaseModel):
     year_of_birth = models.IntegerField(validators=[MinValueValidator(1900)], null=True)
     deceased_datetime = models.DateTimeField(default=None, null=True, blank=True)
 
-    marital_status = models.CharField(max_length=50, default="")
-
     blood_group = models.CharField(max_length=16)
 
     geo_organization = models.ForeignKey(
@@ -50,6 +48,8 @@ class Patient(EMRBaseModel):
 
     instance_tags = ArrayField(models.IntegerField(), default=list)
     facility_tags = models.JSONField(default=dict, null=True, blank=True)
+
+    extensions = models.JSONField(default=dict)
 
     def get_age(self) -> str:
         start = self.date_of_birth or date(self.year_of_birth, 1, 1)

@@ -96,6 +96,7 @@ class TestBookingViewSet(CareAPITestBase):
             "name": "Test Schedule",
             "valid_from": datetime.now(UTC) - timedelta(days=30),
             "valid_to": datetime.now(UTC) + timedelta(days=30),
+            "is_public": True,
         }
         data.update(kwargs)
         return Schedule.objects.create(**data)
@@ -603,6 +604,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
             name="Test Schedule",
             valid_from=datetime.now(UTC) - timedelta(days=30),
             valid_to=datetime.now(UTC) + timedelta(days=30),
+            is_public=True,
         )
         self.availability = self.create_availability()
         self.slot = self.create_slot()
@@ -843,6 +845,7 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             name="Test Schedule",
             valid_from=datetime.now(UTC) - timedelta(days=30),
             valid_to=datetime.now(UTC) + timedelta(days=30),
+            is_public=True,
         )
         self.availability = self.create_availability()
         self.client.force_authenticate(user=self.user)
@@ -1327,6 +1330,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
             name="Test Schedule",
             valid_from=datetime.now(UTC) - timedelta(days=30),
             valid_to=datetime.now(UTC) + timedelta(days=30),
+            is_public=True,
         )
         self.availability = self.create_availability()
         self.slot = self.create_slot()

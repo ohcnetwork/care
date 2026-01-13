@@ -158,15 +158,6 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
         )
         mapping["instance_informational_codes"] = settings.INFORMATIONAL_MONETARY_CODES
 
-        mapping["extensions_schema_product"] = settings.PRODUCT_EXTENSIONS_JSON_SCHEMA
-        mapping["extensions_schema_supply_delivery"] = (
-            settings.SUPPLY_DELIVERY_EXTENSIONS_JSON_SCHEMA
-        )
-        mapping["extensions_schema_supply_delivery_order"] = (
-            settings.SUPPLY_DELIVERY_ORDER_EXTENSIONS_JSON_SCHEMA
-        )
-        mapping["extensions_schema_account"] = settings.ACCOUNT_EXTENSIONS_JSON_SCHEMA
-
 
 class FacilityMonetaryCodeSpec(EMRResource):
     __model__ = Facility

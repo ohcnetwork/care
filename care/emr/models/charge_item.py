@@ -46,3 +46,10 @@ class ChargeItem(EMRBaseModel):
     )
     paid_on = models.DateTimeField(null=True, blank=True, default=None)
     tags = ArrayField(models.IntegerField(), default=list)
+    performer_actor = models.ForeignKey(
+        "users.User",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        default=None,
+    )
