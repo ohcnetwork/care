@@ -685,9 +685,6 @@ SNOWSTORM_DEPLOYMENT_URL = env(
     "SNOWSTORM_DEPLOYMENT_URL", default="http://165.22.211.144/fhir"
 )
 
-# Path to the typst binary, see scripts/install_typst.sh
-TYPST_BIN = env("TYPST_BIN", default="typst")
-
 DJANGO_REST_MULTITOKENAUTH_REQUIRE_USABLE_PASSWORD = False
 
 SMS_BACKEND = "care.utils.sms.backend.sns.SnsBackend"
