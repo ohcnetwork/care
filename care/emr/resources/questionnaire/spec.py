@@ -107,6 +107,13 @@ class AnswerOption(QuestionnaireBaseSpec):
         return value.strip()
 
 
+class TemplateConfig(QuestionnaireBaseSpec):
+    name: str
+    content: str
+    structured_content: dict | None = None
+    meta: dict | None = None
+
+
 class Question(QuestionnaireBaseSpec):
     model_config = ConfigDict(populate_by_name=True)
 
@@ -145,6 +152,7 @@ class Question(QuestionnaireBaseSpec):
     questions: list["Question"] = []
     formula: str | None = None
     styling_metadata: dict = {}
+    templates: list[TemplateConfig] = []
     is_component: bool = False
 
     @field_validator("answer_value_set")

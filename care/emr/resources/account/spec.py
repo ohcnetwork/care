@@ -2,10 +2,10 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 
-from django.conf import settings
-from jsonschema import validate
-from pydantic import UUID4, field_validator
+from pydantic import UUID4
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import ExtensionValidator
 from care.emr.models import Account
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PeriodSpec
@@ -36,6 +36,7 @@ class AccountSpec(EMRResource):
 
     __model__ = Account
     __exclude__ = ["patient"]
+    ___extension_resource_type__ = ExtensionResource.account
 
     id: UUID4 | None = None
     status: AccountStatusOptions
@@ -43,25 +44,19 @@ class AccountSpec(EMRResource):
     name: str
     service_period: PeriodSpec
     description: str | None = None
-    extensions: dict
-
-    @field_validator("extensions")
-    @classmethod
-    def validate_extensions(cls, v):
-        try:
-            validate(v, settings.ACCOUNT_EXTENSIONS_JSON_SCHEMA)
-        except Exception as e:
-            raise ValueError("Invalid additional metadata") from e
-        return v
 
 
-class AccountCreateSpec(AccountSpec):
+class AccountCreateSpec(ExtensionValidator, AccountSpec):
     """Account create specification"""
 
     patient: UUID4
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.patient = get_object_or_404(Patient, external_id=self.patient)
+
+
+class AccountUpdateSpec(ExtensionValidator, AccountSpec):
+    pass
 
 
 class AccountMinimalReadSpec(AccountSpec):
@@ -100,6 +95,7 @@ class AccountRetrieveSpec(AccountMinimalReadSpec):
     patient: dict
     cached_items: list = []
     total_price_components: dict
+    extensions: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

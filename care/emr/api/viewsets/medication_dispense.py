@@ -96,6 +96,13 @@ class MedicationDispenseViewSet(
                     ChargeItemResourceOptions.medication_dispense.value
                 )
                 charge_item.service_resource_id = str(instance.external_id)
+                charge_item.created_by = self.request.user
+                charge_item.updated_by = self.request.user
+                if (
+                    instance.authorizing_request
+                    and instance.authorizing_request.requester
+                ):
+                    charge_item.performer_actor = instance.authorizing_request.requester
                 charge_item.save()
                 instance.charge_item = charge_item
                 instance.save(update_fields=["charge_item"])
