@@ -1,0 +1,7 @@
+care.emr.extensions.validator module
+====================================
+
+.. automodule:: care.emr.extensions.validator
+   :members:
+   :show-inheritance:
+   :undoc-members:

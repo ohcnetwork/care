@@ -13,4 +13,3 @@ Submodules
    :maxdepth: 4
 
    care.emr.templatetags.data_formatting_extras
-   care.emr.templatetags.discharge_summary_utils

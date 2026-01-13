@@ -386,7 +386,6 @@ The development environment includes these tools from the Nix store:
 - **PostgreSQL 15**: Database server and client tools
 - **Redis**: In-memory data structure store
 - **MinIO**: S3-compatible object storage
-- **Typst**: Modern typesetting system
 - **Pre-commit**: Git hook framework
 - **GCC & build tools**: For compiling Python packages
 

@@ -22,7 +22,6 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
-   care.emr.reports.discharge_summary
    care.emr.reports.report_type_registry
    care.emr.reports.report_type_utils
    care.emr.reports.report_types

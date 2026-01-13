@@ -1,0 +1,7 @@
+care.emr.extensions.base module
+===============================
+
+.. automodule:: care.emr.extensions.base
+   :members:
+   :show-inheritance:
+   :undoc-members:

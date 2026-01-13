@@ -1,0 +1,16 @@
+care.emr.extensions package
+===========================
+
+.. automodule:: care.emr.extensions
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.emr.extensions.base
+   care.emr.extensions.validator

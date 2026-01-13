@@ -12,7 +12,9 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   care.emr.reports.authorizers.account
    care.emr.reports.authorizers.base
    care.emr.reports.authorizers.discharge_summary
    care.emr.reports.authorizers.encounter
+   care.emr.reports.authorizers.patient
    care.emr.reports.authorizers.utils

@@ -1,0 +1,7 @@
+care.emr.reports.authorizers.account module
+===========================================
+
+.. automodule:: care.emr.reports.authorizers.account
+   :members:
+   :show-inheritance:
+   :undoc-members:

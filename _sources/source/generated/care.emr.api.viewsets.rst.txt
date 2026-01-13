@@ -35,6 +35,7 @@ Submodules
    care.emr.api.viewsets.diagnostic_report
    care.emr.api.viewsets.encounter
    care.emr.api.viewsets.encounter_authz_base
+   care.emr.api.viewsets.extensions
    care.emr.api.viewsets.facility
    care.emr.api.viewsets.facility_organization
    care.emr.api.viewsets.favorites
@@ -66,6 +67,5 @@ Submodules
    care.emr.api.viewsets.specimen_definition
    care.emr.api.viewsets.tag_config
    care.emr.api.viewsets.totp
-   care.emr.api.viewsets.units
    care.emr.api.viewsets.user
    care.emr.api.viewsets.valueset

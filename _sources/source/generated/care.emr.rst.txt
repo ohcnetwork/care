@@ -14,6 +14,7 @@ Subpackages
 
    care.emr.admin
    care.emr.api
+   care.emr.extensions
    care.emr.fhir
    care.emr.locks
    care.emr.models
@@ -23,7 +24,6 @@ Subpackages
    care.emr.tagging
    care.emr.tasks
    care.emr.templatetags
-   care.emr.units
    care.emr.utils
 
 Submodules

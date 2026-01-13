@@ -1,7 +1,0 @@
-care.emr.tasks.discharge\_summary module
-========================================
-
-.. automodule:: care.emr.tasks.discharge_summary
-   :members:
-   :show-inheritance:
-   :undoc-members:

@@ -1,7 +1,0 @@
-care.emr.api.viewsets.units module
-==================================
-
-.. automodule:: care.emr.api.viewsets.units
-   :members:
-   :show-inheritance:
-   :undoc-members:
