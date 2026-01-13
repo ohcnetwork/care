@@ -79,6 +79,6 @@ class HealthcareServiceRetrieveSpec(HealthcareServiceReadSpec):
                 pass
         mapping["locations"] = locations
         if obj.managing_organization:
-            mapping["managing_organization"] = FacilityOrganizationReadSpec.serialize(
-                obj.managing_organization
-            ).to_json()
+            mapping["managing_organization"] = model_from_cache(
+                FacilityOrganizationReadSpec, id=obj.managing_organization.id
+            )

@@ -158,7 +158,9 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
             ).to_json()
         organizations = EncounterOrganization.objects.filter(encounter=obj)
         mapping["organizations"] = [
-            FacilityOrganizationReadSpec.serialize(encounter_org.organization).to_json()
+            model_from_cache(
+                FacilityOrganizationReadSpec, id=encounter_org.organization.id
+            )
             for encounter_org in organizations
         ]
         mapping["current_location"] = None
