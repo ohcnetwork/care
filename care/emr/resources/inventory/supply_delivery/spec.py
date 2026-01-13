@@ -140,6 +140,8 @@ class SupplyDeliveryReadSpec(BaseSupplyDeliverySpec):
     modified_date: datetime.datetime
     supplied_inventory_item: dict | None = None
     supply_request: dict | None = None
+    supplied_item_pack_quantity: int | None = None
+    supplied_item_pack_size: int | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

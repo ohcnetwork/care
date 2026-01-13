@@ -63,7 +63,7 @@ class CoreEnvExtension(ExtensionBase):
     extension_name = "core"
 
     def schema_key(self, action):
-        return f"CORE_EXTENSIONS_{self.resource_type.value}_{action}"
+        return f"CORE_EXTENSIONS_{self.resource_type.value.upper()}_{action}"
 
     def get_write_schema(self):
         return getenv(self.schema_key("WRITE")) or {}
