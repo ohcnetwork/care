@@ -27,6 +27,7 @@ from care.emr.models.organization import (
 )
 from care.emr.models.scheduling import SchedulableResource, TokenBooking
 from care.emr.models.scheduling.token import Token, TokenCategory, TokenQueue
+from care.emr.resources.base import model_from_cache
 from care.emr.resources.charge_item.handle_charge_item_cancel import (
     handle_charge_item_cancel,
 )
@@ -275,7 +276,7 @@ class TokenBookingViewSet(
         return Response(
             {
                 "users": [
-                    UserSpec.serialize(user_resource.user).to_json()
+                    model_from_cache(UserSpec, id=user_resource.user_id)
                     for user_resource in user_resources
                 ]
             }

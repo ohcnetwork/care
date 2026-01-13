@@ -15,7 +15,6 @@ from care.emr.resources.invoice.default_expression_evaluator import (
 )
 from care.emr.resources.organization.spec import OrganizationReadSpec
 from care.emr.resources.permissions import FacilityPermissionsMixin
-from care.emr.resources.user.spec import UserSpec
 from care.facility.models import (
     REVERSE_FACILITY_TYPES,
     REVERSE_REVERSE_FACILITY_TYPES,
@@ -109,8 +108,7 @@ class FacilityReadSpec(FacilityBaseSpec):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
+        cls.serialize_audit_users(mapping, obj)
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(

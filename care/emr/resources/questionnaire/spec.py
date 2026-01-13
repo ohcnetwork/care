@@ -290,10 +290,7 @@ class QuestionnaireReadSpec(QuestionnaireBaseSpec):
         for tag in obj.tags:
             tags.append(QuestionnaireTag.get_tag(tag))
         mapping["tags"] = tags
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        cls.serialize_audit_users(mapping, obj)
 
 
 # Add this to handle recursive Question type
