@@ -5,7 +5,7 @@ from rest_framework.exceptions import ValidationError
 
 from care.emr.models.location import FacilityLocation
 from care.emr.models.supply_request import RequestOrder
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.location.spec import FacilityLocationListSpec
 from care.emr.resources.organization.spec import (
     Organization,
@@ -110,8 +110,10 @@ class SupplyRequestOrderReadSpec(BaseSupplyRequestOrderSpec):
         if obj.supplier:
             mapping["supplier"] = OrganizationReadSpec.serialize(obj.supplier).to_json()
         if obj.origin:
-            mapping["origin"] = FacilityLocationListSpec.serialize(obj.origin).to_json()
-        mapping["destination"] = FacilityLocationListSpec.serialize(
-            obj.destination
-        ).to_json()
+            mapping["origin"] = model_from_cache(
+                FacilityLocationListSpec, id=obj.origin.id
+            )
+        mapping["destination"] = model_from_cache(
+            FacilityLocationListSpec, id=obj.destination.id
+        )
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)

@@ -163,9 +163,9 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
         ]
         mapping["current_location"] = None
         if obj.current_location:
-            mapping["current_location"] = FacilityLocationListSpec.serialize(
-                obj.current_location
-            ).to_json()
+            mapping["current_location"] = model_from_cache(
+                FacilityLocationListSpec, id=obj.current_location.id
+            )
         mapping["location_history"] = [
             FacilityLocationEncounterListSpecWithLocation.serialize(i)
             for i in FacilityLocationEncounter.objects.filter(encounter=obj).order_by(

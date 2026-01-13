@@ -3,9 +3,8 @@ from enum import Enum
 from pydantic import UUID4
 
 from care.emr.models.healthcare_service import HealthcareService
-from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import FacilityOrganization
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.healthcare_service.valueset import (
     HEALTHCARE_SERVICE_TYPE_CODE_VALUESET,
@@ -74,9 +73,7 @@ class HealthcareServiceRetrieveSpec(HealthcareServiceReadSpec):
         for location in obj.locations:
             try:
                 locations.append(
-                    FacilityLocationListSpec.serialize(
-                        FacilityLocation.objects.get(id=location)
-                    ).to_json()
+                    model_from_cache(FacilityLocationListSpec, id=location)
                 )
             except Exception:  # noqa S110
                 pass

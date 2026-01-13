@@ -38,6 +38,7 @@ class FacilityLocation(EMRBaseModel):
     cache_expiry_days = 15
 
     def get_parent_json(self):
+        from care.emr.resources.base import model_from_cache
         from care.emr.resources.location.spec import FacilityLocationListSpec
 
         if self.parent_id:
@@ -46,7 +47,7 @@ class FacilityLocation(EMRBaseModel):
             ):
                 return self.cached_parent_json
             self.parent.get_parent_json()
-            temp_data = FacilityLocationListSpec.serialize(self.parent).to_json()
+            temp_data = model_from_cache(FacilityLocationListSpec, id=self.parent.id)
             temp_data["cache_expiry"] = str(
                 timezone.now() + timedelta(days=self.cache_expiry_days)
             )

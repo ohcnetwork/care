@@ -168,7 +168,7 @@ class ServiceRequestRetrieveSpec(ServiceRequestReadSpec):
         super().perform_extra_serialization(mapping, obj)
         locations = []
         for location in FacilityLocation.objects.filter(id__in=obj.locations):
-            locations.append(FacilityLocationListSpec.serialize(location).to_json())
+            locations.append(model_from_cache(FacilityLocationListSpec, id=location.id))
 
         mapping["locations"] = locations
         if obj.healthcare_service:

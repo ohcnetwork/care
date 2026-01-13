@@ -5,7 +5,7 @@ from pydantic import UUID4, Field, model_validator
 
 from care.emr.models import Encounter, FacilityLocationEncounter
 from care.emr.models.location import FacilityLocation
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, cacheable, model_from_cache
 from care.emr.resources.common import Coding
 
 
@@ -112,6 +112,7 @@ class FacilityLocationWriteSpec(FacilityLocationSpec):
             obj.parent = None
 
 
+@cacheable
 class FacilityLocationListSpec(FacilityLocationSpec):
     parent: dict
     mode: str
@@ -189,7 +190,9 @@ class FacilityLocationEncounterListSpecWithLocation(FacilityLocationEncounterLis
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        mapping["location"] = FacilityLocationListSpec.serialize(obj.location).to_json()
+        mapping["location"] = model_from_cache(
+            FacilityLocationListSpec, id=obj.location.id
+        )
 
 
 class FacilityLocationEncounterReadSpec(FacilityLocationEncounterBaseSpec):

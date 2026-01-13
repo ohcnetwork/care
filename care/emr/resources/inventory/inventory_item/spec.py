@@ -3,7 +3,7 @@ from enum import Enum
 from pydantic import UUID4
 
 from care.emr.models.inventory_item import InventoryItem
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.inventory.product.spec import ProductReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
 
@@ -40,7 +40,9 @@ class InventoryItemReadSpec(BaseInventoryItemSpec):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["product"] = ProductReadSpec.serialize(obj.product).to_json()
-        mapping["location"] = FacilityLocationListSpec.serialize(obj.location).to_json()
+        mapping["location"] = model_from_cache(
+            FacilityLocationListSpec, id=obj.location.id
+        )
 
 
 class InventoryItemRetrieveSpec(InventoryItemReadSpec):

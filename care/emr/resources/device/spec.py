@@ -5,7 +5,7 @@ from pydantic import UUID4, field_validator
 
 from care.emr.models import Device, DeviceEncounterHistory, DeviceLocationHistory
 from care.emr.registries.device_type.device_registry import DeviceTypeRegistry
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.common.contact_point import ContactPoint
 from care.emr.resources.encounter.spec import EncounterListSpec
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
@@ -97,9 +97,9 @@ class DeviceRetrieveSpec(DeviceListSpec):
         mapping["current_location"] = None
         mapping["current_encounter"] = None
         if obj.current_location:
-            mapping["current_location"] = FacilityLocationListSpec.serialize(
-                obj.current_location
-            ).to_json()
+            mapping["current_location"] = model_from_cache(
+                FacilityLocationListSpec, id=obj.current_location.id
+            )
         if obj.current_encounter:
             mapping["current_encounter"] = EncounterListSpec.serialize(
                 obj.current_encounter
@@ -131,9 +131,9 @@ class DeviceLocationHistoryListSpec(EMRResource):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         if obj.location:
-            mapping["location"] = FacilityLocationListSpec.serialize(
-                obj.location
-            ).to_json()
+            mapping["location"] = model_from_cache(
+                FacilityLocationListSpec, id=obj.location.id
+            )
         cls.serialize_audit_users(mapping, obj)
 
 

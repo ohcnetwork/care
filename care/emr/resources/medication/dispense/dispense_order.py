@@ -6,7 +6,7 @@ from pydantic import UUID4
 from care.emr.models.location import FacilityLocation
 from care.emr.models.medication_dispense import DispenseOrder
 from care.emr.models.patient import Patient
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.location.spec import FacilityLocationListSpec
 from care.emr.resources.patient.spec import PatientListSpec
 from care.utils.shortcuts import get_object_or_404
@@ -61,4 +61,6 @@ class MedicationDispenseOrderReadSpec(BaseMedicationDispenseOrderSpec):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
-        mapping["location"] = FacilityLocationListSpec.serialize(obj.location).to_json()
+        mapping["location"] = model_from_cache(
+            FacilityLocationListSpec, id=obj.location.id
+        )

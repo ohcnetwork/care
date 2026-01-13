@@ -11,5 +11,5 @@ def serialize_resource(obj):
     if obj.resource_type == SchedulableResourceTypeOptions.healthcare_service.value:
         return HealthcareServiceReadSpec.serialize(obj.healthcare_service).to_json()
     if obj.resource_type == SchedulableResourceTypeOptions.location.value:
-        return FacilityLocationListSpec.serialize(obj.location).to_json()
+        return model_from_cache(FacilityLocationListSpec, id=obj.location.id)
     return {}
