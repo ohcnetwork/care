@@ -115,7 +115,7 @@ class CreateDispenseOrder(BaseModel):
     name: str | None = None
     note: str | None = None
     alternate_identifier: str
-    status: CreateDispenseOrderStatusOptions | CreateDispenseOrderStatusOptions.draft
+    status: CreateDispenseOrderStatusOptions = CreateDispenseOrderStatusOptions.draft
 
 
 class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
