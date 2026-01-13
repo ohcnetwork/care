@@ -31,7 +31,9 @@ class IdentifierConfigContextBuilder(SingleObjectContextBuilder):
     display = Field(
         display="Display",
         preview_value="Patient ID",
-        mapping=lambda ic: ic.config.get("display") if ic.config else "",
+        mapping=lambda ic: ic.config.get("display")
+        if ic.config and ic.config.get("display")
+        else "",
         description="Display of the identifier configuration",
     )
 
@@ -41,7 +43,7 @@ class IdentifierConfigContextBuilder(SingleObjectContextBuilder):
         mapping=lambda ic: IDENTIFIER_USE_OPTIONS.get(
             ic.config.get("use"), ic.config.get("use").title()
         )
-        if ic.config
+        if ic.config and ic.config.get("use")
         else "",
         description="Use of the identifier configuration",
     )
@@ -67,7 +69,7 @@ class IdentifiersContextBuilder(QuerysetContextBuilder):
     value = Field(
         display="Identifier Value",
         preview_value="12342",
-        mapping=lambda i: i.get("value"),
+        mapping=lambda i: i.get("value") if i and i.get("value") else "",
         description="Value of the patient identifier",
     )
 
