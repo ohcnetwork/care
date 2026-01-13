@@ -152,9 +152,9 @@ class UserRetrieveSpec(UserSpec):
         if obj.created_by_id:
             mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
         if obj.geo_organization:
-            mapping["geo_organization"] = OrganizationReadSpec.serialize(
-                obj.geo_organization
-            ).to_json()
+            mapping["geo_organization"] = model_from_cache(
+                OrganizationReadSpec, id=obj.geo_organization.id
+            )
         mapping["flags"] = obj.get_all_flags()
 
 
@@ -190,7 +190,7 @@ class CurrentUserRetrieveSpec(UserRetrieveSpec):
                 )
             )
         mapping["organizations"] = [
-            OrganizationReadSpec.serialize(obj).to_json() for obj in organizations
+            model_from_cache(OrganizationReadSpec, id=obj.id) for obj in organizations
         ]
 
         user_facilities = Facility.objects.filter(

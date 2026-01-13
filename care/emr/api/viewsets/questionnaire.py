@@ -16,6 +16,7 @@ from care.emr.models import (
     QuestionnaireTag,
 )
 from care.emr.models.questionnaire import FormSubmission, QuestionnaireResponse
+from care.emr.resources.base import model_from_cache
 from care.emr.resources.form_submission.spec import FormSubmissionStatusChoices
 from care.emr.resources.organization.spec import OrganizationReadSpec
 from care.emr.resources.questionnaire.spec import (
@@ -188,7 +189,7 @@ class QuestionnaireViewSet(EMRModelViewSet):
             questionnaire=questionnaire
         ).select_related("organization")
         organizations_serialized = [
-            OrganizationReadSpec.serialize(obj.organization).to_json()
+            model_from_cache(OrganizationReadSpec, id=obj.organization.id)
             for obj in questionnaire_organizations
         ]
         return Response(
@@ -247,7 +248,7 @@ class QuestionnaireViewSet(EMRModelViewSet):
                     questionnaire=questionnaire, organization=organization
                 )
         organizations_serialized = [
-            OrganizationReadSpec.serialize(obj.organization).to_json()
+            model_from_cache(OrganizationReadSpec, id=obj.organization.id)
             for obj in QuestionnaireOrganization.objects.filter(
                 questionnaire=questionnaire
             ).select_related("organization")

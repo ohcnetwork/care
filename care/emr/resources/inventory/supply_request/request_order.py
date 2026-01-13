@@ -108,7 +108,9 @@ class SupplyRequestOrderReadSpec(BaseSupplyRequestOrderSpec):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         if obj.supplier:
-            mapping["supplier"] = OrganizationReadSpec.serialize(obj.supplier).to_json()
+            mapping["supplier"] = model_from_cache(
+                OrganizationReadSpec, id=obj.supplier.id
+            )
         if obj.origin:
             mapping["origin"] = model_from_cache(
                 FacilityLocationListSpec, id=obj.origin.id

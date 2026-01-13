@@ -85,5 +85,7 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
             FacilityLocationListSpec, id=obj.destination.id
         )
         if obj.supplier:
-            mapping["supplier"] = OrganizationReadSpec.serialize(obj.supplier).to_json()
+            mapping["supplier"] = model_from_cache(
+                OrganizationReadSpec, id=obj.supplier.id
+            )
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
