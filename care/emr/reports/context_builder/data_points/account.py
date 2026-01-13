@@ -8,6 +8,7 @@ from care.emr.reports.context_builder.data_points.charge_items import (
     AccountChargeItemCategoryContextBuilder,
     AccountChargeItemContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.facility import FacilityContextBuilder
 from care.emr.reports.context_builder.data_points.invoice import (
     AccountInvoiceContextBuilder,
 )
@@ -142,6 +143,13 @@ class AccountContextBuilder(BaseAccountContextBuilder):
         target_context=PatientMinimumContextBuilder,
         preview_value="",
         description="Details of the patient associated with the account",
+    )
+
+    facility = Field(
+        display="Facility Details",
+        target_context=FacilityContextBuilder,
+        preview_value="",
+        description="Details of the facility associated with the account",
     )
 
 

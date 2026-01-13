@@ -13,6 +13,7 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.diagnosis import (
     DiagnosisContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.facility import FacilityContextBuilder
 from care.emr.reports.context_builder.data_points.medication import (
     MedicationPrescriptionContextBuilder,
 )
@@ -127,6 +128,13 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         target_context=ServiceRequestDataPointBuilder,
         preview_value="",
         description="Service requests associated with the encounter",
+    )
+
+    facility = Field(
+        display="Facility Details",
+        target_context=FacilityContextBuilder,
+        preview_value="",
+        description="Details of the facility where the encounter took place",
     )
 
 
