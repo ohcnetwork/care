@@ -112,8 +112,8 @@ class FileUploadRetrieveSpec(FileUploadListSpec):
         else:
             mapping["read_signed_url"] = obj.files_manager.read_signed_url(obj)
 
-        if obj.updated_by:
-            mapping["updated_by"] = model_from_cache(UserSpec, id=obj.updated_by.id)
+        if obj.updated_by_id:
+            mapping["updated_by"] = model_from_cache(UserSpec, id=obj.updated_by_id)
 
 
 class ConsentFileUploadCreateSpec(FileUploadBaseSpec):

@@ -187,10 +187,10 @@ class QuestionnaireViewSet(EMRModelViewSet):
         questionnaire = self.get_object()
         questionnaire_organizations = QuestionnaireOrganization.objects.filter(
             questionnaire=questionnaire
-        ).select_related("organization")
+        ).values_list("organization_id", flat=True)
         organizations_serialized = [
-            model_from_cache(OrganizationReadSpec, id=obj.organization.id)
-            for obj in questionnaire_organizations
+            model_from_cache(OrganizationReadSpec, id=org_id)
+            for org_id in questionnaire_organizations
         ]
         return Response(
             {
@@ -248,10 +248,10 @@ class QuestionnaireViewSet(EMRModelViewSet):
                     questionnaire=questionnaire, organization=organization
                 )
         organizations_serialized = [
-            model_from_cache(OrganizationReadSpec, id=obj.organization.id)
-            for obj in QuestionnaireOrganization.objects.filter(
+            model_from_cache(OrganizationReadSpec, id=org_id)
+            for org_id in QuestionnaireOrganization.objects.filter(
                 questionnaire=questionnaire
-            ).select_related("organization")
+            ).values_list("organization_id", flat=True)
         ]
         return Response(
             {

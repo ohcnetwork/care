@@ -182,15 +182,20 @@ class CurrentUserRetrieveSpec(UserRetrieveSpec):
         super().perform_extra_serialization(mapping, obj)
 
         if obj.is_superuser:
-            organizations = Organization.objects.filter(parent__isnull=True)
+            organization_ids = list(
+                Organization.objects.filter(parent__isnull=True).values_list(
+                    "id", flat=True
+                )
+            )
         else:
-            organizations = Organization.objects.filter(
-                id__in=OrganizationUser.objects.filter(user=obj).values_list(
+            organization_ids = list(
+                OrganizationUser.objects.filter(user=obj).values_list(
                     "organization_id", flat=True
                 )
             )
         mapping["organizations"] = [
-            model_from_cache(OrganizationReadSpec, id=obj.id) for obj in organizations
+            model_from_cache(OrganizationReadSpec, id=org_id)
+            for org_id in organization_ids
         ]
 
         user_facilities = Facility.objects.filter(
