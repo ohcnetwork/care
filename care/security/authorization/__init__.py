@@ -7,6 +7,7 @@ from .charge_item_definition import *  # noqa
 from .device import *  # noqa
 from .encounter import *  # noqa
 from .facility import *  # noqa
+from .facility_flag import *  # noqa
 from .facility_location import *  # noqa
 from .facilityorganization import *  # noqa
 from .healthcare_service import *  # noqa
@@ -31,3 +32,4 @@ from .tag_config import *  # noqa
 from .template import *  # noqa
 from .token import *  # noqa
 from .user import *  # noqa
+from .user_flag import *  # noqa
