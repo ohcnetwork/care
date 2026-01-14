@@ -111,11 +111,12 @@ class SupplyRequestOrderReadSpec(BaseSupplyRequestOrderSpec):
             mapping["supplier"] = model_from_cache(
                 OrganizationReadSpec, id=obj.supplier.id
             )
-        if obj.origin:
+        if obj.origin_id:
             mapping["origin"] = model_from_cache(
-                FacilityLocationListSpec, id=obj.origin.id
+                FacilityLocationListSpec, id=obj.origin_id
             )
-        mapping["destination"] = model_from_cache(
-            FacilityLocationListSpec, id=obj.destination.id
-        )
+        if obj.destination_id:
+            mapping["destination"] = model_from_cache(
+                FacilityLocationListSpec, id=obj.destination_id
+            )
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)

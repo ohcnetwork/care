@@ -151,9 +151,9 @@ class UserRetrieveSpec(UserSpec):
         super().perform_extra_serialization(mapping, obj)
         if obj.created_by_id:
             mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
-        if obj.geo_organization:
+        if obj.geo_organization_id:
             mapping["geo_organization"] = model_from_cache(
-                OrganizationReadSpec, id=obj.geo_organization.id
+                OrganizationReadSpec, id=obj.geo_organization_id
             )
         mapping["flags"] = obj.get_all_flags()
 
