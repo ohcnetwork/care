@@ -10,7 +10,6 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
-from care.emr.api.viewsets.encounter import dev_preview_discharge_summary
 from care.users.api.viewsets.change_password import ChangePasswordView
 from care.users.reset_password_views import (
     ResetPasswordCheck,
@@ -87,10 +86,6 @@ if settings.DEBUG:
             kwargs={"exception": Exception("Page not Found")},
         ),
         path("500/", default_views.server_error),
-        path(
-            "preview_discharge_summary/<str:encounter_id>/",
-            dev_preview_discharge_summary,
-        ),
     ]
     if "debug_toolbar" in settings.INSTALLED_APPS:
         urlpatterns += [path("__debug__/", include("debug_toolbar.urls"))]

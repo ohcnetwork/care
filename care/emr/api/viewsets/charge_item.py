@@ -160,7 +160,7 @@ class ChargeItemViewSet(
             instance.performer_actor
             and not FacilityOrganizationUser.objects.filter(
                 user_id=instance.performer_actor.id,
-                facility=instance.facility,
+                organization__facility=instance.facility,
             ).exists()
         ):
             raise ValidationError("Performer is not associated with the facility")
@@ -329,7 +329,7 @@ class ChargeItemViewSet(
                     )
                     if not FacilityOrganizationUser.objects.filter(
                         user_id=charge_item.performer_actor.id,
-                        facility=facility,
+                        organization__facility=facility,
                     ).exists():
                         raise ValidationError(
                             "Performer is not associated with the facility"

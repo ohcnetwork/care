@@ -1,3 +1,4 @@
+import json
 from enum import Enum
 from os import getenv
 
@@ -63,16 +64,24 @@ class CoreEnvExtension(ExtensionBase):
     extension_name = "core"
 
     def schema_key(self, action):
-        return f"CORE_EXTENSIONS_{self.resource_type.value}_{action}"
+        return f"CORE_EXTENSIONS_{self.resource_type.value.upper()}_{action}"
+
+    def get_env_value(self, key):
+        if not getenv(key):
+            return {}
+        try:
+            return json.loads(getenv(key))
+        except Exception as e:
+            raise ValueError("Invalid JSON") from e
 
     def get_write_schema(self):
-        return getenv(self.schema_key("WRITE")) or {}
+        return self.get_env_value(self.schema_key("WRITE"))
 
     def get_read_schema(self):
-        return getenv(self.schema_key("READ")) or self.get_write_schema()
+        return self.get_env_value(self.schema_key("READ")) or self.get_write_schema()
 
     def get_retrieve_schema(self):
-        return getenv(self.schema_key("RETRIEVE")) or self.get_read_schema()
+        return self.get_env_value(self.schema_key("RETRIEVE")) or self.get_read_schema()
 
     def validate(self, data, resource=None):
         write_schema = self.get_write_schema()

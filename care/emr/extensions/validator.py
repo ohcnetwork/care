@@ -1,5 +1,3 @@
-import logging
-
 from pydantic import field_validator
 
 
@@ -10,7 +8,6 @@ def validate_extensions(data, resource_type):
         raise ValueError("Invalid extensions data")
     cleaned_data = {}
     for key in data:
-        logging.info(f"Validating extension {key} for resource type {resource_type}")
         extension_handler = ExtensionRegistry.get_extension_obj(resource_type, key)
         if extension_handler is None:
             # TODO: Once stable, raise error instead

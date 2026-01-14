@@ -1,6 +1,5 @@
 import uuid
 from datetime import timedelta
-from unittest.mock import patch
 
 from django.conf import settings
 from django.urls import reverse
@@ -635,73 +634,6 @@ class EncounterOrganizationAPITests(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn("Organization does not exist", response.data["errors"][0]["msg"])
-
-    def test_generate_discharge_summary_with_permissions(self):
-        self.patient.year_of_birth = 2000
-        self.patient.save()
-        role = self.create_role_with_permissions(
-            permissions=[
-                PatientPermissions.can_view_clinical_data.name,
-            ]
-        )
-        self.attach_role_facility_organization_user(
-            self.facility_organization, self.user, role
-        )
-        # 3. Mock the necessary functions to isolate the test
-        with (
-            patch(
-                "care.emr.reports.discharge_summary.get_progress"
-            ) as mock_get_progress,
-            patch("care.emr.reports.discharge_summary.set_lock") as mock_set_lock,
-            patch(
-                "care.emr.tasks.discharge_summary.generate_discharge_summary_task.delay"
-            ) as mock_task,
-        ):
-            mock_get_progress.return_value = None
-
-            path = "generate_discharge_summary"
-            url = self._get_detail_url(path)
-            response = self.client.post(
-                url, {"external_id": str(self.encounter.external_id)}, format="json"
-            )
-            self.assertEqual(response.status_code, 202)
-            self.assertIn(
-                "Discharge Summary will be generated shortly", response.data["detail"]
-            )
-
-        mock_get_progress.assert_called_once_with(self.encounter.external_id)
-        mock_set_lock.assert_called_once_with(self.encounter.external_id, 1)
-        mock_task.assert_called_once_with(self.encounter.external_id)
-
-    def test_generate_discharge_summary_without_permissions(self):
-        path = "generate_discharge_summary"
-        url = self._get_detail_url(path)
-        response = self.client.post(
-            url, {"external_id": str(self.encounter.external_id)}, format="json"
-        )
-        self.assertEqual(response.status_code, 403)
-        self.assertIn("Permission denied to user", response.data["detail"])
-
-    def test_generate_discharge_summary_with_conflict(self):
-        self.patient.year_of_birth = 2000
-        self.patient.save()
-        self.get_role_with_permissions()
-        with patch(
-            "care.emr.reports.discharge_summary.get_progress"
-        ) as mock_get_progress:
-            # Return 75% to simulate a discharge summary that's already being generated
-            mock_get_progress.return_value = 75
-
-            path = "generate_discharge_summary"
-            url = self._get_detail_url(path)
-            response = self.client.post(
-                url, {"external_id": str(self.encounter.external_id)}, format="json"
-            )
-            self.assertEqual(response.status_code, 409)
-            self.assertIn(
-                "Discharge Summary is already being generated", response.data["detail"]
-            )
-            self.assertIn("75%", response.data["detail"])
 
     # TESTS FOR CARE TEAM MANAGEMENT
 
