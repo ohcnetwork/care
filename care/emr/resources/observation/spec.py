@@ -131,9 +131,9 @@ class ObservationReadSpec(BaseObservationSpec):
         mapping["questionnaire_response"] = None
 
         cls.serialize_audit_users(mapping, obj)
-        if obj.data_entered_by:
+        if obj.data_entered_by_id:
             mapping["data_entered_by"] = model_from_cache(
-                UserSpec, id=obj.data_entered_by.id
+                UserSpec, id=obj.data_entered_by_id
             )
 
 

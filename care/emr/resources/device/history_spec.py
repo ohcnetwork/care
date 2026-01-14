@@ -40,6 +40,9 @@ class DeviceServiceHistoryRetrieveSpec(DeviceServiceHistoryListSpec):
         edit_history = []
         for history in obj.edit_history:
             user = history.get("updated_by")
-            history["updated_by"] = model_from_cache(UserSpec, id=user) or {}
+            if user:
+                history["updated_by"] = model_from_cache(UserSpec, id=user)
+            else:
+                history["updated_by"] = {}
             edit_history.append(history)
         mapping["edit_history"] = edit_history

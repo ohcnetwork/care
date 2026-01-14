@@ -61,6 +61,7 @@ class MedicationDispenseOrderReadSpec(BaseMedicationDispenseOrderSpec):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
-        mapping["location"] = model_from_cache(
-            FacilityLocationListSpec, id=obj.location.id
-        )
+        if obj.location_id:
+            mapping["location"] = model_from_cache(
+                FacilityLocationListSpec, id=obj.location_id
+            )

@@ -279,7 +279,7 @@ class PatientViewSet(EMRModelViewSet):
         patient = self.get_object()
         patient_users = PatientUser.objects.filter(patient=patient)
         data = [
-            model_from_cache(UserSpec, id=patient_user.user)
+            model_from_cache(UserSpec, id=patient_user.user_id)
             for patient_user in patient_users
         ]
         return Response({"results": data})
