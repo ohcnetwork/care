@@ -38,6 +38,7 @@ from care.emr.resources.charge_item.spec import (
     CHARGE_ITEM_CANCELLED_STATUS,
     ChargeItemReadSpec,
     ChargeItemResourceOptions,
+    ChargeItemStatusOptions,
     ChargeItemUpdateSpec,
     ChargeItemWriteSpec,
 )
@@ -193,7 +194,11 @@ class ChargeItemViewSet(
             )
         if model_obj and model_obj.status in CHARGE_ITEM_CANCELLED_STATUS:
             raise ValidationError("No updates allowed on cancelled charge item")
-
+        if model_obj and instance.status in [
+            ChargeItemStatusOptions.billed.value,
+            ChargeItemStatusOptions.paid.value,
+        ]:
+            raise ValidationError("Charge item status cannot be manually changed.")
         return super().validate_data(instance, model_obj)
 
     def perform_update(self, instance):

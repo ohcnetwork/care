@@ -58,13 +58,3 @@ def sync_charge_item_costs(charge_item):
     charge_item.total_price_components = components
     if charge_item.total_price < 0:
         raise ValidationError("Total price is less than 0")
-
-
-"""
-TODOS
-[-] Configurable rounding precision and method.
-[-] Round at every level.
-[-] Switch all floats to Decimal, even the ones inside JSON ( Needs Migration )
-- Check base price without taxes in MonetoryComponents
-- Charge item status transition from billable to paid should not be allowed
-"""

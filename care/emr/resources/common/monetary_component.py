@@ -88,6 +88,30 @@ class MonetaryComponents(RootModel):
     @model_validator(mode="after")
     def check_tax_included_amount_and_amount(self):
         # TODO : Compute base price WRT taxes and check if supplied base price is correct
+        base_price_component = None
+        tax_components = []
+        for component in self.root:
+            if component.monetary_component_type == MonetaryComponentType.base.value:
+                base_price_component = component
+            elif component.monetary_component_type == MonetaryComponentType.tax.value:
+                tax_components.append(component)
+        if not base_price_component:
+            raise ValueError("Base price component is required.")
+        if base_price_component.tax_included_amount is None:
+            return self
+        total_tax = Decimal(0)
+        for component in tax_components:
+            if component.amount is not None:
+                total_tax += component.amount
+            elif component.factor is not None:
+                total_tax += base_price_component.amount * component.factor
+        if (
+            total_tax + base_price_component.tax_included_amount
+            != base_price_component.amount
+        ):
+            raise ValueError(
+                "Total tax amount must be equal to base price component amount."
+            )
         return self
 
 

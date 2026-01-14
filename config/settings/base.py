@@ -713,5 +713,5 @@ FILE_UPLOAD_EXPIRY_HOURS = env.int("FILE_UPLOAD_EXPIRY_HOURS", default=24)
 ACCOUNTING_PRECISION = env.int("ACCOUNTING_PRECISION", default=2)
 
 ACCOUNTING_ROUNDING_METHOD = env(
-    "ACCOUNTING_ROUNDING_METHOD", default="care.utils.rounding.Rounding_05Up"
+    "ACCOUNTING_ROUNDING_METHOD", default="care.utils.rounding.Rounding05Up"
 )
