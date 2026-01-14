@@ -1,4 +1,5 @@
 import enum
+from decimal import Decimal
 
 from pydantic import UUID4, BaseModel, field_validator, model_validator
 
@@ -55,8 +56,8 @@ class InterpretationSpec(BaseModel):
 
 class NumericRangeSpec(BaseModel):
     interpretation: InterpretationSpec
-    min: float | None = None
-    max: float | None = None
+    min: Decimal | None = None
+    max: Decimal | None = None
 
     @model_validator(mode="after")
     def validate_range(self):
@@ -108,13 +109,13 @@ class QualifiedRangeSpec(BaseModel):
         if has_ranges:
             sorted_ranges = sorted(
                 self.ranges,
-                key=lambda r: (r.min if r.min is not None else float("-inf")),
+                key=lambda r: (r.min if r.min is not None else Decimal("-inf")),
             )
             for i in range(1, len(sorted_ranges)):
                 prev = sorted_ranges[i - 1]
                 curr = sorted_ranges[i]
-                prev_max = prev.max if prev.max is not None else float("inf")
-                curr_min = curr.min if curr.min is not None else float("-inf")
+                prev_max = prev.max if prev.max is not None else Decimal("inf")
+                curr_min = curr.min if curr.min is not None else Decimal("-inf")
                 if curr_min < prev_max:
                     raise ValueError(
                         "Overlapping ranges detected between min-max values in the ranges array."

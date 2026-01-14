@@ -709,3 +709,9 @@ TOTP_DISABLED_EMAIL_TEMPLATE_PATH = env(
 
 # Cleanup incomplete file uploads, set to 0 to disable
 FILE_UPLOAD_EXPIRY_HOURS = env.int("FILE_UPLOAD_EXPIRY_HOURS", default=24)
+
+ACCOUNTING_PRECISION = env.int("ACCOUNTING_PRECISION", default=2)
+
+ACCOUNTING_ROUNDING_METHOD = env(
+    "ACCOUNTING_ROUNDING_METHOD", default="care.utils.rounding.Rounding_05Up"
+)

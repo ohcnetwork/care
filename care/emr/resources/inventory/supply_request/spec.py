@@ -1,3 +1,4 @@
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import UUID4
@@ -29,7 +30,7 @@ class BaseSupplyRequestSpec(EMRResource):
 
     status: SupplyRequestStatusOptions
 
-    quantity: float
+    quantity: Decimal
 
 
 class SupplyRequestWriteSpec(BaseSupplyRequestSpec):

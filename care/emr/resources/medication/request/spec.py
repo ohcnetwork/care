@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
@@ -110,12 +111,12 @@ class DoseType(str, Enum):
 
 
 class DosageQuantity(BaseModel):
-    value: float
+    value: Decimal
     unit: Coding
 
 
 class TimingQuantity(BaseModel):
-    value: float
+    value: Decimal
     unit: TimingUnit
 
 
@@ -132,7 +133,7 @@ class DoseAndRate(BaseModel):
 
 class TimingRepeat(BaseModel):
     frequency: int
-    period: float
+    period: Decimal
     period_unit: TimingUnit
     bounds_duration: TimingQuantity
 

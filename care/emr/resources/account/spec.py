@@ -62,7 +62,6 @@ class AccountUpdateSpec(ExtensionValidator, AccountSpec):
 class AccountMinimalReadSpec(AccountSpec):
     """Account read specification"""
 
-    total_net: Decimal
     total_gross: Decimal
     total_paid: Decimal
     total_balance: Decimal

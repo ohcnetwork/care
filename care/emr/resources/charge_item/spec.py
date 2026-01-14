@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import UUID4, BaseModel, model_validator
@@ -21,7 +22,7 @@ from care.utils.shortcuts import get_object_or_404
 
 
 class ChargeItemStatusOptions(str, Enum):
-    planned = "planned"
+    # planned = "planned"
     billable = "billable"
     not_billable = "not_billable"
     aborted = "aborted"
@@ -60,7 +61,7 @@ class ChargeItemSpec(EMRResource):
     description: str | None = None
     status: ChargeItemStatusOptions
     code: Coding | None = None
-    quantity: float
+    quantity: Decimal
     unit_price_components: list[MonetaryComponent]
     note: str | None = None
     override_reason: ChargeItemOverrideReason | None = None
@@ -146,7 +147,7 @@ class ChargeItemReadSpec(ChargeItemSpec):
     """Account read specification"""
 
     total_price_components: list[dict]
-    total_price: float
+    total_price: Decimal
     charge_item_definition: dict
     paid_invoice: dict | None = None
     tags: list[dict] = []

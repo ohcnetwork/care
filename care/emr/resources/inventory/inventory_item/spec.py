@@ -1,3 +1,4 @@
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import UUID4
@@ -32,8 +33,8 @@ class InventoryItemWriteSpec(BaseInventoryItemSpec):
 class InventoryItemReadSpec(BaseInventoryItemSpec):
     """Supply delivery read specification"""
 
-    net_content: float
-    product: float
+    net_content: Decimal
+    product: dict
     location: dict
 
     @classmethod

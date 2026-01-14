@@ -87,11 +87,6 @@ class BaseAccountContextBuilder(SingleObjectContextBuilder):
         preview_value="Account for general health checkup",
         description="Detailed description of the account",
     )
-    total_net = Field(
-        display="Total Net Amount",
-        preview_value="150.00",
-        description="Total net amount for the account",
-    )
     total_gross = Field(
         display="Total Gross Amount",
         preview_value="180.00",

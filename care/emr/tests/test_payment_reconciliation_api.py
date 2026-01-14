@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.urls import reverse
 from django.utils import timezone
 from model_bakery import baker
@@ -160,8 +162,8 @@ class PaymentReconciliationAPITest(CareAPITestBase):
             account=account or self.account,
             patient=patient or self.patient,
             status="issued",
-            total_net=4500,
-            total_gross=4500,
+            total_net=Decimal(4500),
+            total_gross=Decimal(4500),
             issue_date=timezone.now(),
         )
 

@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import UUID4, model_validator
@@ -68,7 +69,7 @@ class SupplyDeliveryWriteSpec(ExtensionValidator, BaseSupplyDeliverySpec):
     supplied_item_pack_quantity: int | None = None
     supplied_item_pack_size: int | None = None
 
-    supplied_item_quantity: float
+    supplied_item_quantity: Decimal
     supplied_item: UUID4 | None = None
     supplied_inventory_item: UUID4 | None = None
 

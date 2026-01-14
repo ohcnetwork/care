@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import UUID4, model_validator
@@ -81,9 +82,9 @@ class PaymentReconciliationWriteSpec(BasePaymentReconciliationSpec):
 
     target_invoice: UUID4 | None = None
     account: UUID4
-    amount: float | None = None
-    tendered_amount: float
-    returned_amount: float
+    amount: Decimal | None = None
+    tendered_amount: Decimal
+    returned_amount: Decimal
     is_credit_note: bool = False
     location: UUID4 | None = None
 
@@ -103,9 +104,9 @@ class PaymentReconciliationWriteSpec(BasePaymentReconciliationSpec):
 
 
 class PaymentReconciliationMinimalReadSpec(BasePaymentReconciliationSpec):
-    amount: float | None = None
-    tendered_amount: float
-    returned_amount: float
+    amount: Decimal | None = None
+    tendered_amount: Decimal
+    returned_amount: Decimal
     is_credit_note: bool
     created_date: datetime
     modified_date: datetime

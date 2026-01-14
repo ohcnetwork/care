@@ -1,3 +1,4 @@
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import BaseModel, RootModel, model_validator
@@ -17,9 +18,19 @@ class MonetaryComponentType(str, Enum):
 class MonetaryComponent(BaseModel):
     monetary_component_type: MonetaryComponentType
     code: Coding | None = None
-    factor: float | None = None
-    amount: float | None = None
+    factor: Decimal | None = None
+    amount: Decimal | None = None
+    tax_included_amount: Decimal | None = None
     conditions: list[EvaluatorConditionSpec] = []
+
+    @model_validator(mode="after")
+    def check_tax_included_amount(self):
+        if (
+            self.tax_included_amount is not None
+            and self.monetary_component_type != MonetaryComponentType.base.value
+        ):
+            raise ValueError("Tax included amount is only allowed for base component.")
+        return self
 
     @model_validator(mode="after")
     def base_no_conditions(self):
@@ -72,6 +83,11 @@ class MonetaryComponents(RootModel):
         component_types = [component.monetary_component_type for component in self.root]
         if component_types.count(MonetaryComponentType.base) > 1:
             raise ValueError("Only one base component is allowed.")
+        return self
+
+    @model_validator(mode="after")
+    def check_tax_included_amount_and_amount(self):
+        # TODO : Compute base price WRT taxes and check if supplied base price is correct
         return self
 
 

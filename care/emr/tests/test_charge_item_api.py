@@ -442,7 +442,7 @@ class TestChargeItemViewSet(CareAPITestBase):
             status=ChargeItemStatusOptions.billable.value, title="Billable Item"
         )
         self.create_charge_item(
-            status=ChargeItemStatusOptions.planned.value, title="Planned Item"
+            status=ChargeItemStatusOptions.billed.value, title="Billed Item"
         )
 
         response = self.client.get(f"{self.base_url}?status=billable")
