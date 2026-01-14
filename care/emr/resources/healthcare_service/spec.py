@@ -40,7 +40,7 @@ class HealthcareServiceWriteSpec(BaseHealthcareServiceSpec):
     """Healthcare service write specification"""
 
     locations: list[UUID4] = []
-    managing_organization: UUID4 | None = None
+    managing_organization: UUID4 | None
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.managing_organization:
@@ -48,6 +48,8 @@ class HealthcareServiceWriteSpec(BaseHealthcareServiceSpec):
                 FacilityOrganization.objects.all().only("id"),
                 external_id=self.managing_organization,
             )
+        else:
+            obj.managing_organization = None
         return super().perform_extra_deserialization(is_update, obj)
 
 

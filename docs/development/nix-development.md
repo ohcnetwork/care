@@ -193,16 +193,6 @@ The development environment sets these variables automatically:
 - `FILE_UPLOAD_BUCKET=patient-bucket`
 - `FACILITY_S3_BUCKET=facility-bucket`
 
-### HCX Configuration (for local testing)
-- `HCX_AUTH_BASE_PATH=https://staging-hcx.swasth.app/auth/realms/swasth-health-claim-exchange/protocol/openid-connect/token`
-- `HCX_ENCRYPTION_PRIVATE_KEY_URL=https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/main/demo-app/server/resources/keys/x509-private-key.pem`
-- `HCX_IG_URL=https://ig.hcxprotocol.io/v0.7.1`
-- `HCX_PARTICIPANT_CODE=qwertyreboot.gmail@swasth-hcx-staging`
-- `HCX_PASSWORD=Opensaber@123`
-- `HCX_PROTOCOL_BASE_PATH=http://staging-hcx.swasth.app/api/v0.7`
-- `HCX_USERNAME=qwertyreboot@gmail.com`
-- `HCX_CERT_URL=https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/main/demo-app/server/resources/keys/x509-self-signed-certificate.pem`
-
 ## Service URLs
 
 - **Django Application**: http://localhost:9000
@@ -396,7 +386,6 @@ The development environment includes these tools from the Nix store:
 - **PostgreSQL 15**: Database server and client tools
 - **Redis**: In-memory data structure store
 - **MinIO**: S3-compatible object storage
-- **Typst**: Modern typesetting system
 - **Pre-commit**: Git hook framework
 - **GCC & build tools**: For compiling Python packages
 

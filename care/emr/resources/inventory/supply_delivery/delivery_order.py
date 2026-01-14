@@ -2,6 +2,8 @@ from enum import Enum
 
 from pydantic import UUID4
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import ExtensionValidator
 from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import Organization
 from care.emr.models.supply_delivery import DeliveryOrder
@@ -31,9 +33,9 @@ SUPPLY_DELIVERY_ORDER_COMPLETED_STATUSES = [
 ]
 
 
-class BaseSupplyDeliveryOrderSpec(EMRResource):
+class BaseSupplyDeliveryOrderSpec(ExtensionValidator, EMRResource):
     __model__ = DeliveryOrder
-
+    ___extension_resource_type__ = ExtensionResource.supply_delivery_order
     id: UUID4 | None = None
 
     status: SupplyDeliveryOrderStatusOptions

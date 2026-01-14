@@ -34,6 +34,7 @@ from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
 from care.emr.resources.medication.dispense.spec import (
     MEDICATION_DISPENSE_CANCELLED_STATUSES,
     MedicationDispenseReadSpec,
+    MedicationDispenseRetrieveSpec,
     MedicationDispenseUpdateSpec,
     MedicationDispenseWriteSpec,
 )
@@ -75,6 +76,7 @@ class MedicationDispenseViewSet(
     pydantic_model = MedicationDispenseWriteSpec
     pydantic_update_model = MedicationDispenseUpdateSpec
     pydantic_read_model = MedicationDispenseReadSpec
+    pydantic_retrieve_model = MedicationDispenseRetrieveSpec
     filterset_class = MedicationDispenseFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date"]
@@ -94,6 +96,13 @@ class MedicationDispenseViewSet(
                     ChargeItemResourceOptions.medication_dispense.value
                 )
                 charge_item.service_resource_id = str(instance.external_id)
+                charge_item.created_by = self.request.user
+                charge_item.updated_by = self.request.user
+                if (
+                    instance.authorizing_request
+                    and instance.authorizing_request.requester
+                ):
+                    charge_item.performer_actor = instance.authorizing_request.requester
                 charge_item.save()
                 instance.charge_item = charge_item
                 instance.save(update_fields=["charge_item"])

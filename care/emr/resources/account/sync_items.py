@@ -24,6 +24,13 @@ def calculate_payment_reconciliation_summary(payment_reconciliations):
     return total_paid
 
 
+def calculate_billable_charge_items_summary(billable_charge_items):
+    total_billable = Decimal(0)
+    for billable_charge_item in billable_charge_items.only("total_price"):
+        total_billable += Decimal(billable_charge_item.total_price)
+    return total_billable
+
+
 def sync_account_items(account: Account):
     with AccountLock(account):
         charge_items = ChargeItem.objects.filter(
@@ -33,7 +40,10 @@ def sync_account_items(account: Account):
                 ChargeItemStatusOptions.billed.value,
             ],
         )
-
+        billable_charge_items = ChargeItem.objects.filter(
+            account=account,
+            status=ChargeItemStatusOptions.billable.value,
+        )
         payment_reconciliations = PaymentReconciliation.objects.filter(
             account=account,
             status=PaymentReconciliationStatusOptions.active.value,
@@ -47,6 +57,9 @@ def sync_account_items(account: Account):
             is_credit_note=True,
         )
         charge_items_summary = calculate_charge_items_summary(charge_items)
+        account.total_billable_charge_items = calculate_billable_charge_items_summary(
+            billable_charge_items
+        )
 
         payment_reconciliation_total = calculate_payment_reconciliation_summary(
             payment_reconciliations

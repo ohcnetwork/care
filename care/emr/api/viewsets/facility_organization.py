@@ -28,6 +28,7 @@ from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.security.roles.role import FACILITY_ADMIN_ROLE
 from care.users.models import User
+from care.utils.filters.dummy_filter import DummyUUIDFilter
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -35,6 +36,7 @@ class FacilityOrganizationFilter(filters.FilterSet):
     parent = filters.UUIDFilter(field_name="parent__external_id")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     org_type = filters.CharFilter(field_name="org_type", lookup_expr="iexact")
+    containing_user = DummyUUIDFilter()
 
 
 class FacilityOrganizationViewSet(EMRModelViewSet):
@@ -183,9 +185,23 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
             .filter(facility=facility)
             .select_related("facility", "parent", "created_by", "updated_by")
         )
-        if "parent" in self.request.GET and not self.request.GET.get("parent"):
+        containing_user = self.request.GET.get("containing_user")
+        if (
+            "parent" in self.request.GET
+            and not self.request.GET.get("parent")
+            and not containing_user
+        ):
             # Filter for root organizations, For some reason its not working as intended in Django Filters
             queryset = queryset.filter(parent__isnull=True)
+        if containing_user:
+            user = get_object_or_404(
+                User.objects.only("id"), external_id=containing_user
+            )
+            queryset = queryset.filter(
+                id__in=FacilityOrganizationUser.objects.filter(
+                    user=user.id, organization__facility=facility
+                ).values_list("organization_id", flat=True)
+            )
         return AuthorizationController.call(
             "get_accessible_facility_organizations",
             queryset,

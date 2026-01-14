@@ -4,10 +4,13 @@ from enum import Enum
 
 from pydantic import UUID4
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import ExtensionValidator
 from care.emr.models import Account
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PeriodSpec
-from care.emr.resources.patient.spec import PatientListSpec
+from care.emr.resources.patient.spec import PatientListSpec, PatientRetrieveSpec
+from care.emr.tagging.base import SingleFacilityTagManager
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -33,6 +36,7 @@ class AccountSpec(EMRResource):
 
     __model__ = Account
     __exclude__ = ["patient"]
+    ___extension_resource_type__ = ExtensionResource.account
 
     id: UUID4 | None = None
     status: AccountStatusOptions
@@ -42,7 +46,7 @@ class AccountSpec(EMRResource):
     description: str | None = None
 
 
-class AccountCreateSpec(AccountSpec):
+class AccountCreateSpec(ExtensionValidator, AccountSpec):
     """Account create specification"""
 
     patient: UUID4
@@ -51,14 +55,18 @@ class AccountCreateSpec(AccountSpec):
         obj.patient = get_object_or_404(Patient, external_id=self.patient)
 
 
-class AccountReadSpec(AccountSpec):
+class AccountUpdateSpec(ExtensionValidator, AccountSpec):
+    pass
+
+
+class AccountMinimalReadSpec(AccountSpec):
     """Account read specification"""
 
-    patient: dict
     total_net: Decimal
     total_gross: Decimal
     total_paid: Decimal
     total_balance: Decimal
+    total_billable_charge_items: Decimal
     calculated_at: datetime.datetime
     created_date: datetime.datetime
     modified_date: datetime.datetime
@@ -66,11 +74,32 @@ class AccountReadSpec(AccountSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["patient"] = PatientListSpec.serialize(obj.patient)
 
 
-class AccountRetrieveSpec(AccountReadSpec):
+class AccountReadSpec(AccountMinimalReadSpec):
+    """Account read specification"""
+
+    patient: dict
+    tags: list[dict] = []
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
+        mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+
+
+class AccountRetrieveSpec(AccountMinimalReadSpec):
     """Account retrieve specification"""
 
+    patient: dict
     cached_items: list = []
     total_price_components: dict
+    extensions: dict
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        mapping["patient"] = PatientRetrieveSpec.serialize(
+            obj.patient, facility=obj.facility
+        ).to_json()

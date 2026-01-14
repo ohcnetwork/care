@@ -77,7 +77,7 @@ make teardown
 Prebuilt docker images for server deployments are available
 on [ghcr](https://github.com/ohcnetwork/care/pkgs/container/care)
 
-For backup and restore use [this](/docs/databases/backup.rst) documentation.
+For backup and restore use [this](/docs/setup/database-backup.rst) documentation.
 
 ## Contributing
 

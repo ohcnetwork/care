@@ -1,5 +1,6 @@
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
+from django.db.models import UniqueConstraint
 
 from care.emr.models.base import EMRBaseModel
 from care.emr.models.medication_request import MedicationRequest
@@ -35,10 +36,19 @@ class MedicationDispense(EMRBaseModel):
 
 
 class DispenseOrder(EMRBaseModel):
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, null=True, blank=True)
     status = models.CharField(max_length=255)
     note = models.TextField(null=True, blank=True)
     location = models.ForeignKey("emr.FacilityLocation", on_delete=models.CASCADE)
     tags = ArrayField(models.IntegerField(), default=list)
     patient = models.ForeignKey("emr.Patient", on_delete=models.CASCADE)
     facility = models.ForeignKey("facility.Facility", on_delete=models.CASCADE)
+    alternate_identifier = models.CharField(max_length=100, null=True, blank=True)
+
+    class Meta:
+        constraints = [
+            UniqueConstraint(
+                fields=["alternate_identifier", "patient", "location"],
+                name="unique_alternate_identifier_encounter_location",
+            )
+        ]

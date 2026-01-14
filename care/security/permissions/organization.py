@@ -48,8 +48,8 @@ class OrganizationPermissions(enum.Enum):
         [ADMIN_ROLE],
     )
     can_manage_organization_users = Permission(
-        "Can Manage Users in an Organizations",
-        "",
+        "Can Manage Users in an Organization",
+        "Add, remove, and assign roles to users in an organization",
         PermissionContext.ORGANIZATION,
         [ADMIN_ROLE, ADMINISTRATOR, FACILITY_ADMIN_ROLE],
     )

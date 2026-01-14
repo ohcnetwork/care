@@ -1,3 +1,6 @@
+from datetime import timedelta
+
+from django.conf import settings
 from django.db import transaction
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -35,15 +38,16 @@ from care.emr.resources.invoice.sync_items import sync_invoice_items
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.shortcuts import get_object_or_404
+from care.utils.time_util import care_now
 
 
 class InvoiceFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     title = filters.CharFilter(lookup_expr="icontains")
     account = filters.UUIDFilter(field_name="account__external_id")
-    encounter = filters.UUIDFilter(field_name="encounter__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
     number = filters.CharFilter(lookup_expr="icontains")
+    locked = filters.BooleanFilter()
 
 
 class AttachChargeItemToInvoiceRequest(BaseModel):
@@ -79,8 +83,12 @@ class InvoiceViewSet(
             Facility, external_id=self.kwargs["facility_external_id"]
         )
 
+    def authorize_retrieve(self, instance):
+        if instance.locked:
+            self.check_invoice_lock_permission(instance)
+
     def get_queryset(self):
-        queryset = super().get_queryset()
+        queryset = super().get_queryset().select_related("account")
         facility = self.get_facility_obj()
         if not AuthorizationController.call(
             "can_read_invoice_in_facility", self.request.user, facility
@@ -142,6 +150,11 @@ class InvoiceViewSet(
                     and instance.status not in INVOICE_CANCELLED_STATUS
                 ):
                     raise ValidationError("Invoice is already cancelled")
+                if (
+                    instance.status == InvoiceStatusOptions.issued.value
+                    and len(instance.charge_items) == 0
+                ):
+                    raise ValidationError("Invoice must have at least one charge item")
                 if old_invoice.status == InvoiceStatusOptions.balanced.value:
                     raise ValidationError("Invoice is already balanced")
                 if (
@@ -163,7 +176,9 @@ class InvoiceViewSet(
                         status=ChargeItemStatusOptions.billed.value,
                         id__in=instance.charge_items,
                     ).update(
-                        status=ChargeItemStatusOptions.paid.value, paid_invoice=instance
+                        status=ChargeItemStatusOptions.paid.value,
+                        paid_invoice=instance,
+                        paid_on=care_now(),
                     )
             super().perform_update(instance)
             rebalance_account_task.delay(instance.account.id)
@@ -194,6 +209,7 @@ class InvoiceViewSet(
                     charge_items.values_list("id", flat=True)
                 )
                 sync_invoice_items(invoice)
+                invoice.updated_by = self.request.user
                 invoice.save()
                 charge_items.update(
                     status=ChargeItemStatusOptions.billed.value, paid_invoice=invoice
@@ -219,9 +235,11 @@ class InvoiceViewSet(
                 with transaction.atomic():
                     invoice.charge_items.remove(charge_item.id)
                     sync_invoice_items(invoice)
+                    invoice.updated_by = self.request.user
                     invoice.save()
                     charge_item.status = ChargeItemStatusOptions.billable.value
                     charge_item.paid_invoice = None
+                    charge_item.paid_on = None
                     charge_item.save()
             except ValueError as e:
                 raise ValidationError("Charge item not found in invoice") from e
@@ -241,6 +259,7 @@ class InvoiceViewSet(
                 )
                 invoice.charge_items = charge_items.values_list("id", flat=True)
                 sync_invoice_items(invoice)
+                invoice.updated_by = self.request.user
                 invoice.save()
                 charge_items.update(
                     status=ChargeItemStatusOptions.billed.value, paid_invoice=invoice
@@ -251,10 +270,17 @@ class InvoiceViewSet(
     def cancel_invoice(self, request, *args, **kwargs):
         invoice = self.get_object()
         with InvoiceLock(invoice):
-            if not AuthorizationController.call(
+            if invoice.created_date >= care_now() - timedelta(
+                minutes=settings.INVOICE_FREE_CANCEL_PERIOD_MINUTES
+            ):
+                if not AuthorizationController.call(
+                    "can_write_invoice_in_facility", self.request.user, invoice.facility
+                ):
+                    raise PermissionDenied("Cannot cancel invoice")
+            elif not AuthorizationController.call(
                 "can_destroy_invoice_in_facility", self.request.user, invoice.facility
             ):
-                raise PermissionDenied("Cannot write invoice")
+                raise PermissionDenied("Cannot cancel invoice")
             if invoice.status in INVOICE_CANCELLED_STATUS:
                 raise ValidationError("Invoice is already cancelled")
             request_params = InvoiceCancelReasonRequest(**request.data)
@@ -266,7 +292,52 @@ class InvoiceViewSet(
                     account=invoice.account,
                     id__in=invoice.charge_items,
                 ).update(
-                    status=ChargeItemStatusOptions.billable.value, paid_invoice=None
+                    status=ChargeItemStatusOptions.billable.value,
+                    paid_invoice=None,
+                    paid_on=None,
                 )
+                invoice.updated_by = self.request.user
                 invoice.save()
+        return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
+
+    def check_invoice_lock_permission(self, invoice):
+        if not AuthorizationController.call(
+            "can_manage_locked_invoice_in_facility", self.request.user, invoice.facility
+        ):
+            raise PermissionDenied("Locked invoice permission denied.")
+
+    @action(methods=["POST"], detail=True)
+    def lock(self, request, *args, **kwargs):
+        invoice = self.get_object()
+        self.check_invoice_lock_permission(invoice)
+        if invoice.locked:
+            raise ValidationError("Invoice is already locked")
+        invoice.locked = True
+        invoice.lock_history.append(
+            {
+                "user": self.request.user.id,
+                "timestamp": str(care_now()),
+                "action": "lock",
+            }
+        )
+        invoice.updated_by = self.request.user
+        invoice.save()
+        return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
+
+    @action(methods=["POST"], detail=True)
+    def unlock(self, request, *args, **kwargs):
+        invoice = self.get_object()
+        self.check_invoice_lock_permission(invoice)
+        if not invoice.locked:
+            raise ValidationError("Invoice is not locked")
+        invoice.locked = False
+        invoice.lock_history.append(
+            {
+                "user": self.request.user.id,
+                "timestamp": str(care_now()),
+                "action": "unlock",
+            }
+        )
+        invoice.updated_by = self.request.user
+        invoice.save()
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())

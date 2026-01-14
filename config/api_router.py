@@ -22,6 +22,7 @@ from care.emr.api.viewsets.device import (
 )
 from care.emr.api.viewsets.diagnostic_report import DiagnosticReportViewSet
 from care.emr.api.viewsets.encounter import EncounterViewSet
+from care.emr.api.viewsets.extensions import ExtensionsViewSet
 from care.emr.api.viewsets.facility import (
     AllFacilityViewSet,
     FacilitySchedulableUsersViewSet,
@@ -76,6 +77,8 @@ from care.emr.api.viewsets.questionnaire import (
     QuestionnaireViewSet,
 )
 from care.emr.api.viewsets.questionnaire_response import QuestionnaireResponseViewSet
+from care.emr.api.viewsets.report.report_upload import ReportUploadViewSet
+from care.emr.api.viewsets.report.template import TemplateViewSet
 from care.emr.api.viewsets.resource_category import ResourceCategoryViewSet
 from care.emr.api.viewsets.resource_request import (
     ResourceRequestCommentViewSet,
@@ -486,6 +489,10 @@ thread_nested_router.register(
     basename="note",
 )
 
+router.register("template", TemplateViewSet, basename="template")
+router.register("template_reports", ReportUploadViewSet, basename="template-reports")
+
+router.register("extensions", ExtensionsViewSet, basename="extensions")
 app_name = "api"
 urlpatterns = [
     path("", include(router.urls)),

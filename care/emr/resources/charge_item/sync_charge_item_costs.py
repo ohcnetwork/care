@@ -50,3 +50,5 @@ def sync_charge_item_costs(charge_item):
             components.append(_component.model_dump(mode="json", exclude_defaults=True))
     charge_item.total_price = total_price
     charge_item.total_price_components = components
+    if charge_item.total_price < 0:
+        raise ValidationError("Total price is less than 0")

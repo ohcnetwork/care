@@ -9,6 +9,7 @@ from care.emr.api.viewsets.base import (
     EMRCreateMixin,
     EMRListMixin,
     EMRRetrieveMixin,
+    EMRTagMixin,
     EMRUpdateMixin,
 )
 from care.emr.models.account import Account
@@ -17,10 +18,12 @@ from care.emr.resources.account.spec import (
     AccountCreateSpec,
     AccountReadSpec,
     AccountRetrieveSpec,
-    AccountSpec,
     AccountStatusOptions,
+    AccountUpdateSpec,
 )
 from care.emr.resources.account.sync_items import sync_account_items
+from care.emr.resources.tag.config_spec import TagResource
+from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.shortcuts import get_object_or_404
@@ -35,11 +38,16 @@ class AccountFilters(filters.FilterSet):
 
 
 class AccountViewSet(
-    EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRTagMixin,
+    EMRBaseViewSet,
 ):
     database_model = Account
     pydantic_model = AccountCreateSpec
-    pydantic_update_model = AccountSpec
+    pydantic_update_model = AccountUpdateSpec
     pydantic_read_model = AccountReadSpec
     pydantic_retrieve_model = AccountRetrieveSpec
     filterset_class = AccountFilters
@@ -47,9 +55,11 @@ class AccountViewSet(
         filters.DjangoFilterBackend,
         OrderingFilter,
         SearchFilter,
+        SingleFacilityTagFilter,
     ]
     search_fields = ["name"]
     ordering_fields = ["created_date", "modified_date"]
+    resource_type = TagResource.account
 
     def get_facility_obj(self):
         return get_object_or_404(

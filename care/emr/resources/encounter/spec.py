@@ -4,6 +4,8 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from pydantic import UUID4, BaseModel
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import ExtensionValidator
 from care.emr.models import (
     Encounter,
     EncounterOrganization,
@@ -48,6 +50,7 @@ class HospitalizationSpec(BaseModel):
 
 class EncounterSpecBase(EMRResource):
     __model__ = Encounter
+    ___extension_resource_type__ = ExtensionResource.encounter
     __exclude__ = [
         "patient",
         "organizations",
@@ -67,7 +70,7 @@ class EncounterSpecBase(EMRResource):
     discharge_summary_advice: str | None = None
 
 
-class EncounterCreateSpec(EncounterSpecBase):
+class EncounterCreateSpec(ExtensionValidator, EncounterSpecBase):
     patient: UUID4
     facility: UUID4
     organizations: list[UUID4] = []
@@ -99,7 +102,7 @@ class EncounterCreateSpec(EncounterSpecBase):
             }
 
 
-class EncounterUpdateSpec(EncounterSpecBase):
+class EncounterUpdateSpec(ExtensionValidator, EncounterSpecBase):
     def perform_extra_deserialization(self, is_update, obj):
         old_instance = Encounter.objects.get(id=obj.id)
         if old_instance.status != self.status:
@@ -139,6 +142,7 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
     current_location: dict | None = None
     location_history: list[dict] = []
     care_team: list[dict] = []
+    extensions: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

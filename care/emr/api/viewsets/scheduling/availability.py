@@ -19,7 +19,10 @@ from care.emr.models.scheduling.schedule import Availability
 from care.emr.resources.charge_item.apply_charge_item_definition import (
     apply_charge_item_definition,
 )
-from care.emr.resources.charge_item.spec import ChargeItemResourceOptions
+from care.emr.resources.charge_item.spec import (
+    ChargeItemResourceOptions,
+    ChargeItemStatusOptions,
+)
 from care.emr.resources.scheduling.schedule.spec import (
     SchedulableResourceTypeOptions,
     SlotTypeOptions,
@@ -151,20 +154,24 @@ def lock_create_appointment(token_slot, patient, created_by, note):
                 patient=patient,
                 token_slot__availability__schedule=schedule,
                 charge_item__isnull=False,
+                charge_item__status=ChargeItemStatusOptions.paid.value,
                 token_slot__start_datetime__lte=token_slot.start_datetime,
             )
             .order_by("-token_slot__start_datetime")
         ).first()
         if last_booking:
-            booking_start_time = last_booking.token_slot.start_datetime
-            current_time = timezone.now()
-            diff_days = (booking_start_time - current_time).days
+            booking_start_time = last_booking.charge_item.paid_on
+            if not booking_start_time:
+                diff_days = None
+            else:
+                new_booking_start_time = token_slot.start_datetime
+                diff_days = (booking_start_time - new_booking_start_time).days
         else:
-            diff_days = -1
+            diff_days = None
         if (
             schedule.revisit_allowed_days
-            and diff_days != -1
-            and diff_days <= schedule.revisit_allowed_days
+            and diff_days is not None
+            and abs(diff_days) <= schedule.revisit_allowed_days
         ):
             charge_item_definition = schedule.revisit_charge_item_definition
         else:
@@ -178,6 +185,9 @@ def lock_create_appointment(token_slot, patient, created_by, note):
             )
             charge_item.service_resource = ChargeItemResourceOptions.appointment.value
             charge_item.service_resource_id = str(booking.external_id)
+            charge_item.created_by = created_by
+            charge_item.updated_by = created_by
+            charge_item.performer_actor = token_slot.resource.user
             charge_item.save()
             booking.charge_item = charge_item
             booking.save(update_fields=["charge_item"])
@@ -192,11 +202,13 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     def get_slots_for_day(self, request, *args, **kwargs):
         # TODO : Add Authorization, Need to confirm what works here
         return self.get_slots_for_day_handler(
-            self.kwargs["facility_external_id"], request.data
+            self.kwargs["facility_external_id"], request.data, is_public=None
         )
 
     @classmethod
-    def get_slots_for_day_handler(cls, facility_external_id, request_data):
+    def get_slots_for_day_handler(
+        cls, facility_external_id, request_data, is_public=None
+    ):
         request_data = SlotsForDayRequestSpec(**request_data)
         facility = get_object_or_404(Facility, external_id=facility_external_id)
         resource = get_schedulable_resource(
@@ -213,6 +225,8 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             schedule__valid_to__gte=request_data.day,
             schedule__resource=resource,
         )
+        if is_public is True:
+            availabilities = availabilities.filter(schedule__is_public=True)
         # Fetch all availabilities for that day of week
         calculated_dow_availabilities = []
         for schedule_availability in availabilities:
@@ -240,6 +254,8 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             end_datetime__date=request_data.day,
             resource=resource,
         )
+        if is_public is True:
+            created_slots = created_slots.filter(availability__schedule__is_public=True)
         for slot in created_slots:
             slot_key = f"{timezone.make_naive(slot.start_datetime).time()}-{timezone.make_naive(slot.end_datetime).time()}"
             if (
@@ -265,17 +281,15 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
                 availability_id=slot["availability_id"],
             )
         # Compare and figure out what needs to be created
+        slots = TokenSlot.objects.filter(
+            start_datetime__date=request_data.day,
+            end_datetime__date=request_data.day,
+            resource=resource,
+        ).select_related("availability")
+        if is_public is True:
+            slots = slots.filter(availability__schedule__is_public=True)
         return Response(
-            {
-                "results": [
-                    TokenSlotBaseSpec.serialize(slot).model_dump(exclude=["meta"])
-                    for slot in TokenSlot.objects.filter(
-                        start_datetime__date=request_data.day,
-                        end_datetime__date=request_data.day,
-                        resource=resource,
-                    ).select_related("availability")
-                ]
-            }
+            {"results": [TokenSlotBaseSpec.serialize(slot).to_json() for slot in slots]}
         )
         # Find all existing Slot objects for that period
         # Get list of all slots, create if missed

@@ -15,3 +15,4 @@ class Product(EMRBaseModel):
     product_type = models.CharField(max_length=255)
     batch = models.JSONField(default=dict, null=True, blank=True)
     expiration_date = models.DateTimeField(default=None, null=True, blank=True)
+    extensions = models.JSONField(default=dict)

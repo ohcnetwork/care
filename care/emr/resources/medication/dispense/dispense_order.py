@@ -1,3 +1,4 @@
+import datetime
 from enum import Enum
 
 from pydantic import UUID4
@@ -32,7 +33,7 @@ class BaseMedicationDispenseOrderSpec(EMRResource):
     id: UUID4 | None = None
 
     status: MedicationDispenseOrderStatusOptions
-    name: str
+    name: str | None = None
     note: str | None = None
 
 
@@ -53,6 +54,8 @@ class MedicationDispenseOrderWriteSpec(BaseMedicationDispenseOrderSpec):
 class MedicationDispenseOrderReadSpec(BaseMedicationDispenseOrderSpec):
     patient: dict
     location: dict
+    created_date: datetime.datetime
+    modified_date: datetime.datetime
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
