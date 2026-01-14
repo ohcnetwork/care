@@ -63,13 +63,18 @@ class UserFlagViewSet(
 
     def perform_create(self, instance):
         with transaction.atomic():
-            FlagRegistry.register(FlagType.USER, instance.flag)
             super().perform_create(instance)
+            FlagRegistry.register(FlagType.USER, instance.flag)
 
     def perform_destroy(self, instance):
         with transaction.atomic():
+            flag_name = instance.flag
             super().perform_destroy(instance)
-            FlagRegistry.unregister(FlagType.USER, instance.flag)
+
+            still_used = UserFlag.objects.filter(flag=flag_name, deleted=False).exists()
+
+            if not still_used:
+                FlagRegistry.unregister(FlagType.USER, flag_name)
 
     @action(detail=False, methods=["GET"], url_path="available-flags")
     def available_flags(self, request):

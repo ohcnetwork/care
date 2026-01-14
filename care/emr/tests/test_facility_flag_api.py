@@ -361,4 +361,88 @@ class FacilityFlagAPITestCase(CareAPITestBase):
     # ========== Helper Methods ==========
 
     def create_facility_flag(self, facility, flag):
+        # Register flag (idempotent operation, safe to call multiple times)
+        FlagRegistry.register(FlagType.FACILITY, flag)
         return FacilityFlag.objects.create(facility=facility, flag=flag)
+
+    # ========== Multi-Facility Flag Deletion Tests ==========
+
+    def test_delete_flag_does_not_unregister_when_other_facilities_have_it(self):
+        """Test that deleting flag from one facility doesn't unregister if other facilities have it"""
+        # Create same flag for two facilities
+        flag1 = self.create_facility_flag(
+            facility=self.facility, flag="SHARED_FACILITY_FLAG"
+        )
+        flag2 = self.create_facility_flag(
+            facility=self.facility_2, flag="SHARED_FACILITY_FLAG"
+        )
+
+        self.client.force_authenticate(user=self.superuser)
+
+        # Delete flag from first facility
+        response = self.client.delete(self.get_detail_url(flag1.external_id))
+        self.assertEqual(response.status_code, 204)
+
+        # Verify flag is still registered (because facility_2 still has it)
+        flags = FlagRegistry.get_all_flags(FlagType.FACILITY)
+        self.assertIn("SHARED_FACILITY_FLAG", flags)
+
+        # Verify second facility's flag still works
+        flag2.refresh_from_db()
+        self.assertEqual(flag2.flag, "SHARED_FACILITY_FLAG")
+        self.assertFalse(flag2.deleted)
+
+    def test_delete_last_facility_with_flag_unregisters_it(self):
+        """Test that deleting the last facility with a flag unregisters it"""
+        # Create flag for only one facility
+        flag = self.create_facility_flag(
+            facility=self.facility, flag="UNIQUE_FACILITY_FLAG"
+        )
+
+        self.client.force_authenticate(user=self.superuser)
+
+        # Delete the only instance
+        response = self.client.delete(self.get_detail_url(flag.external_id))
+        self.assertEqual(response.status_code, 204)
+
+        # Verify flag is unregistered (no other facilities have it)
+        flags = FlagRegistry.get_all_flags(FlagType.FACILITY)
+        self.assertNotIn("UNIQUE_FACILITY_FLAG", flags)
+
+    def test_delete_multiple_facilities_with_same_flag_sequence(self):
+        """Test deleting flag from multiple facilities in sequence"""
+        # Create third facility for this test
+        facility_3 = self.create_facility(name="Test Facility 3", user=self.superuser)
+
+        # Create same flag for three facilities
+        flag1 = self.create_facility_flag(
+            facility=self.facility, flag="MULTI_FACILITY_FLAG"
+        )
+        flag2 = self.create_facility_flag(
+            facility=self.facility_2, flag="MULTI_FACILITY_FLAG"
+        )
+        flag3 = self.create_facility_flag(
+            facility=facility_3, flag="MULTI_FACILITY_FLAG"
+        )
+
+        self.client.force_authenticate(user=self.superuser)
+
+        # Delete first facility's flag
+        response = self.client.delete(self.get_detail_url(flag1.external_id))
+        self.assertEqual(response.status_code, 204)
+        flags = FlagRegistry.get_all_flags(FlagType.FACILITY)
+        self.assertIn("MULTI_FACILITY_FLAG", flags)  # Still registered
+
+        # Delete second facility's flag
+        response = self.client.delete(self.get_detail_url(flag2.external_id))
+        self.assertEqual(response.status_code, 204)
+        flags = FlagRegistry.get_all_flags(FlagType.FACILITY)
+        self.assertIn(
+            "MULTI_FACILITY_FLAG", flags
+        )  # Still registered (facility_3 has it)
+
+        # Delete last facility's flag
+        response = self.client.delete(self.get_detail_url(flag3.external_id))
+        self.assertEqual(response.status_code, 204)
+        flags = FlagRegistry.get_all_flags(FlagType.FACILITY)
+        self.assertNotIn("MULTI_FACILITY_FLAG", flags)  # Now unregistered

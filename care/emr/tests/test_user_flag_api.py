@@ -291,4 +291,77 @@ class UserFlagAPITestCase(CareAPITestBase):
     # ========== Helper Methods ==========
 
     def create_user_flag(self, user, flag):
+        # Register flag (idempotent operation, safe to call multiple times)
+        FlagRegistry.register(FlagType.USER, flag)
         return UserFlag.objects.create(user=user, flag=flag)
+
+    # ========== Multi-User Flag Deletion Tests ==========
+
+    def test_delete_flag_does_not_unregister_when_other_users_have_it(self):
+        """Test that deleting flag from one user doesn't unregister if other users have it"""
+        # Create same flag for two users
+        flag1 = self.create_user_flag(user=self.target_user, flag="SHARED_FLAG")
+        flag2 = self.create_user_flag(user=self.normal_user, flag="SHARED_FLAG")
+
+        self.client.force_authenticate(user=self.superuser)
+
+        # Delete flag from first user
+        response = self.client.delete(self.get_detail_url(flag1.external_id))
+        self.assertEqual(response.status_code, 204)
+
+        # Verify flag is still registered (because normal_user still has it)
+        flags = FlagRegistry.get_all_flags(FlagType.USER)
+        self.assertIn("SHARED_FLAG", flags)
+
+        # Verify second user's flag still works
+        flag2.refresh_from_db()
+        self.assertEqual(flag2.flag, "SHARED_FLAG")
+        self.assertFalse(flag2.deleted)
+
+    def test_delete_last_user_with_flag_unregisters_it(self):
+        """Test that deleting the last user with a flag unregisters it"""
+        # Create flag for only one user
+        flag = self.create_user_flag(user=self.target_user, flag="UNIQUE_USER_FLAG")
+
+        self.client.force_authenticate(user=self.superuser)
+
+        # Delete the only instance
+        response = self.client.delete(self.get_detail_url(flag.external_id))
+        self.assertEqual(response.status_code, 204)
+
+        # Verify flag is unregistered (no other users have it)
+        flags = FlagRegistry.get_all_flags(FlagType.USER)
+        self.assertNotIn("UNIQUE_USER_FLAG", flags)
+
+    def test_delete_multiple_users_with_same_flag_sequence(self):
+        """Test deleting flag from multiple users in sequence"""
+        # Create same flag for three users
+        superuser_flag = self.create_user_flag(
+            user=self.superuser, flag="MULTI_USER_FLAG"
+        )
+        target_flag = self.create_user_flag(
+            user=self.target_user, flag="MULTI_USER_FLAG"
+        )
+        normal_flag = self.create_user_flag(
+            user=self.normal_user, flag="MULTI_USER_FLAG"
+        )
+
+        self.client.force_authenticate(user=self.superuser)
+
+        # Delete first user's flag
+        response = self.client.delete(self.get_detail_url(target_flag.external_id))
+        self.assertEqual(response.status_code, 204)
+        flags = FlagRegistry.get_all_flags(FlagType.USER)
+        self.assertIn("MULTI_USER_FLAG", flags)  # Still registered
+
+        # Delete second user's flag
+        response = self.client.delete(self.get_detail_url(normal_flag.external_id))
+        self.assertEqual(response.status_code, 204)
+        flags = FlagRegistry.get_all_flags(FlagType.USER)
+        self.assertIn("MULTI_USER_FLAG", flags)  # Still registered (superuser has it)
+
+        # Delete last user's flag
+        response = self.client.delete(self.get_detail_url(superuser_flag.external_id))
+        self.assertEqual(response.status_code, 204)
+        flags = FlagRegistry.get_all_flags(FlagType.USER)
+        self.assertNotIn("MULTI_USER_FLAG", flags)  # Now unregistered
