@@ -73,7 +73,7 @@ class ContainerSpec(BaseModel):
 class DurationSpec(BaseModel):
     """Duration specification using value and unit"""
 
-    value: int
+    value: Decimal
     unit: Coding  # Nees to be restricted to Datetime Units
 
 
