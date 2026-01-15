@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.db.models import Sum
 from django_filters import rest_framework as filters
 
 from care.emr.models.charge_item import ChargeItem
@@ -18,6 +19,7 @@ from care.emr.reports.context_builder.data_points.monetary_component import (
 from care.emr.reports.context_builder.data_points.resource_category import (
     ResourceCategoryObjectContextBuilder,
 )
+from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
 
 CHARGE_ITEM_RESOURCE_DISPLAY = {
     "service_request": "Service Request",
@@ -143,14 +145,32 @@ class AccountChargeItemCategoryContextBuilder(QuerysetContextBuilder):
             )
             if not charge_items.exists():
                 continue
-            total_price = sum(
-                (item.total_price or Decimal("0.00")) for item in charge_items
-            )
+            paid_charge_items = charge_items.filter(
+                status=ChargeItemStatusOptions.paid.value
+            ).aggregate(total_price=Sum("total_price")).get(
+                "total_price", Decimal(0)
+            ) or Decimal(0)
+            billed_charge_items = charge_items.filter(
+                status=ChargeItemStatusOptions.billed.value
+            ).aggregate(total_price=Sum("total_price")).get(
+                "total_price", Decimal(0)
+            ) or Decimal(0)
+            billable_charge_items = charge_items.filter(
+                status=ChargeItemStatusOptions.billable.value
+            ).aggregate(total_price=Sum("total_price")).get(
+                "total_price", Decimal(0)
+            ) or Decimal(0)
             summary.append(
                 {
                     "category": category,
                     "charge_items": charge_items,
-                    "total_price": total_price,
+                    "total_charge_items": paid_charge_items
+                    + billed_charge_items
+                    + billable_charge_items,
+                    "total_paid_charge_items": paid_charge_items,
+                    "total_billed_charge_items": billed_charge_items
+                    + paid_charge_items,
+                    "total_billable_charge_items": billable_charge_items,
                 }
             )
         return summary
