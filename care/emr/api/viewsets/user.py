@@ -28,6 +28,7 @@ from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.users.models import User
 from care.utils.file_uploads.cover_image import delete_cover_image, upload_cover_image
+from care.utils.filters.default_filter import DefaultBooleanFilter
 from care.utils.models.validators import (
     cover_image_validator,
     custom_image_extension_validator,
@@ -67,7 +68,9 @@ class UserFilter(filters.FilterSet):
     )
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
     user_type = filters.CharFilter(field_name="user_type", lookup_expr="iexact")
-    is_service_account = filters.BooleanFilter(field_name="is_service_account")
+    is_service_account = DefaultBooleanFilter(
+        field_name="is_service_account", default=False
+    )
 
 
 class UserViewSet(EMRModelViewSet):
@@ -82,13 +85,7 @@ class UserViewSet(EMRModelViewSet):
     search_fields = ["first_name", "last_name", "username"]
 
     def get_queryset(self):
-        queryset = super().get_queryset().filter(deleted=False)
-        if (
-            self.action == "list"
-            and "is_service_account" not in self.request.query_params
-        ):
-            queryset = queryset.filter(is_service_account=False)
-        return queryset
+        return super().get_queryset().filter(deleted=False)
 
     def perform_create(self, instance):
         with transaction.atomic():
@@ -221,7 +218,9 @@ class UserViewSet(EMRModelViewSet):
                 {"error": "Only service accounts can generate token"}, status=400
             )
 
-        has_permission = self.request.user.is_superuser or (self.request.user == user.created_by)
+        has_permission = self.request.user.is_superuser or (
+            self.request.user == user.created_by
+        )
 
         if not has_permission:
             raise PermissionDenied(
@@ -249,8 +248,9 @@ class UserViewSet(EMRModelViewSet):
         if not user.is_service_account:
             return Response({"error": "Not a service account"}, status=400)
 
-        has_permission = self.request.user.is_superuser or (self.request.user == user.created_by)
-
+        has_permission = self.request.user.is_superuser or (
+            self.request.user == user.created_by
+        )
 
         if not has_permission:
             raise PermissionDenied(

@@ -28,6 +28,7 @@ from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.security.roles.role import FACILITY_ADMIN_ROLE
 from care.users.models import User
+from care.utils.filters.default_filter import DefaultBooleanFilter
 from care.utils.filters.dummy_filter import DummyUUIDFilter
 from care.utils.shortcuts import get_object_or_404
 
@@ -238,7 +239,9 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
 
 
 class FacilityOrganizationUsersFilter(filters.FilterSet):
-    is_service_account = filters.BooleanFilter(field_name="user__is_service_account")
+    is_service_account = DefaultBooleanFilter(
+        field_name="user__is_service_account", default=False
+    )
 
 
 class FacilityOrganizationUsersViewSet(EMRModelViewSet):
@@ -376,14 +379,6 @@ class FacilityOrganizationUsersViewSet(EMRModelViewSet):
             raise PermissionDenied(
                 "User does not have the required permissions to list users"
             )
-        queryset = FacilityOrganizationUser.objects.filter(
+        return FacilityOrganizationUser.objects.filter(
             organization=organization
         ).select_related("organization", "user", "role")
-
-        if (
-            self.action == "list"
-            and "is_service_account" not in self.request.query_params
-        ):
-            queryset = queryset.filter(user__is_service_account=False)
-
-        return queryset

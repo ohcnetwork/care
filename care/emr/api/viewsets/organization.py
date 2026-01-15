@@ -23,6 +23,7 @@ from care.emr.resources.organization.spec import (
 )
 from care.security.authorization import AuthorizationController
 from care.security.models import PermissionModel, RoleModel, RolePermission
+from care.utils.filters.default_filter import DefaultBooleanFilter
 from care.utils.pagination.care_pagination import CareLimitOffsetPagination
 from care.utils.shortcuts import get_object_or_404
 from config.patient_otp_authentication import JWTTokenPatientAuthentication
@@ -225,7 +226,9 @@ class OrganizationUserFilter(filters.FilterSet):
         field_name="user__phone_number", lookup_expr="iexact"
     )
     username = filters.CharFilter(field_name="user__username", lookup_expr="icontains")
-    is_service_account = filters.BooleanFilter(field_name="user__is_service_account")
+    is_service_account = DefaultBooleanFilter(
+        field_name="user__is_service_account", default=False
+    )
 
 
 class OrganizationUsersViewSet(EMRModelViewSet):
@@ -322,10 +325,4 @@ class OrganizationUsersViewSet(EMRModelViewSet):
             raise PermissionDenied(
                 "User does not have the required permissions to list users"
             )
-        queryset = OrganizationUser.objects.filter(organization=organization)
-        if (
-            self.action == "list"
-            and "is_service_account" not in self.request.query_params
-        ):
-            queryset = queryset.filter(user__is_service_account=False)
-        return queryset
+        return OrganizationUser.objects.filter(organization=organization)

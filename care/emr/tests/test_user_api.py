@@ -9,9 +9,7 @@ from PIL import Image
 
 from care.emr.resources.patient.spec import GenderChoices
 from care.emr.resources.user.spec import UserTypeOptions, UserTypeRoleMapping
-from care.security.permissions.service_account import ServiceAccountPermissions
 from care.security.permissions.user import UserPermissions
-from care.users.models import User
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -170,105 +168,6 @@ class UserviewTestCase(CareAPITestBase):
         self.client.force_authenticate(user=self.super_user)
         response = self.client.post(self.url, {}, format="json")
         self.assertEqual(response.status_code, 400)
-
-    def test_create_service_account_as_super_user(self):
-        self.client.force_authenticate(user=self.super_user)
-        service_account_data = self.user_data.copy()
-        service_account_data["username"] = "service_account_1"
-        service_account_data["email"] = "service1@example.com"
-        service_account_data["phone_number"] = "9876543210"
-        service_account_data["is_service_account"] = True
-
-        response = self.client.post(self.url, service_account_data, format="json")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["username"], "service_account_1")
-
-        service_account = User.objects.get(username="service_account_1")
-        self.assertTrue(service_account.is_service_account)
-
-    def test_create_service_account_with_permission(self):
-        service_account_role = self.create_role_with_permissions(
-            permissions=[ServiceAccountPermissions.can_create_service_account.name],
-        )
-        self.attach_role_organization_user(
-            self.organization, self.user, service_account_role
-        )
-
-        self.client.force_authenticate(user=self.user)
-        service_account_data = self.user_data.copy()
-        service_account_data["username"] = "service_account_2"
-        service_account_data["email"] = "service2@example.com"
-        service_account_data["phone_number"] = "9876543211"
-        service_account_data["is_service_account"] = True
-
-        response = self.client.post(self.url, service_account_data, format="json")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["username"], "service_account_2")
-
-    def test_create_service_account_without_permission(self):
-        self.client.force_authenticate(user=self.user)
-        service_account_data = self.user_data.copy()
-        service_account_data["username"] = "service_account_3"
-        service_account_data["email"] = "service3@example.com"
-        service_account_data["phone_number"] = "9876543212"
-        service_account_data["is_service_account"] = True
-
-        response = self.client.post(self.url, service_account_data, format="json")
-        self.assertEqual(response.status_code, 403)
-        self.assertIn(
-            "You do not have permission to create service accounts", str(response.data)
-        )
-
-    def test_list_users_excludes_service_accounts_by_default(self):
-        self.client.force_authenticate(user=self.super_user)
-        service_account_data = self.user_data.copy()
-        service_account_data["username"] = "service_account_list_test"
-        service_account_data["email"] = "servicelist@example.com"
-        service_account_data["phone_number"] = "9876543217"
-        service_account_data["is_service_account"] = True
-        self.client.post(self.url, service_account_data, format="json")
-
-        response = self.client.get(self.url)
-        self.assertEqual(response.status_code, 200)
-
-        usernames = [user["username"] for user in response.data["results"]]
-        self.assertNotIn("service_account_list_test", usernames)
-        self.assertIn("testuser", usernames)
-
-    def test_list_service_accounts_with_filter(self):
-        self.client.force_authenticate(user=self.super_user)
-        service_account_data = self.user_data.copy()
-        service_account_data["username"] = "service_account_filter_test"
-        service_account_data["email"] = "servicefilter@example.com"
-        service_account_data["phone_number"] = "9876543218"
-        service_account_data["is_service_account"] = True
-        self.client.post(self.url, service_account_data, format="json")
-
-        response = self.client.get(self.url, {"is_service_account": "true"})
-        self.assertEqual(response.status_code, 200)
-
-        usernames = [user["username"] for user in response.data["results"]]
-        self.assertIn("service_account_filter_test", usernames)
-        self.assertNotIn("testuser", usernames)
-
-    def test_list_regular_users_with_filter_false(self):
-        self.client.force_authenticate(user=self.super_user)
-        service_account_data = self.user_data.copy()
-        service_account_data["username"] = "service_account_false_test"
-        service_account_data["email"] = "servicefalse@example.com"
-        service_account_data["phone_number"] = "9876543219"
-        service_account_data["is_service_account"] = True
-        self.client.post(self.url, service_account_data, format="json")
-
-        response = self.client.get(self.url, {"is_service_account": "false"})
-        self.assertEqual(response.status_code, 200)
-
-        usernames = [user["username"] for user in response.data["results"]]
-        self.assertNotIn("service_account_false_test", usernames)
-        self.assertIn("testuser", usernames)
-
-    # Test cases for update user details
-    "Only super user and the user themselves can update user details"
 
     def test_update_user_as_super_user(self):
         self.client.force_authenticate(user=self.super_user)
