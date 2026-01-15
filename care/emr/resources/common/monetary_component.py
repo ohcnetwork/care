@@ -65,7 +65,7 @@ class MonetaryComponent(BaseModel):
         return self
 
 
-class MonetaryComponents(RootModel):
+class MonetaryComponentsWithoutBase(RootModel):
     root: list[MonetaryComponent] = []
 
     def __iter__(self):
@@ -79,15 +79,7 @@ class MonetaryComponents(RootModel):
         return self
 
     @model_validator(mode="after")
-    def check_single_base_component(self):
-        component_types = [component.monetary_component_type for component in self.root]
-        if component_types.count(MonetaryComponentType.base) > 1:
-            raise ValueError("Only one base component is allowed.")
-        return self
-
-    @model_validator(mode="after")
     def check_tax_included_amount_and_amount(self):
-        # TODO : Compute base price WRT taxes and check if supplied base price is correct
         base_price_component = None
         tax_components = []
         for component in self.root:
@@ -96,7 +88,7 @@ class MonetaryComponents(RootModel):
             elif component.monetary_component_type == MonetaryComponentType.tax.value:
                 tax_components.append(component)
         if not base_price_component:
-            raise ValueError("Base price component is required.")
+            return self
         if base_price_component.tax_included_amount is None:
             return self
         total_tax = Decimal(0)
@@ -112,6 +104,15 @@ class MonetaryComponents(RootModel):
             raise ValueError(
                 "Total tax amount must be equal to base price component amount."
             )
+        return self
+
+
+class MonetaryComponents(MonetaryComponentsWithoutBase):
+    @model_validator(mode="after")
+    def check_single_base_component(self):
+        component_types = [component.monetary_component_type for component in self.root]
+        if component_types.count(MonetaryComponentType.base) > 1:
+            raise ValueError("Only one base component is allowed.")
         return self
 
 

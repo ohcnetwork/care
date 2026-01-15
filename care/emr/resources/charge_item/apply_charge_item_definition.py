@@ -1,4 +1,5 @@
 from care.emr.models.charge_item import ChargeItem
+from care.emr.models.resource_category import merge_monetary_components
 from care.emr.resources.account.default_account import get_default_account
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
 from care.emr.resources.charge_item.sync_charge_item_costs import sync_charge_item_costs
@@ -23,6 +24,11 @@ def apply_charge_item_definition(
     selected_components = []
     metrics_cache = {}
     price_components = charge_item_definition.price_components
+    if charge_item_definition.category:
+        price_components = merge_monetary_components(
+            charge_item_definition.category.calculated_monetary_components,
+            price_components,
+        )
     for component in price_components:
         if component.get("conditions"):
             evaluator = InterpretationEvaluator({}, metrics_cache)
