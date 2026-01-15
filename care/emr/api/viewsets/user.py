@@ -221,12 +221,9 @@ class UserViewSet(EMRModelViewSet):
                 {"error": "Only service accounts can generate token"}, status=400
             )
 
-        has_permission = AuthorizationController.call(
-            "can_manage_service_account_token", self.request.user
-        )
-        is_own_account = self.request.user.id == user.id
+        has_permission = self.request.user.is_superuser or (self.request.user == user.created_by)
 
-        if not (has_permission or is_own_account):
+        if not has_permission:
             raise PermissionDenied(
                 "You do not have permission to update token for service account"
             )
@@ -252,12 +249,10 @@ class UserViewSet(EMRModelViewSet):
         if not user.is_service_account:
             return Response({"error": "Not a service account"}, status=400)
 
-        has_permission = AuthorizationController.call(
-            "can_manage_service_account_token", self.request.user
-        )
-        is_own_account = self.request.user.id == user.id
+        has_permission = self.request.user.is_superuser or (self.request.user == user.created_by)
 
-        if not (has_permission or is_own_account):
+
+        if not has_permission:
             raise PermissionDenied(
                 "You do not have permission to update token for service account"
             )

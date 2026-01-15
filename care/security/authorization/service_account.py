@@ -23,21 +23,5 @@ class ServiceAccountAccess(AuthorizationHandler):
             ).exists()
         )
 
-    def can_manage_service_account_token(self, user):
-        """
-        Check if the user has permission to manage a service account token
-        """
-        if user.is_superuser:
-            return True
-        roles = self.get_role_from_permissions(
-            [ServiceAccountPermissions.can_manage_service_account.name]
-        )
-        return (
-            OrganizationUser.objects.filter(user=user, role_id__in=roles).exists()
-            or FacilityOrganizationUser.objects.filter(
-                user=user, role_id__in=roles
-            ).exists()
-        )
-
 
 AuthorizationController.register_internal_controller(ServiceAccountAccess)

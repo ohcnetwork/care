@@ -1,11 +1,7 @@
 import enum
 
 from care.security.permissions.constants import Permission, PermissionContext
-from care.security.roles.role import (
-    ADMIN_ROLE,
-    ADMINISTRATOR,
-    FACILITY_ADMIN_ROLE,
-)
+from care.security.roles.role import ADMIN_ROLE, ADMINISTRATOR, FACILITY_ADMIN_ROLE
 
 
 class ServiceAccountPermissions(enum.Enum):
@@ -14,11 +10,4 @@ class ServiceAccountPermissions(enum.Enum):
         "",
         PermissionContext.FACILITY,
         [ADMIN_ROLE, FACILITY_ADMIN_ROLE, ADMINISTRATOR],
-    )
-
-    can_manage_service_account = Permission(
-        "Can manage service account in care",
-        "",
-        PermissionContext.FACILITY,
-        [],
     )
