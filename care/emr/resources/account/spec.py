@@ -88,7 +88,7 @@ class AccountReadSpec(AccountMinimalReadSpec):
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
 
 
-class AccountRetrieveSpec(AccountMinimalReadSpec):
+class AccountRetrieveSpec(AccountReadSpec):
     """Account retrieve specification"""
 
     patient: dict
