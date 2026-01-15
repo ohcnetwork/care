@@ -1,3 +1,4 @@
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import UUID4, BaseModel, model_validator
@@ -41,7 +42,7 @@ class HandlingConditionOptions(str, Enum):
 class QuantitySpec(BaseModel):
     """Represents a quantity with value and unit"""
 
-    value: float
+    value: Decimal
     unit: Coding
 
 

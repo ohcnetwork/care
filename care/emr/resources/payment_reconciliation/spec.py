@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import UUID4, model_validator
@@ -10,6 +11,7 @@ from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.resources.account.spec import AccountReadSpec
 from care.emr.resources.base import EMRResource
 from care.emr.resources.location.spec import FacilityLocationListSpec
+from care.emr.resources.patient.spec import PatientRetrieveSpec
 
 
 class PaymentReconciliationTypeOptions(str, Enum):
@@ -80,9 +82,9 @@ class PaymentReconciliationWriteSpec(BasePaymentReconciliationSpec):
 
     target_invoice: UUID4 | None = None
     account: UUID4
-    amount: float | None = None
-    tendered_amount: float
-    returned_amount: float
+    amount: Decimal | None = None
+    tendered_amount: Decimal
+    returned_amount: Decimal
     is_credit_note: bool = False
     location: UUID4 | None = None
 
@@ -102,9 +104,9 @@ class PaymentReconciliationWriteSpec(BasePaymentReconciliationSpec):
 
 
 class PaymentReconciliationMinimalReadSpec(BasePaymentReconciliationSpec):
-    amount: float | None = None
-    tendered_amount: float
-    returned_amount: float
+    amount: Decimal | None = None
+    tendered_amount: Decimal
+    returned_amount: Decimal
     is_credit_note: bool
     created_date: datetime
     modified_date: datetime
@@ -141,6 +143,9 @@ class PaymentReconciliationRetrieveSpec(PaymentReconciliationReadSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
+        mapping["account"]["patient"] = PatientRetrieveSpec.serialize(
+            obj.account.patient, facility=obj.account.facility
+        ).to_json()
         if obj.location:
             mapping["location"] = FacilityLocationListSpec.serialize(
                 obj.location

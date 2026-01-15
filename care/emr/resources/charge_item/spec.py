@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import UUID4, BaseModel, model_validator
@@ -7,19 +8,21 @@ from care.emr.models.account import Account
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.encounter import Encounter
 from care.emr.models.patient import Patient
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.charge_item_definition.spec import ChargeItemDefinitionReadSpec
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.monetary_component import (
     MonetaryComponent,
     MonetaryComponentType,
 )
+from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import SingleFacilityTagManager
+from care.facility.models.facility import User
 from care.utils.shortcuts import get_object_or_404
 
 
 class ChargeItemStatusOptions(str, Enum):
-    planned = "planned"
+    # planned = "planned"
     billable = "billable"
     not_billable = "not_billable"
     aborted = "aborted"
@@ -58,7 +61,7 @@ class ChargeItemSpec(EMRResource):
     description: str | None = None
     status: ChargeItemStatusOptions
     code: Coding | None = None
-    quantity: float
+    quantity: Decimal
     unit_price_components: list[MonetaryComponent]
     note: str | None = None
     override_reason: ChargeItemOverrideReason | None = None
@@ -98,6 +101,7 @@ class ChargeItemWriteSpec(ChargeItemSpec):
     account: UUID4 | None = None
     service_resource: ChargeItemResourceOptions | None = None
     service_resource_id: str | None = None
+    performer_actor: UUID4 | None = None
 
     @model_validator(mode="after")
     def validate_service_resource(self):
@@ -121,13 +125,29 @@ class ChargeItemWriteSpec(ChargeItemSpec):
             obj.account = Account.objects.get(
                 external_id=self.account, patient=obj.patient
             )
+        if self.performer_actor:
+            obj.performer_actor = get_object_or_404(
+                User.objects.only("id"),
+                external_id=self.performer_actor,
+            )
+
+
+class ChargeItemUpdateSpec(ChargeItemSpec):
+    performer_actor: UUID4 | None = None
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.performer_actor:
+            obj.performer_actor = get_object_or_404(
+                User.objects.only("id"),
+                external_id=self.performer_actor,
+            )
 
 
 class ChargeItemReadSpec(ChargeItemSpec):
     """Account read specification"""
 
     total_price_components: list[dict]
-    total_price: float
+    total_price: Decimal
     charge_item_definition: dict
     paid_invoice: dict | None = None
     tags: list[dict] = []
@@ -136,6 +156,9 @@ class ChargeItemReadSpec(ChargeItemSpec):
     created_date: datetime.datetime
     modified_date: datetime.datetime
     paid_on: datetime.datetime | None = None
+    performer_actor: dict | None = None
+    created_by: dict | None = None
+    updated_by: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -151,3 +174,8 @@ class ChargeItemReadSpec(ChargeItemSpec):
                 obj.paid_invoice
             ).to_json()
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+        if obj.performer_actor:
+            mapping["performer_actor"] = model_from_cache(
+                UserSpec, id=obj.performer_actor_id
+            )
+        cls.serialize_audit_users(mapping, obj)

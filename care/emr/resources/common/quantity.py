@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from decimal import Decimal
+
 from pydantic import BaseModel, ConfigDict, Field
 
 from care.emr.resources.common import Coding
@@ -9,7 +11,7 @@ class Quantity(BaseModel):
     model_config = ConfigDict(
         extra="forbid",
     )
-    value: float | None = Field(
+    value: Decimal | None = Field(
         None,
         description="The value of the measured amount. The value includes an implicit precision in the presentation of the value.",
     )

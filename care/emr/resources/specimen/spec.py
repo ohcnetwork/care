@@ -1,4 +1,5 @@
 import datetime
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import UUID4, BaseModel, field_validator, model_serializer
@@ -33,7 +34,7 @@ class SpecimenStatusOptions(str, Enum):
 class QuantitySpec(BaseModel):
     """Represents a quantity with value and unit"""
 
-    value: float
+    value: Decimal
     unit: Coding
 
 

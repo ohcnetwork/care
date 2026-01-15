@@ -74,8 +74,8 @@ class InvoiceReadSpec(BaseInvoiceSpec):
         mapping["id"] = obj.external_id
         mapping["account"] = AccountMinimalReadSpec.serialize(obj.account).to_json()
         if obj.locked:
-            mapping["total_net"] = 0
-            mapping["total_gross"] = 0
+            mapping["total_net"] = Decimal(0)
+            mapping["total_gross"] = Decimal(0)
 
 
 class InvoiceRetrieveSpec(InvoiceReadSpec):

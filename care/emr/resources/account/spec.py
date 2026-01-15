@@ -4,10 +4,12 @@ from enum import Enum
 
 from pydantic import UUID4
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import ExtensionValidator
 from care.emr.models import Account
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PeriodSpec
-from care.emr.resources.patient.spec import PatientListSpec
+from care.emr.resources.patient.spec import PatientListSpec, PatientRetrieveSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.utils.shortcuts import get_object_or_404
 
@@ -34,6 +36,7 @@ class AccountSpec(EMRResource):
 
     __model__ = Account
     __exclude__ = ["patient"]
+    ___extension_resource_type__ = ExtensionResource.account
 
     id: UUID4 | None = None
     status: AccountStatusOptions
@@ -43,7 +46,7 @@ class AccountSpec(EMRResource):
     description: str | None = None
 
 
-class AccountCreateSpec(AccountSpec):
+class AccountCreateSpec(ExtensionValidator, AccountSpec):
     """Account create specification"""
 
     patient: UUID4
@@ -52,10 +55,13 @@ class AccountCreateSpec(AccountSpec):
         obj.patient = get_object_or_404(Patient, external_id=self.patient)
 
 
+class AccountUpdateSpec(ExtensionValidator, AccountSpec):
+    pass
+
+
 class AccountMinimalReadSpec(AccountSpec):
     """Account read specification"""
 
-    total_net: Decimal
     total_gross: Decimal
     total_paid: Decimal
     total_balance: Decimal
@@ -82,8 +88,17 @@ class AccountReadSpec(AccountMinimalReadSpec):
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
 
 
-class AccountRetrieveSpec(AccountReadSpec):
+class AccountRetrieveSpec(AccountMinimalReadSpec):
     """Account retrieve specification"""
 
+    patient: dict
     cached_items: list = []
     total_price_components: dict
+    extensions: dict
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        mapping["patient"] = PatientRetrieveSpec.serialize(
+            obj.patient, facility=obj.facility
+        ).to_json()

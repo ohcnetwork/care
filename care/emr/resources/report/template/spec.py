@@ -51,11 +51,11 @@ class TemplateCreateSpec(TemplateBaseSpec):
 
     @model_validator(mode="after")
     def validate_report_type_and_context(self):
-        report_type = ReportTypeRegistry.get(self.template_type)
+        template_type = ReportTypeRegistry.get(self.template_type)
         context = DataPointRegistry.get(self.context)
-        if not report_type or not context:
+        if not template_type or not context:
             raise ValueError("Invalid report type or context")
-        if report_type.associating_model != context.__associating_model__:
+        if template_type.associating_model != context.__associating_model__:
             raise ValueError("Report Type and Context are not compatible")
 
         generator_class = GeneratorRegistry.get(self.default_format)
@@ -97,7 +97,7 @@ class TemplateUpdateSpec(TemplateCreateSpec):
 class TemplateReadSpec(TemplateBaseSpec):
     slug_config: dict
     slug: str
-    report_type: str
+    template_type: str
     context: str
 
     @classmethod

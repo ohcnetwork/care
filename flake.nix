@@ -239,7 +239,7 @@
 
           echo "✅ Development environment setup complete!"
           echo ""
-          echo "Note: Typst ${pkgs.typst.version} and ruff ${pkgs.ruff.version} are available from Nix store"
+          echo "Note: ruff ${pkgs.ruff.version} is available from Nix store"
         '';
 
         # Django management commands
@@ -429,7 +429,6 @@
             libpq
             redis
             minio
-            typst # Typst directly from nixpkgs
             ruff # Ruff from Nix for NixOS compatibility
 
             # System dependencies for building Python packages
@@ -496,7 +495,6 @@
             echo "   PostgreSQL: ${pkgs.postgresql_15.version}"
             echo "   Redis: ${pkgs.redis.version}"
             echo "   MinIO: ${pkgs.minio.version}"
-            echo "   Typst: ${pkgs.typst.version}"
             echo "   Ruff: ${pkgs.ruff.version}"
             echo ""
             echo "Available commands:"
@@ -542,7 +540,6 @@
 
             # Verify tools are available
             echo "✅ PostgreSQL development tools available (${pkgs.postgresql_15.version})"
-            echo "✅ Typst available (${pkgs.typst.version})"
             echo "✅ Ruff available (${pkgs.ruff.version})"
           '';
         };
@@ -555,7 +552,6 @@
             pkgs.postgresql_15
             pkgs.redis
             pkgs.minio
-            pkgs.typst
             pkgs.ruff
           ];
           text = ''

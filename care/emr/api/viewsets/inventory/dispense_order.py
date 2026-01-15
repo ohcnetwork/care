@@ -22,10 +22,11 @@ from care.emr.resources.medication.dispense.dispense_order import (
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyUUIDFilter
+from care.utils.filters.multiselect import MultiSelectFilter
 
 
 class DispenseOrderFilters(filters.FilterSet):
-    status = filters.CharFilter(lookup_expr="iexact")
+    status = MultiSelectFilter(field_name="status")
     created_date = filters.DateRangeFilter()
     patient = filters.UUIDFilter(field_name="patient__external_id")
     location = DummyUUIDFilter()

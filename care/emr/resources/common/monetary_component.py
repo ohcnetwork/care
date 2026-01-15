@@ -1,3 +1,4 @@
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import BaseModel, RootModel, model_validator
@@ -17,9 +18,19 @@ class MonetaryComponentType(str, Enum):
 class MonetaryComponent(BaseModel):
     monetary_component_type: MonetaryComponentType
     code: Coding | None = None
-    factor: float | None = None
-    amount: float | None = None
+    factor: Decimal | None = None
+    amount: Decimal | None = None
+    tax_included_amount: Decimal | None = None
     conditions: list[EvaluatorConditionSpec] = []
+
+    @model_validator(mode="after")
+    def check_tax_included_amount(self):
+        if (
+            self.tax_included_amount is not None
+            and self.monetary_component_type != MonetaryComponentType.base.value
+        ):
+            raise ValueError("Tax included amount is only allowed for base component.")
+        return self
 
     @model_validator(mode="after")
     def base_no_conditions(self):
@@ -72,6 +83,35 @@ class MonetaryComponents(RootModel):
         component_types = [component.monetary_component_type for component in self.root]
         if component_types.count(MonetaryComponentType.base) > 1:
             raise ValueError("Only one base component is allowed.")
+        return self
+
+    @model_validator(mode="after")
+    def check_tax_included_amount_and_amount(self):
+        # TODO : Compute base price WRT taxes and check if supplied base price is correct
+        base_price_component = None
+        tax_components = []
+        for component in self.root:
+            if component.monetary_component_type == MonetaryComponentType.base.value:
+                base_price_component = component
+            elif component.monetary_component_type == MonetaryComponentType.tax.value:
+                tax_components.append(component)
+        if not base_price_component:
+            raise ValueError("Base price component is required.")
+        if base_price_component.tax_included_amount is None:
+            return self
+        total_tax = Decimal(0)
+        for component in tax_components:
+            if component.amount is not None:
+                total_tax += component.amount
+            elif component.factor is not None:
+                total_tax += base_price_component.amount * component.factor
+        if (
+            total_tax + base_price_component.tax_included_amount
+            != base_price_component.amount
+        ):
+            raise ValueError(
+                "Total tax amount must be equal to base price component amount."
+            )
         return self
 
 

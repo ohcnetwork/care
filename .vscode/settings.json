@@ -22,9 +22,6 @@
   "files.trimTrailingWhitespace": true,
   "githubPullRequests.ignoredPullRequestBranches": ["develop", "staging"],
   "python.languageServer": "Pylance",
-  "cSpell.words": [
-    "Typst"
-  ],
   "python.testing.unittestArgs": [
     "--noinput",
     "--shuffle",
