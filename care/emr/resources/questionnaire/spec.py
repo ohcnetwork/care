@@ -7,7 +7,7 @@ from pydantic import UUID4, UUID5, ConfigDict, Field, field_validator, model_val
 from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
 from care.emr.resources.base import EMRResource
 from care.emr.resources.observation.valueset import (
-    CARE_OBSERVATION_VALUSET,
+    CARE_QUESTIONNAIRE_MULTIPLE_SYSTEM_VALUESET,
     CARE_UCUM_UNITS,
 )
 from care.emr.resources.user.spec import UserSpec
@@ -121,7 +121,9 @@ class Question(QuestionnaireBaseSpec):
     id: UUID4 | UUID5 = Field(
         description="Unique machine provided UUID", default_factory=uuid.uuid4
     )
-    code: ValueSetBoundCoding[CARE_OBSERVATION_VALUSET.slug] | None = None
+    code: (
+        ValueSetBoundCoding[CARE_QUESTIONNAIRE_MULTIPLE_SYSTEM_VALUESET.slug] | None
+    ) = None
     collect_time: bool = Field(
         default=False, description="Whether to collect timestamp"
     )

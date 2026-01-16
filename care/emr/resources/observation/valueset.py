@@ -221,3 +221,19 @@ CARE_OBSERVATION_INTERPRETATION_ABNORMAL.register_valueset(
 )
 
 CARE_OBSERVATION_INTERPRETATION_ABNORMAL.register_as_system()
+
+CARE_QUESTIONNAIRE_MULTIPLE_SYSTEM_VALUESET = CareValueset(
+    "Questionnaire Multiple Systems",
+    "system-questionnaire-multiple-systems",
+    ValueSetStatusOptions.active.value,
+)
+CARE_QUESTIONNAIRE_MULTIPLE_SYSTEM_VALUESET.register_valueset(
+    ValueSetCompose(
+        include=[
+            {"system": "http://loinc.org"},
+            {"system": "http://snomed.info/sct"},
+            {"system": "http://unitsofmeasure.org"},
+        ]
+    )
+)
+CARE_QUESTIONNAIRE_MULTIPLE_SYSTEM_VALUESET.register_as_system()
