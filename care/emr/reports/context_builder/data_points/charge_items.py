@@ -192,9 +192,38 @@ class AccountChargeItemCategoryContextBuilder(QuerysetContextBuilder):
         description="Charge items under this category",
     )
 
-    total_price = Field(
+    total_charge_items_price = Field(
         display="Total Price for Category",
-        preview_value="200.00",
-        mapping=lambda item: item.get("total_price"),
+        preview_value="300.00",
+        mapping=lambda item: item.get("total_charge_items")
+        if item.get("total_charge_items")
+        else "0.00",
         description="Total price of charge items in this category",
+    )
+
+    total_paid_charge_items_price = Field(
+        display="Total Paid Price for Category",
+        preview_value="150.00",
+        mapping=lambda item: item.get("total_paid_charge_items")
+        if item.get("total_paid_charge_items")
+        else "0.00",
+        description="Total paid price of charge items in this category",
+    )
+
+    total_billable_charge_items_price = Field(
+        display="Total Billable Price for Category",
+        preview_value="50.00",
+        mapping=lambda item: item.get("total_billable_charge_items")
+        if item.get("total_billable_charge_items")
+        else "0.00",
+        description="Total billable price of charge items in this category",
+    )
+
+    total_billed_charge_items_price = Field(
+        display="Total Billed Price for Category",
+        preview_value="100.00",
+        mapping=lambda item: item.get("total_billed_charge_items")
+        if item.get("total_billed_charge_items")
+        else "0.00",
+        description="Total billed price of charge items in this category",
     )
