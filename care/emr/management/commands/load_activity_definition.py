@@ -272,9 +272,9 @@ class Command(BaseCommand):
                     s.strip() for s in row["charge_item_slugs"].split(",") if s.strip()
                 ]
 
-            location_names = []
+            location_ids = []
             if row.get("locations"):
-                location_names = [
+                location_ids = [
                     s.strip() for s in row["locations"].split(",") if s.strip()
                 ]
 
@@ -304,7 +304,7 @@ class Command(BaseCommand):
                 "observation_slugs": observation_slugs,
                 "specimen_slugs": specimen_slugs,
                 "charge_item_slugs": charge_item_slugs,
-                "location_names": location_names,
+                "location_ids": location_ids,
                 "derived_from_uri": row.get("derived_from_uri", ""),
                 "substitutions": "; ".join(substitution_messages)
                 if substitution_messages
@@ -369,17 +369,9 @@ class Command(BaseCommand):
             else:
                 missing.append(f"charge_item:{slug}")
 
-        # Resolve locations
-        location_ids, missing_locations = self.lookup_locations(
-            data["location_names"], facility
-        )
-        for loc in missing_locations:
-            missing.append(f"location:{loc}")
-
         data["observation_ids"] = observation_ids
         data["specimen_ids"] = specimen_ids
         data["charge_item_ids"] = charge_item_ids
-        data["location_ids"] = location_ids
 
         return data, missing
 
