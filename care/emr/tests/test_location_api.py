@@ -770,6 +770,11 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         )
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 200)
+        location = FacilityLocation.objects.get(external_id=self.location["id"])
+        self.assertEqual(
+            location.availability_status,
+            LocationEncounterAvailabilityStatusChoices.active.value,
+        )
 
     def test_create_encounter_with_conflicting_schedule(self):
         """Test creating an encounter with conflicting times should return an error."""
@@ -786,11 +791,11 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         # First request should pass
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 200)
+        location = FacilityLocation.objects.get(external_id=self.location["id"])
+        self.assertEqual(location.current_encounter.id, self.encounter.id)
         self.assertEqual(
-            FacilityLocation.objects.get(
-                external_id=self.location["id"]
-            ).current_encounter.id,
-            self.encounter.id,
+            location.availability_status,
+            LocationEncounterAvailabilityStatusChoices.active.value,
         )
         # Second request with the same time should fail
         response = self.client.post(self.base_url, data=data, format="json")
@@ -821,6 +826,11 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
             self.base_url, data=first_encounter_data, format="json"
         )
         self.assertEqual(response.status_code, 200)
+        location = FacilityLocation.objects.get(external_id=self.location["id"])
+        self.assertEqual(
+            location.availability_status,
+            LocationEncounterAvailabilityStatusChoices.active.value,
+        )
 
         second_encounter_data = self.generate_facility_location_encounter_data(
             self.encounter.external_id,
@@ -856,6 +866,11 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         )
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 200)
+        location = FacilityLocation.objects.get(external_id=self.location["id"])
+        self.assertEqual(
+            location.availability_status,
+            LocationEncounterAvailabilityStatusChoices.active.value,
+        )
 
         another_active_data = self.generate_facility_location_encounter_data(
             self.encounter.external_id,
@@ -1028,6 +1043,11 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
                 external_id=facility_location_encounter["id"]
             ).exists()
         )
+        location = FacilityLocation.objects.get(external_id=self.location["id"])
+        self.assertEqual(
+            location.availability_status,
+            LocationEncounterAvailabilityStatusChoices.available.value,
+        )
 
     # UPDATE TESTS
     def test_update_without_permission(self):
@@ -1085,6 +1105,11 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         response = self.client.put(url, data=data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["status"], data["status"])
+        location = FacilityLocation.objects.get(external_id=self.location["id"])
+        self.assertEqual(
+            location.availability_status,
+            LocationEncounterAvailabilityStatusChoices.available.value,
+        )
 
         # Trying to update a completed association
         data["status"] = LocationEncounterAvailabilityStatusChoices.planned.value
@@ -1161,8 +1186,9 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         )
         self.assertIsNotNone(encounter_location_obj.end_datetime)
 
-        self.assertIsNone(
-            FacilityLocation.objects.get(
-                external_id=self.location["id"]
-            ).current_encounter
+        location = FacilityLocation.objects.get(external_id=self.location["id"])
+        self.assertIsNone(location.current_encounter)
+        self.assertEqual(
+            location.availability_status,
+            LocationEncounterAvailabilityStatusChoices.available.value,
         )

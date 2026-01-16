@@ -624,7 +624,7 @@ class Command(BaseCommand):
             organizations=[],  # this field is used by the viewset to add the relations
             parent=parent,
             status="active",
-            operational_status="O",
+            operational_status="U",
             name=name or self.fake.company(),
             description=self.fake.text(max_nb_chars=200),
             mode=mode,

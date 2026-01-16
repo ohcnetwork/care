@@ -11,9 +11,10 @@ from care.emr.resources.user.spec import UserSpec
 
 
 class LocationEncounterAvailabilityStatusChoices(str, Enum):
+    available = "available"
     planned = "planned"
-    active = "active"
     reserved = "reserved"
+    active = "active"
     completed = "completed"
 
 
@@ -117,7 +118,7 @@ class FacilityLocationListSpec(FacilityLocationSpec):
     parent: dict
     mode: str
     has_children: bool
-    availability_status: str
+    availability_status: LocationEncounterAvailabilityStatusChoices
     current_encounter: dict | None = None
 
     @classmethod

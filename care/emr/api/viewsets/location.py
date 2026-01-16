@@ -340,6 +340,8 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
             instance.location = location
             self._validate_data(instance)
             super().perform_create(instance)
+            location.availability_status = instance.status
+            location.save(update_fields=["availability_status"])
             self.reset_encounter_location_association(location)
 
     def perform_update(self, instance):
@@ -348,11 +350,21 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
             # Keep in mind that instance here is an ORM instance and not pydantic
             self._validate_data(instance, self.get_object())
             super().perform_update(instance)
+            status = instance.status
+            if status == LocationEncounterAvailabilityStatusChoices.completed.value:
+                status = LocationEncounterAvailabilityStatusChoices.available.value
+            location.availability_status = status
+            location.save(update_fields=["availability_status"])
             self.reset_encounter_location_association(location)
 
     def perform_destroy(self, instance):
         super().perform_destroy(instance)
-        self.reset_encounter_location_association(instance.location)
+        with Lock(f"facility_location:{instance.location.id}"):
+            instance.location.availability_status = (
+                LocationEncounterAvailabilityStatusChoices.available.value
+            )
+            instance.location.save(update_fields=["availability_status"])
+            self.reset_encounter_location_association(instance.location)
 
     def _validate_data(self, instance, model_obj=None):  # noqa PLR0912
         """
@@ -469,7 +481,8 @@ def close_related_location_from_encounter(instance):
     if instance.status in COMPLETED_CHOICES:
         with transaction.atomic():
             FacilityLocation.objects.filter(current_encounter=instance).update(
-                current_encounter=None
+                current_encounter=None,
+                availability_status=LocationEncounterAvailabilityStatusChoices.available.value,
             )
             FacilityLocationEncounter.objects.filter(encounter=instance).exclude(
                 status__in=COMPLETED_CHOICES
