@@ -194,7 +194,10 @@ class ChargeItemViewSet(
             )
         if model_obj and model_obj.status in CHARGE_ITEM_CANCELLED_STATUS:
             raise ValidationError("No updates allowed on cancelled charge item")
-        if model_obj and instance.status in [
+        last_obj = None
+        if model_obj:
+            last_obj = ChargeItem.objects.get(id=model_obj.id)
+        if model_obj and last_obj and last_obj.status != instance.status and instance.status in [
             ChargeItemStatusOptions.billed.value,
             ChargeItemStatusOptions.paid.value,
         ]:
