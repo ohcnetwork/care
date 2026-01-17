@@ -24,16 +24,16 @@ IDENTIFIER_USE_OPTIONS = {
 
 class IdentifierConfigContextBuilder(SingleObjectContextBuilder):
     def get_context(self):
-        return PatientIdentifierConfig.objects.get(
+        return PatientIdentifierConfig.objects.filter(
             external_id=self.parent_context.get("config"), status="active"
-        )
+        ).first()
 
     display = Field(
         display="Display",
         preview_value="Patient ID",
         mapping=lambda ic: ic.config.get("display")
-        if ic.config and ic.config.get("display")
-        else "",
+        if ic and ic.config and ic.config.get("display")
+        else None,
         description="Display of the identifier configuration",
     )
 
@@ -43,8 +43,8 @@ class IdentifierConfigContextBuilder(SingleObjectContextBuilder):
         mapping=lambda ic: IDENTIFIER_USE_OPTIONS.get(
             ic.config.get("use"), ic.config.get("use").title()
         )
-        if ic.config and ic.config.get("use")
-        else "",
+        if ic and ic.config and ic.config.get("use")
+        else None,
         description="Use of the identifier configuration",
     )
 
@@ -52,8 +52,8 @@ class IdentifierConfigContextBuilder(SingleObjectContextBuilder):
         display="Auto Maintained",
         preview_value="False",
         mapping=lambda ic: ic.config.get("auto_maintained", False)
-        if ic.config
-        else False,
+        if ic and ic.config
+        else None,
         description="Whether the identifier is auto maintained",
     )
 
