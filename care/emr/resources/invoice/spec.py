@@ -12,7 +12,7 @@ from care.emr.resources.account.spec import AccountMinimalReadSpec, AccountReadS
 from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
 from care.emr.resources.payment_reconciliation.spec import (
-    PaymentReconciliationMinimalReadSpec,
+    PaymentReconciliationRetrieveSpec,
 )
 from care.emr.resources.user.spec import UserSpec
 
@@ -108,7 +108,7 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
         total_payments = Decimal(0)
         for payment in PaymentReconciliation.objects.filter(target_invoice=obj):
             payments.append(
-                PaymentReconciliationMinimalReadSpec.serialize(payment).to_json()
+                PaymentReconciliationRetrieveSpec.serialize(payment).to_json()
             )
             total_payments += payment.amount
         mapping["total_payments"] = total_payments
