@@ -1,0 +1,108 @@
+when:
+  - event: push
+    branch:
+      - develop
+      - staging
+  - event: tag
+    ref: refs/tags/v*
+  - event: manual
+
+depends_on:
+  - test
+
+steps:
+  - name: prepare-tags
+    image: alpine:latest
+    commands:
+      - |
+        # Determine tags based on event
+        if [ "$CI_PIPELINE_EVENT" = "tag" ] && echo "$CI_COMMIT_TAG" | grep -q "^v"; then
+          # Production release tags
+          TAGS="production-latest,production-latest-${CI_PIPELINE_NUMBER}-$(date +%Y%m%d)-${CI_COMMIT_SHA:0:7},${CI_COMMIT_TAG#v}"
+        elif [ "$CI_COMMIT_BRANCH" = "staging" ]; then
+          # Staging branch tags
+          TAGS="staging-latest,staging-latest-${CI_PIPELINE_NUMBER}-$(date +%Y%m%d)-${CI_COMMIT_SHA:0:7}"
+        elif [ "$CI_COMMIT_BRANCH" = "develop" ]; then
+          # Development branch tags
+          TAGS="latest,latest-${CI_PIPELINE_NUMBER}"
+        else
+          # Feature/other branch tags
+          TAGS="branch-${CI_COMMIT_BRANCH}-${CI_COMMIT_SHA:0:7}"
+        fi
+
+        echo "DOCKER_TAGS=$TAGS" >> $CI_ENV
+        echo "Tags to be created: $TAGS"
+
+  - name: build-push-multiplatform
+    image: woodpeckerci/plugin-docker-buildx:4
+    settings:
+      repo: ghcr.io/${CI_REPO}
+      dockerfile: docker/prod.Dockerfile
+      platforms: linux/amd64,linux/arm64
+      tags: ${DOCKER_TAGS}
+      # Registry cache for build layers
+      cache_from:
+        - type=registry,ref=ghcr.io/${CI_REPO}:buildcache-amd64
+        - type=registry,ref=ghcr.io/${CI_REPO}:buildcache-arm64
+      cache_to: type=registry,ref=ghcr.io/${CI_REPO}:buildcache,mode=max
+      build_args:
+        - APP_VERSION=${CI_COMMIT_SHA}
+        - ADDITIONAL_PLUGS=${ADDITIONAL_PLUGS:-}
+      provenance: false
+      label:
+        - org.opencontainers.image.source=https://github.com/${CI_REPO}
+        - org.opencontainers.image.revision=${CI_COMMIT_SHA}
+        - org.opencontainers.image.created=${CI_PIPELINE_CREATED}
+        - org.opencontainers.image.version=${CI_COMMIT_TAG:-${CI_COMMIT_SHA:0:7}}
+      # Registry authentication
+      registry: ghcr.io
+      username:
+        from_secret: registry_username
+      password:
+        from_secret: github_token
+    when:
+      - evaluate: 'CI_REPO == "ohcnetwork/care"'
+
+  - name: create-sentry-release
+    image: getsentry/sentry-cli:2
+    commands:
+      - |
+        if [ -n "$SENTRY_AUTH_TOKEN" ]; then
+          echo "Creating Sentry release for ${CI_COMMIT_SHA}"
+          sentry-cli releases new ${CI_COMMIT_SHA}
+          sentry-cli releases set-commits ${CI_COMMIT_SHA} --auto
+          sentry-cli releases finalize ${CI_COMMIT_SHA}
+          echo "Sentry release created successfully"
+        else
+          echo "Sentry token not configured, skipping release creation"
+        fi
+    environment:
+      SENTRY_AUTH_TOKEN:
+        from_secret: sentry_auth_token
+      SENTRY_ORG:
+        from_secret: sentry_org
+      SENTRY_PROJECT:
+        from_secret: sentry_project
+    when:
+      - evaluate: 'CI_REPO == "ohcnetwork/care"'
+
+  - name: notify-release
+    image: alpine:latest
+    commands:
+      - |
+        echo "================================================"
+        echo "Multi-platform Docker images built successfully"
+        echo "================================================"
+        echo "Repository: ${CI_REPO}"
+        echo "SHA: ${CI_COMMIT_SHA}"
+        echo "Tags: ${DOCKER_TAGS}"
+        echo "Platforms: linux/amd64, linux/arm64"
+        echo "Registry: ghcr.io/${CI_REPO}"
+        echo "================================================"
+
+        if [ "$CI_PIPELINE_EVENT" = "tag" ] && echo "$CI_COMMIT_TAG" | grep -q "^v"; then
+          echo ""
+          echo "Release ${CI_COMMIT_TAG} is ready to be deployed to production"
+        fi
+    when:
+      - evaluate: 'CI_REPO == "ohcnetwork/care"'

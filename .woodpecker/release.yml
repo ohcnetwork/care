@@ -1,0 +1,80 @@
+when:
+  - event: push
+    branch: production
+
+steps:
+  - name: calculate-version
+    image: alpine/git:latest
+    commands:
+      - |
+        # Calculate next semantic version based on calendar versioning
+        YEAR=$(date +"%y")
+        WEEK=$(date +"%V")
+
+        # Get the last tag matching the pattern
+        LAST_TAG=$(git tag -l "v$YEAR.$WEEK.*" | sort -V | tail -n1 || echo "")
+
+        # Clean up the tag
+        LAST_TAG=$(echo "$LAST_TAG" | tr -d '\r' | sed 's/[[:space:]]*$//')
+
+        echo "Last Tag: $LAST_TAG"
+
+        # Calculate minor version
+        if [ -z "$LAST_TAG" ]; then
+          MINOR=0
+        else
+          MINOR=$(echo "$LAST_TAG" | awk -F '.' '{print $NF}')
+          echo "Minor Version: $MINOR"
+          MINOR=$((MINOR + 1))
+        fi
+
+        # Create new tag
+        TAG="v$YEAR.$WEEK.$MINOR"
+        echo "Next Tag: $TAG"
+        echo "$TAG" > /tmp/release_tag.txt
+
+  - name: create-tag
+    image: alpine/git:latest
+    commands:
+      - |
+        # Read the calculated tag
+        TAG=$(cat /tmp/release_tag.txt)
+
+        # Configure git
+        git config --global user.name "woodpecker-ci"
+        git config --global user.email "woodpecker@care.ohc.network"
+
+        # Create and push tag
+        git tag -a "$TAG" -m "Release $TAG"
+        git push https://x-access-token:${GITHUB_TOKEN}@github.com/${CI_REPO}.git "$TAG"
+
+        # Save tag for next step
+        echo "$TAG" > /tmp/release_tag.txt
+    environment:
+      GITHUB_TOKEN:
+        from_secret: github_token
+
+  - name: create-github-release
+    image: alpine:latest
+    commands:
+      - |
+        # Install GitHub CLI
+        apk add --no-cache curl jq
+
+        # Read the tag
+        TAG=$(cat /tmp/release_tag.txt)
+
+        # Create release using GitHub API
+        curl -X POST \
+          -H "Authorization: token ${GITHUB_TOKEN}" \
+          -H "Accept: application/vnd.github+json" \
+          https://api.github.com/repos/${CI_REPO}/releases \
+          -d "{
+            \"tag_name\": \"$TAG\",
+            \"name\": \"$TAG\",
+            \"draft\": true,
+            \"generate_release_notes\": true
+          }"
+    environment:
+      GITHUB_TOKEN:
+        from_secret: github_token

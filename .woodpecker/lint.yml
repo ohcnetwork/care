@@ -1,0 +1,32 @@
+when:
+  - event: pull_request
+    branch:
+      - develop
+      - staging
+  # GitHub merge queue support
+  - event: push
+    branch:
+      - gh-readonly-queue/**
+
+steps:
+  - name: install-dependencies
+    image: python:3.13-slim
+    commands:
+      - python -m pip install --no-cache-dir pre-commit git
+
+  - name: run-pre-commit
+    image: python:3.13-slim
+    commands:
+      - |
+        # Configure git for pre-commit
+        git config --global --add safe.directory /woodpecker/src
+
+        if [ "$CI_PIPELINE_EVENT" = "pull_request" ]; then
+          # Run pre-commit on changed files between base and head
+          pre-commit run --show-diff-on-failure --color=always \
+            --from-ref origin/${CI_COMMIT_TARGET_BRANCH} \
+            --to-ref ${CI_COMMIT_SHA}
+        else
+          # Run pre-commit on all files (for merge queue or manual runs)
+          pre-commit run --show-diff-on-failure --color=always --all-files
+        fi

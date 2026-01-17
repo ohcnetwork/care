@@ -1,0 +1,58 @@
+services:
+  woodpecker-server:
+    image: woodpeckerci/woodpecker-server:next
+    ports:
+      - "8000:8000"
+      - "9000:9000"
+    volumes:
+      - woodpecker-data:/var/lib/woodpecker/
+    environment:
+      # Server configuration
+      - WOODPECKER_OPEN=true
+      - WOODPECKER_HOST=http://localhost:8000
+      - WOODPECKER_AGENT_SECRET=${WOODPECKER_AGENT_SECRET}
+
+      # GitHub configuration
+      - WOODPECKER_GITHUB=true
+      - WOODPECKER_GITHUB_CLIENT=${WOODPECKER_GITHUB_CLIENT}
+      - WOODPECKER_GITHUB_SECRET=${WOODPECKER_GITHUB_SECRET}
+      - WOODPECKER_GITHUB_SKIP_VERIFY=false
+
+      # Database (optional, defaults to SQLite)
+      # - WOODPECKER_DATABASE_DRIVER=postgres
+      # - WOODPECKER_DATABASE_DATASOURCE=postgres://user:pass@postgres:5432/woodpecker?sslmode=disable
+
+  woodpecker-agent:
+    image: woodpeckerci/woodpecker-agent:next
+    depends_on:
+      - woodpecker-server
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WOODPECKER_SERVER=woodpecker-server:9000
+      - WOODPECKER_AGENT_SECRET=${WOODPECKER_AGENT_SECRET}
+      - WOODPECKER_MAX_WORKFLOWS=4
+      - WOODPECKER_BACKEND=docker
+
+      # Platform label (for matrix builds)
+      - WOODPECKER_FILTER_LABELS=platform=linux/amd64
+    restart: unless-stopped
+
+volumes:
+  woodpecker-data:
+
+# To use this setup:
+# 1. Create a .env file with your GitHub OAuth credentials:
+#    WOODPECKER_GITHUB_CLIENT=your_client_id
+#    WOODPECKER_GITHUB_SECRET=your_client_secret
+#    WOODPECKER_AGENT_SECRET=generate_a_random_secret
+#    WOODPECKER_ADMIN=your_github_username
+#
+# 2. Start the services:
+#    docker compose -f docker-compose.woodpecker.yml up -d
+#
+# 3. Access Woodpecker UI at http://localhost:8000
+#
+# 4. Authenticate with GitHub and activate your repository
+#
+# 5. Configure repository secrets in the Woodpecker UI

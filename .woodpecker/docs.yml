@@ -1,0 +1,63 @@
+when:
+  - event: [push, pull_request, manual]
+    branch: develop
+    path:
+      include:
+        - docs/**
+
+steps:
+  - name: install-dependencies
+    image: python:3.13-slim
+    commands:
+      - apt-get update && apt-get install -y libpq-dev make
+      - pip install --no-cache-dir pipenv
+      - pipenv sync --categories "packages docs"
+
+  - name: build-docs
+    image: python:3.13-slim
+    commands:
+      - cd docs && make html
+      - echo "Documentation built successfully"
+      - ls -la docs/_build/html/
+    when:
+      - event: [push, pull_request, manual]
+
+  # Deploy docs only on push to develop
+  - name: deploy-docs
+    image: alpine/git:latest
+    commands:
+      - |
+        # Install dependencies
+        apk add --no-cache git openssh-client
+
+        # Configure git
+        git config --global user.name "woodpecker-ci"
+        git config --global user.email "woodpecker@ohc.network"
+
+        # Clone gh-pages branch
+        git clone --depth 1 --branch gh-pages https://x-access-token:${GITHUB_TOKEN}@github.com/${CI_REPO}.git gh-pages
+
+        # Copy built docs
+        rm -rf gh-pages/*
+        cp -r docs/_build/html/* gh-pages/
+
+        # Add .nojekyll to bypass Jekyll processing
+        touch gh-pages/.nojekyll
+
+        # Commit and push
+        cd gh-pages
+        git add -A
+        if git diff --staged --quiet; then
+          echo "No changes to deploy"
+        else
+          git commit -m "Deploy docs from ${CI_COMMIT_SHA}"
+          git push origin gh-pages
+          echo "Documentation deployed to GitHub Pages"
+        fi
+    environment:
+      GITHUB_TOKEN:
+        from_secret: github_token
+    when:
+      - event: push
+        branch: develop
+        evaluate: 'CI_REPO == "ohcnetwork/care"'

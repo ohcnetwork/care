@@ -1,0 +1,81 @@
+when:
+  - event: [pull_request, push]
+    branch: [develop, staging]
+
+steps:
+  - name: build-dev-image
+    image: woodpeckerci/plugin-docker-buildx:4
+    settings:
+      repo: care_local
+      dockerfile: docker/dev.Dockerfile
+      tags: latest
+      platforms: linux/arm64
+      cache_from: type=registry,ref=ghcr.io/ohcnetwork/care:dev-cache
+      cache_to: type=registry,ref=ghcr.io/ohcnetwork/care:dev-cache,mode=max
+      build_args:
+        - BUILDKIT_INLINE_CACHE=1
+      load: true
+      registry: ghcr.io
+      username:
+        from_secret: registry_username
+      password:
+        from_secret: github_token
+
+  - name: start-services
+    image: docker/compose:latest
+    commands:
+      - docker compose -f docker-compose.yaml -f docker-compose.local.yaml up -d --wait || (docker compose -f docker-compose.yaml -f docker-compose.local.yaml logs && exit 1)
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  - name: check-migrations
+    image: docker:latest
+    commands:
+      - docker compose exec -T backend python manage.py makemigrations --check --dry-run
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  - name: load-fixtures
+    image: docker:latest
+    commands:
+      - docker compose exec -T backend python manage.py load_fixtures
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  - name: run-tests
+    image: docker:latest
+    commands:
+      - docker compose exec -T backend coverage run manage.py test --settings=config.settings.test --keepdb --parallel --shuffle
+      - docker compose exec -T backend coverage combine || true
+      - docker compose exec -T backend coverage xml
+      - docker compose cp backend:/app/coverage.xml coverage.xml
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+  - name: upload-coverage
+    image: woodpeckerci/plugin-codecov:2
+    settings:
+      token:
+        from_secret: codecov_token
+      files:
+        - coverage.xml
+
+  - name: dump-db
+    image: docker:latest
+    commands:
+      - docker compose exec -T db sh -c "pg_dump -U postgres -Fc care > /tmp/care_db.dump"
+      - docker compose cp db:/tmp/care_db.dump care_db.dump
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    when:
+      - event: push
+        branch: develop
+
+  - name: cleanup
+    image: docker:latest
+    commands:
+      - docker compose -f docker-compose.yaml -f docker-compose.local.yaml down -v
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    when:
+      - status: [success, failure]
