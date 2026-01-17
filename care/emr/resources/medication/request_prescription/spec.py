@@ -89,6 +89,7 @@ class MedicationRequestPrescriptionRetrieveMedicationsSpec(
     MedicationRequestPrescriptionRetrieveSpec
 ):
     medications: list[dict] = []
+    encounter: dict = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -98,6 +99,7 @@ class MedicationRequestPrescriptionRetrieveMedicationsSpec(
 
         super().perform_extra_serialization(mapping, obj)
         cls.serialize_audit_users(mapping, obj)
+        mapping["encounter"] = EncounterListSpec.serialize(obj.patient).to_json()
         medications = MedicationRequest.objects.filter(prescription=obj).select_related(
             "requested_product"
         )
