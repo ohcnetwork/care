@@ -57,7 +57,7 @@ class InterpretationEvaluator:
                 if max_val is None:
                     max_val = Decimal("inf")
 
-                if min_val <= value <= max_val:
+                if Decimal(str(min_val)) <= value <= Decimal(str(max_val)):
                     return value_range.get("interpretation"), rule.get("ranges", [])
         else:
             # Handle Valueset based interpretation
