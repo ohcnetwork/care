@@ -13,10 +13,14 @@ from care.utils.tests.base import CareAPITestBase
 class ResetPasswordAPITest(CareAPITestBase):
     def setUp(self):
         super().setUp()
-        self.user = self.create_user(username="testuser", email="testuser@example.com")
+        self.password = "testpassword@123"
+        self.user = self.create_user_with_password(
+            self.password, username="testuser", email="testuser@example.com"
+        )
         self.reset_password_request_url = reverse("password_reset_request")
         self.reset_password_confirm_url = reverse("password_reset_confirm")
         self.reset_password_check_url = reverse("password_reset_check")
+        self.change_password_url = reverse("change_password_view")
         cache.clear()
 
     def extract_token_from_email(self, email_body):
@@ -436,3 +440,48 @@ class ResetPasswordAPITest(CareAPITestBase):
                 "Too many requests. Please try again later.",
                 status_code=429,
             )
+
+    def test_change_password_with_leading_whitespace(self):
+        """
+        Test that password with leading whitespace is handled consistently.
+        The password should be stripped before validation, matching login behavior.
+        """
+        self.client.force_authenticate(user=self.user)
+        new_password = "newpassword@123"
+        response = self.client.put(
+            self.change_password_url,
+            {"old_password": f"  {self.password}", "new_password": new_password},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"message": "Password updated successfully"})
+
+    def test_change_password_with_trailing_whitespace(self):
+        """
+        Test that password with trailing whitespace is handled consistently.
+        The password should be stripped before validation, matching login behavior.
+        """
+        self.client.force_authenticate(user=self.user)
+        new_password = "newpassword@123"
+        response = self.client.put(
+            self.change_password_url,
+            {"old_password": f"{self.password}  ", "new_password": new_password},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"message": "Password updated successfully"})
+
+    def test_change_password_with_leading_and_trailing_whitespace(self):
+        """
+        Test that password with both leading and trailing whitespace is handled consistently.
+        The password should be stripped before validation, matching login behavior.
+        """
+        self.client.force_authenticate(user=self.user)
+        new_password = "newpassword@123"
+        response = self.client.put(
+            self.change_password_url,
+            {"old_password": f"  {self.password}  ", "new_password": new_password},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data, {"message": "Password updated successfully"})
