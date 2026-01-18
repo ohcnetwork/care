@@ -13,6 +13,8 @@ class Quantity(BaseModel):
     )
     value: Decimal | None = Field(
         None,
+        max_digits=20,
+        decimal_places=6,
         description="The value of the measured amount. The value includes an implicit precision in the presentation of the value.",
     )
     unit: Coding | None = Field(None, description="A human-readable form of the unit.")

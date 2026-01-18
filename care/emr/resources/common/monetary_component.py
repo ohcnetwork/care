@@ -1,7 +1,7 @@
 from decimal import Decimal
 from enum import Enum
 
-from pydantic import BaseModel, RootModel, model_validator
+from pydantic import BaseModel, Field, RootModel, model_validator
 
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.condition_evaluator import EvaluatorConditionSpec
@@ -18,9 +18,11 @@ class MonetaryComponentType(str, Enum):
 class MonetaryComponent(BaseModel):
     monetary_component_type: MonetaryComponentType
     code: Coding | None = None
-    factor: Decimal | None = None
-    amount: Decimal | None = None
-    tax_included_amount: Decimal | None = None
+    factor: Decimal | None = Field(default=None, max_digits=20, decimal_places=6)
+    amount: Decimal | None = Field(default=None, max_digits=20, decimal_places=6)
+    tax_included_amount: Decimal | None = Field(
+        default=None, max_digits=20, decimal_places=6
+    )
     conditions: list[EvaluatorConditionSpec] = []
 
     @model_validator(mode="after")

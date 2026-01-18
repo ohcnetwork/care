@@ -2,7 +2,7 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 
-from pydantic import UUID4
+from pydantic import UUID4, Field
 
 from care.emr.models.account import Account
 from care.emr.models.charge_item import ChargeItem
@@ -62,8 +62,8 @@ class InvoiceWriteSpec(BaseInvoiceSpec):
 class InvoiceReadSpec(BaseInvoiceSpec):
     """Invoice read specification"""
 
-    total_net: Decimal
-    total_gross: Decimal
+    total_net: Decimal = Field(max_digits=20, decimal_places=6)
+    total_gross: Decimal = Field(max_digits=20, decimal_places=6)
     locked: bool
     created_date: datetime.datetime
     modified_date: datetime.datetime
@@ -86,7 +86,7 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
     created_by: dict | None
     updated_by: dict | None
     payments: list[dict]
-    total_payments: Decimal
+    total_payments: Decimal = Field(max_digits=20, decimal_places=6)
     lock_history: list[dict]
 
     @classmethod

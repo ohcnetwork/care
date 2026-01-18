@@ -1,7 +1,7 @@
 from decimal import Decimal
 from enum import Enum
 
-from pydantic import UUID4
+from pydantic import UUID4, Field
 
 from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.models.supply_request import RequestOrder, SupplyRequest
@@ -30,7 +30,7 @@ class BaseSupplyRequestSpec(EMRResource):
 
     status: SupplyRequestStatusOptions
 
-    quantity: Decimal
+    quantity: Decimal = Field(max_digits=20, decimal_places=6)
 
 
 class SupplyRequestWriteSpec(BaseSupplyRequestSpec):
