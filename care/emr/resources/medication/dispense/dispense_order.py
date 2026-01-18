@@ -7,7 +7,6 @@ from care.emr.models.location import FacilityLocation
 from care.emr.models.medication_dispense import DispenseOrder
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource
-from care.emr.resources.encounter.spec import EncounterListSpec, EncounterRetrieveSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
 from care.emr.resources.patient.spec import PatientListSpec, PatientRetrieveSpec
 from care.utils.shortcuts import get_object_or_404
