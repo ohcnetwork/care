@@ -7,8 +7,8 @@ from care.emr.models.location import FacilityLocation
 from care.emr.models.medication_dispense import DispenseOrder
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource
+from care.emr.resources.encounter.spec import EncounterListSpec, EncounterRetrieveSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
-from care.emr.resources.patient.spec import PatientListSpec
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -52,7 +52,7 @@ class MedicationDispenseOrderWriteSpec(BaseMedicationDispenseOrderSpec):
 
 
 class MedicationDispenseOrderReadSpec(BaseMedicationDispenseOrderSpec):
-    patient: dict
+    encounter: dict = {}
     location: dict
     created_date: datetime.datetime
     modified_date: datetime.datetime
@@ -60,5 +60,19 @@ class MedicationDispenseOrderReadSpec(BaseMedicationDispenseOrderSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
         mapping["location"] = FacilityLocationListSpec.serialize(obj.location).to_json()
+        mapping["encounter"] = EncounterListSpec.serialize(obj.encounter).to_json()
+
+
+class MedicationDispenseOrderRetrieveSpec(MedicationDispenseOrderReadSpec):
+    encounter: dict = {}
+
+    created_by: dict = {}
+    updated_by: dict = {}
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        cls.serialize_audit_users(mapping, obj)
+        mapping["id"] = obj.external_id
+        mapping["location"] = FacilityLocationListSpec.serialize(obj.location).to_json()
+        mapping["encounter"] = EncounterRetrieveSpec.serialize(obj.encounter).to_json()

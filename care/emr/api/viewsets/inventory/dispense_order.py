@@ -17,6 +17,7 @@ from care.emr.models.medication_dispense import DispenseOrder
 from care.emr.resources.medication.dispense.dispense_order import (
     BaseMedicationDispenseOrderSpec,
     MedicationDispenseOrderReadSpec,
+    MedicationDispenseOrderRetrieveSpec,
     MedicationDispenseOrderWriteSpec,
 )
 from care.facility.models.facility import Facility
@@ -45,6 +46,7 @@ class DispenseOrderViewSet(
     pydantic_model = MedicationDispenseOrderWriteSpec
     pydantic_update_model = BaseMedicationDispenseOrderSpec
     pydantic_read_model = MedicationDispenseOrderReadSpec
+    pydantic_retrieve_model = MedicationDispenseOrderRetrieveSpec
     filterset_class = DispenseOrderFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date"]

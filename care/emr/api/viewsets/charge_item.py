@@ -197,10 +197,16 @@ class ChargeItemViewSet(
         last_obj = None
         if model_obj:
             last_obj = ChargeItem.objects.get(id=model_obj.id)
-        if model_obj and last_obj and last_obj.status != instance.status and instance.status in [
-            ChargeItemStatusOptions.billed.value,
-            ChargeItemStatusOptions.paid.value,
-        ]:
+        if (
+            model_obj
+            and last_obj
+            and last_obj.status != instance.status
+            and instance.status
+            in [
+                ChargeItemStatusOptions.billed.value,
+                ChargeItemStatusOptions.paid.value,
+            ]
+        ):
             raise ValidationError("Charge item status cannot be manually changed.")
         return super().validate_data(instance, model_obj)
 
