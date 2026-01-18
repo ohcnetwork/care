@@ -2,7 +2,7 @@ from datetime import datetime
 from decimal import Decimal
 from enum import Enum
 
-from pydantic import UUID4, BaseModel, model_validator
+from pydantic import UUID4, BaseModel, Field, model_validator
 from rest_framework.exceptions import ValidationError
 
 from care.emr.models.encounter import Encounter
@@ -124,8 +124,8 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
     location: UUID4
     authorizing_request: UUID4 | None = None
     item: UUID4
-    quantity: Decimal
-    days_supply: Decimal | None = None
+    quantity: Decimal = Field(max_digits=20, decimal_places=6)
+    days_supply: Decimal | None = Field(default=None, max_digits=20, decimal_places=6)
     fully_dispensed: bool | None = None
     order: UUID4 | None = None
     create_dispense_order: CreateDispenseOrder | None = None
@@ -207,7 +207,7 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
     created_date: datetime
     modified_date: datetime
     location: dict
-    quantity: Decimal
+    quantity: Decimal = Field(max_digits=20, decimal_places=6)
     authorizing_request: dict | None = None
     order: dict | None = None
 

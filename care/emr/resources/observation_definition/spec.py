@@ -1,7 +1,7 @@
 import enum
 from decimal import Decimal
 
-from pydantic import UUID4, BaseModel, field_validator, model_validator
+from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 
 from care.emr.models.observation_definition import ObservationDefinition
 from care.emr.resources.base import EMRResource
@@ -56,8 +56,8 @@ class InterpretationSpec(BaseModel):
 
 class NumericRangeSpec(BaseModel):
     interpretation: InterpretationSpec
-    min: Decimal | None = None
-    max: Decimal | None = None
+    min: Decimal | None = Field(default=None, max_digits=20, decimal_places=6)
+    max: Decimal | None = Field(default=None, max_digits=20, decimal_places=6)
 
     @model_validator(mode="after")
     def validate_range(self):
