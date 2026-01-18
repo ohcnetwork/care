@@ -2,7 +2,7 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 
-from pydantic import UUID4
+from pydantic import UUID4, Field
 
 from care.emr.extensions.base import ExtensionResource
 from care.emr.extensions.validator import ExtensionValidator
@@ -62,10 +62,10 @@ class AccountUpdateSpec(ExtensionValidator, AccountSpec):
 class AccountMinimalReadSpec(AccountSpec):
     """Account read specification"""
 
-    total_gross: Decimal
-    total_paid: Decimal
-    total_balance: Decimal
-    total_billable_charge_items: Decimal
+    total_gross: Decimal = Field(max_digits=20, decimal_places=6)
+    total_paid: Decimal = Field(max_digits=20, decimal_places=6)
+    total_balance: Decimal = Field(max_digits=20, decimal_places=6)
+    total_billable_charge_items: Decimal = Field(max_digits=20, decimal_places=6)
     calculated_at: datetime.datetime
     created_date: datetime.datetime
     modified_date: datetime.datetime

@@ -2,7 +2,7 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 
-from pydantic import UUID4, BaseModel, field_validator, model_serializer
+from pydantic import UUID4, BaseModel, Field, field_validator, model_serializer
 
 from care.emr.models.specimen import Specimen
 from care.emr.resources.base import EMRResource, model_from_cache
@@ -34,7 +34,7 @@ class SpecimenStatusOptions(str, Enum):
 class QuantitySpec(BaseModel):
     """Represents a quantity with value and unit"""
 
-    value: Decimal
+    value: Decimal = Field(max_digits=20, decimal_places=6)
     unit: Coding
 
 

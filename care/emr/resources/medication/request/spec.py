@@ -111,12 +111,12 @@ class DoseType(str, Enum):
 
 
 class DosageQuantity(BaseModel):
-    value: Decimal
+    value: Decimal = Field(max_digits=20, decimal_places=6)
     unit: Coding
 
 
 class TimingQuantity(BaseModel):
-    value: Decimal
+    value: Decimal = Field(max_digits=20, decimal_places=6)
     unit: TimingUnit
 
 
@@ -133,7 +133,7 @@ class DoseAndRate(BaseModel):
 
 class TimingRepeat(BaseModel):
     frequency: int
-    period: Decimal
+    period: Decimal = Field(max_digits=20, decimal_places=6)
     period_unit: TimingUnit
     bounds_duration: TimingQuantity
 
