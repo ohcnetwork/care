@@ -10,6 +10,7 @@ from care.emr.models.medication_request import (
 )
 from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.encounter.spec import EncounterListSpec
+from care.emr.resources.patient.spec import PatientRetrieveSpec
 from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.users.models import User
@@ -100,6 +101,9 @@ class MedicationRequestPrescriptionRetrieveMedicationsSpec(
         super().perform_extra_serialization(mapping, obj)
         cls.serialize_audit_users(mapping, obj)
         mapping["encounter"] = EncounterListSpec.serialize(obj.encounter).to_json()
+        mapping["encounter"]["patient"] = PatientRetrieveSpec.serialize(
+            obj.encounter.patient,
+        ).to_json()
         medications = MedicationRequest.objects.filter(prescription=obj).select_related(
             "requested_product"
         )
