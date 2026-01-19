@@ -7,6 +7,7 @@ from django.db import transaction
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.invoice import Invoice
 from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
+from care.emr.resources.account.default_account import get_default_account
 from care.emr.resources.account.sync_items import rebalance_account_task
 from care.emr.resources.charge_item.apply_charge_item_definition import (
     apply_charge_item_definition,
@@ -29,6 +30,7 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
         invoice_obj = Invoice()
         invoice_obj.status = InvoiceStatusOptions.draft.value
         invoice_obj.facility = delivery_order.destination.facility
+        invoice_obj.account = get_default_account(delivery_order.patient, invoice_obj.facility)
         invoice_obj.number = evaluate_invoice_identifier_default_expression(
             invoice_obj.facility
         )
