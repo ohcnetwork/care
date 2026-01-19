@@ -66,6 +66,17 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
         )
 
 
+class EncounterFacilityLocationContextBuilder(SingleObjectContextBuilder):
+    def get_context(self):
+        return getattr(self.parent_context, self.parent_attribute)
+
+    name = Field(
+        display="Location Name",
+        preview_value="Ward A",
+        description="Name of the facility location",
+    )
+
+
 class EncounterReportContextBase(SingleObjectContextBuilder):
     standalone_context = True
     __slug__ = "encounter_base"
@@ -138,6 +149,12 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         target_context=FacilityContextBuilder,
         preview_value="",
         description="Details of the facility where the encounter took place",
+    )
+    current_location = Field(
+        display="Current Location",
+        target_context=EncounterFacilityLocationContextBuilder,
+        preview_value="",
+        description="Current location within the facility for the encounter",
     )
 
 
