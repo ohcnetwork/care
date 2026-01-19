@@ -1896,3 +1896,178 @@ class TestChargeItemPydanticValidation(CareAPITestBase):
         self.assertIsNone(request.patient)
         self.assertIsNone(request.service_resource)
         self.assertIsNone(request.service_resource_id)
+
+
+class TestSeparatelyBillableChargeItemDefinition(CareAPITestBase):
+    """Tests for the separately_billable flag on ChargeItemDefinition."""
+
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.user)
+        self.organization = self.create_facility_organization(facility=self.facility)
+        self.patient = self.create_patient()
+        self.encounter = self.create_encounter(
+            patient=self.patient, facility=self.facility, organization=self.organization
+        )
+
+        self.account = Account.objects.create(
+            facility=self.facility,
+            patient=self.patient,
+            name=f"Account for {self.patient.name}",
+            status=AccountStatusOptions.active.value,
+            billing_status=AccountBillingStatusOptions.open.value,
+        )
+
+        # Create a separately billable charge item definition (default)
+        self.separately_billable_definition = ChargeItemDefinition.objects.create(
+            facility=self.facility,
+            status=ChargeItemDefinitionStatusOptions.active.value,
+            title="Separately Billable Definition",
+            slug=f"f-{self.facility.external_id}-separately-billable-def",
+            price_components=[
+                {
+                    "monetary_component_type": "base",
+                    "currency": "INR",
+                    "amount": "100.00",
+                }
+            ],
+            separately_billable=True,
+        )
+
+        # Create a non-separately billable charge item definition
+        self.non_separately_billable_definition = ChargeItemDefinition.objects.create(
+            facility=self.facility,
+            status=ChargeItemDefinitionStatusOptions.active.value,
+            title="Non-Separately Billable Definition",
+            slug=f"f-{self.facility.external_id}-non-separately-billable-def",
+            price_components=[
+                {
+                    "monetary_component_type": "base",
+                    "currency": "INR",
+                    "amount": "200.00",
+                }
+            ],
+            separately_billable=False,
+        )
+
+        self.base_url = reverse(
+            "charge_item-list",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+
+    def test_separately_billable_default_is_true(self):
+        """Test that separately_billable defaults to True."""
+        definition = ChargeItemDefinition.objects.create(
+            facility=self.facility,
+            status=ChargeItemDefinitionStatusOptions.active.value,
+            title="Default Definition",
+            slug=f"f-{self.facility.external_id}-default-def",
+            price_components=[],
+        )
+        self.assertTrue(definition.separately_billable)
+
+    def test_apply_separately_billable_definition_without_service_resource(self):
+        """Test that separately billable definition can be applied without service_resource."""
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        url = f"{self.base_url}apply_charge_item_defs/"
+        data = {
+            "requests": [
+                {
+                    "charge_item_definition": self.separately_billable_definition.slug,
+                    "quantity": 1,
+                    "encounter": self.encounter.external_id,
+                }
+            ]
+        }
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_apply_non_separately_billable_definition_without_service_resource_fails(
+        self,
+    ):
+        """Test that non-separately billable definition cannot be applied without service_resource."""
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        url = f"{self.base_url}apply_charge_item_defs/"
+        data = {
+            "requests": [
+                {
+                    "charge_item_definition": self.non_separately_billable_definition.slug,
+                    "quantity": 1,
+                    "encounter": self.encounter.external_id,
+                }
+            ]
+        }
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("cannot be applied manually", str(response.data))
+
+    def test_apply_non_separately_billable_definition_with_service_resource_succeeds(
+        self,
+    ):
+        """Test that non-separately billable definition can be applied with service_resource."""
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        service_request = self.create_service_request(
+            patient=self.patient, facility=self.facility, encounter=self.encounter
+        )
+
+        url = f"{self.base_url}apply_charge_item_defs/"
+        data = {
+            "requests": [
+                {
+                    "charge_item_definition": self.non_separately_billable_definition.slug,
+                    "quantity": 1,
+                    "encounter": self.encounter.external_id,
+                    "service_resource": ChargeItemResourceOptions.service_request.value,
+                    "service_resource_id": str(service_request.external_id),
+                }
+            ]
+        }
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_apply_multiple_definitions_with_mixed_separately_billable_fails(self):
+        """Test that batch apply fails when one definition is non-separately billable without service_resource."""
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        url = f"{self.base_url}apply_charge_item_defs/"
+        data = {
+            "requests": [
+                {
+                    "charge_item_definition": self.separately_billable_definition.slug,
+                    "quantity": 1,
+                    "encounter": self.encounter.external_id,
+                },
+                {
+                    "charge_item_definition": self.non_separately_billable_definition.slug,
+                    "quantity": 1,
+                    "encounter": self.encounter.external_id,
+                },
+            ]
+        }
+
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("cannot be applied manually", str(response.data))

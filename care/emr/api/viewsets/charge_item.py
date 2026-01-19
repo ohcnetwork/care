@@ -295,6 +295,13 @@ class ChargeItemViewSet(
                     raise ValidationError(
                         "Charge item definition is not associated with the facility"
                     )
+                if (
+                    not charge_item_definition.separately_billable
+                    and not charge_item_request.service_resource
+                ):
+                    raise ValidationError(
+                        "Charge item definition cannot be applied manually. It must be linked to a resource."
+                    )
                 patient = None
                 encounter = None
                 if charge_item_request.encounter:
