@@ -4,12 +4,13 @@ from care.emr.resources.account.default_account import get_default_account
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
 from care.emr.resources.charge_item.sync_charge_item_costs import sync_charge_item_costs
 from care.utils.evaluators.interpretation_evaluator import InterpretationEvaluator
+from care.utils.rounding.covert_type import convert_to_decimal
 
 
 def generate_negative_charge_item_definition(components):
     for component in components:
         if component.get("amount"):
-            component["amount"] = -component["amount"]
+            component["amount"] = str(-convert_to_decimal(component["amount"]))
     return components
 
 
