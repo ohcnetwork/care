@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 
 from pydantic import UUID4, field_validator
@@ -63,6 +64,10 @@ class ChargeItemDefinitionReadSpec(ChargeItemDefinitionSpec):
     category: dict | None = None
     slug_config: dict
     slug: str
+    created_by: dict | None = None
+    updated_by: dict | None = None
+    updated_date: datetime | None = None
+    created_date: datetime | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -72,3 +77,4 @@ class ChargeItemDefinitionReadSpec(ChargeItemDefinitionSpec):
                 obj.category
             ).to_json()
         mapping["slug_config"] = obj.parse_slug(obj.slug)
+        cls.serialize_audit_users(mapping, obj)

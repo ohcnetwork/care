@@ -1,11 +1,13 @@
 from enum import Enum
 
 from pydantic import UUID4
+from rest_framework.exceptions import ValidationError
 
 from care.emr.extensions.base import ExtensionResource
 from care.emr.extensions.validator import ExtensionValidator
 from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import Organization
+from care.emr.models.patient import Patient
 from care.emr.models.supply_delivery import DeliveryOrder
 from care.emr.resources.base import EMRResource
 from care.emr.resources.location.spec import FacilityLocationListSpec
@@ -13,6 +15,7 @@ from care.emr.resources.organization.spec import (
     OrganizationReadSpec,
     OrganizationTypeChoices,
 )
+from care.emr.resources.patient.spec import PatientListSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.utils.shortcuts import get_object_or_404
 
@@ -47,6 +50,7 @@ class SupplyDeliveryOrderWriteSpec(BaseSupplyDeliveryOrderSpec):
     supplier: UUID4 | None = None
     origin: UUID4 | None = None
     destination: UUID4
+    patient: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.destination = get_object_or_404(
@@ -64,7 +68,12 @@ class SupplyDeliveryOrderWriteSpec(BaseSupplyDeliveryOrderSpec):
                     org_type=OrganizationTypeChoices.product_supplier.value,
                 )
             )
-
+        if self.patient:
+            obj.patient = get_object_or_404(
+                Patient.objects.only("id").filter(external_id=self.patient)
+            )
+        if self.patient and self.origin:
+            raise ValidationError("Patient and origin cannot be provided together")
         return obj
 
 
@@ -73,6 +82,8 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
     destination: dict
     supplier: dict | None = None
     tags: list[dict] = []
+    patient: dict | None = None
+    patient_invoice_id: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -85,3 +96,7 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
         if obj.supplier:
             mapping["supplier"] = OrganizationReadSpec.serialize(obj.supplier).to_json()
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+        if obj.patient:
+            mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
+        if obj.patient_invoice:
+            mapping["patient_invoice_id"] = str(obj.patient_invoice.external_id)
