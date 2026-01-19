@@ -50,7 +50,7 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
     )
     role = Field(
         display="Role",
-        preview_value="Test Role",
+        preview_value="Primary care physician",
         mapping=lambda c: c.role.get("display")
         if c.role and c.role.get("display")
         else "",
