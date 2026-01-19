@@ -68,6 +68,7 @@ class InvoiceReadSpec(BaseInvoiceSpec):
     created_date: datetime.datetime
     modified_date: datetime.datetime
     account: dict
+    is_refund: bool
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

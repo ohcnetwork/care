@@ -48,7 +48,7 @@ class InvoiceFilters(filters.FilterSet):
     patient = filters.UUIDFilter(field_name="patient__external_id")
     number = filters.CharFilter(lookup_expr="icontains")
     locked = filters.BooleanFilter()
-
+    is_refund = filters.BooleanFilter()
 
 class AttachChargeItemToInvoiceRequest(BaseModel):
     charge_items: list[UUID4]

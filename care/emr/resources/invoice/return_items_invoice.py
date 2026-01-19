@@ -35,6 +35,7 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
             invoice_obj.facility
         )
         invoice_obj.patient = delivery_order.patient
+        invoice_obj.is_refund = True
         invoice_obj.save()
         for supply_delivery in SupplyDelivery.objects.filter(order=delivery_order):
             product = supply_delivery.supplied_item
