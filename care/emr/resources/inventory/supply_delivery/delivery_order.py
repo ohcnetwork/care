@@ -88,7 +88,7 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
     supplier: dict | None = None
     tags: list[dict] = []
     patient: dict | None = None
-    patient_invoice_id: dict | None = None
+    patient_invoice_id: UUID4 | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
