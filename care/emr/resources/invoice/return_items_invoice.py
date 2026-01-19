@@ -34,6 +34,7 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
         invoice_obj.number = evaluate_invoice_identifier_default_expression(
             invoice_obj.facility
         )
+        invoice_obj.patient = delivery_order.patient
         invoice_obj.save()
         for supply_delivery in SupplyDelivery.objects.filter(order=delivery_order):
             product = supply_delivery.supplied_item
