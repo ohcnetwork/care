@@ -48,6 +48,7 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
                 reverse=True,
             )
             charge_item.status = ChargeItemStatusOptions.billed.value
+            charge_item.paid_invoice = invoice_obj
             charge_item.save()
             charge_items.append(charge_item.id)
         invoice_obj.charge_items = charge_items
