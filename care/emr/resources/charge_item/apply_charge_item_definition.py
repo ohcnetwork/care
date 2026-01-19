@@ -6,6 +6,13 @@ from care.emr.resources.charge_item.sync_charge_item_costs import sync_charge_it
 from care.utils.evaluators.interpretation_evaluator import InterpretationEvaluator
 
 
+def generate_negative_charge_item_definition(components):
+    for component in components:
+        if component.get("amount"):
+            component["amount"] = -component["amount"]
+    return components
+
+
 def apply_charge_item_definition(
     charge_item_definition,
     patient,
@@ -13,6 +20,7 @@ def apply_charge_item_definition(
     encounter=None,
     account=None,
     quantity=None,
+    reverse=None,
 ):
     if not account:
         account = get_default_account(patient, facility)
@@ -40,6 +48,8 @@ def apply_charge_item_definition(
             if not conditions_met:
                 continue
         selected_components.append(component)
+    if reverse:
+        price_components = generate_negative_charge_item_definition(price_components)
     charge_item = ChargeItem(
         facility=facility,
         title=charge_item_definition.title,

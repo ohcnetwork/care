@@ -74,6 +74,11 @@ class SupplyDeliveryOrderWriteSpec(BaseSupplyDeliveryOrderSpec):
             )
         if self.patient and self.origin:
             raise ValidationError("Patient and origin cannot be provided together")
+        if self.status.value not in [
+            SupplyDeliveryOrderStatusOptions.draft.value,
+            SupplyDeliveryOrderStatusOptions.pending.value,
+        ]:
+            raise ValidationError("Status must be draft or pending on create")
         return obj
 
 
