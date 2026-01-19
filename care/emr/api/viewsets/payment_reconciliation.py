@@ -147,5 +147,5 @@ class PaymentReconciliationViewSet(
             raise PermissionDenied("Cannot write payment reconciliation")
         instance.status = request_data.reason
         instance.save()
-        rebalance_account_task.delay(instance.account.id)
+        rebalance_account_task(instance.account.id)
         return Response(PaymentReconciliationReadSpec.serialize(instance).to_json())

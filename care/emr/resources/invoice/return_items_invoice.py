@@ -30,7 +30,9 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
         invoice_obj = Invoice()
         invoice_obj.status = InvoiceStatusOptions.draft.value
         invoice_obj.facility = delivery_order.destination.facility
-        invoice_obj.account = get_default_account(delivery_order.patient, invoice_obj.facility)
+        invoice_obj.account = get_default_account(
+            delivery_order.patient, invoice_obj.facility
+        )
         invoice_obj.number = evaluate_invoice_identifier_default_expression(
             invoice_obj.facility
         )
@@ -58,7 +60,7 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
         invoice_obj.save()
         delivery_order.patient_invoice = invoice_obj
         delivery_order.save(update_fields=["patient_invoice"])
-    rebalance_account_task.delay(invoice_obj.account.id)
+    rebalance_account_task(invoice_obj.account.id)
     return invoice_obj
 
 
@@ -78,4 +80,4 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
             paid_invoice=None,
             paid_on=None,
         )
-    rebalance_account_task.delay(delivery_order.patient_invoice.account.id)
+    rebalance_account_task(delivery_order.patient_invoice.account.id)

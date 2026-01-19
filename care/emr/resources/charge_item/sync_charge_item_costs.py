@@ -20,7 +20,7 @@ def calculate_amount(component, quantity, base):
     raise ValidationError("Amount or factor is required")
 
 
-def sync_charge_item_costs(charge_item , reverse=None):
+def sync_charge_item_costs(charge_item, reverse=None):
     """
     Calculate total cost of charge item based on quantity and other factors
     """

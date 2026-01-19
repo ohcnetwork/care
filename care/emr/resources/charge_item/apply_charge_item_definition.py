@@ -63,5 +63,5 @@ def apply_charge_item_definition(
         quantity=quantity,
         unit_price_components=selected_components,
     )
-    sync_charge_item_costs(charge_item , reverse=reverse)
+    sync_charge_item_costs(charge_item, reverse=reverse)
     return charge_item

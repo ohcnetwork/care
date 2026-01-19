@@ -50,6 +50,7 @@ class InvoiceFilters(filters.FilterSet):
     locked = filters.BooleanFilter()
     is_refund = filters.BooleanFilter()
 
+
 class AttachChargeItemToInvoiceRequest(BaseModel):
     charge_items: list[UUID4]
 
@@ -117,7 +118,7 @@ class InvoiceViewSet(
             )
             sync_invoice_items(instance)
             instance.save()
-            rebalance_account_task.delay(instance.account.id)
+            rebalance_account_task(instance.account.id)
 
         return instance
 
@@ -181,7 +182,7 @@ class InvoiceViewSet(
                         paid_on=care_now(),
                     )
             super().perform_update(instance)
-            rebalance_account_task.delay(instance.account.id)
+            rebalance_account_task(instance.account.id)
         return instance
 
     def check_invoice_in_draft(self, instance):
