@@ -45,6 +45,7 @@ class DeliveryOrderFilters(filters.FilterSet):
     include_children = DummyBooleanFilter()
     origin_isnull = NullFilter(field_name="origin")
     patient = filters.UUIDFilter(field_name="patient__external_id")
+    patient_isnull = NullFilter(field_name="patient")
 
 
 class DeliveryOrderViewSet(
