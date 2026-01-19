@@ -79,7 +79,7 @@ class PaymentReconciliationViewSet(
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
         super().perform_create(instance)
-        rebalance_account_task.delay(instance.account.id)
+        rebalance_account_task(instance.account.id)
 
     def perform_update(self, instance):
         old_instance = self.get_object()
@@ -91,7 +91,7 @@ class PaymentReconciliationViewSet(
                 "Cannot update payment reconciliation, use the cancel endpoint instead"
             )
         super().perform_update(instance)
-        rebalance_account_task.delay(instance.account.id)
+        rebalance_account_task(instance.account.id)
 
     def authorize_create(self, instance):
         facility = self.get_facility_obj()
