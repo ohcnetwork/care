@@ -50,7 +50,10 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
     )
     role = Field(
         display="Role",
-        preview_value={"display": "Test Role"},
+        preview_value="Primary care physician",
+        mapping=lambda c: c.role.get("display")
+        if c.role and c.role.get("display")
+        else "",
         description="Role of the user in the encounter care team",
     )
 
@@ -61,6 +64,17 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
             self.__class__(context=SimpleNamespace(user=c["user_id"], role=c["role"]))
             for c in self.context
         )
+
+
+class EncounterFacilityLocationContextBuilder(SingleObjectContextBuilder):
+    def get_context(self):
+        return getattr(self.parent_context, self.parent_attribute)
+
+    name = Field(
+        display="Location Name",
+        preview_value="Ward A",
+        description="Name of the facility location",
+    )
 
 
 class EncounterReportContextBase(SingleObjectContextBuilder):
@@ -135,6 +149,12 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         target_context=FacilityContextBuilder,
         preview_value="",
         description="Details of the facility where the encounter took place",
+    )
+    current_location = Field(
+        display="Current Location",
+        target_context=EncounterFacilityLocationContextBuilder,
+        preview_value="",
+        description="Current location within the facility for the encounter",
     )
 
 
