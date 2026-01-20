@@ -42,13 +42,11 @@ def reverse_monetary_component(component):
 
 
 def update_charge_item_definition_price_components(apps, schema_editor):
-    print("Starting: Update ChargeItemDefinition price_components to decimal")
     ChargeItemDefinition = apps.get_model("emr", "ChargeItemDefinition")
     paginator = Paginator(
         ChargeItemDefinition.objects.order_by("id").only("id", "price_components"), 1000
     )
     for page_number in paginator.page_range:
-        print(f"Processing ChargeItemDefinition page {page_number}/{paginator.num_pages}")
         bulk_update_list = []
         for cid in paginator.page(page_number).object_list:
             if not cid.price_components:
@@ -59,17 +57,14 @@ def update_charge_item_definition_price_components(apps, schema_editor):
             cid.price_components = components
             bulk_update_list.append(cid)
         ChargeItemDefinition.objects.bulk_update(bulk_update_list, ["price_components"])
-    print("Done: Update ChargeItemDefinition price_components to decimal")
 
 
 def reverse_update_charge_item_definition_price_components(apps, schema_editor):
-    print("Starting: Reverse ChargeItemDefinition price_components to float")
     ChargeItemDefinition = apps.get_model("emr", "ChargeItemDefinition")
     paginator = Paginator(
         ChargeItemDefinition.objects.order_by("id").only("id", "price_components"), 1000
     )
     for page_number in paginator.page_range:
-        print(f"Processing ChargeItemDefinition page {page_number}/{paginator.num_pages}")
         bulk_update_list = []
         for cid in paginator.page(page_number).object_list:
             if not cid.price_components:
@@ -80,11 +75,9 @@ def reverse_update_charge_item_definition_price_components(apps, schema_editor):
             cid.price_components = components
             bulk_update_list.append(cid)
         ChargeItemDefinition.objects.bulk_update(bulk_update_list, ["price_components"])
-    print("Done: Reverse ChargeItemDefinition price_components to float")
 
 
 def update_resource_category_price_components(apps, schema_editor):
-    print("Starting: Update ResourceCategory monetary_components to decimal")
     ResourceCategory = apps.get_model("emr", "ResourceCategory")
     paginator = Paginator(
         ResourceCategory.objects.order_by("id").only(
@@ -93,7 +86,6 @@ def update_resource_category_price_components(apps, schema_editor):
         1000,
     )
     for page_number in paginator.page_range:
-        print(f"Processing ResourceCategory page {page_number}/{paginator.num_pages}")
         bulk_update_list = []
         for rc in paginator.page(page_number).object_list:
             changed = False
@@ -115,11 +107,9 @@ def update_resource_category_price_components(apps, schema_editor):
             bulk_update_list,
             ["calculated_monetary_components", "configured_monetary_components"],
         )
-    print("Done: Update ResourceCategory monetary_components to decimal")
 
 
 def reverse_update_resource_category_price_components(apps, schema_editor):
-    print("Starting: Reverse ResourceCategory monetary_components to float")
     ResourceCategory = apps.get_model("emr", "ResourceCategory")
     paginator = Paginator(
         ResourceCategory.objects.order_by("id").only(
@@ -128,7 +118,6 @@ def reverse_update_resource_category_price_components(apps, schema_editor):
         1000,
     )
     for page_number in paginator.page_range:
-        print(f"Processing ResourceCategory page {page_number}/{paginator.num_pages}")
         bulk_update_list = []
         for rc in paginator.page(page_number).object_list:
             changed = False
@@ -150,17 +139,14 @@ def reverse_update_resource_category_price_components(apps, schema_editor):
             bulk_update_list,
             ["calculated_monetary_components", "configured_monetary_components"],
         )
-    print("Done: Reverse ResourceCategory monetary_components to float")
 
 
 def update_facility_discount_monetary_components(apps, schema_editor):
-    print("Starting: Update Facility discount_monetary_components to decimal")
     Facility = apps.get_model("facility", "Facility")
     paginator = Paginator(
         Facility.objects.order_by("id").only("id", "discount_monetary_components"), 1000
     )
     for page_number in paginator.page_range:
-        print(f"Processing Facility page {page_number}/{paginator.num_pages}")
         bulk_update_list = []
         for facility in paginator.page(page_number).object_list:
             if not facility.discount_monetary_components:
@@ -171,17 +157,14 @@ def update_facility_discount_monetary_components(apps, schema_editor):
             facility.discount_monetary_components = components
             bulk_update_list.append(facility)
         Facility.objects.bulk_update(bulk_update_list, ["discount_monetary_components"])
-    print("Done: Update Facility discount_monetary_components to decimal")
 
 
 def reverse_update_facility_discount_monetary_components(apps, schema_editor):
-    print("Starting: Reverse Facility discount_monetary_components to float")
     Facility = apps.get_model("facility", "Facility")
     paginator = Paginator(
         Facility.objects.order_by("id").only("id", "discount_monetary_components"), 1000
     )
     for page_number in paginator.page_range:
-        print(f"Processing Facility page {page_number}/{paginator.num_pages}")
         bulk_update_list = []
         for facility in paginator.page(page_number).object_list:
             if not facility.discount_monetary_components:
@@ -192,17 +175,14 @@ def reverse_update_facility_discount_monetary_components(apps, schema_editor):
             facility.discount_monetary_components = components
             bulk_update_list.append(facility)
         Facility.objects.bulk_update(bulk_update_list, ["discount_monetary_components"])
-    print("Done: Reverse Facility discount_monetary_components to float")
 
 
 def update_charge_item_price_components(apps, schema_editor):
-    print("Starting: Update ChargeItem unit_price_components to decimal")
     ChargeItem = apps.get_model("emr", "ChargeItem")
     paginator = Paginator(
         ChargeItem.objects.order_by("id"), 1000
     )
     for page_number in paginator.page_range:
-        print(f"Processing ChargeItem page {page_number}/{paginator.num_pages}")
         bulk_update_list = []
         for ci in paginator.page(page_number).object_list:
             if not ci.unit_price_components:
@@ -217,11 +197,9 @@ def update_charge_item_price_components(apps, schema_editor):
                 print(f"ValidationError for ChargeItem id {ci.id}: {e}")
             bulk_update_list.append(ci)
         ChargeItem.objects.bulk_update(bulk_update_list, ["unit_price_components"])
-    print("Done: Update ChargeItem unit_price_components to decimal")
 
 
 def reverse_update_charge_item_price_components(apps, schema_editor):
-    print("Starting: Reverse ChargeItem unit_price_components to float")
     ChargeItem = apps.get_model("emr", "ChargeItem")
     paginator = Paginator(
         ChargeItem.objects.order_by("id"), 1000
@@ -242,7 +220,6 @@ def reverse_update_charge_item_price_components(apps, schema_editor):
                 print(f"ValidationError for ChargeItem id {ci.id}: {e}")
             bulk_update_list.append(ci)
         ChargeItem.objects.bulk_update(bulk_update_list, ["unit_price_components"])
-    print("Done: Reverse ChargeItem unit_price_components to float")
 
 class Migration(migrations.Migration):
 
