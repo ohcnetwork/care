@@ -49,6 +49,7 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
                 delivery_order.patient,
                 delivery_order.destination.facility,
                 reverse=True,
+                quantity=supply_delivery.supplied_item_quantity,
             )
             charge_item.status = ChargeItemStatusOptions.billed.value
             charge_item.paid_invoice = invoice_obj
