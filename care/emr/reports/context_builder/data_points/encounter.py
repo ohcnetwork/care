@@ -13,6 +13,9 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.diagnosis import (
     DiagnosisContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.diagnostic_report import (
+    DiagnosticReportContextBuilder,
+)
 from care.emr.reports.context_builder.data_points.facility import FacilityContextBuilder
 from care.emr.reports.context_builder.data_points.medication import (
     MedicationPrescriptionContextBuilder,
@@ -22,9 +25,6 @@ from care.emr.reports.context_builder.data_points.patient import (
 )
 from care.emr.reports.context_builder.data_points.questionnaire import (
     QuestionnaireContextBuilder,
-)
-from care.emr.reports.context_builder.data_points.service_request import (
-    ServiceRequestDataPointBuilder,
 )
 from care.emr.reports.context_builder.data_points.symptom import SymptomsContextBuilder
 from care.emr.reports.context_builder.data_points.user import SingleUserIdContextBuilder
@@ -137,11 +137,11 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         description="Details of the patient associated with the encounter",
     )
 
-    service_requests = Field(
-        display="Service Requests",
-        target_context=ServiceRequestDataPointBuilder,
+    diagnostic_reports = Field(
+        display="Diagnostic Reports",
         preview_value="",
-        description="Service requests associated with the encounter",
+        description="Diagnostic reports associated with the encounter",
+        target_context=DiagnosticReportContextBuilder,
     )
 
     facility = Field(
@@ -155,6 +155,21 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         target_context=EncounterFacilityLocationContextBuilder,
         preview_value="",
         description="Current location within the facility for the encounter",
+    )
+
+    start_time = Field(
+        display="Encounter Start Time",
+        mapping=lambda e: e.period.get("start") if e.period else None,
+        preview_value="2026-01-12T10:01:45.088000Z",
+        description="Start time of the encounter",
+    )
+    end_time = Field(
+        display="Encounter End Time",
+        mapping=lambda e: e.period.get("end")
+        if e.period and e.period.get("end")
+        else "Ongoing",
+        preview_value="2026-01-12T10:01:45.088000Z",
+        description="End time of the encounter",
     )
 
 
