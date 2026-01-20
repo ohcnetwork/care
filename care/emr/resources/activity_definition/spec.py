@@ -98,6 +98,7 @@ class ActivityDefinitionReadSpec(BaseActivityDefinitionSpec):
     category: dict | None = None
     slug_config: dict
     slug: str
+    charge_item_definitions: list[dict]
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -109,6 +110,17 @@ class ActivityDefinitionReadSpec(BaseActivityDefinitionSpec):
                 obj.category
             ).to_json()
         mapping["slug_config"] = obj.parse_slug(obj.slug)
+        charge_item_definitions = []
+        for charge_item_definition in obj.charge_item_definitions:
+            charge_item_obj = ChargeItemDefinition.objects.filter(
+                id=charge_item_definition
+            ).first()
+            if not charge_item_obj:
+                continue
+            charge_item_definitions.append(
+                ChargeItemDefinitionReadSpec.serialize(charge_item_obj).to_json()
+            )
+        mapping["charge_item_definitions"] = charge_item_definitions
 
 
 class ActivityDefinitionRetrieveSpec(ActivityDefinitionReadSpec):
@@ -118,7 +130,6 @@ class ActivityDefinitionRetrieveSpec(ActivityDefinitionReadSpec):
     observation_result_requirements: list[dict]
     locations: list[dict]
     healthcare_service: dict | None = None
-    charge_item_definitions: list[dict]
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -156,14 +167,3 @@ class ActivityDefinitionRetrieveSpec(ActivityDefinitionReadSpec):
             mapping["healthcare_service"] = HealthcareServiceReadSpec.serialize(
                 obj.healthcare_service
             ).to_json()
-        charge_item_definitions = []
-        for charge_item_definition in obj.charge_item_definitions:
-            charge_item_obj = ChargeItemDefinition.objects.filter(
-                id=charge_item_definition
-            ).first()
-            if not charge_item_obj:
-                continue
-            charge_item_definitions.append(
-                ChargeItemDefinitionReadSpec.serialize(charge_item_obj).to_json()
-            )
-        mapping["charge_item_definitions"] = charge_item_definitions
