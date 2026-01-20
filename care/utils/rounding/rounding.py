@@ -60,26 +60,32 @@ class Rounding05Up(RoundingBase):
     ROUNDING_METHOD = ROUND_05UP
 
 
-ROUNDING_CLASS = None
+ROUNDING_CLASS = {}
 
 
-def get_rounding_class():
-    global ROUNDING_CLASS  # noqa: PLW0603
-    if ROUNDING_CLASS is not None:
-        return ROUNDING_CLASS
-    class_path = settings.ACCOUNTING_ROUNDING_METHOD
-    module_name, _, class_name = class_path.rpartition(".")
+def get_rounding_class(method):
+    global ROUNDING_CLASS  # noqa: PLW0602
+    if ROUNDING_CLASS.get(method) is not None and method is None:
+        return ROUNDING_CLASS.get(method)
+    module_name, _, class_name = method.rpartition(".")
     module = importlib.import_module(module_name)
     # Get the class from the module
     rounding_class = getattr(module, class_name)
     if not rounding_class:
         raise ValueError("Rounding class not found")
-    ROUNDING_CLASS = rounding_class
-    return ROUNDING_CLASS
+    ROUNDING_CLASS[method] = rounding_class
+    return ROUNDING_CLASS[method]
 
 
-def care_round(val1: Decimal, precision: int | None = None, method: str | None = None):
+def care_round(
+    val1: Decimal,
+    precision: int | None = None,
+    method: str | None = None,
+    care_method: str | None = None,
+):
     if val1 is None:
         return Decimal(0)
-    rounding_class = get_rounding_class()
+    if not care_method:
+        care_method = settings.ACCOUNTING_ROUNDING_METHOD
+    rounding_class = get_rounding_class(care_method)
     return rounding_class.round(val1, precision, method)

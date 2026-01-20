@@ -49,12 +49,12 @@ def sync_invoice_items(invoice: Invoice):
     invoice.total_net = care_round(
         convert_to_decimal(summary["net"]),
         precision=settings.INVOICE_FINAL_AMOUNT_PRECISION,
-        method=settings.INVOICE_FINAL_AMOUNT_ROUNDING_METHOD,
+        care_method=settings.INVOICE_FINAL_AMOUNT_ROUNDING_METHOD,
     )
     invoice.total_gross = care_round(
         convert_to_decimal(summary["gross"]),
         precision=settings.INVOICE_FINAL_AMOUNT_PRECISION,
-        method=settings.INVOICE_FINAL_AMOUNT_ROUNDING_METHOD,
+        care_method=settings.INVOICE_FINAL_AMOUNT_ROUNDING_METHOD,
     )
     invoice.total_price_components = json.loads(
         json.dumps(
