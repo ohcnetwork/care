@@ -18,6 +18,7 @@ from care.emr.resources.invoice.default_expression_evaluator import (
 )
 from care.emr.resources.invoice.spec import InvoiceStatusOptions
 from care.emr.resources.invoice.sync_items import sync_invoice_items
+from care.utils.time_util import care_now
 
 
 def generate_return_invoice(delivery_order: DeliveryOrder):
@@ -38,6 +39,7 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
         )
         invoice_obj.patient = delivery_order.patient
         invoice_obj.is_refund = True
+        invoice_obj.issue_date = care_now()
         invoice_obj.save()
         for supply_delivery in SupplyDelivery.objects.filter(order=delivery_order):
             product = supply_delivery.supplied_item
