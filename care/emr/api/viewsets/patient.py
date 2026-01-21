@@ -90,11 +90,7 @@ class PatientViewSet(EMRModelViewSet):
                 raise ValidationError("Year of birth cannot be after the year of death")
 
     def get_queryset(self):
-        qs = (
-            super()
-            .get_queryset()
-            .select_related("created_by", "updated_by", "geo_organization")
-        )
+        qs = super().get_queryset().select_related("geo_organization")
         if self.action != "list":
             patient = get_object_or_404(
                 Patient, external_id=self.kwargs.get("external_id")
@@ -200,7 +196,9 @@ class PatientViewSet(EMRModelViewSet):
         if not request_data.phone_number and not request_data.config:
             raise ValidationError("Either phone number or config is required")
         if request_data.phone_number:
-            queryset = Patient.objects.filter(phone_number=request_data.phone_number)
+            queryset = Patient.objects.filter(
+                phone_number=request_data.phone_number
+            ).select_related("geo_organization")
             partial = True
         else:
             config_queryset = PatientIdentifierConfig.objects.filter(
@@ -243,7 +241,7 @@ class PatientViewSet(EMRModelViewSet):
 
             queryset = Patient.objects.filter(
                 id__in=identifier_queryset.values("patient_id")
-            )
+            ).select_related("geo_organization")
 
             if config.config.get("retrieve_config", {}).get(
                 "retrieve_with_year_of_birth"
@@ -268,7 +266,9 @@ class PatientViewSet(EMRModelViewSet):
     @action(detail=False, methods=["POST"])
     def search_retrieve(self, request, *args, **kwargs):
         request_data = self.SearchRetrieveRequestSpec(**request.data)
-        queryset = Patient.objects.filter(phone_number=request_data.phone_number)
+        queryset = Patient.objects.filter(
+            phone_number=request_data.phone_number
+        ).select_related("geo_organization")
         queryset = queryset.filter(year_of_birth=request_data.year_of_birth)
         for patient in queryset:
             if str(patient.external_id)[:5] == request_data.partial_id:
