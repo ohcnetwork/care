@@ -325,4 +325,6 @@ class OrganizationUsersViewSet(EMRModelViewSet):
             raise PermissionDenied(
                 "User does not have the required permissions to list users"
             )
-        return OrganizationUser.objects.filter(organization=organization)
+        return OrganizationUser.objects.filter(
+            organization=organization
+        ).select_related("role")
