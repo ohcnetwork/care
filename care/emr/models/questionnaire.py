@@ -105,7 +105,7 @@ class QuestionnaireResponse(EMRBaseModel):
     form_submission = models.ForeignKey(
         FormSubmission, on_delete=models.CASCADE, null=True, blank=True
     )
-    status = models.CharField(max_length=255,default="completed")
+    status = models.CharField(max_length=255, default="completed")
     # TODO : Add index for subject_id and subject_type in descending order
 
     def render_responses(self):

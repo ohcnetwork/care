@@ -20,6 +20,7 @@ class QuestionnaireResponseFilters(filters.FilterSet):
     form_submission = filters.UUIDFilter(field_name="form_submission__external_id")
     status = filters.CharFilter(field_name="status")
 
+
 class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet, EMRUpdateMixin):
     database_model = QuestionnaireResponse
     pydantic_model = QuestionnaireResponseReadSpec

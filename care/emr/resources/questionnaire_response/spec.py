@@ -14,6 +14,7 @@ class QuestionnaireResponseStatusChoices(str, Enum):
     submitted = "completed"
     entered_in_error = "entered_in_error"
 
+
 class QuestionnaireSubmitResultValue(BaseModel):
     value: str | None = None
     # For Quantity
@@ -43,12 +44,12 @@ class QuestionnaireSubmitRequest(BaseModel):
 class EMRQuestionnaireResponseBase(EMRResource):
     __model__ = QuestionnaireResponse
 
-class QuestionnaireResponseUpdate(EMRResource):
 
-    status : QuestionnaireResponseStatusChoices = "completed"
+class QuestionnaireResponseUpdate(EMRResource):
+    status: QuestionnaireResponseStatusChoices = "completed"
+
 
 class QuestionnaireResponseReadSpec(EMRQuestionnaireResponseBase):
-
     id: UUID4
     questionnaire: QuestionnaireReadSpec
     subject_id: str
