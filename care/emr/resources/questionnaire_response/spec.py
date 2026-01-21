@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 
 from pydantic import UUID4, UUID5, BaseModel
 
@@ -8,6 +9,10 @@ from care.emr.resources.common import Coding
 from care.emr.resources.questionnaire.spec import QuestionnaireReadSpec
 from care.emr.resources.user.spec import UserSpec
 
+
+class QuestionnaireResponseStatusChoices(str, Enum):
+    submitted = "completed"
+    entered_in_error = "entered_in_error"
 
 class QuestionnaireSubmitResultValue(BaseModel):
     value: str | None = None
@@ -35,8 +40,14 @@ class QuestionnaireSubmitRequest(BaseModel):
     form_submission: UUID4 | None = None
 
 
-class QuestionnaireResponseReadSpec(EMRResource):
+class EMRQuestionnaireResponseBase(EMRResource):
     __model__ = QuestionnaireResponse
+
+class QuestionnaireResponseUpdate(EMRResource):
+
+    status : QuestionnaireResponseStatusChoices = "completed"
+
+class QuestionnaireResponseReadSpec(EMRQuestionnaireResponseBase):
 
     id: UUID4
     questionnaire: QuestionnaireReadSpec
