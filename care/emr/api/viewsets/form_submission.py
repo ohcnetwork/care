@@ -10,7 +10,7 @@ from care.emr.api.viewsets.base import (
 )
 from care.emr.models.encounter import Encounter
 from care.emr.models.patient import Patient
-from care.emr.models.questionnaire import FormSubmission, Questionnaire
+from care.emr.models.questionnaire import FormSubmission
 from care.emr.resources.form_submission.spec import (
     FormSubmissionReadSpec,
     FormSubmissionUpdateSpec,
@@ -26,6 +26,9 @@ class FormSubmissionFilters(filters.FilterSet):
     encounter = DummyUUIDFilter()
     patient = DummyUUIDFilter()
     status = MultiSelectFilter(field_name="status")
+    questionnaire = filters.CharFilter(
+        field_name="questionnaire__slug", lookup_expr="iexact"
+    )
 
 
 class FormSubmissionViewSet(
@@ -42,15 +45,8 @@ class FormSubmissionViewSet(
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FormSubmissionFilters
 
-    def get_questionnaire_obj(self):
-        return get_object_or_404(Questionnaire, slug=self.kwargs["questionnaire_slug"])
-
-    def perform_create(self, instance):
-        questionnaire = self.get_questionnaire_obj()
-        instance.questionnaire = questionnaire
-        return super().perform_create(instance)
-
     def authorize_create(self, instance):
+        # TODO : Check if the user is part of questionnaire organization
         if instance.encounter:
             encounter = get_object_or_404(Encounter, external_id=instance.encounter)
             self.authorize_request(encounter=encounter)
@@ -80,8 +76,7 @@ class FormSubmissionViewSet(
             raise PermissionDenied("You do not have permission to view this encounter")
 
     def get_queryset(self):
-        questionnaire = self.get_questionnaire_obj()
-        queryset = super().get_queryset().filter(questionnaire=questionnaire)
+        queryset = super().get_queryset().all()
         if self.action != "list":
             return queryset
         if "encounter" in self.request.GET:

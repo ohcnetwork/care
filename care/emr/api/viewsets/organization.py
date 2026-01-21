@@ -23,6 +23,7 @@ from care.emr.resources.organization.spec import (
 )
 from care.security.authorization import AuthorizationController
 from care.security.models import PermissionModel, RoleModel, RolePermission
+from care.utils.filters.default_filter import DefaultBooleanFilter
 from care.utils.pagination.care_pagination import CareLimitOffsetPagination
 from care.utils.shortcuts import get_object_or_404
 from config.patient_otp_authentication import JWTTokenPatientAuthentication
@@ -225,6 +226,9 @@ class OrganizationUserFilter(filters.FilterSet):
         field_name="user__phone_number", lookup_expr="iexact"
     )
     username = filters.CharFilter(field_name="user__username", lookup_expr="icontains")
+    is_service_account = DefaultBooleanFilter(
+        field_name="user__is_service_account", default=False
+    )
 
 
 class OrganizationUsersViewSet(EMRModelViewSet):

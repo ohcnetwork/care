@@ -6,7 +6,9 @@ from care.emr.models import EMRBaseModel
 
 class SupplyRequest(EMRBaseModel):
     status = models.CharField(max_length=255)
-    quantity = models.FloatField(null=True, blank=True)
+    quantity = models.DecimalField(
+        null=True, blank=True, max_digits=20, decimal_places=6
+    )
     supplied_item_condition = models.CharField(max_length=255)
     item = models.ForeignKey("emr.ProductKnowledge", on_delete=models.CASCADE)
     order = models.ForeignKey(

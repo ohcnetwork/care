@@ -34,6 +34,7 @@ from care.security.permissions.product_knowledge import ProductKnowledgePermissi
 from care.security.permissions.questionnaire import QuestionnairePermissions
 from care.security.permissions.resource_category import ResourceCategoryPermissions
 from care.security.permissions.schedule import SchedulePermissions
+from care.security.permissions.service_account import ServiceAccountPermissions
 from care.security.permissions.service_request import ServiceRequestPermissions
 from care.security.permissions.specimen import SpecimenPermissions
 from care.security.permissions.specimen_definition import SpecimenDefinitionPermissions
@@ -92,6 +93,7 @@ class PermissionController:
         MedicationPermissions,
         TokenPermissions,
         SchedulePermissions,
+        ServiceAccountPermissions,
         ResourceCategoryPermissions,
     ]
 

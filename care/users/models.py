@@ -165,6 +165,8 @@ class User(AbstractUser):
     prefix = models.CharField(max_length=10, blank=True, null=True)
     suffix = models.CharField(max_length=50, blank=True, null=True)
 
+    is_service_account = models.BooleanField(default=False)
+
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 

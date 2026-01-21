@@ -28,6 +28,7 @@ from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.security.roles.role import FACILITY_ADMIN_ROLE
 from care.users.models import User
+from care.utils.filters.default_filter import DefaultBooleanFilter
 from care.utils.filters.dummy_filter import DummyUUIDFilter
 from care.utils.shortcuts import get_object_or_404
 
@@ -237,12 +238,19 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         return Response({"count": len(data), "results": data})
 
 
+class FacilityOrganizationUsersFilter(filters.FilterSet):
+    is_service_account = DefaultBooleanFilter(
+        field_name="user__is_service_account", default=False
+    )
+
+
 class FacilityOrganizationUsersViewSet(EMRModelViewSet):
     database_model = FacilityOrganizationUser
     pydantic_model = FacilityOrganizationUserWriteSpec
     pydantic_read_model = FacilityOrganizationUserReadSpec
     pydantic_update_model = FacilityOrganizationUserUpdateSpec
-    filter_backends = [drf_filters.SearchFilter]
+    filterset_class = FacilityOrganizationUsersFilter
+    filter_backends = [filters.DjangoFilterBackend, drf_filters.SearchFilter]
     search_fields = ["user__first_name", "user__last_name", "user__username"]
 
     def get_organization_obj(self):
