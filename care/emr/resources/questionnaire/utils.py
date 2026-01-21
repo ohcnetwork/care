@@ -1,5 +1,6 @@
 import uuid
 from datetime import datetime
+from decimal import InvalidOperation
 from urllib.parse import urlparse
 
 from dateutil.parser import isoparse
@@ -14,6 +15,7 @@ from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
 from care.emr.registries.care_valueset.care_valueset import validate_valueset
 from care.emr.resources.observation.spec import ObservationSpec, ObservationStatus
 from care.emr.resources.questionnaire.spec import QuestionType
+from care.utils.rounding.covert_type import convert_to_decimal
 
 BOOLEAN_TRUE_STRINGS = ("true", "on", "ok", "y", "yes", "1")
 BOOLEAN_FALSE_STRINGS = ("false", "off", "no", "n", "0")
@@ -78,7 +80,7 @@ def validate_data(values, value_type, questionnaire_ref):  # noqa PLR0912
             if value_type == QuestionType.integer.value:
                 int(value.value)
             elif value_type == QuestionType.decimal.value:
-                float(value.value)
+                convert_to_decimal(value.value)
             elif value_type == QuestionType.boolean.value:
                 if value.value.lower() not in ["true", "false", "1", "0"]:
                     errors.append(f"Invalid boolean value: {value.value}")
@@ -101,7 +103,7 @@ def validate_data(values, value_type, questionnaire_ref):  # noqa PLR0912
             ):
                 error = f"Text too long. Max allowed size is {settings.MAX_QUESTIONNAIRE_TEXT_RESPONSE_SIZE}"
                 errors.append(error)
-        except ValueError:
+        except (ValueError, InvalidOperation):
             errors.append(f"Invalid {value_type}")
         except Exception:
             errors.append(f"Error validating {value_type}")
@@ -172,22 +174,34 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
             result = bool(all_values) and all(v != expected_answer for v in all_values)
         elif operator == "greater":
             try:
-                result = any(float(v) > float(expected_answer) for v in all_values)
+                result = any(
+                    convert_to_decimal(v) > convert_to_decimal(expected_answer)
+                    for v in all_values
+                )
             except (TypeError, ValueError):
                 result = False
         elif operator == "less":
             try:
-                result = any(float(v) < float(expected_answer) for v in all_values)
+                result = any(
+                    convert_to_decimal(v) < convert_to_decimal(expected_answer)
+                    for v in all_values
+                )
             except (TypeError, ValueError):
                 result = False
         elif operator == "greater_or_equals":
             try:
-                result = any(float(v) >= float(expected_answer) for v in all_values)
+                result = any(
+                    convert_to_decimal(v) >= convert_to_decimal(expected_answer)
+                    for v in all_values
+                )
             except (TypeError, ValueError):
                 result = False
         elif operator == "less_or_equals":
             try:
-                result = any(float(v) <= float(expected_answer) for v in all_values)
+                result = any(
+                    convert_to_decimal(v) <= convert_to_decimal(expected_answer)
+                    for v in all_values
+                )
             except (TypeError, ValueError):
                 result = False
         else:

@@ -7,6 +7,9 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.user import (
+    SingleUserRelatedContextBuilder,
+)
 
 
 class QuestionnaireResponsesContextBuilder(QuerysetContextBuilder):
@@ -66,6 +69,13 @@ class QuestionnaireContextBuilder(QuerysetContextBuilder):
         display="Responses",
         preview_value="",
         description="Responses of the questionnaire",
+    )
+
+    updated_by = Field(
+        display="Updated By",
+        target_context=SingleUserRelatedContextBuilder,
+        preview_value="",
+        description="User who last updated the questionnaire",
     )
 
     def get_context(self):

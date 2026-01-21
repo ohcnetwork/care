@@ -22,12 +22,12 @@ class ChargeItem(EMRBaseModel):
     status = models.CharField(max_length=255)
     code = models.JSONField(null=True, blank=True)
     quantity = models.DecimalField(
-        null=True, blank=True, max_digits=10, decimal_places=2
+        null=True, blank=True, max_digits=20, decimal_places=6
     )
     unit_price_components = models.JSONField(null=True, blank=True)
     total_price_components = models.JSONField(null=True, blank=True)
     total_price = models.DecimalField(
-        null=True, blank=True, max_digits=10, decimal_places=2
+        null=True, blank=True, max_digits=20, decimal_places=6
     )
     note = models.TextField(null=True, blank=True)
     override_reason = models.JSONField(null=True, blank=True)

@@ -2,7 +2,7 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 
-from pydantic import UUID4
+from pydantic import UUID4, Field
 
 from care.emr.models.account import Account
 from care.emr.models.charge_item import ChargeItem
@@ -12,7 +12,7 @@ from care.emr.resources.account.spec import AccountMinimalReadSpec, AccountReadS
 from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
 from care.emr.resources.payment_reconciliation.spec import (
-    PaymentReconciliationMinimalReadSpec,
+    PaymentReconciliationRetrieveSpec,
 )
 from care.emr.resources.user.spec import UserSpec
 
@@ -62,20 +62,21 @@ class InvoiceWriteSpec(BaseInvoiceSpec):
 class InvoiceReadSpec(BaseInvoiceSpec):
     """Invoice read specification"""
 
-    total_net: Decimal
-    total_gross: Decimal
+    total_net: Decimal = Field(max_digits=20, decimal_places=6)
+    total_gross: Decimal = Field(max_digits=20, decimal_places=6)
     locked: bool
     created_date: datetime.datetime
     modified_date: datetime.datetime
     account: dict
+    is_refund: bool
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["account"] = AccountMinimalReadSpec.serialize(obj.account).to_json()
         if obj.locked:
-            mapping["total_net"] = 0
-            mapping["total_gross"] = 0
+            mapping["total_net"] = Decimal(0)
+            mapping["total_gross"] = Decimal(0)
 
 
 class InvoiceRetrieveSpec(InvoiceReadSpec):
@@ -86,7 +87,7 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
     created_by: dict | None
     updated_by: dict | None
     payments: list[dict]
-    total_payments: Decimal
+    total_payments: Decimal = Field(max_digits=20, decimal_places=6)
     lock_history: list[dict]
 
     @classmethod
@@ -108,7 +109,7 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
         total_payments = Decimal(0)
         for payment in PaymentReconciliation.objects.filter(target_invoice=obj):
             payments.append(
-                PaymentReconciliationMinimalReadSpec.serialize(payment).to_json()
+                PaymentReconciliationRetrieveSpec.serialize(payment).to_json()
             )
             total_payments += payment.amount
         mapping["total_payments"] = total_payments

@@ -25,8 +25,10 @@ class MedicationDispense(EMRBaseModel):
     charge_item = models.ForeignKey(
         "emr.ChargeItem", on_delete=models.CASCADE, null=True, blank=True
     )
-    quantity = models.FloatField()
-    days_supply = models.FloatField(null=True, blank=True)
+    quantity = models.DecimalField(max_digits=20, decimal_places=6)
+    days_supply = models.DecimalField(
+        null=True, blank=True, max_digits=20, decimal_places=6
+    )
     order = models.ForeignKey(
         "emr.DispenseOrder",
         on_delete=models.CASCADE,

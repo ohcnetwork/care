@@ -33,7 +33,9 @@ class ChangePasswordView(UpdateAPIView):
         serializer = self.get_serializer(data=request.data)
 
         if serializer.is_valid():
-            check = self.object.check_password(request.data.get("old_password"))
+            check = self.object.check_password(
+                serializer.validated_data.get("old_password")
+            )
             if not check:
                 return Response(
                     {

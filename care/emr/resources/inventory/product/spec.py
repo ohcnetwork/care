@@ -38,6 +38,7 @@ class BaseProductSpec(EMRResource):
     batch: ProductBatch | None = None
     expiration_date: datetime.datetime | None = None
     extensions: dict
+    standard_pack_size: int | None = None
 
     @field_validator("extensions")
     @classmethod

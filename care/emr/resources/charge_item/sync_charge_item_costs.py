@@ -4,30 +4,36 @@ from care.emr.resources.common.monetary_component import (
     MonetaryComponents,
     MonetaryComponentType,
 )
+from care.utils.rounding.covert_type import convert_to_decimal
+from care.utils.rounding.rounding import care_round
 
 
 def calculate_amount(component, quantity, base):
     if component.amount:
-        component.amount = component.amount * quantity
+        component.amount = convert_to_decimal(component.amount)
+        component.amount = care_round(component.amount * quantity)
         return component
     if component.factor:
-        component.amount = base * component.factor / 100
+        component.factor = convert_to_decimal(component.factor)
+        component.amount = care_round(base * component.factor / 100)
         return component
     raise ValidationError("Amount or factor is required")
 
 
-def sync_charge_item_costs(charge_item):
+def sync_charge_item_costs(charge_item, reverse=None):
     """
     Calculate total cost of charge item based on quantity and other factors
     """
     charge_item_price_components = MonetaryComponents(charge_item.unit_price_components)
-    quantity = charge_item.quantity
+    quantity = convert_to_decimal(charge_item.quantity)
     components = []
     total_price = 0
     base = 0
     for component in charge_item_price_components:
         if component.monetary_component_type == MonetaryComponentType.base.value:
-            component.amount = component.amount * quantity
+            component.amount = care_round(
+                convert_to_decimal(component.amount) * quantity
+            )
             total_price = component.amount
             base = component.amount
             components.append(component.model_dump(mode="json", exclude_defaults=True))
@@ -50,5 +56,5 @@ def sync_charge_item_costs(charge_item):
             components.append(_component.model_dump(mode="json", exclude_defaults=True))
     charge_item.total_price = total_price
     charge_item.total_price_components = components
-    if charge_item.total_price < 0:
+    if charge_item.total_price < 0 and not reverse:
         raise ValidationError("Total price is less than 0")

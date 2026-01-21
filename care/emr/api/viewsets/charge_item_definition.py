@@ -7,6 +7,7 @@ from care.emr.api.viewsets.base import (
     EMRCreateMixin,
     EMRListMixin,
     EMRRetrieveMixin,
+    EMRTagMixin,
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
@@ -19,6 +20,8 @@ from care.emr.resources.charge_item_definition.spec import (
 )
 from care.emr.resources.favorites.filters import FavoritesFilter
 from care.emr.resources.favorites.spec import FavoriteResourceChoices
+from care.emr.resources.tag.config_spec import TagResource
+from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.facility.models import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyCharFilter
@@ -37,6 +40,7 @@ class ChargeItemDefinitionViewSet(
     EMRCreateMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
+    EMRTagMixin,
     EMRListMixin,
     EMRUpsertMixin,
     EMRBaseViewSet,
@@ -46,9 +50,15 @@ class ChargeItemDefinitionViewSet(
     pydantic_model = ChargeItemDefinitionWriteSpec
     pydantic_read_model = ChargeItemDefinitionReadSpec
     filterset_class = ChargeItemDefinitionFilters
-    filter_backends = [filters.DjangoFilterBackend, OrderingFilter, FavoritesFilter]
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        OrderingFilter,
+        FavoritesFilter,
+        SingleFacilityTagFilter,
+    ]
     ordering_fields = ["created_date", "modified_date"]
     FAVORITE_RESOURCE = FavoriteResourceChoices.charge_item_definition.value
+    resource_type = TagResource.charge_item_definition.value
 
     def get_facility_obj(self):
         return get_object_or_404(

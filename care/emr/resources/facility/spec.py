@@ -1,9 +1,8 @@
-from decimal import Decimal
-
 from django.conf import settings
 from django.db.models.functions import Lower, Trim
 from pydantic import UUID4, BaseModel, field_validator, model_validator
 from pydantic_core.core_schema import ValidationInfo
+from pydantic_extra_types.coordinate import Latitude, Longitude
 
 from care.emr.models import Organization
 from care.emr.models.patient import PatientIdentifierConfigCache
@@ -32,8 +31,8 @@ class FacilityBareMinimumSpec(EMRResource):
 
 class FacilityBaseSpec(FacilityBareMinimumSpec):
     description: str
-    longitude: Decimal | None = None
-    latitude: Decimal | None = None
+    longitude: Longitude | None = None
+    latitude: Latitude | None = None
     pincode: int
     address: str
     phone_number: str
