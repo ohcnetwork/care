@@ -217,4 +217,6 @@ class AllFacilityViewSet(EMRModelReadOnlyViewSet):
     search_fields = ["name"]
 
     def get_queryset(self):
-        return Facility.objects.filter(is_public=True).select_related()
+        return Facility.objects.filter(is_public=True).select_related(
+            "geo_organization"
+        )
