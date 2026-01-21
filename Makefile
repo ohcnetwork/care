@@ -119,3 +119,16 @@ down-playwright:
 
 %:
 	docker compose exec backend bash -c "python manage.py $*"
+
+nomad-up:
+	@./scripts/nomad-up.sh
+
+nomad-status:
+	@nomad job status
+
+nomad-down:
+	@./scripts/nomad-down.sh
+
+nomad-load-fixtures:
+	nomad job stop -purge care-load-fixtures || true
+	nomad run nomad/load-fixtures.nomad
