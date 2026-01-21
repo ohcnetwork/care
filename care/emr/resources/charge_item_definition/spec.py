@@ -8,6 +8,7 @@ from care.emr.models.resource_category import ResourceCategory
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.monetary_component import MonetaryComponent
 from care.emr.resources.resource_category.spec import ResourceCategoryReadSpec
+from care.emr.tagging.base import SingleFacilityTagManager
 from care.emr.utils.slug_type import ExtendedSlugType, SlugType
 
 
@@ -63,6 +64,7 @@ class ChargeItemDefinitionReadSpec(ChargeItemDefinitionSpec):
     version: int | None = None
     category: dict | None = None
     slug_config: dict
+    tags: list[dict] = []
     slug: str
     created_by: dict | None = None
     updated_by: dict | None = None
@@ -77,4 +79,6 @@ class ChargeItemDefinitionReadSpec(ChargeItemDefinitionSpec):
                 obj.category
             ).to_json()
         mapping["slug_config"] = obj.parse_slug(obj.slug)
+        mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+
         cls.serialize_audit_users(mapping, obj)
