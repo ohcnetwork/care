@@ -20,7 +20,7 @@ def calculate_amount(component, quantity, base):
     raise ValidationError("Amount or factor is required")
 
 
-def sync_charge_item_costs(charge_item):
+def sync_charge_item_costs(charge_item, reverse=None):
     """
     Calculate total cost of charge item based on quantity and other factors
     """
@@ -56,5 +56,5 @@ def sync_charge_item_costs(charge_item):
             components.append(_component.model_dump(mode="json", exclude_defaults=True))
     charge_item.total_price = total_price
     charge_item.total_price_components = components
-    if charge_item.total_price < 0:
+    if charge_item.total_price < 0 and not reverse:
         raise ValidationError("Total price is less than 0")

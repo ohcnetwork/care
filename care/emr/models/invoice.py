@@ -31,3 +31,4 @@ class Invoice(EMRBaseModel):
     number = models.CharField(max_length=1000, null=True, blank=True, default=None)
     locked = models.BooleanField(default=False)
     lock_history = models.JSONField(default=list)
+    is_refund = models.BooleanField(default=False)

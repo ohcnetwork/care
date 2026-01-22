@@ -137,9 +137,7 @@ questionnaire_nested_router = NestedSimpleRouter(
     router, r"questionnaire", lookup="questionnaire"
 )
 
-questionnaire_nested_router.register(
-    "form_submission", FormSubmissionViewSet, basename="form_submission"
-)
+router.register("form_submission", FormSubmissionViewSet, basename="form_submission")
 router.register(
     "questionnaire_tag", QuestionnaireTagsViewSet, basename="questionnaire_tags"
 )

@@ -27,3 +27,4 @@ class PaymentReconciliation(EMRBaseModel):
     location = models.ForeignKey(
         "emr.FacilityLocation", on_delete=models.PROTECT, null=True, blank=True
     )
+    extensions = models.JSONField(default=dict)

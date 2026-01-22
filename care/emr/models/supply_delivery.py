@@ -54,3 +54,9 @@ class DeliveryOrder(EMRBaseModel):
         on_delete=models.CASCADE,
     )
     extensions = models.JSONField(default=dict)
+    patient = models.ForeignKey(
+        "emr.Patient", on_delete=models.PROTECT, null=True, blank=True, default=None
+    )
+    patient_invoice = models.ForeignKey(
+        "emr.Invoice", on_delete=models.PROTECT, null=True, blank=True, default=None
+    )
