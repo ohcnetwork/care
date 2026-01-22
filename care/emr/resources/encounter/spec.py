@@ -27,9 +27,9 @@ from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.location.spec import (
     FacilityLocationEncounterListSpecWithLocation,
-    FacilityLocationListSpec,
+    FacilityLocationMinimumSpec,
 )
-from care.emr.resources.patient.spec import PatientListSpec, PatientRetrieveSpec
+from care.emr.resources.patient.spec import PatientListSpec
 from care.emr.resources.permissions import EncounterPermissionsMixin
 from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
 from care.emr.resources.user.spec import UserSpec
@@ -135,9 +135,10 @@ class EncounterListSpec(EncounterSpecBase):
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
         mapping["current_location"] = None
         if obj.current_location:
-            mapping["current_location"] = FacilityLocationListSpec.serialize(
+            mapping["current_location"] = FacilityLocationMinimumSpec.serialize(
                 obj.current_location
             ).to_json()
+
 
 class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
     appointment: dict = {}
@@ -150,12 +151,7 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
-        mapping["id"] = obj.external_id
-        mapping["patient"] = PatientRetrieveSpec.serialize(
-            obj.patient, facility=obj.facility
-        ).to_json()
-        mapping["facility"] = FacilityBareMinimumSpec.serialize(obj.facility).to_json()
-        mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+        super().perform_extra_serialization(mapping, obj)
         if obj.appointment:
             mapping["appointment"] = TokenBookingReadSpec.serialize(
                 obj.appointment

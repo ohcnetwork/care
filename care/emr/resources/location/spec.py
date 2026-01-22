@@ -145,6 +145,14 @@ class FacilityLocationRetrieveSpec(FacilityLocationListSpec):
             mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
 
 
+class FacilityLocationMinimumSpec(FacilityLocationSpec):
+    parent: dict
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["parent"] = obj.get_parent_json()
+
+
 class FacilityLocationEncounterBaseSpec(EMRResource):
     __model__ = FacilityLocationEncounter
     __exclude__ = ["encounter", "location"]
