@@ -125,6 +125,7 @@ class EncounterListSpec(EncounterSpecBase):
     created_date: datetime.datetime
     modified_date: datetime.datetime
     tags: list[dict] = []
+    current_location: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -132,14 +133,17 @@ class EncounterListSpec(EncounterSpecBase):
         mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
         mapping["facility"] = FacilityBareMinimumSpec.serialize(obj.facility).to_json()
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
-
+        mapping["current_location"] = None
+        if obj.current_location:
+            mapping["current_location"] = FacilityLocationListSpec.serialize(
+                obj.current_location
+            ).to_json()
 
 class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
     appointment: dict = {}
     created_by: dict = {}
     updated_by: dict = {}
     organizations: list[dict] = []
-    current_location: dict | None = None
     location_history: list[dict] = []
     care_team: list[dict] = []
     extensions: dict
@@ -161,11 +165,6 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
             FacilityOrganizationReadSpec.serialize(encounter_org.organization).to_json()
             for encounter_org in organizations
         ]
-        mapping["current_location"] = None
-        if obj.current_location:
-            mapping["current_location"] = FacilityLocationListSpec.serialize(
-                obj.current_location
-            ).to_json()
         mapping["location_history"] = [
             FacilityLocationEncounterListSpecWithLocation.serialize(i)
             for i in FacilityLocationEncounter.objects.filter(encounter=obj).order_by(
