@@ -23,7 +23,7 @@ def sync_separately_billable(apps, schema_editor):
 class Migration(migrations.Migration):
 
     dependencies = [
-        ("emr", "0057_add_separately_billable_to_charge_item_definition"),
+        ("emr", "0061_chargeitemdefinition_separately_billable"),
     ]
 
     operations = [
