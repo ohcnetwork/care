@@ -55,10 +55,17 @@ class DiagnosticReportUpdateSpec(DiagnosticReportSpecBase):
 class DiagnosticReportListSpec(DiagnosticReportSpecBase):
     created_date: datetime.datetime
     modified_date: datetime.datetime
+    service_request: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.service_request.spec import BaseServiceRequestSpec
+
         mapping["id"] = obj.external_id
+        if obj.service_request:
+            mapping["service_request"] = BaseServiceRequestSpec.serialize(
+                obj.service_request
+            ).to_json()
 
 
 class DiagnosticReportRetrieveSpec(DiagnosticReportListSpec):
