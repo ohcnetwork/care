@@ -8,3 +8,4 @@ class FavoriteResourceChoices(str, Enum):
     charge_item_definition = "charge_item_definition"
     product_knowledge = "product_knowledge"
     observation_definition = "observation_definition"
+    questionnaire = "questionnaire"
