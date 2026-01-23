@@ -4,7 +4,7 @@ when:
 
 steps:
   - name: build-dev-image
-    image: woodpeckerci/plugin-docker-buildx:4
+    image: woodpeckerci/plugin-docker-buildx:latest
     settings:
       repo: care_local
       dockerfile: docker/dev.Dockerfile
@@ -53,7 +53,7 @@ steps:
       - /var/run/docker.sock:/var/run/docker.sock
 
   - name: upload-coverage
-    image: woodpeckerci/plugin-codecov:2
+    image: woodpeckerci/plugin-codecov:latest
     settings:
       token:
         from_secret: codecov_token

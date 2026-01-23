@@ -34,7 +34,7 @@ steps:
         echo "Tags to be created: $TAGS"
 
   - name: build-push-multiplatform
-    image: woodpeckerci/plugin-docker-buildx:4
+    image: woodpeckerci/plugin-docker-buildx:latest
     settings:
       repo: ghcr.io/${CI_REPO}
       dockerfile: docker/prod.Dockerfile
@@ -64,7 +64,7 @@ steps:
       - evaluate: 'CI_REPO == "ohcnetwork/care"'
 
   - name: create-sentry-release
-    image: getsentry/sentry-cli:2
+    image: getsentry/sentry-cli:latest
     commands:
       - |
         if [ -n "$SENTRY_AUTH_TOKEN" ]; then
