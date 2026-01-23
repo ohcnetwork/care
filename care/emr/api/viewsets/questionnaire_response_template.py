@@ -28,8 +28,8 @@ from care.utils.shortcuts import get_object_or_404
 
 class QuestionnaireTemplateFilters(filters.FilterSet):
     name = filters.CharFilter(lookup_expr="icontains")
-    questionnaire = filters.UUIDFilter(
-        lookup_expr="exact", field_name="questionnaire__external_id"
+    questionnaire = filters.CharFilter(
+        lookup_expr="exact", field_name="questionnaire__slug"
     )
 
 
