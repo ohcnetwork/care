@@ -61,12 +61,21 @@ class QuestionnaireResponseTemplateCreateSpec(QuestionnaireResponseTemplateBaseS
         obj.questionnaire = get_object_or_404(Questionnaire, slug=self.questionnaire)
         if self.facility:
             obj.facility = get_object_or_404(Facility, external_id=self.facility)
+        obj.available_keys = []
+        for key in list(obj.template_data.keys()):
+            if obj.template_data[key]:
+                obj.available_keys.append(key)
         return super().perform_extra_deserialization(is_update, obj)
 
 
 class QuestionnaireResponseTemplateUpdateSpec(QuestionnaireResponseTemplateBaseSpec):
     users: list[str]
     facility_organizations: list[UUID4]
+
+    def perform_extra_deserialization(self, is_update, obj):
+        for key in list(obj.template_data.keys()):
+            if obj.template_data[key]:
+                obj.available_keys.append(key)
 
 
 class QuestionnaireResponseTemplateReadSpec(QuestionnaireResponseTemplateBaseSpec):

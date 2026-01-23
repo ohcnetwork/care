@@ -188,3 +188,4 @@ class QuestionnaireResponseTemplate(EMRBaseModel):
     questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
     facility_organizations = ArrayField(models.IntegerField(), default=list)
     users = ArrayField(models.IntegerField(), default=list)
+    available_keys = ArrayField(models.CharField(max_length=255), default=list)

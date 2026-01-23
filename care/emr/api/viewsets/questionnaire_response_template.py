@@ -26,11 +26,20 @@ from care.users.models import User
 from care.utils.shortcuts import get_object_or_404
 
 
+class KeyFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        queryset = qs
+        if not value:
+            return queryset
+        return queryset.filter(available_keys__overlap=[value])
+
+
 class QuestionnaireTemplateFilters(filters.FilterSet):
     name = filters.CharFilter(lookup_expr="icontains")
     questionnaire = filters.CharFilter(
         lookup_expr="exact", field_name="questionnaire__slug"
     )
+    key_filter = KeyFilter()
 
 
 class QuestionnaireResponseTemplateViewSet(
