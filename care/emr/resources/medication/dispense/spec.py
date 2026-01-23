@@ -10,7 +10,7 @@ from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.location import FacilityLocation
 from care.emr.models.medication_dispense import DispenseOrder, MedicationDispense
 from care.emr.models.medication_request import MedicationRequest
-from care.emr.resources.base import EMRResource, model_from_cache
+from care.emr.resources.base import EMRResource
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
 from care.emr.resources.inventory.inventory_item.spec import InventoryItemReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
@@ -219,9 +219,7 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
             mapping["charge_item"] = ChargeItemReadSpec.serialize(
                 obj.charge_item
             ).to_json()
-        mapping["location"] = model_from_cache(
-            FacilityLocationListSpec, id=obj.location.id
-        )
+        mapping["location"] = FacilityLocationListSpec.serialize(obj.location).to_json()
         if obj.authorizing_request:
             mapping["authorizing_request"] = MedicationRequestReadSpec.serialize(
                 obj.authorizing_request

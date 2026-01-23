@@ -94,12 +94,10 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         if obj.origin:
-            mapping["origin"] = model_from_cache(
-                FacilityLocationListSpec, id=obj.origin.id
-            )
-        mapping["destination"] = model_from_cache(
-            FacilityLocationListSpec, id=obj.destination.id
-        )
+            mapping["origin"] = FacilityLocationListSpec.serialize(obj.origin).to_json()
+        mapping["destination"] = FacilityLocationListSpec.serialize(
+            obj.destination
+        ).to_json()
         if obj.supplier:
             mapping["supplier"] = model_from_cache(
                 OrganizationReadSpec, id=obj.supplier.id

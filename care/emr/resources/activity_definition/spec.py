@@ -12,7 +12,7 @@ from care.emr.models.specimen_definition import SpecimenDefinition
 from care.emr.resources.activity_definition.valueset import (
     ACTIVITY_DEFINITION_PROCEDURE_CODE_VALUESET,
 )
-from care.emr.resources.base import EMRResource, model_from_cache
+from care.emr.resources.base import EMRResource
 from care.emr.resources.charge_item_definition.spec import ChargeItemDefinitionReadSpec
 from care.emr.resources.healthcare_service.spec import HealthcareServiceReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
@@ -150,7 +150,7 @@ class ActivityDefinitionRetrieveSpec(ActivityDefinitionReadSpec):
             location_obj = FacilityLocation.objects.filter(id=location).first()
             if not location_obj:
                 continue
-            locations.append(model_from_cache(FacilityLocationListSpec, id=location))
+            locations.append(FacilityLocationListSpec.serialize(location_obj).to_json())
         mapping["locations"] = locations
         if obj.healthcare_service:
             mapping["healthcare_service"] = HealthcareServiceReadSpec.serialize(

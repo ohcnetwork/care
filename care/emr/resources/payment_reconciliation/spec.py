@@ -11,7 +11,7 @@ from care.emr.models.invoice import Invoice
 from care.emr.models.location import FacilityLocation
 from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.resources.account.spec import AccountReadSpec
-from care.emr.resources.base import EMRResource, model_from_cache
+from care.emr.resources.base import EMRResource
 from care.emr.resources.location.spec import FacilityLocationListSpec
 from care.emr.resources.patient.spec import PatientRetrieveSpec
 
@@ -151,7 +151,7 @@ class PaymentReconciliationRetrieveSpec(PaymentReconciliationReadSpec):
             obj.account.patient, facility=obj.account.facility
         ).to_json()
         if obj.location:
-            mapping["location"] = model_from_cache(
-                FacilityLocationListSpec, id=obj.location.id
-            )
+            mapping["location"] = FacilityLocationListSpec.serialize(
+                obj.location
+            ).to_json()
         cls.serialize_audit_users(mapping, obj)

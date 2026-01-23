@@ -6,6 +6,7 @@ from pydantic import UUID4
 from care.emr.models.diagnostic_report import DiagnosticReport
 from care.emr.models.encounter import Encounter
 from care.emr.models.healthcare_service import HealthcareService
+from care.emr.models.location import FacilityLocation
 from care.emr.models.service_request import ServiceRequest
 from care.emr.models.specimen import Specimen
 from care.emr.resources.activity_definition.spec import (
@@ -167,7 +168,9 @@ class ServiceRequestRetrieveSpec(ServiceRequestReadSpec):
         super().perform_extra_serialization(mapping, obj)
         locations = []
         for location_id in obj.locations:
-            locations.append(model_from_cache(FacilityLocationListSpec, id=location_id))
+            location = FacilityLocation.objects.filter(id=location_id).first()
+            if location:
+                locations.append(FacilityLocationListSpec.serialize(location).to_json())
 
         mapping["locations"] = locations
         if obj.healthcare_service:

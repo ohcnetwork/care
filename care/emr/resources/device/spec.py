@@ -97,9 +97,9 @@ class DeviceRetrieveSpec(DeviceListSpec):
         mapping["current_location"] = None
         mapping["current_encounter"] = None
         if obj.current_location:
-            mapping["current_location"] = model_from_cache(
-                FacilityLocationListSpec, id=obj.current_location.id
-            )
+            mapping["current_location"] = FacilityLocationListSpec.serialize(
+                obj.current_location
+            ).to_json()
         if obj.current_encounter:
             mapping["current_encounter"] = EncounterListSpec.serialize(
                 obj.current_encounter
@@ -131,9 +131,9 @@ class DeviceLocationHistoryListSpec(EMRResource):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         if obj.location:
-            mapping["location"] = model_from_cache(
-                FacilityLocationListSpec, id=obj.location.id
-            )
+            mapping["location"] = FacilityLocationListSpec.serialize(
+                obj.location
+            ).to_json()
         cls.serialize_audit_users(mapping, obj)
 
 

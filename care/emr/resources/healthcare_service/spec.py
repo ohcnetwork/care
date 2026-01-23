@@ -68,12 +68,15 @@ class HealthcareServiceRetrieveSpec(HealthcareServiceReadSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.models.location import FacilityLocation
+
         super().perform_extra_serialization(mapping, obj)
         locations = []
         for location in obj.locations:
             try:
+                location_obj = FacilityLocation.objects.get(id=location)
                 locations.append(
-                    model_from_cache(FacilityLocationListSpec, id=location)
+                    FacilityLocationListSpec.serialize(location_obj).to_json()
                 )
             except Exception:  # noqa S110
                 pass

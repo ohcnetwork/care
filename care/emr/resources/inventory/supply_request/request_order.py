@@ -112,11 +112,11 @@ class SupplyRequestOrderReadSpec(BaseSupplyRequestOrderSpec):
                 OrganizationReadSpec, id=obj.supplier.id
             )
         if obj.origin_id:
-            mapping["origin"] = model_from_cache(
-                FacilityLocationListSpec, id=obj.origin_id
-            )
+            origin = FacilityLocation.objects.get(id=obj.origin_id)
+            mapping["origin"] = FacilityLocationListSpec.serialize(origin).to_json()
         if obj.destination_id:
-            mapping["destination"] = model_from_cache(
-                FacilityLocationListSpec, id=obj.destination_id
-            )
+            destination = FacilityLocation.objects.get(id=obj.destination_id)
+            mapping["destination"] = FacilityLocationListSpec.serialize(
+                destination
+            ).to_json()
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
