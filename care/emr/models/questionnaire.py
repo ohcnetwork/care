@@ -176,3 +176,18 @@ class QuestionnaireFacilityOrganization(EMRBaseModel):
         cache = list(set(cache))
         self.questionnaire.internal_organization_cache = cache
         self.questionnaire.save(update_fields=["internal_organization_cache"])
+
+
+class QuestionnaireResponseTemplate(EMRBaseModel):
+    facility = models.ForeignKey(
+        "facility.Facility", on_delete=models.CASCADE, null=True, blank=True
+    )
+    name = models.CharField(max_length=255)
+    description = models.TextField(default="")
+    template_data = models.JSONField(default=dict)
+    questionnaire = models.ForeignKey(
+        Questionnaire, on_delete=models.CASCADE, null=True, blank=True, default=None
+    )
+    facility_organizations = ArrayField(models.IntegerField(), default=list)
+    users = ArrayField(models.IntegerField(), default=list)
+    available_keys = ArrayField(models.CharField(max_length=255), default=list)

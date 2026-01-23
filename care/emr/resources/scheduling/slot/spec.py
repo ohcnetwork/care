@@ -82,6 +82,8 @@ class TokenBookingWriteSpec(TokenBookingBaseSpec):
 
 
 class TokenBookingMinimumReadSpec(TokenBookingBaseSpec):
+    id: UUID4 | None = None
+
     token_slot: TokenSlotBaseSpec
     booked_on: datetime.datetime
     status: str
