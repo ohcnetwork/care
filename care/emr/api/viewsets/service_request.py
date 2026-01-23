@@ -75,6 +75,9 @@ class ServiceRequestFilters(filters.FilterSet):
     patient_current_location = filters.UUIDFilter(
         field_name="encounter__current_location__external_id"
     )
+    activity_definition = filters.UUIDFilter(
+        field_name="activity_definition__external_id"
+    )
 
 
 class ApplyActivityDefinitionRequest(BaseModel):
