@@ -116,7 +116,3 @@ class QuestionnaireResponseTemplateRetrieveSpec(QuestionnaireResponseTemplateRea
                         facility_organization_obj
                     ).to_json()
                 )
-
-
-for template in QuestionnaireResponseTemplate.objects.all():
-    print(template.available_keys)
