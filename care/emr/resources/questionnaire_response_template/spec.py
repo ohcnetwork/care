@@ -44,7 +44,7 @@ class QuestionnaireResponseTemplateBaseSpec(EMRResource):
 
 
 class QuestionnaireResponseTemplateCreateSpec(QuestionnaireResponseTemplateBaseSpec):
-    questionnaire: str
+    questionnaire: str | None = None
     facility: UUID4 | None = None
     users: list[str]
     facility_organizations: list[UUID4]
@@ -58,7 +58,10 @@ class QuestionnaireResponseTemplateCreateSpec(QuestionnaireResponseTemplateBaseS
         return self
 
     def perform_extra_deserialization(self, is_update, obj):
-        obj.questionnaire = get_object_or_404(Questionnaire, slug=self.questionnaire)
+        if self.questionnaire:
+            obj.questionnaire = get_object_or_404(
+                Questionnaire, slug=self.questionnaire
+            )
         if self.facility:
             obj.facility = get_object_or_404(Facility, external_id=self.facility)
         obj.available_keys = []
