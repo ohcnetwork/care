@@ -6,6 +6,7 @@ from rest_framework.filters import OrderingFilter
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
     EMRCreateMixin,
+    EMRDestroyMixin,
     EMRListMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
@@ -39,6 +40,7 @@ class QuestionnaireResponseTemplateViewSet(
     EMRListMixin,
     EMRBaseViewSet,
     EMRUpsertMixin,
+    EMRDestroyMixin,
 ):
     database_model = QuestionnaireResponseTemplate
     pydantic_model = QuestionnaireResponseTemplateCreateSpec
