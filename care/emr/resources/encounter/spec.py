@@ -172,6 +172,11 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
                 "-created_date"
             )
         ]
+        mapping["current_location"] = None
+        if obj.current_location:
+            mapping["current_location"] = FacilityLocationMinimalListSpec.serialize(
+                obj.current_location
+            ).to_json()
 
         care_team = []
         user_mapping = {x["user_id"]: x for x in obj.care_team}
