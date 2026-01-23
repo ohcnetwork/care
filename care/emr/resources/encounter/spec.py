@@ -28,6 +28,7 @@ from care.emr.resources.facility_organization.spec import FacilityOrganizationRe
 from care.emr.resources.location.spec import (
     FacilityLocationEncounterListSpecWithLocation,
     FacilityLocationListSpec,
+    FacilityLocationMinimalListSpec,
 )
 from care.emr.resources.patient.spec import PatientListSpec, PatientRetrieveSpec
 from care.emr.resources.permissions import EncounterPermissionsMixin
@@ -135,7 +136,7 @@ class EncounterListSpec(EncounterSpecBase):
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
         mapping["current_location"] = None
         if obj.current_location:
-            mapping["current_location"] = FacilityLocationListSpec.serialize(
+            mapping["current_location"] = FacilityLocationMinimalListSpec.serialize(
                 obj.current_location
             ).to_json()
 
