@@ -117,18 +117,14 @@ up-playwright:
 down-playwright:
 	docker compose exec db sh -c 'if [ -f /tmp/care_db.before_playwright.dump ]; then pg_restore -U postgres --clean --if-exists -d care /tmp/care_db.before_playwright.dump && rm -f /tmp/care_db.before_playwright.dump; else echo "no before_playwright dump to restore"; fi'
 
-%:
-	docker compose exec backend bash -c "python manage.py $*"
-
 nomad-up:
 	@./scripts/nomad-up.sh
-
-nomad-status:
-	@nomad job status
 
 nomad-down:
 	@./scripts/nomad-down.sh
 
-nomad-load-fixtures:
-	nomad job stop -purge care-load-fixtures || true
-	nomad run nomad/load-fixtures.nomad
+nomad-status:
+	@nomad job status
+
+%:
+	docker compose exec backend bash -c "python manage.py $*"

@@ -1,6 +1,6 @@
 job "care-redis" {
   datacenters = ["dc1"]
-  type = "service"
+  type        = "service"
 
   group "redis" {
     count = 1
@@ -15,7 +15,7 @@ job "care-redis" {
       driver = "docker"
 
       config {
-        image = "redis:7"
+        image = "redis:8-alpine"
         ports = ["redis"]
       }
 
@@ -23,8 +23,6 @@ job "care-redis" {
         cpu    = 200
         memory = 256
       }
-
-
     }
   }
 }

@@ -1,6 +1,6 @@
 job "care-postgres" {
   datacenters = ["dc1"]
-  type = "service"
+  type        = "service"
 
   group "postgres" {
     count = 1
@@ -15,7 +15,7 @@ job "care-postgres" {
       driver = "docker"
 
       config {
-        image = "postgres:15"
+        image = "postgres:18-alpine"
         ports = ["db"]
       }
 
@@ -29,8 +29,6 @@ job "care-postgres" {
         cpu    = 500
         memory = 1024
       }
-
-
     }
   }
 }
