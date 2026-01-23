@@ -112,6 +112,7 @@ class FacilityLocationWriteSpec(FacilityLocationSpec):
         else:
             obj.parent = None
 
+
 class FacilityLocationMinimalListSpec(FacilityLocationSpec):
     parent: dict
     mode: str
@@ -120,9 +121,9 @@ class FacilityLocationMinimalListSpec(FacilityLocationSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
-
         mapping["id"] = obj.external_id
         mapping["parent"] = obj.get_parent_json()
+
 
 class FacilityLocationListSpec(FacilityLocationSpec):
     parent: dict

@@ -27,7 +27,6 @@ from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.location.spec import (
     FacilityLocationEncounterListSpecWithLocation,
-    FacilityLocationListSpec,
     FacilityLocationMinimalListSpec,
 )
 from care.emr.resources.patient.spec import PatientListSpec, PatientRetrieveSpec
@@ -139,6 +138,7 @@ class EncounterListSpec(EncounterSpecBase):
             mapping["current_location"] = FacilityLocationMinimalListSpec.serialize(
                 obj.current_location
             ).to_json()
+
 
 class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
     appointment: dict = {}

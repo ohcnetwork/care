@@ -72,7 +72,10 @@ class ServiceRequestFilters(filters.FilterSet):
     )
     patient = filters.UUIDFilter(field_name="patient__external_id")
     requester = filters.UUIDFilter(field_name="requester__external_id")
-    patient_current_location = filters.UUIDFilter(field_name="encounter__current_location__external_id")
+    patient_current_location = filters.UUIDFilter(
+        field_name="encounter__current_location__external_id"
+    )
+
 
 class ApplyActivityDefinitionRequest(BaseModel):
     activity_definition: str
