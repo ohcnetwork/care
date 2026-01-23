@@ -76,6 +76,7 @@ class QuestionnaireResponseTemplateUpdateSpec(QuestionnaireResponseTemplateBaseS
     facility_organizations: list[UUID4]
 
     def perform_extra_deserialization(self, is_update, obj):
+        obj.available_keys = []
         for key in list(obj.template_data.keys()):
             if obj.template_data[key]:
                 obj.available_keys.append(key)
@@ -115,3 +116,7 @@ class QuestionnaireResponseTemplateRetrieveSpec(QuestionnaireResponseTemplateRea
                         facility_organization_obj
                     ).to_json()
                 )
+
+
+for template in QuestionnaireResponseTemplate.objects.all():
+    print(template.available_keys)
