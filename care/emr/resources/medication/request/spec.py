@@ -173,9 +173,7 @@ class MedicationRequestResource(EMRResource):
     ]
 
 
-class BaseMedicationRequestSpec(MedicationRequestResource):
-    id: UUID4 = None
-
+class MedicationRequestAbstractSpec(BaseModel):
     status: MedicationRequestStatus
 
     status_reason: StatusReason | None = None
@@ -195,6 +193,12 @@ class BaseMedicationRequestSpec(MedicationRequestResource):
     note: str | None = Field(None)
 
     dispense_status: MedicationRequestDispenseStatus | None = None
+
+
+class BaseMedicationRequestSpec(
+    MedicationRequestResource, MedicationRequestAbstractSpec
+):
+    id: UUID4 = None
 
 
 class CreatePrescription(BaseModel):

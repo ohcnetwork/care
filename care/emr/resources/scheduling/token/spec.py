@@ -104,9 +104,11 @@ class TokenRetrieveSpec(TokenReadSpec):
     booking: dict
     resource_type: str
     resource: dict
+    encounter: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.encounter.spec import EncounterListSpec
         from care.emr.resources.scheduling.slot.spec import TokenBookingMinimumReadSpec
 
         super().perform_extra_serialization(mapping, obj)
@@ -115,5 +117,9 @@ class TokenRetrieveSpec(TokenReadSpec):
             mapping["booking"] = TokenBookingMinimumReadSpec.serialize(
                 obj.booking
             ).to_json()
+            if obj.booking.associated_encounter:
+                mapping["encounter"] = EncounterListSpec.serialize(
+                    obj.booking.associated_encounter
+                ).to_json()
         mapping["resource_type"] = obj.queue.resource.resource_type
         mapping["resource"] = serialize_resource(obj.queue.resource)

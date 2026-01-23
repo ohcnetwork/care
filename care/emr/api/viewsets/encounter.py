@@ -63,6 +63,17 @@ class LiveFilter(filters.CharFilter):
         return queryset
 
 
+class OrganizationUUIDFilter(filters.UUIDFilter):
+    def filter(self, qs, value):
+        queryset = qs
+        if not value:
+            return queryset
+        organization = get_object_or_404(
+            FacilityOrganization.objects.only("id"), external_id=value
+        )
+        return queryset.filter(facility_organization_cache__overlap=[organization.id])
+
+
 class EncounterFilters(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
     status = MultiSelectFilter(field_name="status")
@@ -81,6 +92,7 @@ class EncounterFilters(filters.FilterSet):
     location = filters.UUIDFilter(field_name="current_location__external_id")
     created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     live = LiveFilter()
+    organization = OrganizationUUIDFilter()
 
 
 class EncounterViewSet(
