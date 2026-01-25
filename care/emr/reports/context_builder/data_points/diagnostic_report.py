@@ -1,3 +1,5 @@
+from django_filters import rest_framework as filters
+
 from care.emr.models.diagnostic_report import DiagnosticReport
 from care.emr.reports.context_builder.data_points.base import (
     Field,
@@ -8,7 +10,14 @@ from care.emr.reports.context_builder.data_points.observation import (
 )
 
 
+class DiagnosticReportFilter(filters.FilterSet):
+    status = filters.CharFilter(lookup_expr="iexact")
+
+
 class DiagnosticReportContextBuilder(QuerysetContextBuilder):
+    filterset_class = DiagnosticReportFilter
+    __filterset_backends__ = [filters.DjangoFilterBackend]
+
     def get_context(self):
         return DiagnosticReport.objects.filter(encounter=self.parent_context)
 
