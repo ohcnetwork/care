@@ -231,7 +231,6 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
 
 
 class MedicationDispenseRetrieveSpec(MedicationDispenseReadSpec):
-
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
