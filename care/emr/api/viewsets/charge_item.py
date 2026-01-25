@@ -68,6 +68,7 @@ class ChargeItemFilters(filters.FilterSet):
     paid_on = filters.DateTimeFromToRangeFilter(field_name="paid_on")
     performer_actor = filters.UUIDFilter(field_name="performer_actor__external_id")
     created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
+    created_by = filters.UUIDFilter(field_name="created_by__external_id")
 
 
 class ApplyChargeItemDefinitionRequest(BaseModel):

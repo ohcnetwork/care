@@ -2,10 +2,10 @@ from datetime import datetime
 
 from pydantic import UUID4, BaseModel, field_validator, model_validator
 
+from care.emr.models.activity_definition import ActivityDefinition
 from care.emr.models.organization import FacilityOrganization
 from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponseTemplate
-from care.emr.models.service_request import ServiceRequest
 from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.medication.request.spec import MedicationRequestAbstractSpec
@@ -34,22 +34,22 @@ class MedicationRequestTemplateSpec(MedicationRequestAbstractSpec):
         return requested_product
 
 
-class ServiceRequestTemplateSpec(BaseModel):
+class ActivityDefinitionTemplateSpec(BaseModel):
     slug: str
     service_request: ServiceRequestUpdateSpec
 
     @field_validator("slug")
     @classmethod
     def validate_slug(cls, slug):
-        if not ServiceRequest.objects.filter(slug=slug).exists():
-            raise ValueError("Service request not found")
+        if not ActivityDefinition.objects.filter(slug=slug).exists():
+            raise ValueError("Activity definition not found")
         return slug
 
 
 class TemplateData(BaseModel):
     medication_request: list[MedicationRequestTemplateSpec] | None = None
     questionnaire: list[QuestionnaireAnswer] | None = None
-    service_request: list[ServiceRequestTemplateSpec] | None = None
+    actvity_definition: list[ActivityDefinitionTemplateSpec] | None = None
     meta: dict | None = None
 
 
