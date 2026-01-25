@@ -230,18 +230,8 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
             ).to_json()
 
 
-class MedicationDispenseRetrieveSpec(BaseMedicationDispenseSpec):
-    order: dict | None = None
-    charge_item: dict | None = None
+class MedicationDispenseRetrieveSpec(MedicationDispenseReadSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        if obj.order:
-            mapping["order"] = MedicationDispenseOrderReadSpec.serialize(
-                obj.order
-            ).to_json()
-        if obj.charge_item:
-            mapping["charge_item"] = ChargeItemReadSpec.serialize(
-                obj.charge_item
-            ).to_json()
