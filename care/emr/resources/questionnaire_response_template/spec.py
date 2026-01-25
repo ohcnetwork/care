@@ -22,11 +22,13 @@ class QuestionnaireAnswer(BaseModel):
 
 
 class MedicationRequestTemplateSpec(MedicationRequestAbstractSpec):
-    requested_product: str
+    requested_product: str | None = None
 
     @field_validator("requested_product")
     @classmethod
     def validate_requested_product(cls, requested_product):
+        if requested_product is None:
+            return requested_product
         if not ProductKnowledge.objects.filter(slug=requested_product).exists():
             raise ValueError("Product knowledge not found")
         return requested_product
