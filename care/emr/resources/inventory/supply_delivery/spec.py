@@ -69,7 +69,7 @@ class SupplyDeliveryWriteSpec(ExtensionValidator, BaseSupplyDeliverySpec):
     supplied_item_pack_quantity: int | None = None
     supplied_item_pack_size: int | None = None
 
-    supplied_item_quantity: Decimal = Field(max_digits=20, decimal_places=6)
+    supplied_item_quantity: Decimal = Field(max_digits=20, decimal_places=0)
     supplied_item: UUID4 | None = None
     supplied_inventory_item: UUID4 | None = None
 

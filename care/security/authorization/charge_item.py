@@ -25,5 +25,12 @@ class ChargeItemAccess(AuthorizationHandler):
             facility=facility,
         )
 
+    def can_cancel_charge_item_in_facility(self, user, facility):
+        return self.check_permission_in_facility_organization(
+            [ChargeItemPermissions.can_cancel_charge_item.name],
+            user,
+            facility=facility,
+        )
+
 
 AuthorizationController.register_internal_controller(ChargeItemAccess)

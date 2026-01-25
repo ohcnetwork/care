@@ -33,7 +33,7 @@ class InventoryItemWriteSpec(BaseInventoryItemSpec):
 class InventoryItemReadSpec(BaseInventoryItemSpec):
     """Supply delivery read specification"""
 
-    net_content: Decimal = Field(max_digits=20, decimal_places=6)
+    net_content: Decimal = Field(max_digits=20, decimal_places=0)
     product: dict
     location: dict
 

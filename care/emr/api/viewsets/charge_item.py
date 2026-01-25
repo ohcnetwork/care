@@ -1,3 +1,6 @@
+from datetime import timedelta
+
+from django.conf import settings
 from django.db import transaction
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -55,6 +58,7 @@ from care.security.authorization.base import AuthorizationController
 from care.users.models import User
 from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.shortcuts import get_object_or_404
+from care.utils.time_util import care_now
 
 
 class ChargeItemFilters(filters.FilterSet):
@@ -216,6 +220,20 @@ class ChargeItemViewSet(
             raise ValidationError("Charge item status cannot be manually changed.")
         return super().validate_data(instance, model_obj)
 
+    def authorize_cancel(self, instance):
+        if instance.created_date >= care_now() - timedelta(
+            minutes=settings.CHARGE_ITEM_FREE_CANCEL_PERIOD_MINUTES
+        ):
+            return True
+        if not AuthorizationController.call(
+            "can_cancel_charge_item_in_facility",
+            self.request.user,
+            instance.facility,
+        ):
+            raise PermissionDenied("Access Denied to Cancel Charge Item")
+        # Write permission is already checked
+        return True
+
     def perform_update(self, instance):
         with transaction.atomic():
             # TODO Lock Charge item and Invoice
@@ -224,6 +242,7 @@ class ChargeItemViewSet(
                 old_obj.status != instance.status
                 and instance.status in CHARGE_ITEM_CANCELLED_STATUS
             ):
+                self.authorize_cancel(instance)
                 handle_charge_item_cancel(instance)
             sync_charge_item_costs(instance)
             super().perform_update(instance)

@@ -48,3 +48,9 @@ class ChargeItemPermissions(enum.Enum):
             PHARMACIST_ROLE,
         ],
     )
+    can_cancel_charge_item = Permission(
+        "Can Cancel Charge Item",
+        "",
+        PermissionContext.FACILITY,
+        [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
+    )
