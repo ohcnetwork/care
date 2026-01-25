@@ -38,14 +38,13 @@ class TrigramFilter(filters.CharFilter):
         queryset = qs
         if not value:
             return queryset
-        queryset = (
+        return (
             queryset.annotate(
                 similarity=TrigramSimilarity(self.field_name, value),
             )
             .filter(similarity__gt=0.1)
             .order_by("-similarity")
         )
-        return queryset
 
 
 class ProductKnowledgeFilters(filters.FilterSet):
