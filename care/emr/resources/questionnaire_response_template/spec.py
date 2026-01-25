@@ -31,6 +31,7 @@ class MedicationRequestTemplateSpec(MedicationRequestAbstractSpec):
             raise ValueError("Product knowledge not found")
         return requested_product
 
+
 class ServiceRequestTemplateSpec(BaseModel):
     slug: str
     service_request: ServiceRequestUpdateSpec
@@ -41,6 +42,7 @@ class ServiceRequestTemplateSpec(BaseModel):
         if not ServiceRequest.objects.filter(slug=slug).exists():
             raise ValueError("Service request not found")
         return slug
+
 
 class TemplateData(BaseModel):
     medication_request: list[MedicationRequestTemplateSpec] | None = None
