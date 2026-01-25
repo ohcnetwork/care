@@ -49,7 +49,7 @@ class ActivityDefinitionTemplateSpec(BaseModel):
 class TemplateData(BaseModel):
     medication_request: list[MedicationRequestTemplateSpec] | None = None
     questionnaire: list[QuestionnaireAnswer] | None = None
-    actvity_definition: list[ActivityDefinitionTemplateSpec] | None = None
+    activity_definition: list[ActivityDefinitionTemplateSpec] | None = None
     meta: dict | None = None
 
 
