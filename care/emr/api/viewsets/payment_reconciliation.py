@@ -42,6 +42,7 @@ class PaymentReconciliationFilters(filters.FilterSet):
     location = filters.UUIDFilter(field_name="location__external_id")
     method = filters.CharFilter(lookup_expr="iexact")
     created_by = filters.UUIDFilter(field_name="created_by__external_id")
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
 
 
 class PaymentReconciliationViewSet(

@@ -57,13 +57,17 @@ from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.shortcuts import get_object_or_404
 
 
-class ChargeItemDefinitionFilters(filters.FilterSet):
+class ChargeItemFilters(filters.FilterSet):
     status = MultiSelectFilter(field_name="status")
     title = filters.CharFilter(lookup_expr="icontains")
     account = filters.UUIDFilter(field_name="account__external_id")
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
-    service_resource = filters.CharFilter(lookup_expr="iexact")
+    service_resource = MultiSelectFilter()
     service_resource_id = filters.CharFilter(lookup_expr="iexact")
+    patient = filters.UUIDFilter(field_name="patient__external_id")
+    paid_on = filters.DateTimeFromToRangeFilter(field_name="paid_on")
+    performer_actor = filters.UUIDFilter(field_name="performer_actor__external_id")
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
 
 
 class ApplyChargeItemDefinitionRequest(BaseModel):
@@ -136,13 +140,13 @@ class ChargeItemViewSet(
     pydantic_model = ChargeItemWriteSpec
     pydantic_update_model = ChargeItemUpdateSpec
     pydantic_read_model = ChargeItemReadSpec
-    filterset_class = ChargeItemDefinitionFilters
+    filterset_class = ChargeItemFilters
     filter_backends = [
         filters.DjangoFilterBackend,
         OrderingFilter,
         SingleFacilityTagFilter,
     ]
-    ordering_fields = ["created_date", "modified_date"]
+    ordering_fields = ["created_date", "modified_date", "title"]
     questionnaire_type = "charge_item"
     questionnaire_title = "Charge Item"
     questionnaire_description = "Charge Item"
