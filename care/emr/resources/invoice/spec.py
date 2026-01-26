@@ -12,7 +12,9 @@ from care.emr.resources.account.spec import AccountMinimalReadSpec, AccountReadS
 from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
 from care.emr.resources.payment_reconciliation.spec import (
+    PaymentReconciliationOutcomeOptions,
     PaymentReconciliationRetrieveSpec,
+    PaymentReconciliationStatusOptions,
 )
 from care.emr.resources.user.spec import UserSpec
 
@@ -88,6 +90,8 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
     updated_by: dict | None
     payments: list[dict]
     total_payments: Decimal = Field(max_digits=20, decimal_places=6)
+    credit_notes: list[dict]
+    total_credit_notes: Decimal = Field(max_digits=20, decimal_places=6)
     lock_history: list[dict]
 
     @classmethod
@@ -106,14 +110,28 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
         mapping["account"] = AccountReadSpec.serialize(obj.account).to_json()
         cls.serialize_audit_users(mapping, obj)
         payments = []
+        credit_notes = []
         total_payments = Decimal(0)
-        for payment in PaymentReconciliation.objects.filter(target_invoice=obj):
-            payments.append(
-                PaymentReconciliationRetrieveSpec.serialize(payment).to_json()
-            )
-            total_payments += payment.amount
+        total_credit_notes = Decimal(0)
+        for payment in PaymentReconciliation.objects.filter(
+            target_invoice=obj,
+            outcome=PaymentReconciliationOutcomeOptions.complete.value,
+            status=PaymentReconciliationStatusOptions.active.value,
+        ):
+            if payment.is_credit_note:
+                credit_notes.append(
+                    PaymentReconciliationRetrieveSpec.serialize(payment).to_json()
+                )
+                total_credit_notes += payment.amount
+            else:
+                payments.append(
+                    PaymentReconciliationRetrieveSpec.serialize(payment).to_json()
+                )
+                total_payments += payment.amount
         mapping["total_payments"] = total_payments
         mapping["payments"] = payments
+        mapping["credit_notes"] = credit_notes
+        mapping["total_credit_notes"] = total_credit_notes
         lock_history = []
         for history in obj.lock_history:
             user = history.get("user")

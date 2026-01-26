@@ -111,7 +111,7 @@ class DoseType(str, Enum):
 
 
 class DosageQuantity(BaseModel):
-    value: Decimal = Field(max_digits=20, decimal_places=0)
+    value: Decimal = Field(max_digits=20, decimal_places=6)
     unit: Coding
 
 
