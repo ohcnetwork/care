@@ -25,8 +25,8 @@ class ObservationReferenceRangeContextBuilder(QuerysetContextBuilder):
     interpretation = Field(
         display="Reference Range Interpretation",
         preview_value="Normal",
-        mapping=lambda o: o.get("interpretation")
-        if o and o.get("interpretation")
+        mapping=lambda o: o.get("interpretation").get("display")
+        if o and o.get("interpretation") and o.get("interpretation").get("display")
         else "",
         description="The clinical interpretation of the reference range",
     )
