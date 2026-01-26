@@ -61,7 +61,9 @@ class AccountUpdateSpec(ExtensionValidator, AccountSpec):
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.encounter:
-            obj.primary_encounter = get_object_or_404(Encounter, external_id=self.primary_encounter)
+            obj.primary_encounter = get_object_or_404(
+                Encounter, external_id=self.primary_encounter
+            )
 
 
 class AccountMinimalReadSpec(AccountSpec):

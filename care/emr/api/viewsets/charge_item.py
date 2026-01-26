@@ -360,7 +360,7 @@ class ChargeItemViewSet(
                     facility,
                     encounter=encounter,
                     quantity=quantity,
-                    negative_allowed=negative_allowed
+                    negative_allowed=negative_allowed,
                 )
                 if charge_item_request.service_resource:
                     charge_item.service_resource = charge_item_request.service_resource

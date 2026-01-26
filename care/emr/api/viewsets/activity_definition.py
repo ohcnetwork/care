@@ -46,6 +46,7 @@ class TrigramFilter(filters.CharFilter):
             .order_by("-similarity")
         )
 
+
 class ActivityDefinitionFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     title = TrigramFilter()
