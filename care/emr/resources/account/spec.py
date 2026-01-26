@@ -108,9 +108,10 @@ class AccountRetrieveSpec(AccountReadSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        mapping["primary_encounter"] = EncounterRetrieveSpec.serialize(
-            obj.primary_encounter
-        ).to_json()
+        if obj.primary_encounter:
+            mapping["primary_encounter"] = EncounterRetrieveSpec.serialize(
+                obj.primary_encounter
+            ).to_json()
         mapping["patient"] = PatientRetrieveSpec.serialize(
             obj.patient, facility=obj.facility
         ).to_json()
