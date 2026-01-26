@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import transaction
 from django.db.models import Count, Q
 from django_filters import rest_framework as filters
@@ -85,7 +87,7 @@ class MedicationDispenseViewSet(
     def perform_create(self, instance):
         with transaction.atomic(), InventoryItemLock(instance.item):
             net_content = instance.item.net_content
-            if net_content < instance.quantity:
+            if Decimal(net_content) < Decimal(instance.quantity):
                 raise ValidationError("Inventory item does not have enough stock")
             super().perform_create(instance)
             if instance.item.product.charge_item_definition:
