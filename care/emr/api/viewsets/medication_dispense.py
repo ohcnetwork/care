@@ -83,7 +83,7 @@ class MedicationDispenseViewSet(
     ordering_fields = ["created_date", "modified_date"]
 
     def perform_create(self, instance):
-        with transaction.atomic() , InventoryItemLock(instance.item):
+        with transaction.atomic(), InventoryItemLock(instance.item):
             net_content = instance.item.net_content
             if net_content < instance.quantity:
                 raise ValidationError("Inventory item does not have enough stock")

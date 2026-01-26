@@ -32,6 +32,7 @@ class ChargeItemLock(Lock):
         self.key = f"lock:charge_item:{charge_item.id}"
         self.timeout = timeout
 
+
 class InventoryItemLock(Lock):
     def __init__(self, inventory_item, timeout=settings.LOCK_TIMEOUT):
         self.key = f"lock:inventory_item:{inventory_item.id}"
