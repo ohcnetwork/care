@@ -10,6 +10,7 @@ from care.emr.models import Account
 from care.emr.models.encounter import Encounter
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PeriodSpec
+from care.emr.resources.encounter.spec import EncounterRetrieveSpec
 from care.emr.resources.patient.spec import PatientListSpec, PatientRetrieveSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.utils.shortcuts import get_object_or_404
@@ -99,6 +100,7 @@ class AccountRetrieveSpec(AccountReadSpec):
     """Account retrieve specification"""
 
     patient: dict
+    primary_encounter: dict
     cached_items: list = []
     total_price_components: dict
     extensions: dict
@@ -106,6 +108,9 @@ class AccountRetrieveSpec(AccountReadSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
+        mapping["primary_encounter"] = EncounterRetrieveSpec.serialize(
+            obj.primary_encounter
+        ).to_json()
         mapping["patient"] = PatientRetrieveSpec.serialize(
             obj.patient, facility=obj.facility
         ).to_json()
