@@ -102,9 +102,9 @@ class AccountViewSet(
             raise PermissionDenied("You are not authorized to create accounts")
 
     def authorize_update(self, request_obj, model_instance):
-        if request_obj.get("primary_encounter"):
+        if request_obj.primary_encounter:
             encounter = get_object_or_404(
-                Encounter, external_id=request_obj.get("primary_encounter")
+                Encounter, external_id=request_obj.primary_encounter
             )
             if encounter.facility != model_instance.facility:
                 raise PermissionDenied(
