@@ -14,6 +14,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.locks.billing import InventoryItemLock
 from care.emr.models.encounter import Encounter
 from care.emr.models.location import FacilityLocation
 from care.emr.models.medication_dispense import MedicationDispense
@@ -82,7 +83,10 @@ class MedicationDispenseViewSet(
     ordering_fields = ["created_date", "modified_date"]
 
     def perform_create(self, instance):
-        with transaction.atomic():
+        with transaction.atomic() , InventoryItemLock(instance.item):
+            net_content = instance.item.net_content
+            if net_content < instance.quantity:
+                raise ValidationError("Inventory item does not have enough stock")
             super().perform_create(instance)
             if instance.item.product.charge_item_definition:
                 charge_item = apply_charge_item_definition(
