@@ -61,7 +61,7 @@ class AccountUpdateSpec(ExtensionValidator, AccountSpec):
     primary_encounter: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
-        if self.encounter:
+        if self.primary_encounter:
             obj.primary_encounter = get_object_or_404(
                 Encounter, external_id=self.primary_encounter
             )
