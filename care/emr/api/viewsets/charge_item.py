@@ -304,6 +304,11 @@ class ChargeItemViewSet(
             facility,
         ):
             raise PermissionDenied("Access Denied to Charge Item")
+        negative_allowed = AuthorizationController.call(
+            "can_create_negative_charge_item_in_facility",
+            self.request.user,
+            facility,
+        )
         request_params = ApplyMultipleChargeItemDefinitionRequest(**request.data)
         with transaction.atomic():
             for charge_item_request in request_params.requests:
@@ -355,6 +360,7 @@ class ChargeItemViewSet(
                     facility,
                     encounter=encounter,
                     quantity=quantity,
+                    negative_allowed=negative_allowed
                 )
                 if charge_item_request.service_resource:
                     charge_item.service_resource = charge_item_request.service_resource

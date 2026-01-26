@@ -22,6 +22,7 @@ def apply_charge_item_definition(
     account=None,
     quantity=None,
     reverse=None,
+    negative_allowed=False,
 ):
     if not account:
         account = get_default_account(patient, facility)
@@ -63,5 +64,5 @@ def apply_charge_item_definition(
         quantity=quantity,
         unit_price_components=selected_components,
     )
-    sync_charge_item_costs(charge_item, reverse=reverse)
+    sync_charge_item_costs(charge_item, reverse=reverse or negative_allowed)
     return charge_item

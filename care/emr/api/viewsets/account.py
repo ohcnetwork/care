@@ -13,6 +13,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
 )
 from care.emr.models.account import Account
+from care.emr.models.encounter import Encounter
 from care.emr.resources.account.spec import (
     AccountBillingStatusOptions,
     AccountCreateSpec,
@@ -101,6 +102,12 @@ class AccountViewSet(
             raise PermissionDenied("You are not authorized to create accounts")
 
     def authorize_update(self, request_obj, model_instance):
+        if request_obj.get("primary_encounter"):
+            encounter = get_object_or_404(Encounter, external_id=request_obj.get("primary_encounter"))
+            if encounter.facility != model_instance.facility:
+                raise PermissionDenied("Primary encounter is not associated with the facility")
+            if encounter.patient != model_instance.patient:
+                raise PermissionDenied("Primary encounter is not associated with the patient")
         if not AuthorizationController.call(
             "can_update_account_in_facility",
             self.request.user,

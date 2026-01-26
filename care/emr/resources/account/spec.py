@@ -7,6 +7,7 @@ from pydantic import UUID4, Field
 from care.emr.extensions.base import ExtensionResource
 from care.emr.extensions.validator import ExtensionValidator
 from care.emr.models import Account
+from care.emr.models.encounter import Encounter
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PeriodSpec
 from care.emr.resources.patient.spec import PatientListSpec, PatientRetrieveSpec
@@ -56,7 +57,11 @@ class AccountCreateSpec(ExtensionValidator, AccountSpec):
 
 
 class AccountUpdateSpec(ExtensionValidator, AccountSpec):
-    pass
+    primary_encounter: UUID4 | None = None
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.encounter:
+            obj.primary_encounter = get_object_or_404(Encounter, external_id=self.primary_encounter)
 
 
 class AccountMinimalReadSpec(AccountSpec):
