@@ -39,11 +39,11 @@ def cancel_dispense_order(instance):
         if dispense.charge_item:
             handle_charge_item_cancel(instance.charge_item)
         dispense.charge_item.status = ChargeItemStatusOptions.aborted.value
-        dispense.authorizing_request = None
         dispense.authorizing_request.dispense_status = (
             MedicationRequestDispenseStatus.incomplete.value
         )
         dispense.authorizing_request.save(update_fields=["dispense_status"])
+        dispense.authorizing_request = None
         dispense.charge_item.save()
         dispense.save()
 
