@@ -1,3 +1,4 @@
+from decimal import Decimal
 from typing import Any
 
 from care.emr.models.valueset import ValueSet
@@ -7,6 +8,7 @@ from care.emr.resources.observation_definition.spec import (
     NORMAL_INTERPRETATION,
 )
 from care.utils.registries.evaluation_metric import EvaluatorMetricsRegistry
+from care.utils.rounding.covert_type import convert_to_decimal
 
 
 class InterpretationEvaluator:
@@ -41,7 +43,7 @@ class InterpretationEvaluator:
 
             if isinstance(value, str):
                 try:
-                    value = float(value)
+                    value = convert_to_decimal(value)
                 except ValueError:
                     return False, False
             for value_range in rule.get("ranges", []):
@@ -51,11 +53,11 @@ class InterpretationEvaluator:
                 if min_val is None and max_val is None:
                     raise ValueError("Min and max cannot be None")
                 if min_val is None:
-                    min_val = float("-inf")
+                    min_val = Decimal("-inf")
                 if max_val is None:
-                    max_val = float("inf")
+                    max_val = Decimal("inf")
 
-                if min_val <= value <= max_val:
+                if Decimal(str(min_val)) <= value <= Decimal(str(max_val)):
                     return value_range.get("interpretation"), rule.get("ranges", [])
         else:
             # Handle Valueset based interpretation

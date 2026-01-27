@@ -1,4 +1,5 @@
 from datetime import date, datetime
+from decimal import Decimal
 
 from jinja2 import BaseLoader, Environment, StrictUndefined, TemplateSyntaxError
 from jinja2.sandbox import SandboxedEnvironment
@@ -87,7 +88,7 @@ class TemplateEngine:
         if value is None or value == "":
             return ""
         try:
-            amount = float(value)
+            amount = Decimal(value)
         except (ValueError, TypeError):
             return str(value)
 

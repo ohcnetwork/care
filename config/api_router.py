@@ -78,6 +78,9 @@ from care.emr.api.viewsets.questionnaire import (
     QuestionnaireViewSet,
 )
 from care.emr.api.viewsets.questionnaire_response import QuestionnaireResponseViewSet
+from care.emr.api.viewsets.questionnaire_response_template import (
+    QuestionnaireResponseTemplateViewSet,
+)
 from care.emr.api.viewsets.report.report_upload import ReportUploadViewSet
 from care.emr.api.viewsets.report.template import TemplateViewSet
 from care.emr.api.viewsets.resource_category import ResourceCategoryViewSet
@@ -143,9 +146,7 @@ questionnaire_nested_router = NestedSimpleRouter(
     router, r"questionnaire", lookup="questionnaire"
 )
 
-questionnaire_nested_router.register(
-    "form_submission", FormSubmissionViewSet, basename="form_submission"
-)
+router.register("form_submission", FormSubmissionViewSet, basename="form_submission")
 router.register(
     "questionnaire_tag", QuestionnaireTagsViewSet, basename="questionnaire_tags"
 )
@@ -155,6 +156,11 @@ router.register("supply_request", SupplyRequestViewSet, basename="supply_request
 
 router.register("tag_config", TagConfigViewSet, basename="tag_config")
 
+router.register(
+    "questionnaire_response_template",
+    QuestionnaireResponseTemplateViewSet,
+    basename="questionnaire_response_template",
+)
 
 router.register(
     "observation_definition",

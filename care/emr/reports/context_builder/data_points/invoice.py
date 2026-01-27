@@ -4,6 +4,7 @@ from care.emr.models.invoice import Invoice
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
+    SingleObjectContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.monetary_component import (
     MonetaryComponentContextBuilder,
@@ -70,3 +71,20 @@ class InvoiceContextBuilder(QuerysetContextBuilder):
 class AccountInvoiceContextBuilder(InvoiceContextBuilder):
     def get_context(self):
         return Invoice.objects.filter(account=self.parent_context)
+
+
+class ChargeItemInvoiceContextBuilder(SingleObjectContextBuilder):
+    def get_context(self):
+        return getattr(self.parent_context, self.parent_attribute)
+
+    title = Field(
+        display="Invoice Title",
+        preview_value="Medical Services Invoice",
+        description="Title of the invoice",
+    )
+
+    number = Field(
+        display="Invoice Number",
+        preview_value="INV-1001",
+        description="Unique number of the invoice",
+    )

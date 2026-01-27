@@ -1,6 +1,7 @@
+from decimal import Decimal
 from enum import Enum
 
-from pydantic import UUID4
+from pydantic import UUID4, Field
 
 from care.emr.models.inventory_item import InventoryItem
 from care.emr.resources.base import EMRResource
@@ -32,8 +33,8 @@ class InventoryItemWriteSpec(BaseInventoryItemSpec):
 class InventoryItemReadSpec(BaseInventoryItemSpec):
     """Supply delivery read specification"""
 
-    net_content: float
-    product: float
+    net_content: Decimal = Field(max_digits=20, decimal_places=0)
+    product: dict
     location: dict
 
     @classmethod

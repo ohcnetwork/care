@@ -8,6 +8,7 @@ from pydantic import UUID4, BaseModel
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -62,6 +63,17 @@ class LiveFilter(filters.CharFilter):
         return queryset
 
 
+class OrganizationUUIDFilter(filters.UUIDFilter):
+    def filter(self, qs, value):
+        queryset = qs
+        if not value:
+            return queryset
+        organization = get_object_or_404(
+            FacilityOrganization.objects.only("id"), external_id=value
+        )
+        return queryset.filter(facility_organization_cache__overlap=[organization.id])
+
+
 class EncounterFilters(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
     status = MultiSelectFilter(field_name="status")
@@ -80,6 +92,7 @@ class EncounterFilters(filters.FilterSet):
     location = filters.UUIDFilter(field_name="current_location__external_id")
     created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     live = LiveFilter()
+    organization = OrganizationUUIDFilter()
 
 
 class EncounterViewSet(
@@ -96,7 +109,13 @@ class EncounterViewSet(
     pydantic_read_model = EncounterListSpec
     pydantic_retrieve_model = EncounterRetrieveSpec
     filterset_class = EncounterFilters
-    filter_backends = [filters.DjangoFilterBackend, SingleFacilityTagFilter]
+
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        OrderingFilter,
+        SingleFacilityTagFilter,
+    ]
+    ordering_fields = ["created_date", "modified_date"]
     resource_type = TagResource.encounter
 
     def validate_data(self, instance, model_obj=None):

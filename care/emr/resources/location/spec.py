@@ -113,6 +113,18 @@ class FacilityLocationWriteSpec(FacilityLocationSpec):
             obj.parent = None
 
 
+class FacilityLocationMinimalListSpec(FacilityLocationSpec):
+    parent: dict
+    mode: str
+    has_children: bool
+    availability_status: str
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = obj.external_id
+        mapping["parent"] = obj.get_parent_json()
+
+
 class FacilityLocationListSpec(FacilityLocationSpec):
     parent: dict
     mode: str
@@ -124,8 +136,8 @@ class FacilityLocationListSpec(FacilityLocationSpec):
     def perform_extra_serialization(cls, mapping, obj):
         from care.emr.resources.encounter.spec import EncounterListSpec
 
-        mapping["id"] = obj.external_id
-        mapping["parent"] = obj.get_parent_json()
+        super().perform_extra_serialization(mapping, obj)
+
         if obj.current_encounter:
             mapping["current_encounter"] = EncounterListSpec.serialize(
                 obj.current_encounter

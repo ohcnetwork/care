@@ -11,6 +11,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.locks.billing import PatientCreateLock
 from care.emr.models import Organization, PatientUser, TokenBooking
 from care.emr.models.patient import Patient, PatientIdentifier, PatientIdentifierConfig
 from care.emr.models.scheduling.token import Token
@@ -35,6 +36,7 @@ from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.users.models import User
+from care.utils.lock import ObjectLocked
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -114,33 +116,38 @@ class PatientViewSet(EMRModelViewSet):
 
     def perform_create(self, instance):
         identifiers = instance._identifiers  # noqa: SLF001
-        # TODO : Lock to one patient create at a time
-        with transaction.atomic():
-            super().perform_create(instance)
-            for identifier in identifiers:
-                config = get_object_or_404(
-                    PatientIdentifierConfig,
-                    external_id=identifier.config,
-                    facility__isnull=True,
-                )
-                if config.config.get("auto_maintained"):
-                    continue
-                PatientIdentifier.objects.create(
-                    patient=instance,
-                    config=config,
-                    value=identifier.value,
-                )
-            evaluate_patient_instance_default_values(instance)
+        try:
+            with transaction.atomic():
+                with PatientCreateLock():
+                    super().perform_create(instance)
+                    for identifier in identifiers:
+                        config = get_object_or_404(
+                            PatientIdentifierConfig,
+                            external_id=identifier.config,
+                            facility__isnull=True,
+                        )
+                        if config.config.get("auto_maintained"):
+                            continue
+                        PatientIdentifier.objects.create(
+                            patient=instance,
+                            config=config,
+                            value=identifier.value,
+                        )
+                    evaluate_patient_instance_default_values(instance)
 
-            instance.build_instance_identifiers()
-            instance.save()
-            tag_manager = PatientInstanceTagManager()
-            tag_manager.set_tags(
-                TagResource.patient,
-                instance,
-                instance._tags,  # noqa: SLF001
-                self.request.user,
-            )
+                    instance.build_instance_identifiers()
+                    instance.save()
+                tag_manager = PatientInstanceTagManager()
+                tag_manager.set_tags(
+                    TagResource.patient,
+                    instance,
+                    instance._tags,  # noqa: SLF001
+                    self.request.user,
+                )
+        except ObjectLocked as e:
+            raise ValidationError(
+                "Patient creation failed, try again after a while"
+            ) from e
 
     def perform_update(self, instance):
         identifiers = instance._identifiers  # noqa: SLF001
