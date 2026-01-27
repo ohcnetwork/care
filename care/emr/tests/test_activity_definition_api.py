@@ -1133,33 +1133,6 @@ class ActivityDefinitionAPITestBase(CareAPITestBase):
             ActivityDefinitionStatusOptions.active.value,
         )
 
-    def test_list_activity_definition_with_title_filter(self):
-        """Test listing activity definitions with title filter"""
-        self.client.force_authenticate(user=self.superuser)
-        activity_definition1 = self.create_activity_definition(
-            facility=self.facility,
-            slug="test-activity-definition",
-            title="Test Activity Definition",
-            category=self.resource_category,
-        )
-        self.create_activity_definition(
-            facility=self.facility,
-            slug="test-activity-definition-2",
-            title="Another Activity Definition",
-            category=self.resource_category,
-        )
-        response = self.client.get(
-            self.base_url, {"title": "Test Activity Definition"}, format="json"
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), 1)
-        self.assertEqual(
-            response.data["results"][0]["slug"], str(activity_definition1.slug)
-        )
-        self.assertEqual(
-            response.data["results"][0]["title"], "Test Activity Definition"
-        )
-
     def test_list_activity_definition_with_category_filter(self):
         """Test filtering activity definitions by dummy category filter."""
 

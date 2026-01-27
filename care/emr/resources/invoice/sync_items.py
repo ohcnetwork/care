@@ -3,6 +3,7 @@ from decimal import Decimal
 
 from django.conf import settings
 from django.core.serializers.json import DjangoJSONEncoder
+from rest_framework.exceptions import ValidationError
 
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.invoice import Invoice
@@ -56,6 +57,8 @@ def sync_invoice_items(invoice: Invoice):
         precision=settings.INVOICE_FINAL_AMOUNT_PRECISION,
         care_method=settings.INVOICE_FINAL_AMOUNT_ROUNDING_METHOD,
     )
+    if not invoice.is_refund and (invoice.total_net < 0 or invoice.total_gross < 0):
+        raise ValidationError("A Refund Ivoice is required for negative values")
     invoice.total_price_components = json.loads(
         json.dumps(
             summary["total_price_components"],

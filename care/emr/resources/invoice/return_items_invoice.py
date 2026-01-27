@@ -3,6 +3,7 @@ Utilities to create a return invoice for items based on delivery order
 """
 
 from django.db import transaction
+from rest_framework.exceptions import ValidationError
 
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.invoice import Invoice
@@ -13,6 +14,9 @@ from care.emr.resources.charge_item.apply_charge_item_definition import (
     apply_charge_item_definition,
 )
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
+from care.emr.resources.inventory.supply_delivery.spec import (
+    SupplyDeliveryStatusOptions,
+)
 from care.emr.resources.invoice.default_expression_evaluator import (
     evaluate_invoice_identifier_default_expression,
 )
@@ -28,6 +32,10 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
 
     with transaction.atomic():
         charge_items = []
+        if SupplyDelivery.objects.filter(
+            order=delivery_order, status=SupplyDeliveryStatusOptions.in_progress.value
+        ).exists():
+            raise ValidationError("Finalise Deliveries before completing order")
         invoice_obj = Invoice()
         invoice_obj.status = InvoiceStatusOptions.draft.value
         invoice_obj.facility = delivery_order.destination.facility
@@ -41,7 +49,9 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
         invoice_obj.is_refund = True
         invoice_obj.issue_date = care_now()
         invoice_obj.save()
-        for supply_delivery in SupplyDelivery.objects.filter(order=delivery_order):
+        for supply_delivery in SupplyDelivery.objects.filter(
+            order=delivery_order, status=SupplyDeliveryStatusOptions.completed.value
+        ):
             product = supply_delivery.supplied_item
             charge_item_definition = product.charge_item_definition
             if not charge_item_definition:

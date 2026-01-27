@@ -42,7 +42,7 @@ class HandlingConditionOptions(str, Enum):
 class QuantitySpec(BaseModel):
     """Represents a quantity with value and unit"""
 
-    value: Decimal = Field(max_digits=20, decimal_places=6)
+    value: Decimal = Field(max_digits=20, decimal_places=0)
     unit: Coding
 
 
@@ -73,7 +73,7 @@ class ContainerSpec(BaseModel):
 class DurationSpec(BaseModel):
     """Duration specification using value and unit"""
 
-    value: Decimal = Field(max_digits=20, decimal_places=6)
+    value: Decimal = Field(max_digits=20, decimal_places=0)
     unit: Coding  # Nees to be restricted to Datetime Units
 
 

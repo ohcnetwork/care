@@ -73,9 +73,13 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
 
     frequency = Field(
         display="Frequency",
-        mapping=lambda d: f"{d.get('timing', {}).get('code', {}).get('display', '')}"
-        if d.get("timing") and d.get("timing").get("code")
-        else "",
+        mapping=lambda d: (
+            d.get("timing", {}).get("code", {}).get("display", "")
+            if d.get("timing")
+            and d.get("timing").get("code")
+            and d.get("timing", {}).get("code", {}).get("display")
+            else "As Per Needed"
+        ),
         preview_value="3 times every 1 day",
         description="Frequency of the medication dosage",
     )

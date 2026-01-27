@@ -14,6 +14,12 @@ from care.security.roles.role import (
 
 
 class ChargeItemPermissions(enum.Enum):
+    can_create_negative_charge_item = Permission(
+        "Can Create Negative Charge Item",
+        "",
+        PermissionContext.FACILITY,
+        [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
+    )
     can_create_charge_item = Permission(
         "Can Create Charge Item",
         "",
@@ -47,4 +53,10 @@ class ChargeItemPermissions(enum.Enum):
             VOLUNTEER_ROLE,
             PHARMACIST_ROLE,
         ],
+    )
+    can_cancel_charge_item = Permission(
+        "Can Cancel Charge Item",
+        "",
+        PermissionContext.FACILITY,
+        [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
     )
