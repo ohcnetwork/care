@@ -6,7 +6,7 @@ from pydantic_extra_types.coordinate import Latitude, Longitude
 
 from care.emr.models import Organization
 from care.emr.models.patient import PatientIdentifierConfigCache
-from care.emr.resources.base import EMRResource, cacheable, model_from_cache
+from care.emr.resources.base import EMRResource, cacheable
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.monetary_component import MonetaryComponentDefinition
 from care.emr.resources.invoice.default_expression_evaluator import (
@@ -109,10 +109,10 @@ class FacilityReadSpec(FacilityBaseSpec):
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         cls.serialize_audit_users(mapping, obj)
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
-        if obj.geo_organization_id:
-            mapping["geo_organization"] = model_from_cache(
-                OrganizationReadSpec, id=obj.geo_organization_id
-            )
+        if obj.geo_organization:
+            mapping["geo_organization"] = OrganizationReadSpec.serialize(
+                obj.geo_organization
+            ).to_json()
 
 
 class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
@@ -211,7 +211,7 @@ class FacilityMinimalReadSpec(FacilityBaseSpec):
         mapping["id"] = obj.external_id
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
-        if obj.geo_organization_id:
-            mapping["geo_organization"] = model_from_cache(
-                OrganizationReadSpec, id=obj.geo_organization_id
-            )
+        if obj.geo_organization:
+            mapping["geo_organization"] = OrganizationReadSpec.serialize(
+                obj.geo_organization
+            ).to_json()

@@ -260,14 +260,13 @@ class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj, *args, **kwargs):
-        from care.emr.resources.base import model_from_cache
         from care.emr.resources.organization.spec import OrganizationReadSpec
 
         super().perform_extra_serialization(mapping, obj, *args, **kwargs)
-        if obj.geo_organization_id:
-            mapping["geo_organization"] = model_from_cache(
-                OrganizationReadSpec, id=obj.geo_organization_id
-            )
+        if obj.geo_organization:
+            mapping["geo_organization"] = OrganizationReadSpec.serialize(
+                obj.geo_organization
+            ).to_json()
         cls.serialize_audit_users(mapping, obj)
         if obj.instance_identifiers:
             mapping["instance_identifiers"] = [

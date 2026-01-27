@@ -28,7 +28,6 @@ from care.emr.models import (
     Patient,
 )
 from care.emr.models.patient import PatientIdentifier, PatientIdentifierConfig
-from care.emr.resources.base import model_from_cache
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES, StatusChoices
 from care.emr.resources.encounter.spec import (
     EncounterCareTeamMemberWriteSpec,
@@ -269,10 +268,12 @@ class EncounterViewSet(
         self.authorize_retrieve(instance)
         encounter_organizations = EncounterOrganization.objects.filter(
             encounter=instance
-        ).values_list("organization_id", flat=True)
+        ).select_related("organization")
         data = [
-            model_from_cache(FacilityOrganizationReadSpec, id=org_id)
-            for org_id in encounter_organizations
+            FacilityOrganizationReadSpec.serialize(
+                encounter_organization.organization
+            ).to_json()
+            for encounter_organization in encounter_organizations
         ]
         return Response({"results": data})
 
@@ -301,9 +302,7 @@ class EncounterViewSet(
         EncounterOrganization.objects.create(
             encounter=instance, organization=organization
         )
-        return Response(
-            model_from_cache(FacilityOrganizationReadSpec, id=organization.id)
-        )
+        return Response(FacilityOrganizationReadSpec.serialize(organization).to_json())
 
     @extend_schema(
         request=EncounterOrganizationManageSpec,

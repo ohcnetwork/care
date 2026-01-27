@@ -9,7 +9,7 @@ from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import Organization
 from care.emr.models.patient import Patient
 from care.emr.models.supply_delivery import DeliveryOrder
-from care.emr.resources.base import EMRResource, model_from_cache
+from care.emr.resources.base import EMRResource
 from care.emr.resources.location.spec import FacilityLocationListSpec
 from care.emr.resources.organization.spec import (
     OrganizationReadSpec,
@@ -98,10 +98,8 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
         mapping["destination"] = FacilityLocationListSpec.serialize(
             obj.destination
         ).to_json()
-        if obj.supplier_id:
-            mapping["supplier"] = model_from_cache(
-                OrganizationReadSpec, id=obj.supplier_id
-            )
+        if obj.supplier:
+            mapping["supplier"] = OrganizationReadSpec.serialize(obj.supplier).to_json()
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
         if obj.patient:
             mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()

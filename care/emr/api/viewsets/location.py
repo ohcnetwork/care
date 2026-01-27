@@ -16,7 +16,6 @@ from care.emr.models import (
     FacilityLocationOrganization,
 )
 from care.emr.models.organization import FacilityOrganization, FacilityOrganizationUser
-from care.emr.resources.base import model_from_cache
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.location.spec import (
@@ -179,10 +178,12 @@ class FacilityLocationViewSet(EMRModelViewSet):
         instance = self.get_object()
         location_organizations = FacilityLocationOrganization.objects.filter(
             location=instance
-        ).values_list("organization_id", flat=True)
+        ).select_related("organization")
         data = [
-            model_from_cache(FacilityOrganizationReadSpec, id=org_id)
-            for org_id in location_organizations
+            FacilityOrganizationReadSpec.serialize(
+                location_organization.organization
+            ).to_json()
+            for location_organization in location_organizations
         ]
         return Response({"results": data})
 
@@ -218,9 +219,7 @@ class FacilityLocationViewSet(EMRModelViewSet):
         FacilityLocationOrganization.objects.create(
             location=instance, organization=organization
         )
-        return Response(
-            model_from_cache(FacilityOrganizationReadSpec, id=organization.id)
-        )
+        return Response(FacilityOrganizationReadSpec.serialize(organization).to_json())
 
     @extend_schema(
         request=FacilityLocationOrganizationManageSpec, responses={200: None}

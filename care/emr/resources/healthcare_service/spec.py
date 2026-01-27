@@ -4,7 +4,7 @@ from pydantic import UUID4
 
 from care.emr.models.healthcare_service import HealthcareService
 from care.emr.models.organization import FacilityOrganization
-from care.emr.resources.base import EMRResource, model_from_cache
+from care.emr.resources.base import EMRResource
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.healthcare_service.valueset import (
     HEALTHCARE_SERVICE_TYPE_CODE_VALUESET,
@@ -75,7 +75,7 @@ class HealthcareServiceRetrieveSpec(HealthcareServiceReadSpec):
             FacilityLocationListSpec.serialize(location).to_json()
             for location in FacilityLocation.objects.filter(id__in=obj.locations)
         ]
-        if obj.managing_organization_id:
-            mapping["managing_organization"] = model_from_cache(
-                FacilityOrganizationReadSpec, id=obj.managing_organization_id
-            )
+        if obj.managing_organization:
+            mapping["managing_organization"] = FacilityOrganizationReadSpec.serialize(
+                obj.managing_organization
+            ).to_json()

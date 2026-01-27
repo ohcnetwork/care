@@ -17,7 +17,6 @@ from care.emr.models import (
     QuestionnaireTag,
 )
 from care.emr.models.questionnaire import FormSubmission, QuestionnaireResponse
-from care.emr.resources.base import model_from_cache
 from care.emr.resources.favorites.filters import FavoritesFilter
 from care.emr.resources.favorites.spec import FavoriteResourceChoices
 from care.emr.resources.form_submission.spec import FormSubmissionStatusChoices
@@ -194,10 +193,10 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
         questionnaire = self.get_object()
         questionnaire_organizations = QuestionnaireOrganization.objects.filter(
             questionnaire=questionnaire
-        ).values_list("organization_id", flat=True)
+        ).select_related("organization")
         organizations_serialized = [
-            model_from_cache(OrganizationReadSpec, id=org_id)
-            for org_id in questionnaire_organizations
+            OrganizationReadSpec.serialize(obj.organization).to_json()
+            for obj in questionnaire_organizations
         ]
         return Response(
             {
@@ -255,10 +254,10 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
                     questionnaire=questionnaire, organization=organization
                 )
         organizations_serialized = [
-            model_from_cache(OrganizationReadSpec, id=org_id)
-            for org_id in QuestionnaireOrganization.objects.filter(
+            OrganizationReadSpec.serialize(obj.organization).to_json()
+            for obj in QuestionnaireOrganization.objects.filter(
                 questionnaire=questionnaire
-            ).values_list("organization_id", flat=True)
+            ).select_related("organization")
         ]
         return Response(
             {

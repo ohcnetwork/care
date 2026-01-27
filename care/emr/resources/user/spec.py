@@ -153,10 +153,10 @@ class UserRetrieveSpec(UserSpec):
         super().perform_extra_serialization(mapping, obj)
         if obj.created_by_id:
             mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
-        if obj.geo_organization_id:
-            mapping["geo_organization"] = model_from_cache(
-                OrganizationReadSpec, id=obj.geo_organization_id
-            )
+        if obj.geo_organization:
+            mapping["geo_organization"] = OrganizationReadSpec.serialize(
+                obj.geo_organization
+            ).to_json()
         mapping["flags"] = obj.get_all_flags()
 
 
@@ -184,20 +184,15 @@ class CurrentUserRetrieveSpec(UserRetrieveSpec):
         super().perform_extra_serialization(mapping, obj)
 
         if obj.is_superuser:
-            organization_ids = list(
-                Organization.objects.filter(parent__isnull=True).values_list(
-                    "id", flat=True
-                )
-            )
+            organizations = Organization.objects.filter(parent__isnull=True)
         else:
-            organization_ids = list(
-                OrganizationUser.objects.filter(user=obj).values_list(
+            organizations = Organization.objects.filter(
+                id__in=OrganizationUser.objects.filter(user=obj).values_list(
                     "organization_id", flat=True
                 )
             )
         mapping["organizations"] = [
-            model_from_cache(OrganizationReadSpec, id=org_id)
-            for org_id in organization_ids
+            OrganizationReadSpec.serialize(org).to_json() for org in organizations
         ]
 
         user_facilities = Facility.objects.filter(

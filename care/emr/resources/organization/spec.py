@@ -3,7 +3,7 @@ from enum import Enum
 from pydantic import UUID4, model_validator
 
 from care.emr.models.organization import Organization
-from care.emr.resources.base import EMRResource, cacheable
+from care.emr.resources.base import EMRResource
 from care.security.authorization import AuthorizationController
 
 
@@ -50,7 +50,6 @@ class OrganizationWriteSpec(OrganizationBaseSpec):
                 obj.parent = None
 
 
-@cacheable
 class OrganizationReadSpec(OrganizationBaseSpec):
     level_cache: int = 0
     system_generated: bool

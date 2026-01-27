@@ -5,7 +5,7 @@ from pydantic import UUID4, field_validator
 
 from care.emr.models import Device, DeviceEncounterHistory, DeviceLocationHistory
 from care.emr.registries.device_type.device_registry import DeviceTypeRegistry
-from care.emr.resources.base import EMRResource, model_from_cache
+from care.emr.resources.base import EMRResource
 from care.emr.resources.common.contact_point import ContactPoint
 from care.emr.resources.encounter.spec import EncounterListSpec
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
@@ -109,10 +109,10 @@ class DeviceRetrieveSpec(DeviceListSpec):
             care_device_class = DeviceTypeRegistry.get_care_device_class(obj.care_type)
             mapping["care_metadata"] = care_device_class().retrieve(obj)
 
-        if obj.managing_organization_id:
-            mapping["managing_organization"] = model_from_cache(
-                FacilityOrganizationReadSpec, id=obj.managing_organization_id
-            )
+        if obj.managing_organization:
+            mapping["managing_organization"] = FacilityOrganizationReadSpec.serialize(
+                obj.managing_organization
+            ).to_json()
 
 
 class DeviceLocationHistoryListSpec(EMRResource):

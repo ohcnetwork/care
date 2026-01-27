@@ -176,7 +176,6 @@ class TagConfigRetrieveSpec(TagConfigReadSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
-        from care.emr.resources.base import model_from_cache
         from care.emr.resources.facility_organization.spec import (
             FacilityOrganizationReadSpec,
         )
@@ -184,14 +183,14 @@ class TagConfigRetrieveSpec(TagConfigReadSpec):
 
         super().perform_extra_serialization(mapping, obj)
         cls.serialize_audit_users(mapping, obj)
-        if obj.facility_organization_id:
-            mapping["facility_organization"] = model_from_cache(
-                FacilityOrganizationReadSpec, id=obj.facility_organization_id
-            )
-        if obj.organization_id:
-            mapping["organization"] = model_from_cache(
-                OrganizationReadSpec, id=obj.organization_id
-            )
+        if obj.facility_organization:
+            mapping["facility_organization"] = FacilityOrganizationReadSpec.serialize(
+                obj.facility_organization
+            ).to_json()
+        if obj.organization:
+            mapping["organization"] = OrganizationReadSpec.serialize(
+                obj.organization
+            ).to_json()
 
 
 post_save.connect(
