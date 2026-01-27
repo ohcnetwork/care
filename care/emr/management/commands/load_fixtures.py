@@ -655,7 +655,7 @@ class Command(BaseCommand):
             user_friendly_name=name,
             description=fake.text(max_nb_chars=200),
             status="active",
-            availability_status="available",
+            system_availability_status="available",
             manufacturer=fake.company(),
         )
         device = device_spec.de_serialize()
