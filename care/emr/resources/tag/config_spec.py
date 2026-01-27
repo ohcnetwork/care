@@ -184,13 +184,13 @@ class TagConfigRetrieveSpec(TagConfigReadSpec):
 
         super().perform_extra_serialization(mapping, obj)
         cls.serialize_audit_users(mapping, obj)
-        if obj.facility_organization:
+        if obj.facility_organization_id:
             mapping["facility_organization"] = model_from_cache(
-                FacilityOrganizationReadSpec, id=obj.facility_organization.id
+                FacilityOrganizationReadSpec, id=obj.facility_organization_id
             )
-        if obj.organization:
+        if obj.organization_id:
             mapping["organization"] = model_from_cache(
-                OrganizationReadSpec, id=obj.organization.id
+                OrganizationReadSpec, id=obj.organization_id
             )
 
 

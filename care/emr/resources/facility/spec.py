@@ -109,9 +109,9 @@ class FacilityReadSpec(FacilityBaseSpec):
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         cls.serialize_audit_users(mapping, obj)
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
-        if obj.geo_organization:
+        if obj.geo_organization_id:
             mapping["geo_organization"] = model_from_cache(
-                OrganizationReadSpec, id=obj.geo_organization.id
+                OrganizationReadSpec, id=obj.geo_organization_id
             )
 
 
@@ -211,7 +211,7 @@ class FacilityMinimalReadSpec(FacilityBaseSpec):
         mapping["id"] = obj.external_id
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
-        if obj.geo_organization:
+        if obj.geo_organization_id:
             mapping["geo_organization"] = model_from_cache(
-                OrganizationReadSpec, id=obj.geo_organization.id
+                OrganizationReadSpec, id=obj.geo_organization_id
             )

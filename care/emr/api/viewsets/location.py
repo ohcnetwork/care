@@ -177,14 +177,12 @@ class FacilityLocationViewSet(EMRModelViewSet):
     def organizations(self, request, *args, **kwargs):
         # AuthZ is controlled from the get_queryset method, no need to repeat
         instance = self.get_object()
-        encounter_organizations = FacilityLocationOrganization.objects.filter(
+        location_organizations = FacilityLocationOrganization.objects.filter(
             location=instance
-        ).select_related("organization")
+        ).values_list("organization_id", flat=True)
         data = [
-            model_from_cache(
-                FacilityOrganizationReadSpec, id=encounter_organization.organization.id
-            )
-            for encounter_organization in encounter_organizations
+            model_from_cache(FacilityOrganizationReadSpec, id=org_id)
+            for org_id in location_organizations
         ]
         return Response({"results": data})
 

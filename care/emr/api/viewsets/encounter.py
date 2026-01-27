@@ -262,12 +262,10 @@ class EncounterViewSet(
         self.authorize_retrieve(instance)
         encounter_organizations = EncounterOrganization.objects.filter(
             encounter=instance
-        ).select_related("organization")
+        ).values_list("organization_id", flat=True)
         data = [
-            model_from_cache(
-                FacilityOrganizationReadSpec, id=encounter_organization.organization.id
-            )
-            for encounter_organization in encounter_organizations
+            model_from_cache(FacilityOrganizationReadSpec, id=org_id)
+            for org_id in encounter_organizations
         ]
         return Response({"results": data})
 

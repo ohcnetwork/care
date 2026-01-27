@@ -109,9 +109,9 @@ class DeviceRetrieveSpec(DeviceListSpec):
             care_device_class = DeviceTypeRegistry.get_care_device_class(obj.care_type)
             mapping["care_metadata"] = care_device_class().retrieve(obj)
 
-        if obj.managing_organization:
+        if obj.managing_organization_id:
             mapping["managing_organization"] = model_from_cache(
-                FacilityOrganizationReadSpec, id=obj.managing_organization.id
+                FacilityOrganizationReadSpec, id=obj.managing_organization_id
             )
 
 

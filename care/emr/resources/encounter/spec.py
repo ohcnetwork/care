@@ -161,12 +161,12 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
             mapping["appointment"] = TokenBookingReadSpec.serialize(
                 obj.appointment
             ).to_json()
-        organizations = EncounterOrganization.objects.filter(encounter=obj)
+        organization_ids = EncounterOrganization.objects.filter(
+            encounter=obj
+        ).values_list("organization_id", flat=True)
         mapping["organizations"] = [
-            model_from_cache(
-                FacilityOrganizationReadSpec, id=encounter_org.organization.id
-            )
-            for encounter_org in organizations
+            model_from_cache(FacilityOrganizationReadSpec, id=org_id)
+            for org_id in organization_ids
         ]
         mapping["location_history"] = [
             FacilityLocationEncounterListSpecWithLocation.serialize(i)

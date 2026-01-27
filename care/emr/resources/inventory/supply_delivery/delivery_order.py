@@ -98,9 +98,9 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
         mapping["destination"] = FacilityLocationListSpec.serialize(
             obj.destination
         ).to_json()
-        if obj.supplier:
+        if obj.supplier_id:
             mapping["supplier"] = model_from_cache(
-                OrganizationReadSpec, id=obj.supplier.id
+                OrganizationReadSpec, id=obj.supplier_id
             )
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
         if obj.patient:
