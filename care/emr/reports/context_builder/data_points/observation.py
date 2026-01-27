@@ -91,6 +91,15 @@ class ObservationComponentContextBuilder(QuerysetContextBuilder):
         description="Reference ranges for the observation component",
     )
 
+    interpretation = Field(
+        display="Observation Component Interpretation",
+        preview_value="High",
+        mapping=lambda o: o.get("interpretation").get("display")
+        if o and o.get("interpretation") and o.get("interpretation").get("display")
+        else "",
+        description="The clinical interpretation of the observation component",
+    )
+
 
 class ObservationContextBuilder(QuerysetContextBuilder):
     def get_context(self):
@@ -131,7 +140,7 @@ class ObservationContextBuilder(QuerysetContextBuilder):
     interpretation = Field(
         display="Interpretation",
         preview_value="Normal",
-        mapping=lambda o: o.interpretation if o.interpretation else "",
+        mapping=lambda o: o.interpretation.get("display") if o.interpretation else "",
         description="The clinical interpretation of the observation",
     )
 
