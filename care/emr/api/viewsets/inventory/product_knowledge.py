@@ -1,3 +1,4 @@
+from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -32,10 +33,24 @@ from care.utils.filters.null_filter import NullFilter
 from care.utils.shortcuts import get_object_or_404
 
 
+class TrigramFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        queryset = qs
+        if not value:
+            return queryset
+        return (
+            queryset.annotate(
+                similarity=TrigramSimilarity(self.field_name, value),
+            )
+            .filter(similarity__gt=0.1)
+            .order_by("-similarity")
+        )
+
+
 class ProductKnowledgeFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     facility = DummyUUIDFilter()
-    name = filters.CharFilter(lookup_expr="icontains")  # TODO : Need better searching
+    name = TrigramFilter()
     product_type = filters.CharFilter(lookup_expr="iexact")
     facility_is_null = NullFilter(field_name="facility")
     alternate_identifier = filters.CharFilter(lookup_expr="iexact")

@@ -1,9 +1,9 @@
+from care.emr.models.observation import Observation
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
     SingleObjectContextBuilder,
 )
-from care.emr.resources.observation.spec import Observation
 
 
 class ObservationValueContextBuilder(SingleObjectContextBuilder):
@@ -27,6 +27,11 @@ class ObservationValueContextBuilder(SingleObjectContextBuilder):
     )
 
 
+class ObservationComponentValueContextBuilder(ObservationValueContextBuilder):
+    def get_context(self):
+        return self.parent_context.get("value")
+
+
 class ObservationComponentContextBuilder(QuerysetContextBuilder):
     def get_context(self):
         return self.parent_context.component
@@ -39,10 +44,10 @@ class ObservationComponentContextBuilder(QuerysetContextBuilder):
         else "",
         description="The code representing the observation",
     )
-    result = Field(
+    value = Field(
         display="Observation Component Result",
         preview_value="",
-        target_context=ObservationValueContextBuilder,
+        target_context=ObservationComponentValueContextBuilder,
         description="The result value of the observation component",
     )
 
