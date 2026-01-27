@@ -163,6 +163,8 @@ class AccountViewSet(
                 status=AccountStatusOptions.active.value,
                 billing_status=AccountBillingStatusOptions.open.value,
             ).first()
+        if not account:
+            raise ValidationError("No account found")
         return Response(AccountRetrieveSpec.serialize(account).to_json())
 
     @action(methods=["POST"], detail=True)
