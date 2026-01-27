@@ -60,7 +60,8 @@ class MedicationDispenseOrderReadSpec(BaseMedicationDispenseOrderSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        mapping["location"] = FacilityLocationListSpec.serialize(obj.location).to_json()
+        location = FacilityLocation.objects.get(id=obj.location_id)
+        mapping["location"] = FacilityLocationListSpec.serialize(location).to_json()
         mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
 
 
@@ -74,5 +75,6 @@ class MedicationDispenseOrderRetrieveSpec(MedicationDispenseOrderReadSpec):
     def perform_extra_serialization(cls, mapping, obj):
         cls.serialize_audit_users(mapping, obj)
         mapping["id"] = obj.external_id
-        mapping["location"] = FacilityLocationListSpec.serialize(obj.location).to_json()
+        location = FacilityLocation.objects.get(id=obj.location_id)
+        mapping["location"] = FacilityLocationListSpec.serialize(location).to_json()
         mapping["patient"] = PatientRetrieveSpec.serialize(obj.patient).to_json()

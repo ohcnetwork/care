@@ -191,5 +191,4 @@ class MedicationAdministrationReadSpec(BaseMedicationAdministrationSpec):
                 obj.administered_product
             )
 
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
+        cls.serialize_audit_users(mapping, obj)

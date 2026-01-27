@@ -15,6 +15,7 @@ from care.emr.locks.billing import PatientCreateLock
 from care.emr.models import Organization, PatientUser, TokenBooking
 from care.emr.models.patient import Patient, PatientIdentifier, PatientIdentifierConfig
 from care.emr.models.scheduling.token import Token
+from care.emr.resources.base import model_from_cache
 from care.emr.resources.patient.spec import (
     PatientCreateSpec,
     PatientIdentifierConfigRequest,
@@ -285,7 +286,7 @@ class PatientViewSet(EMRModelViewSet):
         patient = self.get_object()
         patient_users = PatientUser.objects.filter(patient=patient)
         data = [
-            UserSpec.serialize(patient_user.user).to_json()
+            model_from_cache(UserSpec, id=patient_user.user_id)
             for patient_user in patient_users
         ]
         return Response({"results": data})
@@ -305,7 +306,7 @@ class PatientViewSet(EMRModelViewSet):
         if PatientUser.objects.filter(user=user, patient=patient).exists():
             raise ValidationError("User already exists")
         PatientUser.objects.create(user=user, patient=patient, role=role)
-        return Response(UserSpec.serialize(user).to_json())
+        return Response(model_from_cache(UserSpec, id=user.id))
 
     class PatientUserDeleteSpec(BaseModel):
         user: UUID4

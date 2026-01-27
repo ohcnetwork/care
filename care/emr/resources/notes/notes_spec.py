@@ -48,8 +48,4 @@ class NoteMessageReadSpec(NoteMessageSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by).to_json()
+        cls.serialize_audit_users(mapping, obj)

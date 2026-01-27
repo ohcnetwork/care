@@ -7,7 +7,7 @@ from rest_framework.exceptions import ValidationError
 
 from care.emr.models import Encounter, FileUpload
 from care.emr.models.consent import Consent
-from care.emr.resources.base import EMRResource, PeriodSpec
+from care.emr.resources.base import EMRResource, PeriodSpec, model_from_cache
 from care.emr.resources.file_upload.spec import (
     FileCategoryChoices,
     FileTypeChoices,
@@ -117,9 +117,9 @@ class ConsentListSpec(ConsentBaseSpec):
         mapping["encounter"] = obj.encounter.external_id
 
         for verification in obj.verification_details:
-            verification["verified_by"] = UserSpec.serialize(
-                User.objects.get(external_id=verification["verified_by"])
-            ).to_json()
+            verification["verified_by"] = model_from_cache(
+                UserSpec, external_id=verification["verified_by"]
+            )
 
         mapping["verification_details"] = obj.verification_details
 

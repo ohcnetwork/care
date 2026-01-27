@@ -105,17 +105,14 @@ class FacilityReadSpec(FacilityBaseSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
-        from care.emr.resources.user.spec import UserSpec
-
         mapping["id"] = obj.external_id
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
-        if obj.created_by:
-            mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
+        cls.serialize_audit_users(mapping, obj)
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
         if obj.geo_organization:
-            mapping["geo_organization"] = OrganizationReadSpec.serialize(
-                obj.geo_organization
-            ).to_json()
+            mapping["geo_organization"] = model_from_cache(
+                OrganizationReadSpec, id=obj.geo_organization.id
+            )
 
 
 class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
@@ -215,6 +212,6 @@ class FacilityMinimalReadSpec(FacilityBaseSpec):
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
         if obj.geo_organization:
-            mapping["geo_organization"] = OrganizationReadSpec.serialize(
-                obj.geo_organization
-            ).to_json()
+            mapping["geo_organization"] = model_from_cache(
+                OrganizationReadSpec, id=obj.geo_organization.id
+            )

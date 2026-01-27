@@ -162,9 +162,9 @@ class EMRResource(BaseModel):
     def serialize_audit_users(cls, mapping, obj):
         from care.emr.resources.user.spec import UserSpec
 
-        if obj.created_by_id:
+        if hasattr(obj, "created_by_id") and obj.created_by_id:
             mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
-        if obj.updated_by_id:
+        if hasattr(obj, "updated_by_id") and obj.updated_by_id:
             mapping["updated_by"] = model_from_cache(UserSpec, id=obj.updated_by_id)
 
 
@@ -272,7 +272,7 @@ def model_from_cache(model: EMRResource, quiet=True, **kwargs) -> dict[str, Any]
         data = model.serialize(obj)
         cache.set(model_cache_key(model_string(db_model), model.__name__, pk), data)
 
-    return dict(data)
+    return data.model_dump(mode="json")
 
 
 # TODO: add param for manually adding dependencies for cache invalidation

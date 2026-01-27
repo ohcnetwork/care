@@ -27,6 +27,7 @@ from care.emr.models import (
     Patient,
 )
 from care.emr.models.patient import PatientIdentifier, PatientIdentifierConfig
+from care.emr.resources.base import model_from_cache
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES, StatusChoices
 from care.emr.resources.encounter.spec import (
     EncounterCareTeamMemberWriteSpec,
@@ -62,6 +63,17 @@ class LiveFilter(filters.CharFilter):
         return queryset
 
 
+class OrganizationUUIDFilter(filters.UUIDFilter):
+    def filter(self, qs, value):
+        queryset = qs
+        if not value:
+            return queryset
+        organization = get_object_or_404(
+            FacilityOrganization.objects.only("id"), external_id=value
+        )
+        return queryset.filter(facility_organization_cache__overlap=[organization.id])
+
+
 class EncounterFilters(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
     status = MultiSelectFilter(field_name="status")
@@ -80,6 +92,7 @@ class EncounterFilters(filters.FilterSet):
     location = filters.UUIDFilter(field_name="current_location__external_id")
     created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     live = LiveFilter()
+    organization = OrganizationUUIDFilter()
 
 
 class EncounterViewSet(
@@ -251,9 +264,9 @@ class EncounterViewSet(
             encounter=instance
         ).select_related("organization")
         data = [
-            FacilityOrganizationReadSpec.serialize(
-                encounter_organization.organization
-            ).to_json()
+            model_from_cache(
+                FacilityOrganizationReadSpec, id=encounter_organization.organization.id
+            )
             for encounter_organization in encounter_organizations
         ]
         return Response({"results": data})
@@ -283,7 +296,9 @@ class EncounterViewSet(
         EncounterOrganization.objects.create(
             encounter=instance, organization=organization
         )
-        return Response(FacilityOrganizationReadSpec.serialize(organization).to_json())
+        return Response(
+            model_from_cache(FacilityOrganizationReadSpec, id=organization.id)
+        )
 
     @extend_schema(
         request=EncounterOrganizationManageSpec,
