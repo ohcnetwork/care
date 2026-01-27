@@ -6,6 +6,39 @@ from care.emr.reports.context_builder.data_points.base import (
 )
 
 
+class ObservationReferenceRangeContextBuilder(QuerysetContextBuilder):
+    def get_context(self):
+        return getattr(self.parent_context, self.parent_attribute)
+
+    max = Field(
+        display="Reference Range Max",
+        preview_value="14",
+        mapping=lambda o: o.get("max") if o else None,
+        description="The maximum value of the reference range",
+    )
+    min = Field(
+        display="Reference Range Min",
+        preview_value="4",
+        mapping=lambda o: o.get("min") if o else None,
+        description="The minimum value of the reference range",
+    )
+    interpretation = Field(
+        display="Reference Range Interpretation",
+        preview_value="Normal",
+        mapping=lambda o: o.get("interpretation").get("display")
+        if o and o.get("interpretation") and o.get("interpretation").get("display")
+        else "",
+        description="The clinical interpretation of the reference range",
+    )
+
+
+class ObservationComponentReferenceRangeContextBuilder(
+    ObservationReferenceRangeContextBuilder
+):
+    def get_context(self):
+        return self.parent_context.get("reference_range")
+
+
 class ObservationValueContextBuilder(SingleObjectContextBuilder):
     def get_context(self):
         return getattr(self.parent_context, self.parent_attribute)
@@ -51,6 +84,13 @@ class ObservationComponentContextBuilder(QuerysetContextBuilder):
         description="The result value of the observation component",
     )
 
+    reference_range = Field(
+        display="Observation Component Reference Ranges",
+        preview_value="",
+        target_context=ObservationComponentReferenceRangeContextBuilder,
+        description="Reference ranges for the observation component",
+    )
+
 
 class ObservationContextBuilder(QuerysetContextBuilder):
     def get_context(self):
@@ -86,4 +126,18 @@ class ObservationContextBuilder(QuerysetContextBuilder):
         display="Effective DateTime",
         preview_value="2023-10-01T10:00:00Z",
         description="The date and time when the observation was made",
+    )
+
+    interpretation = Field(
+        display="Interpretation",
+        preview_value="Normal",
+        mapping=lambda o: o.interpretation if o.interpretation else "",
+        description="The clinical interpretation of the observation",
+    )
+
+    reference_range = Field(
+        display="Reference Range",
+        preview_value="",
+        target_context=ObservationReferenceRangeContextBuilder,
+        description="Reference ranges for the observation",
     )
