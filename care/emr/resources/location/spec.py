@@ -23,6 +23,11 @@ class StatusChoices(str, Enum):
     unknown = "unknown"
 
 
+class LocationAvailabilityStatusChoices(str, Enum):
+    available = "available"
+    reserved = "reserved"
+
+
 class FacilityLocationOperationalStatusChoices(str, Enum):
     C = "C"
     H = "H"
@@ -117,7 +122,7 @@ class FacilityLocationMinimalListSpec(FacilityLocationSpec):
     parent: dict
     mode: str
     has_children: bool
-    availability_status: str
+    system_availability_status: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -129,7 +134,7 @@ class FacilityLocationListSpec(FacilityLocationSpec):
     parent: dict
     mode: str
     has_children: bool
-    availability_status: str
+    system_availability_status: str
     current_encounter: dict | None = None
 
     @classmethod
