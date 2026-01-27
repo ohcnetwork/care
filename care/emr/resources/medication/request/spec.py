@@ -250,7 +250,9 @@ class MedicationRequestSpec(BaseMedicationRequestSpec):
                 obj.requested_product.facility
                 and obj.requested_product.facility != obj.encounter.facility
             ):
-                raise ValueError("Product not found in facility")
+                raise ValidationError(
+                    {"requested_product": "Product not found in facility"}
+                )
 
         if self.prescription:
             obj.prescription = get_object_or_404(

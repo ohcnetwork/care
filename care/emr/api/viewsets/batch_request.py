@@ -25,6 +25,7 @@ class BatchRequest(BaseModel):
 class HandledError(Exception):
     pass
 
+
 class UnHandledError(Exception):
     pass
 
@@ -47,7 +48,7 @@ class BatchRequestView(GenericViewSet):
                 for response in responses:
                     if response["status_code"] > 299:  # noqa PLR2004
                         errored = True
-                    if response["status_code"] >= 500:
+                    if response["status_code"] >= 500:  # noqa PLR2004
                         structured_responses.append(
                             {
                                 "reference_id": requests.requests[loop].reference_id,
