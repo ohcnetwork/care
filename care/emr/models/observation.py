@@ -29,7 +29,10 @@ class Observation(EMRBaseModel):
     body_site = models.JSONField(default=dict)
     method = models.JSONField(default=dict)
     reference_range = models.JSONField(default=list)
-    interpretation = models.CharField(max_length=255, null=True)
+    interpretation_old = models.CharField(
+        max_length=255, null=True, blank=True, default=None
+    )
+    interpretation = models.JSONField(default=dict)
     parent = models.UUIDField(null=True)
     questionnaire_response = models.ForeignKey(
         "emr.QuestionnaireResponse", on_delete=models.CASCADE, null=True
