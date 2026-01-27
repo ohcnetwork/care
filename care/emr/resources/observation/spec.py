@@ -87,7 +87,7 @@ class BaseObservationSpec(EMRResource):
 
     reference_range: list[ReferenceRange] = []
 
-    interpretation: str | None = None
+    interpretation: dict = {}
 
     parent: UUID4 | None = None
 
