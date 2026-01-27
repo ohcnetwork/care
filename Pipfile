@@ -67,7 +67,7 @@ pre-commit = "==4.5.0"
 tblib = "==3.2.2"
 watchdog = "==6.0.0"
 werkzeug = "==3.1.4"
-ruff = "==0.14.8"
+ruff = "==0.14.14"
 model-bakery = "==1.20.5"
 Faker = "==38.2.0"
 
