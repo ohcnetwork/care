@@ -123,7 +123,11 @@ class AccountViewSet(
                 raise PermissionDenied(
                     "Primary encounter is not associated with the patient"
                 )
-            if Account.objects.filter(primary_encounter=encounter).exists():
+            if (
+                Account.objects.exclude(id=model_instance.id)
+                .filter(primary_encounter=encounter)
+                .exists()
+            ):
                 raise PermissionDenied(
                     "Encounter is already associated with an account"
                 )
