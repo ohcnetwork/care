@@ -195,7 +195,7 @@ class PatientIdentifierConfigCache:
             )
             cls.configs[config_id] = model_from_cache(
                 PatientIdentifierListSpec, id=config.id
-            ).to_json()
+            )
         return cls.configs[config_id]
 
     @classmethod

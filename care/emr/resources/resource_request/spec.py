@@ -169,6 +169,7 @@ class ResourceRequestCommentListSpec(ResourceRequestCommentBaseSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = str(obj.external_id)
         if obj.created_by_id:
             mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
 
