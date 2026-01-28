@@ -13,6 +13,7 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.user import (
     SingleUserRelatedContextBuilder,
 )
+from care.utils.filters.multiselect import MultiSelectFilter
 
 STATUS_DISPLAY = {
     "active": "Active",
@@ -45,9 +46,10 @@ PRIORITY_DISPLAY = {
 
 
 class MedicationRequestReportFilter(filters.FilterSet):
-    status = filters.CharFilter(lookup_expr="iexact")
     intent = filters.CharFilter(lookup_expr="iexact")
     priority = filters.CharFilter(lookup_expr="iexact")
+    status = MultiSelectFilter(field_name="status")
+    exclude_status = MultiSelectFilter(field_name="status", exclude=True)
 
 
 class MedicationPrescriptionReportFilter(filters.FilterSet):
