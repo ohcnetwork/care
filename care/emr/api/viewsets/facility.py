@@ -84,7 +84,7 @@ class FacilityViewSet(EMRModelViewSet):
     filter_backends = [DjangoFilterBackend]
 
     def get_queryset(self):
-        qs = super().get_queryset()
+        qs = super().get_queryset().select_related("geo_organization", "created_by")
         if self.request.user.is_superuser:
             return qs
         organization_ids = list(
@@ -217,4 +217,6 @@ class AllFacilityViewSet(EMRModelReadOnlyViewSet):
     search_fields = ["name"]
 
     def get_queryset(self):
-        return Facility.objects.filter(is_public=True).select_related()
+        return Facility.objects.filter(is_public=True).select_related(
+            "geo_organization"
+        )
