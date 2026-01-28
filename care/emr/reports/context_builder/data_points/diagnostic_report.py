@@ -4,10 +4,22 @@ from care.emr.models.diagnostic_report import DiagnosticReport
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
+    SingleObjectContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.observation import (
     ObservationContextBuilder,
 )
+
+
+class ServiceRequestContextBuilder(SingleObjectContextBuilder):
+    def get_context(self):
+        return getattr(self.parent_context, self.parent_attribute)
+
+    title = Field(
+        display="Title",
+        preview_value="Blood Test Request",
+        description="Title of the service request",
+    )
 
 
 class DiagnosticReportFilter(filters.FilterSet):
@@ -44,4 +56,11 @@ class DiagnosticReportContextBuilder(QuerysetContextBuilder):
         display="Notes",
         preview_value="Patient is in good health.",
         description="Additional notes regarding the diagnostic report",
+    )
+
+    service_request = Field(
+        display="Service Request",
+        preview_value="",
+        description="Identifier for the associated service request",
+        target_context=ServiceRequestContextBuilder,
     )
