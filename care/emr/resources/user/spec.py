@@ -201,7 +201,8 @@ class CurrentUserRetrieveSpec(UserRetrieveSpec):
             ).values_list("organization__facility_id", flat=True)
         )
         mapping["facilities"] = [
-            FacilityBareMinimumSpec.serialize(obj).to_json() for obj in user_facilities
+            model_from_cache(FacilityBareMinimumSpec, id=facility.id)
+            for facility in user_facilities
         ]
 
         mapping["permissions"] = list(

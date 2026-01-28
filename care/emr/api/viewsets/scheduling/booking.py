@@ -274,6 +274,7 @@ class TokenBookingViewSet(
                 user_id__in=facility_organization_users.values("user_id")
             )
 
+        user_resources = user_resources.select_related("user")
         return Response(
             {
                 "users": [

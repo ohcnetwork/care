@@ -4,7 +4,7 @@ from decimal import Decimal
 from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 
 from care.emr.models.observation_definition import ObservationDefinition
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.common.condition_evaluator import EvaluatorConditionSpec
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.observation.valueset import (
@@ -224,8 +224,8 @@ class ObservationDefinitionReadSpec(BaseObservationDefinitionSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        if obj.facility:
-            mapping["facility"] = FacilityBareMinimumSpec.serialize(
-                obj.facility
-            ).to_json()
+        if obj.facility_id:
+            mapping["facility"] = model_from_cache(
+                FacilityBareMinimumSpec, id=obj.facility_id
+            )
         mapping["slug_config"] = obj.parse_slug(obj.slug)

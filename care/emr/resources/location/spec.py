@@ -7,7 +7,6 @@ from care.emr.models import Encounter, FacilityLocationEncounter
 from care.emr.models.location import FacilityLocation
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common import Coding
-from care.emr.resources.user.spec import UserSpec
 
 
 class LocationEncounterAvailabilityStatusChoices(str, Enum):
@@ -156,10 +155,7 @@ class FacilityLocationRetrieveSpec(FacilityLocationListSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        cls.serialize_audit_users(mapping, obj)
 
 
 class FacilityLocationEncounterBaseSpec(EMRResource):

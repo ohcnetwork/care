@@ -131,7 +131,9 @@ class EncounterListSpec(EncounterSpecBase):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
-        mapping["facility"] = FacilityBareMinimumSpec.serialize(obj.facility).to_json()
+        mapping["facility"] = model_from_cache(
+            FacilityBareMinimumSpec, id=obj.facility_id
+        )
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
         mapping["current_location"] = None
         if obj.current_location:
@@ -155,7 +157,9 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
         mapping["patient"] = PatientRetrieveSpec.serialize(
             obj.patient, facility=obj.facility
         ).to_json()
-        mapping["facility"] = FacilityBareMinimumSpec.serialize(obj.facility).to_json()
+        mapping["facility"] = model_from_cache(
+            FacilityBareMinimumSpec, id=obj.facility_id
+        )
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
         if obj.appointment:
             mapping["appointment"] = TokenBookingReadSpec.serialize(

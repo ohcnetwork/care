@@ -7,7 +7,7 @@ from care.emr.models.encounter import Encounter
 from care.emr.models.medication_administration import MedicationAdministration
 from care.emr.models.medication_request import MedicationRequest
 from care.emr.models.product_knowledge import ProductKnowledge
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.common import Quantity
 from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledgeReadSpec
 from care.emr.resources.medication.valueset.administration_method import (
@@ -191,5 +191,5 @@ class MedicationAdministrationReadSpec(BaseMedicationAdministrationSpec):
                 obj.administered_product
             )
 
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
+        if obj.created_by_id:
+            mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
