@@ -123,7 +123,7 @@ class QuestionnaireResponseTemplateRetrieveSpec(QuestionnaireResponseTemplateRea
         mapping["users"] = []
         for user in obj.users:
             mapping["users"].append(model_from_cache(UserSpec, id=user))
-        mapping["organizations"] = []
+        mapping["facility_organizations"] = []
         for facility_organization in obj.facility_organizations:
             facility_organization_obj = FacilityOrganization.objects.filter(
                 id=facility_organization
