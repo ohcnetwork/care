@@ -653,9 +653,8 @@ class Command(BaseCommand):
         device_spec = DeviceCreateSpec(
             registered_name=name,
             user_friendly_name=name,
-            description=fake.text(max_nb_chars=200),
             status="active",
-            system_availability_status="available",
+            availability_status="available",
             manufacturer=fake.company(),
         )
         device = device_spec.de_serialize()

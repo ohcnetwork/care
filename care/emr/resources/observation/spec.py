@@ -46,7 +46,7 @@ class ReferenceRange(BaseModel):
 
 class Component(BaseModel):
     value: QuestionnaireSubmitResultValue
-    interpretation: str | None = None
+    interpretation: str | dict = {}
     reference_range: list[ReferenceRange] = []
     code: Coding | None = None
     note: str = ""
@@ -87,7 +87,7 @@ class BaseObservationSpec(EMRResource):
 
     reference_range: list[ReferenceRange] = []
 
-    interpretation: str | None = None
+    interpretation: dict = {}
 
     parent: UUID4 | None = None
 

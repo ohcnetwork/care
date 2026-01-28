@@ -173,10 +173,11 @@ class MedicationDispenseViewSet(
                 # Perform Cancellation of charge items as well
                 handle_charge_item_cancel(instance.charge_item)
                 instance.charge_item.status = ChargeItemStatusOptions.aborted.value
-                instance.authorizing_request.dispense_status = (
-                    MedicationRequestDispenseStatus.incomplete.value
-                )
-                instance.authorizing_request.save(update_fields=["dispense_status"])
+                if instance.authorizing_request:
+                    instance.authorizing_request.dispense_status = (
+                        MedicationRequestDispenseStatus.incomplete.value
+                    )
+                    instance.authorizing_request.save(update_fields=["dispense_status"])
                 instance.authorizing_request = None
                 instance.charge_item.save()
             super().perform_update(instance)

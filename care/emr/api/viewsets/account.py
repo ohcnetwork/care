@@ -1,4 +1,5 @@
 from django_filters import rest_framework as filters
+from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter, SearchFilter
@@ -14,6 +15,7 @@ from care.emr.api.viewsets.base import (
 )
 from care.emr.models.account import Account
 from care.emr.models.encounter import Encounter
+from care.emr.models.patient import Patient
 from care.emr.resources.account.spec import (
     AccountBillingStatusOptions,
     AccountCreateSpec,
@@ -36,6 +38,13 @@ class AccountFilters(filters.FilterSet):
     billing_status = filters.CharFilter(lookup_expr="iexact")
     patient = filters.UUIDFilter(field_name="patient__external_id")
     created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
+    encounter = filters.UUIDFilter(field_name="primary_encounter__external_id")
+
+
+class AccountSetPrimaryEncounterSpec(BaseModel):
+    patient: UUID4
+    facility: UUID4
+    encounter: UUID4
 
 
 class AccountViewSet(
@@ -114,12 +123,53 @@ class AccountViewSet(
                 raise PermissionDenied(
                     "Primary encounter is not associated with the patient"
                 )
+            if (
+                Account.objects.exclude(id=model_instance.id)
+                .filter(primary_encounter=encounter)
+                .exists()
+            ):
+                raise PermissionDenied(
+                    "Encounter is already associated with an account"
+                )
         if not AuthorizationController.call(
             "can_update_account_in_facility",
             self.request.user,
             model_instance.facility,
         ):
             raise PermissionDenied("You are not authorized to update accounts")
+
+    @action(methods=["POST"], detail=False)
+    def default_account(self, request, *args, **kwargs):
+        request_data = AccountSetPrimaryEncounterSpec(**request.data)
+        patient = get_object_or_404(
+            Patient.objects.only("id"), external_id=request_data.patient
+        )
+        facility = get_object_or_404(
+            Facility.objects.only("id"), external_id=request_data.facility
+        )
+        encounter = get_object_or_404(
+            Encounter.objects.only("id"), external_id=request_data.encounter
+        )
+        self.authorize_read(facility)
+        if encounter.facility != facility:
+            raise PermissionDenied("Encounter is not associated with the facility")
+        if encounter.patient != patient:
+            raise PermissionDenied("Encounter is not associated with the patient")
+        encounter_account = Account.objects.filter(
+            patient=patient, facility=facility, primary_encounter=encounter
+        ).first()
+        if encounter_account:
+            account = encounter_account
+        else:
+            account = Account.objects.filter(
+                patient=patient,
+                facility=facility,
+                status=AccountStatusOptions.active.value,
+                billing_status=AccountBillingStatusOptions.open.value,
+            ).first()
+        if not account:
+            raise ValidationError("No account found")
+        return Response(AccountRetrieveSpec.serialize(account).to_json())
 
     @action(methods=["POST"], detail=True)
     def rebalance(self, request, *args, **kwargs):
@@ -129,12 +179,15 @@ class AccountViewSet(
         account.save()
         return Response(AccountRetrieveSpec.serialize(account).to_json())
 
-    def get_queryset(self):
-        facility = self.get_facility_obj()
+    def authorize_read(self, facility):
         if not AuthorizationController.call(
             "can_read_account_in_facility",
             self.request.user,
             facility,
         ):
             raise PermissionDenied("You are not authorized to read accounts")
+
+    def get_queryset(self):
+        facility = self.get_facility_obj()
+        self.authorize_read(facility)
         return super().get_queryset().filter(facility=facility)
