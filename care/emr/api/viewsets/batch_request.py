@@ -9,11 +9,20 @@ from care.emr.api.viewsets.base import emr_exception_handler
 from care.emr.utils.batch_requests import execute_batch_requests
 
 
+class ResourcePath(BaseModel):
+    reference_id: str
+    path: str
+
+class Replacement(BaseModel):
+    source_path: ResourcePath
+    value_path: ResourcePath
+
 class Request(BaseModel):
     url: str
     method: str
     body: dict = {}
     reference_id: str
+    replacements: list[Replacement] = []
 
 
 class BatchRequest(BaseModel):
@@ -41,21 +50,18 @@ class BatchRequestView(GenericViewSet):
         requests = BatchRequest(**request.data)
         errored = False
         loop = 0
+        data_references = {}
+        replacements = []
+        for req in requests.requests:
+            for replacement in req.replacements:
+                replacements.append(replacement)
         try:
             with transaction.atomic():
-                responses = execute_batch_requests(request, requests)
+                responses = execute_batch_requests(request, requests , replacements , data_references)
                 structured_responses = []
                 for response in responses:
                     if response["status_code"] > 299:  # noqa PLR2004
                         errored = True
-                    if response["status_code"] >= 500:  # noqa PLR2004
-                        structured_responses.append(
-                            {
-                                "reference_id": requests.requests[loop].reference_id,
-                                "status_code": response["status_code"],
-                            }
-                        )
-                        raise UnHandledError
                     structured_responses.append(
                         {
                             "reference_id": requests.requests[loop].reference_id,

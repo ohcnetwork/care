@@ -1,8 +1,10 @@
+import json
 import logging
 
 from django.db import transaction
 from django.test.client import RequestFactory
 from django.urls import Resolver404, resolve
+from jsonpath_ng import parse
 from rest_framework.exceptions import ParseError
 
 logger = logging.getLogger(__name__)
@@ -87,8 +89,35 @@ def get_wsgi_request_object(curr_request, method, url, headers, body):
     )
 
 
-def execute_serially(requests, resp_generator):
-    return [resp_generator(request) for request in requests]
+def find_and_replace_data(data, reference_id, replacements, data_references):
+    for replacement in replacements:
+        if replacement.value_path.reference_id == reference_id:
+            source = data_references[replacement.source_path.reference_id]
+            source_query = parse(replacement.source_path.path)
+            source_value = list(source_query.find(source))
+            if source_value:
+                source_value = source_value[0]
+                destination_query = parse(replacement.value_path.path)
+                destination_value = list(destination_query.find(data))
+                if destination_value:
+                    destination_value = destination_value[0]
+                    destination_value.full_path.update(data, source_value.value)
+
+def execute_serially(parent_request, requests, resp_generator , replacements, data_references):
+
+    from care.emr.api.viewsets.batch_request import UnHandledError
+
+    responses = []
+    for request in requests:
+        request_body = request["body"]
+        find_and_replace_data(request_body, request["reference_id"], replacements, data_references)
+        wsgi_request = get_wsgi_request_object(parent_request, request["method"], request["url"], request["headers"], request_body)
+        response = resp_generator(wsgi_request)
+        responses.append(response)
+        data_references[request["reference_id"]] = response["data"]
+        if response["status_code"] >= 500:
+            raise UnHandledError
+    return responses
 
 
 def construct_wsgi_from_data(request, data):
@@ -99,13 +128,13 @@ def construct_wsgi_from_data(request, data):
     return get_wsgi_request_object(request, method, url, headers, body)
 
 
-def convert_batch_request_to_wsgi(parent_request, batch_request_data):
+def split_batch_request_data(batch_request_data):
     return [
-        construct_wsgi_from_data(parent_request, data)
+        {"body" : data.body, "reference_id" : data.reference_id , "url" : data.url, "method" : data.method, "headers" : {}}
         for data in batch_request_data.requests
     ]
 
 
-def execute_batch_requests(parent_request, batch_request_data):
-    wsgi_requests = convert_batch_request_to_wsgi(parent_request, batch_request_data)
-    return execute_serially(wsgi_requests, get_response)
+def execute_batch_requests(parent_request, batch_request_data, replacements, data_references):
+    wsgi_requests = split_batch_request_data(batch_request_data)
+    return execute_serially(parent_request,wsgi_requests, get_response , replacements , data_references)
