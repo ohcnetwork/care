@@ -48,6 +48,11 @@ class BatchUpdateObservationRequest(BaseModel):
     observations: list[UpsertObservationRequest]
 
 
+class BatchUpdateObservationRequestWithEncounter(BaseModel):
+    observations: list[UpsertObservationRequest]
+    encounter: UUID4
+
+
 class DiagnosticReportFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
@@ -196,6 +201,67 @@ class DiagnosticReportViewSet(
             model_instance.patient = diagnostic_report.patient
             model_instance.subject_id = diagnostic_report.encounter.external_id
             model_instance.diagnostic_report = diagnostic_report
+            model_instance.subject_type = SubjectType.encounter.value
+
+            # Compute interpretation if observation_definition is linked
+            if model_instance.observation_definition:
+                returned_cache = compute_observation_interpretation(
+                    model_instance, metrics_cache
+                )
+                metrics_cache = returned_cache
+            model_instance.save()
+        return Response({"message": "Observations updated successfully"})
+
+
+
+    @extend_schema(
+        request=BatchUpdateObservationRequest,
+    )
+    @action(detail=False, methods=["POST"])
+    def batch_upsert_observations(self, request, *args, **kwargs):
+        """
+        Create observation from observation definition, from scratch or update existing observation
+        """
+        request_params = BatchUpdateObservationRequestWithEncounter(**request.data)
+        metrics_cache = {}
+        encounter = get_object_or_404(Encounter, external_id=request_params.encounter)
+        for request_param in request_params.observations:
+            if request_param.observation_definition:
+                observation_definition = get_object_or_404(
+                    ObservationDefinition,
+                    slug=request_param.observation_definition,
+                    facility=encounter.facility,
+                )
+                observation_obj = convert_od_to_observation(
+                    observation_definition, encounter
+                )
+                serializer_obj = ObservationUpdateSpec.model_validate(
+                    request_param.observation.model_dump(mode="json")
+                )
+                model_instance = serializer_obj.de_serialize(obj=observation_obj)
+                model_instance.observation_definition = observation_definition
+                model_instance.created_by = self.request.user
+            elif request_param.observation_id:
+                observation = get_object_or_404(
+                    Observation,
+                    external_id=request_param.observation_id,
+                )
+                serializer_obj = ObservationUpdateSpec.model_validate(
+                    request_param.observation.model_dump(mode="json")
+                )
+                model_instance = serializer_obj.de_serialize(obj=observation)
+                model_instance.updated_by = self.request.user
+            else:
+                observation_obj = Observation()
+                serializer_obj = ObservationUpdateSpec.model_validate(
+                    request_param.observation.model_dump(mode="json")
+                )
+                model_instance = serializer_obj.de_serialize(obj=observation_obj)
+                model_instance.created_by = self.request.user
+            model_instance.updated_by = self.request.user
+            model_instance.encounter = encounter
+            model_instance.patient = encounter.patient
+            model_instance.subject_id = encounter.external_id
             model_instance.subject_type = SubjectType.encounter.value
 
             # Compute interpretation if observation_definition is linked

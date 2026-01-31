@@ -137,6 +137,7 @@ LOCAL_APPS = [
     "care.users",
     "care.audit_log",
     "care.emr",
+    "care.scribe",
 ]
 
 PLUGIN_APPS = manager.get_apps()
@@ -710,3 +711,24 @@ TOTP_DISABLED_EMAIL_TEMPLATE_PATH = env(
 
 # Cleanup incomplete file uploads, set to 0 to disable
 FILE_UPLOAD_EXPIRY_HOURS = env.int("FILE_UPLOAD_EXPIRY_HOURS", default=24)
+
+# AI Provider Settings (for Scribe functionality)
+# ------------------------------------------------------------------------------
+# OpenAI Configuration
+OPENAI_API_KEY = env("OPENAI_API_KEY", default=None)
+OPENAI_API_BASE = env("OPENAI_API_BASE", default=None)
+OPENAI_MODEL = env("OPENAI_MODEL", default="gpt-4o")
+
+# Azure OpenAI Configuration
+AZURE_OPENAI_API_KEY = env("AZURE_OPENAI_API_KEY", default=None)
+AZURE_OPENAI_ENDPOINT = env("AZURE_OPENAI_ENDPOINT", default=None)
+AZURE_OPENAI_API_VERSION = env("AZURE_OPENAI_API_VERSION", default="2024-02-15-preview")
+AZURE_OPENAI_DEPLOYMENT = env("AZURE_OPENAI_DEPLOYMENT", default=None)
+
+# Anthropic Configuration
+ANTHROPIC_API_KEY = env("ANTHROPIC_API_KEY", default=None)
+ANTHROPIC_MODEL = env("ANTHROPIC_MODEL", default="claude-3-5-sonnet-20241022")
+
+# Google AI Configuration
+GOOGLE_AI_API_KEY = env("GOOGLE_AI_API_KEY", default=None)
+GOOGLE_AI_MODEL = env("GOOGLE_AI_MODEL", default="gemini-1.5-pro")

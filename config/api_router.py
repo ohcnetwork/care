@@ -107,6 +107,8 @@ from care.emr.api.viewsets.tag_config import TagConfigViewSet
 from care.emr.api.viewsets.totp import TOTPViewSet
 from care.emr.api.viewsets.user import UserViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
+from care.emr.fhir.bundle.viewset import FHIRBundleViewSet
+from care.scribe.api.viewsets import ScribeViewSet
 from care.security.api.viewsets.permissions import PermissionViewSet
 from care.security.api.viewsets.roles import RoleViewSet
 from care.users.api.viewsets.plug_config import PlugConfigViewset
@@ -131,6 +133,11 @@ router.register("otp/slots", OTPSlotViewSet, basename="otp-slots")
 
 router.register("batch_requests", BatchRequestView, basename="batch-requests")
 
+# FHIR Bundle processing endpoint
+router.register("fhir/bundle", FHIRBundleViewSet, basename="fhir-bundle")
+
+# Scribe - AI-powered medical transcription and FHIR generation
+router.register("scribe", ScribeViewSet, basename="scribe")
 
 router.register("valueset", ValueSetViewSet, basename="value-set")
 
