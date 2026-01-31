@@ -21,15 +21,8 @@ class Command(BaseCommand):
             type=str,
             help="Google Sheet URL to load HMIS data from",
         )
-        parser.add_argument(
-            "--verbosity",
-            type=str,
-            default="INFO",
-            help="Verbosity level for the command output",
-        )
 
     def handle(self, *args, **options):
-        logger.setLevel(options["verbosity"])
         logger.info("Starting HMIS data load process...")
         with transaction.atomic():
             facility_id = options.get("facility_id")
