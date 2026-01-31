@@ -143,9 +143,11 @@ def read_csv_from_url(url: str) -> list[dict[str, str]]:
     return rows
 
 
-def read_csv_from_google_sheet(sheet_id: str, sheet_name: str) -> list[dict[str, str]]:
+def read_csv_from_google_sheet(sheet_id: str, gid: str) -> list[dict[str, str]]:
     """Read CSV from Google Sheets using the export URL."""
-    url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
+    url = (
+        f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv&gid={gid}"
+    )
     return read_csv_from_url(url)
 
 
