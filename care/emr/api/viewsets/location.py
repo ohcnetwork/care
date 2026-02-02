@@ -480,6 +480,10 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
 def close_related_location_from_encounter(instance):
     if instance.status in COMPLETED_CHOICES:
         with transaction.atomic():
+            FacilityLocation.objects.filter(current_encounter=instance).update(
+                current_encounter=None,
+                system_availability_status=LocationAvailabilityStatusChoices.available.value,
+            )
             location_ids = (
                 FacilityLocationEncounter.objects.filter(encounter=instance)
                 .exclude(status__in=COMPLETED_CHOICES)
@@ -491,10 +495,6 @@ def close_related_location_from_encounter(instance):
                 operational_status=FacilityLocationOperationalStatusChoices.O.value,
             ).update(
                 operational_status=FacilityLocationOperationalStatusChoices.U.value,
-            )
-            FacilityLocation.objects.filter(current_encounter=instance).update(
-                current_encounter=None,
-                system_availability_status=LocationAvailabilityStatusChoices.available.value,
             )
             FacilityLocationEncounter.objects.filter(encounter=instance).exclude(
                 status__in=COMPLETED_CHOICES
