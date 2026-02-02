@@ -307,6 +307,10 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
             location=location,
             status=LocationEncounterAvailabilityStatusChoices.active.value,
         ).first()
+        reserved_location_encounter = FacilityLocationEncounter.objects.filter(
+            location=location,
+            status=LocationEncounterAvailabilityStatusChoices.reserved.value,
+        ).first()
         all_encounters = Encounter.objects.filter(current_location=location)
         if active_location_encounter:
             active_location_encounter.encounter.current_location = location
@@ -315,6 +319,11 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
                 id=active_location_encounter.encounter_id
             )
             location.current_encounter = active_location_encounter.encounter
+            location.system_availability_status = (
+                LocationAvailabilityStatusChoices.reserved.value
+            )
+        elif reserved_location_encounter:
+            location.current_encounter = None
             location.system_availability_status = (
                 LocationAvailabilityStatusChoices.reserved.value
             )
@@ -481,6 +490,17 @@ def close_related_location_from_encounter(instance):
         with transaction.atomic():
             FacilityLocation.objects.filter(current_encounter=instance).update(
                 current_encounter=None,
+                system_availability_status=LocationAvailabilityStatusChoices.available.value,
+            )
+            location_ids = (
+                FacilityLocationEncounter.objects.filter(encounter=instance)
+                .exclude(status__in=COMPLETED_CHOICES)
+                .values_list("location_id", flat=True)
+            )
+            FacilityLocation.objects.filter(
+                id__in=location_ids,
+                system_availability_status=LocationAvailabilityStatusChoices.reserved.value,
+            ).update(
                 system_availability_status=LocationAvailabilityStatusChoices.available.value,
             )
             FacilityLocationEncounter.objects.filter(encounter=instance).exclude(
