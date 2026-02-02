@@ -87,7 +87,9 @@ def validate_data(values, value_type, questionnaire_ref):  # noqa PLR0912
             elif value_type == QuestionType.date.value:
                 isoparse(value.value).date()
             elif value_type == QuestionType.datetime.value:
-                isoparse(value.value)
+                parsed_dt = isoparse(value.value)
+                if timezone.is_naive(parsed_dt):
+                    errors.append("DateTime must include timezone information")
             elif value_type == QuestionType.time.value:
                 datetime.strptime(value.value, "%H:%M:%S")  # noqa DTZ007
             elif value_type == QuestionType.choice.value:
