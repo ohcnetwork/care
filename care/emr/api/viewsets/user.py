@@ -2,6 +2,7 @@ from django.db import IntegrityError, transaction
 from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
+from pydantic import BaseModel
 from rest_framework import filters as drf_filters
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
@@ -59,6 +60,11 @@ class UserImageUploadSerializer(serializers.ModelSerializer):
         )
         user.save(update_fields=["profile_picture_url"])
         return user
+
+
+class UserPreferenceRequest(BaseModel):
+    preference: str
+    value: dict
 
 
 class UserFilter(filters.FilterSet):
@@ -260,3 +266,11 @@ class UserViewSet(EMRModelViewSet):
         Token.objects.filter(user=user).delete()
 
         return Response({"message": "Token revoked successfully"})
+
+    @action(detail=False, methods=["POST"])
+    def set_preferences(self, request, *args, **kwargs):
+        user = self.request.user
+        preferences = UserPreferenceRequest(**request.data)
+        user.preferences[preferences.preference] = preferences.value
+        user.save(update_fields=["preferences"])
+        return Response(status=201)
