@@ -1,7 +1,8 @@
 from datetime import datetime
+from decimal import InvalidOperation
 from enum import Enum
 
-from pydantic import UUID4, BaseModel, Field
+from pydantic import UUID4, BaseModel, Field, model_validator
 
 from care.emr.models.observation import Observation
 from care.emr.resources.base import EMRResource
@@ -18,6 +19,7 @@ from care.emr.resources.questionnaire_response.spec import (
 )
 from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
+from care.utils.rounding.covert_type import convert_to_decimal
 
 
 class ObservationStatus(str, Enum):
@@ -99,6 +101,22 @@ class BaseObservationSpec(EMRResource):
 class ObservationUpdateSpec(BaseObservationSpec):
     effective_datetime: datetime | None = None
     value: QuestionnaireSubmitResultValue | None = None
+
+    @model_validator(mode="after")
+    def validate_numeric_value(self):
+        if (
+            self.value_type == QuestionType.quantity
+            and self.value
+            and self.value.value is not None
+        ):
+            try:
+                convert_to_decimal(self.value.value)
+            except (ValueError, InvalidOperation) as err:
+                msg = (
+                    f"Invalid value: '{self.value.value}' is not a valid decimal number"
+                )
+                raise ValueError(msg) from err
+        return self
 
 
 class ObservationSpec(BaseObservationSpec):
