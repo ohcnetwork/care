@@ -15,10 +15,8 @@ from django.core.management.base import BaseCommand
 from care.emr.management.commands.load_emr_utils import (
     create_slug,
     ensure_category,
+    load_data,
     normalize_title,
-    read_csv_from_file,
-    read_csv_from_google_sheet,
-    read_csv_from_url,
     write_output_csv,
 )
 from care.emr.models.charge_item_definition import ChargeItemDefinition
@@ -66,7 +64,7 @@ class Command(BaseCommand):
         parser.add_argument(
             "--sheet-name",
             type=str,
-            default="Sheet1",
+            default="Charge Item",
             help="Sheet name (default: Sheet1)",
         )
         parser.add_argument(
@@ -86,18 +84,6 @@ class Command(BaseCommand):
             default=100,
             help="Batch size for processing (default: 100)",
         )
-
-    def load_data(self, options):
-        """Load data from source."""
-        if options["google_sheet"]:
-            return read_csv_from_google_sheet(
-                options["google_sheet"], options["sheet_name"]
-            )
-        if options["source"]:
-            if options["source"].startswith("http"):
-                return read_csv_from_url(options["source"])
-            return read_csv_from_file(options["source"])
-        raise ValueError("Must provide either source file/URL or --google-sheet")
 
     def parse_price(self, value) -> str | None:
         """Parse price value to string (for JSON), return None if invalid."""
@@ -133,11 +119,13 @@ class Command(BaseCommand):
             if match:
                 tax_type = match.group(1).lower()  # cgst, sgst, igst
                 percentage = match.group(2)
-                taxes.append({
-                    "type": tax_type,
-                    "factor": f"{float(percentage):.2f}",
-                    "display": match.group(1).upper(),  # CGST, SGST, IGST
-                })
+                taxes.append(
+                    {
+                        "type": tax_type,
+                        "factor": f"{float(percentage):.2f}",
+                        "display": match.group(1).upper(),  # CGST, SGST, IGST
+                    }
+                )
 
         return taxes
 
@@ -151,55 +139,63 @@ class Command(BaseCommand):
         # Base price (required)
         base_price = self.parse_price(row.get("base_price"))
         if base_price:
-            price_components.append({
-                "monetary_component_type": "base",
-                "amount": base_price,
-                "conditions": [],
-            })
+            price_components.append(
+                {
+                    "monetary_component_type": "base",
+                    "amount": base_price,
+                    "conditions": [],
+                }
+            )
 
         # MRP (informational)
         mrp = self.parse_price(row.get("mrp"))
         if mrp:
-            price_components.append({
-                "monetary_component_type": "informational",
-                "amount": mrp,
-                "code": {
-                    "system": "http://ohc.network/codes/monetary/informational",
-                    "version": None,
-                    "code": "mrp",
-                    "display": "MRP",
-                },
-                "conditions": [],
-            })
+            price_components.append(
+                {
+                    "monetary_component_type": "informational",
+                    "amount": mrp,
+                    "code": {
+                        "system": "http://ohc.network/codes/monetary/informational",
+                        "version": None,
+                        "code": "mrp",
+                        "display": "MRP",
+                    },
+                    "conditions": [],
+                }
+            )
 
         # Purchase price (informational)
         purchase_price = self.parse_price(row.get("purchase_price"))
         if purchase_price:
-            price_components.append({
-                "monetary_component_type": "informational",
-                "amount": purchase_price,
-                "code": {
-                    "system": "care",
-                    "code": "purchase_price",
-                    "display": "Purchase Price",
-                },
-                "conditions": [],
-            })
+            price_components.append(
+                {
+                    "monetary_component_type": "informational",
+                    "amount": purchase_price,
+                    "code": {
+                        "system": "care",
+                        "code": "purchase_price",
+                        "display": "Purchase Price",
+                    },
+                    "conditions": [],
+                }
+            )
 
         # Parse taxes from taxes_applicable column
         taxes = self.parse_taxes_applicable(row.get("taxes_applicable"))
         for tax in taxes:
-            price_components.append({
-                "monetary_component_type": "tax",
-                "code": {
-                    "system": "http://ohc.network/codes/monetary/tax",
-                    "code": tax["type"],
-                    "display": tax["display"],
-                },
-                "factor": tax["factor"],
-                "amount": None,
-                "conditions": [],
-            })
+            price_components.append(
+                {
+                    "monetary_component_type": "tax",
+                    "code": {
+                        "system": "http://ohc.network/codes/monetary/tax",
+                        "code": tax["type"],
+                        "display": tax["display"],
+                    },
+                    "factor": tax["factor"],
+                    "amount": None,
+                    "conditions": [],
+                }
+            )
 
         return price_components
 
@@ -313,7 +309,7 @@ class Command(BaseCommand):
             facility = Facility.objects.get(external_id=options["facility"])
             logger.info("Loading charge items for facility: %s", facility.name)
 
-            rows = self.load_data(options)
+            rows = load_data(options)
             logger.info("Loaded %d rows from source", len(rows))
 
             if not rows:

@@ -5,6 +5,7 @@ Shared utilities for loading EMR data from CSV/Google Sheets.
 import hashlib
 import logging
 import re
+import urllib.parse
 from csv import DictReader
 from io import StringIO
 from pathlib import Path
@@ -143,11 +144,10 @@ def read_csv_from_url(url: str) -> list[dict[str, str]]:
     return rows
 
 
-def read_csv_from_google_sheet(sheet_id: str, gid: str) -> list[dict[str, str]]:
-    """Read CSV from Google Sheets using the export URL."""
-    url = (
-        f"https://docs.google.com/spreadsheets/d/{sheet_id}/export?format=csv&gid={gid}"
-    )
+def read_csv_from_google_sheet(sheet_id: str, sheet_name: str) -> list[dict[str, str]]:
+    # URL encode the sheet name to handle special characters and spaces
+    encoded_sheet_name = urllib.parse.quote(sheet_name)
+    url = f"https://docs.google.com/spreadsheets/d/{sheet_id}/gviz/tq?tqx=out:csv&sheet={encoded_sheet_name}"
     return read_csv_from_url(url)
 
 
@@ -296,3 +296,25 @@ def ensure_category(category_name: str, facility, resource_type: str, created_by
     except Exception as e:
         error_message = f"Failed to ensure category '{category_name}': {e}"
         raise RuntimeError(error_message) from e
+
+
+def set_logger_level(logger, level):
+    if level == 0:
+        logger.setLevel(logging.ERROR)
+    elif level == 1:
+        logger.setLevel(logging.INFO)
+    else:
+        logger.setLevel(logging.DEBUG)
+
+
+def load_data(options):
+    """Load data from source."""
+    if options["google_sheet"]:
+        return read_csv_from_google_sheet(
+            options["google_sheet"], options["sheet_name"]
+        )
+    if options["source"]:
+        if options["source"].startswith("http"):
+            return read_csv_from_url(options["source"])
+        return read_csv_from_file(options["source"])
+    raise ValueError("Must provide either source file/URL or --google-sheet")

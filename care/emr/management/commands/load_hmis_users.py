@@ -14,9 +14,8 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 
 from care.emr.management.commands.load_emr_utils import (
-    read_csv_from_file,
-    read_csv_from_google_sheet,
-    read_csv_from_url,
+    load_data,
+    set_logger_level,
     write_output_csv,
 )
 from care.emr.models import Organization
@@ -78,8 +77,8 @@ class Command(BaseCommand):
         parser.add_argument(
             "--sheet-name",
             type=str,
-            default="Sheet1",
-            help="Sheet name (default: Sheet1)",
+            default="User Creation",
+            help="Sheet name (default: User Creation)",
         )
         parser.add_argument(
             "--output",
@@ -92,18 +91,6 @@ class Command(BaseCommand):
             default=100,
             help="Batch size for processing (default: 100)",
         )
-
-    def load_data(self, options):
-        """Load data from source."""
-        if options["google_sheet"]:
-            return read_csv_from_google_sheet(
-                options["google_sheet"], options["sheet_name"]
-            )
-        if options["source"]:
-            if options["source"].startswith("http"):
-                return read_csv_from_url(options["source"])
-            return read_csv_from_file(options["source"])
-        raise ValueError("Must provide either source file/URL or --google-sheet")
 
     def validate_row(self, row: dict) -> list[str]:
         """
@@ -127,6 +114,7 @@ class Command(BaseCommand):
         return missing
 
     def process_row(self, row: dict) -> dict:
+        print(row)
         """
         Process a single CSV row into a User data dict.
         Raises exceptions with descriptive messages on errors.
@@ -142,7 +130,9 @@ class Command(BaseCommand):
         valid_genders = ["male", "female", "non_binary", "transgender"]
         gender = row.get("gender", "").lower()
         if gender not in valid_genders:
-            raise ValueError(f"Invalid gender: {gender}. Must be one of: {valid_genders}")
+            raise ValueError(
+                f"Invalid gender: {gender}. Must be one of: {valid_genders}"
+            )
 
         # Process phone number - add +91 prefix if not present
         phone_number = row["phone_number"].strip()
@@ -172,7 +162,9 @@ class Command(BaseCommand):
 
         # Facility linking fields (comma-separated for multiple departments)
         if row.get("department_name"):
-            dept_names = [d.strip() for d in row["department_name"].split(",") if d.strip()]
+            dept_names = [
+                d.strip() for d in row["department_name"].split(",") if d.strip()
+            ]
             if dept_names:
                 user_data["department_name"] = dept_names
         if row.get("sub_department_name"):
@@ -190,18 +182,6 @@ class Command(BaseCommand):
         Raises exceptions with descriptive messages on errors.
         """
         with transaction.atomic():
-            # Check if username already exists
-            if User.objects.filter(username=data["username"]).exists():
-                raise ValueError(f"Username '{data['username']}' already exists")
-
-            # Check if email already exists
-            if User.objects.filter(email=data["email"]).exists():
-                raise ValueError(f"Email '{data['email']}' already exists")
-
-            # Check if phone_number already exists
-            if User.objects.filter(phone_number=data["phone_number"]).exists():
-                raise ValueError(f"Phone number '{data['phone_number']}' already exists")
-
             # Get geo_organization if provided
             geo_organization = None
             if data.get("geo_organization_id"):
@@ -214,22 +194,33 @@ class Command(BaseCommand):
                         "Geo organization not found: %s", data["geo_organization_id"]
                     )
 
-            # Create the user
-            user = User(
-                username=data["username"],
-                first_name=data["first_name"],
-                last_name=data["last_name"],
-                email=data["email"],
-                phone_number=data["phone_number"],
-                gender=data["gender"],
-                user_type=data["user_type"],
-                is_service_account=data["is_service_account"],
-                prefix=data.get("prefix", ""),
-                suffix=data.get("suffix", ""),
-                geo_organization=geo_organization,
-            )
-            user.set_password(data["password"])
-            user.save()
+            user = User.objects.filter(username=data["username"]).first()
+            if not user:
+                # Check if email already exists
+                if User.objects.filter(email=data["email"]).exists():
+                    raise ValueError(f"Email '{data['email']}' already exists")
+
+                # Check if phone_number already exists
+                if User.objects.filter(phone_number=data["phone_number"]).exists():
+                    raise ValueError(
+                        f"Phone number '{data['phone_number']}' already exists"
+                    )
+                # Create the user
+                user = User(
+                    username=data["username"],
+                    first_name=data["first_name"],
+                    last_name=data["last_name"],
+                    email=data["email"],
+                    phone_number=data["phone_number"],
+                    gender=data["gender"],
+                    user_type=data["user_type"],
+                    is_service_account=data["is_service_account"],
+                    prefix=data.get("prefix", ""),
+                    suffix=data.get("suffix", ""),
+                    geo_organization=geo_organization,
+                )
+                user.set_password(data["password"])
+                user.save()
 
             # Link user to facility department(s) with role
             if data.get("department_name") and data.get("role_name"):
@@ -244,11 +235,12 @@ class Command(BaseCommand):
 
                 for idx, dept_name in enumerate(department_names):
                     department = FacilityOrganization.objects.filter(
-                        facility=facility,
-                        name__iexact=dept_name
+                        facility=facility, name__iexact=dept_name
                     ).first()
                     if not department:
-                        raise ValueError(f"Department '{dept_name}' not found in facility")
+                        raise ValueError(
+                            f"Department '{dept_name}' not found in facility"
+                        )
 
                     # Determine target organization (sub-department or department)
                     target_organization = department
@@ -260,7 +252,7 @@ class Command(BaseCommand):
                             sub_department = FacilityOrganization.objects.filter(
                                 facility=facility,
                                 parent=department,
-                                name__iexact=sub_dept_name
+                                name__iexact=sub_dept_name,
                             ).first()
                             if not sub_department:
                                 raise ValueError(
@@ -270,9 +262,11 @@ class Command(BaseCommand):
                             target_organization = sub_department
 
                     org_name = target_organization.name
-                    self.stdout.write(f"Linking user {data['username']} to {org_name} with role {data['role_name']}")
+                    self.stdout.write(
+                        f"Linking user {data['username']} to {org_name} with role {data['role_name']}"
+                    )
 
-                    FacilityOrganizationUser.objects.create(
+                    FacilityOrganizationUser.objects.get_or_create(
                         organization=target_organization,
                         user=user,
                         role=facility_role,
@@ -291,19 +285,14 @@ class Command(BaseCommand):
         start_time = datetime.now(tz=UTC)
 
         # Set logging level
-        if options["verbosity"] == 0:
-            logger.setLevel(logging.ERROR)
-        elif options["verbosity"] == 1:
-            logger.setLevel(logging.INFO)
-        else:
-            logger.setLevel(logging.DEBUG)
+        set_logger_level(logger, options.get("verbosity", 1))
 
         try:
             # Get facility
             facility = Facility.objects.get(external_id=options["facility"])
             logger.info("Loading users for facility: %s", facility.name)
 
-            rows = self.load_data(options)
+            rows = load_data(options)
             logger.info("Loaded %d rows from source", len(rows))
 
             if not rows:
@@ -371,9 +360,7 @@ class Command(BaseCommand):
             self.stdout.write(self.style.SUCCESS(f"Successful: {len(successful)}"))
             self.stdout.write(self.style.ERROR(f"Failed: {len(failed)}"))
             self.stdout.write(f"Time taken: {datetime.now(tz=UTC) - start_time}")
-            self.stdout.write(
-                self.style.SUCCESS("HMIS users loaded successfully")
-            )
+            self.stdout.write(self.style.SUCCESS("HMIS users loaded successfully"))
 
         except Exception as e:
             logger.exception("Error in main process")

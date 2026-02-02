@@ -1,13 +1,10 @@
 import logging
+from datetime import UTC, datetime
 
 from django.core.management.base import BaseCommand
 from django.db import transaction
 
-from care.emr.management.commands.load_emr_utils import (
-    read_csv_from_file,
-    read_csv_from_google_sheet,
-    read_csv_from_url,
-)
+from care.emr.management.commands.load_emr_utils import load_data, set_logger_level
 from care.emr.models.organization import FacilityOrganization
 from care.facility.models import Facility
 
@@ -36,10 +33,10 @@ class Command(BaseCommand):
             help="Google Sheet ID",
         )
         parser.add_argument(
-            "--sheet-gid",
+            "--sheet-name",
             type=str,
-            default="000",
-            help="Sheet gid (default: 000)",
+            default="Department & Sub Department",
+            help="Sheet name (default: Department & Sub Department)",
         )
         parser.add_argument(
             "--output",
@@ -53,30 +50,28 @@ class Command(BaseCommand):
             help="Batch size for processing (default: 100)",
         )
 
-    def load_data(self, options):
-        """Load data from source."""
-        if options["google_sheet"]:
-            return read_csv_from_google_sheet(
-                options["google_sheet"], options["sheet_gid"]
-            )
-        if options["source"]:
-            if options["source"].startswith("http"):
-                return read_csv_from_url(options["source"])
-            return read_csv_from_file(options["source"])
-        raise ValueError("Must provide either source file/URL or --google-sheet")
-
     def process_row(self, row: dict):
         return {
-            "department_name": row["Department"],
-            "sub_department_name": row["Sub Department"],
+            "department_name": row["Department"].strip(),
+            "sub_department_name": row["Sub Department"].strip(),
         }
 
     def handle(self, *args, **options):
+        start_time = datetime.now(tz=UTC)
+        set_logger_level(logger, options.get("verbosity", 1))
         with transaction.atomic():
-            facility_id = options.get("facility")
-            rows = self.load_data(options)
+            facility = Facility.objects.get(external_id=options.get("facility"))
+            logger.info("Loading departments for facility: %s", facility.name)
 
-            facility = Facility.objects.get(external_id=facility_id)
+            rows = load_data(options)
+            logger.info("Loaded %d rows from source", len(rows))
+
+            if not rows:
+                logger.warning("No data found to process.")
+                return
+
+            created = 0
+            updated = 0
 
             for row in rows:
                 data = self.process_row(row)
@@ -86,23 +81,45 @@ class Command(BaseCommand):
                     defaults={
                         "org_type": "dept",
                         "created_by": facility.created_by,
+                        "updated_by": facility.created_by,
                     },
                 )
                 if created:
-                    logger.info(f"Created department: {data['department_name']}")
-                if data["sub_department_name"]:
-                    sub_department, sub_created = (
-                        FacilityOrganization.objects.update_or_create(
-                            facility=facility,
-                            name=data["sub_department_name"],
-                            defaults={
-                                "org_type": "dept",
-                                "created_by": facility.created_by,
-                                "parent": department,
-                            },
-                        )
+                    logger.debug("Created department: %s", data["department_name"])
+                    created += 1
+                else:
+                    logger.debug(
+                        "Department already exists: %s", data["department_name"]
+                    )
+                    updated += 1
+                if sub_department_name := data["sub_department_name"]:
+                    _, sub_created = FacilityOrganization.objects.update_or_create(
+                        facility=facility,
+                        name=sub_department_name,
+                        defaults={
+                            "org_type": "dept",
+                            "created_by": facility.created_by,
+                            "updated_by": facility.created_by,
+                            "parent": department,
+                        },
                     )
                     if sub_created:
-                        logger.info(
-                            f"Created sub-department: {data['sub_department_name']} under {data['department_name']}"
+                        logger.debug(
+                            "Created sub-department: %s under %s",
+                            data["sub_department_name"],
+                            data["department_name"],
                         )
+                        created += 1
+                    else:
+                        logger.debug(
+                            "Sub-department already exists: %s under %s",
+                            data["sub_department_name"],
+                            data["department_name"],
+                        )
+                        updated += 1
+        self.stdout.write("\n=== Summary ===")
+        self.stdout.write(self.style.SUCCESS("HMIS departments loaded successfully"))
+        self.stdout.write(f"Total rows: {len(rows)}")
+        self.stdout.write(f"Departments created: {created}")
+        self.stdout.write(f"Departments updated: {updated}")
+        self.stdout.write(f"Time taken: {datetime.now(tz=UTC) - start_time}")
