@@ -24,6 +24,7 @@ from care.emr.resources.location.spec import (
     FacilityLocationEncounterUpdateSpec,
     FacilityLocationListSpec,
     FacilityLocationModeChoices,
+    FacilityLocationOperationalStatusChoices,
     FacilityLocationRetrieveSpec,
     FacilityLocationUpdateSpec,
     FacilityLocationWriteSpec,
@@ -307,10 +308,6 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
             location=location,
             status=LocationEncounterAvailabilityStatusChoices.active.value,
         ).first()
-        reserved_location_encounter = FacilityLocationEncounter.objects.filter(
-            location=location,
-            status=LocationEncounterAvailabilityStatusChoices.reserved.value,
-        ).first()
         all_encounters = Encounter.objects.filter(current_location=location)
         if active_location_encounter:
             active_location_encounter.encounter.current_location = location
@@ -319,11 +316,6 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
                 id=active_location_encounter.encounter_id
             )
             location.current_encounter = active_location_encounter.encounter
-            location.system_availability_status = (
-                LocationAvailabilityStatusChoices.reserved.value
-            )
-        elif reserved_location_encounter:
-            location.current_encounter = None
             location.system_availability_status = (
                 LocationAvailabilityStatusChoices.reserved.value
             )
@@ -495,8 +487,11 @@ def close_related_location_from_encounter(instance):
             )
             FacilityLocation.objects.filter(
                 id__in=location_ids,
-                system_availability_status=LocationAvailabilityStatusChoices.reserved.value,
+                operational_status=FacilityLocationOperationalStatusChoices.O.value,
             ).update(
+                operational_status=FacilityLocationOperationalStatusChoices.U.value,
+            )
+            FacilityLocation.objects.filter(current_encounter=instance).update(
                 current_encounter=None,
                 system_availability_status=LocationAvailabilityStatusChoices.available.value,
             )
