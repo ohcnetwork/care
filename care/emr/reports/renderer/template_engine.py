@@ -1,7 +1,7 @@
 from datetime import date, datetime
 from decimal import Decimal
 
-from django.utils.timezone import localtime
+from django.utils.timezone import is_aware, localtime, make_aware
 from jinja2 import BaseLoader, Environment, StrictUndefined, TemplateSyntaxError
 from jinja2.sandbox import SandboxedEnvironment
 
@@ -53,6 +53,8 @@ class TemplateEngine:
             except (ValueError, AttributeError):
                 return value
         if isinstance(value, datetime):
+            if not is_aware(value):
+                value = make_aware(value)
             value = localtime(value)
         if isinstance(value, (datetime, date)):
             return value.strftime(format_str)
@@ -70,6 +72,8 @@ class TemplateEngine:
             except (ValueError, AttributeError):
                 return value
         if isinstance(value, datetime):
+            if not is_aware(value):
+                value = make_aware(value)
             value = localtime(value)
             return value.strftime(format_str)
         return str(value)
@@ -84,6 +88,8 @@ class TemplateEngine:
             except (ValueError, AttributeError):
                 return value
         if isinstance(value, datetime):
+            if not is_aware(value):
+                value = make_aware(value)
             value = localtime(value)
             return value.strftime(format_str)
         return str(value)
