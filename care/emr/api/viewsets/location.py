@@ -487,6 +487,7 @@ def close_related_location_from_encounter(instance):
             )
             FacilityLocation.objects.filter(
                 id__in=location_ids,
+                current_encounter=None,
                 operational_status=FacilityLocationOperationalStatusChoices.O.value,
             ).update(
                 operational_status=FacilityLocationOperationalStatusChoices.U.value,
