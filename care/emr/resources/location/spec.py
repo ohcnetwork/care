@@ -214,7 +214,7 @@ class FacilityLocationEncounterListSpecWithLocation(FacilityLocationEncounterLis
 
 
 class FacilityLocationEncounterReadSpec(FacilityLocationEncounterBaseSpec):
-    encounter: UUID4
+    encounter: dict
     start_datetime: datetime.datetime
     end_datetime: datetime.datetime | None = None
     status: str
