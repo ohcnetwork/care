@@ -474,7 +474,9 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
             "can_list_facility_location_obj", self.request.user, facility, location
         ):
             raise PermissionDenied("You do not have permission to given location")
-        return FacilityLocationEncounter.objects.filter(location=location)
+        return FacilityLocationEncounter.objects.filter(location=location).order_by(
+            "-created_date"
+        )
 
 
 def close_related_location_from_encounter(instance):
