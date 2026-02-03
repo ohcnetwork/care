@@ -224,5 +224,8 @@ class FacilityLocationEncounterReadSpec(FacilityLocationEncounterBaseSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.encounter.spec import EncounterRetrieveSpec
+
         mapping["id"] = obj.external_id
+        mapping["encounter"] = EncounterRetrieveSpec.serialize(obj.encounter).to_json()
         cls.serialize_audit_users(mapping, obj)
