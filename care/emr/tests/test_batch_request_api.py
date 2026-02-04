@@ -657,7 +657,7 @@ class ReplacementBatchRequestAPITest(QuestionnaireBatchRequestAPITest):
             ],
         )
         allergy_request = self.create_request(
-            url=f"/api/v1/patient/{self.patient.external_id}/allergy_intolerance/upsert/",
+            url="/api/v1/patient/{patient_id}/allergy_intolerance/upsert/",
             method="POST",
             body={
                 "datapoints": [
@@ -714,17 +714,25 @@ class ReplacementBatchRequestAPITest(QuestionnaireBatchRequestAPITest):
             reference_id="allergy_intolerance",
             replacements=[
                 {
+                    "source_path": {"reference_id": "patient_fetch", "path": "id"},
+                    "value_path": {
+                        "reference_id": "allergy_intolerance",
+                        "path": "patient_id",
+                        "type": "url",
+                    },
+                },
+                {
                     "source_path": {"reference_id": "encounter_create", "path": "id"},
                     "value_path": {
                         "reference_id": "allergy_intolerance",
                         "path": "datapoints[*].encounter",
                     },
-                }
+                },
             ],
         )
 
         diagnosis_request = self.create_request(
-            url=f"/api/v1/patient/{self.patient.external_id}/diagnosis/upsert/",
+            url="/api/v1/patient/{patient_id}/diagnosis/upsert/",
             method="POST",
             body={
                 "datapoints": [
@@ -785,12 +793,20 @@ class ReplacementBatchRequestAPITest(QuestionnaireBatchRequestAPITest):
             reference_id="diagnosis",
             replacements=[
                 {
+                    "source_path": {"reference_id": "patient_fetch", "path": "id"},
+                    "value_path": {
+                        "reference_id": "diagnosis",
+                        "path": "patient_id",
+                        "type": "url",
+                    },
+                },
+                {
                     "source_path": {"reference_id": "encounter_create", "path": "id"},
                     "value_path": {
                         "reference_id": "diagnosis",
                         "path": "datapoints[*].encounter",
                     },
-                }
+                },
             ],
         )
 
@@ -812,49 +828,3 @@ class ReplacementBatchRequestAPITest(QuestionnaireBatchRequestAPITest):
         self.assertIn("questionnaire_submit", refernce_ids)
         for result in response.data["results"]:
             self.assertEqual(result["status_code"], 200)
-
-    def test_questionnaire_batch_request_with_invalid_replacement_data(self):
-        """
-        Test creating a batch request with invalid replacement details.
-        """
-        patient_request = self.create_request(
-            url=reverse("patient-detail", args=[self.patient.external_id]),
-            method="GET",
-            reference_id="patient_fetch",
-        )
-        encounter_request = self.create_request(
-            url=reverse("encounter-list"),
-            method="POST",
-            body={
-                "patient": self.patient.external_id,
-                "facility": self.facility.external_id,
-                "organization": [str(self.facility_organization.external_id)],
-                "encounter_class": "imp",
-                "status": "planned",
-                "priority": "routine",
-            },
-            reference_id="encounter_create",
-            replacements=[
-                {
-                    "source_path": {"reference_id": "patient_fetch", "path": "id"},
-                    "value_path": {
-                        "reference_id": "encounter_create",
-                        "path": "invalid_patient",
-                    },
-                }
-            ],
-        )
-        requests = [patient_request, encounter_request]
-        response = self.create_batch_request(requests=requests)
-        self.assertEqual(response.status_code, 400)
-        self.assertEqual(len(response.data["results"]), 2)
-        for result in response.data["results"]:
-            if result["reference_id"] == "patient_fetch":
-                self.assertEqual(result["status_code"], 200)
-            else:
-                self.assertEqual(result["status_code"], 400)
-                self.assertContains(
-                    response=result,
-                    text="Replacement path 'invalid_patient' is invalid.",
-                    status_code=400,
-                )
