@@ -1,4 +1,3 @@
-import json
 import logging
 
 from django.db import transaction
@@ -100,22 +99,32 @@ def find_and_replace_data(data, reference_id, replacements, data_references):
                 destination_query = parse(replacement.value_path.path)
                 destination_value = list(destination_query.find(data))
                 if destination_value:
-                    destination_value = destination_value[0]
-                    destination_value.full_path.update(data, source_value.value)
+                    for values in destination_value:
+                        values.full_path.update(data, source_value.value)
 
-def execute_serially(parent_request, requests, resp_generator , replacements, data_references):
 
+def execute_serially(
+    parent_request, requests, resp_generator, replacements, data_references
+):
     from care.emr.api.viewsets.batch_request import UnHandledError
 
     responses = []
     for request in requests:
         request_body = request["body"]
-        find_and_replace_data(request_body, request["reference_id"], replacements, data_references)
-        wsgi_request = get_wsgi_request_object(parent_request, request["method"], request["url"], request["headers"], request_body)
+        find_and_replace_data(
+            request_body, request["reference_id"], replacements, data_references
+        )
+        wsgi_request = get_wsgi_request_object(
+            parent_request,
+            request["method"],
+            request["url"],
+            request["headers"],
+            request_body,
+        )
         response = resp_generator(wsgi_request)
         responses.append(response)
         data_references[request["reference_id"]] = response["data"]
-        if response["status_code"] >= 500:
+        if response["status_code"] >= 500:  # noqa PLR2004
             raise UnHandledError
     return responses
 
@@ -130,11 +139,21 @@ def construct_wsgi_from_data(request, data):
 
 def split_batch_request_data(batch_request_data):
     return [
-        {"body" : data.body, "reference_id" : data.reference_id , "url" : data.url, "method" : data.method, "headers" : {}}
+        {
+            "body": data.body,
+            "reference_id": data.reference_id,
+            "url": data.url,
+            "method": data.method,
+            "headers": {},
+        }
         for data in batch_request_data.requests
     ]
 
 
-def execute_batch_requests(parent_request, batch_request_data, replacements, data_references):
+def execute_batch_requests(
+    parent_request, batch_request_data, replacements, data_references
+):
     wsgi_requests = split_batch_request_data(batch_request_data)
-    return execute_serially(parent_request,wsgi_requests, get_response , replacements , data_references)
+    return execute_serially(
+        parent_request, wsgi_requests, get_response, replacements, data_references
+    )
