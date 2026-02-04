@@ -1,3 +1,5 @@
+from enum import Enum
+
 from django.conf import settings
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
@@ -9,13 +11,21 @@ from care.emr.api.viewsets.base import emr_exception_handler
 from care.emr.utils.batch_requests import execute_batch_requests
 
 
+class ResourceTypeChoices(str, Enum):
+    body = "body"
+    url = "url"
+
+
 class ResourcePath(BaseModel):
     reference_id: str
     path: str
+    type: ResourceTypeChoices = ResourceTypeChoices.body
+
 
 class Replacement(BaseModel):
     source_path: ResourcePath
     value_path: ResourcePath
+
 
 class Request(BaseModel):
     url: str
@@ -57,7 +67,9 @@ class BatchRequestView(GenericViewSet):
                 replacements.append(replacement)
         try:
             with transaction.atomic():
-                responses = execute_batch_requests(request, requests , replacements , data_references)
+                responses = execute_batch_requests(
+                    request, requests, replacements, data_references
+                )
                 structured_responses = []
                 for response in responses:
                     if response["status_code"] > 299:  # noqa PLR2004

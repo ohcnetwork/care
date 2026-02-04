@@ -95,12 +95,18 @@ def find_and_replace_data(data, reference_id, replacements, data_references):
             source_query = parse(replacement.source_path.path)
             source_value = list(source_query.find(source))
             if source_value:
-                source_value = source_value[0]
+                source_value = source_value[0].value
+            destination_type = replacement.value_path.type
+            if destination_type == "url":
+                data["url"] = data["url"].format(
+                    **{replacement.value_path.path: source_value}
+                )
+            else:
                 destination_query = parse(replacement.value_path.path)
-                destination_value = list(destination_query.find(data))
+                destination_value = list(destination_query.find(data["body"]))
                 if destination_value:
                     for values in destination_value:
-                        values.full_path.update(data, source_value.value)
+                        values.full_path.update(data["body"], source_value)
 
 
 def execute_serially(
@@ -110,16 +116,15 @@ def execute_serially(
 
     responses = []
     for request in requests:
-        request_body = request["body"]
         find_and_replace_data(
-            request_body, request["reference_id"], replacements, data_references
+            request, request["reference_id"], replacements, data_references
         )
         wsgi_request = get_wsgi_request_object(
             parent_request,
             request["method"],
             request["url"],
             request["headers"],
-            request_body,
+            request["body"],
         )
         response = resp_generator(wsgi_request)
         responses.append(response)
