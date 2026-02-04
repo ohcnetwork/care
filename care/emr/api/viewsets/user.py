@@ -1,8 +1,10 @@
+from django.conf import settings
 from django.db import IntegrityError, transaction
 from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
-from pydantic import BaseModel
+from jsonschema import validate
+from pydantic import BaseModel, model_validator
 from rest_framework import filters as drf_filters
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
@@ -64,7 +66,18 @@ class UserImageUploadSerializer(serializers.ModelSerializer):
 
 class UserPreferenceRequest(BaseModel):
     preference: str
+    version: str
     value: dict
+
+    @model_validator(mode="after")
+    def validate_preference(self):
+        preference_schema = settings.PREFERENCE_SCHEMA
+        if self.preference in preference_schema:
+            try:
+                validate(self.value, preference_schema[self.preference])
+            except Exception as e:
+                raise ValueError("Invalid JSON") from e
+        return self
 
 
 class UserFilter(filters.FilterSet):

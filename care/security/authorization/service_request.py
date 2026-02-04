@@ -6,7 +6,7 @@ from care.security.permissions.service_request import ServiceRequestPermissions
 from care.security.permissions.specimen import SpecimenPermissions
 
 
-class ServiceRequetAuthorizerUtility( AuthorizationHandler):
+class ServiceRequetAuthorizerUtility(AuthorizationHandler):
     def has_permission_on_service_request(self, user, service_request, permission):
         # Check Access to Encounter
         if self.check_permission_in_encounter(
@@ -49,7 +49,6 @@ class ServiceRequestAccess(ServiceRequetAuthorizerUtility):
             user,
             orgs=orgs,
         )
-
 
     def can_read_service_request(self, user, service_request):
         return self.has_permission_on_service_request(

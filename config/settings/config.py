@@ -281,3 +281,37 @@ INVOICE_FINAL_AMOUNT_PRECISION = env.int("INVOICE_FINAL_AMOUNT_PRECISION", defau
 INVOICE_FINAL_AMOUNT_ROUNDING_METHOD = env(
     "INVOICE_FINAL_AMOUNT_ROUNDING_METHOD", default="care.utils.rounding.RoundingHalfUp"
 )
+
+PREFERENCE_SCHEMA = env.json(
+    "PREFERENCE_SCHEMA",
+    default={
+        "facility_quick_links": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "UserPreferences",
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "blacklist": {
+                    "type": "array",
+                    "items": {"type": "string", "minLength": 1},
+                    "default": [],
+                },
+                "custom_links": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["link", "title"],
+                        "properties": {
+                            "link": {"type": "string", "minLength": 1},
+                            "title": {"type": "string", "minLength": 1},
+                            "icon": {"type": "string", "minLength": 1},
+                            "facilityId": {"type": "string", "minLength": 1},
+                        },
+                    },
+                    "default": [],
+                },
+            },
+        }
+    },
+)

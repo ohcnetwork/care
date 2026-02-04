@@ -113,5 +113,5 @@ class AuthorizationController:
         cls.internal_authz_controllers.append(controller)
 
     @classmethod
-    def register_override_controller(cls , controller):
+    def register_override_controller(cls, controller):
         cls.override_authz_controllers.append(controller)
