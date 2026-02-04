@@ -37,6 +37,7 @@ class MedicationRequestPrescriptionFilter(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="encounter__facility__external_id")
     created_date = filters.DateTimeFromToRangeFilter()
 
+
 class MedicationRequestPrescriptionViewSet(
     EncounterBasedAuthorizationBase,
     EMRCreateMixin,
