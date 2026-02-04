@@ -62,3 +62,13 @@ class TemplatePermissions(enum.Enum):
             PHARMACIST_ROLE,
         ],
     )
+
+    can_generate_report_for_completed_encounter = Permission(
+        "Can generate report for completed encounter",
+        "",
+        PermissionContext.FACILITY,
+        [
+            FACILITY_ADMIN_ROLE,
+            ADMIN_ROLE,
+        ],
+    )
