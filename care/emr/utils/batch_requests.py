@@ -98,9 +98,8 @@ def find_and_replace_data(data, reference_id, replacements, data_references):
                 source_value = source_value[0].value
             destination_type = replacement.value_path.type
             if destination_type == "url":
-                data["url"] = data["url"].format(
-                    **{replacement.value_path.path: source_value}
-                )
+                value = "{" + replacement.value_path.path + "}"
+                data["url"] = data["url"].replace(value, source_value)
             else:
                 destination_query = parse(replacement.value_path.path)
                 destination_value = list(destination_query.find(data["body"]))
