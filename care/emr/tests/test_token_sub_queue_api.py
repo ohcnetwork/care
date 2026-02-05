@@ -77,8 +77,6 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
         return baker.make("emr.SchedulableResource", **kwargs)
 
     def create_healthcare_service(self, **kwargs):
-        if "internal_type" not in kwargs:
-            kwargs["internal_type"] = "scheduling"
         return baker.make("emr.HealthcareService", **kwargs)
 
     def create_facility_location(self, facility, facility_organization, **kwargs):
