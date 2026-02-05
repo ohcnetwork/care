@@ -113,6 +113,9 @@ def execute_serially(
 ):
     from care.emr.api.viewsets.batch_request import UnHandledError
 
+    data_reference_required_id = {
+        replacement.source_path.reference_id for replacement in replacements
+    }
     responses = []
     for request in requests:
         find_and_replace_data(
@@ -127,7 +130,8 @@ def execute_serially(
         )
         response = resp_generator(wsgi_request)
         responses.append(response)
-        data_references[request["reference_id"]] = response["data"]
+        if request["reference_id"] in data_reference_required_id:
+            data_references[request["reference_id"]] = response["data"]
         if response["status_code"] >= 500:  # noqa PLR2004
             raise UnHandledError
     return responses
