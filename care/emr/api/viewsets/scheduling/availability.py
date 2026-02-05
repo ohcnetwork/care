@@ -128,11 +128,15 @@ def lock_create_appointment(token_slot, patient, created_by, note):
         if (
             token_slot.resource.resource_type
             == SchedulableResourceTypeOptions.healthcare_service.value
-            and token_slot.resource.healthcare_service.internal_type != "scheduling"
         ):
-            raise ValidationError(
-                "Appointments should have only healthcare service of type schedulable"
-            )
+            healthcare_service = token_slot.resource.healthcare_service
+            if (
+                not healthcare_service
+                or healthcare_service.internal_type != "scheduling"
+            ):
+                raise ValidationError(
+                    "Appointments should have only healthcare service of type schedulable"
+                )
         if token_slot.end_datetime < timezone.now():
             raise ValidationError("Slot is already past")
         if token_slot.allocated >= token_slot.availability.tokens_per_slot:
