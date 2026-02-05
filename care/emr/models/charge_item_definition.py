@@ -24,3 +24,4 @@ class ChargeItemDefinition(SlugBaseModel):
         null=True,
         blank=True,
     )
+    separately_billable = models.BooleanField(default=True)

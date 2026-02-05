@@ -31,6 +31,7 @@ class ChargeItemDefinitionSpec(EMRResource):
     description: str | None = None
     purpose: str | None = None
     price_components: list[MonetaryComponent]
+    separately_billable: bool = True
 
 
 class ChargeItemDefinitionWriteSpec(ChargeItemDefinitionSpec):
