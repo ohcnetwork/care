@@ -54,6 +54,7 @@ class DispenseOrderFilters(filters.FilterSet):
     patient = filters.UUIDFilter(field_name="patient__external_id")
     location = DummyUUIDFilter()
     include_children = DummyBooleanFilter()
+    created_by = filters.UUIDFilter(field_name="created_by__external_id")
 
 
 class DispenseOrderViewSet(
