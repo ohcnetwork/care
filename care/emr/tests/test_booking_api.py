@@ -7,6 +7,7 @@ from django.utils import timezone
 from care.emr.models import (
     Availability,
     AvailabilityException,
+    HealthcareService,
     SchedulableResource,
     Schedule,
     TokenBooking,
@@ -826,6 +827,161 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
             self._get_create_appointment_url(slot.external_id), data, format="json"
         )
         self.assertContains(response, status_code=400, text="Slot is already full")
+
+    def test_create_appointment_with_healthcare_service_schedulable_type(self):
+        """Users can create appointment with healthcare service of type schedulable."""
+        permissions = [SchedulePermissions.can_write_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        healthcare_service = HealthcareService.objects.create(
+            facility=self.facility,
+            name="Test Healthcare Service",
+            internal_type="scheduling",
+        )
+        resource = SchedulableResource.objects.create(
+            resource_type=SchedulableResourceTypeOptions.healthcare_service.value,
+            healthcare_service=healthcare_service,
+            facility=self.facility,
+        )
+        schedule = Schedule.objects.create(
+            resource=resource,
+            name="Healthcare Service Schedule",
+            valid_from=datetime.now(UTC) - timedelta(days=30),
+            valid_to=datetime.now(UTC) + timedelta(days=30),
+            is_public=True,
+        )
+        availability = Availability.objects.create(
+            schedule=schedule,
+            name="Test Availability",
+            slot_type=SlotTypeOptions.appointment.value,
+            slot_size_in_minutes=30,
+            tokens_per_slot=1,
+            create_tokens=False,
+            reason="Regular schedule",
+            availability=[
+                {"day_of_week": 0, "start_time": "09:00:00", "end_time": "13:00:00"},
+            ],
+        )
+        slot = TokenSlot.objects.create(
+            resource=resource,
+            availability=availability,
+            start_datetime=datetime.now(UTC) + timedelta(minutes=30),
+            end_datetime=datetime.now(UTC) + timedelta(minutes=60),
+            allocated=0,
+        )
+
+        data = self.get_appointment_data()
+        response = self.client.post(
+            self._get_create_appointment_url(slot.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_appointment_with_healthcare_service_non_schedulable_type(self):
+        """Users cannot create appointment with healthcare service of non-schedulable type."""
+        permissions = [SchedulePermissions.can_write_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        healthcare_service = HealthcareService.objects.create(
+            facility=self.facility,
+            name="Test Healthcare Service",
+            internal_type="lab",
+        )
+        resource = SchedulableResource.objects.create(
+            resource_type=SchedulableResourceTypeOptions.healthcare_service.value,
+            healthcare_service=healthcare_service,
+            facility=self.facility,
+        )
+        schedule = Schedule.objects.create(
+            resource=resource,
+            name="Healthcare Service Schedule",
+            valid_from=datetime.now(UTC) - timedelta(days=30),
+            valid_to=datetime.now(UTC) + timedelta(days=30),
+            is_public=True,
+        )
+        availability = Availability.objects.create(
+            schedule=schedule,
+            name="Test Availability",
+            slot_type=SlotTypeOptions.appointment.value,
+            slot_size_in_minutes=30,
+            tokens_per_slot=1,
+            create_tokens=False,
+            reason="Regular schedule",
+            availability=[
+                {"day_of_week": 0, "start_time": "09:00:00", "end_time": "13:00:00"},
+            ],
+        )
+        slot = TokenSlot.objects.create(
+            resource=resource,
+            availability=availability,
+            start_datetime=datetime.now(UTC) + timedelta(minutes=30),
+            end_datetime=datetime.now(UTC) + timedelta(minutes=60),
+            allocated=0,
+        )
+
+        data = self.get_appointment_data()
+        response = self.client.post(
+            self._get_create_appointment_url(slot.external_id), data, format="json"
+        )
+        self.assertContains(
+            response,
+            "Appointments should have only healthcare service of type schedulable",
+            status_code=400,
+        )
+
+    def test_create_appointment_with_healthcare_service_no_internal_type(self):
+        """Users cannot create appointment with healthcare service without internal type."""
+        permissions = [SchedulePermissions.can_write_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        healthcare_service = HealthcareService.objects.create(
+            facility=self.facility,
+            name="Test Healthcare Service",
+            internal_type=None,
+        )
+        resource = SchedulableResource.objects.create(
+            resource_type=SchedulableResourceTypeOptions.healthcare_service.value,
+            healthcare_service=healthcare_service,
+            facility=self.facility,
+        )
+        schedule = Schedule.objects.create(
+            resource=resource,
+            name="Healthcare Service Schedule",
+            valid_from=datetime.now(UTC) - timedelta(days=30),
+            valid_to=datetime.now(UTC) + timedelta(days=30),
+            is_public=True,
+        )
+        availability = Availability.objects.create(
+            schedule=schedule,
+            name="Test Availability",
+            slot_type=SlotTypeOptions.appointment.value,
+            slot_size_in_minutes=30,
+            tokens_per_slot=1,
+            create_tokens=False,
+            reason="Regular schedule",
+            availability=[
+                {"day_of_week": 0, "start_time": "09:00:00", "end_time": "13:00:00"},
+            ],
+        )
+        slot = TokenSlot.objects.create(
+            resource=resource,
+            availability=availability,
+            start_datetime=datetime.now(UTC) + timedelta(minutes=30),
+            end_datetime=datetime.now(UTC) + timedelta(minutes=60),
+            allocated=0,
+        )
+
+        data = self.get_appointment_data()
+        response = self.client.post(
+            self._get_create_appointment_url(slot.external_id), data, format="json"
+        )
+        self.assertContains(
+            response,
+            "Appointments should have only healthcare service of type schedulable",
+            status_code=400,
+        )
 
 
 @ignore_warnings(category=RuntimeWarning, message=r".*received a naive datetime.*")

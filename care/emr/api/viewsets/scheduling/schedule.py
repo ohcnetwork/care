@@ -68,15 +68,11 @@ def validate_resource(
         return schedule_user
     if resource_type == SchedulableResourceTypeOptions.healthcare_service.value:
         healthcare_service_obj = get_object_or_404(
-            HealthcareService.objects.only("id", "internal_type"),
+            HealthcareService.objects.only("id"),
             external_id=resource_id,
         )
         if healthcare_service_obj.facility != facility:
             raise ValidationError("Healthcare Service is not part of the facility")
-        if healthcare_service_obj.internal_type != "scheduling":
-            raise ValidationError(
-                "Appointments should have only healthcare service of type schedulable"
-            )
         return healthcare_service_obj
     if resource_type == SchedulableResourceTypeOptions.location.value:
         location_obj = get_object_or_404(

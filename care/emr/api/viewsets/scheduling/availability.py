@@ -125,6 +125,14 @@ def convert_availability_and_exceptions_to_slots(availabilities, exceptions, day
 
 def lock_create_appointment(token_slot, patient, created_by, note):
     with Lock(f"booking:resource:{token_slot.resource.id}"), transaction.atomic():
+        if (
+            token_slot.resource.resource_type
+            == SchedulableResourceTypeOptions.healthcare_service.value
+            and token_slot.resource.healthcare_service.internal_type != "scheduling"
+        ):
+            raise ValidationError(
+                "Appointments should have only healthcare service of type schedulable"
+            )
         if token_slot.end_datetime < timezone.now():
             raise ValidationError("Slot is already past")
         if token_slot.allocated >= token_slot.availability.tokens_per_slot:

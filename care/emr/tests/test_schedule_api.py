@@ -3,12 +3,10 @@ from datetime import UTC, datetime, timedelta
 from django.conf import settings
 from django.test.utils import ignore_warnings
 from django.urls import reverse
-from model_bakery import baker
 from rest_framework import status
 
 from care.emr.models import (
     Availability,
-    HealthcareService,
     SchedulableResource,
     Schedule,
     TokenBooking,
@@ -349,101 +347,6 @@ class TestScheduleViewSet(CareAPITestBase):
         self.assertContains(
             response,
             "Valid from cannot be greater than valid to",
-            status_code=400,
-        )
-
-    def test_create_schedule_with_healthcare_service_schedulable_type(self):
-        """Users can create schedule with healthcare service of type schedulable."""
-        permissions = [SchedulePermissions.can_write_schedule.name]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        healthcare_service = baker.make(
-            HealthcareService,
-            facility=self.facility,
-            internal_type="scheduling",
-            managing_organization=self.organization,
-        )
-        schedule_data = self.generate_schedule_data(
-            resource_type=SchedulableResourceTypeOptions.healthcare_service.value,
-            resource_id=str(healthcare_service.external_id),
-            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
-        )
-        response = self.client.post(self.base_url, schedule_data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data["name"], schedule_data["name"])
-
-    def test_create_schedule_with_healthcare_service_non_schedulable_type_lab(self):
-        """Users cannot create schedule with healthcare service of type lab."""
-        permissions = [SchedulePermissions.can_write_schedule.name]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        healthcare_service = baker.make(
-            HealthcareService,
-            facility=self.facility,
-            internal_type="lab",
-            managing_organization=self.organization,
-        )
-        schedule_data = self.generate_schedule_data(
-            resource_type=SchedulableResourceTypeOptions.healthcare_service.value,
-            resource_id=str(healthcare_service.external_id),
-            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
-        )
-        response = self.client.post(self.base_url, schedule_data, format="json")
-        self.assertContains(
-            response,
-            "Appointments should have only healthcare service of type schedulable",
-            status_code=400,
-        )
-
-    def test_create_schedule_with_healthcare_service_non_schedulable_type_pharmacy(
-        self,
-    ):
-        """Users cannot create schedule with healthcare service of type pharmacy."""
-        permissions = [SchedulePermissions.can_write_schedule.name]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        healthcare_service = baker.make(
-            HealthcareService,
-            facility=self.facility,
-            internal_type="pharmacy",
-            managing_organization=self.organization,
-        )
-        schedule_data = self.generate_schedule_data(
-            resource_type=SchedulableResourceTypeOptions.healthcare_service.value,
-            resource_id=str(healthcare_service.external_id),
-            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
-        )
-        response = self.client.post(self.base_url, schedule_data, format="json")
-        self.assertContains(
-            response,
-            "Appointments should have only healthcare service of type schedulable",
-            status_code=400,
-        )
-
-    def test_create_schedule_with_healthcare_service_no_internal_type(self):
-        """Users cannot create schedule with healthcare service without internal type."""
-        permissions = [SchedulePermissions.can_write_schedule.name]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-
-        healthcare_service = baker.make(
-            HealthcareService,
-            facility=self.facility,
-            internal_type=None,
-            managing_organization=self.organization,
-        )
-        schedule_data = self.generate_schedule_data(
-            resource_type=SchedulableResourceTypeOptions.healthcare_service.value,
-            resource_id=str(healthcare_service.external_id),
-            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
-        )
-        response = self.client.post(self.base_url, schedule_data, format="json")
-        self.assertContains(
-            response,
-            "Appointments should have only healthcare service of type schedulable",
             status_code=400,
         )
 
