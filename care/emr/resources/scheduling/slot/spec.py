@@ -34,6 +34,11 @@ class TokenSlotBaseSpec(EMRResource):
         mapping["availability"] = {
             "name": obj.availability.name,
             "tokens_per_slot": obj.availability.tokens_per_slot,
+            "id": obj.external_id,
+            "schedule": {
+                "name": obj.availability.schedule.name,
+                "id": obj.availability.schedule.external_id,
+            },
         }
 
 

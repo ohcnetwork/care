@@ -177,6 +177,7 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
             ]:
                 raise ValidationError("Prescription is not active")
             if not dispense_order_obj:
+                user = self._context.get("user")
                 dispense_order_obj = DispenseOrder.objects.create(
                     status=self.create_dispense_order.status,
                     alternate_identifier=self.create_dispense_order.alternate_identifier,
@@ -185,6 +186,8 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
                     facility=obj.encounter.facility,
                     name=self.create_dispense_order.name,
                     note=self.create_dispense_order.note,
+                    created_by=user,
+                    updated_by=user,
                 )
             obj.order = dispense_order_obj
 

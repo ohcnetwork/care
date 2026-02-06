@@ -35,6 +35,7 @@ class MedicationRequestPrescriptionFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     status = MultiSelectFilter(field_name="status")
     facility = filters.UUIDFilter(field_name="encounter__facility__external_id")
+    created_date = filters.DateTimeFromToRangeFilter()
 
 
 class MedicationRequestPrescriptionViewSet(

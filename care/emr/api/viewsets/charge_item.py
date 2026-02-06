@@ -238,13 +238,24 @@ class ChargeItemViewSet(
         with transaction.atomic():
             # TODO Lock Charge item and Invoice
             old_obj = ChargeItem.objects.get(id=instance.id)
+            sync = True
+            if (
+                instance.charge_item_definition
+                and not instance.charge_item_definition.can_edit_charge_item
+            ):
+                instance.unit_price_components = old_obj.unit_price_components
+                instance.total_price_components = old_obj.total_price_components
+                instance.total_price = old_obj.total_price
+                instance.quantity = old_obj.quantity
+                sync = False
             if (
                 old_obj.status != instance.status
                 and instance.status in CHARGE_ITEM_CANCELLED_STATUS
             ):
                 self.authorize_cancel(instance)
                 handle_charge_item_cancel(instance)
-            sync_charge_item_costs(instance)
+            if sync:
+                sync_charge_item_costs(instance)
             super().perform_update(instance)
             if (
                 instance.paid_invoice
@@ -272,6 +283,7 @@ class ChargeItemViewSet(
             raise PermissionDenied("Access Denied to Charge Item")
         return super().authorize_create(instance)
 
+
     def authorize_update(self, request_obj, model_instance):
         if not AuthorizationController.call(
             "can_update_charge_item_in_facility",
@@ -279,6 +291,7 @@ class ChargeItemViewSet(
             model_instance.facility,
         ):
             raise PermissionDenied("Access Denied to Charge Item")
+        return True
 
     def get_queryset(self):
         facility = self.get_facility_obj()
