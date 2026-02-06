@@ -12,7 +12,7 @@ plugs = [
         package_name="git+https://github.com/10bedicu/care_abdm.git",
         version="@develop",
         configs={},
-    ),
+    )
 ]
 
 manager = PlugManager(plugs)
