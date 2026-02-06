@@ -53,6 +53,7 @@ class InvoiceFilters(filters.FilterSet):
     locked = filters.BooleanFilter()
     is_refund = filters.BooleanFilter()
     payment_reconciliation_present = DummyBooleanFilter()
+    created_by = filters.UUIDFilter(field_name="created_by__external_id")
 
 
 class AttachChargeItemToInvoiceRequest(BaseModel):

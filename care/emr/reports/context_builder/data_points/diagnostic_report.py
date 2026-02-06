@@ -6,6 +6,9 @@ from care.emr.reports.context_builder.data_points.base import (
     QuerysetContextBuilder,
     SingleObjectContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.fileupload import (
+    FileUploadContextBuilder,
+)
 from care.emr.reports.context_builder.data_points.observation import (
     ObservationContextBuilder,
 )
@@ -63,4 +66,11 @@ class DiagnosticReportContextBuilder(QuerysetContextBuilder):
         preview_value="",
         description="Identifier for the associated service request",
         target_context=ServiceRequestContextBuilder,
+    )
+
+    file_uploads = Field(
+        display="Uploaded Files",
+        preview_value="",
+        description="List of file uploads associated with the diagnostic report",
+        target_context=FileUploadContextBuilder,
     )
