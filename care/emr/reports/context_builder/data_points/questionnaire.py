@@ -87,4 +87,4 @@ class QuestionnaireContextBuilder(QuerysetContextBuilder):
         if "slug" not in kwargs:
             raise ValueError("slug is required")
         questionnaire = Questionnaire.objects.get(slug=kwargs["slug"])
-        return qs.filter(questionnaire=questionnaire)
+        return qs.filter(questionnaire=questionnaire).order_by("-created_date")

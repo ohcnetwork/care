@@ -21,6 +21,7 @@ from care.emr.locks.billing import InvoiceCreateLock, InvoiceLock
 from care.emr.models.account import Account
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.invoice import Invoice
+from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.resources.account.sync_items import rebalance_account_task
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
 from care.emr.resources.invoice.default_expression_evaluator import (
@@ -37,6 +38,7 @@ from care.emr.resources.invoice.spec import (
 from care.emr.resources.invoice.sync_items import sync_invoice_items
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.filters.dummy_filter import DummyBooleanFilter
 from care.utils.lock import ObjectLocked
 from care.utils.shortcuts import get_object_or_404
 from care.utils.time_util import care_now
@@ -50,6 +52,8 @@ class InvoiceFilters(filters.FilterSet):
     number = filters.CharFilter(lookup_expr="icontains")
     locked = filters.BooleanFilter()
     is_refund = filters.BooleanFilter()
+    payment_reconciliation_present = DummyBooleanFilter()
+    created_by = filters.UUIDFilter(field_name="created_by__external_id")
 
 
 class AttachChargeItemToInvoiceRequest(BaseModel):
@@ -96,6 +100,30 @@ class InvoiceViewSet(
             "can_read_invoice_in_facility", self.request.user, facility
         ):
             raise PermissionDenied("Cannot read invoice")
+
+        if self.request.GET.get("payment_reconciliation_present") is not None:
+            payment_reconciliation_present = (
+                str(self.request.GET.get("payment_reconciliation_present")).lower()
+                == "true"
+            )
+            account_id = self.request.GET.get("account")
+            if payment_reconciliation_present and not account_id:
+                raise ValidationError(
+                    "Account is required when payment reconciliation filter is present"
+                )
+            if payment_reconciliation_present:
+                queryset = queryset.filter(
+                    id__in=PaymentReconciliation.objects.filter(
+                        account__external_id=account_id
+                    ).values("target_invoice_id")
+                )
+            else:
+                queryset = queryset.exclude(
+                    id__in=PaymentReconciliation.objects.filter(
+                        account__external_id=account_id
+                    ).values("target_invoice_id")
+                )
+
         return queryset.filter(facility=facility)
 
     def perform_create(self, instance):

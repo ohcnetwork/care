@@ -1,3 +1,6 @@
+from datetime import timedelta
+
+from django.conf import settings
 from django.db import transaction
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
@@ -55,15 +58,21 @@ from care.security.authorization.base import AuthorizationController
 from care.users.models import User
 from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.shortcuts import get_object_or_404
+from care.utils.time_util import care_now
 
 
-class ChargeItemDefinitionFilters(filters.FilterSet):
+class ChargeItemFilters(filters.FilterSet):
     status = MultiSelectFilter(field_name="status")
     title = filters.CharFilter(lookup_expr="icontains")
     account = filters.UUIDFilter(field_name="account__external_id")
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
-    service_resource = filters.CharFilter(lookup_expr="iexact")
+    service_resource = MultiSelectFilter()
     service_resource_id = filters.CharFilter(lookup_expr="iexact")
+    patient = filters.UUIDFilter(field_name="patient__external_id")
+    paid_on = filters.DateTimeFromToRangeFilter(field_name="paid_on")
+    performer_actor = filters.UUIDFilter(field_name="performer_actor__external_id")
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
+    created_by = filters.UUIDFilter(field_name="created_by__external_id")
 
 
 class ApplyChargeItemDefinitionRequest(BaseModel):
@@ -136,13 +145,13 @@ class ChargeItemViewSet(
     pydantic_model = ChargeItemWriteSpec
     pydantic_update_model = ChargeItemUpdateSpec
     pydantic_read_model = ChargeItemReadSpec
-    filterset_class = ChargeItemDefinitionFilters
+    filterset_class = ChargeItemFilters
     filter_backends = [
         filters.DjangoFilterBackend,
         OrderingFilter,
         SingleFacilityTagFilter,
     ]
-    ordering_fields = ["created_date", "modified_date"]
+    ordering_fields = ["created_date", "modified_date", "title"]
     questionnaire_type = "charge_item"
     questionnaire_title = "Charge Item"
     questionnaire_description = "Charge Item"
@@ -211,16 +220,42 @@ class ChargeItemViewSet(
             raise ValidationError("Charge item status cannot be manually changed.")
         return super().validate_data(instance, model_obj)
 
+    def authorize_cancel(self, instance):
+        if instance.created_date >= care_now() - timedelta(
+            minutes=settings.CHARGE_ITEM_FREE_CANCEL_PERIOD_MINUTES
+        ):
+            return True
+        if not AuthorizationController.call(
+            "can_cancel_charge_item_in_facility",
+            self.request.user,
+            instance.facility,
+        ):
+            raise PermissionDenied("Access Denied to Cancel Charge Item")
+        # Write permission is already checked
+        return True
+
     def perform_update(self, instance):
         with transaction.atomic():
             # TODO Lock Charge item and Invoice
             old_obj = ChargeItem.objects.get(id=instance.id)
+            sync = True
+            if (
+                instance.charge_item_definition
+                and not instance.charge_item_definition.can_edit_charge_item
+            ):
+                instance.unit_price_components = old_obj.unit_price_components
+                instance.total_price_components = old_obj.total_price_components
+                instance.total_price = old_obj.total_price
+                instance.quantity = old_obj.quantity
+                sync = False
             if (
                 old_obj.status != instance.status
                 and instance.status in CHARGE_ITEM_CANCELLED_STATUS
             ):
+                self.authorize_cancel(instance)
                 handle_charge_item_cancel(instance)
-            sync_charge_item_costs(instance)
+            if sync:
+                sync_charge_item_costs(instance)
             super().perform_update(instance)
             if (
                 instance.paid_invoice
@@ -248,6 +283,7 @@ class ChargeItemViewSet(
             raise PermissionDenied("Access Denied to Charge Item")
         return super().authorize_create(instance)
 
+
     def authorize_update(self, request_obj, model_instance):
         if not AuthorizationController.call(
             "can_update_charge_item_in_facility",
@@ -255,6 +291,7 @@ class ChargeItemViewSet(
             model_instance.facility,
         ):
             raise PermissionDenied("Access Denied to Charge Item")
+        return True
 
     def get_queryset(self):
         facility = self.get_facility_obj()
@@ -280,6 +317,11 @@ class ChargeItemViewSet(
             facility,
         ):
             raise PermissionDenied("Access Denied to Charge Item")
+        negative_allowed = AuthorizationController.call(
+            "can_create_negative_charge_item_in_facility",
+            self.request.user,
+            facility,
+        )
         request_params = ApplyMultipleChargeItemDefinitionRequest(**request.data)
         with transaction.atomic():
             for charge_item_request in request_params.requests:
@@ -331,6 +373,7 @@ class ChargeItemViewSet(
                     facility,
                     encounter=encounter,
                     quantity=quantity,
+                    negative_allowed=negative_allowed,
                 )
                 if charge_item_request.service_resource:
                     charge_item.service_resource = charge_item_request.service_resource

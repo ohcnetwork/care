@@ -285,7 +285,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             start_datetime__date=request_data.day,
             end_datetime__date=request_data.day,
             resource=resource,
-        ).select_related("availability")
+        ).select_related("availability", "availability__schedule")
         if is_public is True:
             slots = slots.filter(availability__schedule__is_public=True)
         return Response(

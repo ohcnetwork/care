@@ -126,6 +126,7 @@ class EncounterListSpec(EncounterSpecBase):
     modified_date: datetime.datetime
     tags: list[dict] = []
     current_location: dict | None = None
+    care_team: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -138,6 +139,19 @@ class EncounterListSpec(EncounterSpecBase):
             mapping["current_location"] = FacilityLocationMinimalListSpec.serialize(
                 obj.current_location
             ).to_json()
+        care_team = []
+        user_mapping = {x["user_id"]: x for x in obj.care_team}
+        user_ids = list(user_mapping.keys())
+
+        for user_id in user_ids:
+            care_team.append(
+                {
+                    "member": model_from_cache(UserSpec, id=user_id),
+                    "role": user_mapping[user_id]["role"],
+                }
+            )
+
+        mapping["care_team"] = care_team
 
 
 class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):

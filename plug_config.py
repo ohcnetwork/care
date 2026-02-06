@@ -1,5 +1,5 @@
 from plugs.manager import PlugManager
-from plugs.plug import Plug
+from plugs.plug import Plug  # noqa: F401
 
 plugs = [
     Plug(

@@ -40,6 +40,7 @@ class QuestionnaireTemplateFilters(filters.FilterSet):
         lookup_expr="exact", field_name="questionnaire__slug"
     )
     key_filter = KeyFilter()
+    facility = filters.UUIDFilter(field_name="facility__external_id")
 
 
 class QuestionnaireResponseTemplateViewSet(
@@ -110,14 +111,13 @@ class QuestionnaireResponseTemplateViewSet(
 
     def get_queryset(self):
         base_queryset = super().get_queryset()
+        user_organization_ids = list(
+            FacilityOrganizationUser.objects.filter(user=self.request.user).values_list(
+                "organization_id", flat=True
+            )
+        )
         return base_queryset.filter(
             Q(created_by=self.request.user)
             | Q(users__overlap=[self.request.user.id])
-            | Q(
-                facility_organizations__overlap=[
-                    FacilityOrganizationUser.objects.filter(
-                        user=self.request.user
-                    ).values_list("organization_id", flat=True)
-                ]
-            )
+            | Q(facility_organizations__overlap=user_organization_ids)
         )

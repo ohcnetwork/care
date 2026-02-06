@@ -13,6 +13,7 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.user import (
     SingleUserRelatedContextBuilder,
 )
+from care.utils.filters.multiselect import MultiSelectFilter
 
 STATUS_DISPLAY = {
     "active": "Active",
@@ -45,9 +46,10 @@ PRIORITY_DISPLAY = {
 
 
 class MedicationRequestReportFilter(filters.FilterSet):
-    status = filters.CharFilter(lookup_expr="iexact")
     intent = filters.CharFilter(lookup_expr="iexact")
     priority = filters.CharFilter(lookup_expr="iexact")
+    status = MultiSelectFilter(field_name="status")
+    exclude_status = MultiSelectFilter(field_name="status", exclude=True)
 
 
 class MedicationPrescriptionReportFilter(filters.FilterSet):
@@ -73,9 +75,13 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
 
     frequency = Field(
         display="Frequency",
-        mapping=lambda d: f"{d.get('timing', {}).get('code', {}).get('display', '')}"
-        if d.get("timing") and d.get("timing").get("code")
-        else "",
+        mapping=lambda d: (
+            d.get("timing", {}).get("code", {}).get("display", "")
+            if d.get("timing")
+            and d.get("timing").get("code")
+            and d.get("timing", {}).get("code", {}).get("display")
+            else "As Per Needed"
+        ),
         preview_value="3 times every 1 day",
         description="Frequency of the medication dosage",
     )

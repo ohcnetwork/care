@@ -116,7 +116,7 @@ class DosageQuantity(BaseModel):
 
 
 class TimingQuantity(BaseModel):
-    value: Decimal = Field(max_digits=20, decimal_places=6)
+    value: Decimal = Field(max_digits=20, decimal_places=0)
     unit: TimingUnit
 
 
@@ -133,7 +133,7 @@ class DoseAndRate(BaseModel):
 
 class TimingRepeat(BaseModel):
     frequency: int
-    period: Decimal = Field(max_digits=20, decimal_places=6)
+    period: Decimal = Field(max_digits=20, decimal_places=0)
     period_unit: TimingUnit
     bounds_duration: TimingQuantity
 
@@ -250,7 +250,9 @@ class MedicationRequestSpec(BaseMedicationRequestSpec):
                 obj.requested_product.facility
                 and obj.requested_product.facility != obj.encounter.facility
             ):
-                raise ValueError("Product not found in facility")
+                raise ValidationError(
+                    {"requested_product": "Product not found in facility"}
+                )
 
         if self.prescription:
             obj.prescription = get_object_or_404(

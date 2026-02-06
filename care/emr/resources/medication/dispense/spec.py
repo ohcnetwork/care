@@ -124,8 +124,8 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
     location: UUID4
     authorizing_request: UUID4 | None = None
     item: UUID4
-    quantity: Decimal = Field(max_digits=20, decimal_places=6)
-    days_supply: Decimal | None = Field(default=None, max_digits=20, decimal_places=6)
+    quantity: Decimal = Field(max_digits=20, decimal_places=0)
+    days_supply: Decimal | None = Field(default=None, max_digits=20, decimal_places=0)
     fully_dispensed: bool | None = None
     order: UUID4 | None = None
     create_dispense_order: CreateDispenseOrder | None = None
@@ -177,6 +177,7 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
             ]:
                 raise ValidationError("Prescription is not active")
             if not dispense_order_obj:
+                user = self._context.get("user")
                 dispense_order_obj = DispenseOrder.objects.create(
                     status=self.create_dispense_order.status,
                     alternate_identifier=self.create_dispense_order.alternate_identifier,
@@ -185,6 +186,8 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
                     facility=obj.encounter.facility,
                     name=self.create_dispense_order.name,
                     note=self.create_dispense_order.note,
+                    created_by=user,
+                    updated_by=user,
                 )
             obj.order = dispense_order_obj
 
@@ -207,7 +210,7 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
     created_date: datetime
     modified_date: datetime
     location: dict
-    quantity: Decimal = Field(max_digits=20, decimal_places=6)
+    quantity: Decimal = Field(max_digits=20, decimal_places=0)
     authorizing_request: dict | None = None
     order: dict | None = None
 
@@ -230,18 +233,5 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
             ).to_json()
 
 
-class MedicationDispenseRetrieveSpec(BaseMedicationDispenseSpec):
-    order: dict | None = None
-    charge_item: dict | None = None
-
-    @classmethod
-    def perform_extra_serialization(cls, mapping, obj):
-        super().perform_extra_serialization(mapping, obj)
-        if obj.order:
-            mapping["order"] = MedicationDispenseOrderReadSpec.serialize(
-                obj.order
-            ).to_json()
-        if obj.charge_item:
-            mapping["charge_item"] = ChargeItemReadSpec.serialize(
-                obj.charge_item
-            ).to_json()
+class MedicationDispenseRetrieveSpec(MedicationDispenseReadSpec):
+    pass
