@@ -273,12 +273,20 @@ class ChargeItemViewSet(
         return super().authorize_create(instance)
 
     def authorize_update(self, request_obj, model_instance):
+        if self.request.user.is_superuser:
+            return True
+        if (
+            model_instance.charge_item_definition
+            and not model_instance.charge_item_definition.can_edit_charge_item
+        ):
+            raise PermissionDenied("Charge item is not editable")
         if not AuthorizationController.call(
             "can_update_charge_item_in_facility",
             self.request.user,
             model_instance.facility,
         ):
             raise PermissionDenied("Access Denied to Charge Item")
+        return True
 
     def get_queryset(self):
         facility = self.get_facility_obj()
