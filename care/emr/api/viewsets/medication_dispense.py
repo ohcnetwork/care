@@ -84,6 +84,9 @@ class MedicationDispenseViewSet(
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date"]
 
+    def get_serializer_create_context(self):
+        return {"user": self.request.user}
+
     def perform_create(self, instance):
         with transaction.atomic(), InventoryItemLock(instance.item):
             net_content = instance.item.net_content

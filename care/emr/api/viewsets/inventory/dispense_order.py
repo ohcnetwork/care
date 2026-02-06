@@ -50,7 +50,7 @@ def cancel_dispense_order(instance):
 
 class DispenseOrderFilters(filters.FilterSet):
     status = MultiSelectFilter(field_name="status")
-    created_date = filters.DateRangeFilter()
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     patient = filters.UUIDFilter(field_name="patient__external_id")
     location = DummyUUIDFilter()
     include_children = DummyBooleanFilter()
