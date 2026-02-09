@@ -91,20 +91,29 @@ def get_wsgi_request_object(curr_request, method, url, headers, body):
 def find_and_replace_data(data, reference_id, replacements, data_references):
     for replacement in replacements:
         if replacement.value_path.reference_id == reference_id:
-            source = data_references[replacement.source_path.reference_id]
-            source_query = parse(replacement.source_path.path)
-            source_value = list(source_query.find(source))
-            if source_value:
-                source_value = source_value[0].value
-            destination_type = replacement.value_path.type
-            if destination_type == "url":
-                value = "{" + replacement.value_path.path + "}"
-                data["url"] = data["url"].replace(value, source_value)
-            else:
-                destination_query = parse(replacement.value_path.path)
-                destination_value = list(destination_query.find(data["body"]))
-                if destination_value:
-                    for values in destination_value:
+            source_refernce_id = replacement.source_path.reference_id
+            if source_refernce_id in data_references:
+                source = data_references[replacement.source_path.reference_id]
+                source_query = parse(replacement.source_path.path)
+                source_values = source_query.find(source)
+                if not source_values:
+                    error_msg = f"Invalid source_path '{replacement.source_path.path}' for request {reference_id}"
+                    raise ParseError(error_msg)
+                source_value = source_values[0].value
+                destination_type = replacement.value_path.type
+                if destination_type == "url":
+                    value = "{" + replacement.value_path.path + "}"
+                    if value not in data["url"]:
+                        error_msg = f"URL path '{replacement.value_path.path}' not found in url for request {reference_id}"
+                        raise ParseError(error_msg)
+                    data["url"] = data["url"].replace(value, str(source_value))
+                else:
+                    destination_query = parse(replacement.value_path.path)
+                    destination_values = destination_query.find(data["body"])
+                    if not destination_values:
+                        error_msg = f"Invalid destination_path '{replacement.value_path.path}' for request {reference_id}"
+                        raise ParseError(error_msg)
+                    for values in destination_values:
                         values.full_path.update(data["body"], source_value)
 
 
@@ -130,7 +139,10 @@ def execute_serially(
         )
         response = resp_generator(wsgi_request)
         responses.append(response)
-        if request["reference_id"] in data_reference_required_id:
+        if (
+            request["reference_id"] in data_reference_required_id
+            and response["status_code"] < 300  # noqa PLR2004
+        ):
             data_references[request["reference_id"]] = response["data"]
         if response["status_code"] >= 500:  # noqa PLR2004
             raise UnHandledError
