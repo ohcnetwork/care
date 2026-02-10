@@ -1,4 +1,3 @@
-import json
 import logging
 
 from django.db import transaction
@@ -92,30 +91,60 @@ def get_wsgi_request_object(curr_request, method, url, headers, body):
 def find_and_replace_data(data, reference_id, replacements, data_references):
     for replacement in replacements:
         if replacement.value_path.reference_id == reference_id:
-            source = data_references[replacement.source_path.reference_id]
-            source_query = parse(replacement.source_path.path)
-            source_value = list(source_query.find(source))
-            if source_value:
-                source_value = source_value[0]
-                destination_query = parse(replacement.value_path.path)
-                destination_value = list(destination_query.find(data))
-                if destination_value:
-                    destination_value = destination_value[0]
-                    destination_value.full_path.update(data, source_value.value)
+            source_refernce_id = replacement.source_path.reference_id
+            if source_refernce_id in data_references:
+                source = data_references[replacement.source_path.reference_id]
+                source_query = parse(replacement.source_path.path)
+                source_values = source_query.find(source)
+                if not source_values:
+                    error_msg = f"Invalid source_path '{replacement.source_path.path}' for request {reference_id}"
+                    raise ParseError(error_msg)
+                source_value = source_values[0].value
+                destination_type = replacement.value_path.type
+                if destination_type == "url":
+                    value = "{" + replacement.value_path.path + "}"
+                    if value not in data["url"]:
+                        error_msg = f"URL path '{replacement.value_path.path}' not found in url for request {reference_id}"
+                        raise ParseError(error_msg)
+                    data["url"] = data["url"].replace(value, str(source_value))
+                else:
+                    destination_query = parse(replacement.value_path.path)
+                    destination_values = destination_query.find(data["body"])
+                    if not destination_values:
+                        error_msg = f"Invalid destination_path '{replacement.value_path.path}' for request {reference_id}"
+                        raise ParseError(error_msg)
+                    for values in destination_values:
+                        values.full_path.update(data["body"], source_value)
 
-def execute_serially(parent_request, requests, resp_generator , replacements, data_references):
 
+def execute_serially(
+    parent_request, requests, resp_generator, replacements, data_references
+):
     from care.emr.api.viewsets.batch_request import UnHandledError
 
+    data_reference_required_id = {
+        replacement.source_path.reference_id for replacement in replacements
+    }
     responses = []
     for request in requests:
-        request_body = request["body"]
-        find_and_replace_data(request_body, request["reference_id"], replacements, data_references)
-        wsgi_request = get_wsgi_request_object(parent_request, request["method"], request["url"], request["headers"], request_body)
+        find_and_replace_data(
+            request, request["reference_id"], replacements, data_references
+        )
+        wsgi_request = get_wsgi_request_object(
+            parent_request,
+            request["method"],
+            request["url"],
+            request["headers"],
+            request["body"],
+        )
         response = resp_generator(wsgi_request)
         responses.append(response)
-        data_references[request["reference_id"]] = response["data"]
-        if response["status_code"] >= 500:
+        if (
+            request["reference_id"] in data_reference_required_id
+            and response["status_code"] < 300  # noqa PLR2004
+        ):
+            data_references[request["reference_id"]] = response["data"]
+        if response["status_code"] >= 500:  # noqa PLR2004
             raise UnHandledError
     return responses
 
@@ -130,11 +159,21 @@ def construct_wsgi_from_data(request, data):
 
 def split_batch_request_data(batch_request_data):
     return [
-        {"body" : data.body, "reference_id" : data.reference_id , "url" : data.url, "method" : data.method, "headers" : {}}
+        {
+            "body": data.body,
+            "reference_id": data.reference_id,
+            "url": data.url,
+            "method": data.method,
+            "headers": {},
+        }
         for data in batch_request_data.requests
     ]
 
 
-def execute_batch_requests(parent_request, batch_request_data, replacements, data_references):
+def execute_batch_requests(
+    parent_request, batch_request_data, replacements, data_references
+):
     wsgi_requests = split_batch_request_data(batch_request_data)
-    return execute_serially(parent_request,wsgi_requests, get_response , replacements , data_references)
+    return execute_serially(
+        parent_request, wsgi_requests, get_response, replacements, data_references
+    )
