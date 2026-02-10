@@ -283,6 +283,52 @@ class TokenBookingViewSet(
             }
         )
 
+    @classmethod
+    def generate_token_handler(
+        cls,
+        booking: TokenBooking,
+        category: TokenCategory,
+        queue: TokenQueue | None = None,
+        note: str | None = None,
+    ):
+        if booking.token:
+            raise ValidationError("Token already generated")
+
+        if queue is None:
+            # slot may start at 1:00 IST (19:30 UTC of previous date), hence
+            # making it tz naive and adding 1 second to ensure correct date extraction
+            token_date = timezone.make_naive(
+                booking.token_slot.start_datetime + timedelta(seconds=1)
+            ).date()
+            filters = {
+                "facility": booking.token_slot.resource.facility,
+                "resource": booking.token_slot.resource,
+                "date": token_date,
+            }
+            queue_exists = TokenQueue.objects.filter(**filters).exists()
+            filters["system_generated"] = True
+            queue = TokenQueue.objects.filter(**filters).first()
+            if not queue:
+                filters["name"] = "System Generated"
+                if not queue_exists:
+                    filters["is_primary"] = True
+                queue = TokenQueue.objects.create(**filters)
+        with Lock(f"booking:token:{queue.id}"), transaction.atomic():
+            number = Token.objects.filter(queue=queue, category=category).count() + 1
+            token = Token.objects.create(
+                facility=booking.token_slot.resource.facility,
+                queue=queue,
+                category=category,
+                number=number,
+                status=TokenStatusOptions.CREATED.value,
+                note=note,
+                booking=booking,
+                patient=booking.patient,
+            )
+            booking.token = token
+            booking.save(update_fields=["token"])
+        return token
+
     @extend_schema(
         request=TokenGenerationSpec,
     )
@@ -291,8 +337,6 @@ class TokenBookingViewSet(
         booking = self.get_object()
         self.authorize_update({}, booking)
         request_data = TokenGenerationSpec(**request.data)
-        if booking.token:
-            raise ValidationError("Token already generated")
         # slot may start at 1:00 IST (19:30 UTC of previous date), hence
         # making it tz naive and adding 1 second to ensure correct date extraction
         token_date = timezone.make_naive(
@@ -310,14 +354,8 @@ class TokenBookingViewSet(
             if not queue:
                 raise ValidationError("Queue not found")
         else:
-            queue_exists = TokenQueue.objects.filter(**filters).exists()
-            filters["system_generated"] = True
-            queue = TokenQueue.objects.filter(**filters).first()
-            if not queue:
-                filters["name"] = "System Generated"
-                if not queue_exists:
-                    filters["is_primary"] = True
-                queue = TokenQueue.objects.create(**filters)
+            queue = None
+
         category = TokenCategory.objects.filter(
             facility=booking.token_slot.resource.facility,
             resource_type=booking.token_slot.resource.resource_type,
@@ -325,21 +363,10 @@ class TokenBookingViewSet(
         ).first()
         if not category:
             raise ValidationError("Category not found")
-        note = request_data.note
-        with Lock(f"booking:token:{queue.id}"), transaction.atomic():
-            number = Token.objects.filter(queue=queue, category=category).count() + 1
-            token = Token.objects.create(
-                facility=booking.token_slot.resource.facility,
-                queue=queue,
-                category=category,
-                number=number,
-                status=TokenStatusOptions.CREATED.value,
-                note=note,
-                booking=booking,
-                patient=booking.patient,
-            )
-            booking.token = token
-            booking.save(update_fields=["token"])
+
+        token = self.generate_token_handler(
+            booking, category, queue=queue, note=request_data.note
+        )
         return Response(TokenReadSpec.serialize(token).to_json())
 
 
