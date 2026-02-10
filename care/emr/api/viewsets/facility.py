@@ -21,6 +21,7 @@ from care.emr.resources.facility.spec import (
     FacilityMonetaryCodeSpec,
     FacilityReadSpec,
     FacilityRetrieveSpec,
+    FacilityUpdateSpec,
 )
 from care.emr.resources.user.spec import PublicUserReadSpec, UserRetrieveSpec, UserSpec
 from care.facility.models import Facility
@@ -80,6 +81,7 @@ class FacilityViewSet(EMRModelViewSet):
     pydantic_model = FacilityCreateSpec
     pydantic_read_model = FacilityReadSpec
     pydantic_retrieve_model = FacilityRetrieveSpec
+    pydantic_update_model = FacilityUpdateSpec
     filterset_class = FacilityFilters
     filter_backends = [DjangoFilterBackend]
 

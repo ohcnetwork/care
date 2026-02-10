@@ -218,3 +218,47 @@ class FacilityMinimalReadSpec(FacilityBaseSpec):
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
             ).to_json()
+
+class FacilityUpdateSpec(FacilityCreateSpec):
+    name: str | None = None
+    description: str | None = None
+    longitude: Longitude | None = None
+    latitude: Latitude | None = None
+    pincode: int | None = None
+    address: str | None = None
+    phone_number: str | None = None
+    facility_type: str | None = None
+    is_public: bool | None = None
+    geo_organization: UUID4 | None = None
+    features: list[int] | None = None
+    @field_validator("name")
+    @classmethod
+    def validate_name_uniqueness(cls, v, info: ValidationInfo):
+        if not v:
+            return v
+
+        normalized_name = v.strip().lower()
+        context = info.context or {}
+        is_update = context.get("is_update", False)
+        obj = context.get("object")
+
+        qs = Facility.objects.annotate(normalized_name=Lower(Trim("name"))).filter(
+            normalized_name=normalized_name
+        )
+
+        if is_update and obj:
+            qs = qs.exclude(id=obj.id)
+
+        if qs.exists():
+            raise ValueError("A facility with this name already exists")
+
+        return v
+
+    def perform_extra_deserialization(self, is_update, obj):
+        if self.geo_organization:
+            obj.geo_organization = Organization.objects.filter(
+                external_id=self.geo_organization, org_type="govt"
+            ).first()
+
+        if self.facility_type:
+            obj.facility_type = REVERSE_REVERSE_FACILITY_TYPES[self.facility_type]

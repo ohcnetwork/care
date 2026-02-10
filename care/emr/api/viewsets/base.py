@@ -210,11 +210,11 @@ class EMRUpdateMixin:
 
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        return Response(self.handle_update(instance, request.data))
+        partial = kwargs.pop("partial", False)
+        return Response(self.handle_update(instance, request.data, partial=partial))
 
     def partial_update(self, request, *args, **kwargs):
-        kwargs["partial"] = True
-        return self.update(request, *args, **kwargs)
+        return self.update(request, *args, partial=True, **kwargs)
 
     def get_serializer_update_context(self):
         return {}
@@ -222,7 +222,7 @@ class EMRUpdateMixin:
     def authorize_update(self, request_obj, model_instance):
         pass
 
-    def handle_update(self, instance, request_data):
+    def handle_update(self, instance, request_data, partial=False):
         clean_data = self.clean_update_data(request_data)  # From Create
         pydantic_model = self.get_update_pydantic_model()
         context = {
@@ -237,7 +237,6 @@ class EMRUpdateMixin:
         serializer_obj._context = context  # noqa: SLF001
         self.validate_data(serializer_obj, instance)
         self.authorize_update(serializer_obj, instance)
-        partial = getattr(self, "partial", False)
         model_instance = serializer_obj.de_serialize(obj=instance, partial=partial)
         self.perform_update(model_instance)
         return self.get_retrieve_pydantic_model().serialize(model_instance).to_json()
