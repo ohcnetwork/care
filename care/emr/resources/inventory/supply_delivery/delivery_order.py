@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 
 from pydantic import UUID4
@@ -89,6 +90,7 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
     tags: list[dict] = []
     patient: dict | None = None
     patient_invoice_id: UUID4 | None = None
+    created_date: datetime
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
