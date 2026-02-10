@@ -417,5 +417,5 @@ class EncounterViewSet(
             )
 
         encounter.care_team = members
-        encounter.save(update_fields=["care_team"])
+        encounter.save(update_fields=["care_team", "care_team_users"])
         return Response({}, status=status.HTTP_200_OK)
