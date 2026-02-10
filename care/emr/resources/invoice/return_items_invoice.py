@@ -48,6 +48,8 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
         invoice_obj.patient = delivery_order.patient
         invoice_obj.is_refund = True
         invoice_obj.issue_date = care_now()
+        invoice_obj.created_by = delivery_order.created_by
+        invoice_obj.updated_by = delivery_order.updated_by
         invoice_obj.save()
         for supply_delivery in SupplyDelivery.objects.filter(
             order=delivery_order, status=SupplyDeliveryStatusOptions.completed.value
@@ -64,7 +66,8 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
                 quantity=supply_delivery.supplied_item_quantity,
             )
             charge_item.status = ChargeItemStatusOptions.billed.value
-            charge_item.paid_invoice = invoice_obj
+            charge_item.created_by = delivery_order.created_by
+            charge_item.updated_by = delivery_order.updated_by
             charge_item.save()
             charge_items.append(charge_item.id)
         invoice_obj.charge_items = charge_items
@@ -85,7 +88,8 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
         return
     with transaction.atomic():
         delivery_order.patient_invoice.status = InvoiceStatusOptions.cancelled.value
-        delivery_order.patient_invoice.save(update_fields=["status"])
+        delivery_order.patient_invoice.updated_by = delivery_order.updated_by
+        delivery_order.patient_invoice.save(update_fields=["status", "updated_by"])
         ChargeItem.objects.filter(
             id__in=delivery_order.patient_invoice.charge_items,
         ).update(
