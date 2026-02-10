@@ -67,8 +67,8 @@ class MedicationDispenseOrderReadSpec(BaseMedicationDispenseOrderSpec):
 class MedicationDispenseOrderRetrieveSpec(MedicationDispenseOrderReadSpec):
     patient: dict = {}
 
-    created_by: dict = {}
-    updated_by: dict = {}
+    created_by: dict | None = None
+    updated_by: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
