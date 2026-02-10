@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 
 from pydantic import UUID4
@@ -103,6 +104,7 @@ class SupplyRequestOrderReadSpec(BaseSupplyRequestOrderSpec):
     origin: dict | None = None
     destination: dict
     tags: list[dict] = []
+    created_date: datetime
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
