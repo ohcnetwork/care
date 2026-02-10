@@ -20,6 +20,12 @@ plugs = [
         version="@develop",
         configs={},
     ),
+    Plug(
+        name="care_scribe",
+        package_name="git+https://github.com/10bedicu/care_scribe.git",
+        version="@master",
+        configs={},
+    ),
 ]
 
 manager = PlugManager(plugs)
