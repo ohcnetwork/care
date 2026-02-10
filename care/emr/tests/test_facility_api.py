@@ -1,6 +1,8 @@
 from django.urls import reverse
 from rest_framework import status
+
 from care.utils.tests.base import CareAPITestBase
+
 
 class TestFacilityPartialUpdate(CareAPITestBase):
     def setUp(self):
