@@ -283,7 +283,6 @@ class ChargeItemViewSet(
             raise PermissionDenied("Access Denied to Charge Item")
         return super().authorize_create(instance)
 
-
     def authorize_update(self, request_obj, model_instance):
         if not AuthorizationController.call(
             "can_update_charge_item_in_facility",

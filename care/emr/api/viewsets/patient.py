@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
@@ -96,6 +97,8 @@ class PatientViewSet(EMRModelViewSet):
             .select_related("created_by", "updated_by", "geo_organization")
         )
         if self.action != "list":
+            if settings.PATIENT_GLOBAL_EDIT_ACCESS_ENABLED:
+                return qs.filter(external_id=self.kwargs.get("external_id"))
             patient = get_object_or_404(
                 Patient, external_id=self.kwargs.get("external_id")
             )
