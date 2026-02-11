@@ -63,7 +63,7 @@ def get_user_readable_rate_limit_time(rate_limit):
     if not rate_limit:
         return "1 second"
 
-    requests, time = rate_limit.split("/")
+    _requests, time = rate_limit.split("/")
 
     time_unit_map = {
         "s": "second(s)",

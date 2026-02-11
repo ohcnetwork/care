@@ -2,6 +2,7 @@ from django.db import transaction
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -16,6 +17,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
 )
 from care.emr.models.activity_definition import ActivityDefinition
+from care.emr.models.charge_item import ChargeItem
 from care.emr.models.encounter import Encounter
 from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import FacilityOrganizationUser
@@ -28,11 +30,20 @@ from care.emr.resources.activity_definition.service_request import (
     apply_ad_charge_definitions,
     convert_ad_to_sr,
 )
+from care.emr.resources.charge_item.handle_charge_item_cancel import (
+    handle_charge_item_cancel,
+)
+from care.emr.resources.charge_item.spec import (
+    ChargeItemResourceOptions,
+    ChargeItemStatusOptions,
+)
 from care.emr.resources.questionnaire.spec import SubjectType
 from care.emr.resources.service_request.spec import (
+    SERVICE_REQUEST_CANCELLED_CHOICES,
     ServiceRequestCreateSpec,
     ServiceRequestReadSpec,
     ServiceRequestRetrieveSpec,
+    ServiceRequestStatusChoices,
     ServiceRequestUpdateSpec,
 )
 from care.emr.resources.specimen.spec import (
@@ -56,8 +67,18 @@ class ServiceRequestFilters(filters.FilterSet):
     intent = filters.CharFilter(lookup_expr="iexact")
     do_not_perform = filters.BooleanFilter()
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
+    encounter_class = filters.CharFilter(
+        field_name="encounter__encounter_class", lookup_expr="iexact"
+    )
     patient = filters.UUIDFilter(field_name="patient__external_id")
     requester = filters.UUIDFilter(field_name="requester__external_id")
+    patient_current_location = filters.UUIDFilter(
+        field_name="encounter__current_location__external_id"
+    )
+    activity_definition = filters.CharFilter(
+        lookup_expr="iexact", field_name="activity_definition__slug"
+    )
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
 
 
 class ApplyActivityDefinitionRequest(BaseModel):
@@ -69,6 +90,10 @@ class ApplyActivityDefinitionRequest(BaseModel):
 class ApplySpecimenDefinitionRequest(BaseModel):
     specimen_definition: UUID4
     specimen: SpecimenUpdateSpec
+
+
+class CancelServiceRequestRequest(BaseModel):
+    status: ServiceRequestStatusChoices
 
 
 class ServiceRequestViewSet(
@@ -142,6 +167,19 @@ class ServiceRequestViewSet(
         return super().perform_create(instance)
 
     def perform_update(self, instance):
+        if instance.id:
+            old_status = ServiceRequest.objects.only("status").get(id=instance.id)
+            if old_status.status == ServiceRequestStatusChoices.completed.value:
+                raise ValidationError("Service request is completed")
+            if old_status.status in SERVICE_REQUEST_CANCELLED_CHOICES:
+                raise ValidationError("Cannot update a cancelled service request")
+            if (
+                old_status.status != instance.status
+                and instance.status in SERVICE_REQUEST_CANCELLED_CHOICES
+            ):
+                raise ValidationError(
+                    "Use the cancel API to cancel the service request"
+                )
         self.convert_external_id_to_internal_id(instance)
         self.validate_health_care_service(instance)
         return super().perform_update(instance)
@@ -220,6 +258,43 @@ class ServiceRequestViewSet(
                 )
             return queryset.filter(encounter=encounter)
         raise ValidationError("Location or encounter is required")
+
+    @action(methods=["POST"], detail=True)
+    def complete(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.authorize_update({}, instance)
+        if instance.status == ServiceRequestStatusChoices.completed.value:
+            raise ValidationError("Service request is completed")
+        if instance.status in SERVICE_REQUEST_CANCELLED_CHOICES:
+            raise ValidationError("Service request is cancelled")
+        instance.status = ServiceRequestStatusChoices.completed.value
+        instance.updated_by = self.request.user
+        instance.save(update_fields=["status", "updated_by"])
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @action(methods=["POST"], detail=True)
+    def cancel(self, request, *args, **kwargs):
+        instance = self.get_object()
+        request_params = CancelServiceRequestRequest(**request.data)
+        self.authorize_update({}, instance)
+        if instance.status == ServiceRequestStatusChoices.completed.value:
+            raise ValidationError("Service request is completed")
+        if instance.status in SERVICE_REQUEST_CANCELLED_CHOICES:
+            raise ValidationError("Service request is already in a cancelled state")
+        if request_params.status.value not in SERVICE_REQUEST_CANCELLED_CHOICES:
+            raise ValidationError("Invalid status")
+        instance.status = request_params.status
+        instance.updated_by = self.request.user
+        with transaction.atomic():
+            for charge_item in ChargeItem.objects.filter(
+                service_resource_id=str(instance.external_id),
+                service_resource=ChargeItemResourceOptions.service_request.value,
+            ):
+                handle_charge_item_cancel(charge_item)
+                charge_item.status = ChargeItemStatusOptions.aborted.value
+                charge_item.save()
+            instance.save(update_fields=["status", "updated_by"])
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
     @extend_schema(
         request=ApplyActivityDefinitionRequest,

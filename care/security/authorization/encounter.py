@@ -10,6 +10,7 @@ from care.security.permissions.diagnostic_report import DiagnosticReportPermissi
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.medication import MedicationPermissions
 from care.security.permissions.service_request import ServiceRequestPermissions
+from care.security.permissions.template import TemplatePermissions
 
 
 class EncounterAccess(AuthorizationHandler):
@@ -42,6 +43,20 @@ class EncounterAccess(AuthorizationHandler):
 
         return self.check_permission_in_facility_organization(
             [EncounterPermissions.can_read_encounter.name],
+            user,
+            orgs=orgs,
+        )
+
+    def can_view_encounter_clinical_data(self, user, encounter):
+        """
+        Check if the user has permission to read encounter under this facility
+        """
+        orgs = [*encounter.facility_organization_cache]
+        if encounter.current_location:
+            orgs.extend(encounter.current_location.facility_organization_cache)
+
+        return self.check_permission_in_facility_organization(
+            [EncounterPermissions.can_read_encounter_clinical_data.name],
             user,
             orgs=orgs,
         )
@@ -79,11 +94,35 @@ class EncounterAccess(AuthorizationHandler):
             orgs=orgs,
         )
 
+    def can_update_encounter_clinical_data(self, user, encounter):
+        """
+        Check if the user has permission to create encounter under this facility
+        """
+        if encounter.status in COMPLETED_CHOICES:
+            # Cannot write to a closed encounter
+            return False
+        return self.check_permission_in_encounter(
+            user,
+            encounter,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
+        )
+
     def can_update_encounter_obj(self, user, encounter):
         """
         Check if the user has permission to create encounter under this facility
         """
         if encounter.status in COMPLETED_CHOICES:
+            # Cannot write to a closed encounter
+            return False
+        return self.check_permission_in_encounter(
+            user, encounter, EncounterPermissions.can_write_encounter.name
+        )
+
+    def can_restart_encounter_obj(self, user, encounter):
+        """
+        Check if the user has permission to create encounter under this facility
+        """
+        if encounter.status not in COMPLETED_CHOICES:
             # Cannot write to a closed encounter
             return False
         return self.check_permission_in_encounter(
@@ -123,6 +162,20 @@ class EncounterAccess(AuthorizationHandler):
             return False
         return self.check_permission_in_encounter(
             user, encounter, ServiceRequestPermissions.can_write_service_request.name
+        )
+
+    def can_generate_report_for_encounter(self, user, encounter):
+        """
+        Check if the user has permission to generate report for this encounter
+        """
+        if encounter.status in COMPLETED_CHOICES:
+            return self.check_permission_in_encounter(
+                user,
+                encounter,
+                TemplatePermissions.can_generate_report_for_completed_encounter.name,
+            )
+        return self.check_permission_in_encounter(
+            user, encounter, EncounterPermissions.can_write_encounter.name
         )
 
     def get_filtered_encounters(self, qs, user, facility):

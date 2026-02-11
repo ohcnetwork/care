@@ -48,3 +48,9 @@ class InvoicePermissions(enum.Enum):
         PermissionContext.FACILITY,
         [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
     )
+    can_manage_locked_invoice = Permission(
+        "Can Manage Locked Invoice",
+        "",
+        PermissionContext.FACILITY,
+        [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
+    )
