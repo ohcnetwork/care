@@ -1,3 +1,6 @@
+from datetime import timedelta
+
+from django.conf import settings
 from django_filters import rest_framework as filters
 from pydantic import BaseModel
 from rest_framework.decorators import action
@@ -27,6 +30,7 @@ from care.emr.resources.payment_reconciliation.spec import (
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.shortcuts import get_object_or_404
+from care.utils.time_util import care_now
 
 
 class PaymentReconciliationCancelRequest(BaseModel):
@@ -40,6 +44,9 @@ class PaymentReconciliationFilters(filters.FilterSet):
     account = filters.UUIDFilter(field_name="account__external_id")
     is_credit_note = filters.BooleanFilter(field_name="is_credit_note")
     location = filters.UUIDFilter(field_name="location__external_id")
+    method = filters.CharFilter(lookup_expr="iexact")
+    created_by = filters.UUIDFilter(field_name="created_by__external_id")
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
 
 
 class PaymentReconciliationViewSet(
@@ -77,19 +84,27 @@ class PaymentReconciliationViewSet(
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
         super().perform_create(instance)
-        rebalance_account_task.delay(instance.account.id)
+        rebalance_account_task(instance.account.id)
 
     def perform_update(self, instance):
         old_instance = self.get_object()
-        if old_instance.status != instance.status and instance.status in [
-            PaymentReconciliationStatusOptions.cancelled.value,
-            PaymentReconciliationStatusOptions.entered_in_error.value,
-        ]:
-            raise ValidationError(
-                "Cannot update payment reconciliation, use the cancel endpoint instead"
-            )
+        if old_instance.status != instance.status:
+            if instance.status in [
+                PaymentReconciliationStatusOptions.cancelled.value,
+                PaymentReconciliationStatusOptions.entered_in_error.value,
+            ]:
+                raise ValidationError(
+                    "Cannot update payment reconciliation, use the cancel endpoint instead"
+                )
+            if old_instance.status in [
+                PaymentReconciliationStatusOptions.cancelled.value,
+                PaymentReconciliationStatusOptions.entered_in_error.value,
+            ]:
+                raise ValidationError(
+                    "Payment reconciliation is already cancelled or entered in error"
+                )
         super().perform_update(instance)
-        rebalance_account_task.delay(instance.account.id)
+        rebalance_account_task(instance.account.id)
 
     def authorize_create(self, instance):
         facility = self.get_facility_obj()
@@ -137,13 +152,19 @@ class PaymentReconciliationViewSet(
         ]:
             raise ValidationError("Invalid reason")
         instance = self.get_object()
-        if not AuthorizationController.call(
+        if instance.created_date >= care_now() - timedelta(
+            minutes=settings.PAYMENT_RECONCILIATION_FREE_CANCEL_PERIOD_MINUTES
+        ):
+            self.authorize_update({}, instance)
+        elif not AuthorizationController.call(
             "can_destroy_payment_reconciliation_in_facility",
             self.request.user,
             instance.facility,
         ):
-            raise PermissionDenied("Cannot write payment reconciliation")
+            raise PermissionDenied(
+                "User does not have permission to cancel payment reconciliation"
+            )
         instance.status = request_data.reason
         instance.save()
-        rebalance_account_task.delay(instance.account.id)
+        rebalance_account_task(instance.account.id)
         return Response(PaymentReconciliationReadSpec.serialize(instance).to_json())

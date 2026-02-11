@@ -15,7 +15,7 @@ from care.security.roles.role import (
 
 class ServiceRequestPermissions(enum.Enum):
     can_write_service_request = Permission(
-        "Can Create Service Request on Facility",
+        "Can Write Service Request on Facility",
         "",
         PermissionContext.FACILITY,
         [FACILITY_ADMIN_ROLE, ADMIN_ROLE, DOCTOR_ROLE, NURSE_ROLE],

@@ -48,8 +48,8 @@ class OrganizationPermissions(enum.Enum):
         [ADMIN_ROLE],
     )
     can_manage_organization_users = Permission(
-        "Can Manage Users in an Organizations",
-        "",
+        "Can Manage Users in an Organization",
+        "Add, remove, and assign roles to users in an organization",
         PermissionContext.ORGANIZATION,
         [ADMIN_ROLE, ADMINISTRATOR, FACILITY_ADMIN_ROLE],
     )
@@ -67,4 +67,10 @@ class OrganizationPermissions(enum.Enum):
             VOLUNTEER_ROLE,
             PHARMACIST_ROLE,
         ],
+    )
+    is_geo_admin = Permission(
+        "Is Geo Admin",
+        "Geo Admins can manage facilities in their organization",
+        PermissionContext.ORGANIZATION,
+        [],
     )

@@ -8,6 +8,7 @@ from care.security.models import RoleModel
 from care.security.permissions.facility_organization import (
     FacilityOrganizationPermissions,
 )
+from care.security.permissions.organization import OrganizationPermissions
 
 
 class FacilityOrganizationAccess(AuthorizationHandler):
@@ -45,11 +46,19 @@ class FacilityOrganizationAccess(AuthorizationHandler):
                 [FacilityOrganizationPermissions.can_create_facility_organization.name],
                 user,
                 [*organization.parent_cache, organization.id, root_organization.id],
+            ) or self.check_permission_in_organization(
+                [OrganizationPermissions.is_geo_admin.name],
+                user,
+                orgs=facility.geo_organization_cache,
             )
         return self.check_permission_in_facility_organization(
             [FacilityOrganizationPermissions.can_create_facility_organization.name],
             user,
             facility=facility,
+        ) or self.check_permission_in_organization(
+            [OrganizationPermissions.is_geo_admin.name],
+            user,
+            orgs=facility.geo_organization_cache,
         )
 
     def can_manage_facility_organization_obj(self, user, organization):
@@ -59,10 +68,17 @@ class FacilityOrganizationAccess(AuthorizationHandler):
         root_organization = FacilityOrganization.objects.get(
             facility=organization.facility, org_type="root"
         )
-        return self.check_permission_in_facility_organization(
+        if self.check_permission_in_facility_organization(
             [FacilityOrganizationPermissions.can_manage_facility_organization.name],
             user,
             [*organization.parent_cache, organization.id, root_organization.id],
+        ):
+            return True
+        # Check permission via geo organizations
+        return self.check_permission_in_organization(
+            [OrganizationPermissions.is_geo_admin.name],
+            user,
+            orgs=organization.facility.geo_organization_cache,
         )
 
     def can_delete_facility_organization(self, user, organization):
@@ -76,6 +92,10 @@ class FacilityOrganizationAccess(AuthorizationHandler):
             [FacilityOrganizationPermissions.can_delete_facility_organization.name],
             user,
             [*organization.parent_cache, organization.id, root_organization.id],
+        ) or self.check_permission_in_organization(
+            [OrganizationPermissions.is_geo_admin.name],
+            user,
+            orgs=organization.facility.geo_organization_cache,
         )
 
     def get_accessible_facility_organizations(self, qs, user, facility):
@@ -98,6 +118,13 @@ class FacilityOrganizationAccess(AuthorizationHandler):
             return qs
         if permission:
             return qs.exclude(org_type="root")
+        organization_admin_access = self.check_permission_in_organization(
+            [OrganizationPermissions.is_geo_admin.name],
+            user,
+            orgs=facility.geo_organization_cache,
+        )
+        if organization_admin_access:
+            return qs
         return qs.none()
 
     def can_list_facility_organization_users_obj(self, user, organization):
@@ -108,6 +135,10 @@ class FacilityOrganizationAccess(AuthorizationHandler):
             [FacilityOrganizationPermissions.can_list_facility_organization_users.name],
             user,
             facility=organization.facility,
+        ) or self.check_permission_in_organization(
+            [OrganizationPermissions.is_geo_admin.name],
+            user,
+            orgs=organization.facility.geo_organization_cache,
         )
 
     def can_manage_facility_organization_users_obj(
@@ -127,6 +158,14 @@ class FacilityOrganizationAccess(AuthorizationHandler):
             organization.id,
             root_organization.id,
         ]
+        # Geo Admins have access no matter what.
+        geo_admin_access = self.check_permission_in_organization(
+            [OrganizationPermissions.is_geo_admin.name],
+            user,
+            orgs=organization.facility.geo_organization_cache,
+        )
+        if geo_admin_access:
+            return True
 
         if not self.check_role_subset(user, organization_parents, requested_role):
             return False

@@ -10,7 +10,7 @@ from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.patient.otp_based_flow import PatientOTPReadSpec
-from care.emr.resources.patient.spec import PatientListSpec
+from care.emr.resources.patient.spec import PatientRetrieveSpec
 from care.emr.resources.scheduling.resource.spec import serialize_resource
 from care.emr.resources.scheduling.schedule.spec import SchedulableResourceTypeOptions
 from care.emr.resources.scheduling.token.spec import TokenReadSpec
@@ -34,6 +34,11 @@ class TokenSlotBaseSpec(EMRResource):
         mapping["availability"] = {
             "name": obj.availability.name,
             "tokens_per_slot": obj.availability.tokens_per_slot,
+            "id": obj.external_id,
+            "schedule": {
+                "name": obj.availability.schedule.name,
+                "id": obj.availability.schedule.external_id,
+            },
         }
 
 
@@ -82,6 +87,8 @@ class TokenBookingWriteSpec(TokenBookingBaseSpec):
 
 
 class TokenBookingMinimumReadSpec(TokenBookingBaseSpec):
+    id: UUID4 | None = None
+
     token_slot: TokenSlotBaseSpec
     booked_on: datetime.datetime
     status: str
@@ -145,12 +152,14 @@ class TokenBookingOTPReadSpec(TokenBookingBaseReadSpec):
 
 
 class TokenBookingReadSpec(TokenBookingBaseReadSpec):
-    patient: PatientListSpec
+    patient: PatientRetrieveSpec
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
+        mapping["patient"] = PatientRetrieveSpec.serialize(
+            obj.patient, facility=obj.token_slot.resource.facility
+        ).to_json()
 
 
 class TokenBookingRetrieveSpec(TokenBookingReadSpec):

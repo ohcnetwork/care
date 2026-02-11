@@ -18,7 +18,7 @@ class UsernameValidatorTests(TestCase):
 
     invalid_characters = ["user@123", "user#123", "user?123", "user!123"]
 
-    consecutive_characters = ["user__123", "user--123", "user..123", "user__" "..user"]
+    consecutive_characters = ["user__123", "user--123", "user..123", "user__", "..user"]
 
     invalid_case = ["User", "USER", "uSeR"]
 

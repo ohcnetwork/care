@@ -1,6 +1,8 @@
+from datetime import timedelta
 from typing import Literal
 
 from django.db import transaction
+from django.utils import timezone
 from django_filters import DateFromToRangeFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
@@ -291,10 +293,15 @@ class TokenBookingViewSet(
         request_data = TokenGenerationSpec(**request.data)
         if booking.token:
             raise ValidationError("Token already generated")
+        # slot may start at 1:00 IST (19:30 UTC of previous date), hence
+        # making it tz naive and adding 1 second to ensure correct date extraction
+        token_date = timezone.make_naive(
+            booking.token_slot.start_datetime + timedelta(seconds=1)
+        ).date()
         filters = {
             "facility": booking.token_slot.resource.facility,
             "resource": booking.token_slot.resource,
-            "date": booking.token_slot.start_datetime.date(),
+            "date": token_date,
         }
         if request_data.queue:
             queue = TokenQueue.objects.filter(

@@ -50,6 +50,7 @@ class BatchUpdateObservationRequest(BaseModel):
 
 class DiagnosticReportFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
+    encounter = filters.UUIDFilter(field_name="encounter__external_id")
 
 
 class DiagnosticReportViewSet(

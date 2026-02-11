@@ -37,6 +37,9 @@ class MedicationRequestFilter(filters.FilterSet):
     dispense_status_isnull = NullFilter(field_name="dispense_status")
     facility = filters.UUIDFilter(field_name="encounter__facility__external_id")
     prescription = filters.UUIDFilter(field_name="prescription__external_id")
+    product_type = filters.CharFilter(
+        field_name="requested_product__product_type", lookup_expr="iexact"
+    )
 
 
 class MedicationRequestViewSet(
@@ -72,7 +75,7 @@ class MedicationRequestViewSet(
             encounter = get_object_or_404(Encounter, external_id=instance.encounter)
             requester = get_object_or_404(User, external_id=instance.requester)
             if not AuthorizationController.call(
-                "can_update_encounter_obj", requester, encounter
+                "can_update_encounter_clinical_data", requester, encounter
             ):
                 raise PermissionDenied(
                     "Requester does not have permission to update encounter"

@@ -144,7 +144,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         """
         Users with `can_read_encounter` can list diagnosis for that encounter (HTTP 200).
         """
-        permissions = [EncounterPermissions.can_read_encounter.name]
+        permissions = [EncounterPermissions.can_read_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -165,7 +165,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         """
         Users with `can_read_encounter` on a completed encounter can still list diagnosis (HTTP 200).
         """
-        permissions = [EncounterPermissions.can_read_encounter.name]
+        permissions = [EncounterPermissions.can_read_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -216,7 +216,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         Tests that a user with `can_write_encounter` permissions but belonging to a different
         organization receives (HTTP 403) when attempting to create a diagnosis.
         """
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         external_user = self.create_user()
         external_facility = self.create_facility(user=external_user)
@@ -249,7 +249,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         patient = self.create_patient(geo_organization=organization)
 
         permissions = [
-            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
             PatientPermissions.can_view_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
@@ -279,7 +279,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         """
         Users with `can_write_encounter` on a non-completed encounter => (HTTP 200).
         """
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -297,7 +297,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         self.assertEqual(response.json()["code"], diagnosis_data_dict["code"])
 
     def test_create_symptom_with_onset_date_of_future(self):
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -322,7 +322,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         """
         Users with `can_write_encounter` on a completed encounter => (HTTP 403).
         """
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -343,7 +343,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         associated with the facility, receive an HTTP 403 (Forbidden) response
         when attempting to create a diagnosis.
         """
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         organization = self.create_organization(org_type="govt")
         self.attach_role_organization_user(organization, self.user, role)
@@ -363,7 +363,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         """
         Users with `can_write_encounter` on a encounter with different patient => (HTTP 400).
         """
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -389,7 +389,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         """
         Users with `can_write_encounter` on a incomplete encounter => (HTTP 400).
         """
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -435,7 +435,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         """
         Users with `can_read_encounter` => (HTTP 200).
         """
-        permissions = [EncounterPermissions.can_read_encounter.name]
+        permissions = [EncounterPermissions.can_read_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -490,7 +490,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         => (HTTP 200) when updating.
         """
         permissions = [
-            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
             PatientPermissions.can_view_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
@@ -518,8 +518,8 @@ class TestDiagnosisViewSet(CareAPITestBase):
         => (HTTP 200).
         """
         permissions = [
-            EncounterPermissions.can_write_encounter.name,
-            EncounterPermissions.can_read_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
+            EncounterPermissions.can_read_encounter_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -549,7 +549,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         Lacking `can_read_encounter` => (HTTP 403).
         """
         # Only write permission
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -578,7 +578,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         """
         # Only write permission (same scenario as above but no read or view clinical)
 
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -602,7 +602,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         even if user has `can_write_encounter` + `can_view_clinical_data`.
         """
         permissions = [
-            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
             PatientPermissions.can_view_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
@@ -629,7 +629,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         Users with `can_write_encounter` + `can_view_clinical_data` => (HTTP 204).
         """
         permissions = [
-            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
             PatientPermissions.can_view_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
@@ -651,8 +651,8 @@ class TestDiagnosisViewSet(CareAPITestBase):
         Users with `can_write_encounter` + `can_read_encounter` => (HTTP 204).
         """
         permissions = [
-            EncounterPermissions.can_write_encounter.name,
-            EncounterPermissions.can_read_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
+            EncounterPermissions.can_read_encounter_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -672,7 +672,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         """
         Lacking `can_read_encounter` => (HTTP 403) on delete.
         """
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
@@ -692,7 +692,7 @@ class TestDiagnosisViewSet(CareAPITestBase):
         Users who only have `can_write_encounter` but not `can_view_clinical_data`
         => (HTTP 403) on delete.
         """
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 

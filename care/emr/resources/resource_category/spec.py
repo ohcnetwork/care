@@ -4,6 +4,7 @@ from pydantic import UUID4
 
 from care.emr.models.resource_category import ResourceCategory
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common.monetary_component import MonetaryComponent
 from care.emr.utils.slug_type import SlugType
 
 
@@ -55,9 +56,21 @@ class ResourceCategoryReadSpec(ResourceCategoryBaseSpec):
     is_child: bool
     slug_config: dict
     slug: str
+    calculated_monetary_components: list[MonetaryComponent] | None = None
+    configured_monetary_components: list[MonetaryComponent] | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["parent"] = obj.get_parent_json()
         mapping["slug_config"] = obj.parse_slug(obj.slug)
+        if (
+            obj.resource_type
+            == ResourceCategoryResourceTypeOptions.charge_item_definition.value
+        ):
+            mapping["calculated_monetary_components"] = (
+                obj.calculated_monetary_components
+            )
+            mapping["configured_monetary_components"] = (
+                obj.configured_monetary_components
+            )

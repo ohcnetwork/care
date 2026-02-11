@@ -51,12 +51,12 @@ def meta_artifact_authorizer(user, associating_type, associating_id, permission)
             allowed = AuthorizationController.call(
                 "can_view_clinical_data", user, encounter_obj.patient
             ) or AuthorizationController.call(
-                "can_view_encounter_obj", user, encounter_obj
+                "can_view_encounter_clinical_data", user, encounter_obj
             )
 
         elif permission == "write":
             allowed = AuthorizationController.call(
-                "can_update_encounter_obj", user, encounter_obj
+                "can_update_encounter_clinical_data", user, encounter_obj
             )
 
     if not allowed:

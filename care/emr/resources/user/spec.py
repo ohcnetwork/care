@@ -75,6 +75,7 @@ class UserCreateSpec(UserUpdateSpec):
     password: str | None = None
     username: str
     email: str
+    is_service_account: bool = False
 
     @field_validator("username")
     @classmethod
@@ -143,6 +144,7 @@ class UserRetrieveSpec(UserSpec):
     created_by: UserSpec
     email: str
     flags: list[str] = []
+    is_service_account: bool
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User):
@@ -173,6 +175,7 @@ class CurrentUserRetrieveSpec(UserRetrieveSpec):
     organizations: list[dict]
     facilities: list[dict]
     permissions: list[str]
+    preferences: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User) -> None:
