@@ -91,8 +91,8 @@ def get_wsgi_request_object(curr_request, method, url, headers, body):
 def find_and_replace_data(data, reference_id, replacements, data_references):
     for replacement in replacements:
         if replacement.value_path.reference_id == reference_id:
-            source_refernce_id = replacement.source_path.reference_id
-            if source_refernce_id in data_references:
+            source_reference_id = replacement.source_path.reference_id
+            if source_reference_id in data_references:
                 source = data_references[replacement.source_path.reference_id]
                 source_query = parse(replacement.source_path.path)
                 source_values = source_query.find(source)

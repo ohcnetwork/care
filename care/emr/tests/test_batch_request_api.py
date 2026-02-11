@@ -252,10 +252,10 @@ class QuestionnaireBatchRequestAPITest(BatchRequestAPITest):
         response = self.create_batch_request(requests=requests)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 3)
-        refernce_ids = [req["reference_id"] for req in response.data["results"]]
-        self.assertIn("allergy_intolerance", refernce_ids)
-        self.assertIn("diagnosis", refernce_ids)
-        self.assertIn("26cf708d-c8b1-4c2b-8995-36d2eb88622e", refernce_ids)
+        reference_ids = [req["reference_id"] for req in response.data["results"]]
+        self.assertIn("allergy_intolerance", reference_ids)
+        self.assertIn("diagnosis", reference_ids)
+        self.assertIn("26cf708d-c8b1-4c2b-8995-36d2eb88622e", reference_ids)
         for result in response.data["results"]:
             self.assertEqual(result["status_code"], 200)
 
@@ -305,10 +305,10 @@ class QuestionnaireBatchRequestAPITest(BatchRequestAPITest):
         response = self.create_batch_request(requests=requests, user=self.user)
         self.assertEqual(response.status_code, 400)
         self.assertEqual(len(response.data["results"]), 3)
-        refernce_ids = [req["reference_id"] for req in response.data["results"]]
-        self.assertIn("allergy_intolerance", refernce_ids)
-        self.assertIn("diagnosis", refernce_ids)
-        self.assertIn("26cf708d-c8b1-4c2b-8995-36d2eb88622e", refernce_ids)
+        reference_ids = [req["reference_id"] for req in response.data["results"]]
+        self.assertIn("allergy_intolerance", reference_ids)
+        self.assertIn("diagnosis", reference_ids)
+        self.assertIn("26cf708d-c8b1-4c2b-8995-36d2eb88622e", reference_ids)
         for result in response.data["results"]:
             if result["reference_id"] == "26cf708d-c8b1-4c2b-8995-36d2eb88622e":
                 self.assertEqual(result["status_code"], 404)
@@ -349,10 +349,10 @@ class QuestionnaireBatchRequestAPITest(BatchRequestAPITest):
         response = self.create_batch_request(requests=requests, user=self.user)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 3)
-        refernce_ids = [req["reference_id"] for req in response.data["results"]]
-        self.assertIn("allergy_intolerance", refernce_ids)
-        self.assertIn("diagnosis", refernce_ids)
-        self.assertIn("26cf708d-c8b1-4c2b-8995-36d2eb88622e", refernce_ids)
+        reference_ids = [req["reference_id"] for req in response.data["results"]]
+        self.assertIn("allergy_intolerance", reference_ids)
+        self.assertIn("diagnosis", reference_ids)
+        self.assertIn("26cf708d-c8b1-4c2b-8995-36d2eb88622e", reference_ids)
         for result in response.data["results"]:
             self.assertEqual(result["status_code"], 200)
 
@@ -537,7 +537,7 @@ class ReplacementBatchRequestAPITest(QuestionnaireBatchRequestAPITest):
             body={
                 "patient": None,
                 "facility": self.facility.external_id,
-                "organization": [str(self.facility_organization.external_id)],
+                "organizations": [str(self.facility_organization.external_id)],
                 "encounter_class": "imp",
                 "status": "planned",
                 "priority": "routine",
@@ -820,12 +820,12 @@ class ReplacementBatchRequestAPITest(QuestionnaireBatchRequestAPITest):
         response = self.create_batch_request(requests=requests)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 5)
-        refernce_ids = [req["reference_id"] for req in response.data["results"]]
-        self.assertIn("patient_fetch", refernce_ids)
-        self.assertIn("encounter_create", refernce_ids)
-        self.assertIn("allergy_intolerance", refernce_ids)
-        self.assertIn("diagnosis", refernce_ids)
-        self.assertIn("questionnaire_submit", refernce_ids)
+        reference_ids = [req["reference_id"] for req in response.data["results"]]
+        self.assertIn("patient_fetch", reference_ids)
+        self.assertIn("encounter_create", reference_ids)
+        self.assertIn("allergy_intolerance", reference_ids)
+        self.assertIn("diagnosis", reference_ids)
+        self.assertIn("questionnaire_submit", reference_ids)
         for result in response.data["results"]:
             self.assertEqual(result["status_code"], 200)
 
@@ -1081,12 +1081,12 @@ class ReplacementBatchRequestAPITest(QuestionnaireBatchRequestAPITest):
         response = self.create_batch_request(requests=requests, user=self.user)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 5)
-        refernce_ids = [req["reference_id"] for req in response.data["results"]]
-        self.assertIn("patient_fetch", refernce_ids)
-        self.assertIn("encounter_create", refernce_ids)
-        self.assertIn("allergy_intolerance", refernce_ids)
-        self.assertIn("diagnosis", refernce_ids)
-        self.assertIn("questionnaire_submit", refernce_ids)
+        reference_ids = [req["reference_id"] for req in response.data["results"]]
+        self.assertIn("patient_fetch", reference_ids)
+        self.assertIn("encounter_create", reference_ids)
+        self.assertIn("allergy_intolerance", reference_ids)
+        self.assertIn("diagnosis", reference_ids)
+        self.assertIn("questionnaire_submit", reference_ids)
         for result in response.data["results"]:
             self.assertEqual(result["status_code"], 200)
 
