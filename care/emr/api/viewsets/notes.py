@@ -55,7 +55,7 @@ class NoteThreadViewSet(
         if instance.encounter:
             encounter = get_object_or_404(Encounter, external_id=instance.encounter)
             allowed = AuthorizationController.call(
-                "can_update_encounter_obj", self.request.user, encounter
+                "can_update_encounter_clinical_data", self.request.user, encounter
             )
         else:
             allowed = AuthorizationController.call(
@@ -68,7 +68,9 @@ class NoteThreadViewSet(
         patient = model_instance.patient
         if model_instance.encounter:
             allowed = AuthorizationController.call(
-                "can_update_encounter_obj", self.request.user, model_instance.encounter
+                "can_update_encounter_clinical_data",
+                self.request.user,
+                model_instance.encounter,
             )
         else:
             allowed = AuthorizationController.call(
@@ -95,7 +97,7 @@ class NoteThreadViewSet(
             if encounter := self.request.GET.get("encounter"):
                 encounter_obj = get_object_or_404(Encounter, external_id=encounter)
                 if not AuthorizationController.call(
-                    "can_view_encounter_obj", self.request.user, encounter_obj
+                    "can_view_encounter_clinical_data", self.request.user, encounter_obj
                 ):
                     raise PermissionDenied("Permission denied to user")
             else:
@@ -141,7 +143,9 @@ class NoteMessageViewSet(
         )
         if thread.encounter:
             allowed = AuthorizationController.call(
-                "can_update_encounter_obj", self.request.user, thread.encounter
+                "can_update_encounter_clinical_data",
+                self.request.user,
+                thread.encounter,
             )
         else:
             allowed = AuthorizationController.call(
@@ -157,7 +161,7 @@ class NoteMessageViewSet(
             if encounter := self.request.GET.get("encounter"):
                 encounter_obj = get_object_or_404(Encounter, external_id=encounter)
                 if not AuthorizationController.call(
-                    "can_view_encounter_obj", self.request.user, encounter_obj
+                    "can_view_encounter_clinical_data", self.request.user, encounter_obj
                 ):
                     raise PermissionDenied("Permission denied to user")
             else:

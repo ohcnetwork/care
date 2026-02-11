@@ -23,6 +23,11 @@ class StatusChoices(str, Enum):
     unknown = "unknown"
 
 
+class LocationAvailabilityStatusChoices(str, Enum):
+    available = "available"
+    reserved = "reserved"
+
+
 class FacilityLocationOperationalStatusChoices(str, Enum):
     C = "C"
     H = "H"
@@ -113,19 +118,31 @@ class FacilityLocationWriteSpec(FacilityLocationSpec):
             obj.parent = None
 
 
+class FacilityLocationMinimalListSpec(FacilityLocationSpec):
+    parent: dict
+    mode: str
+    has_children: bool
+    system_availability_status: str
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = obj.external_id
+        mapping["parent"] = obj.get_parent_json()
+
+
 class FacilityLocationListSpec(FacilityLocationSpec):
     parent: dict
     mode: str
     has_children: bool
-    availability_status: str
+    system_availability_status: str
     current_encounter: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         from care.emr.resources.encounter.spec import EncounterListSpec
 
-        mapping["id"] = obj.external_id
-        mapping["parent"] = obj.get_parent_json()
+        super().perform_extra_serialization(mapping, obj)
+
         if obj.current_encounter:
             mapping["current_encounter"] = EncounterListSpec.serialize(
                 obj.current_encounter
@@ -197,7 +214,7 @@ class FacilityLocationEncounterListSpecWithLocation(FacilityLocationEncounterLis
 
 
 class FacilityLocationEncounterReadSpec(FacilityLocationEncounterBaseSpec):
-    encounter: UUID4
+    encounter: dict
     start_datetime: datetime.datetime
     end_datetime: datetime.datetime | None = None
     status: str
@@ -207,5 +224,8 @@ class FacilityLocationEncounterReadSpec(FacilityLocationEncounterBaseSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.encounter.spec import EncounterRetrieveSpec
+
         mapping["id"] = obj.external_id
+        mapping["encounter"] = EncounterRetrieveSpec.serialize(obj.encounter).to_json()
         cls.serialize_audit_users(mapping, obj)

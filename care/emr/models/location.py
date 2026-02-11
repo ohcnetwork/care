@@ -12,6 +12,7 @@ from config.celery_app import app
 class FacilityLocation(EMRBaseModel):
     status = models.CharField(max_length=255)
     operational_status = models.CharField(max_length=255)
+    system_availability_status = models.CharField(max_length=255)
     name = models.CharField(max_length=255)
     description = models.CharField(max_length=255)
     mode = models.CharField(max_length=255)
@@ -124,7 +125,7 @@ class FacilityLocation(EMRBaseModel):
         self.sync_organization_cache()
 
     def cascade_changes(self):
-        handle_cascade.delay(self.id)
+        handle_cascade(self.id)
 
 
 class FacilityLocationOrganization(EMRBaseModel):

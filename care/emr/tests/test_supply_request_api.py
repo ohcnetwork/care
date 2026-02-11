@@ -1,3 +1,4 @@
+from decimal import Decimal
 from uuid import uuid4
 
 from django.urls import reverse
@@ -120,7 +121,9 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["status"], data["status"])
-        self.assertEqual(get_response.data["quantity"], data["quantity"])
+        self.assertEqual(
+            Decimal(get_response.data["quantity"]), Decimal(data["quantity"])
+        )
         self.assertEqual(
             get_response.data["item"]["id"], str(self.product_knowledge.external_id)
         )
@@ -142,7 +145,9 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["status"], data["status"])
-        self.assertEqual(get_response.data["quantity"], data["quantity"])
+        self.assertEqual(
+            Decimal(get_response.data["quantity"]), Decimal(data["quantity"])
+        )
         self.assertEqual(
             get_response.data["item"]["id"], str(self.product_knowledge.external_id)
         )
@@ -193,7 +198,9 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["status"], data["status"])
-        self.assertEqual(get_response.data["quantity"], data["quantity"])
+        self.assertEqual(
+            Decimal(get_response.data["quantity"]), Decimal(data["quantity"])
+        )
         self.assertEqual(
             get_response.data["item"]["id"], str(self.product_knowledge.external_id)
         )
@@ -227,7 +234,9 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["status"], data["status"])
-        self.assertEqual(get_response.data["quantity"], data["quantity"])
+        self.assertEqual(
+            Decimal(get_response.data["quantity"]), Decimal(data["quantity"])
+        )
         self.assertEqual(
             get_response.data["item"]["id"], str(self.product_knowledge.external_id)
         )
@@ -349,7 +358,8 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.client.force_authenticate(user=self.superuser)
         data = self.generate_supply_request_data(
-            quantity=200, order=str(self.request_order_origin_external.external_id)
+            quantity=Decimal(200),
+            order=str(self.request_order_origin_external.external_id),
         )
         response = self.client.patch(
             self.get_detail_url(supply_request.external_id), data, format="json"
@@ -360,26 +370,27 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         )
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["id"], str(supply_request.external_id))
-        self.assertEqual(get_response.data["quantity"], 200)
+        self.assertEqual(Decimal(get_response.data["quantity"]), Decimal(200))
 
     def test_update_supply_request_internally_as_user_with_permissions(self):
         """Test updating a supply request as a user with permissions"""
         supply_request = self.create_supply_request(
             order=self.request_order_internal,
-            quantity=100,
+            quantity=Decimal(100),
         )
         self.attach_role_facility_organization_user(
             self.facility_organization, self.user, self.role
         )
         self.client.force_authenticate(user=self.user)
         data = self.generate_supply_request_data(
-            quantity=200, order=str(self.request_order_origin_external.external_id)
+            quantity=Decimal(200),
+            order=str(self.request_order_origin_external.external_id),
         )
         response = self.client.patch(
             self.get_detail_url(supply_request.external_id), data, format="json"
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["quantity"], 200)
+        self.assertEqual(Decimal(response.data["quantity"]), Decimal(200))
 
     def test_update_supply_request_internally_as_user_without_permissions(self):
         """Test updating a supply request as a user without permissions"""
@@ -401,20 +412,20 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         """Test updating a supply request for an origin externally with permission"""
         supply_request = self.create_supply_request(
             order=self.request_order_origin_external,
-            quantity=100,
+            quantity=Decimal(100),
         )
         self.attach_role_facility_organization_user(
             self.facility_organization, self.user, self.role
         )
         self.client.force_authenticate(user=self.user)
         data = self.generate_supply_request_data(
-            quantity=200, order=str(self.request_order_internal.external_id)
+            quantity=Decimal(200), order=str(self.request_order_internal.external_id)
         )
         response = self.client.patch(
             self.get_detail_url(supply_request.external_id), data, format="json"
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["quantity"], 200)
+        self.assertEqual(Decimal(response.data["quantity"]), Decimal(200))
 
     def test_update_supply_request_for_origin_externally_without_permission(self):
         """Test updating a supply request for an origin externally without permission"""
@@ -449,7 +460,7 @@ class SupplyRequestAPITestCase(CareAPITestBase):
             self.get_detail_url(supply_request.external_id), data, format="json"
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["quantity"], 200)
+        self.assertEqual(response.data["quantity"], "200")
 
     def test_update_supply_request_for_destination_externally_without_permission(self):
         """Test updating a supply request for a destination externally without permission"""

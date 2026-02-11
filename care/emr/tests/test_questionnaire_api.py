@@ -189,7 +189,7 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             "string": "Jane Smith",
             "text": "Persistent cough with fever",
             "date": "2023-12-31",
-            "dateTime": "2023-12-31T15:30:00",
+            "dateTime": "2023-12-31T15:30:00+05:30",
             "time": "15:30:00",
             "choice": "EXCELLENT",
             "url": "http://example.com",
