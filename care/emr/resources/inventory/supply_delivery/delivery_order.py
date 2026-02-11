@@ -91,6 +91,10 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
     patient: dict | None = None
     patient_invoice_id: UUID4 | None = None
     created_date: datetime
+    modified_date: datetime
+
+    created_by: dict | None = None
+    updated_by: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -107,3 +111,4 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
             mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
         if obj.patient_invoice:
             mapping["patient_invoice_id"] = str(obj.patient_invoice.external_id)
+        cls.serialize_audit_users(mapping, obj)
