@@ -144,7 +144,6 @@ class SupplyDeliveryReadSpec(BaseSupplyDeliverySpec):
     supplied_item_pack_quantity: int | None = None
     supplied_item_pack_size: int | None = None
     extensions: dict
-    total_purchase_price: Decimal | None = Field(max_digits=20, decimal_places=6)
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
