@@ -40,6 +40,7 @@ class BaseProductSpec(EMRResource):
     expiration_date: datetime.datetime | None = None
     extensions: dict
     standard_pack_size: int | None = None
+    purchase_price: Decimal | None = Field(max_digits=20, decimal_places=6)
 
 
     @field_validator("extensions")
