@@ -66,6 +66,7 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
                 quantity=supply_delivery.supplied_item_quantity,
             )
             charge_item.status = ChargeItemStatusOptions.billed.value
+            charge_item.paid_invoice = invoice_obj
             charge_item.created_by = delivery_order.created_by
             charge_item.updated_by = delivery_order.updated_by
             charge_item.save()
