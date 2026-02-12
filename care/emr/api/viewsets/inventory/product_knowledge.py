@@ -51,6 +51,7 @@ class ProductKnowledgeFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     facility = DummyUUIDFilter()
     name = TrigramFilter()
+    alternate_names = TrigramFilter(field_name="names_cache")
     product_type = filters.CharFilter(lookup_expr="iexact")
     facility_is_null = NullFilter(field_name="facility")
     alternate_identifier = filters.CharFilter(lookup_expr="iexact")

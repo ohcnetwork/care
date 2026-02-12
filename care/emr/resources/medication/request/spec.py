@@ -140,7 +140,7 @@ class TimingRepeat(BaseModel):
 
 class Timing(BaseModel):
     repeat: TimingRepeat
-    code: Coding
+    code: Coding | None = None
 
 
 class DosageInstruction(BaseModel):
