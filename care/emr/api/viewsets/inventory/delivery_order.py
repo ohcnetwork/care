@@ -39,7 +39,7 @@ class DeliveryOrderFilters(filters.FilterSet):
     status = MultiSelectFilter(field_name="status")
     created_date = filters.DateRangeFilter()
     supplier = filters.UUIDFilter(field_name="supplier__external_id")
-
+    created_by = filters.UUIDFilter(field_name="created_by__external_id")
     origin = DummyUUIDFilter()
     destination = DummyUUIDFilter()
     include_children = DummyBooleanFilter()
