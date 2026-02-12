@@ -63,7 +63,7 @@ def candidate_in_scope(
     if is_application:
         splits = candidate.split(".")
         if len(splits) == 2:  # noqa: PLR2004
-            app_label, model_name = splits
+            app_label, _model_name = splits
             search_candidate = app_label
 
     for item in scope:

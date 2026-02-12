@@ -6,7 +6,6 @@ import django.db.models.deletion
 from django.conf import settings
 from django.db import migrations, models
 
-import care.facility.models.mixins.permissions.patient
 
 
 class Migration(migrations.Migration):
@@ -153,7 +152,6 @@ class Migration(migrations.Migration):
             ],
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.patient.ConsultationRelatedPermissionMixin,
             ),
         ),
         migrations.AddConstraint(

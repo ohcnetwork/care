@@ -110,10 +110,6 @@ msgstr "സൗകര്യത്തിനുള്ളിൽ ആന്തരി�
 msgid "(Unknown)"
 msgstr "(അജ്ഞാതം)"
 
-#: care/hcx/apps.py:7
-msgid "HCX Integration"
-msgstr "HCX ഇൻ്റഗ്രേഷൻ"
-
 #: care/templates/pages/home.html:8
 msgid "Open Healthcare Network"
 msgstr "ഹെൽത്ത് കെയർ നെറ്റ്‌വർക്ക് തുറക്കുക"

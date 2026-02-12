@@ -1,6 +1,7 @@
+from decimal import Decimal
 from enum import Enum
 
-from pydantic import UUID4, BaseModel, model_validator
+from pydantic import UUID4, BaseModel, Field, model_validator
 
 from care.emr.models.specimen_definition import SpecimenDefinition
 from care.emr.resources.base import EMRResource
@@ -41,7 +42,7 @@ class HandlingConditionOptions(str, Enum):
 class QuantitySpec(BaseModel):
     """Represents a quantity with value and unit"""
 
-    value: float
+    value: Decimal = Field(max_digits=20, decimal_places=0)
     unit: Coding
 
 
@@ -72,7 +73,7 @@ class ContainerSpec(BaseModel):
 class DurationSpec(BaseModel):
     """Duration specification using value and unit"""
 
-    value: int
+    value: Decimal = Field(max_digits=20, decimal_places=0)
     unit: Coding  # Nees to be restricted to Datetime Units
 
 

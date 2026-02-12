@@ -1,5 +1,5 @@
 from django.db import transaction
-from django_filters import DateFilter, FilterSet, UUIDFilter
+from django_filters import CharFilter, DateFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
@@ -33,6 +33,7 @@ class TokenFilters(FilterSet):
     status = MultiSelectFilter(field_name="status")
     sub_queue_is_null = NullFilter(field_name="sub_queue")
     date = DateFilter(field_name="queue__date")  # For dependent filtering only
+    patient_name = CharFilter(field_name="patient__name", lookup_expr="icontains")
 
 
 class TokenViewSet(EMRModelViewSet):

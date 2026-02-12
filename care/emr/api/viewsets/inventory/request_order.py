@@ -36,7 +36,7 @@ class RequestOrderFilters(filters.FilterSet):
     intent = filters.CharFilter(lookup_expr="iexact")
     category = filters.CharFilter(lookup_expr="iexact")
     reason = filters.CharFilter(lookup_expr="iexact")
-
+    created_by = filters.UUIDFilter(field_name="created_by__external_id")
     origin = DummyUUIDFilter()
     destination = DummyUUIDFilter()
     include_children = DummyBooleanFilter()

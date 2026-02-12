@@ -67,7 +67,7 @@ class ScheduleAccess(AuthorizationHandler):
         """
         if obj.managing_organization:
             orgs = [
-                obj.managing_organization.parent_cache,
+                *obj.managing_organization.parent_cache,
                 obj.managing_organization.id,
             ]
             return self.check_permission_in_facility_organization(
@@ -106,7 +106,7 @@ class ScheduleAccess(AuthorizationHandler):
         """
         if obj.managing_organization:
             orgs = [
-                obj.managing_organization.parent_cache,
+                *obj.managing_organization.parent_cache,
                 obj.managing_organization.id,
             ]
             return self.check_permission_in_facility_organization(

@@ -19,22 +19,6 @@ class Migration(migrations.Migration):
                 max_length=100,
                 null=True,
                 validators=[
-                    care.utils.models.validators.DenominationValidator(
-                        allow_floats=True,
-                        max_amount=5000,
-                        min_amount=0.0001,
-                        precision=4,
-                        units={
-                            "ampule(s)",
-                            "mg",
-                            "g",
-                            "tsp",
-                            "drop(s)",
-                            "mcg",
-                            "unit(s)",
-                            "ml",
-                        },
-                    )
                 ],
             ),
         ),
@@ -46,22 +30,6 @@ class Migration(migrations.Migration):
                 max_length=100,
                 null=True,
                 validators=[
-                    care.utils.models.validators.DenominationValidator(
-                        allow_floats=True,
-                        max_amount=5000,
-                        min_amount=0.0001,
-                        precision=4,
-                        units={
-                            "ampule(s)",
-                            "mg",
-                            "g",
-                            "tsp",
-                            "drop(s)",
-                            "mcg",
-                            "unit(s)",
-                            "ml",
-                        },
-                    )
                 ],
             ),
         ),
@@ -73,22 +41,6 @@ class Migration(migrations.Migration):
                 max_length=100,
                 null=True,
                 validators=[
-                    care.utils.models.validators.DenominationValidator(
-                        allow_floats=True,
-                        max_amount=5000,
-                        min_amount=0.0001,
-                        precision=4,
-                        units={
-                            "ampule(s)",
-                            "mg",
-                            "g",
-                            "tsp",
-                            "drop(s)",
-                            "mcg",
-                            "unit(s)",
-                            "ml",
-                        },
-                    )
                 ],
             ),
         ),
@@ -121,22 +73,6 @@ class Migration(migrations.Migration):
                 max_length=100,
                 null=True,
                 validators=[
-                    care.utils.models.validators.DenominationValidator(
-                        allow_floats=True,
-                        max_amount=5000,
-                        min_amount=0.0001,
-                        precision=4,
-                        units={
-                            "ampule(s)",
-                            "mg",
-                            "g",
-                            "tsp",
-                            "drop(s)",
-                            "mcg",
-                            "unit(s)",
-                            "ml",
-                        },
-                    )
                 ],
             ),
         ),

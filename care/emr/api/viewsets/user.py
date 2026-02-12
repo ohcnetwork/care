@@ -1,9 +1,13 @@
+from django.conf import settings
 from django.db import IntegrityError, transaction
 from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
+from jsonschema import validate
+from pydantic import BaseModel, model_validator
 from rest_framework import filters as drf_filters
 from rest_framework import serializers
+from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action, parser_classes
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import MultiPartParser
@@ -27,10 +31,12 @@ from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.users.models import User
 from care.utils.file_uploads.cover_image import delete_cover_image, upload_cover_image
+from care.utils.filters.default_filter import DefaultBooleanFilter
 from care.utils.models.validators import (
     cover_image_validator,
     custom_image_extension_validator,
 )
+from care.utils.shortcuts import get_object_or_404
 
 
 class UserImageUploadSerializer(serializers.ModelSerializer):
@@ -58,6 +64,22 @@ class UserImageUploadSerializer(serializers.ModelSerializer):
         return user
 
 
+class UserPreferenceRequest(BaseModel):
+    preference: str
+    version: str
+    value: dict
+
+    @model_validator(mode="after")
+    def validate_preference(self):
+        preference_schema = settings.PREFERENCE_SCHEMA
+        if self.preference in preference_schema:
+            try:
+                validate(self.value, preference_schema[self.preference])
+            except Exception as e:
+                raise ValueError("Invalid JSON") from e
+        return self
+
+
 class UserFilter(filters.FilterSet):
     email = filters.CharFilter(field_name="email", lookup_expr="icontains")
     phone_number = filters.CharFilter(
@@ -65,6 +87,9 @@ class UserFilter(filters.FilterSet):
     )
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
     user_type = filters.CharFilter(field_name="user_type", lookup_expr="iexact")
+    is_service_account = DefaultBooleanFilter(
+        field_name="is_service_account", default=False
+    )
 
 
 class UserViewSet(EMRModelViewSet):
@@ -121,7 +146,14 @@ class UserViewSet(EMRModelViewSet):
             raise PermissionDenied("You do not have permission to update this user")
 
     def authorize_create(self, instance):
-        if not AuthorizationController.call("can_create_user", self.request.user):
+        if instance.is_service_account:
+            if not AuthorizationController.call(
+                "can_create_service_account", self.request.user
+            ):
+                raise PermissionDenied(
+                    "You do not have permission to create service accounts"
+                )
+        elif not AuthorizationController.call("can_create_user", self.request.user):
             raise PermissionDenied("You do not have permission to create Users")
 
     def perform_destroy(self, instance):
@@ -192,3 +224,66 @@ class UserViewSet(EMRModelViewSet):
                 setattr(user, field, request.data[field])
         user.save()
         return Response({})
+
+    @action(detail=True, methods=["POST"])
+    def generate_service_account_token(self, request, *args, **kwargs):
+        user = get_object_or_404(
+            User.objects.filter(deleted=False),
+            **{self.lookup_field: self.kwargs[self.lookup_field]},
+        )
+
+        if not user.is_service_account:
+            return Response(
+                {"error": "Only service accounts can generate token"}, status=400
+            )
+
+        has_permission = self.request.user.is_superuser or (
+            self.request.user == user.created_by
+        )
+
+        if not has_permission:
+            raise PermissionDenied(
+                "You do not have permission to update token for service account"
+            )
+
+        Token.objects.filter(user=user).delete()
+        token = Token.objects.create(user=user)
+
+        return Response(
+            {
+                "token": token.key,
+                "user": user.username,
+                "created": token.created.isoformat(),
+            }
+        )
+
+    @action(detail=True, methods=["DELETE"])
+    def revoke_service_account_token(self, request, *args, **kwargs):
+        user = get_object_or_404(
+            User.objects.filter(deleted=False),
+            **{self.lookup_field: self.kwargs[self.lookup_field]},
+        )
+
+        if not user.is_service_account:
+            return Response({"error": "Not a service account"}, status=400)
+
+        has_permission = self.request.user.is_superuser or (
+            self.request.user == user.created_by
+        )
+
+        if not has_permission:
+            raise PermissionDenied(
+                "You do not have permission to update token for service account"
+            )
+
+        Token.objects.filter(user=user).delete()
+
+        return Response({"message": "Token revoked successfully"})
+
+    @action(detail=False, methods=["POST"])
+    def set_preferences(self, request, *args, **kwargs):
+        user = self.request.user
+        preferences = UserPreferenceRequest(**request.data)
+        user.preferences[preferences.preference] = preferences.value
+        user.save(update_fields=["preferences"])
+        return Response(status=201)

@@ -27,7 +27,7 @@ class AccountPermissions(enum.Enum):
         [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
     )
     can_read_account = Permission(
-        "Can Read Charge Item",
+        "Can Read Account",
         "",
         PermissionContext.FACILITY,
         [

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db.models import Q
 
 from care.emr.models import Encounter, PatientUser
@@ -56,6 +57,15 @@ class PatientAccess(AuthorizationHandler):
 
     def can_write_patient_obj(self, user, patient):
         if user.is_superuser:
+            return True
+        if settings.PATIENT_GLOBAL_EDIT_ACCESS_ENABLED and (
+            self.check_permission_in_facility_organization(
+                [PatientPermissions.can_write_patient.name], user
+            )
+            or self.check_permission_in_organization(
+                [PatientPermissions.can_write_patient.name], user
+            )
+        ):
             return True
         user_roles = self.find_roles_on_patient(user, patient)
         return RolePermission.objects.filter(

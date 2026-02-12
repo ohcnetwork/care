@@ -7,8 +7,6 @@ from django.conf import settings
 from django.core.paginator import Paginator
 from django.db import migrations, models
 
-import care.facility.models.mixins.permissions.patient
-
 
 def backfill_symptoms_table(apps, schema_editor):
     EncounterSymptom = apps.get_model("facility", "EncounterSymptom")
@@ -260,7 +258,6 @@ class Migration(migrations.Migration):
             },
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.patient.ConsultationRelatedPermissionMixin,
             ),
         ),
         migrations.RunPython(backfill_symptoms_table, migrations.RunPython.noop),

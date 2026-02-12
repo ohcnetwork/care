@@ -55,6 +55,7 @@ class Schedule(EMRBaseModel):
         blank=True,
         related_name="schedule_revisit_charge_item_definition",
     )
+    is_public = models.BooleanField(default=False)
 
 
 class Availability(EMRBaseModel):
