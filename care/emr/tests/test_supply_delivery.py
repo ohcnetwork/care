@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.urls import reverse
 from model_bakery import baker
 
@@ -5,6 +7,9 @@ from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
     sync_inventory_item,
+)
+from care.emr.resources.inventory.supply_delivery.delivery_order import (
+    SupplyDeliveryOrderStatusOptions,
 )
 from care.emr.resources.inventory.supply_delivery.spec import (
     SupplyDeliveryConditionOptions,
@@ -58,14 +63,14 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.supply_request_destination_external = self.create_supply_request(
             item=self.product_knowledge,
             status="active",
-            quantity=1500,
+            quantity=Decimal(1500),
             supplied_item_condition=SupplyDeliveryConditionOptions.normal.value,
             order=self.request_order_destination_external,
         )
         self.supply_request_internal = self.create_supply_request(
             item=self.product_knowledge,
             status="active",
-            quantity=200,
+            quantity=Decimal(200),
             supplied_item_condition=SupplyDeliveryConditionOptions.normal.value,
             order=self.request_order_internal,
         )
@@ -95,7 +100,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         # Purchase Order of 1500 units to destination location
         self.purchase_order_destination = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=1500,
+            supplied_item_quantity=Decimal(1500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.completed.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -105,15 +110,15 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         # Purchase Order of 500 units from origin location
         self.purchase_order_origin = self.create_supply_delivery(
             order=self.delivery_order_origin_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.completed.value,
             supplied_inventory_item=self.inventory_item_origin,
         )
         self.inventory_item_origin.refresh_from_db()
         self.inventory_item_destination.refresh_from_db()
-        self.assertEqual(self.inventory_item_origin.net_content, 500)
-        self.assertEqual(self.inventory_item_destination.net_content, 1500)
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(500))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
 
     def get_detail_url(self, external_id):
         return reverse(
@@ -173,7 +178,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         **kwargs,
     ):
         return {
-            "supplied_item_quantity": quantity or 50,
+            "supplied_item_quantity": quantity or Decimal(50),
             "status": status or SupplyDeliveryStatusOptions.in_progress.value,
             "supplied_item_condition": condition
             or SupplyDeliveryConditionOptions.normal.value,
@@ -210,7 +215,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         get_response = self.client.get(self.get_detail_url(response.data["id"]))
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["supplied_item_quantity"], 50)
+        self.assertEqual(get_response.data["supplied_item_quantity"], "50.000000")
         self.assertEqual(
             get_response.data["status"], SupplyDeliveryStatusOptions.in_progress.value
         )
@@ -220,8 +225,8 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.inventory_item_origin.refresh_from_db()
         self.inventory_item_destination.refresh_from_db()
-        self.assertEqual(self.inventory_item_origin.net_content, (float(450)))
-        self.assertEqual(self.inventory_item_destination.net_content, (float(1500)))
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(450))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
         update_response = self.client.put(
             self.get_detail_url(response.data["id"]),
             {"status": SupplyDeliveryStatusOptions.completed.value},
@@ -229,7 +234,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.assertEqual(update_response.status_code, 200)
         self.inventory_item_destination.refresh_from_db()
-        self.assertEqual(self.inventory_item_destination.net_content, (float(1550)))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1550))
 
     def test_create_supply_delivery_externally_as_superuser(self):
         """
@@ -240,7 +245,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         data = self.create_supply_delivery_data(
             supplied_item=self.product.external_id,
             order=self.delivery_order_destination_external.external_id,
-            quantity=500,
+            quantity=Decimal(500),
         )
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, 200)
@@ -248,7 +253,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             self.get_detail_url(response.data["id"]), format="json"
         )
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["supplied_item_quantity"], 500)
+        self.assertEqual(get_response.data["supplied_item_quantity"], "500.000000")
         self.assertEqual(
             get_response.data["status"], SupplyDeliveryStatusOptions.in_progress.value
         )
@@ -257,7 +262,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             str(self.inventory_item_destination.external_id),
         )
         self.inventory_item_destination.refresh_from_db()
-        self.assertEqual(self.inventory_item_destination.net_content, (float(1500)))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
         update_response = self.client.put(
             self.get_detail_url(response.data["id"]),
             {"status": SupplyDeliveryStatusOptions.completed.value},
@@ -265,7 +270,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.assertEqual(update_response.status_code, 200)
         self.inventory_item_destination.refresh_from_db()
-        self.assertEqual(self.inventory_item_destination.net_content, (float(2000)))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(2000))
 
     def test_create_supply_delivery_internally_as_user_with_permissions(self):
         """
@@ -285,7 +290,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         get_response = self.client.get(self.get_detail_url(response.data["id"]))
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["supplied_item_quantity"], 50)
+        self.assertEqual(get_response.data["supplied_item_quantity"], "50.000000")
         self.assertEqual(
             get_response.data["status"], SupplyDeliveryStatusOptions.in_progress.value
         )
@@ -295,8 +300,8 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.inventory_item_origin.refresh_from_db()
         self.inventory_item_destination.refresh_from_db()
-        self.assertEqual(self.inventory_item_origin.net_content, (float(450)))
-        self.assertEqual(self.inventory_item_destination.net_content, (float(1500)))
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(450))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
         update_response = self.client.put(
             self.get_detail_url(response.data["id"]),
             {"status": SupplyDeliveryStatusOptions.completed.value},
@@ -304,7 +309,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.assertEqual(update_response.status_code, 200)
         self.inventory_item_destination.refresh_from_db()
-        self.assertEqual(self.inventory_item_destination.net_content, (float(1550)))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1550))
 
     def test_create_supply_delivery_externally_as_user_with_permissions(self):
         """
@@ -319,7 +324,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         data = self.create_supply_delivery_data(
             supplied_item=self.product.external_id,
             order=self.delivery_order_destination_external.external_id,
-            quantity=500,
+            quantity=Decimal(500),
         )
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, 200)
@@ -327,7 +332,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             self.get_detail_url(response.data["id"]), format="json"
         )
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["supplied_item_quantity"], 500)
+        self.assertEqual(get_response.data["supplied_item_quantity"], "500.000000")
         self.assertEqual(
             get_response.data["status"], SupplyDeliveryStatusOptions.in_progress.value
         )
@@ -336,7 +341,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             str(self.inventory_item_destination.external_id),
         )
         self.inventory_item_destination.refresh_from_db()
-        self.assertEqual(self.inventory_item_destination.net_content, (float(1500)))
+        self.assertEqual(self.inventory_item_destination.net_content, (Decimal(1500)))
         update_response = self.client.put(
             self.get_detail_url(response.data["id"]),
             {"status": SupplyDeliveryStatusOptions.completed.value},
@@ -344,7 +349,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.assertEqual(update_response.status_code, 200)
         self.inventory_item_destination.refresh_from_db()
-        self.assertEqual(self.inventory_item_destination.net_content, (float(2000)))
+        self.assertEqual(self.inventory_item_destination.net_content, (Decimal(2000)))
 
     def test_create_external_supply_delivery_as_user_without_permissions(self):
         """
@@ -354,7 +359,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         data = self.create_supply_delivery_data(
             supplied_item=self.product.external_id,
             order=self.delivery_order_destination_external.external_id,
-            quantity=500,
+            quantity=Decimal(500),
         )
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, 403)
@@ -382,7 +387,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         data = self.create_supply_delivery_data(
             supplied_inventory_item=self.inventory_item_origin.external_id,
             order=self.delivery_order_internal.external_id,
-            quantity=501,
+            quantity=Decimal(501),
         )
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, 400)
@@ -463,6 +468,69 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             status_code=400,
         )
 
+    def test_create_supply_delivery_with_completed_order(self):
+        """
+        Test creating a supply delivery as a superuser with order which is already completed
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.delivery_order_internal.status = (
+            SupplyDeliveryOrderStatusOptions.completed.value
+        )
+        self.delivery_order_internal.save()
+        data = self.create_supply_delivery_data(
+            supplied_inventory_item=self.inventory_item_origin.external_id,
+            order=self.delivery_order_internal.external_id,
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "Delivery order is completed",
+            status_code=400,
+        )
+
+    def test_create_supply_delivery_with_abandoned_order(self):
+        """
+        Test creating a supply delivery as a superuser with order which is already abandoned
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.delivery_order_internal.status = (
+            SupplyDeliveryOrderStatusOptions.abandoned.value
+        )
+        self.delivery_order_internal.save()
+        data = self.create_supply_delivery_data(
+            supplied_inventory_item=self.inventory_item_origin.external_id,
+            order=self.delivery_order_internal.external_id,
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "Delivery order is abandoned or entered in error",
+            status_code=400,
+        )
+
+    def test_create_supply_delivery_with_entered_in_error_order(self):
+        """
+        Test creating a supply delivery as a superuser with order which is already entered in error
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.delivery_order_internal.status = (
+            SupplyDeliveryOrderStatusOptions.entered_in_error.value
+        )
+        self.delivery_order_internal.save()
+        data = self.create_supply_delivery_data(
+            supplied_inventory_item=self.inventory_item_origin.external_id,
+            order=self.delivery_order_internal.external_id,
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "Delivery order is abandoned or entered in error",
+            status_code=400,
+        )
+
     # Testcases for update supply delivery
 
     def test_update_supply_delivery_as_superuser(self):
@@ -472,7 +540,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -484,7 +552,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.assertEqual(update_response.status_code, 200)
         self.inventory_item_destination.refresh_from_db()
-        self.assertEqual(self.inventory_item_destination.net_content, (float(2000)))
+        self.assertEqual(self.inventory_item_destination.net_content, (Decimal(2000)))
         get_response = self.client.get(
             self.get_detail_url(supply_delivery.external_id), format="json"
         )
@@ -503,7 +571,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -515,7 +583,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.assertEqual(update_response.status_code, 200)
         self.inventory_item_destination.refresh_from_db()
-        self.assertEqual(self.inventory_item_destination.net_content, (float(2000)))
+        self.assertEqual(self.inventory_item_destination.net_content, (Decimal(2000)))
         get_response = self.client.get(
             self.get_detail_url(supply_delivery.external_id), format="json"
         )
@@ -534,7 +602,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_internal,
-            supplied_item_quantity=200,
+            supplied_item_quantity=Decimal(200),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_origin,
@@ -546,7 +614,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.assertEqual(update_response.status_code, 200)
         self.inventory_item_destination.refresh_from_db()
-        self.assertEqual(self.inventory_item_destination.net_content, (float(1700)))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1700))
         get_response = self.client.get(
             self.get_detail_url(supply_delivery.external_id), format="json"
         )
@@ -560,7 +628,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.user)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -582,7 +650,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.user)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_internal,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_origin,
@@ -604,7 +672,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_internal,
-            supplied_item_quantity=200,
+            supplied_item_quantity=Decimal(200),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.completed.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -628,7 +696,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -654,6 +722,54 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             SupplyDeliveryConditionOptions.damaged.value,
         )
 
+    def test_update_supply_delivery_with_status_entered_in_error(self):
+        """
+        Test updating a supply delivery with status as entered in error
+        """
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=Decimal(500),
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.entered_in_error.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        response = self.client.put(
+            self.get_detail_url(supply_delivery.external_id),
+            {"status": SupplyDeliveryStatusOptions.in_progress.value},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "Supply delivery is abandoned or entered in error",
+            status_code=400,
+        )
+
+    def test_update_supply_delivery_with_status_abandoned(self):
+        """
+        Test updating a supply delivery with status as abandoned
+        """
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_destination_external,
+            supplied_item_quantity=Decimal(500),
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.abandoned.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        response = self.client.put(
+            self.get_detail_url(supply_delivery.external_id),
+            {"status": SupplyDeliveryStatusOptions.in_progress.value},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "Supply delivery is abandoned or entered in error",
+            status_code=400,
+        )
+
     # Testcases for retrieve supply delivery
 
     def test_retrieve_supply_delivery_as_superuser(self):
@@ -663,7 +779,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -672,7 +788,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             self.get_detail_url(supply_delivery.external_id), format="json"
         )
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["supplied_item_quantity"], 500)
+        self.assertEqual(get_response.data["supplied_item_quantity"], "500.000000")
         self.assertEqual(
             get_response.data["status"], SupplyDeliveryStatusOptions.in_progress.value
         )
@@ -693,7 +809,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -702,7 +818,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             self.get_detail_url(supply_delivery.external_id), format="json"
         )
         self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(get_response.data["supplied_item_quantity"], 500)
+        self.assertEqual(get_response.data["supplied_item_quantity"], "500.000000")
         self.assertEqual(
             get_response.data["status"], SupplyDeliveryStatusOptions.in_progress.value
         )
@@ -716,7 +832,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.user)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -746,7 +862,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             SupplyDeliveryStatusOptions.completed.value,
         )
         self.assertEqual(
-            list_response.data["results"][0]["supplied_item_quantity"], 1500
+            list_response.data["results"][0]["supplied_item_quantity"], "1500.000000"
         )
         self.assertEqual(
             list_response.data["results"][0]["id"],
@@ -777,7 +893,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             SupplyDeliveryStatusOptions.completed.value,
         )
         self.assertEqual(
-            list_response.data["results"][0]["supplied_item_quantity"], 500
+            list_response.data["results"][0]["supplied_item_quantity"], "500.000000"
         )
 
     def test_list_supply_delivery_as_user_without_permissions(self):
@@ -821,7 +937,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             SupplyDeliveryStatusOptions.completed.value,
         )
         self.assertEqual(
-            list_response.data["results"][0]["supplied_item_quantity"], 1500
+            list_response.data["results"][0]["supplied_item_quantity"], "1500.000000"
         )
 
     def test_list_supply_delivery_as_superuser_with_origin_filter(self):
@@ -829,7 +945,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         internal_delivery = self.create_supply_delivery(
             order=self.delivery_order_internal,
-            supplied_item_quantity=200,
+            supplied_item_quantity=Decimal(200),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.completed.value,
             supplied_inventory_item=self.inventory_item_origin,
@@ -847,7 +963,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             SupplyDeliveryStatusOptions.completed.value,
         )
         self.assertEqual(
-            list_response.data["results"][0]["supplied_item_quantity"], 200
+            list_response.data["results"][0]["supplied_item_quantity"], "200.000000"
         )
         self.assertEqual(
             list_response.data["results"][0]["supplied_inventory_item"]["id"],
@@ -855,7 +971,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.assertEqual(
             list_response.data["results"][0]["supplied_inventory_item"]["net_content"],
-            300,
+            "300.000000",
         )
 
     def test_list_supply_delivery_as_user_with_permissions_with_destination_filter(
@@ -882,7 +998,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             SupplyDeliveryStatusOptions.completed.value,
         )
         self.assertEqual(
-            list_response.data["results"][0]["supplied_item_quantity"], 1500
+            list_response.data["results"][0]["supplied_item_quantity"], "1500.000000"
         )
 
     def test_list_supply_delivery_as_user_with_permissions_with_origin_filter(self):
@@ -913,7 +1029,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             SupplyDeliveryStatusOptions.completed.value,
         )
         self.assertEqual(
-            list_response.data["results"][0]["supplied_item_quantity"], 200
+            list_response.data["results"][0]["supplied_item_quantity"], "200.000000"
         )
         self.assertEqual(
             list_response.data["results"][0]["supplied_inventory_item"]["id"],
@@ -921,7 +1037,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.assertEqual(
             list_response.data["results"][0]["supplied_inventory_item"]["net_content"],
-            300,
+            "300.000000",
         )
 
     def test_list_supply_delivery_as_user_without_permissions_with_destination_filter(
@@ -966,7 +1082,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.create_supply_delivery(
             order=child_delivery_order_external,
-            supplied_item_quantity=200,
+            supplied_item_quantity=Decimal(200),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.completed.value,
             supplied_inventory_item=inventory_item_child,
@@ -978,13 +1094,13 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         supply_delivery_parent = self.create_supply_delivery(
             order=self.delivery_order_internal,
-            supplied_item_quantity=200,
+            supplied_item_quantity=Decimal(200),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.completed.value,
             supplied_inventory_item=self.inventory_item_origin,
         )
         supply_delivery_child = self.create_supply_delivery(
-            supplied_item_quantity=100,
+            supplied_item_quantity=Decimal(100),
             order=child_delivery_order_internal,
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.completed.value,
@@ -1007,10 +1123,10 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
 
         self.assertEqual(
-            list_response.data["results"][0]["supplied_item_quantity"], 100
+            list_response.data["results"][0]["supplied_item_quantity"], "100.000000"
         )
         self.assertEqual(
-            list_response.data["results"][1]["supplied_item_quantity"], 200
+            list_response.data["results"][1]["supplied_item_quantity"], "200.000000"
         )
         self.assertEqual(
             list_response.data["results"][0]["supplied_inventory_item"]["id"],
@@ -1018,7 +1134,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.assertEqual(
             list_response.data["results"][0]["supplied_inventory_item"]["net_content"],
-            100,
+            "100.000000",
         )
         self.assertEqual(
             list_response.data["results"][1]["supplied_inventory_item"]["id"],
@@ -1026,7 +1142,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.assertEqual(
             list_response.data["results"][1]["supplied_inventory_item"]["net_content"],
-            300,
+            "300.000000",
         )
 
     def test_list_supply_delivery_with_include_children_as_false(self):
@@ -1082,7 +1198,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             str(supply_delivery_parent.external_id),
         )
         self.assertEqual(
-            list_response.data["results"][0]["supplied_item_quantity"], 200
+            list_response.data["results"][0]["supplied_item_quantity"], "200.000000"
         )
         self.assertEqual(
             list_response.data["results"][0]["supplied_inventory_item"]["id"],
@@ -1090,7 +1206,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         self.assertEqual(
             list_response.data["results"][0]["supplied_inventory_item"]["net_content"],
-            300,
+            "300.000000",
         )
 
     def test_list_supply_delivery_as_superuser_with_request_order_filter(self):
@@ -1113,7 +1229,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             SupplyDeliveryStatusOptions.completed.value,
         )
         self.assertEqual(
-            list_response.data["results"][0]["supplied_item_quantity"], 1500
+            list_response.data["results"][0]["supplied_item_quantity"], "1500.000000"
         )
 
     def test_list_supply_delivery_as_user_with_permissions_with_request_order_filter(
@@ -1142,7 +1258,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             SupplyDeliveryStatusOptions.completed.value,
         )
         self.assertEqual(
-            list_response.data["results"][0]["supplied_item_quantity"], 1500
+            list_response.data["results"][0]["supplied_item_quantity"], "1500.000000"
         )
 
     def test_list_supply_delivery_as_user_without_permissions_with_request_order_filter(
@@ -1306,7 +1422,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         data = self.create_supply_delivery_data(
             supplied_inventory_item=self.inventory_item_origin.external_id,
             order=self.delivery_order_internal.external_id,
-            supplied_item_quantity=200,
+            supplied_item_quantity=Decimal(200),
             supply_request=self.supply_request_internal.external_id,
         )
         response = self.client.post(self.base_url, data, format="json")
@@ -1455,7 +1571,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         )
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -1485,7 +1601,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.user)
         self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -1521,7 +1637,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -1558,7 +1674,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -1593,7 +1709,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -1630,7 +1746,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -1665,7 +1781,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -1701,7 +1817,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
@@ -1736,7 +1852,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
-            supplied_item_quantity=500,
+            supplied_item_quantity=Decimal(500),
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.in_progress.value,
             supplied_inventory_item=self.inventory_item_destination,
