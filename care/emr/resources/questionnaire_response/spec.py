@@ -11,7 +11,7 @@ from care.emr.resources.user.spec import UserSpec
 
 
 class QuestionnaireResponseStatusChoices(str, Enum):
-    submitted = "completed"
+    completed = "completed"
     entered_in_error = "entered_in_error"
 
 
@@ -45,8 +45,10 @@ class EMRQuestionnaireResponseBase(EMRResource):
     __model__ = QuestionnaireResponse
 
 
-class QuestionnaireResponseUpdate(EMRResource):
-    status: QuestionnaireResponseStatusChoices = "completed"
+class QuestionnaireResponseUpdate(EMRQuestionnaireResponseBase):
+    status: QuestionnaireResponseStatusChoices = (
+        QuestionnaireResponseStatusChoices.completed.value
+    )
 
 
 class QuestionnaireResponseReadSpec(EMRQuestionnaireResponseBase):
