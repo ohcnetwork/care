@@ -169,9 +169,6 @@ class UserviewTestCase(CareAPITestBase):
         response = self.client.post(self.url, {}, format="json")
         self.assertEqual(response.status_code, 400)
 
-    # Test cases for update user details
-    "Only super user and the user themselves can update user details"
-
     def test_update_user_as_super_user(self):
         self.client.force_authenticate(user=self.super_user)
         update_data = self.user_data.copy()

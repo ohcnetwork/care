@@ -35,6 +35,7 @@ class MedicationRequestPrescriptionFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     status = MultiSelectFilter(field_name="status")
     facility = filters.UUIDFilter(field_name="encounter__facility__external_id")
+    created_date = filters.DateTimeFromToRangeFilter()
 
 
 class MedicationRequestPrescriptionViewSet(
@@ -66,7 +67,9 @@ class MedicationRequestPrescriptionViewSet(
 
     def authorize_update(self, request_obj, model_instance):
         encounter_access = AuthorizationController.call(
-            "can_update_encounter_obj", self.request.user, model_instance.encounter
+            "can_update_encounter_clinical_data",
+            self.request.user,
+            model_instance.encounter,
         )
         if encounter_access:
             return
@@ -93,8 +96,21 @@ class MedicationRequestPrescriptionViewSet(
         else:
             super().perform_update(instance)
 
+    def authorize_retrieve(self, instance):
+        encounter_access = AuthorizationController.call(
+            "can_view_encounter_obj", self.request.user, instance.encounter
+        )
+        if encounter_access:
+            return
+        pharmacist_access = self.authorize_for_pharmacist_facility(
+            instance.encounter.facility
+        )
+        if not pharmacist_access:
+            raise PermissionDenied("Access Denied to prescription")
+
     def get_queryset(self):
-        self.authorize_read_for_medication()
+        if self.action == "list":
+            self.authorize_read_for_medication()
         return (
             super()
             .get_queryset()

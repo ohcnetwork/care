@@ -14,9 +14,7 @@ from care.emr.resources.service_request.spec import (
     ServiceRequestStatusChoices,
 )
 from care.emr.resources.specimen.spec import SpecimenStatusOptions
-from care.emr.resources.specimen_definition.spec import (
-    SpecimenDefinitionStatusOptions,
-)
+from care.emr.resources.specimen_definition.spec import SpecimenDefinitionStatusOptions
 from care.security.permissions.service_request import ServiceRequestPermissions
 from care.security.permissions.specimen import SpecimenPermissions
 from care.utils.tests.base import CareAPITestBase
@@ -380,7 +378,7 @@ class TestServiceRequestViewSet(CareAPITestBase):
             facility=self.facility,
             organization=self.facility_organization,
             current_location=self.facility_location,
-            status="completed",
+            status="entered_in_error",
         )
         data = self.service_request_data.copy()
         data["encounter"] = str(encounter.external_id)

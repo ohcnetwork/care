@@ -530,7 +530,7 @@ class TestAllergyIntoleranceViewSet(CareAPITestBase):
         permissions = [
             PatientPermissions.can_view_clinical_data.name,
             PatientPermissions.can_write_patient.name,
-            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -562,7 +562,7 @@ class TestAllergyIntoleranceViewSet(CareAPITestBase):
         permissions = [
             PatientPermissions.can_view_clinical_data.name,
             PatientPermissions.can_write_patient.name,
-            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -688,7 +688,7 @@ class TestAllergyIntoleranceViewSet(CareAPITestBase):
         permissions = [
             PatientPermissions.can_write_patient.name,
             PatientPermissions.can_view_clinical_data.name,
-            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)

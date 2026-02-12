@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from care.emr.models.base import SlugBaseModel
@@ -16,6 +17,8 @@ class ChargeItemDefinition(SlugBaseModel):
     description = models.TextField(null=True, blank=True)
     purpose = models.TextField(null=True, blank=True)
     price_components = models.JSONField(default=list)
+    tags = ArrayField(models.IntegerField(), default=list)
+    can_edit_charge_item = models.BooleanField(default=True)
     category = models.ForeignKey(
         "emr.ResourceCategory",
         on_delete=models.CASCADE,

@@ -1,11 +1,12 @@
-from decimal import Decimal
-
 from django.conf import settings
+from django.db.models.functions import Lower, Trim
 from pydantic import UUID4, BaseModel, field_validator, model_validator
+from pydantic_core.core_schema import ValidationInfo
+from pydantic_extra_types.coordinate import Latitude, Longitude
 
 from care.emr.models import Organization
 from care.emr.models.patient import PatientIdentifierConfigCache
-from care.emr.resources.base import EMRResource, cacheable
+from care.emr.resources.base import EMRResource, cacheable, model_from_cache
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.monetary_component import MonetaryComponentDefinition
 from care.emr.resources.invoice.default_expression_evaluator import (
@@ -13,7 +14,6 @@ from care.emr.resources.invoice.default_expression_evaluator import (
 )
 from care.emr.resources.organization.spec import OrganizationReadSpec
 from care.emr.resources.permissions import FacilityPermissionsMixin
-from care.emr.resources.user.spec import UserSpec
 from care.facility.models import (
     REVERSE_FACILITY_TYPES,
     REVERSE_REVERSE_FACILITY_TYPES,
@@ -31,8 +31,8 @@ class FacilityBareMinimumSpec(EMRResource):
 
 class FacilityBaseSpec(FacilityBareMinimumSpec):
     description: str
-    longitude: Decimal | None = None
-    latitude: Decimal | None = None
+    longitude: Longitude | None = None
+    latitude: Latitude | None = None
     pincode: int
     address: str
     phone_number: str
@@ -64,6 +64,30 @@ class FacilityCreateSpec(FacilityBaseSpec):
     geo_organization: UUID4
     features: list[int]
 
+    @field_validator("name")
+    @classmethod
+    def validate_name_uniqueness(cls, v, info: ValidationInfo):
+        if not v:
+            return v
+
+        normalized_name = v.strip().lower()
+        context = info.context or {}
+        is_update = context.get("is_update", False)
+        obj = context.get("object")
+
+        qs = Facility.objects.annotate(normalized_name=Lower(Trim("name"))).filter(
+            normalized_name=normalized_name
+        )
+
+        if is_update and obj:
+            qs = qs.exclude(id=obj.id)
+
+        if qs.exists():
+            err = "A facility with this name already exists"
+            raise ValueError(err)
+
+        return v
+
     def perform_extra_deserialization(self, is_update, obj):
         obj.geo_organization = Organization.objects.filter(
             external_id=self.geo_organization, org_type="govt"
@@ -81,10 +105,12 @@ class FacilityReadSpec(FacilityBaseSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.user.spec import UserSpec
+
         mapping["id"] = obj.external_id
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
+            mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
@@ -104,6 +130,12 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     # Identifiers
     patient_instance_identifier_configs: list[dict] = []
     patient_facility_identifier_configs: list[dict] = []
+
+    # Product
+    extensions_schema_product: dict = {}
+    extensions_schema_supply_delivery: dict = {}
+    extensions_schema_supply_delivery_order: dict = {}
+    extensions_schema_account: dict = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

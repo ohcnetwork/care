@@ -7,6 +7,8 @@ from django.conf import settings
 from django.utils import timezone
 from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import ExtensionValidator
 from care.emr.models import Organization
 from care.emr.models.patient import (
     Patient,
@@ -42,6 +44,7 @@ class GenderChoices(str, Enum):
 
 class PatientBaseSpec(EMRResource):
     __model__ = Patient
+    ___extension_resource_type__ = ExtensionResource.patient
     __exclude__ = [
         "geo_organization",
         "instance_identifiers",
@@ -97,7 +100,7 @@ class PatientIdentifierConfigRequest(BaseModel):
     value: str
 
 
-class PatientCreateSpec(PatientBaseSpec):
+class PatientCreateSpec(ExtensionValidator, PatientBaseSpec):
     name: str = Field(max_length=settings.PATIENT_NAME_MAX_LENGTH)
     geo_organization: UUID4
     date_of_birth: datetime.date | None = None
@@ -122,12 +125,12 @@ class PatientCreateSpec(PatientBaseSpec):
         instance_identifier_configs = PatientIdentifierConfigCache.get_instance_config()
         configs = {str(x.config): x for x in self.identifiers}
         for identifier_config in instance_identifier_configs:
-            if identifier_config["id"] in configs:
-                value = configs[identifier_config["id"]].value
+            if str(identifier_config["id"]) in configs:
+                value = configs[str(identifier_config["id"])].value
+                if identifier_config["config"]["required"] and not value:
+                    err = f"Identifier config {identifier_config['config']['system']} is required"
+                    raise ValueError(err)
                 validate_identifier_config(identifier_config, value)
-            elif identifier_config["config"]["required"]:
-                err = f"Identifier config {identifier_config['config']['system']} is required"
-                raise ValueError(err)
         return self
 
     def perform_extra_deserialization(self, is_update, obj):
@@ -146,7 +149,7 @@ class PatientCreateSpec(PatientBaseSpec):
             obj.pincode = None
 
 
-class PatientUpdateSpec(PatientBaseSpec):
+class PatientUpdateSpec(ExtensionValidator, PatientBaseSpec):
     name: str | None = Field(default=None, max_length=settings.PATIENT_NAME_MAX_LENGTH)
     gender: GenderChoices | None = None
     phone_number: PhoneNumber | None = Field(default=None, max_length=14)
@@ -193,14 +196,14 @@ class PatientUpdateSpec(PatientBaseSpec):
         instance_identifier_configs = PatientIdentifierConfigCache.get_instance_config()
         configs = {str(x.config): x for x in identifiers}
         for identifier_config in instance_identifier_configs:
-            if identifier_config["id"] in configs:
-                value = configs[identifier_config["id"]].value
+            if str(identifier_config["id"]) in configs:
+                value = configs[str(identifier_config["id"])].value
+                if identifier_config["config"]["required"] and not value:
+                    err = f"Identifier config {identifier_config['config']['system']} is required"
+                    raise ValueError(err)
                 validate_identifier_config(
                     identifier_config, value, info.context.get("object")
                 )
-            elif identifier_config["config"]["required"]:
-                err = f"Identifier config {identifier_config['config']['system']} is required"
-                raise ValueError(err)
         return identifiers
 
 
@@ -252,6 +255,8 @@ class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
 
     instance_identifiers: list[PatientIdentifierResponse] = []
     facility_identifiers: list[PatientIdentifierResponse] = []
+
+    extensions: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj, *args, **kwargs):

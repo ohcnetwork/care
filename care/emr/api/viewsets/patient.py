@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
 from django.utils import timezone
@@ -11,6 +12,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.locks.billing import PatientCreateLock
 from care.emr.models import Organization, PatientUser, TokenBooking
 from care.emr.models.patient import Patient, PatientIdentifier, PatientIdentifierConfig
 from care.emr.models.scheduling.token import Token
@@ -35,6 +37,7 @@ from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.users.models import User
+from care.utils.lock import ObjectLocked
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -94,6 +97,8 @@ class PatientViewSet(EMRModelViewSet):
             .select_related("created_by", "updated_by", "geo_organization")
         )
         if self.action != "list":
+            if settings.PATIENT_GLOBAL_EDIT_ACCESS_ENABLED:
+                return qs.filter(external_id=self.kwargs.get("external_id"))
             patient = get_object_or_404(
                 Patient, external_id=self.kwargs.get("external_id")
             )
@@ -114,33 +119,38 @@ class PatientViewSet(EMRModelViewSet):
 
     def perform_create(self, instance):
         identifiers = instance._identifiers  # noqa: SLF001
-        # TODO : Lock to one patient create at a time
-        with transaction.atomic():
-            super().perform_create(instance)
-            for identifier in identifiers:
-                config = get_object_or_404(
-                    PatientIdentifierConfig,
-                    external_id=identifier.config,
-                    facility__isnull=True,
-                )
-                if config.config.get("auto_maintained"):
-                    continue
-                PatientIdentifier.objects.create(
-                    patient=instance,
-                    config=config,
-                    value=identifier.value,
-                )
-            evaluate_patient_instance_default_values(instance)
+        try:
+            with transaction.atomic():
+                with PatientCreateLock():
+                    super().perform_create(instance)
+                    for identifier in identifiers:
+                        config = get_object_or_404(
+                            PatientIdentifierConfig,
+                            external_id=identifier.config,
+                            facility__isnull=True,
+                        )
+                        if config.config.get("auto_maintained"):
+                            continue
+                        PatientIdentifier.objects.create(
+                            patient=instance,
+                            config=config,
+                            value=identifier.value,
+                        )
+                    evaluate_patient_instance_default_values(instance)
 
-            instance.build_instance_identifiers()
-            instance.save()
-            tag_manager = PatientInstanceTagManager()
-            tag_manager.set_tags(
-                TagResource.patient,
-                instance,
-                instance._tags,  # noqa: SLF001
-                self.request.user,
-            )
+                    instance.build_instance_identifiers()
+                    instance.save()
+                tag_manager = PatientInstanceTagManager()
+                tag_manager.set_tags(
+                    TagResource.patient,
+                    instance,
+                    instance._tags,  # noqa: SLF001
+                    self.request.user,
+                )
+        except ObjectLocked as e:
+            raise ValidationError(
+                "Patient creation failed, try again after a while"
+            ) from e
 
     def perform_update(self, instance):
         identifiers = instance._identifiers  # noqa: SLF001
@@ -265,7 +275,12 @@ class PatientViewSet(EMRModelViewSet):
         queryset = queryset.filter(year_of_birth=request_data.year_of_birth)
         for patient in queryset:
             if str(patient.external_id)[:5] == request_data.partial_id:
-                return Response(PatientRetrieveSpec.serialize(patient).to_json())
+                context = self.get_serializer_retrieve_context()
+                return Response(
+                    PatientRetrieveSpec.serialize(
+                        patient, self.request.user, **context
+                    ).to_json()
+                )
         raise PermissionDenied("No valid patients found")
 
     @action(detail=True, methods=["GET"])
@@ -484,7 +499,9 @@ class PatientViewSet(EMRModelViewSet):
         return self.get_serializer_list_context()
 
     def get_serializer_list_context(self):
-        facility = self.request.GET.get("facility", None)
+        facility = getattr(self.request, "data", {}).get("facility") or getattr(
+            self.request, "GET", {}
+        ).get("facility")
         if facility:
             facility = get_object_or_404(Facility, external_id=facility)
             if not AuthorizationController.call(

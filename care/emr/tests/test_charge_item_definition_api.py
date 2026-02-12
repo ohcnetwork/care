@@ -53,6 +53,7 @@ class TestChargeItemDefinitionViewSet(CareAPITestBase):
             "slug_value": self.fake.slug(),
             "description": self.fake.text(),
             "purpose": self.fake.text(),
+            "can_edit_charge_item": True,
             "price_components": [
                 {
                     "monetary_component_type": "base",
@@ -76,6 +77,7 @@ class TestChargeItemDefinitionViewSet(CareAPITestBase):
             "title": self.fake.sentence(nb_words=4),
             "slug": f"f-{self.facility.external_id}-{self.fake.slug()}",
             "description": self.fake.text(),
+            "can_edit_charge_item": True,
         }
         data.update(**kwargs)
         return ChargeItemDefinition.objects.create(**data)
@@ -450,6 +452,7 @@ class TestChargeItemDefinitionSpecValidation(CareAPITestBase):
             "title": "Test Definition",
             "slug_value": "test-def",
             "price_components": [self.get_valid_monetary_component()],
+            "can_edit_charge_item": True,
         }
         spec = ChargeItemDefinitionWriteSpec(**valid_data)
         self.assertEqual(spec.title, "Test Definition")
@@ -519,6 +522,7 @@ class TestChargeItemDefinitionSpecValidation(CareAPITestBase):
                 "title": f"Test Definition {status_option.value}",
                 "slug_value": f"test-def-{status_option.value}",
                 "price_components": [],
+                "can_edit_charge_item": True,
             }
             spec = ChargeItemDefinitionWriteSpec(**spec_data)
             self.assertEqual(spec.status, status_option.value)
@@ -583,6 +587,7 @@ class TestChargeItemDefinitionMissingCoverage(CareAPITestBase):
             "slug_value": self.fake.slug(),
             "description": self.fake.text(),
             "purpose": self.fake.text(),
+            "can_edit_charge_item": True,
             "price_components": [
                 {
                     "monetary_component_type": "base",
@@ -606,6 +611,7 @@ class TestChargeItemDefinitionMissingCoverage(CareAPITestBase):
             "title": self.fake.sentence(nb_words=4),
             "slug": f"f-{self.facility.external_id}-{self.fake.slug()}",
             "description": self.fake.text(),
+            "can_edit_charge_item": True,
         }
         data.update(**kwargs)
         return ChargeItemDefinition.objects.create(**data)

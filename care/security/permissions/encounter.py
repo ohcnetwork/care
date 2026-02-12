@@ -25,14 +25,13 @@ CLINICAL_DATA_ACCESS_ROLES = [
     ADMIN_ROLE,
     DOCTOR_ROLE,
     NURSE_ROLE,
-    STAFF_ROLE,
     FACILITY_ADMIN_ROLE,
 ]
 
 
 class EncounterPermissions(enum.Enum):
     can_create_encounter = Permission(
-        "Can write encounter",
+        "Can Create encounter",
         "",
         PermissionContext.ENCOUNTER,
         CLINICAL_DATA_ACCESS_ROLES,
@@ -44,13 +43,25 @@ class EncounterPermissions(enum.Enum):
         CLINICAL_DATA_ACCESS_ROLES,
     )
     can_write_encounter = Permission(
-        "Update Encounter and Create all associated datapoints",
+        "Update Encounter non clinical",
+        "",
+        PermissionContext.ENCOUNTER,
+        CLINICAL_DATA_ACCESS_ROLES,
+    )
+    can_write_encounter_clinical_data = Permission(
+        "Update Encounter related clinical data",
         "",
         PermissionContext.ENCOUNTER,
         CLINICAL_DATA_ACCESS_ROLES,
     )
     can_read_encounter = Permission(
-        "Can Read encounter and related data",
+        "Can Read encounter",
+        "",
+        PermissionContext.ENCOUNTER,
+        CLINICAL_DATA_ACCESS_ROLES,
+    )
+    can_read_encounter_clinical_data = Permission(
+        "Can Read encounter related clinical data",
         "",
         PermissionContext.ENCOUNTER,
         CLINICAL_DATA_ACCESS_ROLES,

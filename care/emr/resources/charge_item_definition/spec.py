@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 
 from pydantic import UUID4, field_validator
@@ -7,6 +8,7 @@ from care.emr.models.resource_category import ResourceCategory
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.monetary_component import MonetaryComponent
 from care.emr.resources.resource_category.spec import ResourceCategoryReadSpec
+from care.emr.tagging.base import SingleFacilityTagManager
 from care.emr.utils.slug_type import ExtendedSlugType, SlugType
 
 
@@ -29,6 +31,7 @@ class ChargeItemDefinitionSpec(EMRResource):
     description: str | None = None
     purpose: str | None = None
     price_components: list[MonetaryComponent]
+    can_edit_charge_item: bool
 
 
 class ChargeItemDefinitionWriteSpec(ChargeItemDefinitionSpec):
@@ -62,7 +65,12 @@ class ChargeItemDefinitionReadSpec(ChargeItemDefinitionSpec):
     version: int | None = None
     category: dict | None = None
     slug_config: dict
+    tags: list[dict] = []
     slug: str
+    created_by: dict | None = None
+    updated_by: dict | None = None
+    updated_date: datetime | None = None
+    created_date: datetime | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -72,3 +80,6 @@ class ChargeItemDefinitionReadSpec(ChargeItemDefinitionSpec):
                 obj.category
             ).to_json()
         mapping["slug_config"] = obj.parse_slug(obj.slug)
+        mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+
+        cls.serialize_audit_users(mapping, obj)
