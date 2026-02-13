@@ -183,7 +183,9 @@ class ResetPasswordRequestToken(GenericAPIView):
                 send_password_reset_email(user, mail_type)
             except Exception:
                 return Response(
-                    "Failed to send password reset email. Please try again.",
+                    {
+                        "detail": "Failed to send password reset email. Please try again."
+                    },
                     status=status.HTTP_503_SERVICE_UNAVAILABLE,
                 )
 
