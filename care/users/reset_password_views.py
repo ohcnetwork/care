@@ -182,12 +182,9 @@ class ResetPasswordRequestToken(GenericAPIView):
             try:
                 send_password_reset_email(user, mail_type)
             except Exception:
-                return Response(
-                    {
-                        "detail": "Failed to send password reset email. Please try again."
-                    },
-                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
-                )
+                error_message = "Failed to send password reset email. Please try again."
+                response = ResetPasswordResponse(detail=error_message).model_dump()
+                return Response(response, status=status.HTTP_503_SERVICE_UNAVAILABLE)
 
         if not active_user_found and not getattr(
             settings, "DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE", False
