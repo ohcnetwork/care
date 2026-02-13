@@ -48,6 +48,7 @@ class ChargeItemDefinitionFilters(filters.FilterSet):
     title = TrigramFilter()
     category = DummyCharFilter()
     include_children = DummyBooleanFilter()
+    can_edit_charge_item = filters.BooleanFilter()
 
 
 class ChargeItemDefinitionViewSet(

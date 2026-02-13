@@ -9,6 +9,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.favorites import EMRFavoritesMixin
 from care.emr.models.device import Device
 from care.emr.models.encounter import EncounterOrganization
 from care.emr.models.location import FacilityLocationOrganization
@@ -23,6 +24,8 @@ from care.emr.resources.facility_organization.spec import (
     FacilityOrganizationRetrieveSpec,
     FacilityOrganizationWriteSpec,
 )
+from care.emr.resources.favorites.filters import FavoritesFilter
+from care.emr.resources.favorites.spec import FavoriteResourceChoices
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
@@ -40,13 +43,14 @@ class FacilityOrganizationFilter(filters.FilterSet):
     containing_user = DummyUUIDFilter()
 
 
-class FacilityOrganizationViewSet(EMRModelViewSet):
+class FacilityOrganizationViewSet(EMRModelViewSet, EMRFavoritesMixin):
     database_model = FacilityOrganization
     pydantic_model = FacilityOrganizationWriteSpec
     pydantic_read_model = FacilityOrganizationReadSpec
     pydantic_retrieve_model = FacilityOrganizationRetrieveSpec
     filterset_class = FacilityOrganizationFilter
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, FavoritesFilter]
+    FAVORITE_RESOURCE = FavoriteResourceChoices.facility_organization.value
 
     def get_organization_obj(self):
         return get_object_or_404(

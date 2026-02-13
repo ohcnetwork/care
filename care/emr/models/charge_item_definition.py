@@ -18,6 +18,7 @@ class ChargeItemDefinition(SlugBaseModel):
     purpose = models.TextField(null=True, blank=True)
     price_components = models.JSONField(default=list)
     tags = ArrayField(models.IntegerField(), default=list)
+    can_edit_charge_item = models.BooleanField(default=True)
     category = models.ForeignKey(
         "emr.ResourceCategory",
         on_delete=models.CASCADE,

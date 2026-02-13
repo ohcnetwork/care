@@ -282,6 +282,10 @@ INVOICE_FINAL_AMOUNT_ROUNDING_METHOD = env(
     "INVOICE_FINAL_AMOUNT_ROUNDING_METHOD", default="care.utils.rounding.RoundingHalfUp"
 )
 
+PATIENT_GLOBAL_EDIT_ACCESS_ENABLED = env.bool(
+    "PATIENT_GLOBAL_EDIT_ACCESS_ENABLED", default=False
+)
+
 PREFERENCE_SCHEMA = env.json(
     "PREFERENCE_SCHEMA",
     default={
@@ -314,4 +318,8 @@ PREFERENCE_SCHEMA = env.json(
             },
         }
     },
+)
+
+QUESTIONNAIRE_ERRORED_TIME_LIMIT_MINUTES = env.int(
+    "QUESTIONNAIRE_ERRORED_TIME_LIMIT_MINUTES", default=120
 )
