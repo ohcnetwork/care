@@ -179,7 +179,13 @@ class ResetPasswordRequestToken(GenericAPIView):
         if user and user.is_active:
             active_user_found = True
             mail_type = MailTypeChoices.reset.value
-            send_password_reset_email(user, mail_type)
+            try:
+                send_password_reset_email(user, mail_type)
+            except Exception:
+                return Response(
+                    "Failed to send password reset email. Please try again.",
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                )
 
         if not active_user_found and not getattr(
             settings, "DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE", False
