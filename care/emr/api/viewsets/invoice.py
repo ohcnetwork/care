@@ -19,7 +19,6 @@ from care.emr.api.viewsets.base import (
 )
 from care.emr.locks.billing import (
     AccountLock,
-    ChargeItemsLock,
     InvoiceCreateLock,
     InvoiceLock,
 )
@@ -134,7 +133,7 @@ class InvoiceViewSet(
     def perform_create(self, instance):
         instance.status = InvoiceStatusOptions.draft.value
         instance.facility = self.get_facility_obj()
-        with transaction.atomic() , AccountLock(instance.account):
+        with transaction.atomic(), AccountLock(instance.account):
             charge_items = ChargeItem.objects.filter(
                 account=instance.account,
                 status=ChargeItemStatusOptions.billable.value,
@@ -157,7 +156,7 @@ class InvoiceViewSet(
             )
             sync_invoice_items(instance)
             instance.save()
-            rebalance_account_task(instance.account.id)
+        rebalance_account_task(instance.account.id)
 
         return instance
 
@@ -254,6 +253,7 @@ class InvoiceViewSet(
                     status=ChargeItemStatusOptions.billed.value,
                     paid_invoice=invoice,
                 )
+        rebalance_account_task(invoice.account.id)
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
 
     @extend_schema(
@@ -283,7 +283,7 @@ class InvoiceViewSet(
                     charge_item.save()
             except ValueError as e:
                 raise ValidationError("Charge item not found in invoice") from e
-
+        rebalance_account_task(invoice.account.id)
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
 
     @action(methods=["POST"], detail=True)
@@ -304,6 +304,7 @@ class InvoiceViewSet(
                 charge_items.update(
                     status=ChargeItemStatusOptions.billed.value, paid_invoice=invoice
                 )
+        rebalance_account_task(invoice.account.id)
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
 
     @action(methods=["POST"], detail=True)
