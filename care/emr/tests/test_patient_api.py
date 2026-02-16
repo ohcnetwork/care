@@ -206,7 +206,60 @@ class TestPatientViewSet(CareAPITestBase):
         self.assertEqual(error["type"], "validation_error")
         self.assertIn("Date of birth cannot be after the date of death", error["msg"])
 
-    def test_invalid_age_and_death_date(self):
+    def test_create_patient_with_future_deceased_datetime(self):
+        user = self.create_user()
+        geo_organization = self.create_organization(org_type="govt")
+        role = self.create_role_with_permissions(
+            permissions=[PatientPermissions.can_create_patient.name]
+        )
+        self.attach_role_organization_user(geo_organization, user, role)
+        self.client.force_authenticate(user=user)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            deceased_datetime=care_now() + datetime.timedelta(days=10),
+        )
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, 400)
+
+    def test_delete_patient_as_superuser(self):
+        superuser = self.create_super_user()
+        geo_organization = self.create_organization(org_type="govt")
+        role = self.create_role_with_permissions(
+            permissions=[PatientPermissions.can_create_patient.name]
+        )
+        self.attach_role_organization_user(geo_organization, superuser, role)
+        self.client.force_authenticate(user=superuser)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id
+        )
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+        delete_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        response = self.client.delete(delete_url)
+        self.assertIn(response.status_code, [204, 200])
+
+    def test_delete_patient_as_non_superuser(self):
+        user = self.create_user()
+        geo_organization = self.create_organization(org_type="govt")
+        role = self.create_role_with_permissions(
+            permissions=[
+                PatientPermissions.can_create_patient.name,
+                PatientPermissions.can_write_patient.name,
+                PatientPermissions.can_list_patients.name,
+            ]
+        )
+        self.attach_role_organization_user(geo_organization, user, role)
+        self.client.force_authenticate(user=user)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id
+        )
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+        delete_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        response = self.client.delete(delete_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
         user = self.create_user()
         geo_organization = self.create_organization(org_type="govt")
         role = self.create_role_with_permissions(
