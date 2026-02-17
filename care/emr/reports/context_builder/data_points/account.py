@@ -5,7 +5,7 @@ from care.emr.reports.context_builder.data_points.base import (
     SingleObjectContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.charge_items import (
-    AccountChargeItemCategoryContextBuilder,
+    AccountChargeItemCategorySummaryContextBuilder,
     AccountChargeItemContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.encounter import (
@@ -104,10 +104,10 @@ class BaseAccountContextBuilder(SingleObjectContextBuilder):
         target_context=AccountChargeItemContextBuilder,
         description="Chargeable items associated with the account",
     )
-    category_charge_items = Field(
-        display="Category-wise Charge Items",
+    category_charge_items_summary = Field(
+        display="Charge Items Category Summary",
         preview_value="",
-        target_context=AccountChargeItemCategoryContextBuilder,
+        target_context=AccountChargeItemCategorySummaryContextBuilder,
         description="Charge items categorized by their types for the account",
     )
     payment_reconciliations = Field(
