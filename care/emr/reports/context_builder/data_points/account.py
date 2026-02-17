@@ -8,6 +8,9 @@ from care.emr.reports.context_builder.data_points.charge_items import (
     AccountChargeItemCategoryContextBuilder,
     AccountChargeItemContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.encounter import (
+    MinimumEncounterReportContext,
+)
 from care.emr.reports.context_builder.data_points.facility import FacilityContextBuilder
 from care.emr.reports.context_builder.data_points.invoice import (
     AccountInvoiceContextBuilder,
@@ -122,6 +125,12 @@ class BaseAccountContextBuilder(SingleObjectContextBuilder):
         display="Account Calculated At",
         preview_value="2023-01-20T15:45:00Z",
         description="Date when the account totals were last calculated",
+    )
+    primary_encounter = Field(
+        display="Primary Encounter",
+        preview_value="",
+        target_context=MinimumEncounterReportContext,
+        description="Primary encounter associated with the account",
     )
 
 
