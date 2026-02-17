@@ -1,10 +1,22 @@
+from decimal import Decimal
+
 from django.urls import reverse
 from model_bakery import baker
 
 from care.emr.models import FacilityLocation, FacilityLocationOrganization
+from care.emr.models.medication_dispense import MedicationDispense
+from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
 from care.emr.resources.inventory.supply_delivery.delivery_order import (
     SupplyDeliveryOrderStatusOptions,
 )
+from care.emr.resources.inventory.supply_delivery.spec import (
+    SupplyDeliveryStatusOptions,
+)
+from care.emr.resources.invoice.spec import InvoiceStatusOptions
+from care.emr.resources.medication.dispense.spec import MedicationDispenseStatus
+from care.emr.tests.test_supply_delivery import TestSupplyDeliveryViewSetBase
+from care.security.permissions.charge_item import ChargeItemPermissions
+from care.security.permissions.invoice import InvoicePermissions
 from care.security.permissions.supply_delivery import SupplyDeliveryPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -373,6 +385,58 @@ class DeliveryOrderAPITest(CareAPITestBase):
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot write delivery orders", response.data["detail"])
+
+    def test_update_delivery_order_with_status_abandoned(self):
+        """
+        Test updating a delivery order status to abandoned
+        """
+        delivery_order = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+            status=SupplyDeliveryOrderStatusOptions.abandoned.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        data = self.generate_delivery_order_data(
+            status=SupplyDeliveryOrderStatusOptions.completed.value,
+            supplier=self.supplier.external_id,
+            destination=self.destination.external_id,
+        )
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Delivery order already abandoned or entered in error",
+            response.data["errors"][0]["msg"],
+        )
+
+    def test_update_delivery_order_with_status_entered_in_error(self):
+        """
+        Test updating a delivery order status to entered in error
+        """
+        delivery_order = self.create_delivery_order(
+            supplier=self.supplier,
+            destination=self.destination,
+            status=SupplyDeliveryOrderStatusOptions.entered_in_error.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        url = self.generate_detail_url(
+            delivery_order.external_id,
+            self.facility.external_id,
+        )
+        data = self.generate_delivery_order_data(
+            status=SupplyDeliveryOrderStatusOptions.completed.value,
+            supplier=self.supplier.external_id,
+            destination=self.destination.external_id,
+        )
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Delivery order already abandoned or entered in error",
+            response.data["errors"][0]["msg"],
+        )
 
     # Testcases for retrieve delivery order
 
@@ -885,4 +949,343 @@ class DeliveryOrderAPITest(CareAPITestBase):
         self.assertIn(
             str(delivery_order1.external_id),
             [order["id"] for order in response.data["results"]],
+        )
+
+
+class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
+    def setUp(self):
+        super().setUp()
+        """
+        Setup for medication return delivery order test case
+        Inherit setup from TestSupplyDeliveryViewSetBase
+        Inventory item and product setup for destination with quantity 1500
+        Medication dispense of quantity 50 created for the patient from destination inventory item
+
+
+        Needs to check automatic generation of return invoice and charge item related to that account
+        when the delivery order status is updated to completed and cancellation of return invoice when delivery order is abandoned or entered in error
+
+        """
+        self.return_order_destination = self.create_delivery_order(
+            destination=self.destination,
+            patient=self.patient,
+            status=SupplyDeliveryOrderStatusOptions.draft.value,
+            name=f"{self.patient.name}-Return Delivery Order",
+        )
+        self.return_delivery_order_data = {
+            "name": self.return_order_destination.name,
+            "destination": self.return_order_destination.destination.external_id,
+            "status": self.return_order_destination.status,
+        }
+        self.encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        self.return_medication = self.create_medication_dispense(
+            quantity=50,
+            inventory_item=self.inventory_item_destination,
+        )
+        self.return_delivery_order_destination = self.create_supply_delivery(
+            order=self.return_order_destination,
+            supplied_item_quantity=Decimal(50),
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.completed.value,
+            supplied_inventory_item=self.inventory_item_destination,
+        )
+        self.role = self.create_role_with_permissions(
+            permissions=[
+                SupplyDeliveryPermissions.can_write_supply_delivery.name,
+                InvoicePermissions.can_read_invoice.name,
+                InvoicePermissions.can_write_invoice.name,
+                ChargeItemPermissions.can_read_charge_item.name,
+            ]
+        )
+
+    def create_medication_dispense(self, quantity, inventory_item, **kwargs):
+        return baker.make(
+            MedicationDispense,
+            item=inventory_item,
+            quantity=quantity,
+            status=MedicationDispenseStatus.completed.value,
+            encounter=self.encounter,
+            patient=self.patient,
+            location=self.destination,
+            **kwargs,
+        )
+
+    def generate_order_detail_url(self, external_id, facility_external_id):
+        return reverse(
+            "delivery-order-detail",
+            kwargs={
+                "external_id": external_id,
+                "facility_external_id": facility_external_id,
+            },
+        )
+
+    def generate_invoice_detail_url(self, external_id, facility_external_id):
+        return reverse(
+            "invoice-detail",
+            kwargs={
+                "external_id": external_id,
+                "facility_external_id": facility_external_id,
+            },
+        )
+
+    def test_medication_return_delivery_order_as_superuser(self):
+        """
+        Test creating a medication return delivery order as superuser
+        Verify that return invoice is generated when delivery order status is updated to completed,
+        Check the inventory item restored with the return net content
+
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.return_delivery_order_data["status"] = (
+            SupplyDeliveryOrderStatusOptions.completed.value
+        )
+        response = self.client.put(
+            self.generate_order_detail_url(
+                self.return_order_destination.external_id, self.facility.external_id
+            ),
+            self.return_delivery_order_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.inventory_item_destination.refresh_from_db()
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
+
+        get_invoice = self.client.get(
+            self.generate_invoice_detail_url(
+                external_id=response.data["patient_invoice_id"],
+                facility_external_id=self.facility.external_id,
+            )
+        )
+        self.assertEqual(get_invoice.status_code, 200)
+        self.assertTrue(get_invoice.data["is_refund"])
+        self.assertEqual(get_invoice.data["total_net"], "-5000.000000")
+        self.assertEqual(
+            get_invoice.data["charge_items"][0]["total_price"], "-5000.000000"
+        )
+
+    def test_medication_return_delivery_order_cancellation_as_superuser(self):
+        """
+        Test cancelling a medication return delivery order as superuser
+        Verify that return invoice is cancelled when delivery order status is updated to abandoned or entered in error,
+        Check the inventory item net content after cancellation remains the same
+        Supply Delivery need to be updated to entered in error before updating delivery order status to abandoned
+        as the inventory item is recalculated based on the supply delivery status.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.return_delivery_order_data["status"] = (
+            SupplyDeliveryOrderStatusOptions.completed.value
+        )
+        response = self.client.put(
+            self.generate_order_detail_url(
+                self.return_order_destination.external_id, self.facility.external_id
+            ),
+            self.return_delivery_order_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        invoice_id = response.data["patient_invoice_id"]
+        self.return_delivery_order_destination.status = (
+            SupplyDeliveryStatusOptions.entered_in_error.value
+        )
+        self.return_delivery_order_destination.save(update_fields=["status"])
+        self.return_delivery_order_data["status"] = (
+            SupplyDeliveryOrderStatusOptions.abandoned.value
+        )
+        cancel_response = self.client.put(
+            self.generate_order_detail_url(
+                self.return_order_destination.external_id, self.facility.external_id
+            ),
+            self.return_delivery_order_data,
+            format="json",
+        )
+        self.assertEqual(cancel_response.status_code, 200)
+        get_invoice = self.client.get(
+            self.generate_invoice_detail_url(
+                external_id=invoice_id,
+                facility_external_id=self.facility.external_id,
+            )
+        )
+        self.assertEqual(get_invoice.status_code, 200)
+        self.assertEqual(
+            get_invoice.data["status"], InvoiceStatusOptions.cancelled.value
+        )
+        self.charge_item_id = get_invoice.data["charge_items"][0]["id"]
+        get_charge_item = self.client.get(
+            reverse(
+                "charge_item-detail",
+                kwargs={
+                    "external_id": self.charge_item_id,
+                    "facility_external_id": self.facility.external_id,
+                },
+            )
+        )
+        self.assertEqual(get_charge_item.status_code, 200)
+        self.assertEqual(
+            get_charge_item.data["status"],
+            ChargeItemStatusOptions.entered_in_error.value,
+        )
+        self.assertEqual(get_charge_item.data["paid_invoice"], None)
+        self.assertEqual(get_charge_item.data["paid_on"], None)
+        self.inventory_item_destination.refresh_from_db()
+        self.assertEqual(self.inventory_item_destination.net_content, (Decimal(1450)))
+
+    def test_medication_return_delivery_order_as_user_without_permission(self):
+        """
+        Test creating a medication return delivery order as a user without permission
+        Verify that user cannot update the delivery order status to completed and return invoice is not generated
+        """
+        self.client.force_authenticate(user=self.user)
+        self.return_delivery_order_data["status"] = (
+            SupplyDeliveryOrderStatusOptions.completed.value
+        )
+        response = self.client.put(
+            self.generate_order_detail_url(
+                self.return_order_destination.external_id, self.facility.external_id
+            ),
+            self.return_delivery_order_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot write delivery orders", response.data["detail"])
+
+    def test_medication_return_delivery_order_as_user_with_permission(self):
+        """
+        Test returning a medication return delivery order as user with permission
+
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=self.role,
+            facility_organization=self.facility_organization,
+            user=self.user,
+        )
+        self.return_delivery_order_data["status"] = (
+            SupplyDeliveryOrderStatusOptions.completed.value
+        )
+        response = self.client.put(
+            self.generate_order_detail_url(
+                self.return_order_destination.external_id, self.facility.external_id
+            ),
+            self.return_delivery_order_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.inventory_item_destination.refresh_from_db()
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
+        get_invoice = self.client.get(
+            self.generate_invoice_detail_url(
+                external_id=response.data["patient_invoice_id"],
+                facility_external_id=self.facility.external_id,
+            )
+        )
+        self.assertEqual(get_invoice.status_code, 200)
+        self.assertTrue(get_invoice.data["is_refund"])
+        self.assertEqual(get_invoice.data["total_net"], "-5000.000000")
+        self.assertEqual(
+            get_invoice.data["charge_items"][0]["total_price"], "-5000.000000"
+        )
+
+    def test_medication_return_delivery_order_cancellation_as_user_with_permission(
+        self,
+    ):
+        """
+        Test cancelling a medication return delivery order as user with permission
+        Verify that return invoice is cancelled when delivery order status is updated to abandoned or entered in error,
+        Check the inventory item net content after cancellation remains the same
+        Supply Delivery need to be updated to entered in error before updating delivery order status to abandoned
+        as the inventory item is recalculated based on the supply delivery status.
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=self.role,
+            facility_organization=self.facility_organization,
+            user=self.user,
+        )
+        self.return_delivery_order_data["status"] = (
+            SupplyDeliveryOrderStatusOptions.completed.value
+        )
+        response = self.client.put(
+            self.generate_order_detail_url(
+                self.return_order_destination.external_id, self.facility.external_id
+            ),
+            self.return_delivery_order_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        invoice_id = response.data["patient_invoice_id"]
+        self.return_delivery_order_destination.status = (
+            SupplyDeliveryStatusOptions.entered_in_error.value
+        )
+        self.return_delivery_order_destination.save(update_fields=["status"])
+        self.return_delivery_order_data["status"] = (
+            SupplyDeliveryOrderStatusOptions.abandoned.value
+        )
+        cancel_response = self.client.put(
+            self.generate_order_detail_url(
+                self.return_order_destination.external_id, self.facility.external_id
+            ),
+            self.return_delivery_order_data,
+            format="json",
+        )
+        self.assertEqual(cancel_response.status_code, 200)
+        get_invoice = self.client.get(
+            self.generate_invoice_detail_url(
+                external_id=invoice_id,
+                facility_external_id=self.facility.external_id,
+            )
+        )
+        self.assertEqual(get_invoice.status_code, 200)
+        self.assertEqual(
+            get_invoice.data["status"], InvoiceStatusOptions.cancelled.value
+        )
+        self.charge_item_id = get_invoice.data["charge_items"][0]["id"]
+        get_charge_item = self.client.get(
+            reverse(
+                "charge_item-detail",
+                kwargs={
+                    "external_id": self.charge_item_id,
+                    "facility_external_id": self.facility.external_id,
+                },
+            )
+        )
+        self.assertEqual(get_charge_item.status_code, 200)
+        self.assertEqual(
+            get_charge_item.data["status"],
+            ChargeItemStatusOptions.entered_in_error.value,
+        )
+        self.assertEqual(get_charge_item.data["paid_invoice"], None)
+        self.assertEqual(get_charge_item.data["paid_on"], None)
+        self.inventory_item_destination.refresh_from_db()
+        self.assertEqual(self.inventory_item_destination.net_content, (Decimal(1450)))
+
+    def test_create_medication_return_delivery_order_with_inprogress_supply_delivery(
+        self,
+    ):
+        """
+        Test creating a medication return delivery order with in-progress supply delivery
+        Verify that delivery order cannot be marked as completed and return invoice is not generated until the supply delivery is completed
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.return_delivery_order_destination.status = (
+            SupplyDeliveryStatusOptions.in_progress.value
+        )
+        self.return_delivery_order_destination.save(update_fields=["status"])
+        self.return_delivery_order_data["status"] = (
+            SupplyDeliveryOrderStatusOptions.completed.value
+        )
+        response = self.client.put(
+            self.generate_order_detail_url(
+                self.return_order_destination.external_id, self.facility.external_id
+            ),
+            self.return_delivery_order_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Finalise Deliveries before completing order",
+            response.data["errors"][0]["msg"],
         )

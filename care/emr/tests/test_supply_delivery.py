@@ -20,7 +20,7 @@ from care.security.permissions.supply_delivery import SupplyDeliveryPermissions
 from care.utils.tests.base import CareAPITestBase
 
 
-class TestSupplyDeliveryViewSet(CareAPITestBase):
+class TestSupplyDeliveryViewSetBase(CareAPITestBase):
     def setUp(self):
         super().setUp()
         self.user = self.create_user(username="testuser")
@@ -40,6 +40,13 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             ChargeItemDefinition,
             facility=self.facility,
             slug=f"f-{self.facility.external_id}-charge-item-definition",
+            price_components=[
+                {
+                    "amount": str(Decimal(100)),
+                    "monetary_component_type": "base",
+                    "factor": None,
+                }
+            ],
         )
         self.product = self.create_product(facility=self.facility)
 
@@ -200,6 +207,11 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
         return supply_delivery
 
     # Testcases for create supply delivery
+
+
+class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
+    def setUp(self):
+        super().setUp()
 
     def test_create_supply_delivery_internally_as_superuser(self):
         """
