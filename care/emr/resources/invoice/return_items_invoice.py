@@ -101,9 +101,11 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
             paid_invoice=None,
             paid_on=None,
         )
-        sync_inventory_item(
-            location=delivery_order.destination,
-            product=SupplyDelivery.objects.get(order=delivery_order).supplied_item,
-        )
+        supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
+        for supply_delivery in supply_deliveries:
+            sync_inventory_item(
+                location=delivery_order.destination,
+                product=supply_delivery.supplied_item,
+            )
 
     rebalance_account_task(delivery_order.patient_invoice.account.id)
