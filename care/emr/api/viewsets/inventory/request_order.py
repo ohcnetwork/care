@@ -30,7 +30,7 @@ from care.utils.filters.null_filter import NullFilter
 
 class RequestOrderFilters(filters.FilterSet):
     status = MultiSelectFilter(field_name="status")
-    date = filters.DateFilter(field_name="created_date")
+    date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     priority = filters.CharFilter(lookup_expr="iexact")
     supplier = filters.UUIDFilter(field_name="supplier__external_id")
     intent = filters.CharFilter(lookup_expr="iexact")
