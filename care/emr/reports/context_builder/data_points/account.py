@@ -43,6 +43,11 @@ BILLING_STATUS_DISPLAY = {
 
 
 class BaseAccountContextBuilder(SingleObjectContextBuilder):
+    external_id = Field(
+        display="Account External ID",
+        preview_value="beff3ce1-e1be-41bc-8fb9-07ce2ebe42a6",
+        description="Unique identifier for the account",
+    )
     name = Field(
         display="Account Title",
         preview_value="General Checkup Account",
@@ -73,18 +78,23 @@ class BaseAccountContextBuilder(SingleObjectContextBuilder):
     )
     total_gross = Field(
         display="Total Gross Amount",
-        preview_value="180.00",
+        preview_value="180.000000",
         description="Total gross amount for the account",
     )
     total_paid = Field(
         display="Total Paid Amount",
-        preview_value="100.00",
+        preview_value="100.000000",
         description="Total amount paid towards the account",
     )
     total_balance = Field(
         display="Total Balance Amount",
-        preview_value="80.00",
+        preview_value="80.000000",
         description="Total balance amount remaining for the account",
+    )
+    total_billable_charge_items = Field(
+        display="Total Billable Charge Items",
+        preview_value="1455.000000",
+        description="Total number of billable charge items associated with the account",
     )
     total_price_components = Field(
         display="Total Price Components",
