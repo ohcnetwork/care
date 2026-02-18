@@ -158,7 +158,7 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
     @action(detail=False, methods=["POST"])
     def preview(self, request, *args, **kwargs):
         if not AuthorizationController.call("can_preview_template", request.user):
-            raise PermissionDenied("You dont have permission to preview reports")
+            raise PermissionDenied("You do not have permission to preview reports")
 
         request_data = GenerateReportRequest.model_validate(request.data)
 
