@@ -8,6 +8,7 @@ from care.security.authorization.base import (
     AuthorizationHandler,
 )
 from care.security.models import RolePermission
+from care.security.permissions.diagnostic_report import DiagnosticReportPermissions
 from care.security.permissions.patient import PatientPermissions
 
 
@@ -116,6 +117,17 @@ class PatientAccess(AuthorizationHandler):
             Q(organization_cache__overlap=organization_ids)
             | Q(users_cache__overlap=[user.id])
         )
+
+    def can_read_diagnostic_report_in_patient(self, user, patient):
+        if user.is_superuser:
+            return True
+        user_roles = self.find_roles_on_patient(user, patient)
+        return RolePermission.objects.filter(
+            permission__slug__in=[
+                DiagnosticReportPermissions.can_read_diagnostic_report.name
+            ],
+            role__in=user_roles,
+        ).exists()
 
 
 AuthorizationController.register_internal_controller(PatientAccess)

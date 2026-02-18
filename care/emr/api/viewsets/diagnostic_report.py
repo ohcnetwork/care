@@ -129,6 +129,16 @@ class DiagnosticReportViewSet(
                 encounter,
             ):
                 return queryset.filter(encounter=encounter)
+        elif self.request.GET.get("patient"):
+            patient = get_object_or_404(
+                Patient, external_id=self.request.GET.get("patient")
+            )
+            if AuthorizationController.call(
+                "can_read_diagnostic_report_in_patient",
+                self.request.user,
+                patient,
+            ):
+                return queryset.filter(patient=patient)
         elif self.request.GET.get("service_request"):
             service_request = get_object_or_404(
                 ServiceRequest, external_id=self.request.GET.get("service_request")
