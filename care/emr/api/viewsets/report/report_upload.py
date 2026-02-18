@@ -164,15 +164,16 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
 
         if not GeneratorRegistry.is_registered(request_data.output_format):
             raise ValidationError("Invalid output format")
-
         try:
-            generator_class = GeneratorRegistry.get(request_data.output_format)
+            template = Template.objects.get(external_id=request_data.template_id)
+        except Template.DoesNotExist as err:
+            msg = f"Template {request_data.template_id} does not exist"
+            raise ValidationError(msg) from err
+        try:
+            output_format = request_data.output_format or template.default_format
+            generator_class = GeneratorRegistry.get(output_format)
             generator = generator_class()
-            try:
-                template = Template.objects.get(external_id=request_data.template_id)
-            except Template.DoesNotExist as err:
-                msg = f"Template {request_data.template_id} does not exist"
-                raise ValidationError(msg) from err
+
             validated_options = generator.options_model.model_validate(template.options)
             try:
                 report_type_config = ReportTypeRegistry.get(template.template_type)
@@ -182,6 +183,12 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
                 raise ValidationError(error_msg) from err
 
             context_class = DataPointRegistry.get(template.context)
+            if not context_class:
+                error_msg = (
+                    f"Context '{template.context}' not found in DataPointRegistry"
+                )
+                raise ValidationError(error_msg)
+
             context_key = context_class.context_key or template.context
             associating_object = validate_associating_id(
                 associating_model=report_type_config.associating_model,
