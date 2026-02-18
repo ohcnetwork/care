@@ -31,7 +31,6 @@ from care.emr.resources.report.report_upload.spec import (
 )
 from care.emr.tasks.report_generation import generate_report_task
 from care.security.authorization.base import AuthorizationController
-from care.utils.exceptions import CeleryTaskError
 from care.utils.shortcuts import get_object_or_404
 
 logger = logging.getLogger(__name__)
@@ -171,15 +170,16 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
             generator = generator_class()
             try:
                 template = Template.objects.get(external_id=request_data.template_id)
-            except Template.DoesNotExist as e:
+            except Template.DoesNotExist as err:
                 msg = f"Template {request_data.template_id} does not exist"
-                raise CeleryTaskError(msg) from e
+                raise ValidationError(msg) from err
             validated_options = generator.options_model.model_validate(template.options)
             try:
                 report_type_config = ReportTypeRegistry.get(template.template_type)
-            except KeyError as e:
+
+            except Exception as err:
                 error_msg = f"Report Type '{template.template_type}' not found in ReportTypeRegistry"
-                raise ValueError(error_msg) from e
+                raise ValidationError(error_msg) from err
 
             context_class = DataPointRegistry.get(template.context)
             context_key = context_class.context_key or template.context
