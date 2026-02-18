@@ -20,13 +20,18 @@ from care.emr.reports.authorizers.utils import (
     read_report_authorizer,
     write_report_authorizer,
 )
+from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.renderer.generators import GeneratorRegistry
+from care.emr.reports.renderer.renderer import Renderer
+from care.emr.reports.report_type_registry import ReportTypeRegistry
+from care.emr.reports.report_type_utils import validate_associating_id
 from care.emr.resources.report.report_upload.spec import (
     ReportUploadListSpec,
     ReportUploadRetrieveSpec,
 )
 from care.emr.tasks.report_generation import generate_report_task
 from care.security.authorization.base import AuthorizationController
+from care.utils.exceptions import CeleryTaskError
 from care.utils.shortcuts import get_object_or_404
 
 logger = logging.getLogger(__name__)
@@ -147,6 +152,52 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
         return Response(
             status=status.HTTP_201_CREATED,
         )
+
+    @extend_schema(
+        request=GenerateReportRequest, responses={200: "Success"}, tags=["report"]
+    )
+    @action(detail=False, methods=["POST"])
+    def preview(self, request, *args, **kwargs):
+        if not AuthorizationController.call("can_preview_template", request.user):
+            raise PermissionDenied("You dont have permission to preview reports")
+
+        request_data = GenerateReportRequest.model_validate(request.data)
+
+        if not GeneratorRegistry.is_registered(request_data.output_format):
+            raise ValidationError("Invalid output format")
+
+        try:
+            generator_class = GeneratorRegistry.get(request_data.output_format)
+            generator = generator_class()
+            try:
+                template = Template.objects.get(external_id=request_data.template_id)
+            except Template.DoesNotExist as e:
+                msg = f"Template {request_data.template_id} does not exist"
+                raise CeleryTaskError(msg) from e
+            validated_options = generator.options_model.model_validate(template.options)
+            try:
+                report_type_config = ReportTypeRegistry.get(template.template_type)
+            except KeyError as e:
+                error_msg = f"Report Type '{template.template_type}' not found in ReportTypeRegistry"
+                raise ValueError(error_msg) from e
+
+            context_class = DataPointRegistry.get(template.context)
+            context_key = context_class.context_key or template.context
+            associating_object = validate_associating_id(
+                associating_model=report_type_config.associating_model,
+                associating_id=str(request_data.associating_id),
+                report_type_key=template.template_type,
+            )
+            context = {context_key: context_class(context=associating_object)}
+
+            rendered_content = Renderer(generator).render(
+                template.template_data, context, validated_options
+            )
+
+            return generator.get_http_response(rendered_content)
+
+        except Exception as e:
+            raise ValidationError("Preview generation failed") from e
 
     class ArchiveRequestSpec(BaseModel):
         archive_reason: str
