@@ -118,7 +118,7 @@ class PatientAccess(AuthorizationHandler):
             | Q(users_cache__overlap=[user.id])
         )
 
-    def can_read_diagnostic_report_in_patient(self, user, patient):
+    def can_read_patient_diagnostic_report(self, user, patient):
         if user.is_superuser:
             return True
         user_roles = self.find_roles_on_patient(user, patient)

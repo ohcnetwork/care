@@ -134,7 +134,7 @@ class DiagnosticReportViewSet(
                 Patient, external_id=self.request.GET.get("patient")
             )
             if AuthorizationController.call(
-                "can_read_diagnostic_report_in_patient",
+                "can_read_patient_diagnostic_report",
                 self.request.user,
                 patient,
             ):
