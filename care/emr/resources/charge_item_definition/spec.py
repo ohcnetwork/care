@@ -31,6 +31,7 @@ class ChargeItemDefinitionSpec(EMRResource):
     description: str | None = None
     purpose: str | None = None
     price_components: list[MonetaryComponent]
+    can_edit_charge_item: bool
 
 
 class ChargeItemDefinitionWriteSpec(ChargeItemDefinitionSpec):

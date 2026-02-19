@@ -11,6 +11,13 @@ class ChargeItemAccess(AuthorizationHandler):
             facility=facility,
         )
 
+    def can_create_negative_charge_item_in_facility(self, user, facility):
+        return self.check_permission_in_facility_organization(
+            [ChargeItemPermissions.can_create_negative_charge_item.name],
+            user,
+            facility=facility,
+        )
+
     def can_update_charge_item_in_facility(self, user, facility):
         return self.check_permission_in_facility_organization(
             [ChargeItemPermissions.can_update_charge_item.name],

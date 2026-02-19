@@ -40,6 +40,7 @@ class QuestionnaireTemplateFilters(filters.FilterSet):
         lookup_expr="exact", field_name="questionnaire__slug"
     )
     key_filter = KeyFilter()
+    facility = filters.UUIDFilter(field_name="facility__external_id")
 
 
 class QuestionnaireResponseTemplateViewSet(

@@ -1,3 +1,4 @@
+from django.contrib.postgres.search import TrigramSimilarity
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -32,9 +33,23 @@ from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyCharFilter
 from care.utils.shortcuts import get_object_or_404
 
 
+class TrigramFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        queryset = qs
+        if not value:
+            return queryset
+        return (
+            queryset.annotate(
+                similarity=TrigramSimilarity(self.field_name, value),
+            )
+            .filter(similarity__gt=0.1)
+            .order_by("-similarity")
+        )
+
+
 class ActivityDefinitionFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
-    title = filters.CharFilter(lookup_expr="icontains")
+    title = TrigramFilter()
     classification = filters.CharFilter(lookup_expr="iexact")
     kind = filters.CharFilter(lookup_expr="iexact")
     category = DummyCharFilter()

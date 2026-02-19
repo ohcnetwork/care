@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
+from django.core.cache import cache
 from django.db import models
 from django.db.models import IntegerChoices
 from django.utils.translation import gettext_lazy as _
@@ -218,6 +219,33 @@ class Facility(BaseModel):
     class Meta:
         verbose_name_plural = "Facilities"
 
+    @classmethod
+    def get_component_key(cls, component):
+        return component.get("code" , {}).get("system" , "") + "/" + component.get("code" , {}).get("code","")
+
+    @classmethod
+    def get_monetory_component_cache_key(cls , facility_id):
+        return f"facility:{facility_id}:monetory_component"
+
+
+    @classmethod
+    def calculate_monetory_components(cls , components):
+        component_cache = {}
+        for component in components:
+            component_cache[cls.get_component_key(component)] = component
+        return component_cache
+
+    @classmethod
+    def get_monetory_component(cls , facility_id):
+        cached_data = cache.get(cls.get_monetory_component_cache_key(facility_id))
+        if cached_data:
+            return cached_data
+        else:
+            facility = cls.objects.get(id=facility_id)
+            monetory_component = cls.calculate_monetory_components(facility.discount_monetary_components)
+            cache.set(cls.get_monetory_component_cache_key(facility_id), monetory_component)
+            return monetory_component
+
     def read_cover_image_url(self):
         if self.cover_image_url:
             if settings.FACILITY_CDN:
@@ -252,6 +280,7 @@ class Facility(BaseModel):
 
     def save(self, *args, **kwargs) -> None:
         is_create = self.pk is None
+        cache.delete(self.get_monetory_component_cache_key(self.id))
         super().save(*args, **kwargs)
 
         if is_create:

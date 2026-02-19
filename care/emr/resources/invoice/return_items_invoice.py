@@ -3,6 +3,7 @@ Utilities to create a return invoice for items based on delivery order
 """
 
 from django.db import transaction
+from rest_framework.exceptions import ValidationError
 
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.invoice import Invoice
@@ -13,6 +14,9 @@ from care.emr.resources.charge_item.apply_charge_item_definition import (
     apply_charge_item_definition,
 )
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
+from care.emr.resources.inventory.supply_delivery.spec import (
+    SupplyDeliveryStatusOptions,
+)
 from care.emr.resources.invoice.default_expression_evaluator import (
     evaluate_invoice_identifier_default_expression,
 )
@@ -28,6 +32,10 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
 
     with transaction.atomic():
         charge_items = []
+        if SupplyDelivery.objects.filter(
+            order=delivery_order, status=SupplyDeliveryStatusOptions.in_progress.value
+        ).exists():
+            raise ValidationError("Finalise Deliveries before completing order")
         invoice_obj = Invoice()
         invoice_obj.status = InvoiceStatusOptions.draft.value
         invoice_obj.facility = delivery_order.destination.facility
@@ -40,8 +48,12 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
         invoice_obj.patient = delivery_order.patient
         invoice_obj.is_refund = True
         invoice_obj.issue_date = care_now()
+        invoice_obj.created_by = delivery_order.created_by
+        invoice_obj.updated_by = delivery_order.updated_by
         invoice_obj.save()
-        for supply_delivery in SupplyDelivery.objects.filter(order=delivery_order):
+        for supply_delivery in SupplyDelivery.objects.filter(
+            order=delivery_order, status=SupplyDeliveryStatusOptions.completed.value
+        ):
             product = supply_delivery.supplied_item
             charge_item_definition = product.charge_item_definition
             if not charge_item_definition:
@@ -55,6 +67,8 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
             )
             charge_item.status = ChargeItemStatusOptions.billed.value
             charge_item.paid_invoice = invoice_obj
+            charge_item.created_by = delivery_order.created_by
+            charge_item.updated_by = delivery_order.updated_by
             charge_item.save()
             charge_items.append(charge_item.id)
         invoice_obj.charge_items = charge_items
@@ -75,7 +89,8 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
         return
     with transaction.atomic():
         delivery_order.patient_invoice.status = InvoiceStatusOptions.cancelled.value
-        delivery_order.patient_invoice.save(update_fields=["status"])
+        delivery_order.patient_invoice.updated_by = delivery_order.updated_by
+        delivery_order.patient_invoice.save(update_fields=["status", "updated_by"])
         ChargeItem.objects.filter(
             id__in=delivery_order.patient_invoice.charge_items,
         ).update(

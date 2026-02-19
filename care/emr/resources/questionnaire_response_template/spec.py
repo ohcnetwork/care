@@ -49,7 +49,7 @@ class ActivityDefinitionTemplateSpec(BaseModel):
 class TemplateData(BaseModel):
     medication_request: list[MedicationRequestTemplateSpec] | None = None
     questionnaire: list[QuestionnaireAnswer] | None = None
-    actvity_definition: list[ActivityDefinitionTemplateSpec] | None = None
+    activity_definition: list[ActivityDefinitionTemplateSpec] | None = None
     meta: dict | None = None
 
 
@@ -123,7 +123,7 @@ class QuestionnaireResponseTemplateRetrieveSpec(QuestionnaireResponseTemplateRea
         mapping["users"] = []
         for user in obj.users:
             mapping["users"].append(model_from_cache(UserSpec, id=user))
-        mapping["organizations"] = []
+        mapping["facility_organizations"] = []
         for facility_organization in obj.facility_organizations:
             facility_organization_obj = FacilityOrganization.objects.filter(
                 id=facility_organization

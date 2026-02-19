@@ -177,6 +177,10 @@ class User(AbstractUser):
     totp_secret = models.TextField(blank=True, null=True)
     mfa_settings = models.JSONField(default=dict, blank=True)
 
+    # Preferences
+
+    preferences = models.JSONField(default=dict)
+
     objects = CustomUserManager()
 
     REQUIRED_FIELDS = [

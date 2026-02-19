@@ -84,7 +84,7 @@ def generate_and_upload_report(
     current_date = timezone.now()
     timestamp = int(current_date.timestamp() * 1000)
 
-    report_name = f"{report_type}-{associating_id}-{timestamp}"
+    report_name = f"{template.name}-{associating_id}-{timestamp}"
     internal_name = f"{uuid4()}{int(time.time())}{file_extension}"
 
     user_id = kwargs.get("user_id")

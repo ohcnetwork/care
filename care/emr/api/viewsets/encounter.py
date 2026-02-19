@@ -8,6 +8,7 @@ from pydantic import UUID4, BaseModel
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -73,6 +74,15 @@ class OrganizationUUIDFilter(filters.UUIDFilter):
         return queryset.filter(facility_organization_cache__overlap=[organization.id])
 
 
+class CareTeamUserFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        queryset = qs
+        if not value:
+            return queryset
+        user = get_object_or_404(User.objects.only("id"), username=value)
+        return queryset.filter(care_team_users__overlap=[user.id])
+
+
 class EncounterFilters(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
     status = MultiSelectFilter(field_name="status")
@@ -92,6 +102,7 @@ class EncounterFilters(filters.FilterSet):
     created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     live = LiveFilter()
     organization = OrganizationUUIDFilter()
+    care_team_user = CareTeamUserFilter()
 
 
 class EncounterViewSet(
@@ -108,7 +119,13 @@ class EncounterViewSet(
     pydantic_read_model = EncounterListSpec
     pydantic_retrieve_model = EncounterRetrieveSpec
     filterset_class = EncounterFilters
-    filter_backends = [filters.DjangoFilterBackend, SingleFacilityTagFilter]
+
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        OrderingFilter,
+        SingleFacilityTagFilter,
+    ]
+    ordering_fields = ["created_date", "modified_date"]
     resource_type = TagResource.encounter
 
     def validate_data(self, instance, model_obj=None):
@@ -400,5 +417,5 @@ class EncounterViewSet(
             )
 
         encounter.care_team = members
-        encounter.save(update_fields=["care_team"])
+        encounter.save(update_fields=["care_team", "care_team_users"])
         return Response({}, status=status.HTTP_200_OK)

@@ -175,6 +175,7 @@ class CurrentUserRetrieveSpec(UserRetrieveSpec):
     organizations: list[dict]
     facilities: list[dict]
     permissions: list[str]
+    preferences: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User) -> None:

@@ -111,7 +111,7 @@ class DoseType(str, Enum):
 
 
 class DosageQuantity(BaseModel):
-    value: Decimal = Field(max_digits=20, decimal_places=0)
+    value: Decimal = Field(max_digits=20, decimal_places=6)
     unit: Coding
 
 
@@ -140,7 +140,7 @@ class TimingRepeat(BaseModel):
 
 class Timing(BaseModel):
     repeat: TimingRepeat
-    code: Coding
+    code: Coding | None = None
 
 
 class DosageInstruction(BaseModel):
@@ -250,7 +250,9 @@ class MedicationRequestSpec(BaseMedicationRequestSpec):
                 obj.requested_product.facility
                 and obj.requested_product.facility != obj.encounter.facility
             ):
-                raise ValueError("Product not found in facility")
+                raise ValidationError(
+                    {"requested_product": "Product not found in facility"}
+                )
 
         if self.prescription:
             obj.prescription = get_object_or_404(

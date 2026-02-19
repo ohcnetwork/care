@@ -50,6 +50,7 @@ class BaseSupplyDeliverySpec(EMRResource):
 
     status: SupplyDeliveryStatusOptions
     supplied_item_condition: SupplyDeliveryConditionOptions | None = None
+    total_purchase_price: Decimal | None = Field(None, max_digits=20, decimal_places=6)
 
 
 class SupplyDeliveryUpdateSpec(ExtensionValidator, BaseSupplyDeliverySpec):

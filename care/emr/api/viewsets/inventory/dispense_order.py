@@ -39,21 +39,22 @@ def cancel_dispense_order(instance):
         if dispense.charge_item:
             handle_charge_item_cancel(instance.charge_item)
         dispense.charge_item.status = ChargeItemStatusOptions.aborted.value
-        dispense.authorizing_request = None
         dispense.authorizing_request.dispense_status = (
             MedicationRequestDispenseStatus.incomplete.value
         )
         dispense.authorizing_request.save(update_fields=["dispense_status"])
+        dispense.authorizing_request = None
         dispense.charge_item.save()
         dispense.save()
 
 
 class DispenseOrderFilters(filters.FilterSet):
     status = MultiSelectFilter(field_name="status")
-    created_date = filters.DateRangeFilter()
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     patient = filters.UUIDFilter(field_name="patient__external_id")
     location = DummyUUIDFilter()
     include_children = DummyBooleanFilter()
+    created_by = filters.UUIDFilter(field_name="created_by__external_id")
 
 
 class DispenseOrderViewSet(

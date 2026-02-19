@@ -1,6 +1,6 @@
 from django.conf import settings
 
-from care.utils.lock import Lock
+from care.utils.lock import Lock, MultipleItemsLock
 
 
 class AccountLock(Lock):
@@ -30,4 +30,15 @@ class PatientCreateLock(Lock):
 class ChargeItemLock(Lock):
     def __init__(self, charge_item, timeout=settings.LOCK_TIMEOUT):
         self.key = f"lock:charge_item:{charge_item.id}"
+        self.timeout = timeout
+
+
+class ChargeItemsLock(MultipleItemsLock):
+    def get_key(self, key):
+        return f"lock:charge_item:{key}"
+
+
+class InventoryItemLock(Lock):
+    def __init__(self, inventory_item, timeout=settings.LOCK_TIMEOUT):
+        self.key = f"lock:inventory_item:{inventory_item.id}"
         self.timeout = timeout
