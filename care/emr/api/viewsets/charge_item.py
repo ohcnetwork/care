@@ -432,6 +432,8 @@ class ChargeItemViewSet(
                     facility=facility,
                     patient=target_account.patient,
                 )
+                if charge_item.status != ChargeItemStatusOptions.billable.value:
+                    raise ValidationError({"charge_item": "should be billable"})
                 source_accounts.append(charge_item.account_id)
                 charge_item.account = target_account
                 charge_item.save(update_fields=["account"])

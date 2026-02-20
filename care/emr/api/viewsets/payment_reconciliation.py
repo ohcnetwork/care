@@ -204,6 +204,13 @@ class PaymentReconciliationViewSet(
                     external_id=payment_reconciliation_request,
                     facility=facility,
                 )
+                if payment_reconciliation.status not in [
+                    PaymentReconciliationStatusOptions.active.value,
+                    PaymentReconciliationStatusOptions.draft.value,
+                ]:
+                    raise ValidationError(
+                        {"payment_reconciliation": "Not in Active Status"}
+                    )
                 source_accounts.append(payment_reconciliation.account_id)
                 payment_reconciliation.account = target_account
                 payment_reconciliation.save(update_fields=["account"])
