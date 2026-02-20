@@ -88,7 +88,7 @@ class DiagnosticReportViewSet(
             self.request.user,
             get_object_or_404(ServiceRequest, external_id=instance.service_request),
         ):
-            raise ValidationError(
+            raise PermissionError(
                 "You do not have permission to write this diagnostic report"
             )
 
@@ -98,7 +98,7 @@ class DiagnosticReportViewSet(
             self.request.user,
             model_instance.service_request,
         ):
-            raise ValidationError(
+            raise PermissionError(
                 "You do not have permission to write this diagnostic report"
             )
 
@@ -109,8 +109,8 @@ class DiagnosticReportViewSet(
             model_instance.service_request,
         ):
             return
-        raise ValidationError(
-            "You do not have permission to write this diagnostic report"
+        raise PermissionError(
+            "You do not have permission to read this diagnostic report"
         )
 
     def get_queryset(self):
