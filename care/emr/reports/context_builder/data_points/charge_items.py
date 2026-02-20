@@ -11,7 +11,7 @@ from care.emr.reports.context_builder.data_points.base import (
     SingleObjectContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.invoice import (
-    ChargeItemInvoiceContextBuilder,
+    MinimumInvoiceContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.monetary_component import (
     MonetaryComponentContextBuilder,
@@ -57,7 +57,7 @@ class ChargeItemContextBuilder(QuerysetContextBuilder):
     )
     status = Field(
         display="Charge Item Status",
-        preview_value="Active",
+        preview_value="Billable",
         mapping=lambda ci: CHARGE_ITEM_STATUS_DISPLAY.get(
             ci.status, ci.status.replace("_", " ").title()
         )
@@ -107,7 +107,7 @@ class ChargeItemContextBuilder(QuerysetContextBuilder):
     paid_invoice = Field(
         display="Paid Invoice",
         preview_value="",
-        target_context=ChargeItemInvoiceContextBuilder,
+        target_context=MinimumInvoiceContextBuilder,
         description="Invoice associated with the payment of the charge item",
     )
     created_date = Field(
@@ -135,7 +135,6 @@ class AccountChargeItemCategoryContextBuilder(QuerysetContextBuilder):
         categories = ResourceCategory.objects.filter(
             resource_type="charge_item_definition",
             facility_id=self.parent_context.facility_id,
-            parent_id__isnull=True,
         )
         summary = []
         for category in categories:
