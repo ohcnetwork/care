@@ -165,10 +165,11 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
         ):
             raise PermissionDenied("You do not have permission to preview reports")
 
-        report_type_config = ReportTypeRegistry.get(template.template_type)
-        if report_type_config is None:
+        try:
+            report_type_config = ReportTypeRegistry.get(template.template_type)
+        except KeyError as err:
             error_msg = f"Report Type '{template.template_type}' not found in ReportTypeRegistry"
-            raise ValidationError(error_msg)
+            raise ValidationError(error_msg) from err
 
         report_authorizer(
             request.user, template.template_type, request_data.associating_id, "read"
