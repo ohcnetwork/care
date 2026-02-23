@@ -206,6 +206,69 @@ class TestPatientViewSet(CareAPITestBase):
         self.assertEqual(error["type"], "validation_error")
         self.assertIn("Date of birth cannot be after the date of death", error["msg"])
 
+    def test_update_deceased_patient_to_alive(self):
+        """Test that a superuser can set deceased_datetime back to None"""
+        geo_organization = self.create_organization(org_type="govt")
+        superuser = self.create_super_user()
+        role = self.create_role_with_permissions(
+            permissions=[
+                PatientPermissions.can_create_patient.name,
+                PatientPermissions.can_write_patient.name,
+                PatientPermissions.can_list_patients.name,
+            ]
+        )
+        self.attach_role_organization_user(geo_organization, superuser, role)
+        self.client.force_authenticate(user=superuser)
+
+        # Create patient with deceased_datetime
+        deceased_time = care_now() - datetime.timedelta(days=2)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            deceased_datetime=deceased_time,
+        )
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(response.data["deceased_datetime"])
+        patient_id = response.data["id"]
+
+        # Update patient to set deceased_datetime to None
+        update_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        patient_data["deceased_datetime"] = None
+        response = self.client.put(update_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNone(response.data["deceased_datetime"])
+
+    def test_non_superuser_cannot_unmark_deceased(self):
+        """Test that a non-superuser cannot set deceased_datetime back to None"""
+        geo_organization = self.create_organization(org_type="govt")
+        user = self.create_user()
+        role = self.create_role_with_permissions(
+            permissions=[
+                PatientPermissions.can_create_patient.name,
+                PatientPermissions.can_write_patient.name,
+                PatientPermissions.can_list_patients.name,
+            ]
+        )
+        self.attach_role_organization_user(geo_organization, user, role)
+        self.client.force_authenticate(user=user)
+
+        # Create patient with deceased_datetime
+        deceased_time = care_now() - datetime.timedelta(days=2)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            deceased_datetime=deceased_time,
+        )
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(response.data["deceased_datetime"])
+        patient_id = response.data["id"]
+
+        # Attempt to set deceased_datetime to None should be denied
+        update_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        patient_data["deceased_datetime"] = None
+        response = self.client.put(update_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
     def test_invalid_age_and_death_date(self):
         user = self.create_user()
         geo_organization = self.create_organization(org_type="govt")
