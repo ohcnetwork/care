@@ -53,5 +53,15 @@ class TemplateAccess(AuthorizationHandler):
             facility=facility,
         )
 
+    def can_preview_report_from_template(self, user, facility):
+        """
+        Check if the user has permission to preview reports from templates
+        """
+        return self.check_permission_in_facility_organization(
+            [TemplatePermissions.can_generate_report_from_template.name],
+            user,
+            facility=facility,
+        )
+
 
 AuthorizationController.register_internal_controller(TemplateAccess)

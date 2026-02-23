@@ -178,6 +178,20 @@ class EncounterAccess(AuthorizationHandler):
             user, encounter, EncounterPermissions.can_write_encounter.name
         )
 
+    def can_preview_report_for_encounter(self, user, encounter):
+        """
+        Check if the user has permission to preview report for this encounter
+        """
+        if encounter.status in COMPLETED_CHOICES:
+            return self.check_permission_in_encounter(
+                user,
+                encounter,
+                TemplatePermissions.can_generate_report_for_completed_encounter.name,
+            )
+        return self.check_permission_in_encounter(
+            user, encounter, EncounterPermissions.can_read_encounter.name
+        )
+
     def get_filtered_encounters(self, qs, user, facility):
         qs = qs.filter(facility=facility)
         if user.is_superuser:
