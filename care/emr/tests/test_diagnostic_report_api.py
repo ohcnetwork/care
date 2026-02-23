@@ -70,3 +70,103 @@ class DiagnosticReportAPITestCases(CareAPITestBase):
         }
         data.update(**kwargs)
         return data
+
+    # Testcases for creating a diagnostic report
+
+    def test_create_diagnostic_report_as_superuser(self):
+        """
+        Test that a superuser can create a diagnostic report.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_diagnostic_report_data()
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        get_response = self.client.get(
+            self.get_detail_url(external_id=response.data["id"]), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200, get_response.data)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(get_response.data["status"], response.data["status"])
+        self.assertEqual(
+            get_response.data["category"]["code"], response.data["category"]["code"]
+        )
+        self.assertEqual(
+            get_response.data["service_request"]["id"],
+            response.data["service_request"]["id"],
+        )
+
+    def test_create_diagnostic_report_as_user_with_permissions(self):
+        """
+        Test that a user with permissions can create a diagnostic report.
+        """
+        self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(permissions=self.permission)
+        self.attach_role_facility_organization_user(
+            role=role, user=self.user, facility_organization=self.facility_organization
+        )
+        data = self.generate_diagnostic_report_data()
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        get_response = self.client.get(
+            self.get_detail_url(external_id=response.data["id"]), format="json"
+        )
+        self.assertEqual(get_response.status_code, 200, get_response.data)
+        self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(get_response.data["status"], response.data["status"])
+        self.assertEqual(
+            get_response.data["category"]["code"], response.data["category"]["code"]
+        )
+        self.assertEqual(
+            get_response.data["service_request"]["id"],
+            response.data["service_request"]["id"],
+        )
+
+    def test_create_diagnostic_report_as_user_without_permissions(self):
+        """
+        Test that a user without permissions cannot create a diagnostic report.
+        """
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_diagnostic_report_data()
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have permission to write this diagnostic report",
+            response.data,
+        )
+
+    def test_create_diagnostic_report_with_mismatched_service_request(self):
+        """
+        Test that creating a diagnostic report with a mismatched service request fails.
+        """
+        self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(permissions=self.permission)
+        self.attach_role_facility_organization_user(
+            role=role, user=self.user, facility_organization=self.facility_organization
+        )
+        another_patient = self.create_patient()
+        another_encounter = self.create_encounter(
+            patient=another_patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        another_service_request = self.create_service_request(
+            title="Another Service Request",
+            patient=another_patient,
+            facility=self.facility,
+            encounter=another_encounter,
+            status=ServiceRequestStatusChoices.active.value,
+            intent=choice(list(ServiceRequestIntentChoices)).value,
+            priority=choice(list(ServiceRequestPriorityChoices)).value,
+            category=choice(list(ActivityDefinitionCategoryOptions)).value,
+        )
+        data = self.generate_diagnostic_report_data(
+            service_request=str(another_service_request.external_id)
+        )
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Invalid Request",
+            response.data,
+        )
