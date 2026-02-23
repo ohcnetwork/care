@@ -1,5 +1,6 @@
 import logging
 
+from django.conf import settings
 from django.utils import timezone
 from django_filters import BooleanFilter, CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -157,6 +158,8 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
     )
     @action(detail=False, methods=["POST"])
     def preview(self, request, *args, **kwargs):
+        if not settings.TEMPLATE_LIVE_PREVIEW_ENABLED:
+            raise PermissionDenied("Live preview is not enabled")
         request_data = GenerateReportRequest.model_validate(request.data)
         template = get_object_or_404(Template, external_id=request_data.template_id)
 

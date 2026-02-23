@@ -323,3 +323,12 @@ PREFERENCE_SCHEMA = env.json(
 QUESTIONNAIRE_ERRORED_TIME_LIMIT_MINUTES = env.int(
     "QUESTIONNAIRE_ERRORED_TIME_LIMIT_MINUTES", default=120
 )
+
+TEMPLATE_LIVE_PREVIEW_ENABLED = env.bool("TEMPLATE_LIVE_PREVIEW_ENABLED", default=False)
+
+if TEMPLATE_LIVE_PREVIEW_ENABLED:
+    import logging
+
+    logging.getLogger(__name__).warning(
+        "\x1b[31;20m TEMPLATE_LIVE_PREVIEW_ENABLED is enabled. This is an experimental feature and should NOT BE USED IN PRODUCTION AT ANY COST. PLEASE USE WITH CAUTION \x1b[0m"
+    )
