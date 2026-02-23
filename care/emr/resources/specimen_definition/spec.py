@@ -1,6 +1,7 @@
+from decimal import Decimal
 from enum import Enum
 
-from pydantic import UUID4, BaseModel, model_validator
+from pydantic import UUID4, BaseModel, Field, model_validator
 
 from care.emr.models.specimen_definition import SpecimenDefinition
 from care.emr.resources.base import EMRResource
@@ -30,10 +31,18 @@ class PreferenceOptions(str, Enum):
     alternate = "alternate"
 
 
+class HandlingConditionOptions(str, Enum):
+    """Handling condition options for specimen testing"""
+
+    room = "room"
+    refrigerated = "refrigerated"
+    frozen = "frozen"
+
+
 class QuantitySpec(BaseModel):
     """Represents a quantity with value and unit"""
 
-    value: float
+    value: Decimal = Field(max_digits=20, decimal_places=0)
     unit: Coding
 
 
@@ -64,8 +73,24 @@ class ContainerSpec(BaseModel):
 class DurationSpec(BaseModel):
     """Duration specification using value and unit"""
 
-    value: int
+    value: Decimal = Field(max_digits=20, decimal_places=0)
     unit: Coding  # Nees to be restricted to Datetime Units
+
+
+class RangeSpec(BaseModel):
+    """Specification for a range with low and high values"""
+
+    low: QuantitySpec | None = None
+    high: QuantitySpec | None = None
+
+
+class HandlingSpec(BaseModel):
+    """Specification for specimen handling"""
+
+    temperature_qualifier: HandlingConditionOptions | None = None
+    temperature_range: RangeSpec | None = None
+    max_duration: DurationSpec | None = None
+    instruction: str | None = None
 
 
 class TypeTestedSpec(BaseModel):
@@ -77,6 +102,7 @@ class TypeTestedSpec(BaseModel):
     requirement: str | None = None
     retention_time: DurationSpec | None = None
     single_use: bool | None = None
+    handling: HandlingSpec | None = None
 
 
 class BaseSpecimenDefinitionSpec(EMRResource):

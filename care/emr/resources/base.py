@@ -16,6 +16,7 @@ class EMRResource(BaseModel):
     meta: dict = {}
     __questionnaire_cache__ = {}
     __store_metadata__ = False
+    __version__ = 0.1
 
     @classmethod
     def get_database_mapping(cls):
@@ -69,6 +70,7 @@ class EMRResource(BaseModel):
                 **kwargs,
                 user=user,
             )
+        constructed["version"] = getattr(cls, "__version__", 0.1)
         return cls.model_construct(**constructed)
 
     def get_context(self):
@@ -308,4 +310,6 @@ def delete_model_cache(sender, instance, **kwargs) -> None:
     Signal handler to delete the cache for a model instance when it is saved or deleted.
     """
     sender_model_string = model_string(sender)
-    cache.delete(model_cache_key(sender_model_string, pk=instance.id))
+    cache.delete_pattern(model_cache_key(sender_model_string, pk=instance.id))
+    if external_id := getattr(instance, "external_id", None):
+        cache.delete_pattern(model_cache_key(sender_model_string, pk=external_id))

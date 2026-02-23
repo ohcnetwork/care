@@ -39,7 +39,7 @@ from care.utils.shortcuts import get_object_or_404
 
 
 class ChargeItemDefinitionSetSpec(BaseModel):
-    charge_item_definition: str
+    charge_item_definition: str | None
     re_visit_allowed_days: int
     re_visit_charge_item_definition: str | None
 
@@ -82,6 +82,31 @@ def validate_resource(
         if location_obj.facility != facility:
             raise ValidationError("Location is not part of the facility")
         return location_obj
+    raise ValidationError("Invalid Resource Type")
+
+
+def get_schedulable_resource(
+    resource_type: SchedulableResourceTypeOptions, resource_id, facility: Facility
+):
+    resource_obj = validate_resource(resource_type, resource_id, facility)
+    if resource_type == SchedulableResourceTypeOptions.practitioner.value:
+        return SchedulableResource.objects.filter(
+            facility=facility,
+            resource_type=resource_type,
+            user=resource_obj,
+        ).first()
+    if resource_type == SchedulableResourceTypeOptions.healthcare_service.value:
+        return SchedulableResource.objects.filter(
+            facility=facility,
+            resource_type=resource_type,
+            healthcare_service=resource_obj,
+        ).first()
+    if resource_type == SchedulableResourceTypeOptions.location.value:
+        return SchedulableResource.objects.filter(
+            facility=facility,
+            resource_type=resource_type,
+            location=resource_obj,
+        ).first()
     raise ValidationError("Invalid Resource Type")
 
 
@@ -218,11 +243,13 @@ class ScheduleViewSet(EMRModelViewSet):
                 or "resource_id" not in self.request.query_params
             ):
                 raise ValidationError("resource_type and resource_id are required")
-            resource = get_or_create_resource(
+            resource = get_schedulable_resource(
                 self.request.query_params["resource_type"],
                 self.request.query_params["resource_id"],
                 facility,
             )
+            if not resource:
+                return queryset.none()
             self.can_read_resource_schedule(resource)
             queryset = queryset.filter(resource=resource)
         return queryset
@@ -239,12 +266,15 @@ class ScheduleViewSet(EMRModelViewSet):
             raise PermissionDenied(
                 "You do not have permission to set charge item definition"
             )
-        charge_item_definition = get_object_or_404(
-            ChargeItemDefinition.objects.only("id"),
-            slug=request_data.charge_item_definition,
-            facility=schedule.resource.facility,
-        )
-        schedule.charge_item_definition = charge_item_definition
+        if request_data.charge_item_definition:
+            charge_item_definition = get_object_or_404(
+                ChargeItemDefinition.objects.only("id"),
+                slug=request_data.charge_item_definition,
+                facility=schedule.resource.facility,
+            )
+            schedule.charge_item_definition = charge_item_definition
+        else:
+            schedule.charge_item_definition = None
         schedule.revisit_allowed_days = request_data.re_visit_allowed_days
         if request_data.re_visit_charge_item_definition:
             revisit_charge_item_definition = get_object_or_404(
@@ -253,6 +283,8 @@ class ScheduleViewSet(EMRModelViewSet):
                 facility=schedule.resource.facility,
             )
             schedule.revisit_charge_item_definition = revisit_charge_item_definition
+        else:
+            schedule.revisit_charge_item_definition = None
         schedule.save()
         return Response(ScheduleReadSpec.serialize(schedule).to_json())
 

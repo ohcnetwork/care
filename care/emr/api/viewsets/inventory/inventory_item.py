@@ -32,7 +32,7 @@ class InventoryItemViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
     pydantic_retrieve_model = InventoryItemRetrieveSpec
     filterset_class = InventoryItemFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
-    ordering_fields = ["created_date", "modified_date"]
+    ordering_fields = ["created_date", "modified_date", "net_content"]
 
     def get_location_obj(self):
         return get_object_or_404(

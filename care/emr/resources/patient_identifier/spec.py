@@ -3,11 +3,10 @@ from enum import Enum
 from pydantic import UUID4, BaseModel, field_validator
 
 from care.emr.models.patient import PatientIdentifierConfig
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, cacheable
 from care.emr.resources.patient_identifier.default_expression_evaluator import (
     evaluate_patient_dummy_expression,
 )
-from care.facility.models.facility import Facility
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -29,6 +28,7 @@ class PatientIdentifierRetrieveConfig(BaseModel):
     retrieve_with_dob: bool = False
     retrieve_with_year_of_birth: bool = False
     retrieve_with_otp: bool = False
+    retrieve_partial_search: bool = False
 
 
 class IdentifierConfig(BaseModel):
@@ -41,6 +41,7 @@ class IdentifierConfig(BaseModel):
     display: str
     retrieve_config: PatientIdentifierRetrieveConfig = {}
     default_value: str | None = None
+    auto_maintained: bool = False
 
     @field_validator("default_value")
     @classmethod
@@ -67,11 +68,14 @@ class PatientIdentifierCreateSpec(BasePatientIdentifierSpec):
     facility: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
+        from care.facility.models.facility import Facility
+
         if self.facility:
             facility = get_object_or_404(Facility, external_id=self.facility)
             obj.facility = facility
 
 
+@cacheable(use_base_manager=True)
 class PatientIdentifierListSpec(BasePatientIdentifierSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

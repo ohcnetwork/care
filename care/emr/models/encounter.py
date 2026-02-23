@@ -1,8 +1,11 @@
 from django.contrib.postgres.fields import ArrayField
-from django.db import models
+from django.db import models, transaction
 
 from care.emr.models.base import EMRBaseModel
 from care.emr.models.scheduling.booking import TokenBooking
+from care.emr.resources.patient_identifier.default_expression_evaluator import (
+    evaluate_patient_facility_default_values,
+)
 
 
 class Encounter(EMRBaseModel):
@@ -21,6 +24,8 @@ class Encounter(EMRBaseModel):
     external_identifier = models.CharField(max_length=100, null=True, blank=True)
 
     care_team = models.JSONField(default=dict)
+    # Cache users to avoid Json Queries
+    care_team_users = ArrayField(models.IntegerField(), default=list)
 
     # Organization fields
     facility_organization_cache = ArrayField(models.IntegerField(), default=list)
@@ -32,6 +37,8 @@ class Encounter(EMRBaseModel):
     discharge_summary_advice = models.TextField(null=True, blank=True)
 
     tags = ArrayField(models.IntegerField(), default=list)
+
+    extensions = models.JSONField(default=dict)
 
     def sync_organization_cache(self):
         orgs = set()
@@ -50,8 +57,22 @@ class Encounter(EMRBaseModel):
         self.facility_organization_cache = list(orgs)
         super().save(update_fields=["facility_organization_cache"])
 
+    def sync_care_team_users_cache(self):
+        if isinstance(self.care_team, list):
+            self.care_team_users = list(
+                {int(x.get("user_id", -1)) for x in self.care_team}
+            )
+
     def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
+        created = False
+        self.sync_care_team_users_cache()
+        if not self.pk:
+            # Generate Facility identifiers for this encounter
+            created = True
+        with transaction.atomic():
+            super().save(*args, **kwargs)
+            if created:
+                evaluate_patient_facility_default_values(self.patient, self.facility)
         self.sync_organization_cache()
 
 

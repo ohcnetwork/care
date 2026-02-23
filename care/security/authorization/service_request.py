@@ -6,17 +6,7 @@ from care.security.permissions.service_request import ServiceRequestPermissions
 from care.security.permissions.specimen import SpecimenPermissions
 
 
-class ServiceRequestAccess(AuthorizationHandler):
-    def check_permission_in_encounter(self, user, encounter, permission):
-        orgs = [*encounter.facility_organization_cache]
-        if encounter.current_location:
-            orgs.extend(encounter.current_location.facility_organization_cache)
-        return self.check_permission_in_facility_organization(
-            [permission],
-            user,
-            orgs=orgs,
-        )
-
+class ServiceRequetAuthorizerUtility(AuthorizationHandler):
     def has_permission_on_service_request(self, user, service_request, permission):
         # Check Access to Encounter
         if self.check_permission_in_encounter(
@@ -36,6 +26,28 @@ class ServiceRequestAccess(AuthorizationHandler):
             [permission],
             user,
             orgs=list(set(orgs)),
+        )
+
+    def check_permission_in_encounter(self, user, encounter, permission):
+        orgs = [*encounter.facility_organization_cache]
+        if encounter.current_location:
+            orgs.extend(encounter.current_location.facility_organization_cache)
+        return self.check_permission_in_facility_organization(
+            [permission],
+            user,
+            orgs=orgs,
+        )
+
+
+class ServiceRequestAccess(ServiceRequetAuthorizerUtility):
+    def check_permission_in_encounter(self, user, encounter, permission):
+        orgs = [*encounter.facility_organization_cache]
+        if encounter.current_location:
+            orgs.extend(encounter.current_location.facility_organization_cache)
+        return self.check_permission_in_facility_organization(
+            [permission],
+            user,
+            orgs=orgs,
         )
 
     def can_read_service_request(self, user, service_request):

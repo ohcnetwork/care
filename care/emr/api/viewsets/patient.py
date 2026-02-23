@@ -1,4 +1,6 @@
+from django.conf import settings
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
@@ -10,6 +12,7 @@ from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.locks.billing import PatientCreateLock
 from care.emr.models import Organization, PatientUser, TokenBooking
 from care.emr.models.patient import Patient, PatientIdentifier, PatientIdentifierConfig
 from care.emr.models.scheduling.token import Token
@@ -34,6 +37,7 @@ from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.users.models import User
+from care.utils.lock import ObjectLocked
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -56,7 +60,7 @@ class PatientViewSet(EMRModelViewSet):
         if not AuthorizationController.call(
             "can_write_patient_obj", self.request.user, model_instance
         ):
-            raise PermissionDenied("Cannot Create Patient")
+            raise PermissionDenied("Cannot Update Patient")
 
     def authorize_create(self, request_obj):
         if not AuthorizationController.call("can_create_patient", self.request.user):
@@ -93,6 +97,8 @@ class PatientViewSet(EMRModelViewSet):
             .select_related("created_by", "updated_by", "geo_organization")
         )
         if self.action != "list":
+            if settings.PATIENT_GLOBAL_EDIT_ACCESS_ENABLED:
+                return qs.filter(external_id=self.kwargs.get("external_id"))
             patient = get_object_or_404(
                 Patient, external_id=self.kwargs.get("external_id")
             )
@@ -113,39 +119,54 @@ class PatientViewSet(EMRModelViewSet):
 
     def perform_create(self, instance):
         identifiers = instance._identifiers  # noqa: SLF001
-        # TODO : Lock to one patient create at a time
-        with transaction.atomic():
-            super().perform_create(instance)
-            for identifier in identifiers:
-                PatientIdentifier.objects.create(
-                    patient=instance,
-                    config=get_object_or_404(
-                        PatientIdentifierConfig, external_id=identifier.config
-                    ),
-                    value=identifier.value,
-                )
-            evaluate_patient_instance_default_values(instance)
+        try:
+            with transaction.atomic():
+                with PatientCreateLock():
+                    super().perform_create(instance)
+                    for identifier in identifiers:
+                        config = get_object_or_404(
+                            PatientIdentifierConfig,
+                            external_id=identifier.config,
+                            facility__isnull=True,
+                        )
+                        if config.config.get("auto_maintained"):
+                            continue
+                        PatientIdentifier.objects.create(
+                            patient=instance,
+                            config=config,
+                            value=identifier.value,
+                        )
+                    evaluate_patient_instance_default_values(instance)
 
-            instance.build_instance_identifiers()
-            instance.save()
-            tag_manager = PatientInstanceTagManager()
-            tag_manager.set_tags(
-                TagResource.patient,
-                instance,
-                instance._tags,  # noqa: SLF001
-                self.request.user,
-            )
+                    instance.build_instance_identifiers()
+                    instance.save()
+                tag_manager = PatientInstanceTagManager()
+                tag_manager.set_tags(
+                    TagResource.patient,
+                    instance,
+                    instance._tags,  # noqa: SLF001
+                    self.request.user,
+                )
+        except ObjectLocked as e:
+            raise ValidationError(
+                "Patient creation failed, try again after a while"
+            ) from e
 
     def perform_update(self, instance):
         identifiers = instance._identifiers  # noqa: SLF001
         with transaction.atomic():
             super().perform_update(instance)
             for identifier in identifiers:
+                config = get_object_or_404(
+                    PatientIdentifierConfig,
+                    external_id=identifier.config,
+                    facility__isnull=True,
+                )
+                if config.config.get("auto_maintained"):
+                    continue
                 identifier_obj = PatientIdentifier.objects.filter(
                     patient=instance,
-                    config=get_object_or_404(
-                        PatientIdentifierConfig, external_id=identifier.config
-                    ),
+                    config=config,
                 ).first()
                 if identifier_obj:
                     if not identifier.value:
@@ -168,14 +189,16 @@ class PatientViewSet(EMRModelViewSet):
         config: UUID4 | None = None
         value: str | None = None
         facility: UUID4 | None = None
+        page_size: int = 100
 
     @extend_schema(
         request=SearchRequestSpec,
     )
     @action(detail=False, methods=["POST"])
     def search(self, request, *args, **kwargs):
-        max_page_size = 200
         request_data = self.SearchRequestSpec(**request.data)
+        max_page_size = 100
+        page_size = min(max_page_size, request_data.page_size)
         partial = False
         if not request_data.phone_number and not request_data.config:
             raise ValidationError("Either phone number or config is required")
@@ -186,29 +209,51 @@ class PatientViewSet(EMRModelViewSet):
             config_queryset = PatientIdentifierConfig.objects.filter(
                 external_id=request_data.config
             )
-            if request_data.facility:
-                config_queryset = config_queryset.filter(
-                    facility__external_id=request_data.facility
-                )
+
             config = config_queryset.first()
             if not config:
                 raise ValidationError("Config not found")
 
-            queryset = PatientIdentifier.objects.filter(
-                config=config,
-                value__iexact=request_data.value,
+            # Check Permission in facility
+            if config.facility and not AuthorizationController.call(
+                "can_list_facility_patient_identifier_config",
+                self.request.user,
+                config.facility,
+            ):
+                raise PermissionDenied(
+                    "Cannot search for patient identifier configs in this facility"
+                )
+
+            partial_search = config.config.get("retrieve_config", {}).get(
+                "retrieve_partial_search", False
             )
-            identifier = queryset.first()
+            if not request_data.value:
+                raise ValidationError("Value is required")
+            if partial_search:
+                terms = request_data.value.split()
+                query = Q()
+                for term in terms:
+                    query &= Q(value__icontains=term)
+                identifier_queryset = PatientIdentifier.objects.filter(
+                    query,
+                    config=config,
+                )[:page_size]
+            else:
+                identifier_queryset = PatientIdentifier.objects.filter(
+                    config=config,
+                    value__exact=request_data.value,
+                )
+
+            queryset = Patient.objects.filter(
+                id__in=identifier_queryset.values("patient_id")
+            )
 
             if config.config.get("retrieve_config", {}).get(
                 "retrieve_with_year_of_birth"
             ):
                 partial = True
-            if not identifier:
-                queryset = queryset.none()
-            else:
-                queryset = Patient.objects.filter(id=identifier.patient_id)
-        queryset = queryset.order_by("-created_date")[:max_page_size]
+
+        queryset = queryset.order_by("-created_date")[:page_size]
         if partial:
             data = [PatientPartialSpec.serialize(obj).to_json() for obj in queryset]
             return Response({"partial": True, "results": data})
@@ -230,7 +275,12 @@ class PatientViewSet(EMRModelViewSet):
         queryset = queryset.filter(year_of_birth=request_data.year_of_birth)
         for patient in queryset:
             if str(patient.external_id)[:5] == request_data.partial_id:
-                return Response(PatientRetrieveSpec.serialize(patient).to_json())
+                context = self.get_serializer_retrieve_context()
+                return Response(
+                    PatientRetrieveSpec.serialize(
+                        patient, self.request.user, **context
+                    ).to_json()
+                )
         raise PermissionDenied("No valid patients found")
 
     @action(detail=True, methods=["GET"])
@@ -277,8 +327,14 @@ class PatientViewSet(EMRModelViewSet):
 
     @action(detail=True, methods=["GET"])
     def get_appointments(self, request, *args, **kwargs):
+        from care.emr.api.viewsets.scheduling.booking import TokenBookingFilters
+
         facility = self.request.GET.get("facility", None)
         queryset = TokenBooking.objects.all().order_by("-token_slot__start_datetime")
+
+        filter_class = TokenBookingFilters(self.request.GET, queryset=queryset)
+        queryset = filter_class.qs
+
         if facility:
             facility = get_object_or_404(Facility, external_id=facility)
             if not AuthorizationController.call(
@@ -293,6 +349,7 @@ class PatientViewSet(EMRModelViewSet):
             )
         else:
             queryset = queryset.filter(patient=self.get_object())
+
         paginator = self.pagination_class()
         page = paginator.paginate_queryset(queryset, request)
         if page is not None:
@@ -303,8 +360,14 @@ class PatientViewSet(EMRModelViewSet):
 
     @action(detail=True, methods=["GET"])
     def get_tokens(self, request, *args, **kwargs):
+        from care.emr.api.viewsets.scheduling.token import TokenFilters
+
         facility = self.request.GET.get("facility", None)
         queryset = Token.objects.all().order_by("-created_date")
+
+        filter_class = TokenFilters(self.request.GET, queryset=queryset)
+        queryset = filter_class.qs
+
         if facility:
             facility = get_object_or_404(Facility, external_id=facility)
             if not AuthorizationController.call(
@@ -317,6 +380,7 @@ class PatientViewSet(EMRModelViewSet):
             queryset = queryset.filter(facility=facility, patient=patient)
         else:
             queryset = queryset.filter(patient=self.get_object())
+
         paginator = self.pagination_class()
         page = paginator.paginate_queryset(queryset, request)
         if page is not None:
@@ -336,6 +400,8 @@ class PatientViewSet(EMRModelViewSet):
         request_config = get_object_or_404(
             PatientIdentifierConfig, external_id=request_data.config
         )
+        if request_config.config.get("auto_maintained"):
+            raise ValidationError("Cannot update auto maintained identifier")
         # TODO: Check Facility Authz
         value = request_data.value
         if not value and request_config.config["required"]:
@@ -433,7 +499,9 @@ class PatientViewSet(EMRModelViewSet):
         return self.get_serializer_list_context()
 
     def get_serializer_list_context(self):
-        facility = self.request.GET.get("facility", None)
+        facility = getattr(self.request, "data", {}).get("facility") or getattr(
+            self.request, "GET", {}
+        ).get("facility")
         if facility:
             facility = get_object_or_404(Facility, external_id=facility)
             if not AuthorizationController.call(

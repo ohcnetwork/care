@@ -6,6 +6,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.api.viewsets.scheduling.schedule import (
     get_or_create_resource,
+    get_schedulable_resource,
     validate_resource,
 )
 from care.emr.models.scheduling.token import TokenSubQueue
@@ -66,7 +67,9 @@ class TokenSubQueueViewSet(EMRModelViewSet):
             resource,
             self.request.user,
         ):
-            raise PermissionDenied("You do not have permission to create token queue")
+            raise PermissionDenied(
+                "You do not have permission to create token sub queue"
+            )
 
     def authorize_update(self, request_obj, model_instance):
         resource = model_instance.resource
@@ -75,7 +78,9 @@ class TokenSubQueueViewSet(EMRModelViewSet):
             resource,
             self.request.user,
         ):
-            raise PermissionDenied("You do not have permission to create token queue")
+            raise PermissionDenied(
+                "You do not have permission to update token sub queue"
+            )
 
     def authorize_destroy(self, instance):
         self.authorize_update({}, instance)
@@ -90,7 +95,7 @@ class TokenSubQueueViewSet(EMRModelViewSet):
             resource_obj,
             self.request.user,
         ):
-            raise PermissionDenied("You do not have permission to list token queue")
+            raise PermissionDenied("You do not have permission to list token sub queue")
 
     def authorize_retrieve(self, model_instance):
         resource_obj = model_instance.resource
@@ -102,7 +107,6 @@ class TokenSubQueueViewSet(EMRModelViewSet):
             super()
             .get_queryset()
             .select_related("resource", "created_by", "updated_by")
-            .order_by("-modified_date")
         )
         if self.action == "list":
             if (
@@ -110,11 +114,13 @@ class TokenSubQueueViewSet(EMRModelViewSet):
                 or "resource_id" not in self.request.query_params
             ):
                 raise ValidationError("resource_type and resource_id is required")
-            resource = get_or_create_resource(
+            resource = get_schedulable_resource(
                 self.request.query_params["resource_type"],
                 self.request.query_params.get("resource_id"),
                 facility,
             )
+            if not resource:
+                return queryset.none()
             self.can_read_resource_token(resource)
             queryset = queryset.filter(resource=resource)
         return queryset

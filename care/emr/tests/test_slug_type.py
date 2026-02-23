@@ -28,7 +28,7 @@ class TestSlugTypeValidation(TestCase):
         invalid_slugs = [
             "",
             "ab",
-            "a" * 26,
+            "a" * 37,
             "invalid slug",
             "invalid@slug",
             "invalid.slug",
@@ -51,7 +51,7 @@ class TestSlugTypeValidation(TestCase):
             TestModel(slug="ab")
 
         with self.assertRaises(ValidationError):
-            TestModel(slug="a" * 26)
+            TestModel(slug="a" * 37)
 
     def test_optional_slug_handling(self):
         model = TestModel(slug="valid-slug", optional_slug=None)

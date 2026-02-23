@@ -22,6 +22,7 @@ from care.emr.api.viewsets.device import (
 )
 from care.emr.api.viewsets.diagnostic_report import DiagnosticReportViewSet
 from care.emr.api.viewsets.encounter import EncounterViewSet
+from care.emr.api.viewsets.extensions import ExtensionsViewSet
 from care.emr.api.viewsets.facility import (
     AllFacilityViewSet,
     FacilitySchedulableUsersViewSet,
@@ -33,10 +34,14 @@ from care.emr.api.viewsets.facility_organization import (
     FacilityOrganizationViewSet,
 )
 from care.emr.api.viewsets.file_upload import FileUploadViewSet
+from care.emr.api.viewsets.form_submission import FormSubmissionViewSet
 from care.emr.api.viewsets.healthcare_service import HealthcareServiceViewSet
+from care.emr.api.viewsets.inventory.delivery_order import DeliveryOrderViewSet
+from care.emr.api.viewsets.inventory.dispense_order import DispenseOrderViewSet
 from care.emr.api.viewsets.inventory.inventory_item import InventoryItemViewSet
 from care.emr.api.viewsets.inventory.product import ProductViewSet
 from care.emr.api.viewsets.inventory.product_knowledge import ProductKnowledgeViewSet
+from care.emr.api.viewsets.inventory.request_order import RequestOrderViewSet
 from care.emr.api.viewsets.inventory.supply_delivery import SupplyDeliveryViewSet
 from care.emr.api.viewsets.inventory.supply_request import SupplyRequestViewSet
 from care.emr.api.viewsets.invoice import InvoiceViewSet
@@ -72,6 +77,11 @@ from care.emr.api.viewsets.questionnaire import (
     QuestionnaireViewSet,
 )
 from care.emr.api.viewsets.questionnaire_response import QuestionnaireResponseViewSet
+from care.emr.api.viewsets.questionnaire_response_template import (
+    QuestionnaireResponseTemplateViewSet,
+)
+from care.emr.api.viewsets.report.report_upload import ReportUploadViewSet
+from care.emr.api.viewsets.report.template import TemplateViewSet
 from care.emr.api.viewsets.resource_category import ResourceCategoryViewSet
 from care.emr.api.viewsets.resource_request import (
     ResourceRequestCommentViewSet,
@@ -99,10 +109,13 @@ from care.emr.api.viewsets.user import UserViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
 from care.security.api.viewsets.permissions import PermissionViewSet
 from care.security.api.viewsets.roles import RoleViewSet
+from care.users.api.viewsets.plug_config import PlugConfigViewset
 
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 
 router.register("users", UserViewSet, basename="users")
+
+router.register("plug_config", PlugConfigViewset, basename="plug_configs")
 
 user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
 
@@ -123,6 +136,11 @@ router.register("valueset", ValueSetViewSet, basename="value-set")
 
 router.register("questionnaire", QuestionnaireViewSet, basename="questionnaire")
 
+questionnaire_nested_router = NestedSimpleRouter(
+    router, r"questionnaire", lookup="questionnaire"
+)
+
+router.register("form_submission", FormSubmissionViewSet, basename="form_submission")
 router.register(
     "questionnaire_tag", QuestionnaireTagsViewSet, basename="questionnaire_tags"
 )
@@ -132,6 +150,11 @@ router.register("supply_request", SupplyRequestViewSet, basename="supply_request
 
 router.register("tag_config", TagConfigViewSet, basename="tag_config")
 
+router.register(
+    "questionnaire_response_template",
+    QuestionnaireResponseTemplateViewSet,
+    basename="questionnaire_response_template",
+)
 
 router.register(
     "observation_definition",
@@ -345,6 +368,25 @@ facility_nested_router.register(
     basename="medication_prescription",
 )
 
+# Orders
+
+facility_nested_router.register(
+    r"order/delivery",
+    DeliveryOrderViewSet,
+    basename="delivery-order",
+)
+
+facility_nested_router.register(
+    r"order/request",
+    RequestOrderViewSet,
+    basename="request-order",
+)
+
+facility_nested_router.register(
+    r"order/dispense",
+    DispenseOrderViewSet,
+    basename="dispense_order",
+)
 
 device_nested_router = NestedSimpleRouter(
     facility_nested_router, r"device", lookup="device"
@@ -384,6 +426,7 @@ facility_location_nested_router.register(
     InventoryItemViewSet,
     basename="inventory-item",
 )
+
 
 router.register("patient", PatientViewSet, basename="patient")
 patient_nested_router = NestedSimpleRouter(router, r"patient", lookup="patient")
@@ -452,6 +495,10 @@ thread_nested_router.register(
     basename="note",
 )
 
+router.register("template", TemplateViewSet, basename="template")
+router.register("template_reports", ReportUploadViewSet, basename="template-reports")
+
+router.register("extensions", ExtensionsViewSet, basename="extensions")
 app_name = "api"
 urlpatterns = [
     path("", include(router.urls)),
@@ -466,4 +513,5 @@ urlpatterns = [
     path("", include(facility_organization_nested_router.urls)),
     path("", include(facility_location_nested_router.urls)),
     path("", include(device_nested_router.urls)),
+    path("", include(questionnaire_nested_router.urls)),
 ]

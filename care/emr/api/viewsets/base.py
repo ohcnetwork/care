@@ -16,7 +16,9 @@ from rest_framework.viewsets import GenericViewSet
 
 from care.emr.models import QuestionnaireResponse
 from care.emr.models.base import EMRBaseModel
+from care.emr.models.questionnaire import FormSubmission
 from care.emr.resources.base import EMRResource
+from care.emr.resources.form_submission.spec import FormSubmissionStatusChoices
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.utils.shortcuts import get_object_or_404
 
@@ -87,6 +89,9 @@ class EMRRetrieveMixin:
 
 
 class EMRCreateMixin:
+    def get_form_submission_params(self, instance):
+        return {"patient": instance.patient, "encounter": instance.encounter}
+
     def perform_create(self, instance):
         instance.created_by = self.request.user
         instance.updated_by = self.request.user
@@ -95,6 +100,14 @@ class EMRCreateMixin:
             if getattr(self, "TAGS_ENABLED", False):
                 self.perform_set_tags(instance, self.request.data)
             if getattr(self, "CREATE_QUESTIONNAIRE_RESPONSE", False):
+                form_submission = None
+                if self.request.data.get("form_submission"):
+                    form_submission = get_object_or_404(
+                        FormSubmission,
+                        status=FormSubmissionStatusChoices.draft.value,
+                        external_id=self.request.data.get("form_submission"),
+                        **self.get_form_submission_params(instance),
+                    )
                 QuestionnaireResponse.objects.create(
                     subject_id=self.fetch_patient_from_instance(instance).external_id,
                     patient=self.fetch_patient_from_instance(instance),
@@ -108,6 +121,7 @@ class EMRCreateMixin:
                     structured_response_type=self.questionnaire_type,
                     created_by=self.request.user,
                     updated_by=self.request.user,
+                    form_submission=form_submission,
                 )
 
     def clean_create_data(self, request_data):
@@ -365,6 +379,12 @@ class EMRTagMixin:
         except ValueError as e:
             raise RestFrameworkValidationError(str(e)) from e
 
+    def authorize_set_tags(self, instance):
+        return self.authorize_update({}, instance)
+
+    def authorize_remove_tags(self, instance):
+        return self.authorize_update({}, instance)
+
     @extend_schema(request=TagRequest)
     @action(detail=True, methods=["POST"])
     def set_tags(self, request, *args, **kwargs):
@@ -372,6 +392,7 @@ class EMRTagMixin:
         if not self.resource_type:
             return Response({})
         instance = self.get_object()
+        self.authorize_set_tags(instance)
         self.perform_set_tags(instance, request.data)
         return self.retrieve(request, *args, **kwargs)
 
@@ -382,6 +403,7 @@ class EMRTagMixin:
         if not self.resource_type:
             return Response({})
         instance = self.get_object()
+        self.authorize_remove_tags(instance)
         tag_request = TagRequest.model_validate(request.data)
         tag_manager = self.tag_manager()
         tag_manager.unset_tags(

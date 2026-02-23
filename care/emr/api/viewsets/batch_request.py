@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import transaction
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, Field
@@ -16,10 +17,16 @@ class Request(BaseModel):
 
 
 class BatchRequest(BaseModel):
-    requests: list[Request] = Field(..., min_length=1, max_length=20)
+    requests: list[Request] = Field(
+        ..., min_length=1, max_length=settings.MAX_REQUESTS_PER_BATCH_REQUEST
+    )
 
 
 class HandledError(Exception):
+    pass
+
+
+class UnHandledError(Exception):
     pass
 
 
@@ -41,6 +48,14 @@ class BatchRequestView(GenericViewSet):
                 for response in responses:
                     if response["status_code"] > 299:  # noqa PLR2004
                         errored = True
+                    if response["status_code"] >= 500:  # noqa PLR2004
+                        structured_responses.append(
+                            {
+                                "reference_id": requests.requests[loop].reference_id,
+                                "status_code": response["status_code"],
+                            }
+                        )
+                        raise UnHandledError
                     structured_responses.append(
                         {
                             "reference_id": requests.requests[loop].reference_id,
@@ -53,4 +68,6 @@ class BatchRequestView(GenericViewSet):
                     raise HandledError
         except HandledError:
             return Response({"results": structured_responses}, status=400)
+        except UnHandledError:
+            return Response({"results": structured_responses}, status=500)
         return Response({"results": structured_responses})

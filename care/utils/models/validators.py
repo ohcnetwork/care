@@ -68,22 +68,26 @@ class UsernameValidator(validators.RegexValidator):
 @deconstructible
 class PhoneNumberValidator(RegexValidator):
     """
-    Any one of the specified types of phone numbers are considered valid.
+    Validate phone numbers against one or more allowed types.
+
+    Any one of the specified types passed to the validator is considered
+    sufficient for the value to be valid.
 
     Allowed types:
-    - `mobile` (Indian XOR International)
-    - `indian_mobile` (Indian only)
-    - `international_mobile` (International only)
-    - `landline` (Indian only)
-    - `support` (Indian only)
 
-    Example usage:
+    - ``mobile`` (Indian XOR International)
+    - ``indian_mobile`` (Indian only)
+    - ``international_mobile`` (International only)
+    - ``landline`` (Indian only)
+    - ``support`` (Indian only)
 
-    ```
-    field = models.CharField(
-        validators=[PhoneNumberValidator(types=("mobile", "landline", "support"))])
-    )
-    ```
+    Example usage::
+
+        field = models.CharField(
+            validators=[
+                PhoneNumberValidator(types=("mobile", "landline", "support"))
+            ]
+        )
     """
 
     indian_mobile_number_regex = r"^(?=^\+91)(^\+91[6-9]\d{9}$)"
@@ -117,89 +121,6 @@ class PhoneNumberValidator(RegexValidator):
 
 mobile_validator = PhoneNumberValidator(types=("mobile",))
 mobile_or_landline_number_validator = PhoneNumberValidator(types=("mobile", "landline"))
-
-
-@deconstructible
-class DenominationValidator:
-    """
-    This validator is used to validate string inputs with denominations.
-    for example: 1 mg, 1.5 ml, 200 mg etc.
-    """
-
-    def __init__(
-        self,
-        min_amount: int | float,
-        max_amount: int | float,
-        units: Iterable[str],
-        allow_floats: bool = True,
-        precision: int = 2,
-    ):
-        self.min_amount = min_amount
-        self.max_amount = max_amount
-        self.allowed_units = units
-        self.allow_floats = allow_floats
-        self.precision = precision
-
-        if not allow_floats and (
-            isinstance(min_amount, float) or isinstance(max_amount, float)
-        ):
-            msg = (
-                "If floats are not allowed, min_amount and max_amount must be integers"
-            )
-            raise ValueError(msg)
-
-    def __call__(self, value: str):
-        try:
-            amount, unit = value.split(" ", maxsplit=1)
-            if unit not in self.allowed_units:
-                msg = f"Unit must be one of {', '.join(self.allowed_units)}"
-                raise ValidationError(msg)
-
-            amount_number: int | float = float(amount)
-            if amount_number.is_integer():
-                amount_number = int(amount_number)
-            elif not self.allow_floats:
-                msg = "Input amount must be an integer"
-                raise ValidationError(msg)
-            elif len(str(amount_number).split(".")[1]) > self.precision:
-                msg = "Input amount must have at most 4 decimal places"
-                raise ValidationError(msg)
-
-            if len(amount) != len(str(amount_number)):
-                msg = f"Input amount must be a valid number without leading{' or trailing ' if self.allow_floats else ' '}zeroes"
-                raise ValidationError(msg)
-
-            if self.min_amount > amount_number or amount_number > self.max_amount:
-                msg = f"Input amount must be between {self.min_amount} and {self.max_amount}"
-                raise ValidationError(msg)
-        except ValueError as e:
-            msg = "Invalid Input, must be in the format: <amount> <unit>"
-            raise ValidationError(msg) from e
-
-    def clean(self, value: str):
-        if value is None:
-            return None
-        return value.strip()
-
-    def __eq__(self, __value: object) -> bool:  # pragma: no cover
-        if not isinstance(__value, DenominationValidator):
-            return False
-        return (
-            self.min_amount == __value.min_amount
-            and self.max_amount == __value.max_amount
-            and self.allowed_units == __value.allowed_units
-            and self.allow_floats == __value.allow_floats
-            and self.precision == __value.precision
-        )
-
-
-dosage_validator = DenominationValidator(
-    min_amount=0.0001,
-    max_amount=5000,
-    units={"mg", "g", "ml", "drop(s)", "ampule(s)", "tsp", "mcg", "unit(s)"},
-    allow_floats=True,
-    precision=4,
-)
 
 
 class MiddlewareDomainAddressValidator(RegexValidator):
@@ -333,9 +254,9 @@ class ImageSizeValidator:
         byte_size = 1024.0
         for unit in ["B", "KB"]:
             if size < byte_size:
-                return f"{f"{size:.2f}".rstrip(".0")} {unit}"
+                return f"{f'{size:.2f}'.rstrip('.0')} {unit}"
             size /= byte_size
-        return f"{f"{size:.2f}".rstrip(".0")} MB"
+        return f"{f'{size:.2f}'.rstrip('.0')} MB"
 
 
 cover_image_validator = ImageSizeValidator(

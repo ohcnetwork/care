@@ -15,7 +15,7 @@ from care.emr.models.patient import Patient
 from care.emr.models.scheduling import TokenBooking, TokenSlot
 from care.emr.resources.scheduling.slot.spec import (
     BookingStatusChoices,
-    TokenBookingReadSpec,
+    TokenBookingOTPReadSpec,
     TokenSlotBaseSpec,
 )
 from care.utils.shortcuts import get_object_or_404
@@ -40,6 +40,11 @@ class OTPSlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     database_model = TokenSlot
     pydantic_read_model = TokenSlotBaseSpec
 
+    def get_queryset(self):
+        return TokenSlot.objects.filter(
+            availability__schedule__is_public=True,
+        )
+
     @extend_schema(
         request=SlotsForDayRequestSpec,
     )
@@ -47,7 +52,7 @@ class OTPSlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
     def get_slots_for_day(self, request, *args, **kwargs):
         request_data = SlotsForDayRequestSpec(**request.data)
         return SlotViewSet.get_slots_for_day_handler(
-            request_data.facility, request.data
+            request_data.facility, request.data, is_public=True
         )
 
     @extend_schema(
@@ -60,9 +65,10 @@ class OTPSlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             external_id=request_data.patient, phone_number=request.user.phone_number
         ).exists():
             raise ValidationError("Patient not allowed")
-        return SlotViewSet.create_appointment_handler(
+        appointment = SlotViewSet.create_appointment_handler(
             self.get_object(), request.data, None
         )
+        return Response(TokenBookingOTPReadSpec.serialize(appointment).to_json())
 
     @extend_schema(
         request=CancelAppointmentSpec,
@@ -78,9 +84,10 @@ class OTPSlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         token_booking = get_object_or_404(
             TokenBooking, external_id=request_data.appointment, patient=patient
         )
-        return TokenBookingViewSet.cancel_appointment_handler(
+        appointment = TokenBookingViewSet.cancel_appointment_handler(
             token_booking, {"reason": BookingStatusChoices.cancelled}, None
         )
+        return Response(TokenBookingOTPReadSpec.serialize(appointment).to_json())
 
     @action(detail=False, methods=["GET"])
     def get_appointments(self, request, *args, **kwargs):
@@ -90,7 +97,7 @@ class OTPSlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         return Response(
             {
                 "results": [
-                    TokenBookingReadSpec.serialize(obj).model_dump(exclude=["meta"])
+                    TokenBookingOTPReadSpec.serialize(obj).to_json()
                     for obj in appointments
                 ]
             }

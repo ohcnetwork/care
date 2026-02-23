@@ -9,7 +9,7 @@ from care.emr.models.medication_request import (
     MedicationRequestPrescription,
 )
 from care.emr.resources.base import EMRResource, model_from_cache
-from care.emr.resources.encounter.spec import EncounterListSpec
+from care.emr.resources.encounter.spec import EncounterListSpec, EncounterRetrieveSpec
 from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.users.models import User
@@ -24,6 +24,13 @@ class MedicationRequestPrescriptionStatus(str, Enum):
     cancelled = "cancelled"
     entered_in_error = "entered_in_error"
     draft = "draft"
+
+
+MEDICATION_PRESCRIPTION_PHARMACIST_ALLOWED_STATUS = [
+    MedicationRequestPrescriptionStatus.active.value,
+    MedicationRequestPrescriptionStatus.on_hold.value,
+    MedicationRequestPrescriptionStatus.completed.value,
+]
 
 
 class MedicationRequestPrescriptionResource(EMRResource):
@@ -82,6 +89,7 @@ class MedicationRequestPrescriptionRetrieveMedicationsSpec(
     MedicationRequestPrescriptionRetrieveSpec
 ):
     medications: list[dict] = []
+    encounter: dict = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -91,6 +99,7 @@ class MedicationRequestPrescriptionRetrieveMedicationsSpec(
 
         super().perform_extra_serialization(mapping, obj)
         cls.serialize_audit_users(mapping, obj)
+        mapping["encounter"] = EncounterRetrieveSpec.serialize(obj.encounter).to_json()
         medications = MedicationRequest.objects.filter(prescription=obj).select_related(
             "requested_product"
         )

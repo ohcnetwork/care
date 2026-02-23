@@ -22,6 +22,7 @@ from care.emr.resources.encounter.spec import EncounterListSpec
 from care.emr.resources.healthcare_service.spec import HealthcareServiceReadSpec
 from care.emr.resources.location.spec import FacilityLocationListSpec
 from care.emr.resources.observation.valueset import CARE_BODY_SITE_VALUESET
+from care.emr.resources.patient.spec import PatientRetrieveSpec
 from care.emr.resources.specimen.spec import SpecimenReadSpec
 from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import SingleFacilityTagManager
@@ -47,6 +48,11 @@ SERVICE_REQUEST_COMPLETED_CHOICES = [
     ServiceRequestStatusChoices.revoked,
     ServiceRequestStatusChoices.ended,
     ServiceRequestStatusChoices.entered_in_error,
+]
+
+SERVICE_REQUEST_CANCELLED_CHOICES = [
+    ServiceRequestStatusChoices.revoked.value,
+    ServiceRequestStatusChoices.entered_in_error.value,
 ]
 
 
@@ -184,5 +190,8 @@ class ServiceRequestRetrieveSpec(ServiceRequestReadSpec):
             DiagnosticReportListSpec.serialize(diagnostic_report).to_json()
             for diagnostic_report in diagnostic_reports
         ]
+        mapping["encounter"]["patient"] = PatientRetrieveSpec.serialize(
+            obj.encounter.patient, facility=obj.facility
+        ).to_json()
 
         cls.serialize_audit_users(mapping, obj)

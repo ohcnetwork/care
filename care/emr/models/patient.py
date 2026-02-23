@@ -8,6 +8,7 @@ from django.template.defaultfilters import pluralize
 from django.utils import timezone
 
 from care.emr.models import EMRBaseModel
+from care.emr.resources.base import model_from_cache
 from care.users.models import User
 from care.utils.models.validators import mobile_or_landline_number_validator
 
@@ -32,8 +33,6 @@ class Patient(EMRBaseModel):
     year_of_birth = models.IntegerField(validators=[MinValueValidator(1900)], null=True)
     deceased_datetime = models.DateTimeField(default=None, null=True, blank=True)
 
-    marital_status = models.CharField(max_length=50, default="")
-
     blood_group = models.CharField(max_length=16)
 
     geo_organization = models.ForeignKey(
@@ -49,6 +48,8 @@ class Patient(EMRBaseModel):
 
     instance_tags = ArrayField(models.IntegerField(), default=list)
     facility_tags = models.JSONField(default=dict, null=True, blank=True)
+
+    extensions = models.JSONField(default=dict)
 
     def get_age(self) -> str:
         start = self.date_of_birth or date(self.year_of_birth, 1, 1)
@@ -209,10 +210,10 @@ class PatientIdentifierConfigCache:
         )
 
         return [
-            PatientIdentifierListSpec.serialize(x).to_json()
+            model_from_cache(PatientIdentifierListSpec, id=x.id)
             for x in PatientIdentifierConfig.objects.filter(
                 facility__isnull=True, status=PatientIdentifierStatus.active.value
-            )
+            ).only("id")
         ]
 
     @classmethod
@@ -223,17 +224,8 @@ class PatientIdentifierConfigCache:
         )
 
         return [
-            PatientIdentifierListSpec.serialize(x).to_json()
+            model_from_cache(PatientIdentifierListSpec, id=x.id)
             for x in PatientIdentifierConfig.objects.filter(
                 facility_id=facility_id, status=PatientIdentifierStatus.active.value
-            )
+            ).only("id")
         ]
-
-    @classmethod
-    def clear_facility_cache(cls, facility_id):
-        if cls.facility_configs:
-            cls.facility_configs.pop(facility_id, None)
-
-    @classmethod
-    def clear_instance_cache(cls):
-        cls.instance_configs = None

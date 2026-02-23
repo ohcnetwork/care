@@ -1,3 +1,4 @@
+from django.contrib.postgres.search import TrigramSimilarity
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -32,9 +33,23 @@ from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyCharFilter
 from care.utils.shortcuts import get_object_or_404
 
 
+class TrigramFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        queryset = qs
+        if not value:
+            return queryset
+        return (
+            queryset.annotate(
+                similarity=TrigramSimilarity(self.field_name, value),
+            )
+            .filter(similarity__gt=0.1)
+            .order_by("-similarity")
+        )
+
+
 class ActivityDefinitionFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
-    title = filters.CharFilter(lookup_expr="icontains")
+    title = TrigramFilter()
     classification = filters.CharFilter(lookup_expr="iexact")
     kind = filters.CharFilter(lookup_expr="iexact")
     category = DummyCharFilter()
@@ -60,7 +75,7 @@ class ActivityDefinitionViewSet(
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter, FavoritesFilter]
     ordering_fields = ["created_date", "modified_date"]
     resource_type = TagResource.activity_definition
-    FAVORITE_RESOURCE = FavoriteResourceChoices.activity_definition
+    FAVORITE_RESOURCE = FavoriteResourceChoices.activity_definition.value
 
     def get_facility_obj(self):
         return get_object_or_404(
@@ -78,7 +93,7 @@ class ActivityDefinitionViewSet(
             )
             if not obj:
                 error_msg = (
-                    f"Specimen Definition with id {specimen_requirement} not found"
+                    f"Specimen Definition with slug {specimen_requirement} not found"
                 )
                 raise ValidationError(error_msg)
             ids.append(obj.id)
@@ -93,7 +108,7 @@ class ActivityDefinitionViewSet(
             )
             if not obj:
                 error_msg = (
-                    f"Observation Definition with id {observation_result} not found"
+                    f"Observation Definition with slug {observation_result} not found"
                 )
                 raise ValidationError(error_msg)
             ids.append(obj.id)
@@ -155,7 +170,6 @@ class ActivityDefinitionViewSet(
             get_object_or_404(
                 ResourceCategory, slug=instance.category, facility=facility
             )
-
         return super().validate_data(instance, model_obj)
 
     def perform_create(self, instance):
