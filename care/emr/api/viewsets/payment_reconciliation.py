@@ -211,9 +211,16 @@ class PaymentReconciliationViewSet(
                     raise ValidationError(
                         {"payment_reconciliation": "Not in Active Status"}
                     )
+                if payment_reconciliation.target_invoice:
+                    raise ValidationError(
+                        {
+                            "payment_reconciliation": "Cannot change account for a payment reconciliation against an invoice"
+                        }
+                    )
                 source_accounts.append(payment_reconciliation.account_id)
                 payment_reconciliation.account = target_account
-                payment_reconciliation.save(update_fields=["account"])
+                payment_reconciliation.updated_by = request.user
+                payment_reconciliation.save(update_fields=["account", "updated_by"])
 
         for account_id in list(set(source_accounts)):
             rebalance_account_task(account_id)
