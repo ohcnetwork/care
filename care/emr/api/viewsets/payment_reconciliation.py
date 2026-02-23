@@ -1,8 +1,11 @@
 from datetime import timedelta
 
 from django.conf import settings
+from django.db import transaction
 from django_filters import rest_framework as filters
-from pydantic import BaseModel
+from drf_spectacular.utils import extend_schema
+from pydantic import UUID4, BaseModel, Field
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -47,6 +50,11 @@ class PaymentReconciliationFilters(filters.FilterSet):
     method = filters.CharFilter(lookup_expr="iexact")
     created_by = filters.UUIDFilter(field_name="created_by__external_id")
     created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
+
+
+class PaymentReconciliationAccountChangeRequest(BaseModel):
+    payment_reconciliations: list[UUID4] = Field(min_length=1, max_length=100)
+    target_account: UUID4
 
 
 class PaymentReconciliationViewSet(
@@ -168,3 +176,52 @@ class PaymentReconciliationViewSet(
         instance.save()
         rebalance_account_task(instance.account.id)
         return Response(PaymentReconciliationReadSpec.serialize(instance).to_json())
+
+    @extend_schema(
+        request=PaymentReconciliationAccountChangeRequest,
+    )
+    @action(methods=["POST"], detail=False)
+    def change_account(self, request, *args, **kwargs):
+        facility = self.get_facility_obj()
+        if not AuthorizationController.call(
+            "can_write_payment_reconciliation_in_facility",
+            self.request.user,
+            facility,
+        ):
+            raise PermissionDenied("Access Denied to Charge Item")
+        request_params = PaymentReconciliationAccountChangeRequest(**request.data)
+        target_account = get_object_or_404(
+            Account, external_id=request_params.target_account, facility=facility
+        )
+        source_accounts = [target_account.id]  # For Rebalancing all related accounts
+        # Switch to sets maybe to optimize memory
+        with transaction.atomic():
+            for (
+                payment_reconciliation_request
+            ) in request_params.payment_reconciliations:
+                payment_reconciliation = get_object_or_404(
+                    PaymentReconciliation,
+                    external_id=payment_reconciliation_request,
+                    facility=facility,
+                )
+                if payment_reconciliation.status not in [
+                    PaymentReconciliationStatusOptions.active.value,
+                    PaymentReconciliationStatusOptions.draft.value,
+                ]:
+                    raise ValidationError(
+                        {"payment_reconciliation": "Not in Active Status"}
+                    )
+                if payment_reconciliation.target_invoice:
+                    raise ValidationError(
+                        {
+                            "payment_reconciliation": "Cannot change account for a payment reconciliation against an invoice"
+                        }
+                    )
+                source_accounts.append(payment_reconciliation.account_id)
+                payment_reconciliation.account = target_account
+                payment_reconciliation.updated_by = request.user
+                payment_reconciliation.save(update_fields=["account", "updated_by"])
+
+        for account_id in list(set(source_accounts)):
+            rebalance_account_task(account_id)
+        return Response({}, status=status.HTTP_201_CREATED)
