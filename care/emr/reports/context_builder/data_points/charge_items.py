@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from django.db.models import Sum
+from django.db.models import Q, Sum
 from django_filters import rest_framework as filters
 
 from care.emr.models.charge_item import ChargeItem
@@ -8,9 +8,10 @@ from care.emr.models.resource_category import ResourceCategory
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
+    SingleObjectContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.invoice import (
-    ChargeItemInvoiceContextBuilder,
+    MinimumInvoiceContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.monetary_component import (
     MonetaryComponentContextBuilder,
@@ -56,7 +57,7 @@ class ChargeItemContextBuilder(QuerysetContextBuilder):
     )
     status = Field(
         display="Charge Item Status",
-        preview_value="Active",
+        preview_value="Billable",
         mapping=lambda ci: CHARGE_ITEM_STATUS_DISPLAY.get(
             ci.status, ci.status.replace("_", " ").title()
         )
@@ -106,7 +107,7 @@ class ChargeItemContextBuilder(QuerysetContextBuilder):
     paid_invoice = Field(
         display="Paid Invoice",
         preview_value="",
-        target_context=ChargeItemInvoiceContextBuilder,
+        target_context=MinimumInvoiceContextBuilder,
         description="Invoice associated with the payment of the charge item",
     )
     created_date = Field(
@@ -130,19 +131,28 @@ class CategoryChargeItemContextBuilder(ChargeItemContextBuilder):
 
 
 class AccountChargeItemCategoryContextBuilder(QuerysetContextBuilder):
-    def get_category_charge_items_summary(self, account):
+    def get_category_charge_items_summary(self, account, is_refund=False):
         categories = ResourceCategory.objects.filter(
             resource_type="charge_item_definition",
             facility_id=self.parent_context.facility_id,
-            parent_id__isnull=True,
         )
         summary = []
         for category in categories:
-            charge_items = ChargeItem.objects.filter(
-                account_id=account.id,
-                charge_item_definition__category=category,
-                status__in=ACTIVE_CHARGE_ITEM_STATUSES,
-            )
+            if is_refund:
+                charge_items = ChargeItem.objects.filter(
+                    account_id=account.id,
+                    charge_item_definition__category=category,
+                    status__in=ACTIVE_CHARGE_ITEM_STATUSES,
+                    paid_invoice__is_refund=True,
+                )
+            else:
+                charge_items = ChargeItem.objects.filter(
+                    account_id=account.id,
+                    charge_item_definition__category=category,
+                    status__in=ACTIVE_CHARGE_ITEM_STATUSES,
+                ).filter(
+                    Q(paid_invoice__isnull=True) | Q(paid_invoice__is_refund=False)
+                )
             if not charge_items.exists():
                 continue
             paid_charge_items = charge_items.filter(
@@ -226,4 +236,29 @@ class AccountChargeItemCategoryContextBuilder(QuerysetContextBuilder):
         if item.get("total_billed_charge_items")
         else "0.00",
         description="Total billed price of charge items in this category",
+    )
+
+
+class AccountReturnedChargeItemCategoryContextBuilder(
+    AccountChargeItemCategoryContextBuilder
+):
+    def get_context(self):
+        return self.get_category_charge_items_summary(
+            self.parent_context, is_refund=True
+        )
+
+
+class AccountChargeItemCategorySummaryContextBuilder(SingleObjectContextBuilder):
+    category_charge_items = Field(
+        display="Category Charge Items",
+        preview_value="",
+        target_context=AccountChargeItemCategoryContextBuilder,
+        description="Charge items under this category",
+    )
+
+    category_returned_charge_items = Field(
+        display="Category Returned Charge Items",
+        preview_value="",
+        target_context=AccountReturnedChargeItemCategoryContextBuilder,
+        description="Returned charge items under this category",
     )

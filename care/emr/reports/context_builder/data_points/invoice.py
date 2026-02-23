@@ -73,7 +73,7 @@ class AccountInvoiceContextBuilder(InvoiceContextBuilder):
         return Invoice.objects.filter(account=self.parent_context)
 
 
-class ChargeItemInvoiceContextBuilder(SingleObjectContextBuilder):
+class MinimumInvoiceContextBuilder(SingleObjectContextBuilder):
     def get_context(self):
         return getattr(self.parent_context, self.parent_attribute)
 
