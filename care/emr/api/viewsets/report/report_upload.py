@@ -160,7 +160,7 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
         request_data = GenerateReportRequest.model_validate(request.data)
         template = get_object_or_404(Template, external_id=request_data.template_id)
 
-        if not AuthorizationController.call(
+        if template.facility and not AuthorizationController.call(
             "can_preview_report_from_template", request.user, template.facility
         ):
             raise PermissionDenied("You do not have permission to preview reports")
