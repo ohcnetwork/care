@@ -130,7 +130,7 @@ class FacilityLocationMinimalListSpec(FacilityLocationSpec):
         mapping["parent"] = obj.get_parent_json()
 
 
-class FacilityLocationListSpec(FacilityLocationSpec):
+class FacilityLocationListSpec(FacilityLocationMinimalListSpec):
     parent: dict
     mode: str
     has_children: bool
