@@ -157,30 +157,29 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
     )
     @action(detail=False, methods=["POST"])
     def preview(self, request, *args, **kwargs):
-        if not AuthorizationController.call("can_preview_template", request.user):
+        request_data = GenerateReportRequest.model_validate(request.data)
+        template = get_object_or_404(Template, external_id=request_data.template_id)
+
+        if not AuthorizationController.call(
+            "can_preview_report_from_template", request.user, template.facility
+        ):
             raise PermissionDenied("You do not have permission to preview reports")
 
-        request_data = GenerateReportRequest.model_validate(request.data)
+        report_type_config = ReportTypeRegistry.get(template.template_type)
+        if report_type_config is None:
+            error_msg = f"Report Type '{template.template_type}' not found in ReportTypeRegistry"
+            raise ValidationError(error_msg)
 
-        if not GeneratorRegistry.is_registered(request_data.output_format):
-            raise ValidationError("Invalid output format")
+        report_authorizer(
+            request.user, template.template_type, request_data.associating_id, "read"
+        )
+        output_format = request_data.output_format or template.default_format
+
         try:
-            template = Template.objects.get(external_id=request_data.template_id)
-        except Template.DoesNotExist as err:
-            msg = f"Template {request_data.template_id} does not exist"
-            raise ValidationError(msg) from err
-        try:
-            output_format = request_data.output_format or template.default_format
             generator_class = GeneratorRegistry.get(output_format)
             generator = generator_class()
 
             validated_options = generator.options_model.model_validate(template.options)
-            try:
-                report_type_config = ReportTypeRegistry.get(template.template_type)
-
-            except Exception as err:
-                error_msg = f"Report Type '{template.template_type}' not found in ReportTypeRegistry"
-                raise ValidationError(error_msg) from err
 
             context_class = DataPointRegistry.get(template.context)
             if not context_class:
