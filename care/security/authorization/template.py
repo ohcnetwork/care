@@ -58,7 +58,7 @@ class TemplateAccess(AuthorizationHandler):
         Check if the user has permission to preview reports from templates
         """
         return self.check_permission_in_facility_organization(
-            [TemplatePermissions.can_generate_report_from_template.name],
+            [TemplatePermissions.can_preview_report_from_template.name],
             user,
             facility=facility,
         )

@@ -72,3 +72,19 @@ class TemplatePermissions(enum.Enum):
             ADMIN_ROLE,
         ],
     )
+
+    can_preview_report_from_template = Permission(
+        "Can preview report from template",
+        "",
+        PermissionContext.FACILITY,
+        [
+            FACILITY_ADMIN_ROLE,
+            ADMINISTRATOR,
+            ADMIN_ROLE,
+            STAFF_ROLE,
+            DOCTOR_ROLE,
+            NURSE_ROLE,
+            VOLUNTEER_ROLE,
+            PHARMACIST_ROLE,
+        ],
+    )
