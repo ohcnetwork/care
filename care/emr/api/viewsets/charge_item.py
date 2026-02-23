@@ -436,7 +436,8 @@ class ChargeItemViewSet(
                     raise ValidationError({"charge_item": "should be billable"})
                 source_accounts.append(charge_item.account_id)
                 charge_item.account = target_account
-                charge_item.save(update_fields=["account"])
+                charge_item.updated_by = request.user
+                charge_item.save(update_fields=["account", "updated_by"])
 
         for account_id in list(set(source_accounts)):
             rebalance_account_task(account_id)
