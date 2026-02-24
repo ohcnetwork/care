@@ -148,6 +148,8 @@ def lock_create_appointment(token_slot, patient, created_by, note):
         )
         # Generate Charge Item
         schedule = booking.token_slot.availability.schedule
+        if not schedule.charge_item_definition:
+            return booking
         last_booking = (
             TokenBooking.objects.exclude(status__in=CANCELLED_STATUS_CHOICES)
             .filter(
@@ -156,6 +158,7 @@ def lock_create_appointment(token_slot, patient, created_by, note):
                 charge_item__isnull=False,
                 charge_item__status=ChargeItemStatusOptions.paid.value,
                 token_slot__start_datetime__lte=token_slot.start_datetime,
+                charge_item__charge_item_definition=schedule.charge_item_definition,
             )
             .order_by("-token_slot__start_datetime")
         ).first()
