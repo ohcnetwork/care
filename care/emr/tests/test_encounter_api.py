@@ -458,6 +458,57 @@ class EncounterAPITests(CareAPITestBase):
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["status"], StatusChoices.completed.value)
 
+    def test_update_encounter_without_permissions(self):
+        update_data = self.encounter_data.copy()
+        update_data["status"] = StatusChoices.completed.value
+        response = self.client.put(
+            self._get_detail_url(self.facility.external_id, self.patient.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update encounter", response.data["detail"]
+        )
+
+    def test_restart_completed_encounter(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.encounter.status = StatusChoices.completed.value
+        self.encounter.save()
+        url = reverse(
+            "encounter-restart",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        with self.settings(ENCOUNTER_RESTART_TIME_LIMIT_HOURS=24):
+            response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 204)
+        self.encounter.refresh_from_db()
+        self.assertEqual(self.encounter.status, StatusChoices.in_progress.value)
+
+    def test_restart_non_completed_encounter(self):
+        self.client.force_authenticate(user=self.superuser)
+        url = reverse(
+            "encounter-restart",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 403)
+
+    def test_restart_expired_encounter(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.encounter.status = StatusChoices.completed.value
+        self.encounter.modified_date = timezone.now() - timedelta(
+            hours=settings.ENCOUNTER_RESTART_TIME_LIMIT_HOURS + 1
+        )
+        self.encounter.save(update_fields=["status", "modified_date"])
+        url = reverse(
+            "encounter-restart",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("cannot be restarted after", str(response.data))
+
 
 class EncounterOrganizationAPITests(CareAPITestBase):
     def setUp(self):
