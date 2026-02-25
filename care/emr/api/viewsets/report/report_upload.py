@@ -45,6 +45,7 @@ class GenerateReportRequest(BaseModel):
     associating_id: UUID4
     output_format: str | None = None
     force: bool = False
+    status_check: bool = False
 
     @field_validator("output_format")
     @classmethod
@@ -125,7 +126,14 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
         if request_data.force:
             report_utils.clear_lock(lock_key)
 
-        if current_progress := report_utils.get_progress(lock_key):
+        current_progress = report_utils.get_progress(lock_key)
+
+        if request_data.status_check:
+            if current_progress:
+                return Response({"progress": current_progress})
+            return Response({})
+
+        if current_progress:
             return Response(
                 {
                     "detail": (
