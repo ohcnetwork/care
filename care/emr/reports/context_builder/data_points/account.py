@@ -5,8 +5,11 @@ from care.emr.reports.context_builder.data_points.base import (
     SingleObjectContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.charge_items import (
-    AccountChargeItemCategoryContextBuilder,
+    AccountChargeItemCategorySummaryContextBuilder,
     AccountChargeItemContextBuilder,
+)
+from care.emr.reports.context_builder.data_points.encounter import (
+    MinimumEncounterReportContext,
 )
 from care.emr.reports.context_builder.data_points.facility import FacilityContextBuilder
 from care.emr.reports.context_builder.data_points.invoice import (
@@ -40,6 +43,11 @@ BILLING_STATUS_DISPLAY = {
 
 
 class BaseAccountContextBuilder(SingleObjectContextBuilder):
+    external_id = Field(
+        display="Account External ID",
+        preview_value="beff3ce1-e1be-41bc-8fb9-07ce2ebe42a6",
+        description="Unique identifier for the account",
+    )
     name = Field(
         display="Account Title",
         preview_value="General Checkup Account",
@@ -70,18 +78,23 @@ class BaseAccountContextBuilder(SingleObjectContextBuilder):
     )
     total_gross = Field(
         display="Total Gross Amount",
-        preview_value="180.00",
+        preview_value="180.000000",
         description="Total gross amount for the account",
     )
     total_paid = Field(
         display="Total Paid Amount",
-        preview_value="100.00",
+        preview_value="100.000000",
         description="Total amount paid towards the account",
     )
     total_balance = Field(
         display="Total Balance Amount",
-        preview_value="80.00",
+        preview_value="80.000000",
         description="Total balance amount remaining for the account",
+    )
+    total_billable_charge_items = Field(
+        display="Total Billable Charge Items",
+        preview_value="1455.000000",
+        description="Total number of billable charge items associated with the account",
     )
     total_price_components = Field(
         display="Total Price Components",
@@ -101,10 +114,10 @@ class BaseAccountContextBuilder(SingleObjectContextBuilder):
         target_context=AccountChargeItemContextBuilder,
         description="Chargeable items associated with the account",
     )
-    category_charge_items = Field(
-        display="Category-wise Charge Items",
+    category_charge_items_summary = Field(
+        display="Charge Items Category Summary",
         preview_value="",
-        target_context=AccountChargeItemCategoryContextBuilder,
+        target_context=AccountChargeItemCategorySummaryContextBuilder,
         description="Charge items categorized by their types for the account",
     )
     payment_reconciliations = Field(
@@ -122,6 +135,12 @@ class BaseAccountContextBuilder(SingleObjectContextBuilder):
         display="Account Calculated At",
         preview_value="2023-01-20T15:45:00Z",
         description="Date when the account totals were last calculated",
+    )
+    primary_encounter = Field(
+        display="Primary Encounter",
+        preview_value="",
+        target_context=MinimumEncounterReportContext,
+        description="Primary encounter associated with the account",
     )
 
 
