@@ -1,3 +1,4 @@
+import secrets
 import sys
 from secrets import choice
 
@@ -6,10 +7,17 @@ from faker import Faker
 from model_bakery import baker
 from rest_framework.test import APITestCase
 
+from care.emr.management.commands.load_fixtures import (
+    generate_unique_indian_phone_number,
+)
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.resources.encounter.constants import (
     ClassChoices,
     EncounterPriorityChoices,
+)
+from care.emr.resources.patient.spec import (
+    BloodGroupChoices,
+    GenderChoices,
 )
 
 # Global mocking, since the types are loaded when specs load, mocking using patch was not working as the validations were already loaded.
@@ -83,6 +91,13 @@ class CareAPITestBase(APITestCase):
     def create_patient(self, **kwargs):
         from care.emr.models import Patient
 
+        kwargs.setdefault("name", self.fake.name())
+        kwargs.setdefault("gender", secrets.choice(list(GenderChoices)).value)
+        kwargs.setdefault("phone_number", generate_unique_indian_phone_number())
+        kwargs.setdefault("address", self.fake.address())
+        kwargs.setdefault("pincode", self.fake.random_int(min=100000, max=999999))
+        kwargs.setdefault("blood_group", secrets.choice(list(BloodGroupChoices)).value)
+        kwargs.setdefault("date_of_birth", self.fake.date_of_birth())
         return baker.make(Patient, **kwargs)
 
     def create_facility(self, user, **kwargs):
