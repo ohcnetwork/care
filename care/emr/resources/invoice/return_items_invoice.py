@@ -88,6 +88,12 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
     """
     Cancel the return invoice for items based on delivery order
     """
+    supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
+    for supply_delivery in supply_deliveries:
+        sync_inventory_item(
+            location=delivery_order.destination,
+            product=supply_delivery.supplied_item,
+        )
     if not delivery_order.patient_invoice:
         return
     with transaction.atomic():
@@ -101,11 +107,5 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
             paid_invoice=None,
             paid_on=None,
         )
-        supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
-        for supply_delivery in supply_deliveries:
-            sync_inventory_item(
-                location=delivery_order.destination,
-                product=supply_delivery.supplied_item,
-            )
 
     rebalance_account_task(delivery_order.patient_invoice.account.id)
