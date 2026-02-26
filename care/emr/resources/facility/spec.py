@@ -30,6 +30,7 @@ class FacilityBareMinimumSpec(EMRResource):
     id: UUID4 | None = None
     name: str
 
+
 class PageMargin(BaseModel):
     top: float = Field(ge=0)
     bottom: float = Field(ge=0)
@@ -44,7 +45,7 @@ class PageConfig(BaseModel):
 
 
 class PrintSetupConfig(BaseModel):
-    autoPrint: bool | None = None
+    auto_print: bool | None = None
 
 
 class LogoConfig(BaseModel):
@@ -66,8 +67,8 @@ class FooterImageConfig(BaseModel):
 
 class BrandingConfig(BaseModel):
     logo: LogoConfig | None = None
-    headerImage: HeaderImageConfig | None = None
-    footerImage: FooterImageConfig | None = None
+    header_image: HeaderImageConfig | None = None
+    footer_image: FooterImageConfig | None = None
 
 
 class WatermarkConfig(BaseModel):
@@ -78,8 +79,9 @@ class WatermarkConfig(BaseModel):
 
 
 class PrintTemplate(BaseModel):
+    slug: str
     page: PageConfig | None = None
-    printSetup: PrintSetupConfig | None = None
+    print_setup: PrintSetupConfig | None = None
     branding: BrandingConfig | None = None
     watermark: WatermarkConfig | None = None
 
@@ -94,6 +96,7 @@ class FacilityBaseSpec(FacilityBareMinimumSpec):
     middleware_address: str | None = None
     facility_type: str
     is_public: bool
+
 
 DISCOUNT_CODE_COUNT_LIMIT = 100
 DISCOUNT_MONETARY_COMPONENT_COUNT_LIMIT = 100
