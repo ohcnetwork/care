@@ -217,6 +217,7 @@ class PatientListSpec(PatientBaseSpec):
     instance_tags: list[dict] = []
     facility_tags: list[dict] = []
 
+
     @classmethod
     def perform_extra_serialization(cls, mapping, obj, *args, **kwargs):
         mapping["id"] = obj.external_id
