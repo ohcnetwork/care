@@ -1,6 +1,8 @@
+from typing import Literal
+
 from django.conf import settings
 from django.db.models.functions import Lower, Trim
-from pydantic import UUID4, BaseModel, field_validator, model_validator
+from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 from pydantic_core.core_schema import ValidationInfo
 from pydantic_extra_types.coordinate import Latitude, Longitude
 
@@ -28,6 +30,59 @@ class FacilityBareMinimumSpec(EMRResource):
     id: UUID4 | None = None
     name: str
 
+class PageMargin(BaseModel):
+    top: float = Field(ge=0)
+    bottom: float = Field(ge=0)
+    left: float = Field(ge=0)
+    right: float = Field(ge=0)
+
+
+class PageConfig(BaseModel):
+    size: Literal["A4", "A5", "Letter", "Legal"] | None = None
+    orientation: Literal["portrait", "landscape"] | None = None
+    margin: PageMargin | None = None
+
+
+class PrintSetupConfig(BaseModel):
+    autoPrint: bool | None = None
+
+
+class LogoConfig(BaseModel):
+    url: str
+    width: float | None = None
+    height: float | None = None
+    alignment: Literal["left", "center", "right"]
+
+
+class HeaderImageConfig(BaseModel):
+    url: str
+    height: float | None = None
+
+
+class FooterImageConfig(BaseModel):
+    url: str | None = None
+    height: float | None = None
+
+
+class BrandingConfig(BaseModel):
+    logo: LogoConfig | None = None
+    headerImage: HeaderImageConfig | None = None
+    footerImage: FooterImageConfig | None = None
+
+
+class WatermarkConfig(BaseModel):
+    enabled: bool | None = None
+    text: str | None = None
+    opacity: float | None = Field(None, ge=0, le=1)
+    rotation: float | None = None
+
+
+class PrintTemplate(BaseModel):
+    page: PageConfig | None = None
+    printSetup: PrintSetupConfig | None = None
+    branding: BrandingConfig | None = None
+    watermark: WatermarkConfig | None = None
+
 
 class FacilityBaseSpec(FacilityBareMinimumSpec):
     description: str
@@ -39,7 +94,6 @@ class FacilityBaseSpec(FacilityBareMinimumSpec):
     middleware_address: str | None = None
     facility_type: str
     is_public: bool
-
 
 DISCOUNT_CODE_COUNT_LIMIT = 100
 DISCOUNT_MONETARY_COMPONENT_COUNT_LIMIT = 100
@@ -63,6 +117,7 @@ class FacilityInvoiceExpressionSpec(BaseModel):
 class FacilityCreateSpec(FacilityBaseSpec):
     geo_organization: UUID4
     features: list[int]
+    print_templates: list[PrintTemplate] = []
 
     @field_validator("name")
     @classmethod
@@ -136,6 +191,8 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     extensions_schema_supply_delivery: dict = {}
     extensions_schema_supply_delivery_order: dict = {}
     extensions_schema_account: dict = {}
+
+    print_templates: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
