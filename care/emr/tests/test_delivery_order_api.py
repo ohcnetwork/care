@@ -1262,7 +1262,7 @@ class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
         self.inventory_item_destination.refresh_from_db()
         self.assertEqual(self.inventory_item_destination.net_content, (Decimal(1450)))
 
-    def test_create_medication_return_delivery_order_with_inprogress_supply_delivery(
+    def test_create_medication_return_delivery_order_with_in_progress_supply_delivery(
         self,
     ):
         """
@@ -1289,3 +1289,32 @@ class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
             "Finalise Deliveries before completing order",
             response.data["errors"][0]["msg"],
         )
+
+    def test_cancel_medication_return_delivery_order_without_generating_return_invoice(
+        self,
+    ):
+        """
+        Test cancelling a medication return delivery order without generating return invoice
+        Verify that delivery order can be marked as abandoned without generating return invoice when the order is not marked as completed
+        Check the inventory item net content after cancellation remains the same
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.return_delivery_order_destination.status = (
+            SupplyDeliveryStatusOptions.entered_in_error.value
+        )
+        self.return_delivery_order_destination.save(update_fields=["status"])
+        self.return_delivery_order_data["status"] = (
+            SupplyDeliveryOrderStatusOptions.abandoned.value
+        )
+        cancel_response = self.client.put(
+            self.generate_order_detail_url(
+                self.return_order_destination.external_id, self.facility.external_id
+            ),
+            self.return_delivery_order_data,
+            format="json",
+        )
+
+        self.assertEqual(cancel_response.status_code, 200)
+        self.assertEqual(cancel_response.data["patient_invoice_id"], None)
+        self.inventory_item_destination.refresh_from_db()
+        self.assertEqual(self.inventory_item_destination.net_content, (Decimal(1450)))
