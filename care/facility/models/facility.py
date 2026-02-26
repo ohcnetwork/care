@@ -216,6 +216,8 @@ class Facility(BaseModel):
         max_length=1000, blank=True, null=True, default=None
     )
 
+    print_templates = models.JSONField(default=dict)
+
     class Meta:
         verbose_name_plural = "Facilities"
 
