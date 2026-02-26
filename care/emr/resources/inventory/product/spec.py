@@ -42,15 +42,6 @@ class BaseProductSpec(EMRResource):
     standard_pack_size: int | None = None
     purchase_price: Decimal | None = Field(None, max_digits=20, decimal_places=6)
 
-    @field_validator("extensions")
-    @classmethod
-    def validate_extensions(cls, v):
-        try:
-            validate(v, settings.PRODUCT_EXTENSIONS_JSON_SCHEMA)
-        except Exception as e:
-            raise ValueError("Invalid additional metadata") from e
-        return v
-
 
 class ProductWriteSpec(ExtensionValidator, BaseProductSpec):
     """Payment reconciliation write specification"""
