@@ -141,7 +141,8 @@ class PatientCreateSpec(ExtensionValidator, PatientBaseSpec):
             # override dob if user chooses to update age
             obj.date_of_birth = None
             obj.year_of_birth = timezone.now().date().year - self.age
-        else:
+        elif self.date_of_birth:
+            obj.date_of_birth = self.date_of_birth
             obj.year_of_birth = self.date_of_birth.year
         obj._identifiers = self.identifiers  # noqa: SLF001
         obj._tags = self.tags  # noqa: SLF001
@@ -186,6 +187,7 @@ class PatientUpdateSpec(ExtensionValidator, PatientBaseSpec):
                 obj.date_of_birth = None
                 obj.year_of_birth = timezone.now().year - self.age
             elif self.date_of_birth:
+                obj.date_of_birth = self.date_of_birth
                 obj.year_of_birth = self.date_of_birth.year
         if not self.pincode:
             obj.pincode = None
@@ -248,6 +250,7 @@ class PatientIdentifierResponse(BaseModel):
 
 
 class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
+    age: str
     geo_organization: dict = {}
 
     created_by: dict | None = None
@@ -290,3 +293,4 @@ class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
                     }
                     for x in obj.facility_identifiers.get(str(facility.id), [])
                 ]
+        mapping["age"] = obj.get_age()
