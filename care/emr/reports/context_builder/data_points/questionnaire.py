@@ -10,6 +10,9 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.user import (
     SingleUserRelatedContextBuilder,
 )
+from care.emr.resources.questionnaire_response.spec import (
+    QuestionnaireResponseStatusChoices,
+)
 
 
 class QuestionnaireResponsesContextBuilder(QuerysetContextBuilder):
@@ -80,7 +83,9 @@ class QuestionnaireContextBuilder(QuerysetContextBuilder):
 
     def get_context(self):
         return QuestionnaireResponse.objects.filter(
-            encounter=self.parent_context, questionnaire__isnull=False
+            encounter=self.parent_context,
+            questionnaire__isnull=False,
+            status=QuestionnaireResponseStatusChoices.completed.value,
         )
 
     def perform_extra_filters(self, qs, **kwargs):
