@@ -61,7 +61,7 @@ class HeaderImageConfig(BaseModel):
 
 
 class FooterImageConfig(BaseModel):
-    url: str | None = None
+    url: str
     height: float | None = None
 
 
