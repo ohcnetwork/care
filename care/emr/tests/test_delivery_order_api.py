@@ -954,7 +954,6 @@ class DeliveryOrderAPITest(CareAPITestBase):
 
 class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
     def setUp(self):
-        super().setUp()
         """
         Setup for medication return delivery order test case
         Inherit setup from TestSupplyDeliveryViewSetBase
@@ -966,6 +965,7 @@ class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
         when the delivery order status is updated to completed and cancellation of return invoice when delivery order is abandoned or entered in error
 
         """
+        super().setUp()
         self.return_order_destination = self.create_delivery_order(
             destination=self.destination,
             patient=self.patient,
