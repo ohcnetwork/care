@@ -23,6 +23,7 @@ class MonetaryComponent(BaseModel):
     tax_included_amount: Decimal | None = Field(
         default=None, max_digits=20, decimal_places=6
     )
+    global_component: bool = False
     conditions: list[EvaluatorConditionSpec] = []
 
     @model_validator(mode="after")
@@ -62,6 +63,8 @@ class MonetaryComponent(BaseModel):
 
     @model_validator(mode="after")
     def check_amount_or_factor(self):
+        if self.global_component and self.code:
+            return self
         if not ((self.amount is not None) or self.factor):
             raise ValueError("Either 'amount' or 'factor' must be present.")
         return self

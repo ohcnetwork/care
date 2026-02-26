@@ -31,6 +31,9 @@ class SupplyDelivery(EMRBaseModel):
         blank=True,
     )
     extensions = models.JSONField(default=dict)
+    total_purchase_price = models.DecimalField(
+        null=True, blank=True, max_digits=20, decimal_places=6
+    )
 
 
 class DeliveryOrder(EMRBaseModel):
