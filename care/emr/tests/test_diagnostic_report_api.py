@@ -14,6 +14,7 @@ from care.emr.resources.service_request.spec import (
     ServiceRequestStatusChoices,
 )
 from care.security.permissions.diagnostic_report import DiagnosticReportPermissions
+from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -45,6 +46,7 @@ class DiagnosticReportAPITestCases(CareAPITestBase):
         self.permission = [
             DiagnosticReportPermissions.can_write_diagnostic_report.name,
             DiagnosticReportPermissions.can_read_diagnostic_report.name,
+            PatientPermissions.can_view_clinical_data.name,
         ]
         self.url = reverse(
             "diagnostic_report-list",
@@ -81,10 +83,12 @@ class DiagnosticReportAPITestCases(CareAPITestBase):
                 "code": "LAB",
                 "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
             },
-            "service_request": self.service_request,
-            "patient": self.patient,
-            "encounter": self.encounter,
-            "facility": self.facility,
+            "service_request": kwargs.setdefault(
+                "service_request", self.service_request
+            ),
+            "patient": kwargs.setdefault("patient", self.patient),
+            "encounter": kwargs.setdefault("encounter", self.encounter),
+            "facility": kwargs.setdefault("facility", self.facility),
         }
         data.update(**kwargs)
         return baker.make(DiagnosticReport, **data)
@@ -252,5 +256,164 @@ class DiagnosticReportAPITestCases(CareAPITestBase):
         self.assertEqual(
             response.data["detail"],
             "You do not have permission to read this diagnostic report",
+            response.data,
+        )
+
+    #  Testcases for listing diagnostic reports
+
+    def test_list_diagnostic_reports_as_superuser(self):
+        """
+        Test that a superuser can list diagnostic reports.
+        """
+        diagnostic_report_1 = self.create_diagnostic_report()
+        diagnostic_report_2 = self.create_diagnostic_report()
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(self.url, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(len(response.data["results"]), 2)
+        ids = [report["id"] for report in response.data["results"]]
+        self.assertIn(str(diagnostic_report_1.external_id), ids)
+        self.assertIn(str(diagnostic_report_2.external_id), ids)
+
+    def test_list_diagnostic_reports_as_user_with_permissions(self):
+        """
+        Test that a user with permissions can list diagnostic reports.
+        """
+        diagnostic_report_1 = self.create_diagnostic_report()
+        diagnostic_report_2 = self.create_diagnostic_report()
+        self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(permissions=self.permission)
+        self.attach_role_facility_organization_user(
+            role=role, user=self.user, facility_organization=self.facility_organization
+        )
+        response = self.client.get(self.url, format="json")
+
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(len(response.data["results"]), 2)
+        ids = [report["id"] for report in response.data["results"]]
+        self.assertIn(str(diagnostic_report_1.external_id), ids)
+        self.assertIn(str(diagnostic_report_2.external_id), ids)
+
+    def test_list_diagnostic_reports_as_user_without_permissions(self):
+        """
+        Test that a user without permissions cannot list diagnostic reports.
+        """
+        self.create_diagnostic_report()
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(self.url, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have permission to view clinical data for this patient",
+            response.data,
+        )
+
+    def test_list_diagnostic_reports_with_encounter_filter(self):
+        """
+        Test that filtering diagnostic reports by encounter works.
+        """
+        self.create_diagnostic_report()
+        another_encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        diagnostic_report_2 = self.create_diagnostic_report(encounter=another_encounter)
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=self.create_role_with_permissions(permissions=self.permission),
+            user=self.user,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.get(
+            self.url + f"?encounter={another_encounter.external_id}", format="json"
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(diagnostic_report_2.external_id)
+        )
+
+    def test_list_diagnostic_reports_with_service_request_filter(self):
+        """
+        Test that filtering diagnostic reports by service request works.
+        """
+        self.create_diagnostic_report()
+        another_service_request = self.create_service_request(
+            title="Another Service Request",
+            patient=self.patient,
+            facility=self.facility,
+            encounter=self.encounter,
+            status=ServiceRequestStatusChoices.active.value,
+            intent=choice(list(ServiceRequestIntentChoices)).value,
+            priority=choice(list(ServiceRequestPriorityChoices)).value,
+            category=choice(list(ActivityDefinitionCategoryOptions)).value,
+        )
+        diagnostic_report_2 = self.create_diagnostic_report(
+            service_request=another_service_request
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=self.create_role_with_permissions(permissions=self.permission),
+            user=self.user,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.get(
+            self.url + f"?service_request={another_service_request.external_id}",
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(diagnostic_report_2.external_id)
+        )
+
+    def test_list_diagnostic_reports_with_unauthorized_encounter_filter(self):
+        """
+        Test that filtering diagnostic reports by an encounter the user does not have access to fails.
+        """
+        self.create_diagnostic_report()
+        another_encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        self.create_diagnostic_report(encounter=another_encounter)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.url + f"?encounter={another_encounter.external_id}", format="json"
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have permission to read this diagnostic report in this encounter",
+            response.data,
+        )
+
+    def test_list_diagnostic_reports_with_unauthorized_service_request_filter(self):
+        """
+        Test that filtering diagnostic reports by a service request the user does not have access to fails.
+        """
+        self.create_diagnostic_report()
+        another_service_request = self.create_service_request(
+            title="Another Service Request",
+            patient=self.patient,
+            facility=self.facility,
+            encounter=self.encounter,
+            status=ServiceRequestStatusChoices.active.value,
+            intent=choice(list(ServiceRequestIntentChoices)).value,
+            priority=choice(list(ServiceRequestPriorityChoices)).value,
+            category=choice(list(ActivityDefinitionCategoryOptions)).value,
+        )
+        self.create_diagnostic_report(service_request=another_service_request)
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.url + f"?service_request={another_service_request.external_id}",
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have permission to read this diagnostic report for this service request",
             response.data,
         )
