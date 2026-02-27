@@ -417,3 +417,67 @@ class DiagnosticReportAPITestCases(CareAPITestBase):
             "You do not have permission to read this diagnostic report for this service request",
             response.data,
         )
+
+    # Testcases for updating a diagnostic report status
+
+    def test_update_diagnostic_report_as_superuser(self):
+        """
+        Test that a superuser can update a diagnostic report status.
+        """
+        diagnostic_report = self.create_diagnostic_report()
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_diagnostic_report_data(
+            status=DiagnosticReportStatusChoices.final.value
+        )
+
+        response = self.client.patch(
+            self.get_detail_url(external_id=diagnostic_report.external_id),
+            data=data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["id"], str(diagnostic_report.external_id))
+        self.assertEqual(response.data["status"], data["status"])
+
+    def test_update_diagnostic_report_as_user_with_permissions(self):
+        """
+        Test that a user with permissions can update a diagnostic report status.
+        """
+        diagnostic_report = self.create_diagnostic_report()
+        self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(permissions=self.permission)
+        self.attach_role_facility_organization_user(
+            role=role, user=self.user, facility_organization=self.facility_organization
+        )
+        data = self.generate_diagnostic_report_data(
+            status=DiagnosticReportStatusChoices.final.value
+        )
+        response = self.client.patch(
+            self.get_detail_url(external_id=diagnostic_report.external_id),
+            data=data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["id"], str(diagnostic_report.external_id))
+        self.assertEqual(response.data["status"], data["status"])
+
+    def test_update_diagnostic_report_as_user_without_permissions(self):
+        """
+        Test that a user without permissions cannot update a diagnostic report status.
+        """
+        diagnostic_report = self.create_diagnostic_report()
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_diagnostic_report_data(
+            status=DiagnosticReportStatusChoices.final.value
+        )
+        response = self.client.patch(
+            self.get_detail_url(external_id=diagnostic_report.external_id),
+            data=data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have permission to write this diagnostic report",
+            response.data,
+        )
