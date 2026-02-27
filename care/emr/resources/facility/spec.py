@@ -122,6 +122,15 @@ class FacilityCreateSpec(FacilityBaseSpec):
     features: list[int]
     print_templates: list[PrintTemplate] = []
 
+    @field_validator("facility_type")
+    @classmethod
+    def validate_facility_type(cls, v):
+        if v not in REVERSE_REVERSE_FACILITY_TYPES:
+            valid = ", ".join(sorted(REVERSE_REVERSE_FACILITY_TYPES.keys()))
+            err = f"Invalid facility type '{v}'. Valid options are: {valid}"
+            raise ValueError(err)
+        return v
+
     @field_validator("name")
     @classmethod
     def validate_name_uniqueness(cls, v, info: ValidationInfo):
