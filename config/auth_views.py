@@ -165,7 +165,28 @@ class TokenObtainPairView(TokenViewBase):
 
     serializer_class = TokenObtainPairSerializer
 
-    @extend_schema(tags=["auth"])
+    @extend_schema(
+        tags=["auth"],
+        request={
+            "application/json": {
+                "type": "object",
+                "properties": {
+                    "username": {"type": "string"},
+                    "password": {"type": "string", "format": "password"},
+                },
+                "required": ["username", "password"],
+            }
+        },
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "access": {"type": "string"},
+                    "refresh": {"type": "string"},
+                },
+            }
+        },
+    )
     def post(self, request, *args, **kwargs):
         return super().post(request, *args, **kwargs)
 
