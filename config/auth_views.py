@@ -183,6 +183,10 @@ class TokenObtainPairView(TokenViewBase):
                 "properties": {
                     "access": {"type": "string"},
                     "refresh": {"type": "string"},
+                    "temp_token": {
+                        "type": "string",
+                        "description": "Returned instead of access/refresh when MFA is enabled. Use this token to complete MFA authentication.",
+                    },
                 },
             }
         },
