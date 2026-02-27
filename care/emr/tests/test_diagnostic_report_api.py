@@ -1,7 +1,9 @@
 from secrets import choice
 
 from django.urls import reverse
+from model_bakery import baker
 
+from care.emr.models.diagnostic_report import DiagnosticReport
 from care.emr.resources.activity_definition.spec import (
     ActivityDefinitionCategoryOptions,
 )
@@ -21,7 +23,7 @@ class DiagnosticReportAPITestCases(CareAPITestBase):
         self.user = self.create_user()
         self.superuser = self.create_super_user()
         self.patient = self.create_patient()
-        self.facility = self.create_facility(user=self.user)
+        self.facility = self.create_facility(user=self.superuser)
         self.facility_organization = self.create_facility_organization(
             facility=self.facility
         )
@@ -70,6 +72,22 @@ class DiagnosticReportAPITestCases(CareAPITestBase):
         }
         data.update(**kwargs)
         return data
+
+    def create_diagnostic_report(self, **kwargs):
+        data = {
+            "status": DiagnosticReportStatusChoices.final.value,
+            "category": {
+                "display": "Laboratory",
+                "code": "LAB",
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+            },
+            "service_request": self.service_request,
+            "patient": self.patient,
+            "encounter": self.encounter,
+            "facility": self.facility,
+        }
+        data.update(**kwargs)
+        return baker.make(DiagnosticReport, **data)
 
     # Testcases for creating a diagnostic report
 
@@ -168,5 +186,71 @@ class DiagnosticReportAPITestCases(CareAPITestBase):
         self.assertEqual(
             response.data["errors"][0]["msg"],
             "Invalid Request",
+            response.data,
+        )
+
+    # Testcases for retrieving a diagnostic report
+
+    def test_retrieve_diagnostic_report_as_superuser(self):
+        """
+        Test that a superuser can retrieve a diagnostic report.
+        """
+
+        diagnostic_report = self.create_diagnostic_report()
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.get_detail_url(external_id=diagnostic_report.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["id"], str(diagnostic_report.external_id))
+        self.assertEqual(response.data["status"], diagnostic_report.status)
+        self.assertEqual(
+            response.data["category"]["code"], diagnostic_report.category["code"]
+        )
+        self.assertEqual(
+            response.data["service_request"]["id"],
+            str(diagnostic_report.service_request.external_id),
+        )
+
+    def test_retrieve_diagnostic_report_as_user_with_permissions(self):
+        """
+        Test that a user with permissions can retrieve a diagnostic report.
+        """
+        diagnostic_report = self.create_diagnostic_report()
+        self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(permissions=self.permission)
+        self.attach_role_facility_organization_user(
+            role=role, user=self.user, facility_organization=self.facility_organization
+        )
+        response = self.client.get(
+            self.get_detail_url(external_id=diagnostic_report.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["id"], str(diagnostic_report.external_id))
+        self.assertEqual(response.data["status"], diagnostic_report.status)
+        self.assertEqual(
+            response.data["category"]["code"], diagnostic_report.category["code"]
+        )
+        self.assertEqual(
+            response.data["service_request"]["id"],
+            str(diagnostic_report.service_request.external_id),
+        )
+
+    def test_retrieve_diagnostic_report_as_user_without_permissions(self):
+        """
+        Test that a user without permissions cannot retrieve a diagnostic report.
+        """
+        diagnostic_report = self.create_diagnostic_report()
+        self.client.force_authenticate(user=self.user)
+        response = self.client.get(
+            self.get_detail_url(external_id=diagnostic_report.external_id),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have permission to read this diagnostic report",
             response.data,
         )
