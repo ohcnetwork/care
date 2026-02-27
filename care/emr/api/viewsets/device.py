@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Q
 from django.utils import timezone
 from django_filters import rest_framework as filters
 from pydantic import UUID4, BaseModel
@@ -42,6 +43,7 @@ from care.emr.resources.device.spec import (
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
+from care.utils.filters.dummy_filter import DummyBooleanFilter
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -49,6 +51,7 @@ class DeviceFilters(filters.FilterSet):
     current_encounter = filters.UUIDFilter(field_name="current_encounter__external_id")
     current_location = filters.UUIDFilter(field_name="current_location__external_id")
     care_type = filters.CharFilter(field_name="care_type")
+    include_children = DummyBooleanFilter()
 
 
 class DeviceViewSet(EMRModelViewSet):
@@ -133,10 +136,26 @@ class DeviceViewSet(EMRModelViewSet):
             location = get_object_or_404(
                 FacilityLocation, external_id=self.request.GET["location"]
             )
+            include_children = (
+                self.request.GET.get("include_children", "false").lower() == "true"
+            )
             if AuthorizationController.call(
                 "can_read_devices_on_location", self.request.user, location
             ):
-                queryset = queryset.filter(current_location=location)
+                if include_children:
+                    queryset = queryset.filter(
+                        Q(current_location=location)
+                        | Q(current_location__parent_cache__overlap=[location.id])
+                    )
+                else:
+                    queryset = queryset.filter(current_location=location)
+            elif include_children:
+                queryset = queryset.filter(
+                    facility_organization_cache__overlap=users_facility_organizations
+                ).filter(
+                    Q(current_location=location)
+                    | Q(current_location__parent_cache__overlap=[location.id])
+                )
             else:
                 queryset = queryset.filter(
                     facility_organization_cache__overlap=users_facility_organizations,

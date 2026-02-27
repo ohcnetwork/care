@@ -26,6 +26,7 @@ from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
 )
 from care.emr.resources.inventory.supply_delivery.delivery_order import (
     SupplyDeliveryOrderReadSpec,
+    SupplyDeliveryOrderStatusOptions,
 )
 from care.emr.resources.inventory.supply_delivery.spec import (
     SupplyDeliveryReadSpec,
@@ -99,6 +100,13 @@ class SupplyDeliveryViewSet(
         return super().validate_data(instance, model_obj)
 
     def perform_create(self, instance):
+        if instance.order.status in [
+            SupplyDeliveryOrderStatusOptions.abandoned.value,
+            SupplyDeliveryOrderStatusOptions.entered_in_error.value,
+        ]:
+            raise ValidationError("Delivery order is abandoned or entered in error")
+        if instance.order.status == SupplyDeliveryOrderStatusOptions.completed.value:
+            raise ValidationError("Delivery order is completed")
         if instance.order.origin:
             # When the delivery is from outside facility,
             # all statuses are allowed to be updated by the recieving location
@@ -123,6 +131,13 @@ class SupplyDeliveryViewSet(
         with transaction.atomic():
             old_instance = self.database_model.objects.get(id=instance.id)
             if instance.status != old_instance.status:
+                if old_instance.status in [
+                    SupplyDeliveryOrderStatusOptions.abandoned.value,
+                    SupplyDeliveryOrderStatusOptions.entered_in_error.value,
+                ]:
+                    raise ValidationError(
+                        "Supply delivery is abandoned or entered in error"
+                    )
                 if old_instance.status == SupplyDeliveryStatusOptions.completed.value:
                     raise ValidationError("Supply delivery already completed")
                 if (

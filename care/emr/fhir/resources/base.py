@@ -42,9 +42,9 @@ class ResourceManger:
 
     def filter(self, *args, **kwargs):
         if kwargs:
-            for key in kwargs:
+            for key, value in kwargs.items():
                 if key in self.allowed_properties:
-                    self._filters[key] = kwargs[key]
+                    self._filters[key] = value
             self.validate_filter()
         return self.clone()
 

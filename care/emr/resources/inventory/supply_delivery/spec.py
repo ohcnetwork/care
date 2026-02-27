@@ -1,8 +1,11 @@
 import datetime
+from decimal import Decimal
 from enum import Enum
 
-from pydantic import UUID4, model_validator
+from pydantic import UUID4, Field, model_validator
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import ExtensionValidator
 from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.product import Product
 from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
@@ -36,6 +39,7 @@ class BaseSupplyDeliverySpec(EMRResource):
     """Base model for supply delivery"""
 
     __model__ = SupplyDelivery
+    ___extension_resource_type__ = ExtensionResource.supply_delivery
     __exclude__ = [
         "supplied_item",
         "supply_request",
@@ -46,9 +50,10 @@ class BaseSupplyDeliverySpec(EMRResource):
 
     status: SupplyDeliveryStatusOptions
     supplied_item_condition: SupplyDeliveryConditionOptions | None = None
+    total_purchase_price: Decimal | None = Field(None, max_digits=20, decimal_places=6)
 
 
-class SupplyDeliveryUpdateSpec(BaseSupplyDeliverySpec):
+class SupplyDeliveryUpdateSpec(ExtensionValidator, BaseSupplyDeliverySpec):
     order: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
@@ -59,15 +64,26 @@ class SupplyDeliveryUpdateSpec(BaseSupplyDeliverySpec):
         return obj
 
 
-class SupplyDeliveryWriteSpec(BaseSupplyDeliverySpec):
+class SupplyDeliveryWriteSpec(ExtensionValidator, BaseSupplyDeliverySpec):
     """Supply delivery write specification"""
 
-    supplied_item_quantity: float
+    supplied_item_pack_quantity: int | None = None
+    supplied_item_pack_size: int | None = None
+
+    supplied_item_quantity: Decimal = Field(max_digits=20, decimal_places=0)
     supplied_item: UUID4 | None = None
     supplied_inventory_item: UUID4 | None = None
 
     supply_request: UUID4 | None = None
     order: UUID4
+
+    @model_validator(mode="after")
+    def validate_quantity(self):
+        if self.supplied_item_pack_quantity and self.supplied_item_pack_size:
+            self.supplied_item_quantity = (
+                self.supplied_item_pack_quantity * self.supplied_item_pack_size
+            )
+        return self
 
     @model_validator(mode="after")
     def validate_supplied_item(self):
@@ -126,6 +142,9 @@ class SupplyDeliveryReadSpec(BaseSupplyDeliverySpec):
     modified_date: datetime.datetime
     supplied_inventory_item: dict | None = None
     supply_request: dict | None = None
+    supplied_item_pack_quantity: int | None = None
+    supplied_item_pack_size: int | None = None
+    extensions: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

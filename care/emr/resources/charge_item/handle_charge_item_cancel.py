@@ -22,3 +22,4 @@ def handle_charge_item_cancel(charge_item):
             sync_invoice_items(charge_item.paid_invoice)
             charge_item.paid_invoice.save()
             charge_item.paid_invoice = None
+            charge_item.paid_on = None

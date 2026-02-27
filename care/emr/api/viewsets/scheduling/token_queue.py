@@ -98,7 +98,7 @@ class TokenQueueViewSet(EMRModelViewSet):
             resource,
             self.request.user,
         ):
-            raise PermissionDenied("You do not have permission to create token queue")
+            raise PermissionDenied("You do not have permission to update token queue")
 
     def authorize_destroy(self, instance):
         self.authorize_update({}, instance)

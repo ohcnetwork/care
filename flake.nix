@@ -58,16 +58,6 @@
           FILE_UPLOAD_BUCKET = "patient-bucket";
           FACILITY_S3_BUCKET = "facility-bucket";
 
-          # HCX Config (for local testing)
-          HCX_AUTH_BASE_PATH = "https://staging-hcx.swasth.app/auth/realms/swasth-health-claim-exchange/protocol/openid-connect/token";
-          HCX_ENCRYPTION_PRIVATE_KEY_URL = "https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/main/demo-app/server/resources/keys/x509-private-key.pem";
-          HCX_IG_URL = "https://ig.hcxprotocol.io/v0.7.1";
-          HCX_PARTICIPANT_CODE = "qwertyreboot.gmail@swasth-hcx-staging";
-          HCX_PASSWORD = "Opensaber@123";
-          HCX_PROTOCOL_BASE_PATH = "http://staging-hcx.swasth.app/api/v0.7";
-          HCX_USERNAME = "qwertyreboot@gmail.com";
-          HCX_CERT_URL = "https://raw.githubusercontent.com/Swasth-Digital-Health-Foundation/hcx-platform/main/demo-app/server/resources/keys/x509-self-signed-certificate.pem";
-
           # PostgreSQL configuration for compilation (using Nix store paths)
           PG_CONFIG = "${pkgs.postgresql_15}/bin/pg_config";
           LDFLAGS = "-L${pkgs.postgresql_15}/lib";
@@ -249,7 +239,7 @@
 
           echo "✅ Development environment setup complete!"
           echo ""
-          echo "Note: Typst ${pkgs.typst.version} and ruff ${pkgs.ruff.version} are available from Nix store"
+          echo "Note: ruff ${pkgs.ruff.version} is available from Nix store"
         '';
 
         # Django management commands
@@ -439,7 +429,6 @@
             libpq
             redis
             minio
-            typst # Typst directly from nixpkgs
             ruff # Ruff from Nix for NixOS compatibility
 
             # System dependencies for building Python packages
@@ -506,7 +495,6 @@
             echo "   PostgreSQL: ${pkgs.postgresql_15.version}"
             echo "   Redis: ${pkgs.redis.version}"
             echo "   MinIO: ${pkgs.minio.version}"
-            echo "   Typst: ${pkgs.typst.version}"
             echo "   Ruff: ${pkgs.ruff.version}"
             echo ""
             echo "Available commands:"
@@ -552,7 +540,6 @@
 
             # Verify tools are available
             echo "✅ PostgreSQL development tools available (${pkgs.postgresql_15.version})"
-            echo "✅ Typst available (${pkgs.typst.version})"
             echo "✅ Ruff available (${pkgs.ruff.version})"
           '';
         };
@@ -565,7 +552,6 @@
             pkgs.postgresql_15
             pkgs.redis
             pkgs.minio
-            pkgs.typst
             pkgs.ruff
           ];
           text = ''
