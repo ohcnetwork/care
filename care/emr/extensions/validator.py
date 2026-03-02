@@ -46,16 +46,16 @@ class ExtensionListRenderer:
         if mapping.get("_extensions_rendered"):
             return super().perform_extra_serialization(mapping, obj, *args, **kwargs)
         data = {}
-        for key in obj.extensions:
-            extension_handler = ExtensionRegistry.get_extension_obj(
-                cls.___extension_resource_type__.value, key
-            )
+        resource_type = cls.___extension_resource_type__.value
+        for key in ExtensionRegistry.get_extensions_for_resource(resource_type):
+            extension_handler = ExtensionRegistry.get_extension_obj(resource_type, key)
+            current_data = {}
+            if key in obj.extensions:
+                current_data = obj.extensions[key]
             if extension_handler is None:
                 # TODO: Once stable, raise error instead
-                data[key] = obj.extensions[key]
-            data[key] = cls.serialize_extensions(
-                extension_handler, obj.extensions[key], obj
-            )
+                data[key] = current_data
+            data[key] = cls.serialize_extensions(extension_handler, current_data, obj)
 
         mapping["extensions"] = data
         mapping["_extensions_rendered"] = True
