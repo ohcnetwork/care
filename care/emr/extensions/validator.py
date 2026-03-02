@@ -1,5 +1,7 @@
 from pydantic import field_validator
 
+from care.emr.registries.extensions.registry import ExtensionRegistry
+
 
 def validate_extensions(data, resource_type):
     from care.emr.registries.extensions.registry import ExtensionRegistry
@@ -30,3 +32,39 @@ class ExtensionValidator:
         except Exception as e:
             raise ValueError("Invalid extensions") from e
         return v
+
+
+class ExtensionListRenderer:
+    extensions: dict = {}
+
+    @classmethod
+    def serialize_extensions(cls, handler, data, obj):
+        return handler.deserialize_extensions_list(data, obj)
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj, *args, **kwargs):
+        if mapping.get("_extensions_rendered"):
+            return super().perform_extra_serialization(mapping, obj, *args, **kwargs)
+        data = {}
+        for key in obj.extensions:
+            extension_handler = ExtensionRegistry.get_extension_obj(
+                cls.___extension_resource_type__.value, key
+            )
+            if extension_handler is None:
+                # TODO: Once stable, raise error instead
+                data[key] = obj.extensions[key]
+            data[key] = cls.serialize_extensions(
+                extension_handler, obj.extensions[key], obj
+            )
+
+        mapping["extensions"] = data
+        mapping["_extensions_rendered"] = True
+        return super().perform_extra_serialization(mapping, obj, *args, **kwargs)
+
+
+class ExtensionRetrieveRenderer(ExtensionListRenderer):
+    extensions: dict = {}
+
+    @classmethod
+    def serialize_extensions(cls, handler, data, obj):
+        return handler.deserialize_extensions_retrieve(data, obj)

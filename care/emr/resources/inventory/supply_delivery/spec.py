@@ -5,7 +5,11 @@ from enum import Enum
 from pydantic import UUID4, Field, model_validator
 
 from care.emr.extensions.base import ExtensionResource
-from care.emr.extensions.validator import ExtensionValidator
+from care.emr.extensions.validator import (
+    ExtensionListRenderer,
+    ExtensionRetrieveRenderer,
+    ExtensionValidator,
+)
 from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.product import Product
 from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
@@ -133,7 +137,7 @@ class SupplyDeliveryWriteSpec(ExtensionValidator, BaseSupplyDeliverySpec):
         return obj
 
 
-class SupplyDeliveryReadSpec(BaseSupplyDeliverySpec):
+class SupplyDeliveryReadSpec(ExtensionListRenderer, BaseSupplyDeliverySpec):
     """Supply delivery read specification"""
 
     supplied_item_quantity: int
@@ -161,9 +165,9 @@ class SupplyDeliveryReadSpec(BaseSupplyDeliverySpec):
             mapping["supply_request"] = SupplyRequestReadSpec.serialize(
                 obj.supply_request
             ).to_json()
+        return super().perform_extra_serialization(mapping, obj)
 
-
-class SupplyDeliveryRetrieveSpec(SupplyDeliveryReadSpec):
+class SupplyDeliveryRetrieveSpec(ExtensionRetrieveRenderer, SupplyDeliveryReadSpec):
     """Supply delivery retrieve specification"""
 
     created_by: UserSpec = {}
