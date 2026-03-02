@@ -167,6 +167,7 @@ class SupplyDeliveryReadSpec(ExtensionListRenderer, BaseSupplyDeliverySpec):
             ).to_json()
         return super().perform_extra_serialization(mapping, obj)
 
+
 class SupplyDeliveryRetrieveSpec(ExtensionRetrieveRenderer, SupplyDeliveryReadSpec):
     """Supply delivery retrieve specification"""
 
