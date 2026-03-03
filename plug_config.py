@@ -21,6 +21,12 @@ plugs = [
         configs={},
     ),
     Plug(
+        name="nhcx",
+        package_name="git+https://github.com/ohcnetwork/care_nhcx.git",
+        version="@develop",
+        configs={},
+    ),
+    Plug(
         name="care_scribe",
         package_name="git+https://github.com/10bedicu/care_scribe.git",
         version="@master",
