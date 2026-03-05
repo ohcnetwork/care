@@ -1,3 +1,4 @@
+from django.db import models
 from django_filters import rest_framework as filters
 from rest_framework import filters as rest_framework_filters
 from rest_framework.exceptions import PermissionDenied
@@ -22,6 +23,16 @@ from care.utils.filters.null_filter import NullFilter
 from care.utils.shortcuts import get_object_or_404
 
 
+class ProductTypeFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        if not value:
+            return qs
+        return qs.filter(
+            models.Q(requested_product__isnull=True)
+            | models.Q(requested_product__product_type__iexact=value)
+        )
+
+
 class MedicationRequestFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     status = MultiSelectFilter(field_name="status")
@@ -37,9 +48,7 @@ class MedicationRequestFilter(filters.FilterSet):
     dispense_status_isnull = NullFilter(field_name="dispense_status")
     facility = filters.UUIDFilter(field_name="encounter__facility__external_id")
     prescription = filters.UUIDFilter(field_name="prescription__external_id")
-    product_type = filters.CharFilter(
-        field_name="requested_product__product_type", lookup_expr="iexact"
-    )
+    product_type = ProductTypeFilter()
 
 
 class MedicationRequestViewSet(
