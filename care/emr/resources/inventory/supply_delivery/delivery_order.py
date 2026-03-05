@@ -5,7 +5,11 @@ from pydantic import UUID4
 from rest_framework.exceptions import ValidationError
 
 from care.emr.extensions.base import ExtensionResource
-from care.emr.extensions.validator import ExtensionValidator
+from care.emr.extensions.validator import (
+    ExtensionListRenderer,
+    ExtensionRetrieveRenderer,
+    ExtensionValidator,
+)
 from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import Organization
 from care.emr.models.patient import Patient
@@ -83,7 +87,7 @@ class SupplyDeliveryOrderWriteSpec(BaseSupplyDeliveryOrderSpec):
         return obj
 
 
-class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
+class SupplyDeliveryOrderReadSpec(ExtensionListRenderer, BaseSupplyDeliveryOrderSpec):
     origin: dict | None = None
     destination: dict
     supplier: dict | None = None
@@ -112,3 +116,10 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
         if obj.patient_invoice:
             mapping["patient_invoice_id"] = str(obj.patient_invoice.external_id)
         cls.serialize_audit_users(mapping, obj)
+        return super().perform_extra_serialization(mapping, obj)
+
+
+class SupplyDeliveryOrderRetrieveSpec(
+    ExtensionRetrieveRenderer, SupplyDeliveryOrderReadSpec
+):
+    pass

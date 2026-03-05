@@ -139,3 +139,13 @@ class MonetaryComponentDefinition(MonetaryComponent):
         if self.monetary_component_type == MonetaryComponentType.base.value:
             raise ValueError("Base component is not allowed in definition.")
         return self
+
+
+class DiscountApplicability(str, Enum):
+    total_asc = "total_asc"
+    total_desc = "total_desc"
+
+
+class DiscountConfiguration(BaseModel):
+    max_applicable: int = Field(ge=0)
+    applicability_order: DiscountApplicability
