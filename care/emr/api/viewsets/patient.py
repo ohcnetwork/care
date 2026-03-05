@@ -400,9 +400,27 @@ class PatientViewSet(EMRModelViewSet):
         request_config = get_object_or_404(
             PatientIdentifierConfig, external_id=request_data.config
         )
+
+        facility = self.get_serializer_list_context().get("facility")
+
+        # Ensure identifier config belongs to the patient's facility context
+        if request_config.facility and facility and request_config.facility.id != facility.id:
+            raise PermissionDenied(
+                "Identifier configuration does not belong to the patient's facility"
+            )
+
+        # Check user permission for the config's facility
+        if request_config.facility and not AuthorizationController.call(
+            "can_write_facility_patient_identifier_config",
+            self.request.user,
+            request_config.facility,
+        ):
+            raise PermissionDenied(
+                "Cannot update identifier for this facility"
+            )
+
         if request_config.config.get("auto_maintained"):
             raise ValidationError("Cannot update auto maintained identifier")
-        # TODO: Check Facility Authz
         value = request_data.value
         if not value and request_config.config["required"]:
             raise ValidationError("Value is required")
