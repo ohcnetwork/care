@@ -481,3 +481,43 @@ class DiagnosticReportAPITestCases(CareAPITestBase):
             "You do not have permission to write this diagnostic report",
             response.data,
         )
+
+
+class DiagnosticReportUpsertObservationAPITestCases(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.superuser = self.create_super_user()
+        self.patient = self.create_patient()
+        self.facility = self.create_facility(user=self.superuser)
+        self.facility_organization = self.create_facility_organization(
+            facility=self.facility
+        )
+        self.encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        self.service_request = self.create_service_request(
+            title="Test Service Request",
+            patient=self.patient,
+            facility=self.facility,
+            encounter=self.encounter,
+            status=ServiceRequestStatusChoices.active.value,
+            intent=choice(list(ServiceRequestIntentChoices)).value,
+            priority=choice(list(ServiceRequestPriorityChoices)).value,
+            category=choice(list(ActivityDefinitionCategoryOptions)).value,
+        )
+        self.permission = [
+            DiagnosticReportPermissions.can_write_diagnostic_report.name,
+            DiagnosticReportPermissions.can_read_diagnostic_report.name,
+            PatientPermissions.can_view_clinical_data.name,
+        ]
+        self.diagnostic_report = DiagnosticReportAPITestCases.create_diagnostic_report()
+        self.url = reverse(
+            "diagnostic_report-upsert-observations",
+            kwargs={
+                "patient_external_id": self.patient.external_id,
+                "external_id": self.diagnostic_report.external_id,
+            },
+        )
