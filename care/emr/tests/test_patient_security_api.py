@@ -10,12 +10,10 @@ class TestPatientSecurityAPI(CareAPITestBase):
     def setUp(self):
         super().setUp()
         self.user = self.create_user()
-        self.facility_a = self.create_facility(self.user)
         self.facility_b = self.create_facility(self.user)
 
         self.org_a = self.create_organization(org_type="govt")
 
-        # User has access to Facility A
         self.role = self.create_role_with_permissions(
             permissions=[
                 PatientPermissions.can_write_facility_patient_identifier_config.name,
@@ -23,9 +21,9 @@ class TestPatientSecurityAPI(CareAPITestBase):
                 PatientPermissions.can_list_patients.name,
             ]
         )
+
         self.attach_role_organization_user(self.org_a, self.user, self.role)
 
-        # Create a patient and link to Org A
         self.patient = self.create_patient(geo_organization=self.org_a)
 
     def test_update_identifier_bola_vulnerability(self):
