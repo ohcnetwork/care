@@ -11,6 +11,12 @@ from care.security.permissions.location import FacilityLocationPermissions
 
 
 class FacilityLocationAccess(AuthorizationHandler):
+    def find_roles_on_facility_location(self, user, facility_location):
+        roles = FacilityOrganizationUser.objects.filter(
+            organization_id__in=facility_location.facility_organization_cache, user=user
+        ).values_list("role_id", flat=True)
+        return set(roles)
+
     def can_list_facility_location_obj(self, user, facility, location):
         return self.check_permission_in_facility_organization(
             [FacilityLocationPermissions.can_list_facility_locations.name],

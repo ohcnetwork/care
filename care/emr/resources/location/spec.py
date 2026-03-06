@@ -7,6 +7,7 @@ from care.emr.models import Encounter, FacilityLocationEncounter
 from care.emr.models.location import FacilityLocation
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common import Coding
+from care.emr.resources.permissions import FacilityLocationPermissionsMixin
 from care.emr.resources.user.spec import UserSpec
 
 
@@ -149,7 +150,9 @@ class FacilityLocationListSpec(FacilityLocationMinimalListSpec):
             ).to_json()
 
 
-class FacilityLocationRetrieveSpec(FacilityLocationListSpec):
+class FacilityLocationRetrieveSpec(
+    FacilityLocationListSpec, FacilityLocationPermissionsMixin
+):
     created_by: dict | None = None
     updated_by: dict | None = None
 

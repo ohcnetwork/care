@@ -1,3 +1,4 @@
+from care.emr.models.organization import FacilityOrganizationUser
 from care.security.authorization.base import (
     AuthorizationController,
     AuthorizationHandler,
@@ -6,6 +7,19 @@ from care.security.permissions.healthcare_service import HealthcareServicePermis
 
 
 class HealthcareServiceAccess(AuthorizationHandler):
+    def find_roles_on_healthcare_service(self, user, healthcare_service):
+        roles = set()
+        if healthcare_service.managing_organization:
+            orgs = [
+                *healthcare_service.managing_organization.parent_cache,
+                healthcare_service.managing_organization.id,
+            ]
+            roles = FacilityOrganizationUser.objects.filter(
+                organization_id__in=orgs,
+                user=user,
+            ).values_list("role_id", flat=True)
+        return set(roles)
+
     def can_list_facility_healthcare_service(self, user, facility):
         """
         Check if the user has permission to view healthcare services in the facility

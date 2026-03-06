@@ -1,6 +1,8 @@
 from care.emr.resources.base import EMRResource
 from care.security.authorization.encounter import EncounterAccess
 from care.security.authorization.facility import FacilityAccess
+from care.security.authorization.facility_location import FacilityLocationAccess
+from care.security.authorization.healthcare_service import HealthcareServiceAccess
 from care.security.authorization.patient import PatientAccess
 from care.security.models import RolePermission
 
@@ -61,5 +63,33 @@ class EncounterPermissionsMixin(PermissionsMixin):
         mapping["permissions"] = list(
             RolePermission.objects.filter(
                 role_id__in=roles, permission__context__in=["ENCOUNTER", "PATIENT"]
+            ).values_list("permission__slug", flat=True)
+        )
+
+
+class FacilityLocationPermissionsMixin(PermissionsMixin):
+    @classmethod
+    def add_permissions(cls, mapping, user, facility_location):
+        facility_location_access = FacilityLocationAccess()
+        roles = facility_location_access.find_roles_on_facility_location(
+            user, facility_location
+        )
+        mapping["permissions"] = list(
+            RolePermission.objects.filter(
+                role_id__in=roles, permission__context__in=["FACILITY"]
+            ).values_list("permission__slug", flat=True)
+        )
+
+
+class HealthcareServicePermissionsMixin(PermissionsMixin):
+    @classmethod
+    def add_permissions(cls, mapping, user, healthcare_service):
+        healthcare_service_access = HealthcareServiceAccess()
+        roles = healthcare_service_access.find_roles_on_healthcare_service(
+            user, healthcare_service
+        )
+        mapping["permissions"] = list(
+            RolePermission.objects.filter(
+                role_id__in=roles, permission__context__in=["FACILITY"]
             ).values_list("permission__slug", flat=True)
         )

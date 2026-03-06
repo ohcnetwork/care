@@ -11,6 +11,7 @@ from care.emr.resources.healthcare_service.valueset import (
     HEALTHCARE_SERVICE_TYPE_CODE_VALUESET,
 )
 from care.emr.resources.location.spec import FacilityLocationListSpec
+from care.emr.resources.permissions import HealthcareServicePermissionsMixin
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.utils.shortcuts import get_object_or_404
 
@@ -62,7 +63,9 @@ class HealthcareServiceReadSpec(BaseHealthcareServiceSpec):
         mapping["id"] = obj.external_id
 
 
-class HealthcareServiceRetrieveSpec(HealthcareServiceReadSpec):
+class HealthcareServiceRetrieveSpec(
+    HealthcareServiceReadSpec, HealthcareServicePermissionsMixin
+):
     """Healthcare service retrieve specification"""
 
     locations: list[dict]
