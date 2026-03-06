@@ -18,10 +18,10 @@ class TestPatientSecurityAPI(CareAPITestBase):
         # User has access to Facility A
         self.role = self.create_role_with_permissions(
             permissions=[
-    PatientPermissions.can_write_facility_patient_identifier_config.name,
-    PatientPermissions.can_write_patient.name,
-    PatientPermissions.can_list_patients.name,
-    ]
+                PatientPermissions.can_write_facility_patient_identifier_config.name,
+                PatientPermissions.can_write_patient.name,
+                PatientPermissions.can_list_patients.name,
+            ]
         )
         self.attach_role_organization_user(self.org_a, self.user, self.role)
 
