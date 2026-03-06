@@ -7,7 +7,7 @@ from drf_spectacular.utils import extend_schema
 from rest_framework import filters as drf_filters
 from rest_framework import serializers
 from rest_framework.decorators import action, parser_classes
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
@@ -141,6 +141,8 @@ class FacilityViewSet(EMRModelViewSet):
     )
     @action(methods=["POST"], detail=True)
     def set_monetary_config(self, request, *args, **kwargs):
+        if not isinstance(request.data, dict):
+            raise ValidationError("Invalid request body")
         instance = self.get_object()
         self.authorize_update({}, instance)
         facility_monetory_config = FacilityMonetoryConfig.get_monetory_config(
@@ -167,6 +169,8 @@ class FacilityViewSet(EMRModelViewSet):
     )
     @action(methods=["POST"], detail=True)
     def set_invoice_expression(self, request, *args, **kwargs):
+        if not isinstance(request.data, dict):
+            raise ValidationError("Invalid request body")
         instance = self.get_object()
         self.authorize_update({}, instance)
         facility_monetory_config = FacilityMonetoryConfig.get_monetory_config(

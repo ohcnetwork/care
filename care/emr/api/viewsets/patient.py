@@ -196,6 +196,8 @@ class PatientViewSet(EMRModelViewSet):
     )
     @action(detail=False, methods=["POST"])
     def search(self, request, *args, **kwargs):
+        if not isinstance(request.data, dict):
+            raise ValidationError("Invalid request body")
         request_data = self.SearchRequestSpec(**request.data)
         max_page_size = 100
         page_size = min(max_page_size, request_data.page_size)
@@ -270,6 +272,8 @@ class PatientViewSet(EMRModelViewSet):
     )
     @action(detail=False, methods=["POST"])
     def search_retrieve(self, request, *args, **kwargs):
+        if not isinstance(request.data, dict):
+            raise ValidationError("Invalid request body")
         request_data = self.SearchRetrieveRequestSpec(**request.data)
         queryset = Patient.objects.filter(phone_number=request_data.phone_number)
         queryset = queryset.filter(year_of_birth=request_data.year_of_birth)
@@ -300,7 +304,9 @@ class PatientViewSet(EMRModelViewSet):
     @extend_schema(request=PatientUserCreateSpec, responses={200: UserSpec})
     @action(detail=True, methods=["POST"])
     def add_user(self, request, *args, **kwargs):
-        request_data = self.PatientUserCreateSpec(**self.request.data)
+        if not isinstance(request.data, dict):
+            raise ValidationError("Invalid request body")
+        request_data = self.PatientUserCreateSpec(**request.data)
         user = get_object_or_404(User, external_id=request_data.user)
         role = get_object_or_404(RoleModel, external_id=request_data.role)
         patient = self.get_object()
@@ -316,7 +322,9 @@ class PatientViewSet(EMRModelViewSet):
     @extend_schema(request=PatientUserDeleteSpec, responses={200: {}})
     @action(detail=True, methods=["POST"])
     def delete_user(self, request, *args, **kwargs):
-        request_data = self.PatientUserDeleteSpec(**self.request.data)
+        if not isinstance(request.data, dict):
+            raise ValidationError("Invalid request body")
+        request_data = self.PatientUserDeleteSpec(**request.data)
         user = get_object_or_404(User, external_id=request_data.user)
         patient = self.get_object()
         self.authorize_update({}, patient)
@@ -394,15 +402,35 @@ class PatientViewSet(EMRModelViewSet):
     )
     @action(detail=True, methods=["POST"])
     def update_identifier(self, request, *args, **kwargs):
-        request_data = PatientIdentifierConfigRequest(**self.request.data)
+        if not isinstance(request.data, dict):
+            raise ValidationError("Invalid request body")
+        request_data = PatientIdentifierConfigRequest(**request.data)
         patient = self.get_object()
         self.authorize_update({}, patient)
         request_config = get_object_or_404(
             PatientIdentifierConfig, external_id=request_data.config
         )
+
+        facility = self.get_serializer_list_context().get("facility")
+
+        # Ensure identifier config belongs to the patient's facility context
+        if request_config.facility and facility and request_config.facility.id != facility.id:
+            raise PermissionDenied(
+                "Identifier configuration does not belong to the patient's facility"
+            )
+
+        # Check user permission for the config's facility
+        if request_config.facility and not AuthorizationController.call(
+            "can_write_facility_patient_identifier_config",
+            self.request.user,
+            request_config.facility,
+        ):
+            raise PermissionDenied(
+                "Cannot update identifier for this facility"
+            )
+
         if request_config.config.get("auto_maintained"):
             raise ValidationError("Cannot update auto maintained identifier")
-        # TODO: Check Facility Authz
         value = request_data.value
         if not value and request_config.config["required"]:
             raise ValidationError("Value is required")

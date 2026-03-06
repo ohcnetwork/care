@@ -154,7 +154,7 @@ class FacilityCreateSpec(FacilityBaseSpec):
         obj.geo_organization = Organization.objects.filter(
             external_id=self.geo_organization, org_type="govt"
         ).first()
-        obj.facility_type = REVERSE_REVERSE_FACILITY_TYPES[self.facility_type]
+        obj.facility_type = REVERSE_REVERSE_FACILITY_TYPES.get(self.facility_type)
 
 
 class FacilityReadSpec(FacilityBaseSpec):
@@ -172,7 +172,7 @@ class FacilityReadSpec(FacilityBaseSpec):
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         if obj.created_by:
             mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
-        mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
+        mapping["facility_type"] = REVERSE_FACILITY_TYPES.get(obj.facility_type, "Unknown")
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
@@ -289,7 +289,7 @@ class FacilityMinimalReadSpec(FacilityBaseSpec):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
-        mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
+        mapping["facility_type"] = REVERSE_FACILITY_TYPES.get(obj.facility_type, "Unknown")
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
