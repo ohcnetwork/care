@@ -10,13 +10,14 @@ class TestPatientSecurityAPI(CareAPITestBase):
     def setUp(self):
         super().setUp()
         self.user = self.create_user()
+        self.facility_a = self.create_facility(self.user)
         self.facility_b = self.create_facility(self.user)
 
         self.org_a = self.create_organization(org_type="govt")
 
+
         self.role = self.create_role_with_permissions(
             permissions=[
-                PatientPermissions.can_write_facility_patient_identifier_config.name,
                 PatientPermissions.can_write_patient.name,
                 PatientPermissions.can_list_patients.name,
             ]
@@ -42,7 +43,8 @@ class TestPatientSecurityAPI(CareAPITestBase):
 
         payload = {
             "config": str(config_b.external_id),
-            "value": "VULNERABLE_VALUE"
+            "value": "VULNERABLE_VALUE",
+            "facility": str(self.facility_a.external_id),
         }
 
         response = self.client.post(url, payload, format="json")

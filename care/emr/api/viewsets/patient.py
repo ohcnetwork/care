@@ -401,13 +401,22 @@ class PatientViewSet(EMRModelViewSet):
             PatientIdentifierConfig, external_id=request_data.config
         )
 
-        facility = self.get_serializer_list_context().get("facility")
+        facility_id = request.data.get("facility")
+        facility = None
+        if facility_id:
+            facility = get_object_or_404(Facility, external_id=facility_id)
 
         # Ensure identifier config belongs to the patient's facility context
-        if request_config.facility and facility and request_config.facility.id != facility.id:
-            raise PermissionDenied(
-                "Identifier configuration does not belong to the patient's facility"
-            )
+        if request_config.facility:
+            if not facility:
+                raise PermissionDenied(
+                    "Facility context is required for facility-scoped identifiers"
+                )
+
+            if request_config.facility.id != facility.id:
+                raise PermissionDenied(
+                    "Identifier configuration does not belong to the patient's facility"
+                )
 
         # Check user permission for the config's facility
         if request_config.facility and not AuthorizationController.call(

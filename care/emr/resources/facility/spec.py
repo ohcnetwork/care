@@ -154,7 +154,10 @@ class FacilityCreateSpec(FacilityBaseSpec):
         obj.geo_organization = Organization.objects.filter(
             external_id=self.geo_organization, org_type="govt"
         ).first()
-        obj.facility_type = REVERSE_REVERSE_FACILITY_TYPES[self.facility_type]
+        try:
+            obj.facility_type = REVERSE_REVERSE_FACILITY_TYPES[self.facility_type]
+        except KeyError as exc:
+            raise ValueError(f"Invalid facility_type: {self.facility_type}") from exc
 
 
 class FacilityReadSpec(FacilityBaseSpec):
