@@ -150,6 +150,12 @@ class BaseEncounterReportContext(SingleObjectContextBuilder):
         preview_value="",
         description="Organizations associated with the encounter",
     )
+    discharge_summary_advice = Field(
+        display="Discharge Summary Advice",
+        mapping="discharge_summary_advice",
+        preview_value="Patient is advised to follow up in 2 weeks.",
+        description="Discharge summary advice for the encounter",
+    )
 
 
 class MinimumEncounterReportContext(BaseEncounterReportContext):
