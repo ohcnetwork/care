@@ -14,12 +14,11 @@ class TestPatientSecurityAPI(CareAPITestBase):
         self.facility_b = self.create_facility(self.user)
 
         self.org_a = self.create_organization(org_type="govt")
-        self.org_b = self.create_organization(org_type="govt")
 
         # User has access to Facility A
         self.role = self.create_role_with_permissions(
             permissions=[
-                PatientPermissions.can_write_patient.name,
+                PatientPermissions.can_write_facility_patient_identifier_config,
                 PatientPermissions.can_list_patients.name,
             ]
         )
@@ -30,7 +29,7 @@ class TestPatientSecurityAPI(CareAPITestBase):
 
     def test_update_identifier_bola_vulnerability(self):
         """
-        Verify that a user can update an identifier using a config from another facility (BOLA).
+        Verify that a user cannot update an identifier using a config from another facility (BOLA).
         """
         # Create Identifier Config for Facility B
         config_b = PatientIdentifierConfig.objects.create(
