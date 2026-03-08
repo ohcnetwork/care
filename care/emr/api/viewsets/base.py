@@ -131,6 +131,8 @@ class EMRCreateMixin:
         pass
 
     def create(self, request, *args, **kwargs):
+        if not isinstance(request.data, dict):
+            raise RestFrameworkValidationError("Invalid data format")
         return Response(self.handle_create(request.data))
 
     def get_serializer_create_context(self):
@@ -196,8 +198,8 @@ class EMRUpdateMixin:
                 )
 
     def clean_update_data(self, request_data, keep_fields: set | None = None):
-        if type(request_data) is list:
-            return request_data
+        if not isinstance(request_data, dict):
+            raise RestFrameworkValidationError("request body must be json object")
         ignored_fields = {"id", "external_id", "patient", "encounter"}
         if keep_fields:
             ignored_fields = ignored_fields - set(keep_fields)
@@ -209,6 +211,8 @@ class EMRUpdateMixin:
         return request_data
 
     def update(self, request, *args, **kwargs):
+        if not isinstance(request.data, dict):
+            raise RestFrameworkValidationError("request body must be json object")
         instance = self.get_object()
         return Response(self.handle_update(instance, request.data))
 
@@ -265,7 +269,7 @@ class EMRDestroyMixin:
 class EMRUpsertMixin:
     @action(detail=False, methods=["POST"])
     def upsert(self, request, *args, **kwargs):
-        if type(request.data) is not dict:
+        if not isinstance(request.data, dict):
             raise RestFrameworkValidationError("Invalid request data")
         datapoints = request.data.get("datapoints", [])
         if len(datapoints) == 0:
