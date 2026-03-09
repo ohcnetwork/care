@@ -29,7 +29,7 @@ class ProductTypeFilter(filters.CharFilter):
         if not value:
             return qs
         query = models.Q(requested_product__product_type__iexact=value)
-        if value == ProductTypeOptions.medication.value:
+        if value.lower() == ProductTypeOptions.medication.value:
             query |= models.Q(requested_product__isnull=True)
         return qs.filter(query)
 
