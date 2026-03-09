@@ -253,9 +253,10 @@ class PatientIdentifierResponse(BaseModel):
     config: PatientIdentifierListSpec
     value: str
 
+
 class PatientRetrieveSpec(
     ExtensionRetrieveRenderer, PatientListSpec, PatientPermissionsMixin
-):  
+):
     age: str
     geo_organization: dict = {}
 
