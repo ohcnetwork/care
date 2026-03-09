@@ -59,44 +59,44 @@ class InterpretationEvaluator:
 
                 if Decimal(str(min_val)) <= value <= Decimal(str(max_val)):
                     return value_range.get("interpretation"), rule.get("ranges", [])
-        else:
-            # Handle Valueset based interpretation
-            if "coding" not in value:
-                raise ValueError("Coding not found")
-            if rule.get("normal_coded_value_set"):
-                interpretation = self.check_valueset(
-                    rule.get("normal_coded_value_set"),
-                    value.get("coding"),
-                    NORMAL_INTERPRETATION,
-                )
-                if interpretation:
-                    return interpretation, []
-            if rule.get("critical_coded_value_set"):
-                interpretation = self.check_valueset(
-                    rule.get("critical_coded_value_set"),
-                    value.get("coding"),
-                    CRITICAL_INTERPRETATION,
-                )
-                if interpretation:
-                    return interpretation, []
-            if rule.get("abnormal_coded_value_set"):
-                interpretation = self.check_valueset(
-                    rule.get("abnormal_coded_value_set"),
-                    value.get("coding"),
-                    ABNORMAL_INTERPRETATION,
-                )
-                if interpretation:
-                    return interpretation, []
-            for valueset_interpretation in rule.get("valueset_interpretation", []):
-                if not valueset_interpretation.get("valuset"):
-                    continue
-                interpretation = self.check_valueset(
-                    valueset_interpretation.get("valuset"),
-                    value.get("coding"),
-                    valueset_interpretation.get("interpretation"),
-                )
-                if interpretation:
-                    return interpretation, []
+            return False, rule.get("ranges", [])
+        # Handle Valueset based interpretation
+        if "coding" not in value:
+            raise ValueError("Coding not found")
+        if rule.get("normal_coded_value_set"):
+            interpretation = self.check_valueset(
+                rule.get("normal_coded_value_set"),
+                value.get("coding"),
+                NORMAL_INTERPRETATION,
+            )
+            if interpretation:
+                return interpretation, []
+        if rule.get("critical_coded_value_set"):
+            interpretation = self.check_valueset(
+                rule.get("critical_coded_value_set"),
+                value.get("coding"),
+                CRITICAL_INTERPRETATION,
+            )
+            if interpretation:
+                return interpretation, []
+        if rule.get("abnormal_coded_value_set"):
+            interpretation = self.check_valueset(
+                rule.get("abnormal_coded_value_set"),
+                value.get("coding"),
+                ABNORMAL_INTERPRETATION,
+            )
+            if interpretation:
+                return interpretation, []
+        for valueset_interpretation in rule.get("valueset_interpretation", []):
+            if not valueset_interpretation.get("valuset"):
+                continue
+            interpretation = self.check_valueset(
+                valueset_interpretation.get("valuset"),
+                value.get("coding"),
+                valueset_interpretation.get("interpretation"),
+            )
+            if interpretation:
+                return interpretation, []
 
         return False, False
 
