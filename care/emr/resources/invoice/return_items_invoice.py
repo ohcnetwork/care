@@ -14,6 +14,9 @@ from care.emr.resources.charge_item.apply_charge_item_definition import (
     apply_charge_item_definition,
 )
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
+from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
+    sync_inventory_item,
+)
 from care.emr.resources.inventory.supply_delivery.spec import (
     SupplyDeliveryStatusOptions,
 )
@@ -98,4 +101,11 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
             paid_invoice=None,
             paid_on=None,
         )
+        supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
+        for supply_delivery in supply_deliveries:
+            sync_inventory_item(
+                location=delivery_order.destination,
+                product=supply_delivery.supplied_item,
+            )
+
     rebalance_account_task(delivery_order.patient_invoice.account.id)

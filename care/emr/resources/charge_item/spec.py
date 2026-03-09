@@ -159,6 +159,7 @@ class ChargeItemReadSpec(ChargeItemSpec):
     performer_actor: dict | None = None
     created_by: dict | None = None
     updated_by: dict | None = None
+    discount_configuration: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
