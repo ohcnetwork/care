@@ -10,6 +10,7 @@ from care.emr.models.medication_request import MedicationRequest
 from care.emr.registries.system_questionnaire.system_questionnaire import (
     InternalQuestionnaireRegistry,
 )
+from care.emr.resources.inventory.product_knowledge.spec import ProductTypeOptions
 from care.emr.resources.medication.request.spec import (
     MedicationRequestReadSpec,
     MedicationRequestSpec,
@@ -27,10 +28,10 @@ class ProductTypeFilter(filters.CharFilter):
     def filter(self, qs, value):
         if not value:
             return qs
-        return qs.filter(
-            models.Q(requested_product__isnull=True)
-            | models.Q(requested_product__product_type__iexact=value)
-        )
+        query = models.Q(requested_product__product_type__iexact=value)
+        if value == ProductTypeOptions.medication.value:
+            query |= models.Q(requested_product__isnull=True)
+        return qs.filter(query)
 
 
 class MedicationRequestFilter(filters.FilterSet):
