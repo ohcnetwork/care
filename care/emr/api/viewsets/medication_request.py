@@ -24,14 +24,16 @@ from care.utils.filters.null_filter import NullFilter
 from care.utils.shortcuts import get_object_or_404
 
 
-class ProductTypeFilter(filters.CharFilter):
+class MedicationFilter(filters.BooleanFilter):
     def filter(self, qs, value):
-        if not value:
-            return qs
-        query = models.Q(requested_product__product_type__iexact=value)
-        if value.lower() == ProductTypeOptions.medication.value:
-            query |= models.Q(requested_product__isnull=True)
-        return qs.filter(query)
+        if value:
+            return qs.filter(
+                models.Q(
+                    requested_product__product_type__iexact=ProductTypeOptions.medication.value
+                )
+                | models.Q(requested_product__isnull=True)
+            )
+        return qs
 
 
 class MedicationRequestFilter(filters.FilterSet):
@@ -49,7 +51,12 @@ class MedicationRequestFilter(filters.FilterSet):
     dispense_status_isnull = NullFilter(field_name="dispense_status")
     facility = filters.UUIDFilter(field_name="encounter__facility__external_id")
     prescription = filters.UUIDFilter(field_name="prescription__external_id")
-    product_type = ProductTypeFilter()
+    product_type = filters.CharFilter(
+        field_name="requested_product__product_type", lookup_expr="iexact"
+    )
+    medications_only = MedicationFilter(
+        field_name="requested_product__product_type", lookup_expr="iexact"
+    )
 
 
 class MedicationRequestViewSet(
