@@ -563,6 +563,13 @@ class Command(BaseCommand):
                     patient=patient.external_id,
                     facility=facility.external_id,
                     priority=secrets.choice(list(EncounterPriorityChoices)).value,
+                    period={
+                        "start": str(
+                            timezone.make_aware(
+                                fake.date_time_this_year(before_now=True)
+                            )
+                        ),
+                    },
                 )
                 encounter = encounter_spec.de_serialize()
                 encounter.created_by = super_user
