@@ -1,3 +1,4 @@
+from django.db import models
 from django_filters import rest_framework as filters
 from rest_framework import filters as rest_framework_filters
 from rest_framework.exceptions import PermissionDenied
@@ -9,6 +10,7 @@ from care.emr.models.medication_request import MedicationRequest
 from care.emr.registries.system_questionnaire.system_questionnaire import (
     InternalQuestionnaireRegistry,
 )
+from care.emr.resources.inventory.product_knowledge.spec import ProductTypeOptions
 from care.emr.resources.medication.request.spec import (
     MedicationRequestReadSpec,
     MedicationRequestSpec,
@@ -20,6 +22,18 @@ from care.users.models import User
 from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.filters.null_filter import NullFilter
 from care.utils.shortcuts import get_object_or_404
+
+
+class MedicationFilter(filters.BooleanFilter):
+    def filter(self, qs, value):
+        if value:
+            return qs.filter(
+                models.Q(
+                    requested_product__product_type__iexact=ProductTypeOptions.medication.value
+                )
+                | models.Q(requested_product__isnull=True)
+            )
+        return qs
 
 
 class MedicationRequestFilter(filters.FilterSet):
@@ -40,6 +54,7 @@ class MedicationRequestFilter(filters.FilterSet):
     product_type = filters.CharFilter(
         field_name="requested_product__product_type", lookup_expr="iexact"
     )
+    medications_only = MedicationFilter()
 
 
 class MedicationRequestViewSet(
