@@ -4,10 +4,12 @@ from django.urls import reverse
 from model_bakery import baker
 
 from care.emr.models.diagnostic_report import DiagnosticReport
+from care.emr.models.observation_definition import ObservationDefinition
 from care.emr.resources.activity_definition.spec import (
     ActivityDefinitionCategoryOptions,
 )
 from care.emr.resources.diagnostic_report.spec import DiagnosticReportStatusChoices
+from care.emr.resources.questionnaire.spec import SubjectType
 from care.emr.resources.service_request.spec import (
     ServiceRequestIntentChoices,
     ServiceRequestPriorityChoices,
@@ -513,11 +515,241 @@ class DiagnosticReportUpsertObservationAPITestCases(CareAPITestBase):
             DiagnosticReportPermissions.can_read_diagnostic_report.name,
             PatientPermissions.can_view_clinical_data.name,
         ]
-        self.diagnostic_report = DiagnosticReportAPITestCases.create_diagnostic_report()
-        self.url = reverse(
+        self.diagnostic_report = baker.make(
+            DiagnosticReport,
+            status=DiagnosticReportStatusChoices.registered.value,
+            category={
+                "display": "Laboratory",
+                "code": "LAB",
+                "system": "http://terminology.hl7.org/CodeSystem/v2-0074",
+            },
+            service_request=self.service_request,
+            patient=self.patient,
+            encounter=self.encounter,
+            facility=self.facility,
+        )
+        self.observation_definition = baker.make(
+            ObservationDefinition,
+            facility=self.facility,
+            slug="urinalysis-observation",
+            code={"code": "LP7681-2", "system": "http://loinc.org", "display": "Urine"},
+            category="laboratory",
+            permitted_data_type="integer",
+            status="active",
+            description="Test observation definition",
+            qualified_ranges=[
+                {
+                    "ranges": [
+                        {"max": "0.10", "interpretation": {"display": "normal"}}
+                    ],
+                    "conditions": [
+                        {
+                            "value": {"max": 120, "min": 0, "value_type": "years"},
+                            "metric": "patient_age",
+                            "operation": "in_range",
+                        }
+                    ],
+                }
+            ],
+        )
+        self.url = self.get_upsert_url(self.diagnostic_report)
+
+    def get_upsert_url(self, diagnostic_report):
+        return reverse(
             "diagnostic_report-upsert-observations",
             kwargs={
                 "patient_external_id": self.patient.external_id,
-                "external_id": self.diagnostic_report.external_id,
+                "external_id": diagnostic_report.external_id,
             },
         )
+
+    def generate_observation_data(self, **kwargs):
+        data = {
+            "status": "final",
+            "value_type": "integer",
+            "effective_datetime": "2026-03-09T10:48:52.947Z",
+            "value": {"value": "55"},
+        }
+        data.update(**kwargs)
+        return data
+
+    def create_observation(self, **kwargs):
+        from care.emr.models.observation import Observation
+
+        data = {
+            "status": "final",
+            "value_type": "integer",
+            "value": {"value": "55"},
+            "effective_datetime": "2026-03-09T10:48:52.947Z",
+            "diagnostic_report": kwargs.setdefault(
+                "diagnostic_report", self.diagnostic_report
+            ),
+            "encounter": kwargs.setdefault("encounter", self.encounter),
+            "patient": kwargs.setdefault("patient", self.patient),
+            "subject_type": SubjectType.encounter.value,
+            "subject_id": self.encounter.external_id,
+            "created_by": kwargs.setdefault("created_by", self.superuser),
+        }
+        data.update(**kwargs)
+        return baker.make(Observation, **data)
+
+    def test_upsert_observation_with_definition_as_superuser(self):
+        """
+        Test that a superuser can upsert an observation using an observation definition.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        data = {
+            "observations": [
+                {
+                    "observation_definition": self.observation_definition.slug,
+                    "observation": self.generate_observation_data(),
+                }
+            ]
+        }
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["message"], "Observations updated successfully")
+
+    def test_upsert_observation_with_definition_as_user_with_permissions(self):
+        """
+        Test that a user with permissions can upsert an observation using an observation definition.
+        """
+        self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(permissions=self.permission)
+        self.attach_role_facility_organization_user(
+            role=role, user=self.user, facility_organization=self.facility_organization
+        )
+        data = {
+            "observations": [
+                {
+                    "observation_definition": self.observation_definition.slug,
+                    "observation": self.generate_observation_data(),
+                }
+            ]
+        }
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["message"], "Observations updated successfully")
+
+    def test_upsert_observation_with_definition_as_user_without_permissions(self):
+        """
+        Test that a user without permissions cannot upsert observations.
+        """
+        self.client.force_authenticate(user=self.user)
+        data = {
+            "observations": [
+                {
+                    "observation_definition": self.observation_definition.slug,
+                    "observation": self.generate_observation_data(),
+                }
+            ]
+        }
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have permission to write this diagnostic report",
+            response.data,
+        )
+
+    def test_upsert_bare_observation_as_superuser(self):
+        """
+        Test that a superuser can upsert a bare observation (no definition, no id).
+        """
+        self.client.force_authenticate(user=self.superuser)
+        data = {
+            "observations": [
+                {
+                    "observation": self.generate_observation_data(),
+                }
+            ]
+        }
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["message"], "Observations updated successfully")
+
+    def test_upsert_update_existing_observation_as_superuser(self):
+        """
+        Test that a superuser can update an existing observation via observation_id.
+        """
+        self.client.force_authenticate(user=self.superuser)
+
+        observation = self.create_observation()
+        data = {
+            "observations": [
+                {
+                    "observation_id": str(observation.external_id),
+                    "observation": self.generate_observation_data(
+                        value={"value": "99"}
+                    ),
+                }
+            ]
+        }
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["message"], "Observations updated successfully")
+        observation.refresh_from_db()
+        self.assertEqual(observation.value, {"value": "99"})
+
+    def test_upsert_observation_on_final_diagnostic_report(self):
+        """
+        Test that upserting observations on a final diagnostic report is rejected.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.diagnostic_report.status = DiagnosticReportStatusChoices.final.value
+        self.diagnostic_report.save(update_fields=["status"])
+        data = {
+            "observations": [
+                {
+                    "observation_definition": self.observation_definition.slug,
+                    "observation": self.generate_observation_data(),
+                }
+            ]
+        }
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "Cannot update observations for a final diagnostic report",
+            response.data,
+        )
+
+    def test_upsert_multiple_observations_as_superuser(self):
+        """
+        Test that a superuser can upsert multiple observations in a single request.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        data = {
+            "observations": [
+                {
+                    "observation_definition": self.observation_definition.slug,
+                    "observation": self.generate_observation_data(
+                        value={"value": "10"}
+                    ),
+                },
+                {
+                    "observation": self.generate_observation_data(
+                        value={"value": "20"}
+                    ),
+                },
+            ]
+        }
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["message"], "Observations updated successfully")
+
+    def test_upsert_observation_with_invalid_definition(self):
+        """
+        Test that upserting with a non-existent observation definition returns 404.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        data = {
+            "observations": [
+                {
+                    "observation_definition": "non-existent-slug",
+                    "observation": self.generate_observation_data(),
+                }
+            ]
+        }
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, 404, response.data)
