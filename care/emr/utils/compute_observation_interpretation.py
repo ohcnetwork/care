@@ -43,12 +43,11 @@ def compute_observation_interpretation(model_instance, metrics_cache):
             interpretation, ranges = evaluator.evaluate(
                 evaluation_context, component.get("value")
             )
+            component["reference_range"] = ranges
             if interpretation is not None:
                 component["interpretation"] = interpretation
-                component["reference_range"] = ranges
             else:
                 component["interpretation"] = {}
-                component["reference_range"] = []
             metrics_cache = evaluator.metric_cache
     except Exception as e:
         raise e
