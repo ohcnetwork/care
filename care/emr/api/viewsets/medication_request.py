@@ -54,9 +54,7 @@ class MedicationRequestFilter(filters.FilterSet):
     product_type = filters.CharFilter(
         field_name="requested_product__product_type", lookup_expr="iexact"
     )
-    medications_only = MedicationFilter(
-        field_name="requested_product__product_type", lookup_expr="iexact"
-    )
+    medications_only = MedicationFilter()
 
 
 class MedicationRequestViewSet(
