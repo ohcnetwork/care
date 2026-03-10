@@ -170,7 +170,7 @@ class FacilityReadSpec(FacilityBaseSpec):
 
         mapping["id"] = obj.external_id
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
-        if obj.created_by:
+        if obj.created_by_id:
             mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
         if obj.geo_organization:

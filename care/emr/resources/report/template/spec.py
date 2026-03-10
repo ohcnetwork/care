@@ -6,7 +6,7 @@ from care.emr.models.report.template import Template
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.report_type_registry import ReportTypeRegistry
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.utils.slug_type import SlugType
 from care.facility.models.facility import Facility
@@ -113,7 +113,7 @@ class TemplateRetrieveSpec(TemplateReadSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        if obj.facility:
-            mapping["facility"] = FacilityBareMinimumSpec.serialize(
-                obj.facility
-            ).to_json()
+        if obj.facility_id:
+            mapping["facility"] = model_from_cache(
+                FacilityBareMinimumSpec, id=obj.facility_id
+            )

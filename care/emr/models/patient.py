@@ -190,9 +190,12 @@ class PatientIdentifierConfigCache:
         from care.emr.resources.patient_identifier.spec import PatientIdentifierListSpec
 
         if config_id not in cls.configs:
-            cls.configs[config_id] = PatientIdentifierListSpec.serialize(
-                PatientIdentifierConfig.objects.get(external_id=config_id)
-            ).to_json()
+            config = PatientIdentifierConfig.objects.only("id").get(
+                external_id=config_id
+            )
+            cls.configs[config_id] = model_from_cache(
+                PatientIdentifierListSpec, id=config.id
+            )
         return cls.configs[config_id]
 
     @classmethod

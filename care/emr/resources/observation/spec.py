@@ -130,12 +130,13 @@ class ObservationReadSpec(BaseObservationSpec):
         mapping["patient"] = None
         mapping["questionnaire_response"] = None
 
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
-        if obj.data_entered_by:
-            mapping["data_entered_by"] = UserSpec.serialize(obj.data_entered_by)
+        cls.serialize_audit_users(mapping, obj)
+        if obj.data_entered_by_id:
+            from care.emr.resources.base import model_from_cache
+
+            mapping["data_entered_by"] = model_from_cache(
+                UserSpec, id=obj.data_entered_by_id
+            )
 
 
 class ObservationRetrieveSpec(ObservationReadSpec):

@@ -11,7 +11,12 @@ from rest_framework.exceptions import ValidationError
 
 from care.emr.models.organization import FacilityOrganization, Organization
 from care.emr.models.tag_config import TagConfig
-from care.emr.resources.base import EMRResource, cacheable, model_string
+from care.emr.resources.base import (
+    EMRResource,
+    cacheable,
+    model_from_cache,
+    model_string,
+)
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.tag.cache_invalidation import invalidate_tag_config_cache
 from care.facility.models.facility import Facility
@@ -162,10 +167,10 @@ class TagConfigReadSpec(TagConfigBaseSpec):
         parent = obj.get_parent_json()
         if parent:
             mapping["parent"] = parent
-        if obj.facility:
-            mapping["facility"] = FacilityBareMinimumSpec.serialize(
-                obj.facility
-            ).to_json()
+        if obj.facility_id:
+            mapping["facility"] = model_from_cache(
+                FacilityBareMinimumSpec, id=obj.facility_id
+            )
 
 
 class TagConfigRetrieveSpec(TagConfigReadSpec):

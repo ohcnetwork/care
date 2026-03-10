@@ -253,7 +253,9 @@ class PatientViewSet(EMRModelViewSet):
             ):
                 partial = True
 
-        queryset = queryset.order_by("-created_date")[:page_size]
+        queryset = queryset.select_related("geo_organization").order_by(
+            "-created_date"
+        )[:page_size]
         if partial:
             data = [PatientPartialSpec.serialize(obj).to_json() for obj in queryset]
             return Response({"partial": True, "results": data})
@@ -271,7 +273,9 @@ class PatientViewSet(EMRModelViewSet):
     @action(detail=False, methods=["POST"])
     def search_retrieve(self, request, *args, **kwargs):
         request_data = self.SearchRetrieveRequestSpec(**request.data)
-        queryset = Patient.objects.filter(phone_number=request_data.phone_number)
+        queryset = Patient.objects.filter(
+            phone_number=request_data.phone_number
+        ).select_related("geo_organization")
         queryset = queryset.filter(year_of_birth=request_data.year_of_birth)
         for patient in queryset:
             if str(patient.external_id)[:5] == request_data.partial_id:
@@ -286,7 +290,9 @@ class PatientViewSet(EMRModelViewSet):
     @action(detail=True, methods=["GET"])
     def get_users(self, request, *args, **kwargs):
         patient = self.get_object()
-        patient_users = PatientUser.objects.filter(patient=patient)
+        patient_users = PatientUser.objects.filter(patient=patient).select_related(
+            "user"
+        )
         data = [
             UserSpec.serialize(patient_user.user).to_json()
             for patient_user in patient_users
