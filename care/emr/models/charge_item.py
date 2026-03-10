@@ -53,3 +53,4 @@ class ChargeItem(EMRBaseModel):
         blank=True,
         default=None,
     )
+    discount_configuration = models.JSONField(null=True, blank=True, default=None)
