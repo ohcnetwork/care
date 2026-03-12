@@ -502,3 +502,47 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             response.data["errors"][0]["msg"],
             "Location or encounter is required",
         )
+
+    #  Testcases for retrieve api
+
+    def test_retrieve_medication_dispense_as_superuser(self):
+        """
+        Test retrieving a medication dispense as a superuser
+        """
+        self.client.force_authenticate(user=self.superuser)
+        medication_dispense = self.create_medication_dispense(order=self.dispense_order)
+        response = self.client.get(self.get_detail_url(medication_dispense.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["id"],
+            str(medication_dispense.external_id),
+        )
+
+    def test_retrieve_medication_dispense_as_user_with_permission(self):
+        """
+        Test retrieving a medication dispense as a regular user with permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        medication_dispense = self.create_medication_dispense(order=self.dispense_order)
+        response = self.client.get(self.get_detail_url(medication_dispense.external_id))
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["id"],
+            str(medication_dispense.external_id),
+        )
+
+    def test_retrieve_medication_dispense_as_user_without_permission(self):
+        """
+        Test retrieving a medication dispense as a regular user without permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        medication_dispense = self.create_medication_dispense(order=self.dispense_order)
+        response = self.client.get(self.get_detail_url(medication_dispense.external_id))
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have permission to read medication dispense",
+        )
