@@ -562,6 +562,13 @@ class EncounterAPITests(CareAPITestBase):
         }
         response = self.client.post(url, data, format="json")
         self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            PatientIdentifier.objects.filter(
+                patient=self.patient,
+                config=identifier_config,
+                value="TEST-123",
+            ).exists()
+        )
 
     def test_set_facility_identifier_without_permissions(self):
         identifier_config = self._create_identifier_config(self.facility)
