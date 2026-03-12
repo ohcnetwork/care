@@ -83,7 +83,7 @@ class ChargeItemDefinitionReadSpec(ChargeItemDefinitionSpec):
             mapping["category"] = ResourceCategoryReadSpec.serialize(
                 obj.category
             ).to_json()
-        mapping["slug_config"] = obj.parse_slug(obj.slug)
+        mapping["slug_config"] = obj.parse_slug(obj.calculate_slug())
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
 
         cls.serialize_audit_users(mapping, obj)
