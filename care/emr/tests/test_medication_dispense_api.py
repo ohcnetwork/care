@@ -4,7 +4,7 @@ from django.urls import reverse
 from model_bakery import baker
 
 from care.emr.models.location import FacilityLocation, FacilityLocationOrganization
-from care.emr.models.medication_dispense import DispenseOrder
+from care.emr.models.medication_dispense import DispenseOrder, MedicationDispense
 from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
     sync_inventory_item,
 )
@@ -71,6 +71,13 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             status="active",
             net_content=50,
         )
+        self.dispense_order = self.create_dispense_order(
+            patient=self.patient,
+            location=self.location,
+            facility=self.facility,
+            status=MedicationDispenseStatus.cancelled.value,
+            alternate_identifier="test-alternate-id",
+        )
         self.delivery_order_destination_external = self.create_delivery_order(
             destination=self.location,
             supplier=self.supplier,
@@ -81,6 +88,11 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             supplied_item=self.product,
             status=SupplyDeliveryStatusOptions.completed.value,
             supplied_inventory_item=self.inventory_item,
+        )
+
+        self.medication_request = self.create_medication_request(
+            encounter=self.encounter,
+            requested_product=self.product_knowledge,
         )
 
     def create_facility_location(self, facility, facility_organization, **kwargs):
@@ -105,6 +117,11 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
 
         return baker.make(DeliveryOrder, **kwargs)
 
+    def create_medication_request(self, **kwargs):
+        from care.emr.models import MedicationRequest
+
+        return baker.make(MedicationRequest, **kwargs)
+
     def generate_base_url(self):
         return reverse("medication-dispense-list")
 
@@ -121,8 +138,10 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             )
         return supply_delivery
 
-    def get_detail_url(self):
-        return reverse("medication-dispense-detail")
+    def get_detail_url(self, external_id):
+        return reverse(
+            "medication-dispense-detail", kwargs={"external_id": external_id}
+        )
 
     def generate_medication_dispense_data(self, **overrides):
         data = {
@@ -135,6 +154,18 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
         }
         data.update(overrides)
         return data
+
+    def create_medication_dispense(self, **overrides):
+        defaults = {
+            "status": MedicationDispenseStatus.in_progress.value,
+            "encounter": self.encounter,
+            "patient": self.patient,
+            "location": self.location,
+            "quantity": 10,
+            "item": self.inventory_item,
+        }
+        defaults.update(overrides)
+        return baker.make(MedicationDispense, **defaults)
 
     def test_create_medication_dispense_as_superuser(self):
         """
@@ -199,4 +230,194 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
         self.assertEqual(
             response.data["errors"][0]["msg"],
             "Inventory item does not have enough stock",
+        )
+
+    def test_create_medication_dispense_with_both_dispense_order_and_create_dispense_order(
+        self,
+    ):
+        """
+        Test creating a medication dispense with both dispense order and create dispense order
+        """
+        self.client.force_authenticate(user=self.superuser)
+
+        data = self.generate_medication_dispense_data(
+            order=str(self.dispense_order.external_id),
+            create_dispense_order={
+                "status": MedicationDispenseStatus.in_progress.value,
+                "alternate_identifier": "test-alternate-id",
+                "name": "Test Dispense Order",
+                "note": "Test Note",
+            },
+        )
+        response = self.client.post(self.generate_base_url(), data, format="json")
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Value error, Cannot have both dispense order and create_dispense_order",
+        )
+
+    def test_create_medication_dispense_with_create_dispense_order_for_inactive_prescription(
+        self,
+    ):
+        """Test creating a medication dispense with create dispense order for an inactive prescription"""
+        self.client.force_authenticate(user=self.superuser)
+
+        data = self.generate_medication_dispense_data(
+            create_dispense_order={
+                "status": MedicationDispenseStatus.in_progress.value,
+                "alternate_identifier": "test-alternate-id",
+                "name": "Test Dispense Order",
+                "note": "Test Note",
+            }
+        )
+        response = self.client.post(self.generate_base_url(), data, format="json")
+        self.assertEqual(response.status_code, 400)
+
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Prescription is not active",
+        )
+
+    # Testcases for update dispenses
+
+    def test_update_medication_dispense_as_superuser(self):
+        """
+        Test updating a medication dispense as a superuser
+        """
+        self.client.force_authenticate(user=self.superuser)
+        medication_dispense = self.create_medication_dispense(order=self.dispense_order)
+        data = {
+            "status": MedicationDispenseStatus.completed.value,
+            "fully_dispensed": True,
+        }
+        response = self.client.put(
+            self.get_detail_url(medication_dispense.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["status"], MedicationDispenseStatus.completed.value
+        )
+
+    def test_update_medication_dispense_as_user_with_permission(self):
+        """
+        Test updating a medication dispense as a regular user with permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        medication_dispense = self.create_medication_dispense(order=self.dispense_order)
+        data = {
+            "status": MedicationDispenseStatus.completed.value,
+            "fully_dispensed": True,
+        }
+        response = self.client.put(
+            self.get_detail_url(medication_dispense.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["status"], MedicationDispenseStatus.completed.value
+        )
+
+    def test_update_medication_dispense_as_user_without_permission(self):
+        """
+        Test updating a medication dispense as a regular user without permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        medication_dispense = self.create_medication_dispense(order=self.dispense_order)
+        data = {
+            "status": MedicationDispenseStatus.completed.value,
+            "fully_dispensed": True,
+        }
+        response = self.client.put(
+            self.get_detail_url(medication_dispense.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have permission to write medication dispenses",
+        )
+
+    def test_update_medication_with_authorizing_request_based_on_fully_dispensed_value(
+        self,
+    ):
+        """
+        Test updating a medication dispense with authorizing request with fully dispensed value as true which will update the medication request dispense status to completed
+        """
+        self.client.force_authenticate(user=self.superuser)
+        medication_dispense = self.create_medication_dispense(
+            order=self.dispense_order,
+            authorizing_request=self.medication_request,
+        )
+        data = {
+            "status": MedicationDispenseStatus.completed.value,
+            "fully_dispensed": True,
+        }
+        response = self.client.put(
+            self.get_detail_url(medication_dispense.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["status"], MedicationDispenseStatus.completed.value
+        )
+        self.assertEqual(
+            response.data["authorizing_request"]["id"],
+            str(self.medication_request.external_id),
+        )
+        self.assertEqual(
+            response.data["authorizing_request"]["dispense_status"], "complete"
+        )
+
+    def test_update_medication_with_authorizing_request_based_on_fully_dispensed_value_as_false(
+        self,
+    ):
+        """
+        Test updating a medication dispense with authorizing request with fully dispensed value as false which will update the medication request dispense status to in_progress
+        """
+        self.client.force_authenticate(user=self.superuser)
+        medication_dispense = self.create_medication_dispense(
+            order=self.dispense_order,
+            authorizing_request=self.medication_request,
+        )
+        data = {
+            "status": MedicationDispenseStatus.completed.value,
+            "fully_dispensed": False,
+        }
+        response = self.client.put(
+            self.get_detail_url(medication_dispense.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["status"], MedicationDispenseStatus.completed.value
+        )
+        self.assertEqual(
+            response.data["authorizing_request"]["id"],
+            str(self.medication_request.external_id),
+        )
+        self.assertEqual(
+            response.data["authorizing_request"]["dispense_status"], "partial"
+        )
+
+    def test_update_a_cancelled_medication_dispense(self):
+        """
+        Test updating a cancelled medication dispense
+        """
+        self.client.force_authenticate(user=self.superuser)
+        medication_dispense = self.create_medication_dispense(
+            order=self.dispense_order,
+            authorizing_request=self.medication_request,
+            status=MedicationDispenseStatus.cancelled.value,
+        )
+        data = {
+            "status": MedicationDispenseStatus.completed.value,
+            "fully_dispensed": True,
+        }
+        response = self.client.put(
+            self.get_detail_url(medication_dispense.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "No updates allowed on cancelled medication dispense",
         )
