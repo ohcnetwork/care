@@ -421,3 +421,84 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             response.data["errors"][0]["msg"],
             "No updates allowed on cancelled medication dispense",
         )
+
+    # Testcases for listing testcases
+
+    def test_list_medication_dispense_as_superuser(self):
+        """
+        Test listing medication dispenses as a superuser
+        """
+        self.client.force_authenticate(user=self.superuser)
+        medication_dispense = self.create_medication_dispense(order=self.dispense_order)
+        response = self.client.get(
+            self.generate_base_url(), {"location": self.location.external_id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"],
+            str(medication_dispense.external_id),
+        )
+
+    def test_list_medication_dispense_as_user_with_permission(self):
+        """
+        Test listing medication dispenses as a regular user with permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        medication_dispense = self.create_medication_dispense(order=self.dispense_order)
+        response = self.client.get(
+            self.generate_base_url(), {"location": self.location.external_id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"],
+            str(medication_dispense.external_id),
+        )
+
+    def test_list_medication_dispense_as_user_without_permission(self):
+        """
+        Test listing medication dispenses as a regular user without permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        self.create_medication_dispense(order=self.dispense_order)
+        response = self.client.get(
+            self.generate_base_url(), {"location": self.location.external_id}
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have permission to read medication dispenses",
+        )
+
+    def test_list_medication_dispense_with_encounter_filter(self):
+        """
+        Test listing medication dispenses with encounter filter
+        """
+        self.client.force_authenticate(user=self.superuser)
+        medication_dispense = self.create_medication_dispense(order=self.dispense_order)
+        response = self.client.get(
+            self.generate_base_url(), {"encounter": self.encounter.external_id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"],
+            str(medication_dispense.external_id),
+        )
+
+    def test_list_medication_dispense_without_list_filter(self):
+        """
+        Test listing medication dispenses without list filter should return 400
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.create_medication_dispense(order=self.dispense_order)
+        response = self.client.get(self.generate_base_url())
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Location or encounter is required",
+        )
