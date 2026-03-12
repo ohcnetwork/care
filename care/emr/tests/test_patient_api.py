@@ -6,7 +6,11 @@ from django.urls import reverse
 from phonenumbers import PhoneNumberFormat, PhoneNumberType
 from rest_framework import status
 
-from care.emr.models.patient import PatientIdentifierConfig
+from care.emr.models.patient import (
+    PatientIdentifier,
+    PatientIdentifierConfig,
+    PatientUser,
+)
 from care.emr.models.tag_config import TagConfig
 from care.emr.resources.patient.spec import BloodGroupChoices, GenderChoices
 from care.security.permissions.patient import PatientPermissions
@@ -306,12 +310,15 @@ class TestPatientViewSet(CareAPITestBase):
 
     def test_search_by_phone_number(self):
         phone = generate_random_valid_phone_number()
-        self._create_patient_with_phone(phone)
+        patient_data, _, _ = self._create_patient_with_phone(phone)
         search_url = reverse("patient-search")
         response = self.client.post(search_url, {"phone_number": phone}, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertTrue(response.data["partial"])
-        self.assertGreaterEqual(len(response.data["results"]), 1)
+        results = response.data["results"]
+        self.assertGreaterEqual(len(results), 1)
+        partial_ids = [r["partial_id"] for r in results]
+        self.assertIn(str(patient_data["id"])[:5], partial_ids)
 
     def test_search_without_phone_or_config(self):
         user = self.create_user()
@@ -407,6 +414,11 @@ class TestPatientViewSet(CareAPITestBase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(
+            PatientUser.objects.filter(
+                user=other_user, patient__external_id=patient_id
+            ).exists()
+        )
 
     def test_add_duplicate_user_to_patient(self):
         patient_id, _, role, _ = self._setup_patient_with_write_permission()
@@ -436,7 +448,8 @@ class TestPatientViewSet(CareAPITestBase):
         get_url = reverse("patient-get-users", kwargs={"external_id": patient_id})
         response = self.client.get(get_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertGreaterEqual(len(response.data["results"]), 1)
+        user_ids = [r["id"] for r in response.data["results"]]
+        self.assertIn(str(other_user.external_id), user_ids)
 
     def test_delete_user_from_patient(self):
         patient_id, _, role, _ = self._setup_patient_with_write_permission()
@@ -447,6 +460,11 @@ class TestPatientViewSet(CareAPITestBase):
             {"user": str(other_user.external_id), "role": str(role.external_id)},
             format="json",
         )
+        self.assertTrue(
+            PatientUser.objects.filter(
+                user=other_user, patient__external_id=patient_id
+            ).exists()
+        )
         del_url = reverse("patient-delete-user", kwargs={"external_id": patient_id})
         response = self.client.post(
             del_url,
@@ -454,6 +472,11 @@ class TestPatientViewSet(CareAPITestBase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(
+            PatientUser.objects.filter(
+                user=other_user, patient__external_id=patient_id
+            ).exists()
+        )
 
     def test_delete_nonexistent_user_from_patient(self):
         patient_id, _, _, _ = self._setup_patient_with_write_permission()
@@ -498,6 +521,11 @@ class TestPatientViewSet(CareAPITestBase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(
+            PatientIdentifier.objects.filter(
+                patient__external_id=patient_id, config=config, value="ID-12345"
+            ).exists()
+        )
 
     def test_update_identifier_auto_maintained(self):
         patient_id, _, _, _ = self._setup_patient_with_write_permission()
@@ -547,6 +575,8 @@ class TestPatientViewSet(CareAPITestBase):
             url, {"tags": [str(tag.external_id)]}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        tag_displays = [t["display"] for t in response.data["instance_tags"]]
+        self.assertIn("Test Tag", tag_displays)
 
     def test_remove_instance_tags(self):
         superuser = self.create_super_user()
@@ -580,6 +610,7 @@ class TestPatientViewSet(CareAPITestBase):
             remove_url, {"tags": [str(tag.external_id)]}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["instance_tags"], [])
 
     def test_set_facility_tags(self):
         superuser = self.create_super_user()
@@ -614,6 +645,8 @@ class TestPatientViewSet(CareAPITestBase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        tag_displays = [t["display"] for t in response.data["facility_tags"]]
+        self.assertIn("Facility Tag", tag_displays)
 
     def test_remove_facility_tags(self):
         superuser = self.create_super_user()
@@ -661,3 +694,4 @@ class TestPatientViewSet(CareAPITestBase):
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["facility_tags"], [])

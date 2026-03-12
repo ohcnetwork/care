@@ -6,6 +6,7 @@ from care.emr.models.medication_request import MedicationRequestPrescription
 from care.emr.resources.medication.request_prescription.spec import (
     MedicationRequestPrescriptionStatus,
 )
+from care.security.permissions.medication import MedicationPermissions
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -219,12 +220,17 @@ class TestMedicationPrescriptionSummaryViewSet(CareAPITestBase):
         response = self.client.get(self.base_url)
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
-    def test_summary_as_superuser(self):
+    def test_summary_as_pharmacist(self):
+        pharmacist = self.create_user()
+        role = self.create_role_with_permissions(
+            permissions=[MedicationPermissions.is_pharmacist.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, pharmacist, role
+        )
+        self.client.force_authenticate(user=pharmacist)
         self._create_prescription_obj()
         self._create_prescription_obj(name="Second Prescription")
         response = self.client.get(self.base_url)
-        # Superuser may or may not have pharmacist access - check for valid response
-        self.assertIn(
-            response.status_code,
-            [status.HTTP_200_OK, status.HTTP_403_FORBIDDEN],
-        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertGreaterEqual(len(response.data["results"]), 2)
