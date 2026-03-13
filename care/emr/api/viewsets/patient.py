@@ -120,26 +120,25 @@ class PatientViewSet(EMRModelViewSet):
     def perform_create(self, instance):
         identifiers = instance._identifiers  # noqa: SLF001
         try:
-            with transaction.atomic():
-                with PatientCreateLock():
-                    super().perform_create(instance)
-                    for identifier in identifiers:
-                        config = get_object_or_404(
-                            PatientIdentifierConfig,
-                            external_id=identifier.config,
-                            facility__isnull=True,
-                        )
-                        if config.config.get("auto_maintained"):
-                            continue
-                        PatientIdentifier.objects.create(
-                            patient=instance,
-                            config=config,
-                            value=identifier.value,
-                        )
-                    evaluate_patient_instance_default_values(instance)
+            with PatientCreateLock(), transaction.atomic():
+                super().perform_create(instance)
+                for identifier in identifiers:
+                    config = get_object_or_404(
+                        PatientIdentifierConfig,
+                        external_id=identifier.config,
+                        facility__isnull=True,
+                    )
+                    if config.config.get("auto_maintained"):
+                        continue
+                    PatientIdentifier.objects.create(
+                        patient=instance,
+                        config=config,
+                        value=identifier.value,
+                    )
+                evaluate_patient_instance_default_values(instance)
 
-                    instance.build_instance_identifiers()
-                    instance.save()
+                instance.build_instance_identifiers()
+                instance.save()
                 tag_manager = PatientInstanceTagManager()
                 tag_manager.set_tags(
                     TagResource.patient,
