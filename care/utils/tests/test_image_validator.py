@@ -8,6 +8,38 @@ from PIL import Image
 from care.utils.models.validators import ImageSizeValidator
 
 
+class HumanizeBytesTests(TestCase):
+    def setUp(self):
+        self.validator = ImageSizeValidator()
+
+    def test_bytes_exact_kilobyte_boundary(self):
+        # 1024 bytes is exactly 1 KB
+        self.assertEqual(self.validator._humanize_bytes(1024), "1 KB")
+
+    def test_bytes_below_kilobyte(self):
+        self.assertEqual(self.validator._humanize_bytes(512), "512 B")
+
+    def test_bytes_multiple_of_kilobyte(self):
+        # 20 * 1024 = 20480 bytes = 20 KB
+        # The old rstrip('.0') bug returned "2 KB" for this case
+        self.assertEqual(self.validator._humanize_bytes(20 * 1024), "20 KB")
+
+    def test_bytes_round_kilobytes(self):
+        # 1000 bytes = 0.98 KB, below 1 KB so shows as B
+        # The old bug would return "1" B (stripping trailing zeros from "1000.00")
+        self.assertEqual(self.validator._humanize_bytes(1000), "1000 B")
+
+    def test_bytes_megabyte(self):
+        self.assertEqual(self.validator._humanize_bytes(1024 * 1024), "1 MB")
+
+    def test_bytes_two_megabytes(self):
+        self.assertEqual(self.validator._humanize_bytes(2 * 1024 * 1024), "2 MB")
+
+    def test_bytes_fractional_kilobytes(self):
+        # 1536 bytes = 1.5 KB
+        self.assertEqual(self.validator._humanize_bytes(1536), "1.5 KB")
+
+
 class CoverImageValidatorTests(TestCase):
     @classmethod
     def setUpClass(cls):
