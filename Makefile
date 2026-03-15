@@ -36,7 +36,7 @@ teardown:
 
 #TODO: remove alias load-dummy-data
 load-fixtures load-dummy-data:
-	docker compose exec backend bash -c "python manage.py load_fixtures"
+	docker compose exec backend bash -c "python manage.py load_fixtures --output-json /app/fixture_manifest.json"
 
 list:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) ps
@@ -109,7 +109,7 @@ up-playwright:
 	  docker compose exec db dropdb -U postgres care 2>/dev/null || true; \
 	  docker compose exec db createdb -U postgres care; \
 	  echo "Running migrations and fixtures on blank DB"; \
-	  docker compose exec backend bash -c "python manage.py migrate && python manage.py load_fixtures"; \
+	  docker compose exec backend bash -c "python manage.py migrate && python manage.py load_fixtures --output-json /app/fixture_manifest.json"; \
 	  echo "Dumping /tmp/test_db for faster subsequent runs"; \
 	  docker compose exec db sh -c 'pg_dump -U postgres -Fc care > /tmp/test_db'; \
 	fi

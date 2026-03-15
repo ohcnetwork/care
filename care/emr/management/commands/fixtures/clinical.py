@@ -1,46 +1,69 @@
-from care.emr.models.resource_category import ResourceCategory
 from care.emr.resources.activity_definition.spec import BaseActivityDefinitionSpec
 from care.emr.resources.healthcare_service.spec import BaseHealthcareServiceSpec
 from care.emr.resources.observation_definition.spec import BaseObservationDefinitionSpec
 from care.emr.resources.specimen_definition.spec import BaseSpecimenDefinitionSpec
 
+from . import create_charge_item_definition, create_object, create_resource_category
 from .facilities import create_location
 
 
-def _create_resource_category(facility, title, resource_type, **kwargs):
-    resource_category = ResourceCategory.objects.filter(
-        facility=facility, title=title, resource_type=resource_type
-    ).first()
-    if resource_category:
-        return resource_category
-    _data = {
-        "facility": facility,
-        "resource_type": resource_type,
-        "title": title,
-        "slug": f"{title.lower().replace(' ', '-')}-{resource_type}",
-        "created_by": facility.created_by,
-        "updated_by": facility.created_by,
-        "resource_sub_type": "other",
+def create_specimen_definition(facility, user=None, slug=None, **kwargs):
+    """Create a SpecimenDefinition for a facility."""
+    extra = {}
+    if slug:
+        extra["slug"] = slug
+    return create_object(
+        BaseSpecimenDefinitionSpec(**kwargs),
+        facility,
+        user,
+        **extra,
+    )
+
+
+def create_observation_definition(facility, user=None, **kwargs):
+    """Create an ObservationDefinition for a facility."""
+    spec_keys = {
+        "title", "status", "description", "category", "code",
+        "permitted_data_type", "qualified_ranges", "component",
+        "method", "permitted_unit",
     }
-    if kwargs:
-        _data.update(kwargs)
-    resource_category = ResourceCategory(**_data)
-    resource_category.slug = resource_category.calculate_slug()
-    resource_category.save()
-    return resource_category
+    spec_kwargs = {k: v for k, v in kwargs.items() if k in spec_keys}
+    extra_kwargs = {k: v for k, v in kwargs.items() if k not in spec_keys}
+    return create_object(
+        BaseObservationDefinitionSpec(**spec_kwargs),
+        facility,
+        user,
+        **extra_kwargs,
+    )
 
 
-def _create_object(model, facility, user=None, **kwargs):
-    obj = model.de_serialize()
-    obj.facility = facility
-    obj.created_by = user or facility.created_by
-    obj.updated_by = user or facility.updated_by
-    for key, value in kwargs.items():
-        setattr(obj, key, value)
-    if hasattr(obj, "calculate_slug"):
-        obj.slug = obj.calculate_slug()
-    obj.save()
-    return obj
+def create_activity_definition(facility, user=None, **kwargs):
+    """Create an ActivityDefinition for a facility."""
+    spec_keys = {
+        "id", "title", "status", "description", "usage", "classification",
+        "category", "kind", "code", "diagnostic_report_codes", "derived_from_uri",
+    }
+    spec_kwargs = {k: v for k, v in kwargs.items() if k in spec_keys}
+    extra_kwargs = {k: v for k, v in kwargs.items() if k not in spec_keys}
+    return create_object(
+        BaseActivityDefinitionSpec(**spec_kwargs),
+        facility,
+        user,
+        **extra_kwargs,
+    )
+
+
+def create_healthcare_service(facility, user=None, **kwargs):
+    """Create a HealthcareService for a facility."""
+    spec_keys = {"internal_type", "name", "styling_metadata", "extra_details"}
+    spec_kwargs = {k: v for k, v in kwargs.items() if k in spec_keys}
+    extra_kwargs = {k: v for k, v in kwargs.items() if k not in spec_keys}
+    return create_object(
+        BaseHealthcareServiceSpec(**spec_kwargs),
+        facility,
+        user,
+        **extra_kwargs,
+    )
 
 
 def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
@@ -215,7 +238,7 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         "display": "Fasting glucose [Mass/volume] in Serum or Plasma",
     }
 
-    blood_glucose_specimen_definition = _create_object(
+    blood_glucose_specimen_definition = create_object(
         BaseSpecimenDefinitionSpec(
             title="Blood Glucose Test Specimen",
             status="active",
@@ -244,7 +267,7 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         user,
         slug="blood-glucose-specimen",
     )
-    cbc_specimen_definition = _create_object(
+    cbc_specimen_definition = create_object(
         BaseSpecimenDefinitionSpec(
             title="CBC Blood Specimen",
             status="active",
@@ -273,7 +296,7 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         user,
         slug="cbc-blood",
     )
-    lipid_panel_specimen_definition = _create_object(
+    lipid_panel_specimen_definition = create_object(
         BaseSpecimenDefinitionSpec(
             title="Lipid Panel Blood Specimen",
             status="active",
@@ -302,7 +325,7 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         user,
         slug="lipid-panel-specimen",
     )
-    urinalysis_specimen_definition = _create_object(
+    urinalysis_specimen_definition = create_object(
         BaseSpecimenDefinitionSpec(
             title="Urinalysis Specimen",
             status="active",
@@ -332,7 +355,7 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         slug="urinalysis-specimen",
     )
 
-    fasting_blood_glucose_observation_definition = _create_object(
+    fasting_blood_glucose_observation_definition = create_object(
         BaseObservationDefinitionSpec(
             title="Fasting Blood Glucose",
             status="active",
@@ -359,7 +382,7 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         user,
         slug="fasting_blood_glucose",
     )
-    cbc_observation_definition = _create_object(
+    cbc_observation_definition = create_object(
         BaseObservationDefinitionSpec(
             title="Complete Blood Count",
             status="active",
@@ -478,7 +501,7 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         slug="complete-blood-count",
     )
 
-    lipid_panel_observation_definition = _create_object(
+    lipid_panel_observation_definition = create_object(
         BaseObservationDefinitionSpec(
             title="Lipid Panel Observation",
             status="active",
@@ -506,7 +529,7 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         slug="lipid-panel-observation",
     )
 
-    urinalysis_observation_definition = _create_object(
+    urinalysis_observation_definition = create_object(
         BaseObservationDefinitionSpec(
             title="Urinalysis Observation",
             status="active",
@@ -552,7 +575,7 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         },
     ]
 
-    fasting_blood_glucose_charge_definition = _create_charge_item_definition(
+    fasting_blood_glucose_charge_definition = create_charge_item_definition(
         facility,
         title="Fasting Blood Glucose Test",
         slug="fasting-glucose-test",
@@ -562,11 +585,11 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
             {"amount": 600.0, "monetary_component_type": "base"},
             *default_price_components,
         ],
-        category=_create_resource_category(
+        category=create_resource_category(
             facility, title="Lab Tests", resource_type="charge_item_definition"
         ),
     )
-    cbc_charge_definition = _create_charge_item_definition(
+    cbc_charge_definition = create_charge_item_definition(
         facility,
         title="Complete Blood Count (CBC) Test",
         slug="complete-blood-count",
@@ -585,12 +608,12 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
             },
             *default_price_components,
         ],
-        category=_create_resource_category(
+        category=create_resource_category(
             facility, title="Lab Tests", resource_type="charge_item_definition"
         ),
     )
 
-    lipid_panel_charge_definition = _create_charge_item_definition(
+    lipid_panel_charge_definition = create_charge_item_definition(
         facility,
         title="Lipid Panel Test",
         slug="lipid-panel-test",
@@ -601,12 +624,12 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
             {"amount": 400.0, "monetary_component_type": "base"},
             *default_price_components,
         ],
-        category=_create_resource_category(
+        category=create_resource_category(
             facility, title="Lab Tests", resource_type="charge_item_definition"
         ),
     )
 
-    urinalysis_charge_definition = _create_charge_item_definition(
+    urinalysis_charge_definition = create_charge_item_definition(
         facility,
         title="Urinalysis Test",
         slug="urinalysis-test",
@@ -628,12 +651,12 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
             *default_price_components,
         ],
         version=1,
-        category=_create_resource_category(
+        category=create_resource_category(
             facility, title="Lab Tests", resource_type="charge_item_definition"
         ),
     )
 
-    _create_object(
+    create_object(
         BaseHealthcareServiceSpec(
             internal_type="lab",
             name="Pathology Lab",
@@ -645,7 +668,7 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         locations=[bio_chemistry_lab_location.id],
     )
 
-    _create_object(
+    create_object(
         BaseActivityDefinitionSpec(
             title="Fasting Blood Glucose",
             status="active",
@@ -666,11 +689,11 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         ],
         locations=[bio_chemistry_lab_location.id],
         charge_item_definitions=[fasting_blood_glucose_charge_definition.id],
-        category=_create_resource_category(
+        category=create_resource_category(
             facility, title="Lab Tests", resource_type="activity_definition"
         ),
     )
-    _create_object(
+    create_object(
         BaseActivityDefinitionSpec(
             id="76c88bae-f4a4-4200-86b9-77f9a26d1a13",
             title="Complete Blood Count (CBC) Panel",
@@ -690,11 +713,11 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         observation_result_requirements=[cbc_observation_definition.id],
         locations=[bio_chemistry_lab_location.id],
         charge_item_definitions=[cbc_charge_definition.id],
-        category=_create_resource_category(
+        category=create_resource_category(
             facility, title="Lab Tests", resource_type="activity_definition"
         ),
     )
-    _create_object(
+    create_object(
         BaseActivityDefinitionSpec(
             title="Lipid Panel",
             status="active",
@@ -714,11 +737,11 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         observation_result_requirements=[lipid_panel_observation_definition.id],
         locations=[bio_chemistry_lab_location.id],
         charge_item_definitions=[lipid_panel_charge_definition.id],
-        category=_create_resource_category(
+        category=create_resource_category(
             facility, title="Lab Tests", resource_type="activity_definition"
         ),
     )
-    _create_object(
+    create_object(
         BaseActivityDefinitionSpec(
             title="Urinalysis",
             status="active",
@@ -737,31 +760,7 @@ def create_lab_definition_objects(fake, facility, user=None):  # noqa: PLR0915
         observation_result_requirements=[urinalysis_observation_definition.id],
         locations=[bio_chemistry_lab_location.id],
         charge_item_definitions=[urinalysis_charge_definition.id],
-        category=_create_resource_category(
+        category=create_resource_category(
             facility, title="Lab Tests", resource_type="activity_definition"
         ),
     )
-
-
-def _create_charge_item_definition(facility, title, price=None, **kwargs):
-    from care.emr.models import ChargeItemDefinition
-
-    _data = {
-        "facility": facility,
-        "status": "active",
-        "title": title,
-        "created_by": facility.created_by,
-        "updated_by": facility.created_by,
-        "slug": title.lower().replace(" ", "-").replace(".", ""),
-        "version": 1,
-    }
-    if price:
-        _data["price_components"] = [
-            {"amount": price, "monetary_component_type": "base"}
-        ]
-    if kwargs:
-        _data.update(kwargs)
-    charge_item_definition = ChargeItemDefinition(**_data)
-    charge_item_definition.slug = charge_item_definition.calculate_slug()
-    charge_item_definition.save()
-    return charge_item_definition
