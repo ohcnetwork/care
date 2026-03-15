@@ -81,3 +81,40 @@ def create_encounters(
             encounters.append(encounter)
 
     return encounters
+
+
+def setup_patients(ctx):
+    """Create patients and their encounters.
+
+    Populates ctx.patients, ctx.encounters, and ctx.manifest["patients"].
+    """
+    ctx.patients = create_patients(
+        ctx.fake, ctx.super_user, ctx.geo_organization, ctx.options["patients"]
+    )
+
+    ctx.encounters = create_encounters(
+        ctx.fake,
+        ctx.super_user,
+        ctx.patients,
+        ctx.facility,
+        [ctx.facility_organization],
+        ctx.options["encounter"],
+    )
+
+    # Build patient manifest with encounter IDs
+    manifest_patients = []
+    encounter_idx = 0
+    for patient in ctx.patients:
+        patient_data = {
+            "id": str(patient.external_id),
+            "name": patient.name,
+            "encounters": [],
+        }
+        for _ in range(ctx.options["encounter"]):
+            if encounter_idx < len(ctx.encounters):
+                patient_data["encounters"].append(
+                    {"id": str(ctx.encounters[encounter_idx].external_id)}
+                )
+                encounter_idx += 1
+        manifest_patients.append(patient_data)
+    ctx.manifest["patients"] = manifest_patients

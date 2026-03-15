@@ -7,6 +7,12 @@ from . import create_charge_item_definition, create_object, create_resource_cate
 from .facilities import create_location
 
 
+def setup_clinical(ctx):
+    """Create lab definitions and clinical objects for the primary facility."""
+    create_lab_definition_objects(ctx.fake, ctx.facility, ctx.super_user)
+    ctx.log("Created lab objects for facility")
+
+
 def create_specimen_definition(facility, user=None, slug=None, **kwargs):
     """Create a SpecimenDefinition for a facility."""
     extra = {}

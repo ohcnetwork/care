@@ -1,5 +1,6 @@
 import secrets
 import sys
+from dataclasses import dataclass, field
 from decimal import Decimal, localcontext
 
 from faker import Faker
@@ -39,6 +40,42 @@ ROLES_OPTIONS = {
     "Administrator": "administrator",
     "Facility Admin": "administrator",
 }
+
+
+@dataclass
+class FixtureContext:
+    """Shared state accumulated during fixture generation.
+
+    Fixture modules read from and write to this context, eliminating
+    the need to thread many parameters through every function call.
+    Adding a new fixture domain only requires:
+      1. Creating a new module in fixtures/
+      2. Writing a setup_*(ctx) function that takes this context
+      3. Adding one line to load_fixtures.py calling that function
+    """
+
+    fake: object  # Faker instance
+    super_user: object  # User model instance
+    options: dict  # CLI options from the management command
+
+    # Accumulated state — populated by fixture modules as they run
+    manifest: dict = field(default_factory=dict)
+    geo_organization: object = None
+    facility: object = None
+    facility_organization: object = None  # The "department" org for the facility
+    location: object = None  # Primary ward location
+    supplier: object = None  # Product supplier organization
+
+    # Collections
+    patients: list = field(default_factory=list)
+    encounters: list = field(default_factory=list)
+
+    # Output callback — set by the management command for logging
+    write: object = None  # callable(str) for stdout output
+
+    def log(self, msg):
+        if self.write:
+            self.write(msg)
 
 
 def generate_unique_indian_phone_number():

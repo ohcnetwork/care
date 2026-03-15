@@ -4,21 +4,14 @@ from django.conf import settings
 from django.core.management import BaseCommand, call_command
 from django.db import transaction
 
-from care.emr.resources.organization.spec import OrganizationTypeChoices
-from care.users.models import User
-
-from .fixtures import get_faker
-from .fixtures.clinical import create_lab_definition_objects
-from .fixtures.facilities import create_device, create_facility, create_location
-from .fixtures.inventory import create_inventory_items
-from .fixtures.organizations import (
-    create_facility_organization,
-    create_organization,
-    create_role_organizations,
-)
-from .fixtures.patients import create_encounters, create_patients
-from .fixtures.questionnaires import create_questionnaires
-from .fixtures.users import create_default_users, create_facility_users
+from .fixtures import FixtureContext, get_faker
+from .fixtures.clinical import setup_clinical
+from .fixtures.facilities import setup_facility
+from .fixtures.inventory import setup_inventory
+from .fixtures.organizations import setup_organizations
+from .fixtures.patients import setup_patients
+from .fixtures.questionnaires import setup_questionnaires
+from .fixtures.users import setup_admin, setup_users
 
 
 class Command(BaseCommand):
@@ -87,214 +80,31 @@ class Command(BaseCommand):
                 )
             )
 
-    def _generate_fixtures(self, options):  # noqa: PLR0915
-        """Generate all the fixture data within a transaction context."""
-        fake = get_faker()
-        manifest = {}
+    def _generate_fixtures(self, options):
+        """Generate all fixture data within a transaction context.
 
-        # Create superuser
-        super_user, created = User.objects.get_or_create(
-            username="admin",
-            defaults={
-                "user_type": "admin",
-                "is_superuser": True,
-                "is_staff": True,
-                "first_name": "Admin",
-                "last_name": "User",
-            },
-        )
-        if created:
-            super_user.set_password("admin")
-            super_user.save()
-
-        self.stdout.write("=" * 30)
-        if created:
-            self.stdout.write("Superuser username: admin")
-            self.stdout.write("Superuser password: admin")
-        else:
-            self.stdout.write(
-                "Superuser 'admin' already exists, not creating a new one."
-            )
-        self.stdout.write("=" * 30)
-
-        manifest["admin"] = {"username": "admin", "password": "admin"}
-
-        # Create geo organization
-        geo_organization = create_organization(fake, super_user)
-        self.stdout.write(f"Created geo organization: {geo_organization.name}")
-        manifest["geo_organization_id"] = str(geo_organization.external_id)
-
-        # Create product suppliers
-        for _ in range(2):
-            create_organization(
-                fake,
-                super_user,
-                org_type=OrganizationTypeChoices.product_supplier,
-                name=f"Supplier {fake.company()}",
-            )
-        supplier = create_organization(
-            fake,
-            super_user,
-            org_type=OrganizationTypeChoices.product_supplier,
-            name=f"Supplier {fake.company()}",
+        Each setup_* function reads what it needs from the context and
+        writes back what it produces.  Adding a new fixture domain is:
+          1. Create fixtures/<domain>.py with a setup_<domain>(ctx) function
+          2. Add one line here calling it in the right order
+        """
+        ctx = FixtureContext(
+            fake=get_faker(),
+            super_user=None,  # set by setup_admin
+            options=options,
+            write=self.stdout.write,
         )
 
-        # Create facility
-        facility = create_facility(
-            fake, super_user, geo_organization, "FACILITY WITH PATIENTS"
-        )
-        self.stdout.write(f"Created facility: {facility.name}")
-        manifest["facility"] = {
-            "id": str(facility.external_id),
-            "name": facility.name,
-        }
+        # Core infrastructure (order matters — later steps depend on earlier ones)
+        setup_admin(ctx)
+        setup_organizations(ctx)
+        setup_facility(ctx)
 
-        # Create inventory items
-        create_inventory_items(fake, facility, supplier)
-        self.stdout.write("Created inventory items for facility")
+        # Domain data (depend on facility + organizations)
+        setup_inventory(ctx)
+        setup_clinical(ctx)
+        setup_users(ctx)
+        setup_patients(ctx)
+        setup_questionnaires(ctx)
 
-        # Create facility organization (department)
-        external_facility_organization = create_facility_organization(
-            fake, super_user, facility
-        )
-        self.stdout.write(
-            f"Created facility organization (dept): {external_facility_organization.name}"
-        )
-        manifest["facility_organization_id"] = str(
-            external_facility_organization.external_id
-        )
-
-        # Create resource facility
-        create_facility(fake, super_user, geo_organization)
-        self.stdout.write("Created resource facility")
-
-        # Create locations
-        location = create_location(
-            fake,
-            super_user,
-            facility,
-            [external_facility_organization],
-            mode="kind",
-            form="wa",
-        )
-        self.stdout.write(f"Created location: {location.name}")
-
-        # Create lab definitions
-        create_lab_definition_objects(fake, facility, super_user)
-        self.stdout.write("Created lab objects for facility")
-
-        # Create beds
-        manifest_locations = [
-            {"id": str(location.external_id), "name": location.name}
-        ]
-        for i in range(1, 6):
-            bed = create_location(
-                fake,
-                super_user,
-                facility,
-                [external_facility_organization],
-                mode="instance",
-                form="bd",
-                parent=location.external_id,
-                name=f"Bed {i}",
-            )
-            self.stdout.write(f"Created bed: {bed.name}")
-            manifest_locations.append(
-                {"id": str(bed.external_id), "name": bed.name}
-            )
-        manifest["locations"] = manifest_locations
-
-        # Create devices
-        manifest_devices = []
-        for i in range(1, 6):
-            device = create_device(
-                fake,
-                super_user,
-                external_facility_organization,
-                name=f"Device {i}",
-            )
-            self.stdout.write(f"Created device: {device.user_friendly_name}")
-            manifest_devices.append(
-                {"id": str(device.external_id), "name": device.user_friendly_name}
-            )
-        manifest["devices"] = manifest_devices
-
-        # Create role organizations
-        organizations = create_role_organizations(fake, super_user)
-        for organization in organizations:
-            self.stdout.write(f"Created organization: {organization.name}")
-
-        # Create default users
-        default_users = create_default_users(
-            fake, super_user, external_facility_organization, geo_organization
-        )
-
-        self.stdout.write("=" * 50)
-        self.stdout.write("DEFAULT USER CREDENTIALS")
-        self.stdout.write("=" * 50)
-        for u in default_users:
-            self.stdout.write(
-                f"{u['role']:<15} {u['username']:<30} {u['password']:<20}"
-            )
-        self.stdout.write("=" * 50)
-
-        # Create facility users
-        self.stdout.write("=" * 50)
-        self.stdout.write("USER CREDENTIALS")
-        self.stdout.write("=" * 50)
-        self.stdout.write(f"{'ROLE':<15} {'USERNAME':<30} {'PASSWORD':<20}")
-        self.stdout.write("-" * 65)
-
-        facility_users = create_facility_users(
-            fake,
-            super_user,
-            external_facility_organization,
-            geo_organization,
-            options["users"],
-            options["default_password"],
-        )
-        for u in facility_users:
-            self.stdout.write(
-                f"{u['role']:<15} {u['username']:<30} {u['password']:<20}"
-            )
-        self.stdout.write("=" * 50)
-
-        manifest["users"] = default_users + facility_users
-
-        # Create patients
-        patients = create_patients(
-            fake, super_user, geo_organization, options["patients"]
-        )
-
-        # Create encounters
-        encounters = create_encounters(
-            fake,
-            super_user,
-            patients,
-            facility,
-            [external_facility_organization],
-            options["encounter"],
-        )
-
-        # Build patient manifest with encounter IDs
-        manifest_patients = []
-        encounter_idx = 0
-        for patient in patients:
-            patient_data = {
-                "id": str(patient.external_id),
-                "name": patient.name,
-                "encounters": [],
-            }
-            for _ in range(options["encounter"]):
-                if encounter_idx < len(encounters):
-                    patient_data["encounters"].append(
-                        {"id": str(encounters[encounter_idx].external_id)}
-                    )
-                    encounter_idx += 1
-            manifest_patients.append(patient_data)
-        manifest["patients"] = manifest_patients
-
-        # Create questionnaires
-        create_questionnaires(facility, super_user)
-
-        return manifest
+        return ctx.manifest

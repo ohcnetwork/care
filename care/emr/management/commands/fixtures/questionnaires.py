@@ -13,6 +13,12 @@ from care.emr.resources.questionnaire.spec import QuestionnaireSpec
 from . import ROLES_OPTIONS
 
 
+def setup_questionnaires(ctx):
+    """Create questionnaires for the primary facility."""
+    create_questionnaires(ctx.facility, ctx.super_user)
+    ctx.log("Created questionnaires")
+
+
 def create_questionnaires(facility, super_user):
     with Path.open("data/questionnaire_fixtures.json") as f:
         questionnaires = json.load(f)

@@ -77,3 +77,82 @@ def create_device(fake, super_user, facility_organization, name=None):
     device.updated_by = super_user
     device.save()
     return device
+
+
+def setup_facility(ctx):
+    """Create the primary facility, department org, locations, beds, and devices.
+
+    Populates ctx.facility, ctx.facility_organization, ctx.location,
+    and manifest entries for facility, locations, and devices.
+    """
+    from .organizations import create_facility_organization
+
+    # Primary facility
+    ctx.facility = create_facility(
+        ctx.fake, ctx.super_user, ctx.geo_organization, "FACILITY WITH PATIENTS"
+    )
+    ctx.log(f"Created facility: {ctx.facility.name}")
+    ctx.manifest["facility"] = {
+        "id": str(ctx.facility.external_id),
+        "name": ctx.facility.name,
+    }
+
+    # Facility organization (department)
+    ctx.facility_organization = create_facility_organization(
+        ctx.fake, ctx.super_user, ctx.facility
+    )
+    ctx.log(f"Created facility organization (dept): {ctx.facility_organization.name}")
+    ctx.manifest["facility_organization_id"] = str(
+        ctx.facility_organization.external_id
+    )
+
+    # Resource facility (second facility without patients)
+    create_facility(ctx.fake, ctx.super_user, ctx.geo_organization)
+    ctx.log("Created resource facility")
+
+    # Primary ward location
+    ctx.location = create_location(
+        ctx.fake,
+        ctx.super_user,
+        ctx.facility,
+        [ctx.facility_organization],
+        mode="kind",
+        form="wa",
+    )
+    ctx.log(f"Created location: {ctx.location.name}")
+
+    # Beds
+    manifest_locations = [
+        {"id": str(ctx.location.external_id), "name": ctx.location.name}
+    ]
+    for i in range(1, 6):
+        bed = create_location(
+            ctx.fake,
+            ctx.super_user,
+            ctx.facility,
+            [ctx.facility_organization],
+            mode="instance",
+            form="bd",
+            parent=ctx.location.external_id,
+            name=f"Bed {i}",
+        )
+        ctx.log(f"Created bed: {bed.name}")
+        manifest_locations.append(
+            {"id": str(bed.external_id), "name": bed.name}
+        )
+    ctx.manifest["locations"] = manifest_locations
+
+    # Devices
+    manifest_devices = []
+    for i in range(1, 6):
+        device = create_device(
+            ctx.fake,
+            ctx.super_user,
+            ctx.facility_organization,
+            name=f"Device {i}",
+        )
+        ctx.log(f"Created device: {device.user_friendly_name}")
+        manifest_devices.append(
+            {"id": str(device.external_id), "name": device.user_friendly_name}
+        )
+    ctx.manifest["devices"] = manifest_devices

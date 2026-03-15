@@ -155,3 +155,73 @@ def create_facility_users(
             pass
 
     return created_users
+
+
+def setup_admin(ctx):
+    """Create the superuser account.
+
+    Populates ctx.super_user and ctx.manifest["admin"].
+    """
+    super_user, created = User.objects.get_or_create(
+        username="admin",
+        defaults={
+            "user_type": "admin",
+            "is_superuser": True,
+            "is_staff": True,
+            "first_name": "Admin",
+            "last_name": "User",
+        },
+    )
+    if created:
+        super_user.set_password("admin")
+        super_user.save()
+
+    ctx.super_user = super_user
+    ctx.log("=" * 30)
+    if created:
+        ctx.log("Superuser username: admin")
+        ctx.log("Superuser password: admin")
+    else:
+        ctx.log("Superuser 'admin' already exists, not creating a new one.")
+    ctx.log("=" * 30)
+
+    ctx.manifest["admin"] = {"username": "admin", "password": "admin"}
+
+
+def setup_users(ctx):
+    """Create default and facility users.
+
+    Populates ctx.manifest["users"].
+    """
+    # Default users (fixed credentials for manual testing)
+    default_users = create_default_users(
+        ctx.fake, ctx.super_user, ctx.facility_organization, ctx.geo_organization
+    )
+
+    ctx.log("=" * 50)
+    ctx.log("DEFAULT USER CREDENTIALS")
+    ctx.log("=" * 50)
+    for u in default_users:
+        ctx.log(f"{u['role']:<15} {u['username']:<30} {u['password']:<20}")
+    ctx.log("=" * 50)
+
+    # Facility users (generated per role x count)
+    ctx.log("=" * 50)
+    ctx.log("USER CREDENTIALS")
+    ctx.log("=" * 50)
+    ctx.log(f"{'ROLE':<15} {'USERNAME':<30} {'PASSWORD':<20}")
+    ctx.log("-" * 65)
+
+    facility_users = create_facility_users(
+        ctx.fake,
+        ctx.super_user,
+        ctx.facility_organization,
+        ctx.geo_organization,
+        ctx.options["users"],
+        ctx.options["default_password"],
+    )
+    for u in facility_users:
+        ctx.log(f"{u['role']:<15} {u['username']:<30} {u['password']:<20}")
+    ctx.log("=" * 50)
+
+    ctx.manifest["users"] = default_users + facility_users

@@ -72,3 +72,34 @@ def attach_role_facility_organization_user(facility_organization, user, role):
     return FacilityOrganizationUser.objects.create(
         organization=facility_organization, user=user, role=role
     )
+
+
+def setup_organizations(ctx):
+    """Create geo organization, suppliers, role organizations.
+
+    Populates ctx.geo_organization, ctx.supplier, ctx.manifest entries.
+    """
+    # Geo organization
+    ctx.geo_organization = create_organization(ctx.fake, ctx.super_user)
+    ctx.log(f"Created geo organization: {ctx.geo_organization.name}")
+    ctx.manifest["geo_organization_id"] = str(ctx.geo_organization.external_id)
+
+    # Product suppliers
+    for _ in range(2):
+        create_organization(
+            ctx.fake,
+            ctx.super_user,
+            org_type=OrganizationTypeChoices.product_supplier,
+            name=f"Supplier {ctx.fake.company()}",
+        )
+    ctx.supplier = create_organization(
+        ctx.fake,
+        ctx.super_user,
+        org_type=OrganizationTypeChoices.product_supplier,
+        name=f"Supplier {ctx.fake.company()}",
+    )
+
+    # Role organizations
+    organizations = create_role_organizations(ctx.fake, ctx.super_user)
+    for org in organizations:
+        ctx.log(f"Created organization: {org.name}")

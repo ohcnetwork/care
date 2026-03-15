@@ -131,6 +131,15 @@ def create_supply_delivery(
     return supply_delivery
 
 
+def setup_inventory(ctx):
+    """Create inventory items for the primary facility.
+
+    Requires ctx.facility and ctx.supplier to be set.
+    """
+    create_inventory_items(ctx.fake, ctx.facility, ctx.supplier)
+    ctx.log("Created inventory items for facility")
+
+
 def create_inventory_items(fake, facility, supplier, user=None):
     inventory_location = create_location(
         fake,
