@@ -3,8 +3,12 @@ from decimal import Decimal
 from django.urls import reverse
 from model_bakery import baker
 
+from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.location import FacilityLocation, FacilityLocationOrganization
 from care.emr.models.medication_dispense import DispenseOrder, MedicationDispense
+from care.emr.resources.charge_item_definition.spec import (
+    ChargeItemDefinitionStatusOptions,
+)
 from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
     sync_inventory_item,
 )
@@ -12,6 +16,7 @@ from care.emr.resources.inventory.supply_delivery.spec import (
     SupplyDeliveryStatusOptions,
 )
 from care.emr.resources.medication.dispense.spec import MedicationDispenseStatus
+from care.emr.resources.medication.request.spec import MedicationRequestDispenseStatus
 from care.security.permissions.medication import MedicationPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -56,13 +61,24 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             product_type="medication",
             code={"code": "test", "display": "Test", "system": "http://test"},
         )
-
-        self.product = baker.make(
-            "emr.Product",
+        self.charge_item_definition = ChargeItemDefinition.objects.create(
             facility=self.facility,
-            product_knowledge=self.product_knowledge,
-            status="active",
+            status=ChargeItemDefinitionStatusOptions.active.value,
+            title="Test Charge Definition",
+            slug=f"f-{self.facility.external_id}-test-charge-def",
+            price_components=[
+                {
+                    "monetary_component_type": "base",
+                    "currency": "INR",
+                    "amount": "100.00",
+                }
+            ],
+        )
+
+        self.product = self.create_product(
+            facility=self.facility,
             product_type="medication",
+            product_knowledge=self.product_knowledge,
         )
 
         self.inventory_item = self.create_inventory_item(
@@ -93,6 +109,7 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
         self.medication_request = self.create_medication_request(
             encounter=self.encounter,
             requested_product=self.product_knowledge,
+            requester=self.user,
         )
 
     def create_facility_location(self, facility, facility_organization, **kwargs):
@@ -103,6 +120,9 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             organization=facility_organization,
         )
         return location
+
+    def create_product(self, **kwargs):
+        return baker.make("emr.Product", **kwargs)
 
     def create_dispense_order(self, **kwargs):
         return baker.make(DispenseOrder, **kwargs)
@@ -277,6 +297,101 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
         self.assertEqual(
             response.data["errors"][0]["msg"],
             "Prescription is not active",
+        )
+
+    def test_create_medication_dispense_with_product_with_chargeitem_definition(self):
+        """
+        Test creating a medication dispense with a product that has a charge item definition
+        """
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product(
+            facility=self.facility,
+            product_type="medication",
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        inventory_item = self.create_inventory_item(
+            location=self.location,
+            product=product,
+            status="active",
+            net_content=50,
+        )
+        data = self.generate_medication_dispense_data(
+            item=str(inventory_item.external_id)
+        )
+        response = self.client.post(self.generate_base_url(), data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["status"], MedicationDispenseStatus.in_progress.value
+        )
+        self.assertIsNotNone(response.data["charge_item"])
+        self.assertEqual(
+            response.data["charge_item"]["charge_item_definition"]["id"],
+            str(self.charge_item_definition.external_id),
+        )
+
+    def test_create_medication_dispense_with_authorizing_request(self):
+        """
+        Test creating a medication dispense with an authorizing medication request
+        """
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_medication_dispense_data(
+            authorizing_request=str(self.medication_request.external_id)
+        )
+        response = self.client.post(self.generate_base_url(), data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["status"], MedicationDispenseStatus.in_progress.value
+        )
+        self.assertEqual(
+            response.data["authorizing_request"]["id"],
+            str(self.medication_request.external_id),
+        )
+
+    def test_create_medication_dispense_with_fully_dispensed_value_as_true(self):
+        """
+        Test creating a medication dispense with fully dispensed value as true which will update the medication request dispense status to completed
+        """
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_medication_dispense_data(
+            authorizing_request=str(self.medication_request.external_id),
+            fully_dispensed=True,
+        )
+        response = self.client.post(self.generate_base_url(), data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["status"], MedicationDispenseStatus.in_progress.value
+        )
+        self.assertEqual(
+            response.data["authorizing_request"]["id"],
+            str(self.medication_request.external_id),
+        )
+        self.assertEqual(
+            response.data["authorizing_request"]["dispense_status"],
+            MedicationRequestDispenseStatus.complete.value,
+        )
+
+    def test_create_medication_dispense_with_fully_dispensed_value_as_false(self):
+        """
+        Test creating a medication dispense with fully dispensed value as false which will update the medication request dispense status to in_progress
+        """
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_medication_dispense_data(
+            authorizing_request=str(self.medication_request.external_id),
+            fully_dispensed=False,
+        )
+        response = self.client.post(self.generate_base_url(), data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["status"], MedicationDispenseStatus.in_progress.value
+        )
+        self.assertEqual(
+            response.data["authorizing_request"]["id"],
+            str(self.medication_request.external_id),
+        )
+        self.assertEqual(
+            response.data["authorizing_request"]["dispense_status"],
+            MedicationRequestDispenseStatus.partial.value,
         )
 
     # Testcases for update dispenses
@@ -488,6 +603,24 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
         self.assertEqual(
             response.data["results"][0]["id"],
             str(medication_dispense.external_id),
+        )
+
+    def test_list_medication_dispense_without_encounter_permission(self):
+        """
+        Test listing medication dispenses with encounter filter without encounter read permission should return 403
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.create_medication_dispense(order=self.dispense_order)
+        response = self.client.get(
+            self.generate_base_url(), {"encounter": self.encounter.external_id}
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have permission to read medication dispenses",
         )
 
     def test_list_medication_dispense_without_list_filter(self):
