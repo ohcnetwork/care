@@ -6,6 +6,7 @@ from django.urls import reverse
 from phonenumbers import PhoneNumberFormat, PhoneNumberType
 from rest_framework import status
 
+from care.emr.locks.billing import PatientCreateLock
 from care.emr.models.patient import (
     PatientIdentifier,
     PatientIdentifierConfig,
@@ -87,6 +88,7 @@ class TestPatientViewSet(CareAPITestBase):
         )
         self.attach_role_organization_user(organization, user, role)
         self.client.force_authenticate(user=user)
+        PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -103,6 +105,7 @@ class TestPatientViewSet(CareAPITestBase):
         )
         self.attach_role_organization_user(organization, user, role)
         self.client.force_authenticate(user=user)
+        PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -143,6 +146,7 @@ class TestPatientViewSet(CareAPITestBase):
             patient_data = self.generate_patient_data(
                 geo_organization=geo_organization.external_id, phone_number=valid_number
             )
+            PatientCreateLock().release()
             response = self.client.post(self.base_url, patient_data, format="json")
             self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -162,6 +166,7 @@ class TestPatientViewSet(CareAPITestBase):
             geo_organization=geo_organization.external_id,
             date_of_birth=datetime.date(1993, 1, 10),
         )
+        PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["date_of_birth"], "1993-01-10")
@@ -224,6 +229,7 @@ class TestPatientViewSet(CareAPITestBase):
             geo_organization=geo_organization.external_id,
             deceased_datetime=care_now() + datetime.timedelta(days=10),
         )
+        PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, 400)
 
@@ -238,6 +244,7 @@ class TestPatientViewSet(CareAPITestBase):
         patient_data = self.generate_patient_data(
             geo_organization=geo_organization.external_id
         )
+        PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         patient_id = response.data["id"]
@@ -260,6 +267,7 @@ class TestPatientViewSet(CareAPITestBase):
         patient_data = self.generate_patient_data(
             geo_organization=geo_organization.external_id
         )
+        PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         patient_id = response.data["id"]
@@ -304,6 +312,7 @@ class TestPatientViewSet(CareAPITestBase):
             geo_organization=geo_organization.external_id,
             phone_number=phone_number,
         )
+        PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         return response.data, user, geo_organization
@@ -400,6 +409,7 @@ class TestPatientViewSet(CareAPITestBase):
         patient_data = self.generate_patient_data(
             geo_organization=geo_organization.external_id
         )
+        PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         return response.data["id"], user, role, geo_organization
@@ -560,6 +570,7 @@ class TestPatientViewSet(CareAPITestBase):
         patient_data = self.generate_patient_data(
             geo_organization=geo_organization.external_id
         )
+        PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         patient_id = response.data["id"]
@@ -589,6 +600,7 @@ class TestPatientViewSet(CareAPITestBase):
         patient_data = self.generate_patient_data(
             geo_organization=geo_organization.external_id
         )
+        PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         patient_id = response.data["id"]
@@ -623,6 +635,7 @@ class TestPatientViewSet(CareAPITestBase):
         patient_data = self.generate_patient_data(
             geo_organization=geo_organization.external_id
         )
+        PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         patient_id = response.data["id"]
@@ -659,6 +672,7 @@ class TestPatientViewSet(CareAPITestBase):
         patient_data = self.generate_patient_data(
             geo_organization=geo_organization.external_id
         )
+        PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         patient_id = response.data["id"]
