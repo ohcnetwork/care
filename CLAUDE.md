@@ -10,20 +10,14 @@ CARE is a Digital Public Good building an open source EMR + Hospital Management 
 
 ### Running Locally (without Docker)
 
-The local setup uses a Python 3.13 venv at `/home/user/care/.venv` with PostgreSQL 16 and Redis running natively.
+The local setup uses a Python 3.13 venv with PostgreSQL 16 and Redis running natively.
 
 **Start services:**
 ```bash
-# Ensure PostgreSQL and Redis are running
-pg_isready || sudo pg_ctlcluster 16 main start
-redis-cli ping || redis-server --daemonize yes
-
+# Ensure PostgreSQL 16 and Redis are running on your system
 # Start Django backend on port 9000
-cd /home/user/care
 DJANGO_SETTINGS_MODULE=config.settings.local DJANGO_READ_DOT_ENV_FILE=true .venv/bin/python manage.py runserver 0.0.0.0:9000
 ```
-
-Or use: `/home/user/start-backend.sh`
 
 **Database:**
 - PostgreSQL on localhost:5432, database `care`, user `postgres`, password `postgres`
@@ -57,6 +51,7 @@ make down             # Stop services
 .venv/bin/python manage.py load_fixtures
 .venv/bin/python manage.py test care.users --keepdb --parallel
 .venv/bin/ruff check --fix .
+.venv/bin/ruff format .
 ```
 
 ## Code Style
@@ -71,6 +66,7 @@ make down             # Stop services
 ```
 care/                    # Main Django app
 ├── audit_log/          # Audit logging
+├── contrib/            # Contributed modules
 ├── emr/                # Electronic Medical Records (core domain)
 ├── facility/           # Facility management
 ├── users/              # User management & auth
@@ -80,7 +76,11 @@ config/                 # Django configuration
 ├── settings/           # Settings modules (base, local, deployment, test)
 ├── api_router.py       # API URL routing
 └── celery_app.py       # Celery task queue config
+plug_config.py          # Plugin system configuration
 ```
+
+### Plugin System
+CARE supports a plugin architecture via `plug_config.py` and the `plugs` package. Plugins extend core functionality without modifying the main codebase. Be aware of plugin interfaces when modifying core models or APIs.
 
 ### Settings
 - **Local dev**: `config.settings.local` (DEBUG=True, CORS open, email to console)
@@ -93,14 +93,9 @@ config/                 # Django configuration
 - API docs via `drf-spectacular` (OpenAPI/Swagger)
 - Routes in `config/api_router.py`
 
-### Test Credentials (from fixtures)
+### Test Credentials
 
-| Role | Username | Password |
-|------|----------|----------|
-| Doctor | `doctor_2_0` | `Coronasafe@123` |
-| Admin | `administrator_2_0` | `Coronasafe@123` |
-| Nurse | `nurse_2_0` | `Coronasafe@123` |
-| Facility Admin | `facility_admin_2_0` | `Coronasafe@123` |
+Test credentials are available in the fixture data loaded by `make load-fixtures` or `python manage.py load_fixtures`.
 
 ## Git Workflow
 
@@ -112,7 +107,6 @@ config/                 # Django configuration
 When working autonomously:
 
 1. **Before coding:** Read the relevant model, serializer, viewset, and test files
-2. **After changes:** Run `ruff check --fix .` to lint
+2. **After changes:** Run `ruff check --fix .` and `ruff format .` to lint and format
 3. **Verify:** Run related tests: `.venv/bin/python manage.py test care.module_name --keepdb`
-4. **For API changes:** Update the corresponding frontend in `/home/user/care_fe`
-5. **Migrations:** Run `makemigrations` after model changes, then `migrate`
+4. **Migrations:** Run `makemigrations` after model changes, then `migrate`
