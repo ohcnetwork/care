@@ -121,7 +121,7 @@ class InterpretationEvaluator:
 
     def get_matching_condition(self, context: dict, value: Any):
         for rule in self.rules:
-            conditions = rule.get("conditions", {})
+            conditions = rule.get("conditions", [])
             if self.evaluate_conditions(conditions, context):
                 return rule, value
         return None, None
