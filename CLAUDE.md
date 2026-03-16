@@ -47,11 +47,11 @@ make down             # Stop services
 
 ### Without Docker (venv)
 ```bash
-.venv/bin/python manage.py migrate
-.venv/bin/python manage.py load_fixtures
-.venv/bin/python manage.py test care.users --keepdb --parallel
-.venv/bin/ruff check --fix .
-.venv/bin/ruff format .
+pipenv run python manage.py migrate
+pipenv run python manage.py load_fixtures
+pipenv run python manage.py test care.users --keepdb --parallel
+pipenv run ruff check --fix .
+pipenv run ruff format .
 ```
 
 ## Code Style
@@ -106,7 +106,7 @@ Test credentials are available in the fixture data loaded by `make load-fixtures
 
 When working autonomously:
 
-1. **Before coding:** Read the relevant model, serializer, viewset, and test files
+1. **Before coding:** Read the relevant model, resource spec, authorization controller, viewset, and test files
 2. **After changes:** Run `ruff check --fix .` and `ruff format .` to lint and format
-3. **Verify:** Run related tests: `.venv/bin/python manage.py test care.module_name --keepdb`
+3. **Verify:** Run related tests: `pipenv run python manage.py test care.module_name --keepdb`
 4. **Migrations:** Run `makemigrations` after model changes, then `migrate`
