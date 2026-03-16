@@ -34,6 +34,7 @@ class TokenFilters(FilterSet):
     sub_queue_is_null = NullFilter(field_name="sub_queue")
     date = DateFilter(field_name="queue__date")  # For dependent filtering only
     patient_name = CharFilter(field_name="patient__name", lookup_expr="icontains")
+    patient = UUIDFilter(field_name="patient__external_id")
 
 
 class TokenViewSet(EMRModelViewSet):
