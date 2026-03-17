@@ -297,3 +297,13 @@ class PatientRetrieveSpec(
                     }
                     for x in obj.facility_identifiers.get(str(facility.id), [])
                 ]
+        def calculate_risk(patient):
+    score = 0
+
+    if hasattr(patient, "age") and patient.age and patient.age > 60:
+        score += 2
+
+    return {
+        "risk_score": score,
+        "risk_level": "High" if score >= 5 else "Low"
+    }
