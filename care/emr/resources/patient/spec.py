@@ -26,6 +26,18 @@ from care.emr.tagging.base import PatientFacilityTagManager, PatientInstanceTagM
 from care.emr.utils.datetime_type import StrictTZAwareDateTime
 from care.utils.time_util import care_now
 
+def calculate_risk(patient):
+    score = 0
+
+    if hasattr(patient, "year_of_birth") and patient.year_of_birth:
+        age = datetime.datetime.now().year - patient.year_of_birth
+        if age > 60:
+            score += 2
+
+    return {
+        "score": score,
+        "level": "High" if score >= 5 else "Medium" if score >= 3 else "Low",
+    }
 
 class BloodGroupChoices(str, Enum):
     A_negative = "A_negative"
@@ -271,6 +283,8 @@ class PatientRetrieveSpec(
         from care.emr.resources.user.spec import UserSpec
 
         super().perform_extra_serialization(mapping, obj, *args, **kwargs)
+        mapping["risk_score"] = calculate_risk(obj)
+
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
@@ -297,13 +311,4 @@ class PatientRetrieveSpec(
                     }
                     for x in obj.facility_identifiers.get(str(facility.id), [])
                 ]
-        def calculate_risk(patient):
-    score = 0
 
-    if hasattr(patient, "age") and patient.age and patient.age > 60:
-        score += 2
-
-    return {
-        "risk_score": score,
-        "risk_level": "High" if score >= 5 else "Low"
-    }
