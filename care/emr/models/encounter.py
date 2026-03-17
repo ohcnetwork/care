@@ -60,7 +60,7 @@ class Encounter(EMRBaseModel):
     def sync_care_team_users_cache(self):
         if isinstance(self.care_team, list):
             self.care_team_users = list(
-                {int(x.get("user_id", -1)) for x in self.care_team}
+                int(x.get("user_id", -1)) for x in self.care_team
             )
 
     def save(self, *args, **kwargs):
