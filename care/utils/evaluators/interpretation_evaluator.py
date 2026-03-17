@@ -136,4 +136,6 @@ class InterpretationEvaluator:
             interpretation, ranges = self.get_interpretation(rule, value)
             if interpretation:
                 return interpretation, ranges
+            if rule.get("default_interpretation"):
+                return rule.get("default_interpretation"), rule.get("ranges", [])
         return None, []

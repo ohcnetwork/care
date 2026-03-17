@@ -81,6 +81,7 @@ ABNORMAL_INTERPRETATION = {"display": "Abnormal"}
 class QualifiedRangeSpec(BaseModel):
     conditions: list[EvaluatorConditionSpec] = []
     ranges: list[NumericRangeSpec] = []
+    default_interpretation: InterpretationSpec | None = None
     normal_coded_value_set: str | None = ""
     critical_coded_value_set: str | None = ""
     abnormal_coded_value_set: str | None = ""
