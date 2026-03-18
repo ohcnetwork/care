@@ -1,7 +1,11 @@
+from enum import Enum
+
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Q
 from django_filters import rest_framework as filters
+from drf_spectacular.utils import extend_schema
+from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
@@ -29,11 +33,23 @@ from care.utils.shortcuts import get_object_or_404
 from config.patient_otp_authentication import JWTTokenPatientAuthentication
 
 
+class ManagingOrganizationFilter(filters.UUIDFilter):
+    def filter(self, qs, value):
+        queryset = qs
+        if not value:
+            return queryset
+        organization = get_object_or_404(
+            Organization.objects.only("id"), external_id=value
+        )
+        return queryset.filter(managing_organizations__overlap=[organization.id])
+
+
 class OrganizationFilter(filters.FilterSet):
     parent = filters.UUIDFilter(field_name="parent__external_id")
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     org_type = filters.CharFilter(field_name="org_type", lookup_expr="iexact")
     level_cache = filters.NumberFilter(field_name="level_cache")
+    get_managed_organizations = ManagingOrganizationFilter()
 
 
 class OrganizationPublicViewSet(EMRModelReadOnlyViewSet):
@@ -49,6 +65,16 @@ class OrganizationPublicViewSet(EMRModelReadOnlyViewSet):
         if "parent" in self.request.GET and not self.request.GET.get("parent"):
             queryset = queryset.filter(parent__isnull=True)
         return queryset
+
+
+class OrganizationManagingOrganizationAction(str, Enum):
+    add = "add"
+    remove = "remove"
+
+
+class OrganizationManagingOrganizationRequest(BaseModel):
+    organization: UUID4
+    action: OrganizationManagingOrganizationAction
 
 
 class OrganizationViewSet(EMRModelViewSet):
@@ -220,6 +246,49 @@ class OrganizationViewSet(EMRModelViewSet):
         ]
         return Response({"count": len(data), "results": data})
 
+    @extend_schema(
+        request=OrganizationManagingOrganizationRequest,
+    )
+    @action(detail=True, methods=["POST"])
+    def managing_organization(self, request, *args, **kwargs):
+        request_data = OrganizationManagingOrganizationRequest(**request.data)
+        organization = self.get_object()
+        managing_organization = get_object_or_404(
+            Organization, external_id=request_data.organization
+        )
+        if (
+            organization.org_type != OrganizationTypeChoices.role.value
+            or managing_organization.org_type != OrganizationTypeChoices.role.value
+        ):
+            raise ValidationError(
+                "Managing organization is only supported for role organizations"
+            )
+        if not AuthorizationController.call(
+            "can_manage_organization_obj", self.request.user, managing_organization
+        ):
+            raise PermissionDenied(
+                "User does not have the required permissions to requested organization"
+            )
+        if not AuthorizationController.call(
+            "can_manage_organization_obj", self.request.user, organization
+        ):
+            raise PermissionDenied(
+                "User does not have the required permissions to manage the organization"
+            )
+
+        if request_data.action == OrganizationManagingOrganizationAction.add:
+            organization.managing_organizations = list(
+                {*organization.managing_organizations, managing_organization.id}
+            )
+        elif request_data.action == OrganizationManagingOrganizationAction.remove:
+            if managing_organization.id not in organization.managing_organizations:
+                raise ValidationError(
+                    "Managing organization is not part of the organization"
+                )
+            organization.managing_organizations.remove(managing_organization.id)
+        organization.save()
+        return Response({})
+
 
 class OrganizationUserFilter(filters.FilterSet):
     phone_number = filters.CharFilter(
@@ -306,6 +375,7 @@ class OrganizationUsersViewSet(EMRModelViewSet):
             return
         organization = self.get_organization_obj()
         requested_role = get_object_or_404(RoleModel, external_id=instance.role)
+
         if not AuthorizationController.call(
             "can_manage_organization_users_obj",
             self.request.user,

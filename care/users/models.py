@@ -181,11 +181,23 @@ class User(AbstractUser):
 
     preferences = models.JSONField(default=dict)
 
+    cached_role_orgs = models.JSONField(default=None, null=True, blank=True)
+
     objects = CustomUserManager()
 
     REQUIRED_FIELDS = [
         "email",
     ]
+
+    def get_cached_role_orgs(self):
+        from care.emr.models.organization import OrganizationUser
+
+        if self.cached_role_orgs is not None:
+            return self.cached_role_orgs
+        data = OrganizationUser.get_cached_role_orgs(self.id)
+        self.cached_role_orgs = data
+        self.save(update_fields=["cached_role_orgs"])
+        return data
 
     def read_profile_picture_url(self):
         if self.profile_picture_url:
