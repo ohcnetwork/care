@@ -171,6 +171,11 @@ class OrganizationViewSet(EMRModelViewSet):
 
         parent = get_object_or_404(Organization, external_id=instance.parent)
 
+        if parent.org_type == OrganizationTypeChoices.role.value:
+            raise ValidationError(
+                "Cannot create organizations under role organizations"
+            )
+
         if not AuthorizationController.call(
             "can_create_organization_obj", self.request.user, parent
         ):

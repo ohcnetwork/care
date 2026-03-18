@@ -86,7 +86,6 @@ class UserFilter(filters.FilterSet):
         field_name="phone_number", lookup_expr="icontains"
     )
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
-    user_type = filters.CharFilter(field_name="user_type", lookup_expr="iexact")
     is_service_account = DefaultBooleanFilter(
         field_name="is_service_account", default=False
     )
