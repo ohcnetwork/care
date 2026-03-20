@@ -88,15 +88,15 @@ def safe_coordinate(self, center=None, radius=0.001):
 GeoProvider.coordinate = safe_coordinate
 
 
-# Roles with their user types
-ROLES_OPTIONS = {
-    "Volunteer": "volunteer",
-    "Doctor": "doctor",
-    "Staff": "staff",
-    "Nurse": "nurse",
-    "Administrator": "administrator",
-    "Facility Admin": "administrator",
-}
+# Role names used for creating role organizations and assigning users
+ROLE_NAMES = [
+    "Volunteer",
+    "Doctor",
+    "Staff",
+    "Nurse",
+    "Administrator",
+    "Facility Admin",
+]
 
 
 def generate_unique_indian_phone_number():
@@ -338,7 +338,7 @@ class Command(BaseCommand):
 
     def _create_role_organizations(self, fake, super_user):
         orgs = []
-        for role_name in ROLES_OPTIONS:
+        for role_name in ROLE_NAMES:
             if Organization.objects.filter(
                 name=role_name, org_type=OrganizationTypeChoices.role
             ).exists():
@@ -374,8 +374,8 @@ class Command(BaseCommand):
         self,
         fake,
         username,
-        user_type,
         super_user,
+        role_org=None,
         facility_organization=None,
         geo_organization=None,
         role=None,
@@ -392,7 +392,7 @@ class Command(BaseCommand):
             password=password,
             username=username,
             email=str(uuid.uuid4()) + fake.email(),
-            user_type=user_type,
+            role_orgs=[],
         )
         user = user_spec.de_serialize()
         user.geo_organization = geo_organization or self.geo_organization
@@ -408,7 +408,7 @@ class Command(BaseCommand):
                     role=role,
                 )
                 if (
-                    user.user_type == "administrator"
+                    role.name == "Administrator"
                     and facility_organization.facility.default_internal_organization
                 ):
                     self._attach_role_facility_organization_user(
@@ -422,13 +422,14 @@ class Command(BaseCommand):
                     user=user,
                     role=role,
                 )
-            self._attach_role_organization_user(
-                organization=Organization.objects.get(
-                    name=role.name, org_type=OrganizationTypeChoices.role
-                ),
-                user=user,
-                role=role,
-            )
+            if role_org:
+                self._attach_role_organization_user(
+                    organization=Organization.objects.get(
+                        external_id=role_org["organization"]
+                    ),
+                    user=user,
+                    role=RoleModel.objects.get(external_id=role_org["role"]),
+                )
 
     def _create_facility_users(
         self,
@@ -444,9 +445,16 @@ class Command(BaseCommand):
         self.stdout.write(f"{'ROLE':<15} {'USERNAME':<30} {'PASSWORD':<20}")
         self.stdout.write("-" * 65)
 
-        for role_name, user_type in ROLES_OPTIONS.items():
+        for role_name in ROLE_NAMES:
             try:
                 role = RoleModel.objects.get(name=role_name)
+                role_org = Organization.objects.get(
+                    name=role_name, org_type=OrganizationTypeChoices.role
+                )
+                role_org_spec = {
+                    "organization": role_org.external_id,
+                    "role": role.external_id,
+                }
 
                 for i in range(count):
                     password = default_password or fake.password(
@@ -461,8 +469,8 @@ class Command(BaseCommand):
                     self._create_user(
                         fake,
                         username=username,
-                        user_type=user_type,
                         super_user=super_user,
+                        role_org=role_org_spec,
                         facility_organization=facility_organization,
                         role=role,
                         password=password,
@@ -491,6 +499,13 @@ class Command(BaseCommand):
         for role_name, username in fixed_users:
             try:
                 role = RoleModel.objects.get(name=role_name)
+                role_org = Organization.objects.get(
+                    name=role_name, org_type=OrganizationTypeChoices.role
+                )
+                role_org_spec = {
+                    "organization": role_org.external_id,
+                    "role": role.external_id,
+                }
 
                 if User.objects.filter(username=username).exists():
                     self.stdout.write(
@@ -501,8 +516,8 @@ class Command(BaseCommand):
                 self._create_user(
                     fake,
                     username=username,
-                    user_type=ROLES_OPTIONS[role_name],
                     super_user=super_user,
+                    role_org=role_org_spec,
                     facility_organization=facility_organization,
                     role=role,
                     password=password,
@@ -586,7 +601,7 @@ class Command(BaseCommand):
             questionnaires = json.load(f)
 
         roles = Organization.objects.filter(
-            name__in=ROLES_OPTIONS.keys(), org_type=OrganizationTypeChoices.role
+            name__in=ROLE_NAMES, org_type=OrganizationTypeChoices.role
         )
 
         facility_organizations = FacilityOrganization.objects.filter(
