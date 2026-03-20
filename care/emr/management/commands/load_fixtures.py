@@ -270,6 +270,8 @@ class Command(BaseCommand):
             options["default_password"],
         )
 
+        self._setup_managing_organization(fake, super_user)
+
         patients = self._create_patients(
             fake, super_user, geo_organization, options["patients"]
         )
@@ -357,6 +359,120 @@ class Command(BaseCommand):
             org.save()
             orgs.append(org)
         return orgs
+
+    def _setup_managing_organization(self, fake, super_user):
+        """
+        Create a managing organization, link it to all role orgs,
+        create 3 users with ROLE_ORG roles, and assign governance
+        roles to existing administrators and doctors.
+        """
+        role_org_admin = RoleModel.objects.get(
+            name="Admin", contexts__overlap=["ROLE_ORG"]
+        )
+        role_org_manager = RoleModel.objects.get(
+            name="Manager", contexts__overlap=["ROLE_ORG"]
+        )
+        role_org_member = RoleModel.objects.get(
+            name="Member", contexts__overlap=["ROLE_ORG"]
+        )
+
+        # Create managing organization
+        managing_org, created = Organization.objects.get_or_create(
+            name="Health Department",
+            org_type=OrganizationTypeChoices.role.value,
+            defaults={"system_generated": False},
+        )
+        if not created:
+            self.stdout.write(
+                self.style.WARNING("Health Department already exists, skipping setup.")
+            )
+            return
+
+        self.stdout.write(f"Created managing organization: {managing_org.name}")
+
+        # Link managing org to all role orgs
+        role_orgs = Organization.objects.filter(
+            name__in=ROLE_NAMES, org_type=OrganizationTypeChoices.role
+        )
+        for role_org in role_orgs:
+            role_org.managing_organizations = list(
+                {*role_org.managing_organizations, managing_org.id}
+            )
+            role_org.save(update_fields=["managing_organizations"])
+        self.stdout.write(
+            f"Linked managing organization to {role_orgs.count()} role orgs"
+        )
+
+        # Create 3 users with ROLE_ORG roles
+        password = "Ohcn@123"
+        role_org_users = [
+            ("care-role-admin", role_org_admin),
+            ("care-role-manager", role_org_manager),
+            ("care-role-member", role_org_member),
+        ]
+        for username, role in role_org_users:
+            if User.objects.filter(username=username).exists():
+                self.stdout.write(
+                    self.style.WARNING(f"User {username} already exists, skipping.")
+                )
+                continue
+            user_spec = UserCreateSpec(
+                first_name=fake.first_name(),
+                last_name=fake.last_name(),
+                phone_number=generate_unique_indian_phone_number(),
+                gender="male",
+                password=password,
+                username=username,
+                email=f"{username}@example.com",
+                role_orgs=[],
+            )
+            user = user_spec.de_serialize()
+            user.geo_organization = self.geo_organization
+            user.created_by = super_user
+            user.updated_by = super_user
+            user.save()
+            self._attach_role_organization_user(managing_org, user, role)
+            self.stdout.write(f"  {role.name:<10} {username:<25} {password}")
+
+        # Add Role Org Admin to existing administrators
+        for username in ["care-admin"]:
+            try:
+                user = User.objects.get(username=username)
+                if not OrganizationUser.objects.filter(
+                    user=user, organization=managing_org
+                ).exists():
+                    self._attach_role_organization_user(
+                        managing_org, user, role_org_admin
+                    )
+                    self.stdout.write(f"Assigned Role Org Admin to {username}")
+            except User.DoesNotExist:
+                pass
+
+        # Add Role Org Admin to superuser
+        if not OrganizationUser.objects.filter(
+            user=super_user, organization=managing_org
+        ).exists():
+            self._attach_role_organization_user(
+                managing_org, super_user, role_org_admin
+            )
+            self.stdout.write("Assigned Role Org Admin to superuser")
+
+        # Add Role Org Manager to all doctors
+        doctor_role = RoleModel.objects.filter(name="Doctor", is_system=True).first()
+        if doctor_role:
+            doctor_users = User.objects.filter(
+                id__in=OrganizationUser.objects.filter(role=doctor_role).values(
+                    "user_id"
+                )
+            )
+            for user in doctor_users:
+                if not OrganizationUser.objects.filter(
+                    user=user, organization=managing_org
+                ).exists():
+                    self._attach_role_organization_user(
+                        managing_org, user, role_org_manager
+                    )
+                    self.stdout.write(f"Assigned Role Org Manager to {user.username}")
 
     def _attach_role_organization_user(self, organization, user, role):
         return OrganizationUser.objects.create(
