@@ -120,11 +120,8 @@ class ManagingOrganizationAPITestCase(CareAPITestBase):
             },
             format="json",
         )
-        # User cannot see the target org, so gets 404 (not 403)
-        self.assertIn(
-            response.status_code,
-            [status.HTTP_403_FORBIDDEN, status.HTTP_404_NOT_FOUND],
-        )
+        # User cannot see the target org, so gets 404
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_add_managing_organization_as_member_denied(self):
         self.attach_role_organization_user(

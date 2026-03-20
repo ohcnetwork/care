@@ -270,7 +270,7 @@ class Command(BaseCommand):
             options["default_password"],
         )
 
-        self._setup_managing_organization(fake, super_user)
+        self._setup_managing_organization(fake, super_user, options["default_password"])
 
         patients = self._create_patients(
             fake, super_user, geo_organization, options["patients"]
@@ -360,7 +360,7 @@ class Command(BaseCommand):
             orgs.append(org)
         return orgs
 
-    def _setup_managing_organization(self, fake, super_user):
+    def _setup_managing_organization(self, fake, super_user, default_password=None):
         """
         Create a managing organization, link it to all role orgs,
         create 3 users with ROLE_ORG roles, and assign governance
@@ -380,7 +380,11 @@ class Command(BaseCommand):
         managing_org, created = Organization.objects.get_or_create(
             name="Health Department",
             org_type=OrganizationTypeChoices.role.value,
-            defaults={"system_generated": False},
+            defaults={
+                "system_generated": False,
+                "created_by": super_user,
+                "updated_by": super_user,
+            },
         )
         if not created:
             self.stdout.write(
@@ -404,7 +408,7 @@ class Command(BaseCommand):
         )
 
         # Create 3 users with ROLE_ORG roles
-        password = "Ohcn@123"
+        password = default_password or "Ohcn@123"
         role_org_users = [
             ("care-role-admin", role_org_admin),
             ("care-role-manager", role_org_manager),
