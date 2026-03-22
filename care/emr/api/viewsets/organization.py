@@ -25,6 +25,7 @@ from care.emr.resources.organization.spec import (
     OrganizationUpdateSpec,
     OrganizationWriteSpec,
 )
+from care.emr.resources.role.spec import RoleReadSpec
 from care.security.authorization import AuthorizationController
 from care.security.models import PermissionModel, RoleModel, RolePermission
 from care.utils.filters.default_filter import DefaultBooleanFilter
@@ -255,11 +256,13 @@ class OrganizationViewSet(EMRModelViewSet):
     def accessible_role_organizations(self, request, *args, **kwargs):
         my_organizations = OrganizationUser.objects.filter(
             organization__org_type=OrganizationTypeChoices.role.value, user=request.user
-        )
-        my_organizations_ids = list(
-            my_organizations.values_list("organization_id", flat=True)
-        )
-        if not self.request.user.is_superuser:
+        ).only("organization_id", "role_id")
+        org_role_mapping = {}
+        for my_organization in my_organizations:
+            org_role_mapping[my_organization.organization_id] = my_organization.role_id
+        my_organizations_ids = list(org_role_mapping.keys())
+
+        if self.request.user.is_superuser:
             managing_organization = Organization.objects.filter(
                 org_type=OrganizationTypeChoices.role.value
             )
@@ -269,10 +272,21 @@ class OrganizationViewSet(EMRModelViewSet):
                 | Q(id__in=my_organizations_ids)
             )
 
-        rendered_data = [
-            OrganizationReadSpec.serialize(org).to_json()
-            for org in managing_organization
-        ]
+        rendered_data = []
+        for org in managing_organization:
+            data = {}
+            org_data = OrganizationReadSpec.serialize(org).to_json()
+            # TODO : Cache RoleModel
+            if org.id in org_role_mapping:
+                role_data = RoleReadSpec.serialize(
+                    RoleModel.objects.get(id=org_role_mapping[org.id])
+                ).to_json()
+            else:
+                role_data = None
+            data["role"] = role_data
+            data["organization"] = org_data
+            rendered_data.append(data)
+
         return Response({"count": len(rendered_data), "results": rendered_data})
 
     @extend_schema(
