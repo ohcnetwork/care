@@ -200,11 +200,12 @@ class OrganizationViewSet(EMRModelViewSet):
 
     def get_queryset(self):
         queryset = (
-            super()
-            .get_queryset()
-            .select_related("parent", "created_by", "updated_by")
-            .order_by("created_date")
+            super().get_queryset().select_related("parent").order_by("created_date")
         )
+        if self.action == "retrieve":
+            obj = self.get_object()
+            if obj.org_type == OrganizationTypeChoices.role.value:
+                return queryset
         if "parent" in self.request.GET and not self.request.GET.get("parent"):
             # Filter for root organizations, For some reason its not working as intended in Django Filters
             queryset = queryset.filter(parent__isnull=True)

@@ -94,7 +94,7 @@ class OrganizationAccess(AuthorizationHandler):
             return self.check_permission_in_organization(
                 [OrganizationPermissions.can_list_organization_users.name],
                 user,
-                [organization.id , *organization.managing_organizations],
+                [organization.id, *organization.managing_organizations],
             )
         return self.check_permission_in_organization(
             [OrganizationPermissions.can_list_organization_users.name],
