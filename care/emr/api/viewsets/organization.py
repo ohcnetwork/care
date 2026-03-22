@@ -203,7 +203,10 @@ class OrganizationViewSet(EMRModelViewSet):
             super().get_queryset().select_related("parent").order_by("created_date")
         )
         if self.action == "retrieve":
-            obj = self.get_object()
+            obj = get_object_or_404(
+                Organization.objects.only("org_type"),
+                external_id=self.kwargs["external_id"],
+            )
             if obj.org_type == OrganizationTypeChoices.role.value:
                 return queryset
         if "parent" in self.request.GET and not self.request.GET.get("parent"):
