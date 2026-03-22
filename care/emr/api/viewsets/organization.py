@@ -251,6 +251,22 @@ class OrganizationViewSet(EMRModelViewSet):
         ]
         return Response({"count": len(data), "results": data})
 
+    @action(detail=False, methods=["GET"])
+    def manageable_organizations(self, request, *args, **kwargs):
+        my_organizations = OrganizationUser.objects.filter(
+            organization__org_type=OrganizationTypeChoices.role.value, user=request.user
+        )
+        managing_organization = Organization.objects.filter(
+            managing_organizations__overlap=list(
+                my_organizations.values_list("organization_id", flat=True)
+            )
+        )
+        rendered_data = [
+            OrganizationReadSpec.serialize(org).to_json()
+            for org in managing_organization
+        ]
+        return Response({"count": len(rendered_data), "results": rendered_data})
+
     @extend_schema(
         request=OrganizationManagingOrganizationRequest,
     )
