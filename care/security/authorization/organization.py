@@ -58,13 +58,14 @@ class OrganizationAccess(AuthorizationHandler):
         """
         if user.is_superuser:
             return True
-        organization_parents = [*organization.parent_cache, organization.id]
 
         if organization.org_type == OrganizationTypeChoices.role.value:
             organization_parents = [
                 organization.id,
                 *organization.managing_organizations,
             ]
+        else:
+            organization_parents = [*organization.parent_cache, organization.id]
 
         if not self.check_role_subset(user, organization_parents, requested_role):
             return False
@@ -89,6 +90,12 @@ class OrganizationAccess(AuthorizationHandler):
         """
         Check if the user has permission to create organizations under the given organization
         """
+        if organization.org_type == OrganizationTypeChoices.role.value:
+            return self.check_permission_in_organization(
+                [OrganizationPermissions.can_list_organization_users.name],
+                user,
+                [organization.id, *organization.managing_organizations],
+            )
         return self.check_permission_in_organization(
             [OrganizationPermissions.can_list_organization_users.name],
             user,
