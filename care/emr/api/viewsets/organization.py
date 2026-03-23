@@ -333,6 +333,7 @@ class OrganizationViewSet(EMRModelViewSet):
                     "Managing organization is not part of the organization"
                 )
             organization.managing_organizations.remove(managing_organization.id)
+        organization.updated_by = request.user
         organization.save()
         return Response({})
 
