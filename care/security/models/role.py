@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.core.cache import cache
 from django.db import models
 from django.db.models.signals import post_delete, post_save
@@ -26,6 +27,7 @@ class RoleModel(BaseModel):
     )  # Denotes if role was created by the system or a user
     temp_deleted = models.BooleanField(default=False)
     is_archived = models.BooleanField(default=False)
+    contexts = ArrayField(models.CharField(max_length=24), default=list)
 
     class Meta:
         constraints = [
