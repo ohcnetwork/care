@@ -10,6 +10,9 @@ from care.emr.reports.context_builder.data_points.base import (
     QuerysetContextBuilder,
     SingleObjectContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.charge_items import (
+    EncounterChargeItemContextBuilder,
+)
 from care.emr.reports.context_builder.data_points.diagnosis import (
     DiagnosisContextBuilder,
 )
@@ -222,6 +225,13 @@ class EncounterReportContext(BaseEncounterReportContext):
         target_context=MedicationPrescriptionContextBuilder,
         preview_value="",
         description="Medication prescriptions of the encounter",
+    )
+
+    charge_items = Field(
+        display="Charge Items",
+        target_context=EncounterChargeItemContextBuilder,
+        preview_value="",
+        description="Charge items associated with the encounter",
     )
 
 
