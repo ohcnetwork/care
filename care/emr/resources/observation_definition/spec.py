@@ -217,6 +217,9 @@ class ObservationDefinitionUpdateSpec(BaseObservationDefinitionSpec):
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.slug = self.slug_value
+        obj.component = [
+            c.model_dump(mode="json", exclude_defaults=True) for c in self.component
+        ]
 
 
 class ObservationDefinitionReadSpec(BaseObservationDefinitionSpec):
