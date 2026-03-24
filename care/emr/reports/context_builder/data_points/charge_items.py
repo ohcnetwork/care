@@ -125,11 +125,6 @@ class AccountChargeItemContextBuilder(ChargeItemContextBuilder):
         return ChargeItem.objects.filter(account=self.parent_context)
 
 
-class EncounterChargeItemContextBuilder(ChargeItemContextBuilder):
-    def get_context(self):
-        return ChargeItem.objects.filter(encounter=self.parent_context)
-
-
 class CategoryChargeItemContextBuilder(ChargeItemContextBuilder):
     def get_context(self):
         return self.parent_context.get("charge_items")
