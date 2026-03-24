@@ -3,6 +3,7 @@ from model_bakery import baker
 from rest_framework import status
 
 from care.security.models import PermissionModel, RoleModel, RolePermission
+from care.security.roles.role import RoleContext
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -34,6 +35,7 @@ class RoleApiTestCase(CareAPITestBase):
             "description": "A test role",
             "permissions": [p.slug for p in self.permissions],
             "is_system": False,
+            "contexts": [RoleContext.FACILITY.value],
         }
 
         self.client.force_authenticate(user=self.user)
@@ -126,6 +128,7 @@ class RoleApiTestCase(CareAPITestBase):
             "name": "Simple Test Role",
             "description": "Simple test role for create",
             "permissions": [self.permissions[0].slug],
+            "contexts": [RoleContext.FACILITY.value],
         }
         response = self.client.post(self.role_list_url, role_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -143,6 +146,7 @@ class RoleApiTestCase(CareAPITestBase):
         role_data_no_perms = {
             "name": "Role without permissions",
             "description": "Test role without permissions",
+            "contexts": [RoleContext.FACILITY.value],
         }
         response = self.client.post(
             self.role_list_url, role_data_no_perms, format="json"
@@ -161,6 +165,7 @@ class RoleApiTestCase(CareAPITestBase):
             "name": "Duplicate Role",
             "description": "Test role for duplication",
             "permissions": [self.permissions[0].slug],
+            "contexts": [RoleContext.FACILITY.value],
         }
         # Create the role for the first time
         response = self.client.post(self.role_list_url, role_data, format="json")
@@ -180,6 +185,7 @@ class RoleApiTestCase(CareAPITestBase):
             "name": "",
             "description": "Test role with empty name",
             "permissions": [self.permissions[0].slug],
+            "contexts": [RoleContext.FACILITY.value],
         }
         response = self.client.post(
             self.role_list_url, role_data_empty_name, format="json"
@@ -199,6 +205,7 @@ class RoleApiTestCase(CareAPITestBase):
             "description": "Test system role",
             "permissions": [self.permissions[0].slug],
             "is_system": True,
+            "contexts": [RoleContext.FACILITY.value],
         }
         response = self.client.post(self.role_list_url, role_data_system, format="json")
         self.assertEqual(response.status_code, 400)
@@ -232,6 +239,7 @@ class RoleApiTestCase(CareAPITestBase):
             "name": "Updated Role Name",
             "description": "Updated description",
             "permissions": [p.slug for p in self.permissions],
+            "contexts": [RoleContext.FACILITY.value],
         }
         response = self.client.put(
             self._get_role_detail_url(role.external_id), update_data, format="json"
@@ -257,6 +265,7 @@ class RoleApiTestCase(CareAPITestBase):
             "description": role.description,
             "permissions": [self.permissions[0].slug],
             "is_system": role.is_system,
+            "contexts": [RoleContext.FACILITY.value],
         }
 
         response = self.client.put(
@@ -272,7 +281,10 @@ class RoleApiTestCase(CareAPITestBase):
         """Superusers can update role without changing permissions"""
         role = self._create_role()
         self.client.force_authenticate(user=self.superuser)
-        update_data = {"name": "Updated Name Only"}
+        update_data = {
+            "name": "Updated Name Only",
+            "contexts": [RoleContext.FACILITY.value],
+        }
         response = self.client.put(
             self._get_role_detail_url(role.external_id), update_data, format="json"
         )
@@ -292,6 +304,7 @@ class RoleApiTestCase(CareAPITestBase):
             "description": role.description,
             "permissions": [p.slug for p in self.permissions],
             "is_system": role.is_system,
+            "contexts": [RoleContext.FACILITY.value],
         }
         response = self.client.put(
             self._get_role_detail_url(role.external_id), update_data, format="json"

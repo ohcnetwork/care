@@ -8,6 +8,9 @@ from care.security.roles.role import (
     FACILITY_ADMIN_ROLE,
     NURSE_ROLE,
     PHARMACIST_ROLE,
+    ROLE_ORGANIZATION_ADMIN_ROLE,
+    ROLE_ORGANIZATION_MANAGER_ROLE,
+    ROLE_ORGANIZATION_MEMBER_ROLE,
     STAFF_ROLE,
     VOLUNTEER_ROLE,
 )
@@ -27,6 +30,9 @@ class OrganizationPermissions(enum.Enum):
             NURSE_ROLE,
             VOLUNTEER_ROLE,
             PHARMACIST_ROLE,
+            ROLE_ORGANIZATION_ADMIN_ROLE,
+            ROLE_ORGANIZATION_MANAGER_ROLE,
+            ROLE_ORGANIZATION_MEMBER_ROLE,
         ],
     )
     can_create_organization = Permission(
@@ -45,13 +51,19 @@ class OrganizationPermissions(enum.Enum):
         "Can Manage Organizations",
         "This includes changing names, descriptions, metadata, etc..",
         PermissionContext.ORGANIZATION,
-        [ADMIN_ROLE],
+        [ADMIN_ROLE, ROLE_ORGANIZATION_ADMIN_ROLE],
     )
     can_manage_organization_users = Permission(
         "Can Manage Users in an Organization",
         "Add, remove, and assign roles to users in an organization",
         PermissionContext.ORGANIZATION,
-        [ADMIN_ROLE, ADMINISTRATOR, FACILITY_ADMIN_ROLE],
+        [ADMIN_ROLE, ADMINISTRATOR, FACILITY_ADMIN_ROLE, ROLE_ORGANIZATION_ADMIN_ROLE],
+    )
+    can_manage_connected_role_organizations = Permission(
+        "Can Manage Connected Role Organizations",
+        "Add, remove, and assign roles to users in connected role organizations",
+        PermissionContext.ORGANIZATION,
+        [ROLE_ORGANIZATION_ADMIN_ROLE, ROLE_ORGANIZATION_MANAGER_ROLE],
     )
     can_list_organization_users = Permission(
         "Can List Users in an Organizations",
@@ -66,6 +78,8 @@ class OrganizationPermissions(enum.Enum):
             NURSE_ROLE,
             VOLUNTEER_ROLE,
             PHARMACIST_ROLE,
+            ROLE_ORGANIZATION_ADMIN_ROLE,
+            ROLE_ORGANIZATION_MANAGER_ROLE,
         ],
     )
     is_geo_admin = Permission(

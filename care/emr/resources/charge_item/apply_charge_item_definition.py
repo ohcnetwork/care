@@ -24,6 +24,8 @@ def compute_global_components(charge_item_definition, price_components):
             component_key = FacilityMonetoryConfig.get_component_key(component)
             if component_key in components_override:
                 price_components_new.append(components_override[component_key])
+            else:
+                price_components_new.append(component)
         else:
             price_components_new.append(component)
     return price_components_new
