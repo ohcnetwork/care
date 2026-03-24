@@ -145,6 +145,9 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
     def generate_base_url(self):
         return reverse("medication-dispense-list")
 
+    def generate_summary_url(self):
+        return reverse("medication-dispense-summary")
+
     def create_supply_delivery(self, **kwargs):
         from care.emr.models import SupplyDelivery
 
@@ -610,9 +613,6 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
         Test listing medication dispenses with encounter filter without encounter read permission should return 403
         """
         self.client.force_authenticate(user=self.user)
-        self.attach_role_facility_organization_user(
-            self.facility_organization, self.user, self.role
-        )
         self.create_medication_dispense(order=self.dispense_order)
         response = self.client.get(
             self.generate_base_url(), {"encounter": self.encounter.external_id}
@@ -678,4 +678,139 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
         self.assertEqual(
             response.data["detail"],
             "You do not have permission to read medication dispense",
+        )
+
+    # Testcases for summary api
+
+    def test_summary_medication_dispense_as_superuser(self):
+        """
+        Test summary of medication dispenses as a superuser
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.create_medication_dispense(order=self.dispense_order)
+        another_dispense_order = self.create_dispense_order(
+            patient=self.patient,
+            location=self.location,
+            facility=self.facility,
+            status=MedicationDispenseStatus.in_progress.value,
+            alternate_identifier="test-alternate-id-2",
+        )
+        self.create_medication_dispense(order=another_dispense_order)
+        response = self.client.get(
+            self.generate_summary_url(), {"location": self.location.external_id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["count"], 2)
+
+    def test_summary_medication_dispense_as_user_with_permission(self):
+        """
+        Test summary of medication dispenses as a regular user with permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.create_medication_dispense(order=self.dispense_order)
+        another_dispense_order = self.create_dispense_order(
+            patient=self.patient,
+            location=self.location,
+            facility=self.facility,
+            status=MedicationDispenseStatus.in_progress.value,
+            alternate_identifier="test-alternate-id-2",
+        )
+        self.create_medication_dispense(order=another_dispense_order)
+        response = self.client.get(
+            self.generate_summary_url(), {"location": self.location.external_id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["count"], 2)
+
+    def test_summary_medication_dispense_as_user_without_location_permission(self):
+        """
+        Test summary of medication dispenses as a regular user without permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        self.create_medication_dispense(order=self.dispense_order)
+        response = self.client.get(
+            self.generate_summary_url(), {"location": self.location.external_id}
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have permission to read medication dispenses",
+        )
+
+    def test_summary_medication_dispense_without_list_filter(self):
+        """
+        Test summary of medication dispenses without list filter should return 400
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.create_medication_dispense(order=self.dispense_order)
+        response = self.client.get(self.generate_summary_url())
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Location or encounter is required",
+        )
+
+    def test_summary_medication_dispense_with_encounter_filter(self):
+        """
+        Test summary of medication dispenses with encounter filter
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.create_medication_dispense(order=self.dispense_order)
+        another_encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        another_dispense_order = self.create_dispense_order(
+            patient=self.patient,
+            location=self.location,
+            facility=self.facility,
+            status=MedicationDispenseStatus.in_progress.value,
+            alternate_identifier="test-alternate-id-2",
+        )
+        self.create_medication_dispense(
+            order=another_dispense_order, encounter=another_encounter
+        )
+        response = self.client.get(
+            self.generate_summary_url(), {"encounter": self.encounter.external_id}
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(response.data["results"][0]["count"], 1)
+
+    def test_summary_medication_dispense_with_encounter_filter_without_encounter_permission(
+        self,
+    ):
+        """
+        Test summary of medication dispenses with encounter filter without encounter read permission should return 403
+        """
+        self.client.force_authenticate(user=self.user)
+        self.create_medication_dispense(order=self.dispense_order)
+        another_encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        another_dispense_order = self.create_dispense_order(
+            patient=self.patient,
+            location=self.location,
+            facility=self.facility,
+            status=MedicationDispenseStatus.in_progress.value,
+            alternate_identifier="test-alternate-id-2",
+        )
+        self.create_medication_dispense(
+            order=another_dispense_order, encounter=another_encounter
+        )
+        response = self.client.get(
+            self.generate_summary_url(), {"encounter": self.encounter.external_id}
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.data["detail"],
+            "You do not have permission to read medication dispenses",
         )
