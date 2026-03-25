@@ -166,7 +166,7 @@ class BaseObservationDefinitionSpec(EMRResource):
     category: ObservationCategoryChoices
     code: ValueSetBoundCoding[CARE_OBSERVATION_VALUSET.slug]
     permitted_data_type: QuestionType
-    component: list[ObservationDefinitionComponentSpec] = []
+    component: list[ObservationDefinitionComponentSpec] | None = None
     body_site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug] | None = None
     method: ValueSetBoundCoding[CARE_OBSERVATION_COLLECTION_METHOD.slug] | None = None
     permitted_unit: ValueSetBoundCoding[CARE_UCUM_UNITS.slug] | None = None
@@ -217,9 +217,6 @@ class ObservationDefinitionUpdateSpec(BaseObservationDefinitionSpec):
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.slug = self.slug_value
-        obj.component = [
-            c.model_dump(mode="json", exclude_defaults=True) for c in self.component
-        ]
 
 
 class ObservationDefinitionReadSpec(BaseObservationDefinitionSpec):
