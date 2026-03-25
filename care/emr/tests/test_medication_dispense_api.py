@@ -338,8 +338,21 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
         Test creating a medication dispense with an authorizing medication request
         """
         self.client.force_authenticate(user=self.superuser)
+        product = self.create_product(
+            facility=self.facility,
+            product_type="medication",
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        inventory_item = self.create_inventory_item(
+            location=self.location,
+            product=product,
+            status="active",
+            net_content=50,
+        )
         data = self.generate_medication_dispense_data(
-            authorizing_request=str(self.medication_request.external_id)
+            item=str(inventory_item.external_id),
+            authorizing_request=str(self.medication_request.external_id),
         )
         response = self.client.post(self.generate_base_url(), data, format="json")
         self.assertEqual(response.status_code, 200)
@@ -540,6 +553,81 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             "No updates allowed on cancelled medication dispense",
         )
 
+    def test_cancel_medication_dispense_with_chargeitem_and_authorizing_request(self):
+        """
+        Test cancelling a medication dispense which has a charge item and authorizing request should update the charge item status to cancelled and medication request dispense status to cancelled
+        """
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product(
+            facility=self.facility,
+            product_type="medication",
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        inventory_item = self.create_inventory_item(
+            location=self.location,
+            product=product,
+            status="active",
+            net_content=50,
+        )
+        data = self.generate_medication_dispense_data(
+            item=str(inventory_item.external_id),
+            authorizing_request=str(self.medication_request.external_id),
+        )
+        response = self.client.post(self.generate_base_url(), data, format="json")
+        self.assertEqual(response.status_code, 200)
+        data = {
+            "status": MedicationDispenseStatus.cancelled.value,
+            "fully_dispensed": True,
+        }
+        response = self.client.put(
+            self.get_detail_url(response.data["id"]), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["status"], MedicationDispenseStatus.cancelled.value
+        )
+        self.assertIsNone(response.data["authorizing_request"])
+        self.assertIsNotNone(response.data["charge_item"])
+        self.assertEqual(response.data["charge_item"]["status"], "aborted")
+
+    def test_cancel_medication_dispense_without_authorizing_request(self):
+        """
+        Test cancelling a medication dispense which does not have an authorizing request should update the medication dispense status to cancelled without any error
+        """
+        self.client.force_authenticate(user=self.superuser)
+        product = self.create_product(
+            facility=self.facility,
+            product_type="medication",
+            product_knowledge=self.product_knowledge,
+            charge_item_definition=self.charge_item_definition,
+        )
+        inventory_item = self.create_inventory_item(
+            location=self.location,
+            product=product,
+            status="active",
+            net_content=50,
+        )
+        data = self.generate_medication_dispense_data(
+            item=str(inventory_item.external_id),
+        )
+        response = self.client.post(self.generate_base_url(), data, format="json")
+        self.assertEqual(response.status_code, 200)
+        data = {
+            "status": MedicationDispenseStatus.cancelled.value,
+            "fully_dispensed": True,
+        }
+        response = self.client.put(
+            self.get_detail_url(response.data["id"]), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["status"], MedicationDispenseStatus.cancelled.value
+        )
+        self.assertIsNone(response.data["authorizing_request"])
+        self.assertIsNotNone(response.data["charge_item"])
+        self.assertEqual(response.data["charge_item"]["status"], "aborted")
+
     # Testcases for listing testcases
 
     def test_list_medication_dispense_as_superuser(self):
@@ -634,6 +722,66 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
         self.assertEqual(
             response.data["errors"][0]["msg"],
             "Location or encounter is required",
+        )
+
+    def test_list_medication_dispense_with_location_include_children_filter(self):
+        """
+        Test listing medication dispenses with location include children filter
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.create_medication_dispense(order=self.dispense_order)
+        child_location = self.create_facility_location(
+            self.facility,
+            name="Child Location",
+            facility_organization=self.facility_organization,
+            parent=self.location,
+        )
+        another_dispense_order = self.create_dispense_order(
+            patient=self.patient,
+            location=child_location,
+            facility=self.facility,
+            status=MedicationDispenseStatus.in_progress.value,
+            alternate_identifier="test-alternate-id-2",
+        )
+        self.create_medication_dispense(order=another_dispense_order)
+        response = self.client.get(
+            self.generate_base_url(),
+            {"location": self.location.external_id, "include_children": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+
+    def test_list_medication_dispense_with_location_include_children_filter_false(self):
+        """
+        Test listing medication dispenses with location include children filter as false should return only medication dispenses for the specified location
+        """
+        self.client.force_authenticate(user=self.superuser)
+        medication_dispense = self.create_medication_dispense(order=self.dispense_order)
+        child_location = self.create_facility_location(
+            self.facility,
+            name="Child Location",
+            facility_organization=self.facility_organization,
+            parent=self.location,
+        )
+        another_dispense_order = self.create_dispense_order(
+            patient=self.patient,
+            location=child_location,
+            facility=self.facility,
+            status=MedicationDispenseStatus.in_progress.value,
+            alternate_identifier="test-alternate-id-2",
+        )
+        self.create_medication_dispense(
+            order=another_dispense_order, location=child_location
+        )
+        response = self.client.get(
+            self.generate_base_url(),
+            {"location": self.location.external_id, "include_children": False},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"],
+            str(medication_dispense.external_id),
         )
 
     #  Testcases for retrieve api
