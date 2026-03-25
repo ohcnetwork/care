@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from care.emr.models.resource_request import ResourceRequestComment
+from care.emr.models.resource_request import ResourceRequest, ResourceRequestComment
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -171,6 +171,17 @@ class TestResourceRequestViewSet(CareAPITestBase):
         res = self.client.put(url, data, "json")
         self.assertEqual(res.status_code, 200)
 
+    def test_list_resource_requests_as_superuser(self):
+        self.create_resource_request(title="Request 1")
+        self.create_resource_request(title="Request 2")
+        other_facility = self.create_facility(user=self.user)
+        self.create_resource_request(title="Request 3", origin_facility=other_facility)
+        superuser = self.create_super_user()
+        self.client.force_authenticate(user=superuser)
+        res = self.client.get(self.base_url)
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(len(res.data["results"]), 3)
+
 
 class TestResourceRequestCommentViewSet(CareAPITestBase):
     def setUp(self):
@@ -187,8 +198,6 @@ class TestResourceRequestCommentViewSet(CareAPITestBase):
         )
 
     def _create_resource_request(self):
-        from care.emr.models.resource_request import ResourceRequest
-
         return ResourceRequest.objects.create(
             origin_facility=self.facility,
             related_patient=self.patient,

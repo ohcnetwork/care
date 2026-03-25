@@ -104,7 +104,7 @@ class FacilityOrganization(OrganizationCommonBase):
 
 
 class Organization(OrganizationCommonBase):
-    pass
+    managing_organizations = ArrayField(models.IntegerField(), default=list)
 
 
 class OrganizationUser(EMRBaseModel):
@@ -119,6 +119,31 @@ class OrganizationUser(EMRBaseModel):
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE)
     user = models.ForeignKey("users.User", on_delete=models.CASCADE)
     role = models.ForeignKey("security.RoleModel", on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+        from care.emr.resources.organization.spec import OrganizationTypeChoices
+
+        super().save(*args, **kwargs)
+        if self.organization.org_type == OrganizationTypeChoices.role.value:
+            self.user.cached_role_orgs = None
+            self.user.save(update_fields=["cached_role_orgs"])
+
+    @classmethod
+    def get_cached_role_orgs(cls, user_id):
+        from care.emr.resources.organization.organization_user_spec import (
+            OrganizationUserExtendedReadSpec,
+        )
+        from care.emr.resources.organization.spec import OrganizationTypeChoices
+
+        org_users = cls.objects.filter(
+            user_id=user_id, organization__org_type=OrganizationTypeChoices.role.value
+        )
+        return_data = []
+        for org_user in org_users:
+            return_data.append(
+                OrganizationUserExtendedReadSpec.serialize(org_user).to_json()
+            )
+        return return_data
 
 
 class FacilityOrganizationUser(EMRBaseModel):

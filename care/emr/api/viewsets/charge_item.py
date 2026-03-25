@@ -263,6 +263,7 @@ class ChargeItemViewSet(
             ):
                 self.authorize_cancel(instance)
                 handle_charge_item_cancel(instance)
+                sync = False
             if sync:
                 sync_charge_item_costs(instance)
             super().perform_update(instance)

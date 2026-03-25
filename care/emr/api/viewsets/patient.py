@@ -119,27 +119,33 @@ class PatientViewSet(EMRModelViewSet):
 
     def perform_create(self, instance):
         identifiers = instance._identifiers  # noqa: SLF001
+        lock = PatientCreateLock()
+        try:
+            lock.acquire()
+        except ObjectLocked as e:
+            raise ValidationError(
+                "Patient creation failed, try again after a while"
+            ) from e
         try:
             with transaction.atomic():
-                with PatientCreateLock():
-                    super().perform_create(instance)
-                    for identifier in identifiers:
-                        config = get_object_or_404(
-                            PatientIdentifierConfig,
-                            external_id=identifier.config,
-                            facility__isnull=True,
-                        )
-                        if config.config.get("auto_maintained"):
-                            continue
-                        PatientIdentifier.objects.create(
-                            patient=instance,
-                            config=config,
-                            value=identifier.value,
-                        )
-                    evaluate_patient_instance_default_values(instance)
+                super().perform_create(instance)
+                for identifier in identifiers:
+                    config = get_object_or_404(
+                        PatientIdentifierConfig,
+                        external_id=identifier.config,
+                        facility__isnull=True,
+                    )
+                    if config.config.get("auto_maintained"):
+                        continue
+                    PatientIdentifier.objects.create(
+                        patient=instance,
+                        config=config,
+                        value=identifier.value,
+                    )
+                evaluate_patient_instance_default_values(instance)
 
-                    instance.build_instance_identifiers()
-                    instance.save()
+                instance.build_instance_identifiers()
+                instance.save()
                 tag_manager = PatientInstanceTagManager()
                 tag_manager.set_tags(
                     TagResource.patient,
@@ -147,10 +153,10 @@ class PatientViewSet(EMRModelViewSet):
                     instance._tags,  # noqa: SLF001
                     self.request.user,
                 )
-        except ObjectLocked as e:
-            raise ValidationError(
-                "Patient creation failed, try again after a while"
-            ) from e
+            transaction.on_commit(lock.release)
+        except Exception:
+            lock.release()
+            raise
 
     def perform_update(self, instance):
         identifiers = instance._identifiers  # noqa: SLF001
