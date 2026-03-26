@@ -137,6 +137,7 @@ LOCAL_APPS = [
     "care.users",
     "care.audit_log",
     "care.emr",
+    "care.messaging",
 ]
 
 PLUGIN_APPS = manager.get_apps()
