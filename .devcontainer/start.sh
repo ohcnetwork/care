@@ -7,5 +7,6 @@ while ! docker info > /dev/null 2>&1; do
 done
 echo "✅ Docker is ready"
 
+export DOCKER_API_VERSION=1.43
 echo "🚀 Starting CARE services..."
-make up
+make build-up-live
