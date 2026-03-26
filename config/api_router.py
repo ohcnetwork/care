@@ -110,12 +110,15 @@ from care.emr.api.viewsets.valueset import ValueSetViewSet
 from care.security.api.viewsets.permissions import PermissionViewSet
 from care.security.api.viewsets.roles import RoleViewSet
 from care.users.api.viewsets.plug_config import PlugConfigViewset
+from care.messaging.api.viewsets.whatsapp import WhatsAppWebhookViewSet
 
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 
 router.register("users", UserViewSet, basename="users")
 
 router.register("plug_config", PlugConfigViewset, basename="plug_configs")
+
+router.register("messaging/whatsapp/webhook", WhatsAppWebhookViewSet, basename="whatsapp-webhook")
 
 user_nested_router = NestedSimpleRouter(router, r"users", lookup="users")
 
