@@ -15,7 +15,7 @@ class Lock:
         self.timeout = timeout
 
     def acquire(self):
-        if not cache.set(self.key, value=True, timeout=self.timeout, nx=True):
+        if not cache.add(self.key, True, timeout=self.timeout):
             raise ObjectLocked
 
     def release(self):
@@ -41,7 +41,7 @@ class MultipleItemsLock:
 
     def acquire(self):
         for key in self.keys:
-            if not cache.set(key, value=True, timeout=self.timeout, nx=True):
+            if not cache.add(key, True, timeout=self.timeout):
                 self.release()
                 raise ObjectLocked
             self.aquired_keys.append(key)

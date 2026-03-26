@@ -63,3 +63,17 @@ SMS_BACKEND = "care.utils.sms.backend.console.ConsoleBackend"
 
 
 MAINTAIN_PATIENT_PHONE_NUMBER_IDENTIFIER = True
+
+# Bypass Redis for Windows local dev without Redis server
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+    }
+}
+CELERY_BROKER_URL = "memory://"
+CELERY_RESULT_BACKEND = "cache+memory://"
+SILENCED_SYSTEM_CHECKS = ["django_ratelimit.E003"]
+
+from django.core.cache.backends.locmem import LocMemCache
+if not hasattr(LocMemCache, "delete_pattern"):
+    LocMemCache.delete_pattern = lambda self, pattern, *args, **kwargs: None
