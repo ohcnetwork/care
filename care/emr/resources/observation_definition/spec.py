@@ -166,7 +166,7 @@ class BaseObservationDefinitionSpec(EMRResource):
     category: ObservationCategoryChoices
     code: ValueSetBoundCoding[CARE_OBSERVATION_VALUSET.slug]
     permitted_data_type: QuestionType
-    component: list[ObservationDefinitionComponentSpec] = []
+    component: list[ObservationDefinitionComponentSpec] | None = None
     body_site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug] | None = None
     method: ValueSetBoundCoding[CARE_OBSERVATION_COLLECTION_METHOD.slug] | None = None
     permitted_unit: ValueSetBoundCoding[CARE_UCUM_UNITS.slug] | None = None
