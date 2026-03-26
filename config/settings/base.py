@@ -710,3 +710,11 @@ TOTP_DISABLED_EMAIL_TEMPLATE_PATH = env(
 
 # Cleanup incomplete file uploads, set to 0 to disable
 FILE_UPLOAD_EXPIRY_HOURS = env.int("FILE_UPLOAD_EXPIRY_HOURS", default=24)
+
+ #   W h a t s A p p   C l o u d   A P I   S e t t i n g s 
+ W H A T S A P P _ P H O N E _ N U M B E R _ I D   =   e n v ( " W H A T S A P P _ P H O N E _ N U M B E R _ I D " ,   d e f a u l t = " " ) 
+ W H A T S A P P _ A C C E S S _ T O K E N   =   e n v ( " W H A T S A P P _ A C C E S S _ T O K E N " ,   d e f a u l t = " " ) 
+ W H A T S A P P _ A P I _ V E R S I O N   =   e n v ( " W H A T S A P P _ A P I _ V E R S I O N " ,   d e f a u l t = " v 1 7 . 0 " ) 
+ W H A T S A P P _ V E R I F Y _ T O K E N   =   e n v ( " W H A T S A P P _ V E R I F Y _ T O K E N " ,   d e f a u l t = " " ) 
+ W H A T S A P P _ A P P _ S E C R E T   =   e n v ( " W H A T S A P P _ A P P _ S E C R E T " ,   d e f a u l t = " " )  
+ 
