@@ -7,6 +7,7 @@ from django.utils import timezone
 
 from care.emr.models.report.report_upload import ReportUpload
 from care.emr.models.report.template import Template
+from care.emr.reports.context_builder import SingleUserIdContextBuilder
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.reports.renderer.renderer import Renderer
@@ -38,7 +39,7 @@ def clear_lock(key: str) -> None:
     cache.delete(cache_key)
 
 
-def generate_and_upload_report(
+def generate_and_upload_report(  # noqa:PLR0915
     template: Template,
     report_type: str,
     associating_id: str,
@@ -63,11 +64,24 @@ def generate_and_upload_report(
     )
 
     context_key = context_class.context_key or template.context
-
     context = {context_key: context_class(context=associating_object)}
 
-    template_engine = TemplateEngine()
+    user_id = kwargs.get("user_id")
+    user = None
+    if user_id:
+        try:
+            user = User.objects.get(id=user_id)
+        except User.DoesNotExist:
+            logger.warning(
+                "User with id %s not found, report will have no current_user", user_id
+            )
 
+    if user:
+        context["current_user"] = SingleUserIdContextBuilder(context=user)
+    else:
+        context["current_user"] = SingleUserIdContextBuilder(is_preview=True)
+
+    template_engine = TemplateEngine()
     format_lower = output_format.lower()
 
     generator_class = GeneratorRegistry.get(format_lower)
@@ -87,8 +101,6 @@ def generate_and_upload_report(
     report_name = f"{template.name}-{associating_id}-{timestamp}"
     internal_name = f"{uuid4()}{int(time.time())}{file_extension}"
 
-    user_id = kwargs.get("user_id")
-
     report_upload = ReportUpload(
         template=template,
         name=report_name,
@@ -98,13 +110,8 @@ def generate_and_upload_report(
         upload_completed=False,
     )
 
-    if user_id:
-        try:
-            report_upload.created_by = User.objects.get(id=user_id)
-        except User.DoesNotExist:
-            logger.warning(
-                "User with id %s not found, report will have no created_by", user_id
-            )
+    if user:
+        report_upload.created_by = user
 
     report_upload.meta["mime_type"] = mime_type
     report_upload.meta["generated_at"] = current_date.isoformat()
