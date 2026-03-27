@@ -167,7 +167,7 @@ class Facility(BaseModel):
     latitude = models.DecimalField(
         max_digits=22, decimal_places=16, null=True, blank=True
     )
-    pincode = models.IntegerField(default=None, null=True)
+    pincode = models.IntegerField(default=None, null=True, db_index=True)
     address = models.TextField()
 
     geo_organization = models.ForeignKey(

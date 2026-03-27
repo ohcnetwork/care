@@ -74,6 +74,7 @@ class FacilityFilters(filters.FilterSet):
     facility_type = NumberFilter(field_name="facility_type")
     organization = GeoOrganizationFilter()
     phone_number = CharFilter(field_name="phone_number", lookup_expr="iexact")
+    pincode = NumberFilter(field_name="pincode")
 
 
 class FacilityViewSet(EMRModelViewSet):
