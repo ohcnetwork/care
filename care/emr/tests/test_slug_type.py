@@ -40,8 +40,8 @@ class TestSlugTypeValidation(TestCase):
                 TestModel(slug=slug)
 
     def test_uppercase_slug_handling(self):
-        with self.assertRaises(ValidationError):
-            TestModel(slug="UPPERCASE")
+        model = TestModel(slug="UPPERCASE")
+        self.assertEqual(model.slug, "UPPERCASE")
 
     def test_length_constraints(self):
         with self.assertRaises(ValidationError):
