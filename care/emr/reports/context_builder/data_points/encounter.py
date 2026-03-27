@@ -27,7 +27,7 @@ from care.emr.reports.context_builder.data_points.questionnaire import (
     QuestionnaireContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.service_request import (
-    ServiceRequestDataPointBuilder,
+    ServiceRequestBaseContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.symptom import SymptomsContextBuilder
 from care.emr.reports.context_builder.data_points.user import SingleUserIdContextBuilder
