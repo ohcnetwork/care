@@ -5,7 +5,11 @@ from django.urls import reverse
 from model_bakery import baker
 
 from care.emr.fhir.resources.code_concept import MinimalCodeConcept
-from care.emr.models.valueset import UserValueSetPreference, ValueSet
+from care.emr.models.valueset import (
+    RecentViewsManager,
+    UserValueSetPreference,
+    ValueSet,
+)
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -600,5 +604,112 @@ class TestValueSetFavourites(ValueSetTestBase):
         user = self.create_user()
         self.client.force_authenticate(user=user)
         url = self.get_action_url("clear-favourites", self.valueset.slug)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 200)
+
+
+class TestValueSetRecentViews(ValueSetTestBase):
+    @patch.object(ValueSet, "lookup", return_value=True)
+    def test_add_recent_view(self, mock_lookup):
+        url = self.get_action_url("add-recent-view", self.valueset.slug)
+        payload = {
+            "code": "123",
+            "display": "Test",
+            "system": "http://snomed.info/sct",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("added to recent views", response.json()["message"])
+
+    @patch.object(ValueSet, "lookup", return_value=False)
+    def test_add_recent_view_invalid_code(self, mock_lookup):
+        url = self.get_action_url("add-recent-view", self.valueset.slug)
+        payload = {
+            "code": "invalid",
+            "display": "Invalid",
+            "system": "http://snomed.info/sct",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Invalid code value", response.json()["detail"])
+
+    @patch.object(ValueSet, "lookup", return_value=True)
+    def test_add_recent_view_as_regular_user(self, mock_lookup):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        url = self.get_action_url("add-recent-view", self.valueset.slug)
+        payload = {
+            "code": "123",
+            "display": "Test",
+            "system": "http://snomed.info/sct",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_remove_recent_view(self):
+        url = self.get_action_url("remove-recent-view", self.valueset.slug)
+        payload = {
+            "code": "123",
+            "display": "Test",
+            "system": "http://snomed.info/sct",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("removed from recent views", response.json()["message"])
+
+    def test_remove_recent_view_as_regular_user(self):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        url = self.get_action_url("remove-recent-view", self.valueset.slug)
+        payload = {
+            "code": "123",
+            "display": "Test",
+            "system": "http://snomed.info/sct",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    @patch.object(RecentViewsManager, "get_recent_views", return_value=[])
+    def test_recent_views_empty(self, mock_get):
+        url = self.get_action_url("recent-views", self.valueset.slug)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    @patch.object(
+        RecentViewsManager,
+        "get_recent_views",
+        return_value=[
+            {"code": "123", "display": "Test", "system": "http://snomed.info/sct"}
+        ],
+    )
+    def test_recent_views_with_data(self, mock_get):
+        url = self.get_action_url("recent-views", self.valueset.slug)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]["code"], "123")
+
+    @patch.object(RecentViewsManager, "get_recent_views", return_value=[])
+    def test_recent_views_as_regular_user(self, mock_get):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        url = self.get_action_url("recent-views", self.valueset.slug)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+
+    @patch.object(RecentViewsManager, "clear_recent_views")
+    def test_clear_recent_views(self, mock_clear):
+        url = self.get_action_url("clear-recent-views", self.valueset.slug)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("All recent views cleared", response.json()["message"])
+        mock_clear.assert_called_once()
+
+    @patch.object(RecentViewsManager, "clear_recent_views")
+    def test_clear_recent_views_as_regular_user(self, mock_clear):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        url = self.get_action_url("clear-recent-views", self.valueset.slug)
         response = self.client.post(url, format="json")
         self.assertEqual(response.status_code, 200)
