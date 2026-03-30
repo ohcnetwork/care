@@ -743,7 +743,9 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             status=MedicationDispenseStatus.in_progress.value,
             alternate_identifier="test-alternate-id-2",
         )
-        self.create_medication_dispense(order=another_dispense_order)
+        self.create_medication_dispense(
+            order=another_dispense_order, location=child_location
+        )
         response = self.client.get(
             self.generate_base_url(),
             {"location": self.location.external_id, "include_children": True},
@@ -962,3 +964,48 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             response.data["detail"],
             "You do not have permission to read medication dispenses",
         )
+
+    def test_summary_medication_dispense_with_multiple_dispenses_for_multiple_encounters(
+        self,
+    ):
+        """
+        Test summary of medication dispenses with multiple dispenses for multiple encounters should return correct count for each encounter
+        """
+        self.client.force_authenticate(user=self.superuser)
+        self.create_medication_dispense(order=self.dispense_order)
+        self.create_medication_dispense(order=self.dispense_order)
+        another_encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        child_location = self.create_facility_location(
+            self.facility,
+            name="Child Location",
+            facility_organization=self.facility_organization,
+            parent=self.location,
+        )
+
+        another_dispense_order = self.create_dispense_order(
+            patient=self.patient,
+            location=child_location,
+            facility=self.facility,
+            status=MedicationDispenseStatus.in_progress.value,
+            alternate_identifier="test-alternate-id-2",
+        )
+        self.create_medication_dispense(
+            order=another_dispense_order,
+            encounter=another_encounter,
+            location=child_location,
+        )
+        response = self.client.get(
+            self.generate_summary_url(),
+            {"location": self.location.external_id, "include_children": True},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 2)
+        for result in response.data["results"]:
+            if result["encounter"]["id"] == str(self.encounter.external_id):
+                self.assertEqual(result["count"], 2)
+            elif result["encounter"]["id"] == str(another_encounter.external_id):
+                self.assertEqual(result["count"], 1)
