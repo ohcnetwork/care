@@ -1,10 +1,11 @@
+from unittest.mock import patch
+
 from django.core.cache import cache
 from django.urls import reverse
 from model_bakery import baker
 
-from care.emr.models.valueset import (
-    ValueSet,
-)
+from care.emr.fhir.resources.code_concept import MinimalCodeConcept
+from care.emr.models.valueset import ValueSet
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -218,4 +219,42 @@ class TestValueSetPermissionsController(ValueSetTestBase):
         self.assertEqual(
             response.json()["detail"],
             "You do not have permission to perform this action.",
+        )
+
+
+class TestValueSetExpand(ValueSetTestBase):
+    """Tests for the expand action."""
+
+    @patch.object(ValueSet, "search")
+    def test_expand_as_superuser(self, mock_search):
+        mock_result = MinimalCodeConcept(
+            display="Test Code", system="http://snomed.info/sct", code="123"
+        )
+        mock_search.return_value = [mock_result]
+        url = self.get_action_url("expand", self.valueset.slug)
+        response = self.client.post(url, {"search": "test", "count": 5}, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()["results"]), 1)
+        self.assertEqual(response.json()["results"][0]["code"], "123")
+        mock_search.assert_called_once_with(
+            search="test", count=5, display_language="en-gb"
+        )
+
+    @patch.object(ValueSet, "search")
+    def test_expand_as_regular_user(self, mock_search):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        mock_search.return_value = []
+        url = self.get_action_url("expand", self.valueset.slug)
+        response = self.client.post(url, {"search": ""}, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    @patch.object(ValueSet, "search")
+    def test_expand_default_params(self, mock_search):
+        mock_search.return_value = []
+        url = self.get_action_url("expand", self.valueset.slug)
+        response = self.client.post(url, {}, format="json")
+        self.assertEqual(response.status_code, 200)
+        mock_search.assert_called_once_with(
+            search="", count=10, display_language="en-gb"
         )
