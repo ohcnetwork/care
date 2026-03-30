@@ -258,3 +258,83 @@ class TestValueSetExpand(ValueSetTestBase):
         mock_search.assert_called_once_with(
             search="", count=10, display_language="en-gb"
         )
+
+
+class TestValueSetPreviewSearch(ValueSetTestBase):
+    """Tests for the preview_search action."""
+
+    @patch.object(ValueSet, "search")
+    def test_preview_search(self, mock_search):
+        mock_result = MinimalCodeConcept(
+            display="Preview", system="http://snomed.info/sct", code="789"
+        )
+        mock_search.return_value = [mock_result]
+        url = reverse("value-set-preview-search") + "?search=preview&count=5"
+        payload = {
+            "slug": "preview-test",
+            "name": "Preview Test",
+            "description": "desc",
+            "status": "active",
+            "compose": {
+                "include": [
+                    {
+                        "system": "http://snomed.info/sct",
+                        "filter": [
+                            {"property": "concept", "op": "is-a", "value": "100"}
+                        ],
+                    }
+                ]
+            },
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()["results"]), 1)
+        self.assertEqual(response.json()["results"][0]["code"], "789")
+
+    @patch.object(ValueSet, "search")
+    def test_preview_search_default_params(self, mock_search):
+        mock_search.return_value = []
+        url = reverse("value-set-preview-search")
+        payload = {
+            "slug": "preview-default",
+            "name": "Preview Default",
+            "description": "desc",
+            "status": "active",
+            "compose": {
+                "include": [
+                    {
+                        "system": "http://snomed.info/sct",
+                        "filter": [
+                            {"property": "concept", "op": "is-a", "value": "100"}
+                        ],
+                    }
+                ]
+            },
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    @patch.object(ValueSet, "search")
+    def test_preview_search_as_regular_user(self, mock_search):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        mock_search.return_value = []
+        url = reverse("value-set-preview-search")
+        payload = {
+            "slug": "preview-regular",
+            "name": "Preview Regular",
+            "description": "desc",
+            "status": "active",
+            "compose": {
+                "include": [
+                    {
+                        "system": "http://snomed.info/sct",
+                        "filter": [
+                            {"property": "concept", "op": "is-a", "value": "100"}
+                        ],
+                    }
+                ]
+            },
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
