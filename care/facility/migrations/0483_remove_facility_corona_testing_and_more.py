@@ -45,10 +45,5 @@ class Migration(migrations.Migration):
         migrations.RemoveField(
             model_name='facility',
             name='type_d_cylinders',
-        ),
-        migrations.AlterField(
-            model_name='facility',
-            name='print_templates',
-            field=models.JSONField(default=list),
-        ),
+        )
     ]

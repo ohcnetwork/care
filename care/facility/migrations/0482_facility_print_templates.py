@@ -13,6 +13,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='facility',
             name='print_templates',
-            field=models.JSONField(default=dict),
+            field=models.JSONField(default=list),
         ),
     ]

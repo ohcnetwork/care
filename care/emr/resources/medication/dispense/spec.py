@@ -59,6 +59,7 @@ class MedicationDispenseCategory(str, Enum):
     inpatient = "inpatient"
     outpatient = "outpatient"
     community = "community"
+    discharge = "discharge"
 
 
 class SubstitutionType(str, Enum):

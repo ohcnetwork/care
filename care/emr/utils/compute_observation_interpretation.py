@@ -11,7 +11,6 @@ def compute_observation_interpretation(model_instance, metrics_cache):
         evaluator = InterpretationEvaluator(
             model_instance.observation_definition.qualified_ranges, metrics_cache
         )
-
         interpretation, ranges = evaluator.evaluate(
             evaluation_context, model_instance.value
         )
