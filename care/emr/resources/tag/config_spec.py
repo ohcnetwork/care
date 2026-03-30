@@ -6,7 +6,7 @@ Tag configs include what tags are available for a resource and their configurati
 from enum import Enum
 
 from django.db.models.signals import post_save
-from pydantic import UUID4, model_validator
+from pydantic import UUID4, BaseModel, model_validator
 from rest_framework.exceptions import ValidationError
 
 from care.emr.models.organization import FacilityOrganization, Organization
@@ -50,6 +50,11 @@ class TagStatus(str, Enum):
     archived = "archived"
 
 
+class TagConfigMetadata(BaseModel):
+    color: str | None = None
+    icon: str | None = None
+
+
 class TagConfigBaseSpec(EMRResource):
     __model__ = TagConfig
     __exclude__ = ["facility", "facility_organization", "organization", "parent"]
@@ -59,6 +64,7 @@ class TagConfigBaseSpec(EMRResource):
     description: str | None
     priority: int = 100
     status: TagStatus
+    metadata: TagConfigMetadata | None = None
 
 
 class TagConfigUpdateSpec(TagConfigBaseSpec):

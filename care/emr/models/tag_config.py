@@ -51,6 +51,8 @@ class TagConfig(EMRBaseModel):
         blank=True,
     )
     resource = models.CharField(max_length=255)
+    metadata = models.JSONField(default=None, null=True, blank=True)
+
     cache_expiry_days = 15
 
     def set_tag_config_cache(self):
