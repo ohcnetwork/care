@@ -215,7 +215,7 @@ class EncounterReportContext(BaseEncounterReportContext):
 
     service_requests = Field(
         display="Service Requests",
-        target_context=ServiceRequestDataPointBuilder,
+        target_context=ServiceRequestBaseContextBuilder,
         preview_value="",
         description="Service requests associated with the encounter",
     )
