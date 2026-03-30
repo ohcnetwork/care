@@ -1,11 +1,11 @@
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 from django.core.cache import cache
 from django.urls import reverse
 from model_bakery import baker
 
 from care.emr.fhir.resources.code_concept import MinimalCodeConcept
-from care.emr.models.valueset import ValueSet
+from care.emr.models.valueset import UserValueSetPreference, ValueSet
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -373,4 +373,232 @@ class TestValueSetValidateCode(ValueSetTestBase):
         url = self.get_action_url("validate-code", self.valueset.slug)
         payload = {"code": "123", "system": "http://snomed.info/sct"}
         response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+
+class TestValueSetLookupCode(ValueSetTestBase):
+    """Tests for the lookup_code action."""
+
+    @patch("care.emr.api.viewsets.valueset.CodeConceptResource")
+    def test_lookup_code_found(self, moke_code_concept):
+        mock_resource = MagicMock()
+        mock_filtered = MagicMock()
+        mock_resource.filter.return_value = mock_filtered
+        mock_filtered.get.return_value = {
+            "code": "123",
+            "system": "http://snomed.info/sct",
+            "display": "Test",
+        }
+        moke_code_concept.return_value = mock_resource
+        url = reverse("value-set-lookup-code")
+        payload = {"code": "123", "system": "http://snomed.info/sct"}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["code"], "123")
+
+    @patch("care.emr.api.viewsets.valueset.CodeConceptResource")
+    def test_lookup_code_not_found(self, moke_code_concept):
+        mock_resource = MagicMock()
+        mock_filtered = MagicMock()
+        mock_resource.filter.return_value = mock_filtered
+        mock_filtered.get.side_effect = ValueError("No results found")
+        moke_code_concept.return_value = mock_resource
+        url = reverse("value-set-lookup-code")
+        payload = {"code": "999", "system": "http://snomed.info/sct"}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.json()["error"],
+            "No results found for the given system and code",
+        )
+
+    @patch("care.emr.api.viewsets.valueset.CodeConceptResource")
+    def test_lookup_code_as_regular_user(self, moke_code_concept):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        mock_resource = MagicMock()
+        mock_filtered = MagicMock()
+        mock_resource.filter.return_value = mock_filtered
+        mock_filtered.get.return_value = {"code": "123"}
+        moke_code_concept.return_value = mock_resource
+        url = reverse("value-set-lookup-code")
+        payload = {"code": "123", "system": "http://snomed.info/sct"}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+
+class TestValueSetFavourites(ValueSetTestBase):
+    """Tests for favourites, add_favourite, remove_favourite, clear_favourites actions."""
+
+    def test_favourites_empty(self):
+        url = self.get_action_url("favourites", self.valueset.slug)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    def test_favourites_from_db_when_cache_empty(self):
+        UserValueSetPreference.objects.create(
+            user=self.user,
+            valueset=self.valueset,
+            favorite_codes=[
+                {"code": "123", "display": "Test", "system": "http://snomed.info/sct"}
+            ],
+        )
+        url = self.get_action_url("favourites", self.valueset.slug)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()), 1)
+        self.assertEqual(response.json()[0]["code"], "123")
+
+    def test_favourites_from_cache(self):
+        cache_key = f"user_valueset_code_prefs:{self.valueset.slug}:{self.user.external_id}:favourites"
+        cached_favs = [
+            {"code": "456", "display": "Cached", "system": "http://snomed.info/sct"}
+        ]
+        cache.set(cache_key, cached_favs)
+        url = self.get_action_url("favourites", self.valueset.slug)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()[0]["code"], "456")
+
+    def test_favourites_as_regular_user(self):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        url = self.get_action_url("favourites", self.valueset.slug)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json(), [])
+
+    @patch.object(ValueSet, "lookup", return_value=True)
+    def test_add_favourite(self, mock_lookup):
+        url = self.get_action_url("add-favourite", self.valueset.slug)
+        payload = {
+            "code": "123",
+            "display": "Test Code",
+            "system": "http://snomed.info/sct",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("added to favourites", response.json()["message"])
+        pref = UserValueSetPreference.objects.get(
+            user=self.user, valueset=self.valueset
+        )
+        self.assertEqual(len(pref.favorite_codes), 1)
+
+    @patch.object(ValueSet, "lookup", return_value=True)
+    def test_add_favourite_duplicate(self, mock_lookup):
+        UserValueSetPreference.objects.create(
+            user=self.user,
+            valueset=self.valueset,
+            favorite_codes=[
+                {"code": "123", "display": "Test", "system": "http://snomed.info/sct"}
+            ],
+        )
+        url = self.get_action_url("add-favourite", self.valueset.slug)
+        payload = {
+            "code": "123",
+            "display": "Test Code",
+            "system": "http://snomed.info/sct",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("already exists", response.json()["message"])
+
+    @patch.object(ValueSet, "lookup", return_value=False)
+    def test_add_favourite_invalid_code(self, mock_lookup):
+        url = self.get_action_url("add-favourite", self.valueset.slug)
+        payload = {
+            "code": "invalid",
+            "display": "Invalid",
+            "system": "http://snomed.info/sct",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 400)
+
+    @patch.object(ValueSet, "lookup", return_value=True)
+    def test_add_favourite_as_regular_user(self, mock_lookup):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        url = self.get_action_url("add-favourite", self.valueset.slug)
+        payload = {
+            "code": "123",
+            "display": "Test",
+            "system": "http://snomed.info/sct",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_remove_favourite_existing(self):
+        UserValueSetPreference.objects.create(
+            user=self.user,
+            valueset=self.valueset,
+            favorite_codes=[
+                {"code": "123", "display": "Test", "system": "http://snomed.info/sct"}
+            ],
+        )
+        url = self.get_action_url("remove-favourite", self.valueset.slug)
+        payload = {
+            "code": "123",
+            "display": "Test",
+            "system": "http://snomed.info/sct",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("removed from favourites", response.json()["message"])
+        pref = UserValueSetPreference.objects.get(
+            user=self.user, valueset=self.valueset
+        )
+        self.assertEqual(len(pref.favorite_codes), 0)
+
+    def test_remove_favourite_no_preference_exists(self):
+        url = self.get_action_url("remove-favourite", self.valueset.slug)
+        payload = {
+            "code": "123",
+            "display": "Test",
+            "system": "http://snomed.info/sct",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("No favourites found", response.json()["message"])
+
+    def test_remove_favourite_as_regular_user(self):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        url = self.get_action_url("remove-favourite", self.valueset.slug)
+        payload = {
+            "code": "123",
+            "display": "Test",
+            "system": "http://snomed.info/sct",
+        }
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_clear_favourites_existing(self):
+        UserValueSetPreference.objects.create(
+            user=self.user,
+            valueset=self.valueset,
+            favorite_codes=[
+                {"code": "123", "display": "Test", "system": "http://snomed.info/sct"}
+            ],
+        )
+        url = self.get_action_url("clear-favourites", self.valueset.slug)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("All favourites cleared", response.json()["message"])
+        pref = UserValueSetPreference.objects.get(
+            user=self.user, valueset=self.valueset
+        )
+        self.assertEqual(pref.favorite_codes, [])
+
+    def test_clear_favourites_no_preference_exists(self):
+        url = self.get_action_url("clear-favourites", self.valueset.slug)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("No favourites found", response.json()["message"])
+
+    def test_clear_favourites_as_regular_user(self):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        url = self.get_action_url("clear-favourites", self.valueset.slug)
+        response = self.client.post(url, format="json")
         self.assertEqual(response.status_code, 200)
