@@ -318,3 +318,91 @@ class QuestionnaireTestBase(CareAPITestBase):
             f"Questionnaire creation failed: {response.json()}",
         )
         return response.json()
+
+    # Testcases for retrive questionnaire responses
+
+    def test_retrieve_questionnaire_response(self):
+        """
+        Tests retrieval of a submitted questionnaire response and validates the response data structure and content.
+        """
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            self.user,
+            self.role,
+        )
+        response = self.client.get(
+            self.get_detail_url(self.questionnaire_response["id"])
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.json()
+        self.assertEqual(response_data["id"], self.questionnaire_response["id"])
+        self.assertEqual(response_data["status"], "completed")
+        self.assertEqual(response_data["questionnaire"]["id"], self.questionnaire["id"])
+        self.assertEqual(len(response_data["responses"]), len(self.responses))
+
+    def test_retrieve_questionnaire_response_without_encounter_permission(self):
+        """
+        Tests that retrieving a questionnaire response without appropriate permissions results in a permission denied error.
+        """
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        response = self.client.get(
+            self.get_detail_url(self.questionnaire_response["id"]),
+            {"encounter": self.encounter.external_id},
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json()["detail"],
+            "You do not have permission to view questionnaire responses",
+        )
+
+    def test_retrieve_questionnaire_response_without_patient_permission(self):
+        """
+        Tests that retrieving a questionnaire response without appropriate patient permissions results in a permission denied error.
+        """
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        response = self.client.get(
+            self.get_detail_url(self.questionnaire_response["id"])
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json()["detail"],
+            "You do not have permission to view questionnaire responses",
+        )
+
+    def test_retrieve_questionnaire_response_with_questionnaire_slug_filter(self):
+        """
+        Tests retrieval of questionnaire responses filtered by questionnaire slug and validates the response data.
+        """
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            self.user,
+            self.role,
+        )
+        response = self.client.get(
+            self.get_url(), {"questionnaire_slugs": self.questionnaire["slug"]}
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.json()
+        self.assertEqual(len(response_data["results"]), 1)
+        self.assertEqual(
+            response_data["results"][0]["id"], self.questionnaire_response["id"]
+        )
+
+    def test_retrieve_questionnaire_response_with_only_unstructured_filter(self):
+        """
+        Tests retrieval of questionnaire responses filtered by only unstructured responses and validates the response data.
+        """
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            self.user,
+            self.role,
+        )
+        response = self.client.get(self.get_url(), {"only_unstructured": "true"})
+        self.assertEqual(response.status_code, 200)
+        response_data = response.json()
+        self.assertEqual(len(response_data["results"]), 1)
+        self.assertEqual(
+            response_data["results"][0]["id"], self.questionnaire_response["id"]
+        )
