@@ -52,3 +52,170 @@ class ValueSetTestBase(CareAPITestBase):
 
     def get_action_url(self, action_name, slug):
         return reverse(f"value-set-{action_name}", kwargs={"slug": slug})
+
+
+class TestValueSetPermissionsController(ValueSetTestBase):
+    """Tests for permissions_controller — read actions open to all, write only for superusers."""
+
+    def test_list_as_superuser(self):
+        """
+        Test that a superuser can list value sets.
+        """
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()["results"]), 1)
+        self.assertEqual(
+            response.json()["results"][0]["id"], str(self.valueset.external_id)
+        )
+        self.assertEqual(response.json()["results"][0]["slug"], "test-valueset")
+
+    def test_list_as_regular_user(self):
+        """
+        Test that a regular user can list value sets.
+        """
+
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        response = self.client.get(self.list_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.json()["results"]), 1)
+        self.assertEqual(
+            response.json()["results"][0]["id"], str(self.valueset.external_id)
+        )
+        self.assertEqual(response.json()["results"][0]["slug"], "test-valueset")
+
+    def test_retrieve_as_superuser(self):
+        """
+        Test that a superuser can retrieve a value set.
+        """
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["id"], str(self.valueset.external_id))
+        self.assertEqual(response.json()["slug"], "test-valueset")
+
+    def test_retrieve_as_regular_user(self):
+        """
+        Test that a regular user can retrieve a value set.
+        """
+
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        response = self.client.get(self.detail_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["id"], str(self.valueset.external_id))
+        self.assertEqual(response.json()["slug"], "test-valueset")
+
+    # Testcases for create valuesets
+
+    def test_create_as_superuser(self):
+        payload = {
+            "slug": "new-valueset",
+            "name": "New ValueSet",
+            "description": "desc",
+            "status": "active",
+            "compose": {
+                "include": [
+                    {
+                        "system": "http://snomed.info/sct",
+                        "filter": [
+                            {"property": "concept", "op": "is-a", "value": "456"}
+                        ],
+                    }
+                ]
+            },
+        }
+        response = self.client.post(self.list_url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(ValueSet.objects.filter(slug="new-valueset").exists())
+
+    def test_create_as_regular_user_denied(self):
+        """
+        Test that a regular user cannot create a value set.
+        """
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        payload = {
+            "slug": "blocked-valueset",
+            "name": "Blocked",
+            "description": "desc",
+            "status": "active",
+            "compose": {
+                "include": [
+                    {
+                        "system": "http://snomed.info/sct",
+                        "filter": [
+                            {"property": "concept", "op": "is-a", "value": "456"}
+                        ],
+                    }
+                ]
+            },
+        }
+        response = self.client.post(self.list_url, payload, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertFalse(ValueSet.objects.filter(slug="blocked-valueset").exists())
+        self.assertEqual(
+            response.json()["detail"],
+            "You do not have permission to perform this action.",
+        )
+
+    def test_update_as_superuser(self):
+        payload = {
+            "slug": "test-valueset",
+            "name": "Updated Name",
+            "description": "updated",
+            "status": "active",
+            "compose": {
+                "include": [
+                    {
+                        "system": "http://snomed.info/sct",
+                        "filter": [
+                            {"property": "concept", "op": "is-a", "value": "123"}
+                        ],
+                    }
+                ]
+            },
+        }
+        response = self.client.put(self.detail_url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.valueset.refresh_from_db()
+        self.assertEqual(self.valueset.name, "Updated Name")
+
+    def test_update_as_regular_user_denied(self):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        payload = {
+            "slug": "test-valueset",
+            "name": "Hacked",
+            "description": "hacked",
+            "status": "active",
+            "compose": {
+                "include": [
+                    {
+                        "system": "http://snomed.info/sct",
+                        "filter": [
+                            {"property": "concept", "op": "is-a", "value": "123"}
+                        ],
+                    }
+                ]
+            },
+        }
+        response = self.client.put(self.detail_url, payload, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json()["detail"],
+            "You do not have permission to perform this action.",
+        )
+
+    def test_delete_as_superuser(self):
+        response = self.client.delete(self.detail_url)
+        self.assertEqual(response.status_code, 204)
+
+    def test_delete_as_regular_user_denied(self):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        response = self.client.delete(self.detail_url)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json()["detail"],
+            "You do not have permission to perform this action.",
+        )
