@@ -1,3 +1,5 @@
+import uuid
+
 from django.urls import reverse
 from model_bakery import baker
 
@@ -405,4 +407,89 @@ class QuestionnaireTestBase(CareAPITestBase):
         self.assertEqual(len(response_data["results"]), 1)
         self.assertEqual(
             response_data["results"][0]["id"], self.questionnaire_response["id"]
+        )
+
+    # Test cases for listing questionnaire responses
+
+    def test_list_questionnaire_responses_as_superuser(self):
+        """
+        Tests listing of questionnaire responses for a patient and validates the response data structure and content.
+        """
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            self.user,
+            self.role,
+        )
+        response = self.client.get(self.get_url())
+        self.assertEqual(response.status_code, 200)
+        response_data = response.json()
+        self.assertEqual(len(response_data["results"]), 1)
+        self.assertEqual(
+            response_data["results"][0]["id"], self.questionnaire_response["id"]
+        )
+
+    def test_list_questionnaire_responses_without_encounter_permission(self):
+        """
+        Tests that listing questionnaire responses without appropriate permissions results in a permission denied error.
+        """
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        response = self.client.get(
+            self.get_url(), {"encounter": self.encounter.external_id}
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json()["detail"],
+            "You do not have permission to view questionnaire responses",
+        )
+
+    def test_list_questionnaire_responses_without_patient_permission(self):
+        """
+        Tests that listing questionnaire responses without appropriate patient permissions results in a permission denied error.
+        """
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        response = self.client.get(self.get_url())
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json()["detail"],
+            "You do not have permission to view questionnaire responses",
+        )
+
+    def test_list_questionnaire_responses_with_invalid_encounter_uuid(self):
+        """
+        Tests that listing questionnaire responses with an invalid encounter UUID results in a not found error.
+        """
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            self.user,
+            self.role,
+        )
+        response = self.client.get(self.get_url(), {"encounter": str(uuid.uuid4())})
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.json()["errors"][0]["msg"],
+            "No Encounter matches the given query.",
+        )
+
+    def test_list_questionnaire_responses_with_invalid_patient_uuid(self):
+        """
+        Tests that listing questionnaire responses with an invalid patient UUID results in a not found error.
+        """
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            self.user,
+            self.role,
+        )
+        url = reverse(
+            "questionnaire-response-list",
+            kwargs={
+                "patient_external_id": str(uuid.uuid4()),
+            },
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.json()["errors"][0]["msg"],
+            "No Patient matches the given query.",
         )
