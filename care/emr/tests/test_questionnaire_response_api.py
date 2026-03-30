@@ -1,8 +1,11 @@
 import uuid
+from datetime import timedelta
 
+from django.conf import settings
 from django.urls import reverse
 from model_bakery import baker
 
+from care.emr.models.questionnaire import QuestionnaireResponse
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
@@ -492,4 +495,92 @@ class QuestionnaireTestBase(CareAPITestBase):
         self.assertEqual(
             response.json()["errors"][0]["msg"],
             "No Patient matches the given query.",
+        )
+
+    #  Test cases for udpdate the questionnaire response
+
+    def test_update_questionnaire_response_status_as_superuser(self):
+        """
+        Tests updating the status of a questionnaire response and validates the update results.
+        """
+
+        update_url = self.get_detail_url(self.questionnaire_response["id"])
+        response = self.client.patch(
+            update_url, {"status": "entered_in_error"}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.json()
+        self.assertEqual(response_data["id"], self.questionnaire_response["id"])
+        self.assertEqual(response_data["status"], "entered_in_error")
+
+    def test_update_questionnaire_response_status_without_permission(self):
+        """
+        Tests that updating the status of a questionnaire response without appropriate permissions results in a permission denied error.
+        """
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        update_url = self.get_detail_url(self.questionnaire_response["id"])
+        response = self.client.put(
+            update_url, {"status": "entered_in_error"}, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json()["detail"],
+            "You do not have permission to view questionnaire responses",
+        )
+
+    def test_update_questionnaire_response_status_already_entered_in_error(self):
+        """
+        Tests that updating the status of a questionnaire response that is already entered in error results in a permission denied error.
+        """
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            user,
+            self.role,
+        )
+        update_url = self.get_detail_url(self.questionnaire_response["id"])
+        response = self.client.put(
+            update_url, {"status": "entered_in_error"}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        response = self.client.put(update_url, {"status": "completed"}, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json()["detail"],
+            "Questionnaire Response cannot be edited",
+        )
+
+    def test_update_questionnaire_response_status_after_time_limit(self):
+        """
+        Tests that updating the status of a questionnaire response after the allowed time limit results in a permission denied error.
+        """
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            user,
+            self.role,
+        )
+        update_url = self.get_detail_url(self.questionnaire_response["id"])
+        response = self.client.put(
+            update_url, {"status": "entered_in_error"}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        # Simulate time passing beyond the allowed limit
+        questionnaire_response_obj = QuestionnaireResponse.objects.get(
+            external_id=self.questionnaire_response["id"]
+        )
+        questionnaire_response_obj.created_date -= timedelta(
+            minutes=settings.QUESTIONNAIRE_ERRORED_TIME_LIMIT_MINUTES + 1
+        )
+        questionnaire_response_obj.save()
+        # Ensure the object is refreshed from DB to avoid stale data
+        questionnaire_response_obj.refresh_from_db()
+        response = self.client.put(update_url, {"status": "completed"}, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json()["detail"],
+            "Questionnaire Response cannot be edited",
         )
