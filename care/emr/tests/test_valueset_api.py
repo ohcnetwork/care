@@ -342,3 +342,35 @@ class TestValueSetPreviewSearch(ValueSetTestBase):
         self.assertEqual(response.status_code, 200)
         mock_search.assert_called_once_with(search="", count=10)
         self.assertEqual(len(response.json()["results"]), 0)
+
+
+class TestValueSetValidateCode(ValueSetTestBase):
+    """Tests for the validate_code action."""
+
+    @patch.object(ValueSet, "lookup")
+    def test_validate_code_found(self, mock_lookup):
+        mock_lookup.return_value = True
+        url = self.get_action_url("validate-code", self.valueset.slug)
+        payload = {"code": "123", "system": "http://snomed.info/sct"}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["result"])
+
+    @patch.object(ValueSet, "lookup")
+    def test_validate_code_not_found(self, mock_lookup):
+        mock_lookup.return_value = False
+        url = self.get_action_url("validate-code", self.valueset.slug)
+        payload = {"code": "999", "system": "http://snomed.info/sct"}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.json()["result"])
+
+    @patch.object(ValueSet, "lookup")
+    def test_validate_code_as_regular_user(self, mock_lookup):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        mock_lookup.return_value = True
+        url = self.get_action_url("validate-code", self.valueset.slug)
+        payload = {"code": "123", "system": "http://snomed.info/sct"}
+        response = self.client.post(url, payload, format="json")
+        self.assertEqual(response.status_code, 200)
