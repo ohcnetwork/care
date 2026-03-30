@@ -313,6 +313,8 @@ class TestValueSetPreviewSearch(ValueSetTestBase):
         }
         response = self.client.post(url, payload, format="json")
         self.assertEqual(response.status_code, 200)
+        mock_search.assert_called_once_with(search="", count=10)
+        self.assertEqual(len(response.json()["results"]), 0)
 
     @patch.object(ValueSet, "search")
     def test_preview_search_as_regular_user(self, mock_search):
@@ -338,3 +340,5 @@ class TestValueSetPreviewSearch(ValueSetTestBase):
         }
         response = self.client.post(url, payload, format="json")
         self.assertEqual(response.status_code, 200)
+        mock_search.assert_called_once_with(search="", count=10)
+        self.assertEqual(len(response.json()["results"]), 0)
