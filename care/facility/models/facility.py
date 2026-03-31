@@ -154,9 +154,11 @@ class Facility(BaseModel):
     name = models.CharField(max_length=1000, blank=False, null=False)
     description = models.TextField(blank=True, null=False)
     is_active = models.BooleanField(
-        default=True, help_text="Marks if the facility is admin-verified."
+        default=True, help_text="Marks if the facility is active/enabled."
     )
-    verified = models.BooleanField(default=False)
+    verified = models.BooleanField(
+        default=False, help_text="Marks if the facility is admin-verified."
+    )
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     features = ArrayField(
         models.SmallIntegerField(choices=FacilityFeature),
