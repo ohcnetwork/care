@@ -199,7 +199,7 @@ class Facility(BaseModel):
     middleware_address = models.CharField(null=True, default=None, max_length=200)
 
     is_public = models.BooleanField(
-        default=False, 
+        default=False,
         help_text="Controls public visibility of the facility."
     )
 
