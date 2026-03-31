@@ -153,7 +153,9 @@ DOCTOR_TYPES = [
 class Facility(BaseModel):
     name = models.CharField(max_length=1000, blank=False, null=False)
     description = models.TextField(blank=True, null=False)
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(
+        default=True, help_text="Marks if the facility is admin-verified."
+    )
     verified = models.BooleanField(default=False)
     facility_type = models.IntegerField(choices=FACILITY_TYPES)
     features = ArrayField(
@@ -196,7 +198,10 @@ class Facility(BaseModel):
     )
     middleware_address = models.CharField(null=True, default=None, max_length=200)
 
-    is_public = models.BooleanField(default=False)
+    is_public = models.BooleanField(
+        default=False, 
+        help_text="Controls public visibility of the facility."
+    )
 
     print_templates = models.JSONField(default=list)
 
