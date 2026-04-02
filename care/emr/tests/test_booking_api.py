@@ -511,6 +511,19 @@ class TestBookingViewSet(CareAPITestBase):
         self.assertContains(response, self.user.external_id)
         self.assertNotContains(response, deleted_user.external_id)
 
+    def test_list_available_users_filtered_by_username(self):
+        """Users can list available schedulable users filtered by username"""
+        another_user = self.create_user(username="john_doe")
+        self.create_resource(user=another_user)
+
+        available_users_url = reverse(
+            "appointments-available-users",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.get(available_users_url, {"username": "john"})
+        self.assertContains(response, another_user.external_id)
+        self.assertNotContains(response, self.user.external_id)
+
     def test_list_booking_for_user_with_schedules_in_multiple_facilities(self):
         """Appointments for a user with schedules in multiple facilities are filtered correctly."""
         permissions = [SchedulePermissions.can_list_booking.name]

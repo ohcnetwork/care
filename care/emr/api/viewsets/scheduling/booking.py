@@ -262,6 +262,10 @@ class TokenBookingViewSet(
             facility=facility,
             user__deleted=False,
         )
+        if request.query_params.get("username"):
+            user_resources = user_resources.filter(
+                user__username__icontains=request.query_params["username"]
+            )
         if request.query_params.get("organization_ids"):
             organization_ids = request.query_params.get("organization_ids").split(",")
             organizations = FacilityOrganization.objects.filter(
