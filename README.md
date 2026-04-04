@@ -1,84 +1,78 @@
-# Care Backend
+# AI Voice - Medical Transcription Plugin for CARE
 
-<p align="center">
-  <a href="https://ohc.network">
-    <picture>
-      <source media="(prefers-color-scheme: dark)" srcset="./care/static/images/logos/logo-dark.svg">
-      <img alt="care logo" src="./care/static/images/logos/logo-light.svg"  width="300">
-    </picture>
-  </a>
-</p>
-
-[![Deploy Care](https://github.com/ohcnetwork/care/actions/workflows/deployment.yaml/badge.svg)](https://github.com/ohcnetwork/care/actions/workflows/deployment.yaml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Cookiecutter Django](https://img.shields.io/badge/built%20with-Cookiecutter%20Django-ff69b4.svg)](https://github.com/pydanny/cookiecutter-django/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Chat](https://img.shields.io/badge/-Join%20us%20on%20slack-7b1c7d?logo=slack)](https://slack.ohc.network/)
-[![Open in Dev Containers](https://img.shields.io/static/v1?label=&message=Open%20in%20Dev%20Containers&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/ohcnetwork/care)
-
-This is the backend for care. an open source platform for managing patients, health workers, and hospitals.
+Real-time medical transcription and AI-powered clinical documentation plugin for the [CARE](https://github.com/ohcnetwork/care) platform.
 
 ## Features
 
-Care backend makes the following features possible:
+- **Real-time audio transcription** via AssemblyAI with medical vocabulary boosting
+- **WebSocket streaming** for live transcription display during patient encounters
+- **AI-powered SOAP note generation** using LLM (GPT-4o or compatible)
+- **Encounter integration** - transcriptions linked directly to patient encounters
+- **Physician review workflow** - SOAP notes require review before finalization
+- **Speaker identification** - distinguishes provider and patient speech when available
 
-- Realtime Analytics of Beds, ICUs, Ventilators, Oxygen and other resources in hospitals
-- Facility Management with Inventory Monitoring
-- Integrated Tele-medicine & Triage
-- Patient Management and Consultation History
-- Realtime video feed and vitals monitoring of patients
-- Clinical Data Visualizations.
+## Architecture
 
-## Getting Started
-
-### Docs and Guides
-
-You can find the docs at https://care-be-docs.ohc.network
-
-### Staging Deployments
-
-Dev and staging instances for testing are automatically deployed on every commit to the `develop` and `staging` branches.
-The staging instances are available at:
-
-- https://careapi.ohc.network
-- https://careapi-staging.ohc.network
-
-### Self hosting
-
-#### Compose
-
-docker compose is the easiest way to get started with care.
-put the required environment variables in a `.env` file and run:
-
-```bash
-make up
+```
+Browser (Mic) → WebSocket → Django Channels Consumer → AssemblyAI Streaming API
+                                    ↓
+                            TranscriptionSegments (DB)
+                                    ↓
+                         Full Transcript Assembly
+                                    ↓
+                    Celery Task → LLM (GPT-4o) → SOAP Note
+                                    ↓
+                         Physician Review & Approval
 ```
 
-to load fixtures for testing run:
+## Configuration
 
-```bash
-make load-fixtures
+Add to your `plug_config.py`:
+
+```python
+from plugs.plug import Plug
+
+ai_voice = Plug(
+    name="ai_voice",
+    package_name="git+https://github.com/ohcnetwork/ai_voice.git",
+    version="@main",
+    configs={
+        "ASSEMBLYAI_API_KEY": "your-assemblyai-key",
+        "OPENAI_API_KEY": "your-openai-key",
+        "LLM_MODEL": "gpt-4o",
+        "LLM_TEMPERATURE": 0.2,
+        # Optional: custom OpenAI-compatible endpoint
+        # "OPENAI_BASE_URL": "https://your-gateway.com/v1",
+    },
+)
 ```
 
-Stops and removes the containers without affecting the volumes:
+## API Endpoints
 
-```bash
-make down
-```
+All endpoints are under `/api/ai_voice/`:
 
-Stops and removes the containers and their volumes:
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/sessions/` | List transcription sessions |
+| POST | `/sessions/` | Create new session (requires `encounter_id`) |
+| GET | `/sessions/{id}/` | Get session with segments and notes |
+| POST | `/sessions/{id}/complete/` | Complete session and assemble transcript |
+| POST | `/sessions/{id}/generate_notes/` | Generate SOAP note from transcript |
+| GET | `/soap-notes/{id}/` | Get a SOAP note |
+| PATCH | `/soap-notes/{id}/` | Edit SOAP note fields |
+| POST | `/soap-notes/{id}/mark_reviewed/` | Mark note as physician-reviewed |
 
-```bash
-make teardown
-```
+## WebSocket
 
-#### Docker
+Connect to `ws://host/ws/transcription/{session_id}/` for real-time streaming.
 
-Prebuilt docker images for server deployments are available
-on [ghcr](https://github.com/ohcnetwork/care/pkgs/container/care)
+**Send:** Binary PCM audio (16-bit, 16kHz, mono) or JSON control messages
+**Receive:** JSON transcription results and status updates
 
-For backup and restore use [this](/docs/setup/database-backup.rst) documentation.
+## Requirements
 
-## Contributing
-
-We welcome contributions from everyone. Please read our [contributing guidelines](./CONTRIBUTING.md) to get started.
+- Python 3.13+
+- CARE platform
+- Redis (for Django Channels)
+- AssemblyAI API key
+- OpenAI API key (or compatible LLM provider)
