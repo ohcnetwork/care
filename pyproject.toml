@@ -1,141 +1,29 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=68.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "care"
-version = "3.0"
-description = "A Django app for managing healthcare across hospitals and care centers."
-authors = [
-    {name = "Open Healthcare Network", email = "info@ohc.network"}
-]
+name = "ai_voice"
+version = "0.1.0"
+description = "Real-time medical transcription plugin for CARE with AssemblyAI and LLM-powered SOAP notes"
+requires-python = ">=3.13"
 license = {text = "MIT"}
-keywords = ["django", "care", "ohc"]
-classifiers = [
-    "Framework :: Django",
-    "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
+readme = "README.md"
+
+dependencies = [
+    "assemblyai>=0.35.0",
+    "openai>=1.50.0",
+    "channels>=4.0.0",
+    "channels-redis>=4.1.0",
+    "numpy>=1.26.0",
 ]
-requires-python = "==3.13.*"
 
-[project.urls]
-Homepage = "https://github.com/ohcnetwork/care"
-
-[tool.setuptools]
-include-package-data = true
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0",
+    "pytest-django>=4.5",
+    "pytest-asyncio>=0.23",
+]
 
 [tool.setuptools.packages.find]
-include = ["care*"]
-
-
-[tool.coverage.run]
-branch = true
-source = ["care", "config", "plugs"]
-parallel = true
-concurrency = ["multiprocessing"]
-# relative_files = true
-omit = ["care/facility/**", "care/users/**", "*/tests/**", "*/migrations/**"]
-
-
-[tool.coverage.report]
-exclude_also = [
-  'def __repr__',
-  'if self.debug:',
-  'if settings.DEBUG',
-  'raise AssertionError',
-  'raise NotImplementedError',
-  'if __name__ == .__main__.:',
-  'if TYPE_CHECKING:',
-]
-ignore_errors = true
-omit = ["care/facility/**", "care/users/**", "*/tests/**", "*/migrations*/**"]
-
-
-[tool.ruff]
-target-version = "py313"
-extend-exclude = ["*/migrations*/*", "care/facility/**"]
-include = ["*.py", "pyproject.toml"]
-
-[tool.ruff.lint]
-# https://docs.astral.sh/ruff/rules/
-select = [
-  "F",  # pyflakes
-  "E",  # pycodestyle errors
-  "W",  # pycodestyle warnings
-  "I",  # isort
-  "N",  # pep8-naming
-  "UP", # pyupgrade
-  # "ANN", # flake8-annotations
-  "S",   # flake8-bandit
-  "FBT", # flake8-boolean-trap
-  "B",   # flake8-bugbear
-  "A",   # flake8-builtins
-  "COM", # flake8-commas
-  "C4",  # flake8-comprehensions
-  "DTZ", # flake8-datetimez
-  "T10", # flake8-debugger
-  "DJ",  # flake8-django
-  "EM",  # flake8-errmsg
-  "ISC", # flake8-import-conventions
-  "ICN", # flake8-import-order
-  "LOG", # flake8-logging
-  "G",   # flake8-logging-format
-  "INP", # flake8-no-pep420
-  "PIE", # flake8-pie
-  "T20", # flake8-print
-  "Q",   # flake8-quotes
-  "RSE", # flake8-raise
-  "RET", # flake8-return
-  "SLF", # flake8-self
-  "SIM", # flake8-simplify
-  "TID", # flake8-tidy-imports
-  "INT", # flake8-gettext
-  # "ARG",  # flake8-unused-arguments
-  "PTH", # flake8-use-pathlib
-  # "TD",   # flake8-todo # disabling this for now
-  "ERA",  # eradicate
-  "PL",   # pylint
-  "FURB", # refurb
-  "RUF",  # ruff
-]
-unfixable = [
-  "T20", # don't remove print statements
-]
-ignore = [
-  "E203",    # whitespace-before-punctuation
-  "E501",    # line-too-long
-  "FBT002",  # boolean-default-value-positional-argument
-  "SIM105",  # suppressible-exception
-  "PLR0913", # too-many-arguments
-  "PLW1641", # object does not have __hash__ method
-  "DJ001",   # django-nullable-model-string-field
-  "ISC001",  # conflicts with format
-  "COM812",  # conflicts with format
-  "RUF012",  # Too hard
-  "FBT001",  # why not!
-  "S106",
-  "S105",
-  "EM101",   # Why not!
-  "ERA001",  # Lots of commented out code until the big merge!
-  "PLC0415", # TODO: ignore specific warning for top level imports and remove the catchall
-]
-
-[tool.ruff.lint.per-file-ignores]
-"**/__init__.py" = ["E402", "F401"] # for imports
-"**/tests/**" = ["DTZ001"]
-
-[tool.ruff.lint.flake8-builtins]
-builtins-ignorelist = ["id", "list", "filter"]
-
-[tool.ruff.lint.flake8-quotes]
-docstring-quotes = "double"
-
-[tool.ruff.lint.flake8-unused-arguments]
-ignore-variadic-names = true
-
-[tool.ruff.format]
-line-ending = "lf"
-quote-style = "double"
+include = ["ai_voice*"]
