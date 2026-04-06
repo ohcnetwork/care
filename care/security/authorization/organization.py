@@ -139,10 +139,10 @@ class OrganizationAccess(AuthorizationHandler):
     def get_permission_on_organization(self, organization, user):
         organization_parents = []
         if organization.org_type == OrganizationTypeChoices.role.value:
-            managing_organization_ids = []
-            for managing_organization in organization.managing_organizations:
-                managing_organization_ids.append(managing_organization)
-            organization_parents = [organization.id, *managing_organization_ids]
+            organization_parents = [
+                organization.id,
+                *organization.managing_organizations,
+            ]
         else:
             organization_parents = [*organization.parent_cache, organization.id]
         user_roles = RoleModel.objects.filter(
