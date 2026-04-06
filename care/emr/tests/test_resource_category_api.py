@@ -21,6 +21,9 @@ class ResourceCategoryAPITestCase(CareAPITestBase):
             ResourceCategoryPermissions.can_write_resource_category.name,
             ResourceCategoryPermissions.can_read_resource_category.name,
         ]
+        self.role = self.create_role_with_permissions(
+            permissions=self.premissions,
+        )
         self.url = reverse(
             "resource_category-list",
             kwargs={"facility_external_id": self.facility.external_id},
@@ -54,5 +57,245 @@ class ResourceCategoryAPITestCase(CareAPITestBase):
         data.update(kwargs)
         return data
 
-    def create_resource_category(self, **kwargs):
-        return baker.make(ResourceCategory, facility=self.facility, **kwargs)
+    def calculate_slug(self, slug_value, facility):
+        return f"f-{facility.external_id}-{slug_value}"
+
+    def create_resource_category(self, slug_value, facility, **kwargs):
+        data = {
+            "title": kwargs.get("title", "Test Resource Category"),
+            "description": kwargs.get("description", "Test Description"),
+            "resource_type": kwargs.get("resource_type", "product_knowledge"),
+            "resource_sub_type": kwargs.get("resource_sub_type", "other"),
+            "facility": kwargs.get("facility", self.facility),
+            **kwargs,
+        }
+        slug = self.calculate_slug(slug_value, facility)
+        return baker.make(ResourceCategory, slug=slug, **data)
+
+    # Test cases for create resource category api
+
+    def test_create_resource_category_as_super_user(self):
+        self.client.force_authenticate(user=self.super_user)
+        data = self.generate_resource_category_data()
+        response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_resource_category_as_regular_user(self):
+        self.client.force_authenticate(user=self.user)
+        data = self.generate_resource_category_data()
+        response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Access denied to resource category")
+
+    def test_create_resource_category_with_parent(self):
+        self.client.force_authenticate(user=self.super_user)
+        parent_category = self.create_resource_category(
+            slug_value="parent-category",
+            facility=self.facility,
+            title="Parent Category",
+        )
+        data = self.generate_resource_category_data(
+            title="Child Category",
+            slug_value="child-category",
+            parent=parent_category.slug,
+        )
+        response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["parent"]["id"], str(parent_category.external_id)
+        )
+
+    def test_create_resource_category_with_parent_as_regular_user(self):
+        self.client.force_authenticate(user=self.user)
+        parent_category = self.create_resource_category(
+            slug_value="parent-category",
+            facility=self.facility,
+            title="Parent Category",
+        )
+        data = self.generate_resource_category_data(
+            title="Child Category",
+            slug_value="child-category",
+            parent=parent_category.slug,
+        )
+        response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Access denied to resource category")
+
+    def test_create_resource_category_with_parent_of_different_resource_type(self):
+        self.client.force_authenticate(user=self.super_user)
+        parent_category = self.create_resource_category(
+            slug_value="parent-category",
+            facility=self.facility,
+            title="Parent Category",
+            resource_type="activity_definition",
+        )
+        data = self.generate_resource_category_data(
+            title="Child Category",
+            slug_value="child-category",
+            parent=parent_category.slug,
+            resource_type="product_knowledge",
+        )
+        response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Parent category does not belong to same resource type",
+        )
+
+    def test_create_resource_category_with_parent_as_child_category(self):
+        self.client.force_authenticate(user=self.super_user)
+        parent_category = self.create_resource_category(
+            slug_value="parent-category",
+            facility=self.facility,
+            title="Parent Category",
+            is_child=True,
+        )
+        data = self.generate_resource_category_data(
+            title="Child Category",
+            slug_value="child-category",
+            parent=parent_category.slug,
+        )
+        response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Parent category is a child",
+        )
+
+    # Test cases for update resource category api
+
+    def test_update_resource_category_as_super_user(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="test-category", facility=self.facility
+        )
+        url = self.get_detail_url(self.facility, resource_category)
+        data = self.generate_resource_category_data(title="Updated Title")
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["title"], "Updated Title")
+
+    def test_update_resource_category_as_regular_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        resource_category = self.create_resource_category(
+            slug_value="test-category", facility=self.facility
+        )
+        url = self.get_detail_url(self.facility, resource_category)
+        data = self.generate_resource_category_data(title="Updated Title")
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Access denied to resource category")
+
+    def test_update_resource_category_as_regular_user_with_permission(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        resource_category = self.create_resource_category(
+            slug_value="test-category", facility=self.facility
+        )
+        url = self.get_detail_url(self.facility, resource_category)
+        data = self.generate_resource_category_data(title="Updated Title")
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["title"], "Updated Title")
+
+    # Testcases for list resource categories
+
+    def test_list_resource_categories_as_super_user(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="test-category", facility=self.facility
+        )
+        url = self.get_url(self.facility)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(resource_category.external_id)
+        )
+
+    def test_list_resource_categories_as_regular_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        self.create_resource_category(
+            slug_value="test-category", facility=self.facility
+        )
+        url = self.get_url(self.facility)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Access denied to resource category")
+
+    def test_list_resource_categories_as_regular_user_with_permission(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        resource_category = self.create_resource_category(
+            slug_value="test-category", facility=self.facility
+        )
+        url = self.get_url(self.facility)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(resource_category.external_id)
+        )
+
+    def test_list_resource_categories_with_parent_filter(self):
+        self.client.force_authenticate(user=self.super_user)
+        parent_category = self.create_resource_category(
+            slug_value="parent-category",
+            facility=self.facility,
+            title="Parent Category",
+        )
+        child_category = self.create_resource_category(
+            slug_value="child-category",
+            facility=self.facility,
+            title="Child Category",
+            parent=parent_category,
+        )
+        parent_slug = self.calculate_slug("parent-category", self.facility)
+        response = self.client.get(
+            self.get_url(self.facility) + f"?parent={parent_slug}", format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(child_category.external_id)
+        )
+        self.assertEqual(response.data["results"][0]["title"], "Child Category")
+
+    # Test cases for retrieve resource category api
+
+    def test_retrieve_resource_category_as_super_user(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="test-category", facility=self.facility
+        )
+        url = self.get_detail_url(self.facility, resource_category)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(resource_category.external_id))
+
+    def test_retrieve_resource_category_as_regular_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        resource_category = self.create_resource_category(
+            slug_value="test-category", facility=self.facility
+        )
+        url = self.get_detail_url(self.facility, resource_category)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Access denied to resource category")
+
+    def test_retrieve_resource_category_as_regular_user_with_permission(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        resource_category = self.create_resource_category(
+            slug_value="test-category", facility=self.facility
+        )
+        url = self.get_detail_url(self.facility, resource_category)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(resource_category.external_id))
