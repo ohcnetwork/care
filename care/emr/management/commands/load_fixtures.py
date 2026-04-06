@@ -179,14 +179,14 @@ class Command(BaseCommand):
         log("=" * 55 + "\n")
 
     def load_lab_definitions(self, base, facility_id, departments):
-        general_medicine = departments["General Medicine"]
+        laboratory = departments["Laboratory"]
 
         lab_location = base.create_location(
             facility_id,
             name="Bio-Chemistry Lab",
             form=FacilityLocationFormChoices.ro.value,
             mode=FacilityLocationModeChoices.kind.value,
-            organizations=[general_medicine["id"]],
+            organizations=[laboratory["id"]],
         )
 
         lab_charge_category = base.create_resource_category(
@@ -215,14 +215,14 @@ class Command(BaseCommand):
             )
 
     def load_inventory(self, base, facility_id, departments, supplier_id):
-        general_medicine = departments["General Medicine"]
+        pharmacy = departments["Pharmacy"]
 
         pharmacy_location = base.create_location(
             facility_id,
             name="Pharmacy",
             form=FacilityLocationFormChoices.ro.value,
             mode=FacilityLocationModeChoices.kind.value,
-            organizations=[general_medicine["id"]],
+            organizations=[pharmacy["id"]],
         )
 
         base.create_healthcare_service(
