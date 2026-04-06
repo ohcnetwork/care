@@ -299,3 +299,227 @@ class ResourceCategoryAPITestCase(CareAPITestBase):
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(resource_category.external_id))
+
+    # Test cases for set_monetary_components action
+
+    def get_set_monetary_components_url(self, facility, resource_category):
+        return reverse(
+            "resource_category-set-monetary-components",
+            kwargs={
+                "facility_external_id": facility.external_id,
+                "slug": resource_category.slug,
+            },
+        )
+
+    def test_set_monetary_components_as_super_user(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="charge-item",
+            facility=self.facility,
+            resource_type="charge_item_definition",
+        )
+        url = self.get_set_monetary_components_url(self.facility, resource_category)
+        data = [
+            {
+                "monetary_component_type": "surcharge",
+                "code": {"system": "http://example.com", "code": "surcharge-1"},
+                "amount": "100.00",
+            },
+        ]
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        resource_category.refresh_from_db()
+        self.assertEqual(len(resource_category.configured_monetary_components), 1)
+        self.assertEqual(
+            resource_category.configured_monetary_components[0][
+                "monetary_component_type"
+            ],
+            "surcharge",
+        )
+
+    def test_set_monetary_components_as_regular_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        resource_category = self.create_resource_category(
+            slug_value="charge-item",
+            facility=self.facility,
+            resource_type="charge_item_definition",
+        )
+        url = self.get_set_monetary_components_url(self.facility, resource_category)
+        data = [
+            {
+                "monetary_component_type": "base",
+                "code": {"system": "http://example.com", "code": "base-1"},
+                "amount": "100.00",
+            },
+        ]
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Access denied to resource category")
+
+    def test_set_monetary_components_as_regular_user_with_permission(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        resource_category = self.create_resource_category(
+            slug_value="charge-item",
+            facility=self.facility,
+            resource_type="charge_item_definition",
+        )
+        url = self.get_set_monetary_components_url(self.facility, resource_category)
+        data = [
+            {
+                "monetary_component_type": "tax",
+                "code": {"system": "http://example.com", "code": "tax-1"},
+                "factor": "0.18",
+            },
+        ]
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        resource_category.refresh_from_db()
+        self.assertEqual(len(resource_category.configured_monetary_components), 1)
+
+    def test_set_monetary_components_on_non_charge_item_definition(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="product-category",
+            facility=self.facility,
+            resource_type="product_knowledge",
+        )
+        url = self.get_set_monetary_components_url(self.facility, resource_category)
+        data = [
+            {
+                "monetary_component_type": "surcharge",
+                "code": {"system": "http://example.com", "code": "surcharge-1"},
+                "amount": "50.00",
+            },
+        ]
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Resource category is not a charge item definition",
+        )
+
+    def test_set_monetary_components_with_base_component_rejected(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="charge-item",
+            facility=self.facility,
+            resource_type="charge_item_definition",
+        )
+        url = self.get_set_monetary_components_url(self.facility, resource_category)
+        data = [
+            {
+                "monetary_component_type": "base",
+                "amount": "500.00",
+            },
+        ]
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Base component is not allowed in configured monetary components",
+        )
+
+    def test_set_monetary_components_with_empty_list(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="charge-item",
+            facility=self.facility,
+            resource_type="charge_item_definition",
+        )
+        url = self.get_set_monetary_components_url(self.facility, resource_category)
+        data = []
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        resource_category.refresh_from_db()
+        self.assertEqual(resource_category.configured_monetary_components, [])
+
+    def test_set_monetary_components_with_multiple_components(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="charge-item",
+            facility=self.facility,
+            resource_type="charge_item_definition",
+        )
+        url = self.get_set_monetary_components_url(self.facility, resource_category)
+        data = [
+            {
+                "monetary_component_type": "surcharge",
+                "code": {"system": "http://example.com", "code": "surcharge-1"},
+                "amount": "100.00",
+            },
+            {
+                "monetary_component_type": "tax",
+                "code": {"system": "http://example.com", "code": "tax-1"},
+                "factor": "0.18",
+            },
+            {
+                "monetary_component_type": "discount",
+                "code": {"system": "http://example.com", "code": "discount-1"},
+                "amount": "50.00",
+            },
+        ]
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        resource_category.refresh_from_db()
+        self.assertEqual(len(resource_category.configured_monetary_components), 3)
+
+    def test_set_monetary_components_with_duplicate_codes_rejected(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="charge-item",
+            facility=self.facility,
+            resource_type="charge_item_definition",
+        )
+        url = self.get_set_monetary_components_url(self.facility, resource_category)
+        data = [
+            {
+                "monetary_component_type": "surcharge",
+                "code": {"system": "http://example.com", "code": "same-code"},
+                "amount": "100.00",
+            },
+            {
+                "monetary_component_type": "tax",
+                "code": {"system": "http://example.com", "code": "same-code"},
+                "factor": "0.18",
+            },
+        ]
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+
+    def test_set_monetary_components_overwrites_previous(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="charge-item",
+            facility=self.facility,
+            resource_type="charge_item_definition",
+        )
+        url = self.get_set_monetary_components_url(self.facility, resource_category)
+        data = [
+            {
+                "monetary_component_type": "surcharge",
+                "code": {"system": "http://example.com", "code": "surcharge-1"},
+                "amount": "100.00",
+            },
+        ]
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        data = [
+            {
+                "monetary_component_type": "tax",
+                "code": {"system": "http://example.com", "code": "tax-1"},
+                "factor": "0.05",
+            },
+        ]
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        resource_category.refresh_from_db()
+        self.assertEqual(len(resource_category.configured_monetary_components), 1)
+        self.assertEqual(
+            resource_category.configured_monetary_components[0][
+                "monetary_component_type"
+            ],
+            "tax",
+        )
