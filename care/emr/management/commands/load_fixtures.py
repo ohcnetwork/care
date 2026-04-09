@@ -44,7 +44,7 @@ class Command(BaseCommand):
         )
         base.create_organization(
             org_type=OrganizationTypeChoices.govt.value,
-            parent=geo_organization["id"],
+            parent=geo_organization.id,
             name="Ernakulam",
         )
         suppliers = []
@@ -71,16 +71,16 @@ class Command(BaseCommand):
         log("Loading organizations completed")
 
         facility = base.create_facility(
-            geo_organization["id"],
+            geo_organization.id,
             name="FACILITY WITH PATIENTS",
             facility_type="Private Hospital",
         )
-        facility_id = facility["id"]
+        facility_id = facility.id
         log("Loading facility completed")
 
         existing = base.get_facility_organizations(facility_id)
         departments = {}
-        admin_org = next((o for o in existing if o["name"] == "Administration"), None)
+        admin_org = next((o for o in existing if o.name == "Administration"), None)
         if admin_org:
             departments["Administration"] = admin_org
         for name in ["General Medicine", "Emergency", "Laboratory", "Pharmacy"]:
@@ -95,17 +95,17 @@ class Command(BaseCommand):
             name="Ward A",
             form=FacilityLocationFormChoices.wa.value,
             mode=FacilityLocationModeChoices.kind.value,
-            organizations=[general_medicine["id"]],
+            organizations=[general_medicine.id],
         )
         for idx in range(1, 6):
             base.create_location(
                 facility_id,
                 name=f"Bed {idx}",
-                description=f"Bed {idx} in {ward['name']}",
-                parent=ward["id"],
+                description=f"Bed {idx} in {ward.name}",
+                parent=ward.id,
                 form=FacilityLocationFormChoices.bd.value,
                 mode=FacilityLocationModeChoices.instance.value,
-                organizations=[general_medicine["id"]],
+                organizations=[general_medicine.id],
             )
         log("Loading locations completed")
 
@@ -126,11 +126,11 @@ class Command(BaseCommand):
             if role_name not in roles or role_name not in role_orgs:
                 continue
             base.create_user(
-                geo_organization["id"],
+                geo_organization.id,
                 role_orgs=[
                     {
-                        "organization": role_orgs[role_name]["id"],
-                        "role": roles[role_name]["id"],
+                        "organization": role_orgs[role_name].id,
+                        "role": roles[role_name].id,
                     }
                 ],
                 username=username,
@@ -141,30 +141,28 @@ class Command(BaseCommand):
 
         patients = []
         for _ in range(10):
-            patients.append(base.create_patient(geo_organization["id"]))
+            patients.append(base.create_patient(geo_organization.id))
         log("Loading patients completed")
 
         for patient in patients:
             base.create_encounter(
-                patient["id"],
+                patient.id,
                 facility_id,
-                organizations=[general_medicine["id"]],
+                organizations=[general_medicine.id],
                 status=StatusChoices.in_progress.value,
             )
         log("Loading encounters completed")
 
-        base.load_questionnaires_from_file([geo_organization["id"]])
+        base.load_questionnaires_from_file([geo_organization.id])
         log("Loading questionnaires completed")
 
         self.load_lab_definitions(base, facility_id, departments)
         log("Loading lab definitions completed")
 
-        self.load_inventory(base, facility_id, departments, suppliers[0]["id"])
+        self.load_inventory(base, facility_id, departments, suppliers[0].id)
         log("Loading inventory completed")
 
-        self.setup_managing_organization(
-            base, role_orgs, geo_organization["id"], password
-        )
+        self.setup_managing_organization(base, role_orgs, geo_organization.id, password)
         log("Loading managing organization completed")
 
         log("\n" + "=" * 55)
@@ -186,7 +184,7 @@ class Command(BaseCommand):
             name="Bio-Chemistry Lab",
             form=FacilityLocationFormChoices.ro.value,
             mode=FacilityLocationModeChoices.kind.value,
-            organizations=[laboratory["id"]],
+            organizations=[laboratory.id],
         )
 
         lab_charge_category = base.create_resource_category(
@@ -201,17 +199,17 @@ class Command(BaseCommand):
             name="Pathology Lab",
             internal_type=HealthcareServiceInternalType.lab.value,
             styling_metadata={"careIcon": "microscope"},
-            locations=[lab_location["id"]],
+            locations=[lab_location.id],
         )
 
         for test in LAB_TESTS:
             base.create_lab_test(
                 facility_id,
                 test,
-                service_id=lab_service["id"],
-                location_id=lab_location["id"],
-                charge_category_slug=lab_charge_category["slug"],
-                activity_category_slug=lab_activity_category["slug"],
+                service_id=lab_service.id,
+                location_id=lab_location.id,
+                charge_category_slug=lab_charge_category.slug,
+                activity_category_slug=lab_activity_category.slug,
             )
 
     def load_inventory(self, base, facility_id, departments, supplier_id):
@@ -222,7 +220,7 @@ class Command(BaseCommand):
             name="Pharmacy",
             form=FacilityLocationFormChoices.ro.value,
             mode=FacilityLocationModeChoices.kind.value,
-            organizations=[pharmacy["id"]],
+            organizations=[pharmacy.id],
         )
 
         base.create_healthcare_service(
@@ -230,7 +228,7 @@ class Command(BaseCommand):
             name="Main Pharmacy",
             internal_type=HealthcareServiceInternalType.pharmacy.value,
             styling_metadata={},
-            locations=[pharmacy_location["id"]],
+            locations=[pharmacy_location.id],
         )
 
         # Build category map
@@ -240,10 +238,10 @@ class Command(BaseCommand):
             categories[category_name] = {
                 "product_knowledge": base.create_resource_category(
                     facility_id, category_name, "product_knowledge"
-                )["slug"],
+                ).slug,
                 "charge_item_definition": base.create_resource_category(
                     facility_id, category_name, "charge_item_definition"
-                )["slug"],
+                ).slug,
             }
 
         products = []
@@ -258,15 +256,15 @@ class Command(BaseCommand):
         order = base.create_delivery_order(
             facility_id,
             name="Initial Stock Delivery",
-            destination=pharmacy_location["id"],
+            destination=pharmacy_location.id,
             supplier=supplier_id,
         )
 
         for product, quantity in products:
             base.create_supply_delivery(
-                order=order["id"],
+                order=order.id,
                 supplied_item_quantity=quantity,
-                supplied_item=product["id"],
+                supplied_item=product.id,
             )
 
     def setup_managing_organization(self, base, role_orgs, geo_id, password):
@@ -276,13 +274,13 @@ class Command(BaseCommand):
         managing_org = base.create_organization(
             org_type=OrganizationTypeChoices.role.value, name="Health Department"
         )
-        managing_org_id = managing_org["id"]
+        managing_org_id = managing_org.id
 
         for _name, org in role_orgs.items():
-            base.link_managing_org(org["id"], managing_org_id)
+            base.link_managing_org(org.id, managing_org_id)
 
         for user_def in MANAGING_ORG_USERS:
-            role_id = role_org_roles[user_def["role"]]["id"]
+            role_id = role_org_roles[user_def["role"]].id
 
             if user_def["action"] == "create":
                 user = base.create_user(
@@ -291,8 +289,8 @@ class Command(BaseCommand):
                     email=f"{user_def['username']}@care.test",
                     password=password,
                 )
-                base.assign_org_role(managing_org_id, user["id"], role_id)
+                base.assign_org_role(managing_org_id, user.id, role_id)
 
             elif user_def["action"] == "assign":
                 user_data = base.get_user(user_def["username"])
-                base.assign_org_role(managing_org_id, user_data["id"], role_id)
+                base.assign_org_role(managing_org_id, user_data.id, role_id)

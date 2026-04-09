@@ -34,6 +34,27 @@ class FixtureError(Exception):
     pass
 
 
+class AttributeDict(dict):
+    """Allow accessing dict keys as attributes."""
+
+    def __getattr__(self, key):
+        try:
+            return self[key]
+        except KeyError:
+            raise AttributeError(key) from None
+
+    def __setattr__(self, key, value):
+        self[key] = value
+
+
+def to_attr_dict(obj):
+    if isinstance(obj, dict):
+        return AttributeDict({k: to_attr_dict(v) for k, v in obj.items()})
+    if isinstance(obj, list):
+        return [to_attr_dict(item) for item in obj]
+    return obj
+
+
 def generate_phone():
     prefix = secrets.choice(["6", "7", "8", "9"])
     suffix = "".join(secrets.choice(string.digits) for _ in range(9))
@@ -64,14 +85,14 @@ class CareFixtureBase:
         ):
             msg = f"POST {url} failed ({response.status_code}): {response.data}"
             raise FixtureError(msg)
-        return response.data
+        return to_attr_dict(response.data)
 
     def get(self, url, params=None):
         response = self.client.get(url, params or {}, format="json")
         if response.status_code != http_status.HTTP_200_OK:
             msg = f"GET {url} failed ({response.status_code}): {response.data}"
             raise FixtureError(msg)
-        return response.data
+        return to_attr_dict(response.data)
 
     def create_organization(self, org_type="govt", **kwargs):
         data = {
@@ -148,7 +169,7 @@ class CareFixtureBase:
     def get_roles(self):
         data = self.get(reverse("role-list"))
         results = data.get("results", data) if isinstance(data, dict) else data
-        return {role["name"]: role for role in results}
+        return {role.name: role for role in results}
 
     def create_user(self, geo_organization, role_orgs=None, **kwargs):
         data = {
@@ -404,9 +425,9 @@ class CareFixtureBase:
         self.create_activity_definition(
             facility_id,
             locations=[location_id],
-            specimen_requirements=[specimen["slug"]],
-            observation_result_requirements=[observation["slug"]],
-            charge_item_definitions=[charge_item_definition["slug"]],
+            specimen_requirements=[specimen.slug],
+            observation_result_requirements=[observation.slug],
+            charge_item_definitions=[charge_item_definition.slug],
             healthcare_service=service_id,
             category=activity_category_slug,
             **activity_config,
@@ -425,8 +446,8 @@ class CareFixtureBase:
         )
         return self.create_product(
             facility_id,
-            product_knowledge_slug=product_knowledge["slug"],
-            charge_item_definition=charge_item_definition["slug"],
+            product_knowledge_slug=product_knowledge.slug,
+            charge_item_definition=charge_item_definition.slug,
         )
 
     def link_managing_org(self, role_org_id, managing_org_id):
@@ -446,7 +467,7 @@ class CareFixtureBase:
     def get_role_org_roles(self):
         data = self.get(reverse("role-list"), params={"context": "ROLE_ORG"})
         results = data.get("results", data)
-        return {r["name"]: r for r in results}
+        return {r.name: r for r in results}
 
     def get_user(self, username):
         return self.get(reverse("users-detail", kwargs={"username": username}))

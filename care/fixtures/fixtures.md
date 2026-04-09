@@ -15,7 +15,7 @@ care/fixtures/
 
 ### base.py — CareFixtureBase
 
-A class that wraps `APIClient` with named methods for every resource type. Each method constructs the request payload, calls the API, and returns the response dict.
+A class that wraps `APIClient` with named methods for every resource type. Each method constructs the request payload, calls the API, and returns an `AttrDict` — a dict subclass that supports both attribute access (`org.id`) and key access (`org["id"]`).
 
 **Core methods:**
 - `create_organization()` — Geo, role, or supplier orgs
@@ -203,34 +203,33 @@ with care_fixture_context() as base:
     org = base.create_organization(name="My Hospital Network")
 
     # Create a facility
-    facility = base.create_facility(org["id"], name="City Hospital")
-    facility_id = facility["id"]
+    facility = base.create_facility(org.id, name="City Hospital")
 
     # Fetch auto-created departments
-    existing = base.get_facility_organizations(facility_id)
+    existing = base.get_facility_organizations(facility.id)
 
     # Create a patient
-    patient = base.create_patient(org["id"])
+    patient = base.create_patient(org.id)
 
     # Create an encounter
-    encounter = base.create_encounter(patient["id"], facility_id)
+    encounter = base.create_encounter(patient.id, facility.id)
 
     # Create a lab test using constants
-    lab_category = base.create_resource_category(facility_id, "Tests", "charge_item_definition")
-    activity_category = base.create_resource_category(facility_id, "Tests", "activity_definition")
-    location = base.create_location(facility_id, name="Lab Room")
-    service = base.create_healthcare_service(facility_id, name="Lab")
+    lab_category = base.create_resource_category(facility.id, "Tests", "charge_item_definition")
+    activity_category = base.create_resource_category(facility.id, "Tests", "activity_definition")
+    location = base.create_location(facility.id, name="Lab Room")
+    service = base.create_healthcare_service(facility.id, name="Lab")
 
     base.create_lab_test(
-        facility_id,
+        facility.id,
         LAB_TESTS[0],  # Fasting Blood Glucose
-        service_id=service["id"],
-        location_id=location["id"],
-        charge_category_slug=lab_category["slug"],
-        activity_category_slug=activity_category["slug"],
+        service_id=service.id,
+        location_id=location.id,
+        charge_category_slug=lab_category.slug,
+        activity_category_slug=activity_category.slug,
     )
 
-    print(f"Created facility: {facility['name']} ({facility_id})")
+    print(f"Created facility: {facility.name} ({facility.id})")
 ```
 
 ### Running the script
