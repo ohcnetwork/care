@@ -2,6 +2,7 @@ import json
 import re
 import secrets
 import string
+from collections import UserDict
 from pathlib import Path
 from secrets import choice
 
@@ -34,17 +35,22 @@ class FixtureError(Exception):
     pass
 
 
-class AttributeDict(dict):
-    """Allow accessing dict keys as attributes."""
+class AttributeDict(UserDict):
+    """Allows attribute access (obj.id for a dict api response)."""
 
     def __getattr__(self, key):
         try:
-            return self[key]
+            return self.data[key]
         except KeyError:
             raise AttributeError(key) from None
 
     def __setattr__(self, key, value):
-        self[key] = value
+        if (
+            key == "data"
+        ):  # this is to avoid overwriting the inner data dict of UserDict
+            super().__setattr__(key, value)
+        else:
+            self.data[key] = value
 
 
 def to_attr_dict(obj):
@@ -168,7 +174,7 @@ class CareFixtureBase:
 
     def get_roles(self):
         data = self.get(reverse("role-list"))
-        results = data.get("results", data) if isinstance(data, dict) else data
+        results = data.get("results", data)
         return {role.name: role for role in results}
 
     def create_user(self, geo_organization, role_orgs=None, **kwargs):
