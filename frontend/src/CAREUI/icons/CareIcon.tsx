@@ -29,11 +29,17 @@ export default function CareIcon({
   // Rethink Implementation
 
   const isDuoTone = icon.startsWith("d-");
+  const iconSet = (
+    isDuoTone ? duoToneIconData : iconData
+  ) as typeof iconData & typeof duoToneIconData;
+  const iconDefinition = iconSet[icon];
 
-  const [viewBox, path, fill, strokeWidth, secondaryPath] = (
-    (isDuoTone ? duoToneIconData : iconData) as typeof iconData &
-      typeof duoToneIconData
-  )[icon] as [
+  if (!iconDefinition) {
+    console.warn(`Missing CARE icon: ${icon}`);
+    return null;
+  }
+
+  const [viewBox, path, fill, strokeWidth, secondaryPath] = iconDefinition as [
     number,
     string,
     boolean | undefined,
