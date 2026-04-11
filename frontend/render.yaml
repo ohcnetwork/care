@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: parxio-frontend
+    env: static
+    rootDir: .
+    buildCommand: npm ci && npm run build
+    staticPublishPath: dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

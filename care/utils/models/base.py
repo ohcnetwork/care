@@ -9,7 +9,16 @@ from care.utils.registries.feature_flag import FlagName, FlagRegistry
 class BaseManager(models.Manager):
     def get_queryset(self):
         qs = super().get_queryset()
-        return qs.filter(deleted=False)
+        qs = qs.filter(deleted=False)
+        try:
+            from care.parxio_core.tenant import get_current_tenant_id
+        except Exception:
+            return qs
+
+        tenant_id = get_current_tenant_id()
+        if tenant_id and any(field.name == "tenant" for field in self.model._meta.fields):
+            qs = qs.filter(tenant_id=tenant_id)
+        return qs
 
 
 class BaseModel(models.Model):

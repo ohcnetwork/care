@@ -1,0 +1,282 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+import * as z from "zod";
+
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+import mutate from "@/Utils/request/mutate";
+import {
+  FacilityOrganizationRead,
+  FacilityOrganizationType,
+} from "@/types/facilityOrganization/facilityOrganization";
+import facilityOrganizationApi from "@/types/facilityOrganization/facilityOrganizationApi";
+
+interface Props {
+  facilityId: string;
+  parentId?: string;
+  org?: FacilityOrganizationRead;
+
+  trigger: React.ReactNode;
+
+  tooltip?: string;
+}
+
+export default function FacilityOrganizationFormSheet({
+  facilityId,
+  parentId,
+  org,
+  trigger,
+  tooltip,
+}: Props) {
+  const { t } = useTranslation();
+
+  const isEditMode = !!org;
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
+
+  const formSchema = z.object({
+    name: z
+      .string()
+      .trim()
+      .min(1, { message: t("field_required") }),
+    description: z.string().trim().default(""),
+    org_type: z.nativeEnum(FacilityOrganizationType).refine(
+      (val) => {
+        return (
+          val === FacilityOrganizationType.DEPT ||
+          val === FacilityOrganizationType.TEAM
+        );
+      },
+      {
+        message: t("invalid_organization_type"),
+      },
+    ),
+  });
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      description: "",
+      org_type: FacilityOrganizationType.DEPT,
+    },
+  });
+
+  useEffect(() => {
+    if (isEditMode && org) {
+      form.reset({
+        name: org.name || "",
+        description: org.description || "",
+        org_type: org.org_type,
+      });
+    }
+  }, [isEditMode, org, open]);
+
+  const { mutate: createOrganization, isPending: isCreating } = useMutation({
+    mutationFn: mutate(facilityOrganizationApi.create, {
+      pathParams: { facilityId },
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["facilityOrganization"],
+      });
+      toast.success(t("organization_created_successfully"));
+      setOpen(false);
+      form.reset();
+    },
+  });
+
+  const { mutate: updateOrganization, isPending: isUpdating } = useMutation({
+    mutationFn: mutate(facilityOrganizationApi.update, {
+      pathParams: { facilityId, organizationId: org?.id },
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["facilityOrganization"],
+      });
+      toast.success(t("organizations_updated_successfully"));
+      setOpen(false);
+    },
+  });
+
+  const onSubmit = (values: z.infer<typeof formSchema>) => {
+    const data = {
+      name: values.name.trim(),
+      description: values.description.trim(),
+      org_type: values.org_type,
+      parent: parentId,
+    };
+
+    if (isEditMode) {
+      updateOrganization({ ...data, facility: facilityId });
+    } else {
+      createOrganization({ ...data, facility: facilityId });
+    }
+  };
+
+  const isPending = isCreating || isUpdating;
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      {tooltip ? (
+        <Tooltip>
+          <TooltipTrigger asChild>
+            <SheetTrigger asChild>{trigger}</SheetTrigger>
+          </TooltipTrigger>
+          <TooltipContent>{tooltip}</TooltipContent>
+        </Tooltip>
+      ) : (
+        <SheetTrigger asChild>{trigger}</SheetTrigger>
+      )}
+      <SheetContent onCloseAutoFocus={(event) => event.preventDefault()}>
+        <SheetHeader>
+          <SheetTitle>
+            {isEditMode
+              ? t("edit_department_team")
+              : t("create_department_team")}
+          </SheetTitle>
+          <SheetDescription>
+            {isEditMode
+              ? t("edit_department_team_description")
+              : t("create_department_team_description")}
+          </SheetDescription>
+        </SheetHeader>
+        <Form {...form}>
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="space-y-6 py-4"
+          >
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel aria-required>{t("name")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      {...field}
+                      placeholder={t("enter_department_team_name")}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="org_type"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel>{t(`type`)}</FormLabel>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger ref={field.ref}>
+                        <SelectValue
+                          placeholder={t("select_organization_type")}
+                        />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      {Object.values(FacilityOrganizationType)
+                        .filter(
+                          (type) => type !== FacilityOrganizationType.ROOT,
+                        )
+                        .map((type) => (
+                          <SelectItem key={type} value={type}>
+                            {type === FacilityOrganizationType.DEPT
+                              ? t("department")
+                              : t("team")}
+                          </SelectItem>
+                        ))}
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem className="space-y-2">
+                  <FormLabel>{t("description")}</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      {...field}
+                      placeholder={t("enter_department_team_description")}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <div className="flex justify-end mt-6 space-x-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => {
+                  setOpen(false);
+                  form.reset();
+                }}
+              >
+                {t("cancel")}
+              </Button>
+              <Button
+                type="submit"
+                disabled={
+                  isPending ||
+                  !form.formState.isValid ||
+                  !form.formState.isDirty
+                }
+              >
+                {isPending
+                  ? isEditMode
+                    ? t("updating")
+                    : t("creating")
+                  : isEditMode
+                    ? t("update_organization")
+                    : t("create_organization")}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </SheetContent>
+    </Sheet>
+  );
+}

@@ -8,12 +8,20 @@ from django.template.defaultfilters import pluralize
 from django.utils import timezone
 
 from care.emr.models import EMRBaseModel
+from care.parxio_core.compat import TenantForeignKey
 from care.emr.resources.base import model_from_cache
 from care.users.models import User
 from care.utils.models.validators import mobile_or_landline_number_validator
 
 
 class Patient(EMRBaseModel):
+    tenant = TenantForeignKey(
+        "parxio_core.Tenant",
+        on_delete=models.CASCADE,
+        related_name="patients",
+        null=True,
+        blank=True,
+    )
     name = models.CharField(max_length=200, default="")
     gender = models.CharField(max_length=35, default="")
 
@@ -122,6 +130,12 @@ class Patient(EMRBaseModel):
         ]
 
     def save(self, *args, **kwargs) -> None:
+        if self.tenant_id is None:
+            from care.parxio_core.tenant import get_current_tenant
+
+            current_tenant = get_current_tenant()
+            if current_tenant:
+                self.tenant = current_tenant
         if self.date_of_birth and not self.year_of_birth:
             self.year_of_birth = self.date_of_birth.year
         super().save(*args, **kwargs)

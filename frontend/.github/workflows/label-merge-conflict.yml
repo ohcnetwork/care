@@ -1,0 +1,29 @@
+name: Auto Label Conflicts
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+on:
+  push:
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
+jobs:
+  auto-label:
+    if: github.repository == 'ohcnetwork/care_fe'
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: prince-chrismc/label-merge-conflicts-action@v3
+        with:
+          conflict_label_name: "Merge Conflict"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          max_retries: 5
+          wait_ms: 15000
+          detect_merge_changes: false
+          conflict_comment: |
+            Conflicts have been detected against the base branch. Please merge the base branch into your branch.
+            cc: @${author}
+            > _See: https://docs.ohc.network/docs/contributing#how-to-resolve-merge-conflicts_

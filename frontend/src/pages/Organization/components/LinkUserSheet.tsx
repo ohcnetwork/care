@@ -1,0 +1,225 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { formatPhoneNumberIntl } from "react-phone-number-input";
+import { toast } from "sonner";
+
+import CareIcon from "@/CAREUI/icons/CareIcon";
+
+import { Button } from "@/components/ui/button";
+import { Label } from "@/components/ui/label";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+
+import { Avatar } from "@/components/Common/Avatar";
+import { RoleSelect } from "@/components/Common/RoleSelect";
+import UserSelector from "@/components/Common/UserSelector";
+
+import mutate from "@/Utils/request/mutate";
+import query from "@/Utils/request/query";
+import { formatName } from "@/Utils/utils";
+import {
+  RoleBase,
+  getRoleContextForOrganizationType,
+} from "@/types/emr/role/role";
+import organizationApi from "@/types/organization/organizationApi";
+import { UserReadMinimal } from "@/types/user/user";
+import UserApi from "@/types/user/userApi";
+
+interface Props {
+  organizationId: string;
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  preSelectedUsername?: string;
+  isServiceAccount?: boolean;
+}
+
+export default function LinkUserSheet({
+  organizationId,
+  open,
+  setOpen,
+  preSelectedUsername,
+  isServiceAccount = false,
+}: Props) {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const [selectedUser, setSelectedUser] = useState<UserReadMinimal>();
+  const [selectedRole, setSelectedRole] = useState<RoleBase>();
+
+  const { data: preSelectedUser } = useQuery({
+    queryKey: ["user", preSelectedUsername],
+    queryFn: query(UserApi.get, {
+      pathParams: { username: preSelectedUsername || "" },
+    }),
+    enabled: !!preSelectedUsername,
+  });
+
+  useEffect(() => {
+    if (preSelectedUser) {
+      setSelectedUser(preSelectedUser);
+    }
+  }, [preSelectedUser]);
+
+  const { data: organization } = useQuery({
+    queryKey: ["organization", organizationId],
+    queryFn: query(organizationApi.get, {
+      pathParams: { id: organizationId },
+    }),
+    enabled: !!organizationId,
+  });
+
+  const { mutate: assignUser } = useMutation({
+    mutationFn: (body: { user: string; role: string }) =>
+      mutate(organizationApi.assignUser, {
+        pathParams: { id: organizationId },
+        body,
+      })(body),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["organizationUsers", organizationId],
+      });
+      toast.success(t("user_added_to_organization_successfully"));
+      setOpen(false);
+      setSelectedUser(undefined);
+      setSelectedRole(undefined);
+    },
+  });
+
+  const handleAddUser = () => {
+    if (!selectedUser || !selectedRole) {
+      toast.error(t("please_select_user_and_role"));
+      return;
+    }
+
+    assignUser({
+      user: selectedUser.id,
+      role: selectedRole.id,
+    });
+  };
+
+  const handleUserChange = (value: UserReadMinimal) => {
+    setSelectedUser(value);
+    setSelectedRole(undefined);
+  };
+
+  return (
+    <Sheet open={open} onOpenChange={setOpen}>
+      <SheetTrigger asChild>
+        <Button variant="primary_gradient">
+          <CareIcon icon="l-plus" className="mr-2 size-4" />
+          {isServiceAccount ? t("link_service_account") : t("link_user")}
+        </Button>
+      </SheetTrigger>
+      <SheetContent>
+        <SheetHeader>
+          <SheetTitle>
+            {isServiceAccount
+              ? t("link_service_account_to_organization")
+              : t("link_user_to_organization")}
+          </SheetTitle>
+          <SheetDescription>
+            {isServiceAccount
+              ? t("link_service_account_to_organization_description")
+              : t("link_user_to_organization_description")}
+          </SheetDescription>
+        </SheetHeader>
+        <div className="space-y-6 py-4">
+          <UserSelector
+            selected={selectedUser}
+            onChange={handleUserChange}
+            placeholder={
+              isServiceAccount
+                ? t("search_for_a_service_account")
+                : t("search_for_a_user")
+            }
+            noOptionsMessage={
+              isServiceAccount
+                ? t("no_service_accounts_found")
+                : t("no_users_found")
+            }
+            popoverClassName="w-full"
+            isServiceAccount={isServiceAccount}
+          />
+          {selectedUser && (
+            <div className="space-y-4">
+              <div className="rounded-lg border border-gray-200 p-4 space-y-4">
+                <div className="flex gap-4 flex-row">
+                  <Avatar
+                    name={formatName(selectedUser, true)}
+                    imageUrl={selectedUser.profile_picture_url}
+                    className="size-12"
+                  />
+                  <div className="w-3/4">
+                    <p className="font-medium text-lg truncate">
+                      {formatName(selectedUser)}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-200">
+                  <div>
+                    <span className="text-sm text-gray-500">
+                      {t("username")}
+                    </span>
+                    <p className="text-sm font-medium truncate">
+                      {selectedUser.username}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-500">
+                      {isServiceAccount
+                        ? t("service_account_type")
+                        : t("user_type")}
+                    </span>
+                    <p className="text-sm font-medium">
+                      {selectedUser.user_type}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm text-gray-500">
+                      {t("phone_number")}
+                    </span>
+                    <p className="text-sm font-medium truncate">
+                      {selectedUser.phone_number
+                        ? formatPhoneNumberIntl(selectedUser.phone_number)
+                        : "-"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-sm font-medium">
+                  {t("select_role")}
+                </Label>
+                <div>
+                  <RoleSelect
+                    value={selectedRole}
+                    onChange={setSelectedRole}
+                    context={getRoleContextForOrganizationType(
+                      organization?.org_type,
+                    )}
+                    disabled={!organization}
+                  />
+                </div>
+              </div>
+              <Button
+                className="w-full"
+                onClick={handleAddUser}
+                disabled={!selectedRole}
+              >
+                {t("link_to_organization")}
+              </Button>
+            </div>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}

@@ -1,0 +1,25 @@
+name: "Code scanning - action"
+on:
+  push:
+    branches: [develop, master]
+  pull_request:
+    branches: [develop]
+  schedule:
+    - cron: "0 22 * * 0"
+jobs:
+  CodeQL-Build:
+    runs-on: ubuntu-latest
+    if: github.repository == 'ohcnetwork/care_fe'
+    permissions:
+      security-events: write
+      actions: read
+      contents: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@v3
+        with:
+          languages: javascript
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@v3

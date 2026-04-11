@@ -1,0 +1,978 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { PlusCircle, X } from "lucide-react";
+import { navigate } from "raviger";
+import React, { useRef, useState } from "react";
+import { useFieldArray, useForm } from "react-hook-form";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+import { z } from "zod";
+
+import { Button, buttonVariants } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+
+import Page from "@/components/Common/Page";
+import { FormSkeleton } from "@/components/Common/SkeletonLoading";
+import ValueSetSelect from "@/components/Questionnaire/ValueSetSelect";
+
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import { cn } from "@/lib/utils";
+import { CodeSchema } from "@/types/base/code/code";
+import {
+  getConditionDiscriminatorValue,
+  removeConditionType,
+} from "@/types/base/condition/condition";
+import {
+  InterpretationType,
+  QualifiedRange,
+  qualifiedRangeSchema,
+} from "@/types/base/qualifiedRange/qualifiedRange";
+import {
+  OBSERVATION_DEFINITION_CATEGORY,
+  type ObservationDefinitionCreateSpec,
+  type ObservationDefinitionReadSpec,
+  ObservationDefinitionStatus,
+  ObservationDefinitionUpdateSpec,
+  QuestionType,
+} from "@/types/emr/observationDefinition/observationDefinition";
+import observationDefinitionApi from "@/types/emr/observationDefinition/observationDefinitionApi";
+import mutate from "@/Utils/request/mutate";
+import query from "@/Utils/request/query";
+import { generateSlug } from "@/Utils/utils";
+import { ObservationInterpretation } from "./ObservationInterpretation";
+
+export default function ObservationDefinitionForm({
+  facilityId,
+  observationSlug,
+  onSuccess,
+  onCancel,
+}: {
+  facilityId: string;
+  observationSlug?: string;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}) {
+  const { t } = useTranslation();
+
+  const isEditMode = Boolean(observationSlug);
+
+  const { data: existingData, isFetching } = useQuery({
+    queryKey: ["observationDefinitions", observationSlug],
+    queryFn: query(observationDefinitionApi.retrieveObservationDefinition, {
+      pathParams: {
+        observationSlug: observationSlug!,
+      },
+      queryParams: {
+        facility: facilityId,
+      },
+    }),
+    enabled: isEditMode,
+  });
+
+  if (isEditMode && isFetching) {
+    return (
+      <Page title={t("edit_observation_definition")} hideTitleOnPage>
+        <div className="container mx-auto max-w-3xl">
+          <div className="mb-6">
+            <h1 className="text-xl font-semibold text-gray-900">
+              {t("edit_observation_definition")}
+            </h1>
+          </div>
+          <FormSkeleton rows={10} />
+        </div>
+      </Page>
+    );
+  }
+
+  return (
+    <ObservationDefinitionFormContent
+      facilityId={facilityId}
+      observationSlug={observationSlug}
+      existingData={existingData}
+      onSuccess={onSuccess}
+      onCancel={onCancel}
+    />
+  );
+}
+
+function ObservationDefinitionFormContent({
+  facilityId,
+  observationSlug,
+  existingData,
+  onSuccess = () =>
+    navigate(`/facility/${facilityId}/settings/observation_definitions`),
+  onCancel = () =>
+    navigate(`/facility/${facilityId}/settings/observation_definitions`),
+}: {
+  facilityId: string;
+  observationSlug?: string;
+  existingData?: ObservationDefinitionReadSpec;
+  onSuccess?: () => void;
+  onCancel?: () => void;
+}) {
+  const { t } = useTranslation();
+
+  const formSchema = z
+    .object({
+      title: z.string().min(1, t("field_required")),
+      slug_value: z
+        .string()
+        .min(5, t("character_count_validation", { min: 5, max: 25 }))
+        .max(25, t("character_count_validation", { min: 5, max: 25 })),
+      description: z.string().min(1, t("field_required")),
+      status: z.nativeEnum(ObservationDefinitionStatus),
+      category: z.enum(
+        OBSERVATION_DEFINITION_CATEGORY as [string, ...string[]],
+      ),
+      permitted_data_type: z.nativeEnum(QuestionType),
+      code: CodeSchema,
+      body_site: CodeSchema.nullable(),
+      method: CodeSchema.nullable(),
+      permitted_unit: CodeSchema.nullable(),
+      component: z
+        .array(
+          z.object({
+            code: CodeSchema,
+            permitted_data_type: z.nativeEnum(QuestionType),
+            permitted_unit: CodeSchema.nullable(),
+            qualified_ranges: qualifiedRangeSchema.default([]),
+          }),
+        )
+        .default([]),
+      qualified_ranges: qualifiedRangeSchema.default([]),
+    })
+    .refine(
+      (data) => {
+        const hasRootQualifiedRanges =
+          data.qualified_ranges && data.qualified_ranges.length > 0;
+        const hasComponentQualifiedRanges = data.component.some(
+          (c) => c.qualified_ranges && c.qualified_ranges.length > 0,
+        );
+
+        // Valid if only one level has qualified ranges, or neither has any
+        return !(hasRootQualifiedRanges && hasComponentQualifiedRanges);
+      },
+      {
+        message: t(
+          "observation_interpretation_root_component_conflict_message",
+        ),
+        path: ["qualified_ranges"],
+      },
+    );
+
+  const queryClient = useQueryClient();
+  const isEditMode = Boolean(observationSlug);
+  const [
+    showClearObsInterpretationWarning,
+    setshowClearObsInterpretationWarning,
+  ] = useState(false);
+  const [clearRootLevel, setClearRootLevel] = useState(false);
+  const qualifiedRangesRef = useRef<QualifiedRange[]>([]);
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues:
+      isEditMode && existingData
+        ? {
+            title: existingData.title,
+            slug_value: existingData.slug_config.slug_value,
+            description: existingData.description,
+            status: existingData.status,
+            category: existingData.category,
+            permitted_data_type: existingData.permitted_data_type,
+            code: existingData.code,
+            body_site: existingData.body_site || null,
+            method: existingData.method || null,
+            permitted_unit: existingData.permitted_unit || null,
+            component:
+              existingData.component?.map((c) => ({
+                ...c,
+                permitted_unit: c.permitted_unit || null,
+                qualified_ranges:
+                  c.qualified_ranges?.map((range, index) => ({
+                    ...range,
+                    id: index,
+                    conditions: range?.conditions?.map((condition) => ({
+                      ...condition,
+                      _conditionType: getConditionDiscriminatorValue(
+                        condition.metric,
+                        condition.operation,
+                      ),
+                    })),
+                    _interpretation_type:
+                      range?.ranges?.length > 0
+                        ? InterpretationType.ranges
+                        : InterpretationType.valuesets,
+                  })) || [],
+              })) || [],
+            qualified_ranges:
+              existingData.qualified_ranges?.map((range, index) => ({
+                ...range,
+                id: index,
+                conditions: range?.conditions?.map((condition) => ({
+                  ...condition,
+                  _conditionType: getConditionDiscriminatorValue(
+                    condition.metric,
+                    condition.operation,
+                  ),
+                })),
+                _interpretation_type:
+                  range?.ranges?.length > 0
+                    ? InterpretationType.ranges
+                    : InterpretationType.valuesets,
+              })) || [],
+          }
+        : {
+            status: ObservationDefinitionStatus.active,
+            component: [],
+            body_site: null,
+            method: null,
+            permitted_unit: null,
+          },
+  });
+
+  const {
+    fields: componentFields,
+    append: appendComponent,
+    remove: removeComponent,
+  } = useFieldArray({
+    control: form.control,
+    name: "component",
+  });
+
+  const rootQualifiedRanges = form.watch("qualified_ranges");
+  const componentQualifiedRanges =
+    form.watch("component")?.flatMap((c) => c.qualified_ranges || []) || [];
+
+  // Mutual exclusivity logic: only one level can have qualified ranges at a time
+  const hasRootQualifiedRanges =
+    rootQualifiedRanges && rootQualifiedRanges.length > 0;
+  const hasComponentQualifiedRanges = componentQualifiedRanges.length > 0;
+
+  const disableRootObsInterpretation = hasComponentQualifiedRanges;
+  const disableComponentObsInterpretation = hasRootQualifiedRanges;
+
+  React.useEffect(() => {
+    if (isEditMode) return;
+
+    const subscription = form.watch((value, { name }) => {
+      if (name === "title") {
+        form.setValue("slug_value", generateSlug(value.title || "", 25), {
+          shouldValidate: true,
+        });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [form, isEditMode]);
+
+  const { mutate: createObservationDefinition, isPending: isCreating } =
+    useMutation({
+      mutationFn: mutate(observationDefinitionApi.createObservationDefinition),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ["observationDefinitions"] });
+        toast.success(t("observation_definition_created"));
+        onSuccess();
+      },
+    });
+
+  const { mutate: updateObservationDefinition, isPending: isUpdating } =
+    useMutation({
+      mutationFn: mutate(observationDefinitionApi.updateObservationDefinition, {
+        pathParams: { observationSlug: observationSlug || "" },
+        queryParams: {
+          facility: facilityId,
+        },
+      }),
+      onSuccess: (observationDefinition: ObservationDefinitionReadSpec) => {
+        queryClient.invalidateQueries({ queryKey: ["observationDefinitions"] });
+        toast.success(t("observation_definition_updated"));
+        navigate(
+          `/facility/${facilityId}/settings/observation_definitions/${observationDefinition.slug}`,
+        );
+      },
+    });
+
+  const isPending = isCreating || isUpdating;
+
+  const handleClearObservationInterpretation = (
+    clearRootObsInterp: boolean,
+  ) => {
+    setshowClearObsInterpretationWarning(false);
+    if (clearRootObsInterp) {
+      form.setValue("qualified_ranges", []);
+    } else {
+      form.setValue(
+        "component",
+        form.watch("component")?.map((c) => ({
+          ...c,
+          qualified_ranges: [],
+        })),
+      );
+    }
+    setClearRootLevel(!clearRootObsInterp);
+  };
+
+  function onSubmit(data: z.infer<typeof formSchema>) {
+    const cleanData = {
+      ...data,
+      qualified_ranges: removeConditionType(data.qualified_ranges || []),
+      component: data.component?.map((c) => ({
+        ...c,
+        qualified_ranges: removeConditionType(c.qualified_ranges || []),
+        permitted_unit: c.permitted_unit || null,
+      })),
+    };
+    if (isEditMode && observationSlug) {
+      updateObservationDefinition(cleanData as ObservationDefinitionUpdateSpec);
+    } else {
+      const payload: ObservationDefinitionCreateSpec = {
+        ...cleanData,
+        facility: facilityId as string,
+      };
+      createObservationDefinition(payload);
+    }
+  }
+
+  return (
+    <Page
+      title={
+        isEditMode
+          ? t("edit_observation_definition")
+          : t("create_observation_definition")
+      }
+      hideTitleOnPage
+    >
+      <div className="container mx-auto max-w-3xl">
+        <div className="mb-6">
+          <h1 className="text-xl font-semibold text-gray-900">
+            {isEditMode
+              ? t("edit_observation_definition")
+              : t("create_observation_definition")}
+          </h1>
+        </div>
+
+        <AlertDialog
+          open={showClearObsInterpretationWarning}
+          onOpenChange={setshowClearObsInterpretationWarning}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>
+                {clearRootLevel
+                  ? t("remove_root_observation_interpretation")
+                  : t("remove_component_observation_interpretation")}
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                {clearRootLevel
+                  ? t("remove_root_observation_interpretation_description")
+                  : t(
+                      "remove_component_observation_interpretation_description",
+                    )}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel
+                onClick={() => setshowClearObsInterpretationWarning(false)}
+                className="w-full sm:w-auto"
+              >
+                {t("cancel")}
+              </AlertDialogCancel>
+
+              <AlertDialogAction
+                onClick={() => {
+                  handleClearObservationInterpretation(clearRootLevel);
+                }}
+                className={cn(buttonVariants({ variant: "destructive" }))}
+              >
+                {t("remove")}
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
+        <Form {...form}>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              form.handleSubmit(onSubmit)();
+            }}
+            className="space-y-4"
+          >
+            {/* Basic Information Section */}
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <div className="space-y-4">
+                <div>
+                  <h2 className="text-base font-medium text-gray-900">
+                    {t("basic_information")}
+                  </h2>
+                  <p className="mt-0.5 text-sm text-gray-500">
+                    {t("observation_basic_information")}
+                  </p>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2 items-start">
+                  <FormField
+                    control={form.control}
+                    name="title"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel aria-required>{t("title")}</FormLabel>
+                        <FormControl>
+                          <Input {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="slug_value"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel aria-required>{t("slug")}</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...field}
+                            onChange={(e) => {
+                              const sanitizedValue = e.target.value
+                                .toLowerCase()
+                                .replace(/[^a-z0-9_-]/g, "");
+                              form.setValue("slug_value", sanitizedValue, {
+                                shouldValidate: true,
+                              });
+                            }}
+                          />
+                        </FormControl>
+                        <FormDescription>
+                          {t("slug_format_message")}
+                        </FormDescription>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <FormField
+                  control={form.control}
+                  name="description"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel aria-required>{t("description")}</FormLabel>
+                      <FormControl>
+                        <Textarea {...field} className="min-h-[60px]" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <div className="grid gap-4 md:grid-cols-2 items-start">
+                  <FormField
+                    control={form.control}
+                    name="status"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>{t("status")}</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger ref={field.ref}>
+                              <SelectValue placeholder={t("select_status")} />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {Object.values(ObservationDefinitionStatus).map(
+                              (status) => (
+                                <SelectItem key={status} value={status}>
+                                  {t(status)}
+                                </SelectItem>
+                              ),
+                            )}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="category"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel aria-required>{t("category")}</FormLabel>
+                        <Select
+                          onValueChange={field.onChange}
+                          defaultValue={field.value}
+                        >
+                          <FormControl>
+                            <SelectTrigger ref={field.ref}>
+                              <SelectValue placeholder={t("select_category")} />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {OBSERVATION_DEFINITION_CATEGORY.map((category) => (
+                              <SelectItem key={category} value={category}>
+                                {t(category)}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-2">
+                  <FormField
+                    control={form.control}
+                    name="permitted_data_type"
+                    render={({ field }) => {
+                      return (
+                        <FormItem className="flex flex-col">
+                          <FormLabel aria-required>{t("data_type")}</FormLabel>
+                          <Select
+                            onValueChange={field.onChange}
+                            defaultValue={field.value}
+                          >
+                            <FormControl>
+                              <SelectTrigger ref={field.ref}>
+                                <SelectValue
+                                  placeholder={t("select_data_type")}
+                                />
+                              </SelectTrigger>
+                            </FormControl>
+                            <SelectContent>
+                              {Object.keys(QuestionType).map((type) => (
+                                <SelectItem key={type} value={type}>
+                                  {t(type)}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                          <FormMessage />
+                        </FormItem>
+                      );
+                    }}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="code"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel aria-required>{t("loinc_code")}</FormLabel>
+                        <FormControl>
+                          <ValueSetSelect
+                            ref={field.ref}
+                            system="system-observation"
+                            value={field.value}
+                            placeholder={t("search_for_observation_codes")}
+                            onSelect={(code) => {
+                              field.onChange({
+                                code: code.code,
+                                display: code.display,
+                                system: code.system,
+                              });
+                            }}
+                            showCode={true}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <ObservationInterpretation
+              form={form}
+              qualifiedRanges={form.watch("qualified_ranges") || []}
+              setQualifiedRanges={(value: QualifiedRange[]) =>
+                form.setValue("qualified_ranges", value)
+              }
+              disabled={disableRootObsInterpretation}
+              onClearRequest={() => {
+                setClearRootLevel(false);
+                setshowClearObsInterpretationWarning(true);
+              }}
+              conflictMessage={
+                hasComponentQualifiedRanges
+                  ? t("component_qualified_ranges_exist_message")
+                  : undefined
+              }
+              onCancel={() => {
+                form.setValue("qualified_ranges", qualifiedRangesRef.current);
+              }}
+              onSheetOpen={() => {
+                const ranges = form.getValues("qualified_ranges") || [];
+                qualifiedRangesRef.current = JSON.parse(JSON.stringify(ranges));
+              }}
+              facilityId={facilityId}
+            />
+
+            {/* Additional Details Section */}
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <div className="space-y-4">
+                <div>
+                  <h2 className="text-base font-medium text-gray-900">
+                    {t("additional_details")}{" "}
+                    <span className="text-sm font-normal text-gray-500">
+                      ({t("optional")})
+                    </span>
+                  </h2>
+                  <p className="mt-0.5 text-sm text-gray-500">
+                    {t("observation_additional_details")}
+                  </p>
+                </div>
+
+                <div className="grid gap-4 md:grid-cols-3">
+                  <FormField
+                    control={form.control}
+                    name="body_site"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>{t("body_site")}</FormLabel>
+                        <FormControl>
+                          <ValueSetSelect
+                            ref={field.ref}
+                            system="system-body-site"
+                            value={field.value}
+                            placeholder={t("select_body_site")}
+                            onSelect={(code) => {
+                              field.onChange({
+                                code: code.code,
+                                display: code.display,
+                                system: code.system,
+                              });
+                            }}
+                            showCode={true}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="method"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col">
+                        <FormLabel>{t("method")}</FormLabel>
+                        <FormControl>
+                          <ValueSetSelect
+                            {...field}
+                            system="system-collection-method"
+                            placeholder={t("method_placeholder")}
+                            onSelect={(code) => {
+                              field.onChange({
+                                code: code.code,
+                                display: code.display,
+                                system: code.system,
+                              });
+                            }}
+                            showCode={true}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="permitted_unit"
+                    render={({ field }) => (
+                      <FormItem className="flex flex-col gap-1">
+                        <FormLabel>{t("unit")}</FormLabel>
+                        <FormControl>
+                          <ValueSetSelect
+                            {...field}
+                            system="system-ucum-units"
+                            placeholder={t("unit_placeholder")}
+                            onSelect={(code) => {
+                              field.onChange({
+                                code: code.code,
+                                display: code.display,
+                                system: code.system,
+                              });
+                            }}
+                            showCode={true}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Components Section */}
+            <div className="rounded-lg border border-gray-200 bg-white p-4">
+              <div className="space-y-4">
+                <div>
+                  <h2 className="text-base font-medium text-gray-900">
+                    {t("components")}{" "}
+                    <span className="text-sm font-normal text-gray-500">
+                      {t("optional")}
+                    </span>
+                  </h2>
+                  <p className="mt-0.5 text-sm text-gray-500">
+                    {t("observation_components_description")}
+                  </p>
+                </div>
+
+                {componentFields.length === 0 ? (
+                  <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-gray-200 bg-gray-50 p-4">
+                    <p className="mb-2 text-sm text-gray-500">
+                      {t("observation_components_description")}
+                    </p>
+                    <ul className="mb-4 text-sm text-gray-600">
+                      <li>• {t("blood_pressure_systolic_diastolic")}</li>
+                      <li>• {t("complete_blood_count_rbc_wbc_platelets")}</li>
+                    </ul>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        appendComponent({
+                          code: { code: "", display: "", system: "" },
+                          permitted_data_type: QuestionType.quantity,
+                          permitted_unit: null,
+                          qualified_ranges: [],
+                        });
+                      }}
+                    >
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      {t("add_your_first_component")}
+                    </Button>
+                  </div>
+                ) : (
+                  <div className="space-y-3">
+                    {componentFields.map((componentField, index) => (
+                      <div
+                        key={componentField.id}
+                        className="relative rounded-lg border border-gray-200 bg-gray-50 p-4"
+                      >
+                        <div className="absolute right-3 top-3">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7 rounded-full hover:bg-gray-100"
+                            onClick={() => removeComponent(index)}
+                          >
+                            <X className="h-4 w-4 text-gray-500" />
+                          </Button>
+                        </div>
+
+                        <div className="mb-2 text-sm font-medium text-gray-700">
+                          {t("component_with_index", { index: index + 1 })}
+                        </div>
+
+                        <div className="grid gap-4">
+                          <FormField
+                            control={form.control}
+                            name={`component.${index}.code`}
+                            render={({ field }) => (
+                              <FormItem className="flex flex-col">
+                                <FormLabel aria-required>{t("code")}</FormLabel>
+                                <FormControl>
+                                  <ValueSetSelect
+                                    {...field}
+                                    system="system-observation"
+                                    placeholder={t(
+                                      "search_for_observation_codes",
+                                    )}
+                                    showCode={true}
+                                    onSelect={(code) => {
+                                      field.onChange({
+                                        code: code.code,
+                                        display: code.display,
+                                        system: code.system,
+                                      });
+                                    }}
+                                  />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <div className="grid gap-4 md:grid-cols-2">
+                            <FormField
+                              control={form.control}
+                              name={`component.${index}.permitted_data_type`}
+                              render={({ field }) => (
+                                <FormItem className="flex flex-col gap-1">
+                                  <FormLabel>{t("data_type")}</FormLabel>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger ref={field.ref}>
+                                        <SelectValue
+                                          placeholder={t("select_data_type")}
+                                        />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {Object.keys(QuestionType).map((type) => (
+                                        <SelectItem key={type} value={type}>
+                                          {t(type)}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+
+                            <FormField
+                              control={form.control}
+                              name={`component.${index}.permitted_unit`}
+                              render={({ field }) => (
+                                <FormItem className="flex flex-col gap-1">
+                                  <FormLabel>{t("unit")}</FormLabel>
+                                  <FormControl>
+                                    <ValueSetSelect
+                                      {...field}
+                                      system="system-ucum-units"
+                                      placeholder={t("search_for_units")}
+                                      showCode={true}
+                                      onSelect={(code) => {
+                                        field.onChange({
+                                          code: code.code,
+                                          display: code.display,
+                                          system: code.system,
+                                        });
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <ObservationInterpretation
+                            form={form}
+                            qualifiedRanges={
+                              form.watch(
+                                `component.${index}.qualified_ranges`,
+                              ) || []
+                            }
+                            setQualifiedRanges={(value: QualifiedRange[]) =>
+                              form.setValue(
+                                `component.${index}.qualified_ranges`,
+                                value,
+                              )
+                            }
+                            disabled={disableComponentObsInterpretation}
+                            onClearRequest={() => {
+                              setClearRootLevel(true);
+                              setshowClearObsInterpretationWarning(true);
+                            }}
+                            conflictMessage={
+                              hasRootQualifiedRanges
+                                ? t("root_qualified_ranges_exist_message")
+                                : undefined
+                            }
+                            name={`component.${index}.qualified_ranges`}
+                            onCancel={() => {
+                              form.setValue(
+                                `component.${index}.qualified_ranges`,
+                                qualifiedRangesRef.current,
+                              );
+                            }}
+                            onSheetOpen={() => {
+                              const ranges =
+                                form.getValues(
+                                  `component.${index}.qualified_ranges`,
+                                ) || [];
+                              qualifiedRangesRef.current = JSON.parse(
+                                JSON.stringify(ranges),
+                              );
+                            }}
+                            facilityId={facilityId}
+                          />
+                        </div>
+                      </div>
+                    ))}
+                    <Button
+                      type="button"
+                      variant="outline"
+                      className="w-full"
+                      onClick={() => {
+                        appendComponent({
+                          code: { code: "", display: "", system: "" },
+                          permitted_data_type: QuestionType.quantity,
+                          permitted_unit: null,
+                          qualified_ranges: [],
+                        });
+                      }}
+                    >
+                      <PlusCircle className="mr-2 h-4 w-4" />
+                      {t("add_component")}
+                    </Button>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <Button type="button" variant="outline" onClick={onCancel}>
+                {t("cancel")}
+              </Button>
+              <Button type="submit" disabled={isPending}>
+                {isPending
+                  ? isEditMode
+                    ? t("saving")
+                    : t("creating")
+                  : isEditMode
+                    ? t("save")
+                    : t("create")}
+              </Button>
+            </div>
+          </form>
+        </Form>
+      </div>
+    </Page>
+  );
+}

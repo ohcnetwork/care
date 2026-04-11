@@ -33,6 +33,17 @@ class FacilityBareMinimumSpec(EMRResource):
     __exclude__ = ["geo_organization"]
     id: UUID4 | None = None
     name: str
+    tenant_name: str | None = None
+    tenant_plan_tier: str | None = None
+    tenant_logo_url: str | None = None
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = obj.external_id
+        if obj.tenant_id:
+            mapping["tenant_name"] = obj.tenant.name
+            mapping["tenant_plan_tier"] = obj.tenant.plan_tier
+            mapping["tenant_logo_url"] = obj.tenant.logo_url or None
 
 
 class PageMargin(BaseModel):
@@ -100,6 +111,9 @@ class FacilityBaseSpec(FacilityBareMinimumSpec):
     middleware_address: str | None = None
     facility_type: str
     is_public: bool
+    tenant_name: str | None = None
+    tenant_plan_tier: str | None = None
+    tenant_logo_url: str | None = None
 
 
 DISCOUNT_CODE_COUNT_LIMIT = 100
@@ -168,7 +182,7 @@ class FacilityReadSpec(FacilityBaseSpec):
     def perform_extra_serialization(cls, mapping, obj):
         from care.emr.resources.user.spec import UserSpec
 
-        mapping["id"] = obj.external_id
+        super().perform_extra_serialization(mapping, obj)
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         if obj.created_by:
             mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)

@@ -1,0 +1,117 @@
+import { cn } from "@/lib/utils";
+
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+
+import {
+  BedAvailableSelected,
+  BedAvailableUnselected,
+  BedUnavailableSelected,
+  BedUnavailableUnselected,
+} from "@/CAREUI/icons/CustomIcons";
+import { LocationRead } from "@/types/location/location";
+import { buildLocationPath } from "@/types/location/utils";
+
+interface BedListingProps {
+  beds: LocationRead[];
+  selectedBed: LocationRead | null;
+  onBedSelect: (bed: LocationRead) => void;
+  onCheckStatus: (bed: LocationRead) => void;
+  showParent?: boolean;
+}
+
+export function BedListing({
+  beds,
+  selectedBed,
+  onBedSelect,
+  onCheckStatus,
+  showParent = false,
+}: BedListingProps) {
+  if (beds.length === 0) return null;
+  return (
+    <RadioGroup
+      value={selectedBed?.id || ""}
+      onValueChange={(id) => {
+        const bed = beds.find((b) => b.id === id);
+        if (bed) onBedSelect(bed);
+      }}
+      className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+    >
+      {beds.map((bed) => {
+        const isAvailable = bed.operational_status === "U";
+        const isDischargedBed = bed.current_encounter?.status === "discharged";
+        const isSelected = selectedBed?.id === bed.id;
+        const isClickable = isAvailable || isDischargedBed;
+        const segments = buildLocationPath(bed);
+        const fullPath = segments.map((s) => s.name).join(" › ");
+        const shortPath = segments
+          .map((s) => s.name)
+          .slice(-2)
+          .join(" › ");
+
+        return (
+          <div
+            key={bed.id}
+            className={cn(
+              "h-32 relative border rounded-lg pt-3 pb-1",
+              isSelected && "border-green-600 bg-green-50",
+              !isSelected &&
+                isClickable &&
+                "border-gray-400 hover:border-green-200 cursor-pointer",
+              !isSelected &&
+                !isClickable &&
+                "border-gray-100 bg-gray-50 opacity-60 cursor-not-allowed",
+            )}
+            onClick={() => {
+              if (isAvailable) {
+                onBedSelect(bed);
+              } else if (isDischargedBed) {
+                onCheckStatus(bed);
+              }
+            }}
+          >
+            <div className="absolute top-2 right-2">
+              <RadioGroupItem
+                value={bed.id}
+                id={bed.id}
+                className="size-4"
+                disabled={!isClickable}
+                onClick={(e) => e.stopPropagation()}
+              />
+            </div>
+            <div className="flex flex-col items-center">
+              <div className="relative">
+                {isAvailable ? (
+                  isSelected ? (
+                    <BedAvailableSelected className="size-10 mt-4" />
+                  ) : (
+                    <BedAvailableUnselected className="size-10 mt-4" />
+                  )
+                ) : isSelected ? (
+                  <BedUnavailableSelected className="size-10 mt-4" />
+                ) : (
+                  <BedUnavailableUnselected className="size-10 mt-4" />
+                )}
+              </div>
+              <p className="text-xs text-center font-medium mt-2">{bed.name}</p>
+              {showParent && segments.length > 1 && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <p className="text-xs mt-1 text-gray-400 truncate max-w-full cursor-default">
+                      {shortPath}
+                    </p>
+                  </TooltipTrigger>
+                  <TooltipContent>{fullPath}</TooltipContent>
+                </Tooltip>
+              )}
+            </div>
+          </div>
+        );
+      })}
+    </RadioGroup>
+  );
+}

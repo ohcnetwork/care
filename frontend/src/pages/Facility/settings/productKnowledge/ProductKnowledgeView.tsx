@@ -1,0 +1,341 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { navigate } from "raviger";
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { toast } from "sonner";
+
+import CareIcon from "@/CAREUI/icons/CareIcon";
+
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Separator } from "@/components/ui/separator";
+
+import ConfirmActionDialog from "@/components/Common/ConfirmActionDialog";
+import Page from "@/components/Common/Page";
+import { CardListWithHeaderSkeleton } from "@/components/Common/SkeletonLoading";
+
+import mutate from "@/Utils/request/mutate";
+import query from "@/Utils/request/query";
+import BackButton from "@/components/Common/BackButton";
+import { Code, isCodePresent } from "@/types/base/code/code";
+import {
+  PRODUCT_KNOWLEDGE_STATUS_COLORS,
+  ProductKnowledgeStatus,
+  ProductName,
+} from "@/types/inventory/productKnowledge/productKnowledge";
+import productKnowledgeApi from "@/types/inventory/productKnowledge/productKnowledgeApi";
+import { ArrowLeft } from "lucide-react";
+
+interface Props {
+  facilityId: string;
+  slug: string;
+}
+
+function CodeDisplay({ code }: { code: Code | null }) {
+  if (!isCodePresent(code)) return null;
+  return (
+    <div className="space-y-1">
+      <p className="text-sm font-medium">{code.display}</p>
+      <p className="text-xs text-gray-500">{code.system}</p>
+      <p className="text-xs text-gray-500">{code.code}</p>
+    </div>
+  );
+}
+
+export default function ProductKnowledgeView({ facilityId, slug }: Props) {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  const {
+    data: product,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["productKnowledge", slug],
+    queryFn: query(productKnowledgeApi.retrieveProductKnowledge, {
+      pathParams: { slug },
+      queryParams: {
+        facility: facilityId,
+      },
+    }),
+  });
+
+  const { mutate: updateProductKnowledge, isPending: isDeleting } = useMutation(
+    {
+      mutationFn: mutate(productKnowledgeApi.updateProductKnowledge, {
+        pathParams: { slug },
+      }),
+      onSuccess: () => {
+        toast.success(t("product_knowledge_deleted_successfully"));
+        queryClient.invalidateQueries({ queryKey: ["productKnowledge"] });
+        navigate(
+          `/facility/${facilityId}/settings/product_knowledge/categories/${product?.category.slug}`,
+        );
+      },
+    },
+  );
+
+  const handleDelete = () => {
+    if (!product) return;
+
+    const updateData = {
+      ...product,
+      status: ProductKnowledgeStatus.retired,
+      category: product.category.slug,
+      slug_value: product.slug_config.slug_value,
+      facility: facilityId,
+    };
+
+    if (!product.code || !product.code.code) {
+      delete updateData.code;
+    }
+
+    if (
+      !product.definitional ||
+      !product.definitional.dosage_form ||
+      !product.definitional.dosage_form.code
+    ) {
+      delete updateData.definitional;
+    }
+
+    updateProductKnowledge(updateData);
+  };
+
+  if (isLoading) {
+    return <CardListWithHeaderSkeleton count={3} />;
+  }
+
+  if (isError || !product) {
+    return (
+      <Page title={t("error")}>
+        <div className="container mx-auto max-w-3xl py-8">
+          <Alert variant="destructive">
+            <CareIcon icon="l-exclamation-triangle" className="size-4" />
+            <AlertTitle>{t("error_loading_product_knowledge")}</AlertTitle>
+            <AlertDescription>
+              {t("product_knowledge_not_found")}
+            </AlertDescription>
+          </Alert>
+          <BackButton>
+            <ArrowLeft />
+            {t("back_to_list")}
+          </BackButton>
+        </div>
+      </Page>
+    );
+  }
+
+  return (
+    <Page title={product.name} hideTitleOnPage={true}>
+      <div className="container mx-auto max-w-3xl space-y-6">
+        <BackButton
+          to={`/facility/${facilityId}/settings/product_knowledge/categories/${product.category.slug}`}
+        >
+          <ArrowLeft />
+          {t("back")}
+        </BackButton>
+
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="flex items-center gap-3">
+              <h1 className="text-2xl font-bold">{product.name}</h1>
+              <Badge variant={PRODUCT_KNOWLEDGE_STATUS_COLORS[product.status]}>
+                {t(product.status)}
+              </Badge>
+            </div>
+            {isCodePresent(product.code) && (
+              <p className="mt-1 text-sm text-gray-600">
+                {product.code.system} | {product.code.code}
+              </p>
+            )}
+          </div>
+          <div className="flex gap-2">
+            {product.status !== ProductKnowledgeStatus.retired && (
+              <Button
+                variant="outline"
+                onClick={() => setShowDeleteDialog(true)}
+                disabled={isDeleting}
+              >
+                <CareIcon icon="l-trash" className="mr-2 size-4" />
+                {isDeleting ? t("deleting") : t("delete")}
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              onClick={() =>
+                navigate(
+                  `/facility/${facilityId}/settings/product_knowledge/${product.slug}/edit`,
+                )
+              }
+            >
+              <CareIcon icon="l-pen" className="mr-2 size-4" />
+              {t("edit")}
+            </Button>
+          </div>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>{t("overview")}</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <p className="text-sm text-gray-500">{t("product_type")}</p>
+              <p className="font-medium">{t(product.product_type)}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">
+                {t("product_knowledge_alternate_identifier")}
+              </p>
+              <p className="text-gray-700">
+                {product.alternate_identifier || "-"}
+              </p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">{t("base_unit")}</p>
+              <div className="rounded-lg border bg-gray-50/50 p-3">
+                <CodeDisplay code={product.base_unit} />
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {product.names && product.names.length > 0 && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("names")}</CardTitle>
+              <CardDescription>
+                {t("product_knowledge_names_description")}
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {product.names.map((name: ProductName, index) => (
+                  <div
+                    key={index}
+                    className="rounded-lg border bg-gray-50/50 p-4 transition-colors hover:bg-gray-50"
+                  >
+                    <div className="space-y-2">
+                      <p className="font-medium">{name.name}</p>
+                      <p className="text-sm text-gray-500">
+                        {t(name.name_type)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {product.storage_guidelines &&
+          product.storage_guidelines.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>{t("storage_guidelines")}</CardTitle>
+                <CardDescription>
+                  {t("pk_form_storage_guidelines_description")}
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {product.storage_guidelines.map((guideline, index) => (
+                    <div
+                      key={index}
+                      className="rounded-lg border bg-gray-50/50 p-4 transition-colors hover:bg-gray-50"
+                    >
+                      <div className="space-y-4">
+                        <p className="text-sm font-medium">{guideline.note}</p>
+                        <Separator />
+                        <div>
+                          <p className="text-sm text-gray-500">
+                            {t("stability_duration")}
+                          </p>
+                          <p className="font-medium">
+                            {guideline.stability_duration.value}{" "}
+                            {t(
+                              `unit_${guideline.stability_duration.unit?.code}`,
+                            ) || ""}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+        {product.definitional?.dosage_form && (
+          <Card>
+            <CardHeader>
+              <CardTitle>{t("product_definition")}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="grid gap-6">
+                {product.definitional.dosage_form && (
+                  <div>
+                    <p className="mb-2 text-sm text-gray-500">
+                      {t("dosage_form")}
+                    </p>
+                    <div className="rounded-lg border bg-gray-50/50 p-3">
+                      <CodeDisplay code={product.definitional.dosage_form} />
+                    </div>
+                  </div>
+                )}
+                {product.definitional.intended_routes &&
+                  product.definitional.intended_routes.length > 0 && (
+                    <div>
+                      <p className="mb-2 text-sm text-gray-500">
+                        {t("intended_routes")}
+                      </p>
+                      <div className="space-y-2">
+                        {product.definitional.intended_routes.map(
+                          (route, index) => (
+                            <div
+                              key={index}
+                              className="rounded-lg border bg-gray-50/50 p-3"
+                            >
+                              <CodeDisplay code={route} />
+                            </div>
+                          ),
+                        )}
+                      </div>
+                    </div>
+                  )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        <ConfirmActionDialog
+          open={showDeleteDialog}
+          onOpenChange={setShowDeleteDialog}
+          title={t("delete")}
+          description={
+            <Alert variant="destructive">
+              <AlertTitle>{t("warning")}</AlertTitle>
+              <AlertDescription>
+                {t("are_you_sure_want_to_delete", {
+                  name: product.name,
+                })}
+              </AlertDescription>
+            </Alert>
+          }
+          confirmText={isDeleting ? t("deleting") : t("confirm")}
+          variant="destructive"
+          onConfirm={handleDelete}
+        />
+      </div>
+    </Page>
+  );
+}

@@ -1,0 +1,72 @@
+services:
+  - type: web
+    name: parxio-backend
+    env: python
+    plan: starter
+    rootDir: .
+    buildCommand: pip install pipenv && pipenv install --system --deploy
+    startCommand: python manage.py migrate && python manage.py collectstatic --noinput && gunicorn config.wsgi:application
+    healthCheckPath: /api/v1/
+    envVars:
+      - key: DJANGO_SETTINGS_MODULE
+        value: config.settings.production
+      - key: DJANGO_ALLOWED_HOSTS
+        value: '[".parxio.in",".onrender.com"]'
+      - key: DJANGO_READ_DOT_ENV_FILE
+        value: "false"
+      - key: PYTHON_VERSION
+        value: 3.12.4
+      - key: DATABASE_URL
+        fromDatabase:
+          name: parxio-db
+          property: connectionString
+      - key: REDIS_URL
+        sync: false
+      - key: CELERY_BROKER_URL
+        sync: false
+      - key: PARXIO_BASE_DOMAIN
+        value: parxio.in
+      - key: PARXIO_ABDM_BRIDGE_URL
+        sync: false
+      - key: RAZORPAY_WEBHOOK_SECRET
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DJANGO_SUPERUSER_EMAIL
+        sync: false
+      - key: DJANGO_SUPERUSER_PASSWORD
+        sync: false
+
+  - type: web
+    name: parxio-frontend
+    env: static
+    plan: free
+    rootDir: frontend
+    buildCommand: npm ci && npm run build
+    staticPublishPath: build
+    pullRequestPreviewsEnabled: true
+    envVars:
+      - key: NODE_VERSION
+        value: 24.14.0
+      - key: REACT_CARE_API_URL
+        value: https://parxio-backend.onrender.com
+      - key: REACT_APP_TITLE
+        value: Parxio
+      - key: REACT_APP_META_DESCRIPTION
+        value: Parxio is a multi-clinic care delivery and ABDM incentive platform.
+      - key: REACT_PUBLIC_URL
+        value: https://app.parxio.in
+      - key: REACT_APP_COVER_IMAGE
+        value: https://app.parxio.in/cover-image.png
+      - key: REACT_APP_COVER_IMAGE_ALT
+        value: https://app.parxio.in/cover-image-alt.png
+      - key: REACT_RECAPTCHA_SITE_KEY
+        sync: false
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+databases:
+  - name: parxio-db
+    plan: starter

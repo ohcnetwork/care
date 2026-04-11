@@ -1,0 +1,79 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+.claude/
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.idea
+dist
+dev-dist
+build
+.swp
+stats.json
+public/build-meta.json
+.vscode/*
+!.vscode/launch.json
+src/supportedBrowsers.ts
+
+# Reason React
+/lib/bs/**
+.merlin
+*.bs.js
+*.gen.tsx
+*.gen
+.bsb.lock
+
+# Yarn
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+
+# Using NPM
+yarn.lock
+pnpm-lock.yaml
+bun.lockb
+
+# Playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/tests/.auth/
+test-results.json
+
+# Care Apps
+/apps/*
+src/pluginMap.ts
+/apps_backup/*
+
+# Federation Temp files
+/.__mf__temp
+public/sbom/*
+public/_headers
+
+namespaceMapping.json
+dump.rdb

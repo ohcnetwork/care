@@ -1,0 +1,104 @@
+import { useTranslation } from "react-i18next";
+
+import {
+  BaseCategoryPickerDefinition,
+  ResourceDefinitionCategoryPicker,
+} from "@/components/Common/ResourceDefinitionCategoryPicker";
+import useCurrentFacility from "@/pages/Facility/utils/useCurrentFacility";
+import { ResourceCategoryResourceType } from "@/types/base/resourceCategory/resourceCategory";
+import {
+  ProductKnowledgeBase,
+  ProductKnowledgeStatus,
+} from "@/types/inventory/productKnowledge/productKnowledge";
+import productKnowledgeApi from "@/types/inventory/productKnowledge/productKnowledgeApi";
+
+const productKnowledgeMapper = (
+  item: ProductKnowledgeBase,
+): BaseCategoryPickerDefinition => ({
+  ...item,
+  title: item.name,
+});
+
+interface ProductKnowledgeSelectProps {
+  value?: ProductKnowledgeBase;
+  onChange: (value: ProductKnowledgeBase | undefined) => void;
+  disabled?: boolean;
+  className?: string;
+  placeholder?: string;
+  disableFavorites?: boolean;
+  ref?: React.Ref<HTMLButtonElement>;
+  hideClearButton?: boolean;
+  alignContent?: "start" | "center" | "end";
+  defaultOpen?: boolean;
+}
+
+export function ProductKnowledgeSelect({
+  value,
+  onChange,
+  disabled,
+  className,
+  placeholder,
+  disableFavorites = false,
+  ref,
+  hideClearButton = false,
+  alignContent = "start",
+  defaultOpen = false,
+}: ProductKnowledgeSelectProps) {
+  const { t } = useTranslation();
+  const { facilityId } = useCurrentFacility();
+
+  return (
+    <ResourceDefinitionCategoryPicker<ProductKnowledgeBase>
+      searchParamName="name"
+      facilityId={facilityId}
+      value={value}
+      onValueChange={(
+        selectedValue:
+          | ProductKnowledgeBase
+          | ProductKnowledgeBase[]
+          | undefined,
+      ) => {
+        if (!selectedValue) {
+          onChange(undefined);
+          return;
+        }
+        onChange(
+          Array.isArray(selectedValue) ? selectedValue[0] : selectedValue,
+        );
+      }}
+      placeholder={placeholder || t("select_product_knowledge")}
+      disabled={disabled}
+      className={className}
+      resourceType={ResourceCategoryResourceType.product_knowledge}
+      listDefinitions={{
+        queryFn: productKnowledgeApi.listProductKnowledge,
+        queryParams: {
+          facility: facilityId,
+          status: ProductKnowledgeStatus.active,
+        },
+      }}
+      mapper={productKnowledgeMapper}
+      translationBaseKey="product_knowledge"
+      enableFavorites={!disableFavorites}
+      favoritesConfig={
+        !disableFavorites
+          ? {
+              listFavorites: {
+                queryFn: productKnowledgeApi.listFavorites,
+              },
+              addFavorite: {
+                queryFn: productKnowledgeApi.addFavorite,
+              },
+              removeFavorite: {
+                queryFn: productKnowledgeApi.removeFavorite,
+              },
+            }
+          : undefined
+      }
+      ref={ref}
+      hideClearButton={hideClearButton}
+      alignContent={alignContent}
+      defaultOpen={defaultOpen}
+    />
+  );
+}

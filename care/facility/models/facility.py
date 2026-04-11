@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _
 from care.emr.models import FacilityOrganization
 from care.emr.models.organization import FacilityOrganizationUser
 from care.facility.models.facility_flag import FacilityFlag
+from care.parxio_core.compat import TenantForeignKey
 from care.security.models import RoleModel
 from care.security.roles.role import FACILITY_ADMIN_ROLE
 from care.utils.models.base import BaseModel
@@ -151,6 +152,13 @@ DOCTOR_TYPES = [
 
 
 class Facility(BaseModel):
+    tenant = TenantForeignKey(
+        "parxio_core.Tenant",
+        on_delete=models.CASCADE,
+        related_name="facilities",
+        null=True,
+        blank=True,
+    )
     name = models.CharField(max_length=1000, blank=False, null=False)
     description = models.TextField(blank=True, null=False)
     is_active = models.BooleanField(default=True)
@@ -238,6 +246,12 @@ class Facility(BaseModel):
 
     def save(self, *args, **kwargs) -> None:
         is_create = self.pk is None
+        if self.tenant_id is None:
+            from care.parxio_core.tenant import get_current_tenant
+
+            current_tenant = get_current_tenant()
+            if current_tenant:
+                self.tenant = current_tenant
         super().save(*args, **kwargs)
 
         if is_create:
