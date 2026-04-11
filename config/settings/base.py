@@ -132,6 +132,7 @@ THIRD_PARTY_APPS = [
     "import_export",
 ]
 LOCAL_APPS = [
+    "care.parxio_core",
     "care.security",
     "care.facility",
     "care.users",
@@ -199,6 +200,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "care.parxio_core.middleware.TenantMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",

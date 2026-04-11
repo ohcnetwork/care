@@ -1,0 +1,83 @@
+import { Code } from "@/types/base/code/code";
+import { UserReadMinimal } from "@/types/user/user";
+
+export const ALLERGY_CLINICAL_STATUS = [
+  "active",
+  "inactive",
+  "resolved",
+] as const;
+export const ALLERGY_CATEGORY = [
+  "food",
+  "medication",
+  "environment",
+  "biologic",
+] as const;
+export const ALLERGY_CRITICALITY = ["low", "high", "unable_to_assess"] as const;
+export type AllergyVerificationStatus =
+  | "unconfirmed"
+  | "confirmed"
+  | "refuted"
+  | "presumed"
+  | "entered_in_error";
+export type AllergyClinicalStatus = (typeof ALLERGY_CLINICAL_STATUS)[number];
+export type AllergyCategory = (typeof ALLERGY_CATEGORY)[number];
+export type AllergyCriticality = (typeof ALLERGY_CRITICALITY)[number];
+
+// Base type for allergy data
+export interface AllergyIntolerance {
+  id: string;
+  code: Code;
+  clinical_status: AllergyClinicalStatus;
+  verification_status: AllergyVerificationStatus;
+  category: AllergyCategory;
+  criticality: AllergyCriticality;
+  last_occurrence?: string;
+  note?: string;
+  created_by: UserReadMinimal;
+  encounter: string;
+  edited_by?: UserReadMinimal;
+  created_date: string;
+  modified_date: string;
+}
+
+// Type for API request, extends base type with required fields
+// Added optional id here as this type is used only in one place
+export interface AllergyIntoleranceRequest {
+  id?: string;
+  clinical_status: AllergyClinicalStatus;
+  verification_status: AllergyVerificationStatus;
+  category: AllergyCategory;
+  criticality: string;
+  code: Code;
+  last_occurrence?: string;
+  note?: string;
+  encounter: string;
+}
+
+export const ALLERGY_VERIFICATION_STATUS = {
+  unconfirmed: "Unconfirmed",
+  confirmed: "Confirmed",
+  refuted: "Refuted",
+  presumed: "Presumed",
+  entered_in_error: "Entered in Error",
+} as const;
+
+export const ALLERGY_VERIFICATION_STATUS_COLORS = {
+  unconfirmed: "yellow",
+  confirmed: "green",
+  refuted: "destructive",
+  presumed: "blue",
+  entered_in_error: "destructive",
+} as const;
+
+export const ALLERGY_CLINICAL_STATUS_COLORS = {
+  active: "primary",
+  inactive: "secondary",
+  resolved: "blue",
+} as const;
+
+export const ALLERGY_CRITICALITY_COLORS = {
+  low: "blue",
+  high: "destructive",
+  unable_to_assess: "secondary",
+} as const;

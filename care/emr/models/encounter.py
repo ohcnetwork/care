@@ -2,6 +2,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.db import models, transaction
 
 from care.emr.models.base import EMRBaseModel
+from care.parxio_core.compat import TenantForeignKey
 from care.emr.models.scheduling.booking import TokenBooking
 from care.emr.resources.patient_identifier.default_expression_evaluator import (
     evaluate_patient_facility_default_values,
@@ -9,6 +10,13 @@ from care.emr.resources.patient_identifier.default_expression_evaluator import (
 
 
 class Encounter(EMRBaseModel):
+    tenant = TenantForeignKey(
+        "parxio_core.Tenant",
+        on_delete=models.CASCADE,
+        related_name="encounters",
+        null=True,
+        blank=True,
+    )
     status = models.CharField(max_length=100, null=True, blank=True)
     status_history = models.JSONField(default=dict)
     encounter_class = models.CharField(max_length=100, null=True, blank=True)
@@ -64,6 +72,11 @@ class Encounter(EMRBaseModel):
     def save(self, *args, **kwargs):
         created = False
         self.sync_care_team_users_cache()
+        if self.tenant_id is None:
+            self.tenant_id = (
+                getattr(self.facility, "tenant_id", None)
+                or getattr(self.patient, "tenant_id", None)
+            )
         if not self.pk:
             # Generate Facility identifiers for this encounter
             created = True

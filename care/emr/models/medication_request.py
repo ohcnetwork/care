@@ -4,9 +4,17 @@ from django.db.models import UniqueConstraint
 from django.utils import timezone
 
 from care.emr.models.base import EMRBaseModel
+from care.parxio_core.compat import TenantForeignKey
 
 
 class MedicationRequestPrescription(EMRBaseModel):
+    tenant = TenantForeignKey(
+        "parxio_core.Tenant",
+        on_delete=models.CASCADE,
+        related_name="medication_request_prescriptions",
+        null=True,
+        blank=True,
+    )
     encounter = models.ForeignKey("emr.Encounter", on_delete=models.CASCADE)
     patient = models.ForeignKey("emr.Patient", on_delete=models.CASCADE)
     name = models.CharField(max_length=100, null=True, blank=True)
@@ -26,6 +34,14 @@ class MedicationRequestPrescription(EMRBaseModel):
                 name="unique_alternate_identifier_encounter",
             )
         ]
+
+    def save(self, *args, **kwargs):
+        if self.tenant_id is None:
+            self.tenant_id = (
+                getattr(self.encounter, "tenant_id", None)
+                or getattr(self.patient, "tenant_id", None)
+            )
+        return super().save(*args, **kwargs)
 
 
 class MedicationRequest(EMRBaseModel):

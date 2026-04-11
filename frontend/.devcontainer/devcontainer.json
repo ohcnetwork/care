@@ -1,0 +1,75 @@
+// For format details, see https://aka.ms/devcontainer.json
+{
+  "name": "CARE Frontend",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:1-22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  // Lifecycle commands — all run in bash (Bookworm default)
+  "waitFor": "onCreateCommand",
+  "onCreateCommand": "npm install --no-audit --no-fund && npm run postinstall && npm run setup",
+  "postCreateCommand": "echo '✅ CARE Frontend ready — run: npm run dev'",
+  "postAttachCommand": {
+    "dev-server": "npm run dev"
+  },
+
+  "containerEnv": {
+    "REACT_CARE_API_URL": "https://careapi.ohc.network",
+    "NODE_OPTIONS": "--max-old-space-size=4096"
+  },
+  "remoteEnv": {
+    "REACT_CARE_API_URL": "https://careapi.ohc.network"
+  },
+
+  "hostRequirements": {
+    "cpus": 4,
+    "memory": "8gb",
+    "storage": "32gb"
+  },
+
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        },
+        "typescript.suggest.autoImports": true,
+        "typescript.updateImportsOnFileMove.enabled": "always",
+        "eslint.validate": [
+          "javascript",
+          "javascriptreact",
+          "typescript",
+          "typescriptreact"
+        ],
+        "tailwindCSS.includeLanguages": {
+          "typescriptreact": "javascript"
+        },
+        "files.associations": {
+          "*.css": "tailwindcss"
+        },
+        "terminal.integrated.defaultProfile.linux": "bash"
+      },
+      "extensions": [
+        "esbenp.prettier-vscode",
+        "dbaeumer.vscode-eslint",
+        "bradlc.vscode-tailwindcss",
+        "yoavbls.pretty-ts-errors",
+        "usernamehw.errorlens",
+        "christian-kohler.path-intellisense",
+        "github.vscode-pull-request-github",
+        "eamodio.gitlens"
+      ]
+    }
+  },
+
+  "portsAttributes": {
+    "4000": {
+      "label": "CARE Frontend",
+      "onAutoForward": "openPreview"
+    }
+  },
+  "forwardPorts": [4000]
+}

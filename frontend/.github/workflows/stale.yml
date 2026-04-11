@@ -1,0 +1,21 @@
+name: "Close stale issues and PRs"
+on:
+  schedule:
+    - cron: "0 4 * * *"
+
+jobs:
+  stale:
+    runs-on: ubuntu-24.04-arm
+    if: github.repository == 'ohcnetwork/care_fe'
+    steps:
+      - uses: actions/stale@v9
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          stale-issue-label: "stale"
+          stale-pr-label: "stale"
+          exempt-issue-labels: "blocked,waiting for related PR,waiting for back end,help wanted,work-in-progress,In Progress,wishlist,EPIC,backlog"
+          exempt-pr-labels: "tested,needs testing,need Review,waiting for related PR,waiting for back end,help wanted,blocked,work-in-progress,In Progress,backlog"
+          days-before-issue-stale: 14
+          days-before-pr-stale: 7
+          days-before-issue-close: -1
+          days-before-pr-close: -1

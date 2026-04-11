@@ -110,6 +110,11 @@ from care.emr.api.viewsets.valueset import ValueSetViewSet
 from care.security.api.viewsets.permissions import PermissionViewSet
 from care.security.api.viewsets.roles import RoleViewSet
 from care.users.api.viewsets.plug_config import PlugConfigViewset
+from care.parxio_core.views import (
+    CurrentTenantView,
+    MonthlyIncentiveSummaryView,
+    RazorpayWebhookView,
+)
 
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 
@@ -502,6 +507,17 @@ router.register("extensions", ExtensionsViewSet, basename="extensions")
 app_name = "api"
 urlpatterns = [
     path("", include(router.urls)),
+    path("parxio/tenant/current/", CurrentTenantView.as_view(), name="parxio-current-tenant"),
+    path(
+        "parxio/webhooks/razorpay/",
+        RazorpayWebhookView.as_view(),
+        name="parxio-razorpay-webhook",
+    ),
+    path(
+        "parxio/facility/<uuid:facility_external_id>/incentives/",
+        MonthlyIncentiveSummaryView.as_view(),
+        name="parxio-monthly-incentives",
+    ),
     path("", include(user_nested_router.urls)),
     path("", include(facility_nested_router.urls)),
     path("", include(schedule_nested_router.urls)),

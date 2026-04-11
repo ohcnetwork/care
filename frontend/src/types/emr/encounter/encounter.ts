@@ -1,0 +1,302 @@
+import {
+  BadgeCheck,
+  Ban,
+  BedDouble,
+  Calendar,
+  CirclePause,
+  CircleX,
+  DoorOpen,
+  FileQuestion,
+  Home,
+  HouseHeart,
+  LoaderCircle,
+  LucideIcon,
+  MonitorSmartphone,
+  Siren,
+  Stethoscope,
+} from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+
+import { CareTeamResponse } from "@/types/careTeam/careTeam";
+import { PatientListRead, PatientRead } from "@/types/emr/patient/patient";
+import { Permissions } from "@/types/emr/permission/permission";
+import { TagConfig } from "@/types/emr/tagConfig/tagConfig";
+import { FacilityBareMinimum } from "@/types/facility/facility";
+import { FacilityOrganizationRead } from "@/types/facilityOrganization/facilityOrganization";
+import { LocationAssociationRead } from "@/types/location/association";
+import { LocationMinSpec, LocationRead } from "@/types/location/location";
+import { AppointmentRead } from "@/types/scheduling/schedule";
+import { UserReadMinimal } from "@/types/user/user";
+
+export const ENCOUNTER_ADMIT_SOURCE = [
+  "hosp_trans",
+  "emd",
+  "outp",
+  "born",
+  "gp",
+  "mp",
+  "nursing",
+  "psych",
+  "rehab",
+  "other",
+] as const;
+
+/**
+ * Do not use this constant directly. Use `careConfig.encounterClasses` instead.
+ */
+export const ENCOUNTER_CLASS = [
+  "imp",
+  "amb",
+  "obsenc",
+  "emer",
+  "vr",
+  "hh",
+] as const;
+
+export const ENCOUNTER_DIET_PREFERENCE = [
+  "vegetarian",
+  "dairy_free",
+  "nut_free",
+  "gluten_free",
+  "vegan",
+  "halal",
+  "kosher",
+  "none",
+] as const;
+
+export const ENCOUNTER_DISCHARGE_DISPOSITION = [
+  "home",
+  "other_hcf",
+  "aadvice",
+  "exp",
+  "alt_home",
+  "hosp",
+  "long",
+  "psy",
+  "rehab",
+  "snf",
+  "oth",
+] as const;
+
+export const ENCOUNTER_PRIORITY = [
+  "stat",
+  "ASAP",
+  "emergency",
+  "urgent",
+  "routine",
+  "elective",
+  "rush_reporting",
+  "timing_critical",
+  "callback_results",
+  "callback_for_scheduling",
+  "preop",
+  "as_needed",
+  "use_as_directed",
+] as const;
+
+export const ENCOUNTER_PRIORITY_COLORS = {
+  stat: "destructive",
+  ASAP: "yellow",
+  emergency: "destructive",
+  urgent: "orange",
+  routine: "blue",
+  elective: "indigo",
+  rush_reporting: "orange",
+  timing_critical: "yellow",
+  callback_results: "green",
+  callback_for_scheduling: "purple",
+  preop: "pink",
+  as_needed: "teal",
+  use_as_directed: "indigo",
+} as const satisfies Record<
+  EncounterPriority,
+  React.ComponentProps<typeof Badge>["variant"]
+>;
+
+export enum EncounterStatus {
+  PLANNED = "planned",
+  IN_PROGRESS = "in_progress",
+  ON_HOLD = "on_hold",
+  DISCHARGED = "discharged",
+  COMPLETED = "completed",
+  CANCELLED = "cancelled",
+  DISCONTINUED = "discontinued",
+  ENTERED_IN_ERROR = "entered_in_error",
+  UNKNOWN = "unknown",
+}
+
+export const ENCOUNTER_STATUS_COLORS = {
+  planned: "blue",
+  in_progress: "yellow",
+  on_hold: "orange",
+  discharged: "primary",
+  completed: "green",
+  cancelled: "destructive",
+  discontinued: "destructive",
+  entered_in_error: "destructive",
+  unknown: "secondary",
+} as const satisfies Record<
+  EncounterStatus,
+  React.ComponentProps<typeof Badge>["variant"]
+>;
+
+export const ENCOUNTER_CLASS_ICONS = {
+  imp: BedDouble,
+  amb: DoorOpen,
+  obsenc: Stethoscope,
+  emer: Siren,
+  vr: MonitorSmartphone,
+  hh: HouseHeart,
+} as const satisfies Record<EncounterClass, LucideIcon>;
+
+export const ENCOUNTER_STATUS_ICONS = {
+  planned: Calendar,
+  in_progress: LoaderCircle,
+  discharged: Home,
+  completed: BadgeCheck,
+  cancelled: CircleX,
+  on_hold: CirclePause,
+  discontinued: CircleX,
+  entered_in_error: Ban,
+  unknown: FileQuestion,
+} as const satisfies Record<EncounterStatus, LucideIcon>;
+
+export const ENCOUNTER_CLASSES_COLORS = {
+  imp: "indigo", // Inpatient
+  emer: "destructive", // Emergency
+  amb: "green", // Outpatient/Ambulatory
+  obsenc: "secondary", // Observation
+  vr: "secondary", // Virtual
+  hh: "teal", // Home Health
+} as const satisfies Record<EncounterClass, string>;
+
+export type EncounterAdmitSources = (typeof ENCOUNTER_ADMIT_SOURCE)[number];
+
+export type EncounterClass = (typeof ENCOUNTER_CLASS)[number];
+
+export type EncounterDietPreference =
+  (typeof ENCOUNTER_DIET_PREFERENCE)[number];
+
+export type EncounterDischargeDisposition =
+  (typeof ENCOUNTER_DISCHARGE_DISPOSITION)[number];
+
+export type EncounterPriority = (typeof ENCOUNTER_PRIORITY)[number];
+
+export type Period = {
+  start?: string;
+  end?: string;
+};
+
+export type Hospitalization = {
+  re_admission?: boolean;
+  admit_source?: EncounterAdmitSources;
+  discharge_disposition?: EncounterDischargeDisposition;
+  diet_preference?: EncounterDietPreference;
+};
+
+export type History = {
+  status: string;
+  moved_at: string;
+};
+
+export type EncounterClassHistory = {
+  history: History[];
+};
+
+export type StatusHistory = {
+  history: History[];
+};
+
+export interface EncounterBase {
+  status: EncounterStatus;
+  encounter_class: EncounterClass;
+  period: Period;
+  hospitalization?: Hospitalization | null;
+  priority: EncounterPriority;
+  external_identifier: string | null;
+  discharge_summary_advice: string | null;
+}
+
+export interface EncounterListRead extends EncounterBase {
+  id: string;
+  patient: PatientListRead;
+  facility: FacilityBareMinimum;
+  status_history: StatusHistory;
+  encounter_class_history: EncounterClassHistory;
+  created_date: string;
+  modified_date: string;
+  tags: TagConfig[];
+  current_location: LocationMinSpec | null;
+  care_team: CareTeamResponse[];
+}
+
+export interface EncounterRead
+  extends Omit<EncounterListRead, "patient">, Permissions {
+  appointment: AppointmentRead | null;
+  patient: PatientRead;
+  organizations: FacilityOrganizationRead[];
+  current_location: LocationRead | null;
+  location_history: LocationAssociationRead[];
+  care_team: CareTeamResponse[];
+  tags: TagConfig[];
+  created_by: UserReadMinimal;
+  updated_by: UserReadMinimal;
+}
+export interface EncounterCreate extends Omit<
+  EncounterBase,
+  "discharge_summary_advice" | "external_identifier"
+> {
+  patient: string;
+  facility: string;
+  organizations: string[];
+  tags?: string[];
+  appointment?: string;
+  external_identifier?: string;
+  discharge_summary_advice?: string;
+}
+
+export type EncounterEdit = EncounterBase;
+
+export const completedEncounterStatus = ["completed"];
+export const inactiveEncounterStatus = [
+  ...["cancelled", "entered_in_error", "discontinued"],
+  ...completedEncounterStatus,
+] as const;
+
+export const ENCOUNTER_STATUS_FILTER_COLORS = {
+  planned: "bg-blue-100 text-blue-900 border-blue-300",
+  in_progress: "bg-yellow-100/80 text-yellow-900 border-yellow-300",
+  on_hold: "bg-orange-100 text-orange-900 border-orange-300",
+  discharged: "bg-primary-100 text-primary-900 border-primary-300",
+  completed: "bg-green-100 text-green-900 border-green-300",
+  cancelled: "bg-red-100 text-red-900 border-red-300",
+  discontinued: "bg-red-100 text-red-900 border-red-300",
+  entered_in_error: "bg-red-100 text-red-900 border-red-300",
+  unknown: "bg-gray-100 text-gray-900 border-gray-300",
+} as const;
+
+export const ENCOUNTER_CLASS_FILTER_COLORS = {
+  imp: "bg-indigo-100 text-indigo-900 border-indigo-300",
+  emer: "bg-red-100 text-red-900 border-red-300",
+  amb: "bg-green-100 text-green-900 border-green-300",
+  obsenc: "border-gray-300 bg-gray-100 text-gray-900",
+  vr: "border-gray-300 bg-gray-100 text-gray-900",
+  hh: "bg-teal-100 text-teal-900 border-teal-300",
+} as const;
+
+export const ENCOUNTER_PRIORITY_FILTER_COLORS = {
+  stat: "bg-red-100 text-red-900 border-red-300",
+  ASAP: "bg-yellow-100/80 text-yellow-900 border-yellow-300",
+  emergency: "bg-red-100 text-red-900 border-red-300",
+  urgent: "bg-orange-100 text-orange-900 border-orange-300",
+  routine: "bg-blue-100 text-blue-900 border-blue-300",
+  elective: "bg-indigo-100 text-indigo-900 border-indigo-300",
+  rush_reporting: "bg-orange-100 text-orange-900 border-orange-300",
+  timing_critical: "bg-yellow-100/80 text-yellow-900 border-yellow-300",
+  callback_results: "bg-green-100 text-green-900 border-green-300",
+  callback_for_scheduling: "bg-purple-100 text-purple-900 border-purple-300",
+  preop: "bg-pink-100 text-pink-900 border-pink-300",
+  as_needed: "bg-teal-100 text-teal-900 border-teal-300",
+  use_as_directed: "bg-indigo-100 text-indigo-900 border-indigo-300",
+} as const;

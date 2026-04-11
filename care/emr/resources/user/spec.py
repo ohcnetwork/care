@@ -190,8 +190,15 @@ class CurrentUserRetrieveSpec(UserRetrieveSpec):
 
         mapping["permissions"] = list(
             RolePermission.objects.filter(
-                role_id__in=OrganizationUser.objects.filter(user=obj).values_list(
-                    "role_id", flat=True
+                role_id__in=list(
+                    OrganizationUser.objects.filter(user=obj).values_list(
+                        "role_id", flat=True
+                    )
+                )
+                + list(
+                    FacilityOrganizationUser.objects.filter(user=obj).values_list(
+                        "role_id", flat=True
+                    )
                 )
             )
             .select_related("permission")

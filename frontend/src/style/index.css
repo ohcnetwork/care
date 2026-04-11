@@ -1,0 +1,744 @@
+@import "@fontsource/figtree/300.css" layer(base);
+@import "@fontsource/figtree/400.css" layer(base);
+@import "@fontsource/figtree/500.css" layer(base);
+@import "@fontsource/figtree/600.css" layer(base);
+@import "@fontsource/figtree/700.css" layer(base);
+@import "@fontsource/figtree/800.css" layer(base);
+@import "@fontsource/figtree/900.css" layer(base);
+
+@import "tailwindcss";
+
+@import "tw-animate-css";
+
+@config "../../tailwind.config.js";
+
+/* Custom animations for the SessionExpired component */
+@keyframes ping-slow {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(0.8);
+    opacity: 0.3;
+  }
+}
+
+@keyframes ping-medium {
+  0% {
+    transform: scale(0.75);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(0.75);
+    opacity: 0.3;
+  }
+}
+
+@keyframes ping-fast {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(0.7);
+    opacity: 0.3;
+  }
+}
+@keyframes fade {
+  0%,
+  100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+.animate-ping-slow {
+  animation: ping-slow 8s ease-in-out infinite;
+}
+
+.animate-ping-medium {
+  animation: ping-medium 8s ease-in-out infinite;
+}
+
+.animate-ping-fast {
+  animation: ping-fast 8s ease-in-out infinite;
+}
+.animate-fade {
+  animation: fade 4s ease-in-out infinite;
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+
+  [data-slot="textarea"]:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@theme {
+  --color-warning-50: var(--color-amber-50);
+  --color-warning-100: var(--color-amber-100);
+  --color-warning-200: var(--color-amber-200);
+  --color-warning-300: var(--color-amber-300);
+  --color-warning-400: var(--color-amber-400);
+  --color-warning-500: var(--color-amber-500);
+  --color-warning-600: var(--color-amber-600);
+  --color-warning-700: var(--color-amber-700);
+  --color-warning-800: var(--color-amber-800);
+  --color-warning-900: var(--color-amber-900);
+
+  --color-alert-50: var(--color-violet-50);
+  --color-alert-100: var(--color-violet-100);
+  --color-alert-200: var(--color-violet-200);
+  --color-alert-300: var(--color-violet-300);
+  --color-alert-400: var(--color-violet-400);
+  --color-alert-500: var(--color-violet-500);
+  --color-alert-600: var(--color-violet-600);
+  --color-alert-700: var(--color-violet-700);
+  --color-alert-800: var(--color-violet-800);
+  --color-alert-900: var(--color-violet-900);
+
+  --color-danger-50: var(--color-red-50);
+  --color-danger-100: var(--color-red-100);
+  --color-danger-200: var(--color-red-200);
+  --color-danger-300: var(--color-red-300);
+  --color-danger-400: var(--color-red-400);
+  --color-danger-500: var(--color-red-500);
+  --color-danger-600: var(--color-red-600);
+  --color-danger-700: var(--color-red-700);
+  --color-danger-800: var(--color-red-800);
+  --color-danger-900: var(--color-red-900);
+}
+
+@layer utilities {
+  html {
+    @apply size-full scroll-smooth;
+  }
+
+  body {
+    font-family: "Figtree", sans-serif;
+    color: #453c52;
+    @apply text-secondary-900 size-full font-sans antialiased;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
+  }
+
+  h1 {
+    font-size: 2.5rem;
+  }
+
+  h2 {
+    font-size: 2rem;
+  }
+
+  h3 {
+    font-size: 1.5rem;
+  }
+
+  h4 {
+    font-size: 1.25rem;
+  }
+
+  h5 {
+    font-size: 1rem;
+  }
+
+  h6 {
+    font-size: 0.875rem;
+  }
+
+  @keyframes wave {
+    50% {
+      transform: scale(0.9);
+    }
+  }
+
+  /* Print utility classes for better content control */
+  .print-page-break-before {
+    page-break-before: always;
+    break-before: page;
+  }
+
+  .print-page-break-after {
+    page-break-after: always;
+    break-after: page;
+  }
+
+  .print-avoid-break {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  .print-landscape {
+    page: landscape;
+  }
+
+  .print-portrait {
+    page: portrait;
+  }
+
+  .print-a4 {
+    page: a4;
+  }
+
+  .print-letter {
+    page: letter;
+  }
+
+  /* Responsive print font sizes */
+  .print-text-small {
+    font-size: 10pt !important;
+  }
+
+  .print-text-medium {
+    font-size: 12pt !important;
+  }
+
+  .print-text-large {
+    font-size: 14pt !important;
+  }
+
+  /* Auto-scaling print text - scales relative to page width */
+  .print-text-auto {
+    font-size: clamp(8pt, 1.8vw, 12pt) !important;
+  }
+
+  .print-text-auto-small {
+    font-size: clamp(6pt, 1.4vw, 10pt) !important;
+  }
+
+  .print-text-auto-large {
+    font-size: clamp(10pt, 2.2vw, 14pt) !important;
+  }
+
+  /* Scale factor utilities for print containers */
+  .print-scale-90 {
+    transform: scale(0.9);
+    transform-origin: top left;
+  }
+
+  .print-scale-85 {
+    transform: scale(0.85);
+    transform-origin: top left;
+  }
+
+  .print-scale-80 {
+    transform: scale(0.8);
+    transform-origin: top left;
+  }
+
+  .print-scale-75 {
+    transform: scale(0.75);
+    transform-origin: top left;
+  }
+
+  .print-scale-fit {
+    transform: scale(var(--print-scale, 1));
+    transform-origin: top left;
+  }
+
+  /* Print-specific logo sizing */
+  .print-logo-small {
+    max-width: 80px !important;
+    max-height: 24px !important;
+  }
+
+  .print-logo-medium {
+    max-width: 120px !important;
+    max-height: 32px !important;
+  }
+
+  .print-logo-large {
+    max-width: 150px !important;
+    max-height: 40px !important;
+  }
+
+  @media print {
+    /* Respect browser's margin selection (None/Default/Minimum)
+     * by not setting explicit @page margins */
+    @page {
+      size: auto;
+
+      @bottom-center {
+        content: "Page " counter(page) " of " counter(pages);
+        font-size: 8pt;
+        color: #666;
+      }
+    }
+  }
+
+  @media print {
+    /* Content scaling and layout adjustments */
+    body * {
+      visibility: hidden;
+    }
+
+    #section-to-print,
+    #section-to-print * {
+      visibility: visible;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    #section-to-print {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: auto;
+      /* Allow content to scale and wrap naturally */
+      max-width: 100%;
+      box-sizing: border-box;
+      /* Ensure content fits within printable area */
+      overflow: visible;
+      /* No transform to respect browser margins exactly */
+      transform: none;
+      transform-origin: top left;
+      /* Responsive font scaling for print - scales based on page width */
+      font-size: clamp(8pt, 1.6vw, 12pt);
+      line-height: 1.4;
+      /* CSS custom property for manual scale control */
+      --print-scale: 1;
+    }
+
+    /* Isolated print styles — shared by single-print and multi-print */
+    #single-print,
+    #single-print *,
+    #multi-print,
+    #multi-print * {
+      visibility: visible;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    #single-print,
+    #multi-print {
+      display: block !important;
+      position: fixed;
+      left: 0;
+      top: 0;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+      overflow: visible;
+    }
+
+    /* Collapse everything else for single-print (only when multi-print is NOT also active) */
+    body:has(#single-print):not(:has(#multi-print))
+      *:not(#single-print):not(#single-print *) {
+      height: 0 !important;
+      min-height: 0 !important;
+      max-height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+    }
+
+    /* Collapse everything else for multi-print, and suppress any open single-print card */
+    body:has(#multi-print) *:not(#multi-print):not(#multi-print *) {
+      height: 0 !important;
+      min-height: 0 !important;
+      max-height: 0 !important;
+      padding: 0 !important;
+      margin: 0 !important;
+      overflow: hidden !important;
+    }
+
+    body:has(#multi-print) #single-print {
+      display: none !important;
+    }
+
+    /* Auto-fit content to page width */
+    #section-to-print.print-fit-page {
+      transform: scale(var(--print-scale, 0.95));
+      width: calc(100% / var(--print-scale, 0.95));
+    }
+
+    /* Tighter text scaling for dense content */
+    #section-to-print.print-compact {
+      font-size: clamp(7pt, 1.3vw, 10pt);
+      line-height: 1.3;
+    }
+
+    /* Looser text scaling for readability */
+    #section-to-print.print-readable {
+      font-size: clamp(10pt, 2vw, 14pt);
+      line-height: 1.5;
+    }
+
+    /* No scaling applied - respect browser's layout and margins exactly */
+
+    /* Break handling for better content flow */
+    #section-to-print {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* Ensure tables and large elements scale properly */
+    #section-to-print table {
+      max-width: 100%;
+      width: 100%;
+      table-layout: auto;
+      font-size: clamp(7pt, 1.4vw, 11pt);
+      border-collapse: collapse;
+    }
+
+    #section-to-print table th,
+    #section-to-print table td {
+      padding: clamp(2pt, 0.4vw, 6pt);
+    }
+
+    /* Scale headings proportionally */
+    #section-to-print h1 {
+      font-size: clamp(14pt, 3vw, 20pt);
+    }
+
+    #section-to-print h2 {
+      font-size: clamp(12pt, 2.5vw, 16pt);
+    }
+
+    #section-to-print h3 {
+      font-size: clamp(10pt, 2vw, 14pt);
+    }
+
+    #section-to-print h4,
+    #section-to-print h5,
+    #section-to-print h6 {
+      font-size: clamp(9pt, 1.8vw, 12pt);
+    }
+
+    #section-to-print img {
+      max-width: 100%;
+      height: auto;
+    }
+
+    /* Specific styling for logos and small images in print */
+    #section-to-print img[alt*="Logo" i],
+    #section-to-print img[alt*="logo" i],
+    #section-to-print .logo img,
+    #section-to-print img.logo {
+      max-width: 100px !important;
+      max-height: 100px !important;
+      width: auto !important;
+      height: auto !important;
+      object-fit: contain !important;
+    }
+
+    /* Ensure header logos don't take too much space */
+    #section-to-print header img,
+    #section-to-print .header img {
+      max-width: 120px !important;
+      max-height: 35px !important;
+    }
+
+    /* Flexible content containers */
+    #section-to-print .container,
+    #section-to-print .content {
+      width: 100%;
+      max-width: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    /* Ensure content doesn't overflow page boundaries */
+    #section-to-print * {
+      max-width: 100%;
+      word-wrap: break-word;
+      overflow-wrap: break-word;
+    }
+
+    /* Hide elements that shouldn't be printed */
+    .no-print,
+    button:not(.print-button),
+    .navbar,
+    .sidebar {
+      display: none !important;
+    }
+
+    /* Apply print utility classes */
+    .print-page-break-before {
+      page-break-before: always;
+      break-before: page;
+    }
+
+    .print-page-break-after {
+      page-break-after: always;
+      break-after: page;
+    }
+
+    .print-avoid-break {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    .print-text-small {
+      font-size: 10pt !important;
+    }
+
+    .print-text-medium {
+      font-size: 12pt !important;
+    }
+
+    .print-text-large {
+      font-size: 14pt !important;
+    }
+  }
+
+  .App {
+    text-align: center;
+  }
+
+  .App-logo {
+    height: 10vmin;
+    pointer-events: none;
+    filter: brightness(80%);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .App-logo {
+      animation: App-logo-blink 1s linear infinite;
+    }
+  }
+
+  .App-header {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: calc(10px + 2vmin);
+    color: white;
+  }
+
+  @keyframes App-logo-blink {
+    0% {
+      opacity: 0;
+    }
+    25% {
+      opacity: 0.5;
+    }
+    50% {
+      opacity: 1;
+    }
+    75% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+
+  /* for gmaps search dropdown */
+  .pac-container {
+    z-index: 100000 !important;
+  }
+
+  .login-hero {
+    background:
+      linear-gradient(
+        to bottom right,
+        rgba(4, 78, 55, 0.466),
+        rgba(2, 54, 40, 0.521)
+      ),
+      url("/images/wave_scene_square.png");
+    background-size: cover;
+    background-position: center;
+    animation: alternate-reverse 30s linear infinite herobg;
+  }
+
+  .login-hero::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0px;
+    width: 200px;
+    z-index: 2;
+    background: url("/images/wave_long_2.png");
+    background-position: top right;
+    transition: 0.2s;
+    animation: 120s linear infinite wave alternate-reverse;
+    -webkit-filter: drop-shadow(-30px 10px 10px rgba(34, 34, 34, 0.101));
+  }
+
+  .login-hero::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 10px;
+    width: 200px;
+    z-index: 1;
+    background: url("/images/wave_long.png");
+    opacity: 0.5;
+    background-position: bottom right;
+    animation: 120s linear infinite wave_2 alternate-reverse;
+    -webkit-filter: drop-shadow(-30px 10px 10px rgba(34, 34, 34, 0.116));
+  }
+
+  @media screen and (max-width: 768px) {
+    .login-hero::before {
+      display: none;
+    }
+    .login-hero::after {
+      display: none;
+    }
+  }
+
+  @keyframes wave {
+    0% {
+      background-position: top right;
+    }
+    100% {
+      background-position: bottom right;
+    }
+  }
+
+  @keyframes wave_2 {
+    0% {
+      background-position: bottom right;
+    }
+    100% {
+      background-position: top right;
+    }
+  }
+
+  @keyframes herobg {
+    0% {
+      background-size: 110%;
+    }
+    100% {
+      background-size: 200%;
+    }
+  }
+
+  @media screen and (max-width: 1078px) {
+    @keyframes herobg {
+      0% {
+        background-size: 140%;
+      }
+      100% {
+        background-size: 200%;
+      }
+    }
+  }
+
+  /* clears the ‘X’ from Internet Explorer for input:search */
+  input[type="search"]::-ms-clear {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  input[type="search"]::-ms-reveal {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+
+  /* clears the ‘X’ from Chrome for input:search */
+  input[type="search"]::-webkit-search-decoration,
+  input[type="search"]::-webkit-search-cancel-button,
+  input[type="search"]::-webkit-search-results-button,
+  input[type="search"]::-webkit-search-results-decoration {
+    display: none;
+  }
+
+  /* Style for required form labels */
+  [data-slot="form-label"][for][aria-required="true"]::after {
+    @apply -ml-1 text-red-500 content-['*'];
+  }
+
+  /* Style for tabs */
+  [data-slot="tabs-trigger"] {
+    @apply not-data-[state=active]:text-gray-500;
+  }
+
+  /* Styling for input otp */
+  [data-slot="input-otp-slot"] {
+    @apply data-[active=true]:ring-primary-500 data-[active=true]:border-primary-500 data-[active=true]:ring-1 not-first:data-[active=true]:border-x;
+  }
+
+  /* Styling for radio group */
+  button[role="radio"] {
+    @apply data-[state=checked]:border-primary-500 data-[state=checked]:text-primary-500 border-gray-300 shadow-sm;
+  }
+
+  /* Styling for autocomplete */
+  [data-slot="popover-trigger"] {
+    @apply px-3;
+  }
+
+  /* Styling fix for Select for backwards compatibility */
+  button[role="combobox"] {
+    @apply w-full;
+  }
+
+  /* Styling for command input */
+  [data-slot="command-input-wrapper"] {
+    @apply border-b-0;
+  }
+
+  /* Styling for command dialog */
+  [data-slot="dialog-overlay"] {
+    @apply bg-white/50 backdrop-blur-xs;
+  }
+}
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    --sidebar-background: 220 14.3% 95.9%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: transparent;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}

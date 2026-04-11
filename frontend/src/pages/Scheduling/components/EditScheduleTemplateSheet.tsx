@@ -1,0 +1,971 @@
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import { SaveIcon, Trash2Icon } from "lucide-react";
+import { useState } from "react";
+import { useForm } from "react-hook-form";
+import { Trans, useTranslation } from "react-i18next";
+import { toast } from "sonner";
+import * as z from "zod";
+
+import Callout from "@/CAREUI/display/Callout";
+import CareIcon from "@/CAREUI/icons/CareIcon";
+import WeekdayCheckbox, {
+  DayOfWeek,
+} from "@/CAREUI/interactive/WeekdayCheckbox";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { DatePicker } from "@/components/ui/date-picker";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Switch } from "@/components/ui/switch";
+import { Textarea } from "@/components/ui/textarea";
+
+import ConfirmActionDialog from "@/components/Common/ConfirmActionDialog";
+
+import mutate from "@/Utils/request/mutate";
+import { Time } from "@/Utils/types";
+import { dateQueryString } from "@/Utils/utils";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  calculateSlotDuration,
+  formatAvailabilityTime,
+  getSlotsPerSession,
+  getTokenDuration,
+} from "@/pages/Scheduling/utils";
+import {
+  AvailabilityDateTime,
+  SchedulableResourceType,
+  ScheduleAvailability,
+  ScheduleAvailabilityCreateRequest,
+  ScheduleTemplate,
+} from "@/types/scheduling/schedule";
+import scheduleApis from "@/types/scheduling/scheduleApi";
+
+export default function EditScheduleTemplateSheet({
+  template,
+  facilityId,
+  resourceType,
+  resourceId,
+  trigger,
+  open,
+  onOpenChange,
+}: {
+  template: ScheduleTemplate;
+  facilityId: string;
+  resourceType: SchedulableResourceType;
+  resourceId: string;
+  trigger?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}) {
+  const { t } = useTranslation();
+
+  return (
+    <Sheet open={open} onOpenChange={onOpenChange}>
+      <SheetTrigger asChild>
+        {trigger || <Button variant="outline" size="sm"></Button>}
+      </SheetTrigger>
+      <SheetContent className="flex min-w-full flex-col bg-gray-100 sm:min-w-128">
+        <SheetHeader>
+          <SheetTitle>{t("edit_schedule_template")}</SheetTitle>
+          <SheetDescription className="sr-only">
+            {t("edit_schedule_template")}
+          </SheetDescription>
+        </SheetHeader>
+        <div className="overflow-auto -mx-6 px-6 pb-16">
+          <ScheduleTemplateEditor
+            template={template}
+            facilityId={facilityId}
+            resourceType={resourceType}
+            resourceId={resourceId}
+          />
+
+          <div className="mt-4">
+            <h2 className="text-lg font-semibold">{t("availabilities")}</h2>
+          </div>
+
+          {template.availabilities.length === 0 && (
+            <div className="mt-4">
+              <p className="text-sm text-gray-500">
+                {t("no_availabilities_yet")}
+              </p>
+            </div>
+          )}
+
+          {template.availabilities.map((availability) => (
+            <AvailabilityEditor
+              key={availability.id}
+              availability={availability}
+              scheduleId={template.id}
+              facilityId={facilityId}
+              resourceType={resourceType}
+              resourceId={resourceId}
+            />
+          ))}
+
+          <NewAvailabilityCard
+            scheduleId={template.id}
+            facilityId={facilityId}
+            resourceType={resourceType}
+            resourceId={resourceId}
+          />
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+
+const ScheduleTemplateEditor = ({
+  template,
+  facilityId,
+  resourceId,
+  resourceType,
+}: {
+  template: ScheduleTemplate;
+  facilityId: string;
+  resourceId: string;
+  resourceType: SchedulableResourceType;
+}) => {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  const templateFormSchema = z
+    .object({
+      name: z.string().min(1, t("field_required")),
+      valid_from: z.date({
+        required_error: t("field_required"),
+      }),
+      valid_to: z.date({
+        required_error: t("field_required"),
+      }),
+      is_public: z.boolean(),
+    })
+    .refine(
+      (data) => !dayjs(data.valid_to).isBefore(dayjs(data.valid_from), "day"),
+      {
+        message: t("to_date_equal_or_after_from_date"),
+        path: ["valid_to"],
+      },
+    );
+
+  const form = useForm({
+    resolver: zodResolver(templateFormSchema),
+    defaultValues: {
+      name: template.name,
+      valid_from: new Date(template.valid_from),
+      valid_to: new Date(template.valid_to),
+      is_public: template.is_public,
+    },
+  });
+
+  const { mutate: updateTemplate, isPending: isUpdating } = useMutation({
+    mutationFn: mutate(scheduleApis.templates.update, {
+      pathParams: { facilityId, id: template.id },
+    }),
+    onSuccess: () => {
+      toast.success(t("schedule_template_updated_successfully"));
+      queryClient.invalidateQueries({
+        queryKey: ["schedule", facilityId, { resourceType, resourceId }],
+      });
+    },
+  });
+
+  const { mutate: deleteTemplate, isPending: isDeleting } = useMutation({
+    mutationFn: mutate(scheduleApis.templates.delete, {
+      pathParams: { facilityId, id: template.id },
+    }),
+    onSuccess: () => {
+      toast.success(t("template_deleted"));
+      queryClient.invalidateQueries({
+        queryKey: ["schedule", facilityId, { resourceType, resourceId }],
+      });
+    },
+  });
+
+  const isProcessing = isUpdating || isDeleting;
+
+  function onSubmit(values: z.infer<typeof templateFormSchema>) {
+    updateTemplate({
+      name: values.name,
+      valid_from: dateQueryString(values.valid_from),
+      valid_to: dateQueryString(values.valid_to),
+      is_public: values.is_public,
+    });
+  }
+
+  return (
+    <div className="rounded-lg bg-white p-4 shadow-sm">
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel aria-required>
+                  {t("schedule_template_name")}
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={t("schedule_template_name_placeholder")}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="grid md:grid-cols-2 gap-4">
+            <FormField
+              control={form.control}
+              name="valid_from"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel aria-required>{t("valid_from")}</FormLabel>
+                  <DatePicker
+                    date={field.value}
+                    onChange={(date) => field.onChange(date)}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="valid_to"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel aria-required>{t("valid_to")}</FormLabel>
+                  <DatePicker
+                    date={field.value}
+                    onChange={(date) => field.onChange(date)}
+                  />
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <FormField
+            control={form.control}
+            name="is_public"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                <div className="flex flex-row items-center gap-2">
+                  <FormControl>
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                  </FormControl>
+                  <FormLabel className="text-sm">
+                    {t("make_template_public")}
+                  </FormLabel>
+                </div>
+                {template.is_public && !field.value && (
+                  <Callout variant="warning" badge="Note">
+                    <p className="text-sm">
+                      {t("template_visibility_change_warning")}
+                    </p>
+                  </Callout>
+                )}
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="flex justify-end gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              disabled={isProcessing}
+              onClick={() => setShowDeleteDialog(true)}
+              size="sm"
+            >
+              <Trash2Icon />
+              {isDeleting ? t("deleting") : t("delete")}
+            </Button>
+
+            <Button
+              variant="primary"
+              type="submit"
+              disabled={isUpdating || !form.formState.isDirty}
+              size="sm"
+            >
+              <SaveIcon />
+              {isUpdating ? t("saving") : t("save")}
+            </Button>
+          </div>
+        </form>
+      </Form>
+      <ConfirmActionDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        title={t("are_you_sure")}
+        description={
+          <Alert variant="destructive" className="mt-4">
+            <AlertTitle>{t("warning")}</AlertTitle>
+            <AlertDescription>
+              {t(
+                "this_will_permanently_remove_the_scheduled_template_and_cannot_be_undone",
+              )}
+            </AlertDescription>
+          </Alert>
+        }
+        onConfirm={() => {
+          deleteTemplate();
+        }}
+        confirmText={isDeleting ? t("deleting") : t("delete")}
+        variant="destructive"
+      />
+    </div>
+  );
+};
+
+const AvailabilityEditor = ({
+  availability,
+  scheduleId,
+  facilityId,
+  resourceType,
+  resourceId,
+}: {
+  availability: ScheduleAvailability;
+  scheduleId: string;
+  facilityId: string;
+  resourceType: SchedulableResourceType;
+  resourceId: string;
+}) => {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  const { mutate: deleteAvailability, isPending: isDeleting } = useMutation({
+    mutationFn: mutate(scheduleApis.templates.availabilities.delete, {
+      pathParams: { facilityId, scheduleId, id: availability.id },
+    }),
+    onSuccess: () => {
+      toast.success(t("schedule_availability_deleted_successfully"));
+      queryClient.invalidateQueries({
+        queryKey: ["schedule", facilityId, { resourceType, resourceId }],
+      });
+    },
+  });
+
+  // Group availabilities by day of week
+  const availabilitiesByDay = availability.availability.reduce(
+    (acc, curr) => {
+      const day = curr.day_of_week;
+      if (!acc[day]) {
+        acc[day] = [];
+      }
+      acc[day].push(curr);
+      return acc;
+    },
+    {} as Record<DayOfWeek, AvailabilityDateTime[]>,
+  );
+
+  // Calculate slots and duration for appointment type
+  const { totalSlots, tokenDuration } = (() => {
+    if (availability.slot_type !== "appointment")
+      return { totalSlots: null, tokenDuration: null };
+
+    const slots = Math.floor(
+      getSlotsPerSession(
+        availability.availability[0].start_time,
+        availability.availability[0].end_time,
+        availability.slot_size_in_minutes,
+      ) ?? 0,
+    );
+
+    const duration = getTokenDuration(
+      availability.slot_size_in_minutes,
+      availability.tokens_per_slot,
+    );
+
+    return { totalSlots: slots, tokenDuration: duration };
+  })();
+
+  return (
+    <div className="mt-4 rounded-lg bg-white p-4 shadow-sm">
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <CareIcon icon="l-clock" className="text-lg text-blue-600" />
+          <span className="font-semibold">{availability.name}</span>
+          <Badge variant="blue" className="rounded-full text-xs">
+            {t(`SCHEDULE_AVAILABILITY_TYPE__${availability.slot_type}`)}
+          </Badge>
+        </div>
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setShowDeleteDialog(true)}
+          disabled={isDeleting}
+        >
+          <CareIcon icon="l-trash" className="text-lg" />
+        </Button>
+      </div>
+
+      <div className="space-y-4">
+        {availability.slot_type === "appointment" && (
+          <div className="grid md:grid-cols-2 gap-3">
+            <div className="flex flex-col rounded-md bg-gray-50 p-3">
+              <span className="text-sm font-medium text-gray-600">
+                {t("slot_configuration")}
+              </span>
+              <div className="mt-2 flex items-baseline gap-1">
+                <span className="text-2xl font-semibold text-gray-900">
+                  {availability.slot_size_in_minutes}
+                </span>
+                <span className="text-sm font-normal text-gray-500">
+                  {t("minutes")}
+                </span>
+                <span className="mx-1 text-gray-400">×</span>
+                <span className="text-2xl font-semibold text-gray-900">
+                  {availability.tokens_per_slot}
+                </span>
+                <span className="text-sm font-normal text-gray-500">
+                  {t("patients")}
+                </span>
+              </div>
+              <span className="mt-1 text-sm text-gray-500">
+                ≈ {tokenDuration?.toFixed(1).replace(".0", "")}{" "}
+                {t("minutes_per_patient")}{" "}
+              </span>
+            </div>
+
+            <div className="flex flex-col rounded-md bg-gray-50 p-3">
+              <span className="text-sm font-medium text-gray-600">
+                {t("session_capacity")}
+              </span>
+              <div className="mt-2 flex items-baseline gap-1">
+                <span className="text-2xl font-semibold text-gray-900">
+                  {totalSlots}
+                </span>
+                <span className="text-sm font-normal text-gray-500">
+                  {t("slots")}
+                </span>
+                <span className="mx-1 text-gray-400">×</span>
+                <span className="text-2xl font-semibold text-gray-900">
+                  {availability.tokens_per_slot}
+                </span>
+                <span className="text-sm font-normal text-gray-500">
+                  {t("patients")}
+                </span>
+              </div>
+              <span className="mt-1 text-sm text-gray-500">
+                = {totalSlots ? totalSlots * availability.tokens_per_slot : 0}{" "}
+                {t("total_patients")}
+              </span>
+            </div>
+          </div>
+        )}
+
+        <div>
+          <span className="text-sm font-medium text-gray-500">
+            {t("remarks")}
+          </span>
+          <p className="mt-1 text-sm text-gray-600">
+            {availability.reason || t("no_remarks")}
+          </p>
+        </div>
+
+        <div>
+          <span className="text-sm font-medium text-gray-500">
+            {t("schedule")}
+          </span>
+          <div className="mt-2 space-y-1 pl-2">
+            {Object.entries(availabilitiesByDay).map(([day, times]) => (
+              <p key={day} className="flex items-center gap-2 text-sm">
+                <span className="font-medium w-24 text-gray-600">
+                  {DayOfWeek[parseInt(day)].charAt(0) +
+                    DayOfWeek[parseInt(day)].slice(1).toLowerCase()}
+                </span>
+                <span className="text-gray-500">
+                  {times
+                    .map((time) => formatAvailabilityTime([time]))
+                    .join(", ")}
+                </span>
+              </p>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <ConfirmActionDialog
+        open={showDeleteDialog}
+        onOpenChange={setShowDeleteDialog}
+        title={t("are_you_sure")}
+        description={
+          <Alert variant="destructive" className="mt-4">
+            <AlertTitle>{t("warning")}</AlertTitle>
+            <AlertDescription>
+              {t(
+                "this_will_permanently_remove_the_session_and_cannot_be_undone",
+              )}
+            </AlertDescription>
+          </Alert>
+        }
+        onConfirm={() => {
+          deleteAvailability();
+        }}
+        confirmText={isDeleting ? t("deleting") : t("delete")}
+        variant="destructive"
+      />
+    </div>
+  );
+};
+
+const NewAvailabilityCard = ({
+  scheduleId,
+  facilityId,
+  resourceType,
+  resourceId,
+}: {
+  scheduleId: string;
+  facilityId: string;
+  resourceType: SchedulableResourceType;
+  resourceId: string;
+}) => {
+  const { t } = useTranslation();
+  const queryClient = useQueryClient();
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const formSchema = z
+    .object({
+      name: z.string().min(1, t("field_required")),
+      slot_type: z.enum(["appointment", "open", "closed"]),
+      start_time: z.string().min(1, t("field_required")) as z.ZodType<
+        Time | undefined
+      >,
+      end_time: z.string().min(1, t("field_required")) as z.ZodType<
+        Time | undefined
+      >,
+      slot_size_in_minutes: z.number().nullable(),
+      tokens_per_slot: z.number().nullable(),
+      reason: z.string().trim(),
+      weekdays: z
+        .array(z.number() as unknown as z.ZodType<DayOfWeek>)
+        .min(1, t("schedule_weekdays_min_error")),
+      is_auto_fill: z.boolean().optional(),
+      num_of_slots: z.number().min(1, t("number_min_error", { min: 0 })),
+    })
+    .refine(
+      (data) => {
+        // Parse time strings into Date objects for comparison
+        const startTime = dayjs(data.start_time, "HH:mm");
+        const endTime = dayjs(data.end_time, "HH:mm");
+
+        return startTime.isBefore(endTime);
+      },
+      {
+        message: t("start_time_must_be_before_end_time"),
+        path: ["start_time"], // This will show the error on the start_time field
+      },
+    );
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      name: "",
+      slot_type: "appointment",
+      start_time: undefined,
+      end_time: undefined,
+      slot_size_in_minutes: null,
+      tokens_per_slot: null,
+      reason: "",
+      weekdays: [],
+      is_auto_fill: false,
+      num_of_slots: 1,
+    },
+  });
+
+  const { mutate: createAvailability, isPending } = useMutation({
+    mutationFn: mutate(scheduleApis.templates.availabilities.create, {
+      pathParams: { facilityId, scheduleId },
+    }),
+    onSuccess: () => {
+      toast.success(t("schedule_availability_created_successfully"));
+      queryClient.invalidateQueries({
+        queryKey: ["schedule", facilityId, { resourceType, resourceId }],
+      });
+      form.reset();
+      setIsExpanded(false);
+    },
+  });
+
+  const timeAllocationCallout = () => {
+    const startTime = form.watch("start_time");
+    const endTime = form.watch("end_time");
+    const slotSizeInMinutes = form.watch("slot_size_in_minutes");
+    const tokensPerSlot = form.watch("tokens_per_slot");
+
+    if (!startTime || !endTime || !slotSizeInMinutes || !tokensPerSlot) {
+      return null;
+    }
+
+    const slotsPerSession = getSlotsPerSession(
+      startTime,
+      endTime,
+      slotSizeInMinutes,
+    );
+    const tokenDuration = getTokenDuration(slotSizeInMinutes, tokensPerSlot);
+
+    if (!slotsPerSession || !tokenDuration) return null;
+
+    return (
+      <Callout variant="alert" badge="Info">
+        <Trans
+          i18nKey="schedule_slots_allocation_callout"
+          values={{
+            slots: Math.floor(slotsPerSession),
+            token_duration: tokenDuration.toFixed(1).replace(".0", ""),
+          }}
+        />
+      </Callout>
+    );
+  };
+
+  function onSubmit(values: z.infer<typeof formSchema>) {
+    const availability = {
+      name: values.name,
+      slot_type: values.slot_type,
+      reason: values.reason,
+      availability: values.weekdays.map((day) => ({
+        day_of_week: day,
+        start_time: values.start_time,
+        end_time: values.end_time,
+      })),
+      ...(values.slot_type === "appointment"
+        ? {
+            slot_size_in_minutes: values.slot_size_in_minutes!,
+            tokens_per_slot: values.tokens_per_slot!,
+          }
+        : {
+            slot_size_in_minutes: null,
+            tokens_per_slot: null,
+          }),
+    } as ScheduleAvailabilityCreateRequest;
+
+    createAvailability(availability);
+  }
+
+  if (!isExpanded) {
+    return (
+      <div className="mt-4">
+        <Button
+          variant="outline_primary"
+          onClick={() => setIsExpanded(true)}
+          className="w-full"
+        >
+          <CareIcon icon="l-plus" className="text-lg" />
+          <span>{t("add_another_session")}</span>
+        </Button>
+      </div>
+    );
+  }
+  const updateSlotDuration = () => {
+    const isAutoFill = form.watch("is_auto_fill");
+    if (isAutoFill) {
+      const start = form.watch("start_time");
+      const end = form.watch("end_time");
+      const numOfSlots = form.watch("num_of_slots");
+      if (!start || !end) return;
+      const duration = calculateSlotDuration(start, end, numOfSlots);
+      form.setValue("slot_size_in_minutes", duration);
+    }
+  };
+
+  return (
+    <div className="mt-4 rounded-lg bg-white p-4 shadow-sm">
+      <div className="mb-4 flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          <CareIcon icon="l-clock" className="text-lg text-blue-600" />
+          <span className="font-semibold">{t("new_session")}</span>
+        </div>
+      </div>
+
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel aria-required>{t("session_title")}</FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder={t("session_title_placeholder")}
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* <FormField
+            control={form.control}
+            name="slot_type"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel aria-required>{t("session_type")}</FormLabel>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue>
+                        {t(`SCHEDULE_AVAILABILITY_TYPE__${field.value}`)}
+                      </SelectValue>
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {["appointment", "open", "closed"].map((type) => (
+                      <SelectItem key={type} value={type}>
+                        <p>{t(`SCHEDULE_AVAILABILITY_TYPE__${type}`)}</p>
+                        <p className="text-xs text-gray-500">
+                          {t(`SCHEDULE_AVAILABILITY_TYPE_DESCRIPTION__${type}`)}
+                        </p>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          /> */}
+
+          <div className="flex flex-wrap">
+            <FormField
+              control={form.control}
+              name="start_time"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full">
+                  <FormLabel aria-required>{t("start_time")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="time"
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        updateSlotDuration();
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="end_time"
+              render={({ field }) => (
+                <FormItem className="flex flex-col w-full mt-2">
+                  <FormLabel aria-required>{t("end_time")}</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="time"
+                      {...field}
+                      onChange={(e) => {
+                        field.onChange(e);
+                        updateSlotDuration();
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {form.watch("slot_type") === "appointment" && (
+            <>
+              <div className="flex flex-wrap mt-0 pt-2 gap-2">
+                <div className="w-full gap-x-2 grid grid-cols-[auto_1fr_auto] mb-2 bg-gray-50 p-3 rounded-lg">
+                  <CareIcon icon="l-bolt" className="text-lg text-blue-600" />
+                  <Label
+                    htmlFor={"auto-fill"}
+                    className="text-sm font-medium cursor-pointer col-start-2"
+                  >
+                    {t("auto_fill_slot_duration")}
+                  </Label>
+                  <Switch
+                    className="col-start-3"
+                    id={"auto-fill"}
+                    checked={form.watch(`is_auto_fill`)}
+                    onCheckedChange={(checked) => {
+                      form.setValue(`is_auto_fill`, checked);
+                      if (checked) {
+                        updateSlotDuration();
+                      }
+                    }}
+                  />
+                  {form.watch(`is_auto_fill`) && (
+                    <div className="row-start-2 col-start-2 col-span-2">
+                      <FormField
+                        control={form.control}
+                        name={`num_of_slots`}
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col mt-2 space-y-0">
+                            <Label className="text-sm font-light">
+                              {t("number_of_slots")}
+                            </Label>
+                            <FormControl>
+                              <Input
+                                type="number"
+                                inputMode="numeric"
+                                pattern="[0-9]*"
+                                min={1}
+                                defaultValue={1}
+                                {...field}
+                                className="shadow-none"
+                                onChange={(e) => {
+                                  field.onChange(e.target.valueAsNumber);
+                                  updateSlotDuration();
+                                }}
+                              />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="flex items-center gap-4">
+                <FormField
+                  control={form.control}
+                  name="slot_size_in_minutes"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel aria-required>
+                        {t("schedule_slot_size_label")}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          min={0}
+                          placeholder="e.g. 10"
+                          {...field}
+                          value={field.value ?? ""}
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber)
+                          }
+                          disabled={form.watch("is_auto_fill")}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="tokens_per_slot"
+                  render={({ field }) => (
+                    <FormItem className="flex-1">
+                      <FormLabel aria-required>
+                        {t("patients_per_slot")}
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          inputMode="numeric"
+                          pattern="[0-9]*"
+                          min={0}
+                          placeholder="e.g. 1"
+                          {...field}
+                          value={field.value ?? ""}
+                          onChange={(e) =>
+                            field.onChange(e.target.valueAsNumber)
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              {timeAllocationCallout()}
+            </>
+          )}
+
+          <FormField
+            control={form.control}
+            name="weekdays"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel aria-required>{t("schedule_weekdays")}</FormLabel>
+                <FormControl>
+                  <WeekdayCheckbox
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="reason"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t("remarks")}</FormLabel>
+                <FormControl>
+                  <Textarea
+                    placeholder={t("remarks_placeholder")}
+                    className="resize-none"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <div className="flex justify-end gap-2">
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => setIsExpanded(false)}
+              disabled={isPending}
+            >
+              {t("cancel")}
+            </Button>
+            <Button variant="primary" type="submit" disabled={isPending}>
+              {isPending ? t("creating") : t("create")}
+            </Button>
+          </div>
+        </form>
+      </Form>
+    </div>
+  );
+};
