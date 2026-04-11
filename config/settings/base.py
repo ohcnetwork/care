@@ -122,7 +122,6 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework.authtoken",
     "drf_spectacular",
-    "django_multitenant",
     "django_filters",
     "django_ratelimit",
     "corsheaders",
