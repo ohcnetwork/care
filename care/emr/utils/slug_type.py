@@ -12,10 +12,10 @@ def slug_validator(value: str) -> str:
     if not value:
         raise ValueError("Slug cannot be empty")
 
-    pattern = r"^[-\w]+$"
-    if not re.match(pattern, value, re.ASCII):
+    pattern = r"^[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]$"
+    if not re.match(pattern, value):
         raise ValueError(
-            "Slug must contain only URL-safe characters (lowercase letters, numbers, hyphens, and underscores). "
+            "Slug must contain only URL-safe characters (letters, numbers, hyphens, and underscores). "
             "It must start and end with alphanumeric characters."
         )
 
@@ -30,10 +30,10 @@ def extended_slug_validator(value: str) -> str:
     if not value:
         raise ValueError("Slug cannot be empty")
 
-    pattern = r"^[-\w]+$"
-    if not re.match(pattern, value, re.ASCII):
+    pattern = r"^[a-zA-Z0-9][a-zA-Z0-9_-]*[a-zA-Z0-9]$"
+    if not re.match(pattern, value):
         raise ValueError(
-            "Slug must contain only URL-safe characters (lowercase letters, numbers, hyphens, and underscores). "
+            "Slug must contain only URL-safe characters (letters, numbers, hyphens, and underscores). "
             "It must start and end with alphanumeric characters."
         )
 

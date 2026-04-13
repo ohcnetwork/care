@@ -1,4 +1,11 @@
-from dataclasses import dataclass
+import enum
+from dataclasses import dataclass, field
+
+
+class RoleContext(enum.Enum):
+    FACILITY = "FACILITY"
+    GOVT_ORG = "GOVT_ORG"
+    ROLE_ORG = "ROLE_ORG"
 
 
 @dataclass
@@ -9,39 +16,64 @@ class Role:
 
     name: str
     description: str
+    contexts: list[RoleContext] = field(default_factory=list)
 
 
 VOLUNTEER_ROLE = Role(
     name="Volunteer",
     description="Volunteer at some facility",
+    contexts=[RoleContext.FACILITY, RoleContext.GOVT_ORG],
 )
 DOCTOR_ROLE = Role(
     name="Doctor",
     description="Doctor at some facility",
+    contexts=[RoleContext.FACILITY, RoleContext.GOVT_ORG],
 )
 NURSE_ROLE = Role(
     name="Nurse",
     description="Nurse at some facility",
+    contexts=[RoleContext.FACILITY, RoleContext.GOVT_ORG],
 )
 STAFF_ROLE = Role(
     name="Staff",
     description="Staff at some facility",
+    contexts=[RoleContext.FACILITY, RoleContext.GOVT_ORG],
 )
 PHARMACIST_ROLE = Role(
     name="Pharmacist",
     description="Pharmacist at some facility",
+    contexts=[RoleContext.FACILITY],
 )
 ADMINISTRATOR = Role(
     name="Administrator",
     description="Administrator at a given boundary",
+    contexts=[RoleContext.FACILITY, RoleContext.GOVT_ORG],
 )
 FACILITY_ADMIN_ROLE = Role(
     name="Facility Admin",
     description="Administrator of a facility, associated to the person creating the facility.",
+    contexts=[RoleContext.FACILITY],
 )
 ADMIN_ROLE = Role(
     name="Admin",
     description="Admin",
+    contexts=[RoleContext.FACILITY, RoleContext.GOVT_ORG],
+)
+
+ROLE_ORGANIZATION_ADMIN_ROLE = Role(
+    name="Admin",
+    description="Administrator of a role organization",
+    contexts=[RoleContext.ROLE_ORG],
+)
+ROLE_ORGANIZATION_MANAGER_ROLE = Role(
+    name="Manager",
+    description="Manager of a role organization",
+    contexts=[RoleContext.ROLE_ORG],
+)
+ROLE_ORGANIZATION_MEMBER_ROLE = Role(
+    name="Member",
+    description="Member of a role organization",
+    contexts=[RoleContext.ROLE_ORG],
 )
 
 
@@ -57,6 +89,9 @@ class RoleController:
         ADMIN_ROLE,
         VOLUNTEER_ROLE,
         PHARMACIST_ROLE,
+        ROLE_ORGANIZATION_ADMIN_ROLE,
+        ROLE_ORGANIZATION_MANAGER_ROLE,
+        ROLE_ORGANIZATION_MEMBER_ROLE,
     ]
 
     @classmethod

@@ -4,7 +4,7 @@ from enum import Enum
 from pydantic import UUID4, BaseModel, Field
 
 from care.emr.models.observation import Observation
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.common import Coding
 from care.emr.resources.common.codable_concept import CodeableConcept
 from care.emr.resources.observation.valueset import (
@@ -130,12 +130,11 @@ class ObservationReadSpec(BaseObservationSpec):
         mapping["patient"] = None
         mapping["questionnaire_response"] = None
 
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        cls.serialize_audit_users(mapping, obj)
         if obj.data_entered_by:
-            mapping["data_entered_by"] = UserSpec.serialize(obj.data_entered_by)
+            mapping["data_entered_by"] = model_from_cache(
+                UserSpec, id=obj.data_entered_by_id
+            )
 
 
 class ObservationRetrieveSpec(ObservationReadSpec):
