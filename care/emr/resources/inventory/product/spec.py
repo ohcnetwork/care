@@ -1,10 +1,13 @@
 import datetime
+from decimal import Decimal
 from enum import Enum
 
 from django.conf import settings
 from jsonschema import validate
-from pydantic import UUID4, BaseModel, field_validator
+from pydantic import UUID4, BaseModel, Field, field_validator
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import ExtensionValidator
 from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.product import Product
 from care.emr.models.product_knowledge import ProductKnowledge
@@ -29,12 +32,15 @@ class BaseProductSpec(EMRResource):
 
     __model__ = Product
     __exclude__ = ["product_knowledge", "charge_item_definition"]
+    ___extension_resource_type__ = ExtensionResource.product
 
     id: UUID4 | None = None
     status: ProductStatusOptions
     batch: ProductBatch | None = None
     expiration_date: datetime.datetime | None = None
     extensions: dict
+    standard_pack_size: int | None = None
+    purchase_price: Decimal | None = Field(None, max_digits=20, decimal_places=6)
 
     @field_validator("extensions")
     @classmethod
@@ -46,7 +52,7 @@ class BaseProductSpec(EMRResource):
         return v
 
 
-class ProductWriteSpec(BaseProductSpec):
+class ProductWriteSpec(ExtensionValidator, BaseProductSpec):
     """Payment reconciliation write specification"""
 
     product_knowledge: str
@@ -62,7 +68,7 @@ class ProductWriteSpec(BaseProductSpec):
             )
 
 
-class ProductUpdateSpec(BaseProductSpec):
+class ProductUpdateSpec(ExtensionValidator, BaseProductSpec):
     """Payment reconciliation write specification"""
 
     charge_item_definition: str | None = None

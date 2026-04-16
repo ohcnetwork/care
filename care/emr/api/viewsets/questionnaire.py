@@ -7,6 +7,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.favorites import EMRFavoritesMixin
 from care.emr.models import (
     Encounter,
     Organization,
@@ -16,6 +17,8 @@ from care.emr.models import (
     QuestionnaireTag,
 )
 from care.emr.models.questionnaire import FormSubmission, QuestionnaireResponse
+from care.emr.resources.favorites.filters import FavoritesFilter
+from care.emr.resources.favorites.spec import FavoriteResourceChoices
 from care.emr.resources.form_submission.spec import FormSubmissionStatusChoices
 from care.emr.resources.organization.spec import OrganizationReadSpec
 from care.emr.resources.questionnaire.spec import (
@@ -71,14 +74,18 @@ class QuestionnaireFilter(filters.FilterSet):
     status = filters.CharFilter(field_name="status", lookup_expr="iexact")
 
 
-class QuestionnaireViewSet(EMRModelViewSet):
+class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
     database_model = Questionnaire
     pydantic_model = QuestionnaireSpec
     pydantic_read_model = QuestionnaireReadSpec
     pydantic_update_model = QuestionnaireUpdateSpec
     lookup_field = "slug"
     filterset_class = QuestionnaireFilter
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, FavoritesFilter]
+    FAVORITE_RESOURCE = FavoriteResourceChoices.questionnaire.value
+
+    def retrieve_facility_obj(self, obj):
+        return None
 
     def permissions_controller(self, request):
         if self.action in ["list", "retrieve", "get_organizations"]:

@@ -1,7 +1,8 @@
 from datetime import datetime
+from decimal import Decimal
 from enum import Enum
 
-from pydantic import UUID4, BaseModel, model_validator
+from pydantic import UUID4, BaseModel, Field, model_validator
 from rest_framework.exceptions import ValidationError
 
 from care.emr.models.encounter import Encounter
@@ -58,6 +59,7 @@ class MedicationDispenseCategory(str, Enum):
     inpatient = "inpatient"
     outpatient = "outpatient"
     community = "community"
+    discharge = "discharge"
 
 
 class SubstitutionType(str, Enum):
@@ -106,10 +108,16 @@ class BaseMedicationDispenseSpec(EMRResource):
     substitution: MedicationDispenseSubstitution | None = None
 
 
+class CreateDispenseOrderStatusOptions(str, Enum):
+    draft = "draft"
+    in_progress = "in_progress"
+
+
 class CreateDispenseOrder(BaseModel):
     name: str | None = None
     note: str | None = None
     alternate_identifier: str
+    status: CreateDispenseOrderStatusOptions = CreateDispenseOrderStatusOptions.draft
 
 
 class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
@@ -117,8 +125,8 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
     location: UUID4
     authorizing_request: UUID4 | None = None
     item: UUID4
-    quantity: float
-    days_supply: float | None = None
+    quantity: Decimal = Field(max_digits=20, decimal_places=0)
+    days_supply: Decimal | None = Field(default=None, max_digits=20, decimal_places=0)
     fully_dispensed: bool | None = None
     order: UUID4 | None = None
     create_dispense_order: CreateDispenseOrder | None = None
@@ -170,14 +178,17 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
             ]:
                 raise ValidationError("Prescription is not active")
             if not dispense_order_obj:
+                user = self._context.get("user")
                 dispense_order_obj = DispenseOrder.objects.create(
-                    status=MedicationDispenseOrderStatusOptions.draft.value,
+                    status=self.create_dispense_order.status,
                     alternate_identifier=self.create_dispense_order.alternate_identifier,
                     patient=obj.patient,
                     location=obj.location,
                     facility=obj.encounter.facility,
                     name=self.create_dispense_order.name,
                     note=self.create_dispense_order.note,
+                    created_by=user,
+                    updated_by=user,
                 )
             obj.order = dispense_order_obj
 
@@ -200,7 +211,7 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
     created_date: datetime
     modified_date: datetime
     location: dict
-    quantity: float
+    quantity: Decimal = Field(max_digits=20, decimal_places=0)
     authorizing_request: dict | None = None
     order: dict | None = None
 
@@ -223,18 +234,5 @@ class MedicationDispenseReadSpec(BaseMedicationDispenseSpec):
             ).to_json()
 
 
-class MedicationDispenseRetrieveSpec(BaseMedicationDispenseSpec):
-    order: dict | None = None
-    charge_item: dict | None = None
-
-    @classmethod
-    def perform_extra_serialization(cls, mapping, obj):
-        super().perform_extra_serialization(mapping, obj)
-        if obj.order:
-            mapping["order"] = MedicationDispenseOrderReadSpec.serialize(
-                obj.order
-            ).to_json()
-        if obj.charge_item:
-            mapping["charge_item"] = ChargeItemReadSpec.serialize(
-                obj.charge_item
-            ).to_json()
+class MedicationDispenseRetrieveSpec(MedicationDispenseReadSpec):
+    pass

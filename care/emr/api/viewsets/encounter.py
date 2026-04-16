@@ -1,16 +1,14 @@
-import tempfile
 from datetime import timedelta
 
 from django.conf import settings
 from django.db import transaction
-from django.http import HttpResponse
-from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -30,7 +28,6 @@ from care.emr.models import (
     Patient,
 )
 from care.emr.models.patient import PatientIdentifier, PatientIdentifierConfig
-from care.emr.reports import discharge_summary
 from care.emr.resources.encounter.constants import COMPLETED_CHOICES, StatusChoices
 from care.emr.resources.encounter.spec import (
     EncounterCareTeamMemberWriteSpec,
@@ -46,7 +43,6 @@ from care.emr.resources.patient_identifier.default_expression_evaluator import (
 )
 from care.emr.resources.tag.config_spec import TagResource
 from care.emr.tagging.filters import SingleFacilityTagFilter
-from care.emr.tasks.discharge_summary import generate_discharge_summary_task
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
@@ -67,6 +63,26 @@ class LiveFilter(filters.CharFilter):
         return queryset
 
 
+class OrganizationUUIDFilter(filters.UUIDFilter):
+    def filter(self, qs, value):
+        queryset = qs
+        if not value:
+            return queryset
+        organization = get_object_or_404(
+            FacilityOrganization.objects.only("id"), external_id=value
+        )
+        return queryset.filter(facility_organization_cache__overlap=[organization.id])
+
+
+class CareTeamUserFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        queryset = qs
+        if not value:
+            return queryset
+        user = get_object_or_404(User.objects.only("id"), username=value)
+        return queryset.filter(care_team_users__overlap=[user.id])
+
+
 class EncounterFilters(filters.FilterSet):
     facility = filters.UUIDFilter(field_name="facility__external_id")
     status = MultiSelectFilter(field_name="status")
@@ -85,6 +101,8 @@ class EncounterFilters(filters.FilterSet):
     location = filters.UUIDFilter(field_name="current_location__external_id")
     created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     live = LiveFilter()
+    organization = OrganizationUUIDFilter()
+    care_team_user = CareTeamUserFilter()
 
 
 class EncounterViewSet(
@@ -101,7 +119,13 @@ class EncounterViewSet(
     pydantic_read_model = EncounterListSpec
     pydantic_retrieve_model = EncounterRetrieveSpec
     filterset_class = EncounterFilters
-    filter_backends = [filters.DjangoFilterBackend, SingleFacilityTagFilter]
+
+    filter_backends = [
+        filters.DjangoFilterBackend,
+        OrderingFilter,
+        SingleFacilityTagFilter,
+    ]
+    ordering_fields = ["created_date", "modified_date"]
     resource_type = TagResource.encounter
 
     def validate_data(self, instance, model_obj=None):
@@ -313,38 +337,6 @@ class EncounterViewSet(
         ).delete()
         return Response({})
 
-    @extend_schema(
-        description="Generate a discharge summary",
-        responses={
-            200: "Success",
-        },
-        tags=["encounter"],
-    )
-    @action(detail=True, methods=["POST"])
-    def generate_discharge_summary(self, request, *args, **kwargs):
-        encounter = self.get_object()
-        if not AuthorizationController.call(
-            "can_view_clinical_data", self.request.user, encounter.patient
-        ):
-            raise PermissionDenied("Permission denied to user")
-        encounter_ext_id = encounter.external_id
-        if current_progress := discharge_summary.get_progress(encounter_ext_id):
-            return Response(
-                {
-                    "detail": (
-                        "Discharge Summary is already being generated, "
-                        f"current progress {current_progress}%"
-                    )
-                },
-                status=status.HTTP_409_CONFLICT,
-            )
-        discharge_summary.set_lock(encounter_ext_id, 1)
-        generate_discharge_summary_task.delay(encounter_ext_id)
-        return Response(
-            {"detail": "Discharge Summary will be generated shortly"},
-            status=status.HTTP_202_ACCEPTED,
-        )
-
     class EncounterFacilityIdentifierWriteSpec(BaseModel):
         identifier: UUID4
         value: str | None = None
@@ -425,23 +417,5 @@ class EncounterViewSet(
             )
 
         encounter.care_team = members
-        encounter.save(update_fields=["care_team"])
+        encounter.save(update_fields=["care_team", "care_team_users"])
         return Response({}, status=status.HTTP_200_OK)
-
-
-def dev_preview_discharge_summary(request, encounter_id):
-    """
-    This is a dev only view to preview the discharge summary template
-    """
-    encounter = get_object_or_404(Encounter, external_id=encounter_id)
-    data = discharge_summary.get_discharge_summary_data(encounter)
-    data["date"] = timezone.now()
-
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as tmp_file:
-        discharge_summary.generate_discharge_summary_pdf(data, tmp_file)
-        tmp_file.seek(0)
-
-        response = HttpResponse(tmp_file, content_type="application/pdf")
-        response["Content-Disposition"] = 'inline; filename="discharge_summary.pdf"'
-
-        return response

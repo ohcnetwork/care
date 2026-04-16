@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import transaction
 from django.db.models import Count, Q
 from django_filters import rest_framework as filters
@@ -14,6 +16,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.locks.billing import InventoryItemLock
 from care.emr.models.encounter import Encounter
 from care.emr.models.location import FacilityLocation
 from care.emr.models.medication_dispense import MedicationDispense
@@ -81,8 +84,14 @@ class MedicationDispenseViewSet(
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date"]
 
+    def get_serializer_create_context(self):
+        return {"user": self.request.user}
+
     def perform_create(self, instance):
-        with transaction.atomic():
+        with transaction.atomic(), InventoryItemLock(instance.item):
+            net_content = instance.item.net_content
+            if Decimal(net_content) < Decimal(instance.quantity):
+                raise ValidationError("Inventory item does not have enough stock")
             super().perform_create(instance)
             if instance.item.product.charge_item_definition:
                 charge_item = apply_charge_item_definition(
@@ -96,6 +105,13 @@ class MedicationDispenseViewSet(
                     ChargeItemResourceOptions.medication_dispense.value
                 )
                 charge_item.service_resource_id = str(instance.external_id)
+                charge_item.created_by = self.request.user
+                charge_item.updated_by = self.request.user
+                if (
+                    instance.authorizing_request
+                    and instance.authorizing_request.requester
+                ):
+                    charge_item.performer_actor = instance.authorizing_request.requester
                 charge_item.save()
                 instance.charge_item = charge_item
                 instance.save(update_fields=["charge_item"])
@@ -160,19 +176,26 @@ class MedicationDispenseViewSet(
                 # Perform Cancellation of charge items as well
                 handle_charge_item_cancel(instance.charge_item)
                 instance.charge_item.status = ChargeItemStatusOptions.aborted.value
+                if instance.authorizing_request:
+                    instance.authorizing_request.dispense_status = (
+                        MedicationRequestDispenseStatus.incomplete.value
+                    )
+                    instance.authorizing_request.save(update_fields=["dispense_status"])
+                instance.authorizing_request = None
                 instance.charge_item.save()
             super().perform_update(instance)
             sync_inventory_item(instance.item.location, instance.item.product)
-            if instance._fully_dispensed is not None and instance._fully_dispensed:  # noqa
-                instance.authorizing_request.dispense_status = (
-                    MedicationRequestDispenseStatus.complete.value
-                )
-                instance.authorizing_request.save(update_fields=["dispense_status"])
-            elif instance.authorizing_request:
-                instance.authorizing_request.dispense_status = (
-                    MedicationRequestDispenseStatus.partial.value
-                )
-                instance.authorizing_request.save(update_fields=["dispense_status"])
+            if instance.authorizing_request:
+                if instance._fully_dispensed is not None and instance._fully_dispensed:  # noqa
+                    instance.authorizing_request.dispense_status = (
+                        MedicationRequestDispenseStatus.complete.value
+                    )
+                    instance.authorizing_request.save(update_fields=["dispense_status"])
+                elif instance.authorizing_request:
+                    instance.authorizing_request.dispense_status = (
+                        MedicationRequestDispenseStatus.partial.value
+                    )
+                    instance.authorizing_request.save(update_fields=["dispense_status"])
             return instance
 
     def authorize_location_read(self, location):

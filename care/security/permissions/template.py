@@ -18,7 +18,7 @@ class TemplatePermissions(enum.Enum):
         "Can Create Template on Facility",
         "",
         PermissionContext.FACILITY,
-        [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
+        [FACILITY_ADMIN_ROLE, ADMIN_ROLE, DOCTOR_ROLE, NURSE_ROLE],
     )
     can_read_template = Permission(
         "Can Read Template",
@@ -60,5 +60,15 @@ class TemplatePermissions(enum.Enum):
             NURSE_ROLE,
             VOLUNTEER_ROLE,
             PHARMACIST_ROLE,
+        ],
+    )
+
+    can_generate_report_for_completed_encounter = Permission(
+        "Can generate report for completed encounter",
+        "",
+        PermissionContext.FACILITY,
+        [
+            FACILITY_ADMIN_ROLE,
+            ADMIN_ROLE,
         ],
     )

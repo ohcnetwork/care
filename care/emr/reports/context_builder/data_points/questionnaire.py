@@ -7,6 +7,9 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.user import (
+    SingleUserRelatedContextBuilder,
+)
 
 
 class QuestionnaireResponsesContextBuilder(QuerysetContextBuilder):
@@ -68,6 +71,13 @@ class QuestionnaireContextBuilder(QuerysetContextBuilder):
         description="Responses of the questionnaire",
     )
 
+    updated_by = Field(
+        display="Updated By",
+        target_context=SingleUserRelatedContextBuilder,
+        preview_value="",
+        description="User who last updated the questionnaire",
+    )
+
     def get_context(self):
         return QuestionnaireResponse.objects.filter(
             encounter=self.parent_context, questionnaire__isnull=False
@@ -77,4 +87,4 @@ class QuestionnaireContextBuilder(QuerysetContextBuilder):
         if "slug" not in kwargs:
             raise ValueError("slug is required")
         questionnaire = Questionnaire.objects.get(slug=kwargs["slug"])
-        return qs.filter(questionnaire=questionnaire)
+        return qs.filter(questionnaire=questionnaire).order_by("-created_date")

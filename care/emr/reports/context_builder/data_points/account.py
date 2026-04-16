@@ -5,13 +5,21 @@ from care.emr.reports.context_builder.data_points.base import (
     SingleObjectContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.charge_items import (
+    AccountChargeItemCategorySummaryContextBuilder,
     AccountChargeItemContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.encounter import (
+    MinimumEncounterReportContext,
+)
+from care.emr.reports.context_builder.data_points.facility import FacilityContextBuilder
 from care.emr.reports.context_builder.data_points.invoice import (
     AccountInvoiceContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.monetary_component import (
     MonetaryComponentContextBuilder,
+)
+from care.emr.reports.context_builder.data_points.patient import (
+    PatientMinimumContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.payment_reconciliation import (
     PaymentReconciliationContextBuilder,
@@ -34,31 +42,12 @@ BILLING_STATUS_DISPLAY = {
 }
 
 
-class AccountPatientContextBuilder(SingleObjectContextBuilder):
-    def get_context(self):
-        return self.parent_context.patient
-
-    name = Field(
-        display="Patient Name",
-        preview_value="John Doe",
-        description="Full name of the patient",
-    )
-    age = Field(
-        display="Patient Age",
-        mapping=lambda p: p.get_age(),
-        preview_value="30 Y",
-        description="Age of the patient",
-    )
-
-    gender = Field(
-        display="Patient Gender",
-        mapping=lambda p: p.gender,
-        preview_value="Male",
-        description="Gender of the patient",
-    )
-
-
 class BaseAccountContextBuilder(SingleObjectContextBuilder):
+    external_id = Field(
+        display="Account External ID",
+        preview_value="beff3ce1-e1be-41bc-8fb9-07ce2ebe42a6",
+        description="Unique identifier for the account",
+    )
     name = Field(
         display="Account Title",
         preview_value="General Checkup Account",
@@ -87,25 +76,25 @@ class BaseAccountContextBuilder(SingleObjectContextBuilder):
         preview_value="Account for general health checkup",
         description="Detailed description of the account",
     )
-    total_net = Field(
-        display="Total Net Amount",
-        preview_value="150.00",
-        description="Total net amount for the account",
-    )
     total_gross = Field(
         display="Total Gross Amount",
-        preview_value="180.00",
+        preview_value="180.000000",
         description="Total gross amount for the account",
     )
     total_paid = Field(
         display="Total Paid Amount",
-        preview_value="100.00",
+        preview_value="100.000000",
         description="Total amount paid towards the account",
     )
     total_balance = Field(
         display="Total Balance Amount",
-        preview_value="80.00",
+        preview_value="80.000000",
         description="Total balance amount remaining for the account",
+    )
+    total_billable_charge_items = Field(
+        display="Total Billable Charge Items",
+        preview_value="1455.000000",
+        description="Total number of billable charge items associated with the account",
     )
     total_price_components = Field(
         display="Total Price Components",
@@ -125,6 +114,12 @@ class BaseAccountContextBuilder(SingleObjectContextBuilder):
         target_context=AccountChargeItemContextBuilder,
         description="Chargeable items associated with the account",
     )
+    category_charge_items_summary = Field(
+        display="Charge Items Category Summary",
+        preview_value="",
+        target_context=AccountChargeItemCategorySummaryContextBuilder,
+        description="Charge items categorized by their types for the account",
+    )
     payment_reconciliations = Field(
         display="Payment Reconciliations",
         preview_value="",
@@ -141,12 +136,12 @@ class BaseAccountContextBuilder(SingleObjectContextBuilder):
         preview_value="2023-01-20T15:45:00Z",
         description="Date when the account totals were last calculated",
     )
-
-
-class PatientAccountContextBuilder(BaseAccountContextBuilder):
-    def get_context(self):
-        accounts = Account.objects.filter(patient=self.parent_context)
-        return accounts.first()
+    primary_encounter = Field(
+        display="Primary Encounter",
+        preview_value="",
+        target_context=MinimumEncounterReportContext,
+        description="Primary encounter associated with the account",
+    )
 
 
 class AccountContextBuilder(BaseAccountContextBuilder):
@@ -159,9 +154,16 @@ class AccountContextBuilder(BaseAccountContextBuilder):
 
     patient = Field(
         display="Patient Details",
-        target_context=AccountPatientContextBuilder,
+        target_context=PatientMinimumContextBuilder,
         preview_value="",
         description="Details of the patient associated with the account",
+    )
+
+    facility = Field(
+        display="Facility Details",
+        target_context=FacilityContextBuilder,
+        preview_value="",
+        description="Details of the facility associated with the account",
     )
 
 

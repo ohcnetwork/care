@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 
 from pydantic import UUID4, UUID5, BaseModel
 
@@ -7,6 +8,11 @@ from care.emr.resources.base import EMRResource
 from care.emr.resources.common import Coding
 from care.emr.resources.questionnaire.spec import QuestionnaireReadSpec
 from care.emr.resources.user.spec import UserSpec
+
+
+class QuestionnaireResponseStatusChoices(str, Enum):
+    completed = "completed"
+    entered_in_error = "entered_in_error"
 
 
 class QuestionnaireSubmitResultValue(BaseModel):
@@ -35,10 +41,19 @@ class QuestionnaireSubmitRequest(BaseModel):
     form_submission: UUID4 | None = None
 
 
-class QuestionnaireResponseReadSpec(EMRResource):
+class EMRQuestionnaireResponseBase(EMRResource):
     __model__ = QuestionnaireResponse
 
+
+class QuestionnaireResponseUpdate(EMRQuestionnaireResponseBase):
+    status: QuestionnaireResponseStatusChoices = (
+        QuestionnaireResponseStatusChoices.completed.value
+    )
+
+
+class QuestionnaireResponseReadSpec(EMRQuestionnaireResponseBase):
     id: UUID4
+    status: str
     questionnaire: QuestionnaireReadSpec
     subject_id: str
     responses: list
@@ -61,7 +76,4 @@ class QuestionnaireResponseReadSpec(EMRResource):
             mapping["encounter"] = obj.encounter.external_id
         else:
             mapping["encounter"] = None
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        cls.serialize_audit_users(mapping, obj)

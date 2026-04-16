@@ -18,6 +18,7 @@ from care.utils.shortcuts import get_object_or_404
 class HealthcareServiceInternalType(str, Enum):
     pharmacy = "pharmacy"
     lab = "lab"
+    scheduling = "scheduling"
 
 
 class BaseHealthcareServiceSpec(EMRResource):

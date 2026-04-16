@@ -9,6 +9,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.favorites import EMRFavoritesMixin
 from care.emr.models.device import Device
 from care.emr.models.encounter import EncounterOrganization
 from care.emr.models.location import FacilityLocationOrganization
@@ -23,11 +24,14 @@ from care.emr.resources.facility_organization.spec import (
     FacilityOrganizationRetrieveSpec,
     FacilityOrganizationWriteSpec,
 )
+from care.emr.resources.favorites.filters import FavoritesFilter
+from care.emr.resources.favorites.spec import FavoriteResourceChoices
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
 from care.security.roles.role import FACILITY_ADMIN_ROLE
 from care.users.models import User
+from care.utils.filters.default_filter import DefaultBooleanFilter
 from care.utils.filters.dummy_filter import DummyUUIDFilter
 from care.utils.shortcuts import get_object_or_404
 
@@ -39,13 +43,14 @@ class FacilityOrganizationFilter(filters.FilterSet):
     containing_user = DummyUUIDFilter()
 
 
-class FacilityOrganizationViewSet(EMRModelViewSet):
+class FacilityOrganizationViewSet(EMRModelViewSet, EMRFavoritesMixin):
     database_model = FacilityOrganization
     pydantic_model = FacilityOrganizationWriteSpec
     pydantic_read_model = FacilityOrganizationReadSpec
     pydantic_retrieve_model = FacilityOrganizationRetrieveSpec
     filterset_class = FacilityOrganizationFilter
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, FavoritesFilter]
+    FAVORITE_RESOURCE = FavoriteResourceChoices.facility_organization.value
 
     def get_organization_obj(self):
         return get_object_or_404(
@@ -237,12 +242,19 @@ class FacilityOrganizationViewSet(EMRModelViewSet):
         return Response({"count": len(data), "results": data})
 
 
+class FacilityOrganizationUsersFilter(filters.FilterSet):
+    is_service_account = DefaultBooleanFilter(
+        field_name="user__is_service_account", default=False
+    )
+
+
 class FacilityOrganizationUsersViewSet(EMRModelViewSet):
     database_model = FacilityOrganizationUser
     pydantic_model = FacilityOrganizationUserWriteSpec
     pydantic_read_model = FacilityOrganizationUserReadSpec
     pydantic_update_model = FacilityOrganizationUserUpdateSpec
-    filter_backends = [drf_filters.SearchFilter]
+    filterset_class = FacilityOrganizationUsersFilter
+    filter_backends = [filters.DjangoFilterBackend, drf_filters.SearchFilter]
     search_fields = ["user__first_name", "user__last_name", "user__username"]
 
     def get_organization_obj(self):

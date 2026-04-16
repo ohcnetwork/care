@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
@@ -13,23 +14,47 @@ from care.emr.api.viewsets.base import (
     EMRUpsertMixin,
 )
 from care.emr.models.location import FacilityLocation
-from care.emr.models.medication_dispense import DispenseOrder
+from care.emr.models.medication_dispense import DispenseOrder, MedicationDispense
+from care.emr.resources.charge_item.handle_charge_item_cancel import (
+    handle_charge_item_cancel,
+)
+from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
 from care.emr.resources.medication.dispense.dispense_order import (
     BaseMedicationDispenseOrderSpec,
     MedicationDispenseOrderReadSpec,
+    MedicationDispenseOrderRetrieveSpec,
+    MedicationDispenseOrderStatusOptions,
     MedicationDispenseOrderWriteSpec,
 )
+from care.emr.resources.medication.request.spec import MedicationRequestDispenseStatus
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyUUIDFilter
+from care.utils.filters.multiselect import MultiSelectFilter
+
+
+def cancel_dispense_order(instance):
+    related_dispenses = MedicationDispense.objects.filter(order=instance)
+    for dispense in related_dispenses:
+        if dispense.charge_item:
+            handle_charge_item_cancel(instance.charge_item)
+        dispense.charge_item.status = ChargeItemStatusOptions.aborted.value
+        dispense.authorizing_request.dispense_status = (
+            MedicationRequestDispenseStatus.incomplete.value
+        )
+        dispense.authorizing_request.save(update_fields=["dispense_status"])
+        dispense.authorizing_request = None
+        dispense.charge_item.save()
+        dispense.save()
 
 
 class DispenseOrderFilters(filters.FilterSet):
-    status = filters.CharFilter(lookup_expr="iexact")
-    created_date = filters.DateRangeFilter()
+    status = MultiSelectFilter(field_name="status")
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     patient = filters.UUIDFilter(field_name="patient__external_id")
     location = DummyUUIDFilter()
     include_children = DummyBooleanFilter()
+    created_by = filters.UUIDFilter(field_name="created_by__external_id")
 
 
 class DispenseOrderViewSet(
@@ -44,6 +69,7 @@ class DispenseOrderViewSet(
     pydantic_model = MedicationDispenseOrderWriteSpec
     pydantic_update_model = BaseMedicationDispenseOrderSpec
     pydantic_read_model = MedicationDispenseOrderReadSpec
+    pydantic_retrieve_model = MedicationDispenseOrderRetrieveSpec
     filterset_class = DispenseOrderFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date"]
@@ -67,6 +93,30 @@ class DispenseOrderViewSet(
         return AuthorizationController.call(
             "can_view_as_pharmacist", self.request.user, facility
         )
+
+    def perform_update(self, instance):
+        # TODO : Add a Lock to ensure that the dispense order is not updated concurrently
+        with transaction.atomic():
+            old_object = DispenseOrder.objects.get(id=instance.id)
+            if old_object.status != instance.status:
+                if old_object.status in [
+                    MedicationDispenseOrderStatusOptions.abandoned.value,
+                    MedicationDispenseOrderStatusOptions.entered_in_error.value,
+                ]:
+                    raise ValidationError(
+                        "Dispense order already abandoned or entered in error"
+                    )
+                if (
+                    old_object.status
+                    == MedicationDispenseOrderStatusOptions.completed.value
+                ):
+                    if instance.status not in [
+                        MedicationDispenseOrderStatusOptions.abandoned.value,
+                        MedicationDispenseOrderStatusOptions.entered_in_error.value,
+                    ]:
+                        raise ValidationError("Dispense order can only be cancelled")
+                    cancel_dispense_order(instance)
+            return super().perform_update(instance)
 
     def perform_create(self, instance):
         instance.facility = self.get_facility_obj()

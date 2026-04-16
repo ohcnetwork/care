@@ -310,4 +310,6 @@ def delete_model_cache(sender, instance, **kwargs) -> None:
     Signal handler to delete the cache for a model instance when it is saved or deleted.
     """
     sender_model_string = model_string(sender)
-    cache.delete(model_cache_key(sender_model_string, pk=instance.id))
+    cache.delete_pattern(model_cache_key(sender_model_string, pk=instance.id))
+    if external_id := getattr(instance, "external_id", None):
+        cache.delete_pattern(model_cache_key(sender_model_string, pk=external_id))

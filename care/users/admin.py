@@ -20,7 +20,6 @@ class UserAdmin(auth_admin.UserAdmin):
             "User",
             {
                 "fields": (
-                    "user_type",
                     "phone_number",
                     "alt_phone_number",
                     "gender",

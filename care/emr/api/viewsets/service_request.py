@@ -72,6 +72,13 @@ class ServiceRequestFilters(filters.FilterSet):
     )
     patient = filters.UUIDFilter(field_name="patient__external_id")
     requester = filters.UUIDFilter(field_name="requester__external_id")
+    patient_current_location = filters.UUIDFilter(
+        field_name="encounter__current_location__external_id"
+    )
+    activity_definition = filters.CharFilter(
+        lookup_expr="iexact", field_name="activity_definition__slug"
+    )
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
 
 
 class ApplyActivityDefinitionRequest(BaseModel):

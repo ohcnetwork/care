@@ -8,7 +8,10 @@ from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
 from care.emr.models.observation import Observation
 from care.emr.resources.common.coding import Coding
-from care.emr.resources.observation.spec import ObservationReadSpec
+from care.emr.resources.observation.spec import (
+    ObservationReadSpec,
+    ObservationRetrieveSpec,
+)
 from care.emr.resources.questionnaire.spec import QuestionType
 
 
@@ -41,6 +44,7 @@ class ObservationAnalyseRequest(BaseModel):
 class ObservationViewSet(EncounterBasedAuthorizationBase, EMRModelReadOnlyViewSet):
     database_model = Observation
     pydantic_model = ObservationReadSpec
+    pydantic_retrieve_model = ObservationRetrieveSpec
     filterset_class = ObservationFilter
     filter_backends = [filters.DjangoFilterBackend]
 
@@ -51,7 +55,6 @@ class ObservationViewSet(EncounterBasedAuthorizationBase, EMRModelReadOnlyViewSe
             super()
             .get_queryset()
             .filter(patient__external_id=self.kwargs["patient_external_id"])
-            .select_related("created_by", "updated_by", "data_entered_by")
         )
 
         return queryset.order_by("-modified_date")

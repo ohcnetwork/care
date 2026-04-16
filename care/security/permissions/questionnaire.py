@@ -8,6 +8,9 @@ from care.security.roles.role import (
     FACILITY_ADMIN_ROLE,
     NURSE_ROLE,
     PHARMACIST_ROLE,
+    ROLE_ORGANIZATION_ADMIN_ROLE,
+    ROLE_ORGANIZATION_MANAGER_ROLE,
+    ROLE_ORGANIZATION_MEMBER_ROLE,
     STAFF_ROLE,
     VOLUNTEER_ROLE,
 )
@@ -39,6 +42,9 @@ class QuestionnairePermissions(enum.Enum):
             FACILITY_ADMIN_ROLE,
             VOLUNTEER_ROLE,
             PHARMACIST_ROLE,
+            ROLE_ORGANIZATION_ADMIN_ROLE,
+            ROLE_ORGANIZATION_MANAGER_ROLE,
+            ROLE_ORGANIZATION_MEMBER_ROLE,
         ],
     )
     can_submit_questionnaire = Permission(
@@ -53,11 +59,14 @@ class QuestionnairePermissions(enum.Enum):
             STAFF_ROLE,
             FACILITY_ADMIN_ROLE,
             VOLUNTEER_ROLE,
+            ROLE_ORGANIZATION_ADMIN_ROLE,
+            ROLE_ORGANIZATION_MEMBER_ROLE,
+            ROLE_ORGANIZATION_MANAGER_ROLE,
         ],
     )
     can_manage_questionnaire = Permission(
         "Can Manage Questionnaires",
         "Allows users to add or remove organizations from questionnaires, ie control Access Management",
         PermissionContext.QUESTIONNAIRE,
-        [ADMIN_ROLE, FACILITY_ADMIN_ROLE],
+        [ADMIN_ROLE, FACILITY_ADMIN_ROLE, ROLE_ORGANIZATION_ADMIN_ROLE],
     )
