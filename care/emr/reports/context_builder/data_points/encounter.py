@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from care.emr.models.encounter import Encounter
+from care.emr.models.encounter import Encounter, EncounterOrganization
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.context_builder.data_points.allergy_intolerance import (
     AllergyIntoleranceContextBuilder,
@@ -35,6 +35,15 @@ STATUS_DISPLAY = {
     "completed": "Completed",
     "cancelled": "Cancelled",
     "entered_in_error": "Entered in Error",
+}
+
+ENCOUNTER_CLASS_DISPLAY = {
+    "imp": "Inpatient",
+    "amb": "Outpatient",
+    "obsenc": "Observation",
+    "emer": "Emergency",
+    "vr": "Virtual",
+    "hh": "Home Health",
 }
 
 
@@ -77,14 +86,19 @@ class EncounterFacilityLocationContextBuilder(SingleObjectContextBuilder):
     )
 
 
-class EncounterReportContextBase(SingleObjectContextBuilder):
-    standalone_context = True
-    __slug__ = "encounter_base"
-    __associating_model__ = Encounter
-    __display_name__ = "Encounter Report"
-    __description__ = "Report context for encounter-based reports"
-    context_key = "encounter"
+class EncounterOrganizationsContextBuilder(QuerysetContextBuilder):
+    def get_context(self):
+        return EncounterOrganization.objects.filter(encounter_id=self.parent_context.id)
 
+    organization = Field(
+        display="Organization",
+        preview_value="",
+        mapping=lambda o: o.organization.name if o.organization else "",
+        description="Organization associated with the encounter",
+    )
+
+
+class BaseEncounterReportContext(SingleObjectContextBuilder):
     status = Field(
         display="Encounter Status",
         mapping=lambda e: STATUS_DISPLAY.get(
@@ -93,23 +107,14 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         preview_value="In Progress",
         description="Current status of the encounter",
     )
-    symptoms = Field(
-        target_context=SymptomsContextBuilder,
-        display="Symptoms",
-        preview_value="",
-        description="Symptoms of the encounter",
-    )
-    allergy_intolerances = Field(
-        target_context=AllergyIntoleranceContextBuilder,
-        display="Allergy Intolerances",
-        preview_value="",
-        description="Allergy intolerances of the encounter",
-    )
-    diagnoses = Field(
-        target_context=DiagnosisContextBuilder,
-        display="Diagnoses",
-        preview_value="",
-        description="Diagnoses of the encounter",
+
+    encounter_class = Field(
+        display="Encounter Class",
+        mapping=lambda e: ENCOUNTER_CLASS_DISPLAY.get(
+            e.encounter_class, e.encounter_class.title() if e.encounter_class else ""
+        ),
+        preview_value="Outpatient",
+        description="Classification of the encounter",
     )
     care_team = Field(
         target_context=EncounterCareTeamContextBuilder,
@@ -117,39 +122,7 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         preview_value="",
         description="Care team of the encounter",
     )
-    questionnaire_responses = Field(
-        target_context=QuestionnaireContextBuilder,
-        display="Questionnaire Responses",
-        preview_value="",
-        description="Questionnaire responses of the encounter",
-    )
 
-    medication_prescriptions = Field(
-        display="Medication Prescriptions",
-        target_context=MedicationPrescriptionContextBuilder,
-        preview_value="",
-        description="Medication prescriptions of the encounter",
-    )
-    patient = Field(
-        display="Patient Details",
-        target_context=PatientMinimumContextBuilder,
-        preview_value="",
-        description="Details of the patient associated with the encounter",
-    )
-
-    diagnostic_reports = Field(
-        display="Diagnostic Reports",
-        preview_value="",
-        description="Diagnostic reports associated with the encounter",
-        target_context=DiagnosticReportContextBuilder,
-    )
-
-    facility = Field(
-        display="Facility Details",
-        target_context=FacilityContextBuilder,
-        preview_value="",
-        description="Details of the facility where the encounter took place",
-    )
     current_location = Field(
         display="Current Location",
         target_context=EncounterFacilityLocationContextBuilder,
@@ -171,6 +144,85 @@ class EncounterReportContextBase(SingleObjectContextBuilder):
         preview_value="2026-01-12T10:01:45.088000Z",
         description="End time of the encounter",
     )
+    organizations = Field(
+        display="Associated Organizations",
+        target_context=EncounterOrganizationsContextBuilder,
+        preview_value="",
+        description="Organizations associated with the encounter",
+    )
+    discharge_summary_advice = Field(
+        display="Discharge Summary Advice",
+        mapping="discharge_summary_advice",
+        preview_value="Patient is advised to follow up in 2 weeks.",
+        description="Discharge summary advice for the encounter",
+    )
 
 
-DataPointRegistry.register(EncounterReportContextBase)
+class MinimumEncounterReportContext(BaseEncounterReportContext):
+    def get_context(self):
+        return getattr(self.parent_context, self.parent_attribute)
+
+
+class EncounterReportContext(BaseEncounterReportContext):
+    standalone_context = True
+    __slug__ = "encounter_base"
+    __associating_model__ = Encounter
+    __display_name__ = "Encounter Report"
+    __description__ = "Report context for encounter-based reports"
+    context_key = "encounter"
+
+    patient = Field(
+        display="Patient Details",
+        target_context=PatientMinimumContextBuilder,
+        preview_value="",
+        description="Details of the patient associated with the encounter",
+    )
+
+    facility = Field(
+        display="Facility Details",
+        target_context=FacilityContextBuilder,
+        preview_value="",
+        description="Details of the facility where the encounter took place",
+    )
+
+    diagnostic_reports = Field(
+        display="Diagnostic Reports",
+        preview_value="",
+        description="Diagnostic reports associated with the encounter",
+        target_context=DiagnosticReportContextBuilder,
+    )
+    symptoms = Field(
+        target_context=SymptomsContextBuilder,
+        display="Symptoms",
+        preview_value="",
+        description="Symptoms of the encounter",
+    )
+    allergy_intolerances = Field(
+        target_context=AllergyIntoleranceContextBuilder,
+        display="Allergy Intolerances",
+        preview_value="",
+        description="Allergy intolerances of the encounter",
+    )
+    diagnoses = Field(
+        target_context=DiagnosisContextBuilder,
+        display="Diagnoses",
+        preview_value="",
+        description="Diagnoses of the encounter",
+    )
+
+    questionnaire_responses = Field(
+        target_context=QuestionnaireContextBuilder,
+        display="Questionnaire Responses",
+        preview_value="",
+        description="Questionnaire responses of the encounter",
+    )
+
+    medication_prescriptions = Field(
+        display="Medication Prescriptions",
+        target_context=MedicationPrescriptionContextBuilder,
+        preview_value="",
+        description="Medication prescriptions of the encounter",
+    )
+
+
+DataPointRegistry.register(EncounterReportContext)

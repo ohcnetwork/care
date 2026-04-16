@@ -4,7 +4,8 @@ from django.conf import settings
 from django.db import transaction
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
-from pydantic import UUID4, BaseModel, model_validator
+from pydantic import UUID4, BaseModel, Field, model_validator
+from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -31,6 +32,8 @@ from care.emr.registries.system_questionnaire.system_questionnaire import (
     InternalQuestionnaireRegistry,
 )
 from care.emr.resources.account.default_account import get_default_account
+from care.emr.resources.account.spec import AccountStatusOptions
+from care.emr.resources.account.sync_items import rebalance_account_task
 from care.emr.resources.charge_item.apply_charge_item_definition import (
     apply_charge_item_definition,
 )
@@ -81,6 +84,7 @@ class ApplyChargeItemDefinitionRequest(BaseModel):
     encounter: UUID4 | None = None
     patient: UUID4 | None = None
     performer_actor: UUID4 | None = None
+    account: UUID4 | None = None
 
     service_resource: ChargeItemResourceOptions | None = None
     service_resource_id: str | None = None
@@ -96,6 +100,11 @@ class ApplyChargeItemDefinitionRequest(BaseModel):
         if self.service_resource and not self.service_resource_id:
             raise ValueError("Service resource id is required.")
         return self
+
+
+class ChargeItemAccountChangeRequest(BaseModel):
+    charge_items: list[UUID4] = Field(min_length=1, max_length=100)
+    target_account: UUID4
 
 
 class ApplyMultipleChargeItemDefinitionRequest(BaseModel):
@@ -254,6 +263,7 @@ class ChargeItemViewSet(
             ):
                 self.authorize_cancel(instance)
                 handle_charge_item_cancel(instance)
+                sync = False
             if sync:
                 sync_charge_item_costs(instance)
             super().perform_update(instance)
@@ -352,7 +362,6 @@ class ChargeItemViewSet(
                     )
                 else:
                     raise ValidationError("Patient or encounter is required")
-
                 if (
                     charge_item_request.service_resource
                     and not validate_service_resource(
@@ -364,7 +373,15 @@ class ChargeItemViewSet(
                     )
                 ):
                     raise ValidationError("Invalid service resource")
-                encounter = None
+                kwargs = {}
+                if charge_item_request.account:
+                    kwargs["account"] = get_object_or_404(
+                        Account,
+                        external_id=charge_item_request.account,
+                        facility=facility,
+                        patient=patient,
+                        status=AccountStatusOptions.active.value,
+                    )
                 quantity = charge_item_request.quantity
                 charge_item = apply_charge_item_definition(
                     charge_item_definition,
@@ -373,6 +390,7 @@ class ChargeItemViewSet(
                     encounter=encounter,
                     quantity=quantity,
                     negative_allowed=negative_allowed,
+                    **kwargs,
                 )
                 if charge_item_request.service_resource:
                     charge_item.service_resource = charge_item_request.service_resource
@@ -396,6 +414,45 @@ class ChargeItemViewSet(
                 charge_item.updated_by = request.user
                 charge_item.save()
         return Response({})
+
+    @extend_schema(
+        request=ChargeItemAccountChangeRequest,
+    )
+    @action(methods=["POST"], detail=False)
+    def change_account(self, request, *args, **kwargs):
+        """
+        Change accounts related to a charge item.
+        """
+        facility = self.get_facility_obj()
+        if not AuthorizationController.call(
+            "can_create_charge_item_in_facility",
+            self.request.user,
+            facility,
+        ):
+            raise PermissionDenied("Access Denied to Charge Item")
+        request_params = ChargeItemAccountChangeRequest(**request.data)
+        target_account = get_object_or_404(
+            Account, external_id=request_params.target_account, facility=facility
+        )
+        source_accounts = [target_account.id]  # For Rebalancing all related accounts
+        with transaction.atomic():
+            for charge_item_request in request_params.charge_items:
+                charge_item = get_object_or_404(
+                    ChargeItem,
+                    external_id=charge_item_request,
+                    facility=facility,
+                    patient=target_account.patient,
+                )
+                if charge_item.status != ChargeItemStatusOptions.billable.value:
+                    raise ValidationError({"charge_item": "should be billable"})
+                source_accounts.append(charge_item.account_id)
+                charge_item.account = target_account
+                charge_item.updated_by = request.user
+                charge_item.save(update_fields=["account", "updated_by"])
+
+        for account_id in list(set(source_accounts)):
+            rebalance_account_task(account_id)
+        return Response({}, status=status.HTTP_201_CREATED)
 
 
 InternalQuestionnaireRegistry.register(ChargeItemViewSet)

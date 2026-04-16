@@ -5,6 +5,7 @@ from care.emr.resources.base import EMRResource
 from care.emr.utils.slug_type import SlugType
 from care.security.models import PermissionModel, RoleModel
 from care.security.permissions.base import PermissionController
+from care.security.roles.role import RoleContext
 
 
 class PermissionSpec(EMRResource):
@@ -24,6 +25,7 @@ class RoleBaseSpec(EMRResource):
     description: str | None = None
     is_system: bool | None = False
     is_archived: bool | None = False
+    contexts: list[RoleContext]
 
 
 class RoleCreateSpec(RoleBaseSpec):
@@ -71,4 +73,11 @@ class RoleReadSpec(RoleBaseSpec):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["permissions"] = obj.get_permissions_for_role()
+        return mapping
+
+
+class RoleReadMinimalSpec(RoleBaseSpec):
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = obj.external_id
         return mapping

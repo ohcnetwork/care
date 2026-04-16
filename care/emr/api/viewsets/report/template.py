@@ -14,7 +14,11 @@ from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models.report.template import Template
-from care.emr.reports.context_builder import Field, types  # noqa
+from care.emr.reports.context_builder import (  # noqa
+    Field,
+    SingleUserIdContextBuilder,
+    types,
+)
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.context_builder.data_points.utils import build_schema
 from care.emr.reports.renderer.generators import GeneratorRegistry
@@ -186,6 +190,10 @@ class TemplateViewSet(EMRModelViewSet):
             context_class = DataPointRegistry.get(request_data.context)
             preview_context = context_class(is_preview=True)
             context_dict = {context_class.context_key: preview_context}
+
+            context_dict["current_user"] = SingleUserIdContextBuilder(
+                context=request.user,
+            )
 
             rendered_content = Renderer(generator).render(
                 request_data.template_data, context_dict, validated_options

@@ -17,7 +17,11 @@ from care.emr.api.viewsets.base import (
     EMRRetrieveMixin,
     EMRUpdateMixin,
 )
-from care.emr.locks.billing import InvoiceCreateLock, InvoiceLock
+from care.emr.locks.billing import (
+    AccountLock,
+    InvoiceCreateLock,
+    InvoiceLock,
+)
 from care.emr.models.account import Account
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.invoice import Invoice
@@ -129,7 +133,7 @@ class InvoiceViewSet(
     def perform_create(self, instance):
         instance.status = InvoiceStatusOptions.draft.value
         instance.facility = self.get_facility_obj()
-        with transaction.atomic():
+        with transaction.atomic(), AccountLock(instance.account):
             charge_items = ChargeItem.objects.filter(
                 account=instance.account,
                 status=ChargeItemStatusOptions.billable.value,
@@ -152,7 +156,7 @@ class InvoiceViewSet(
             )
             sync_invoice_items(instance)
             instance.save()
-            rebalance_account_task(instance.account.id)
+        rebalance_account_task(instance.account.id)
 
         return instance
 
@@ -230,7 +234,7 @@ class InvoiceViewSet(
     @action(methods=["POST"], detail=True)
     def attach_items_to_invoice(self, request, *args, **kwargs):
         invoice = self.get_object()
-        with InvoiceLock(invoice):
+        with AccountLock(invoice.account):
             self.authorize_update({}, invoice)
             self.check_invoice_in_draft(invoice)
             request_params = AttachChargeItemToInvoiceRequest(**request.data)
@@ -240,15 +244,16 @@ class InvoiceViewSet(
                     account=invoice.account,
                     status=ChargeItemStatusOptions.billable.value,
                 )
-                invoice.charge_items = invoice.charge_items + list(
-                    charge_items.values_list("id", flat=True)
-                )
+                extra_charge_items = list(charge_items.values_list("id", flat=True))
+                invoice.charge_items = invoice.charge_items + extra_charge_items
                 sync_invoice_items(invoice)
                 invoice.updated_by = self.request.user
                 invoice.save()
                 charge_items.update(
-                    status=ChargeItemStatusOptions.billed.value, paid_invoice=invoice
+                    status=ChargeItemStatusOptions.billed.value,
+                    paid_invoice=invoice,
                 )
+        rebalance_account_task(invoice.account.id)
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
 
     @extend_schema(
@@ -257,7 +262,7 @@ class InvoiceViewSet(
     @action(methods=["POST"], detail=True)
     def remove_item_from_invoice(self, request, *args, **kwargs):
         invoice = self.get_object()
-        with InvoiceLock(invoice):
+        with AccountLock(invoice.account):
             self.authorize_update({}, invoice)
             self.check_invoice_in_draft(invoice)
             request_params = RemoveChargeItemFromInvoiceRequest(**request.data)
@@ -278,13 +283,13 @@ class InvoiceViewSet(
                     charge_item.save()
             except ValueError as e:
                 raise ValidationError("Charge item not found in invoice") from e
-
+        rebalance_account_task(invoice.account.id)
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
 
     @action(methods=["POST"], detail=True)
     def attach_account_to_invoice(self, request, *args, **kwargs):
         invoice = self.get_object()
-        with InvoiceLock(invoice):
+        with AccountLock(invoice.account):
             self.authorize_update({}, invoice)
             self.check_invoice_in_draft(invoice)
             with transaction.atomic():
@@ -299,12 +304,13 @@ class InvoiceViewSet(
                 charge_items.update(
                     status=ChargeItemStatusOptions.billed.value, paid_invoice=invoice
                 )
+        rebalance_account_task(invoice.account.id)
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
 
     @action(methods=["POST"], detail=True)
     def cancel_invoice(self, request, *args, **kwargs):
         invoice = self.get_object()
-        with InvoiceLock(invoice):
+        with AccountLock(invoice.account):
             if invoice.created_date >= care_now() - timedelta(
                 minutes=settings.INVOICE_FREE_CANCEL_PERIOD_MINUTES
             ):

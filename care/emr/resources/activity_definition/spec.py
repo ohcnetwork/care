@@ -46,6 +46,7 @@ class ActivityDefinitionCategoryOptions(str, Enum):
     imaging = "imaging"
     counselling = "counselling"
     surgical_procedure = "surgical_procedure"
+    education = "education"
 
 
 class BaseActivityDefinitionSpec(EMRResource):

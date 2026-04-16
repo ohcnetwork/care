@@ -5,6 +5,7 @@ from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 
 from care.emr.models.observation_definition import ObservationDefinition
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.condition_evaluator import EvaluatorConditionSpec
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.observation.valueset import (
@@ -52,6 +53,8 @@ class InterpretationSpec(BaseModel):
     display: str
     icon: str | None = ""
     color: str | None = ""
+    highlight: bool | None = False
+    code: Coding | None = {}
 
 
 class NumericRangeSpec(BaseModel):
@@ -79,8 +82,10 @@ ABNORMAL_INTERPRETATION = {"display": "Abnormal"}
 
 
 class QualifiedRangeSpec(BaseModel):
+    title: str | None = None
     conditions: list[EvaluatorConditionSpec] = []
     ranges: list[NumericRangeSpec] = []
+    default_interpretation: InterpretationSpec | None = None
     normal_coded_value_set: str | None = ""
     critical_coded_value_set: str | None = ""
     abnormal_coded_value_set: str | None = ""
@@ -161,7 +166,7 @@ class BaseObservationDefinitionSpec(EMRResource):
     category: ObservationCategoryChoices
     code: ValueSetBoundCoding[CARE_OBSERVATION_VALUSET.slug]
     permitted_data_type: QuestionType
-    component: list[ObservationDefinitionComponentSpec] = []
+    component: list[ObservationDefinitionComponentSpec] | None = None
     body_site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug] | None = None
     method: ValueSetBoundCoding[CARE_OBSERVATION_COLLECTION_METHOD.slug] | None = None
     permitted_unit: ValueSetBoundCoding[CARE_UCUM_UNITS.slug] | None = None
