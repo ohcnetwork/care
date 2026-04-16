@@ -657,15 +657,6 @@ class ObservationDefinitionAPITest(CareAPITestBase):
         self.assertIn("patient_age", metric_names)
         self.assertIn("patient_gender", metric_names)
 
-
-class TestObservationDefinitionViewSet(CareAPITestBase):
-    def setUp(self):
-        super().setUp()
-        self.superuser = self.create_super_user(username="superuser")
-        self.facility = self.create_facility(user=self.superuser)
-        self.base_url = reverse("observation_definition-list")
-        self.client.force_authenticate(user=self.superuser)
-
     def _obs_def_data(self, slug_value, component=None, **kwargs):
         data = {
             "title": "Test Observation Definition",
@@ -714,23 +705,21 @@ class TestObservationDefinitionViewSet(CareAPITestBase):
             }
         ]
 
-    def _detail_url(self, slug):
-        return reverse("observation_definition-detail", kwargs={"slug": slug})
-
     def test_update_component_to_empty_list_clears_components(self):
         """
         Creating an observation definition with components and then
         updating with component=[] should clear the component list.
         """
+        self.client.force_authenticate(user=self.superuser)
         create_data = self._obs_def_data(
             slug_value="clear-component-test",
             component=self._component_payload(),
         )
-        create_resp = self.client.post(self.base_url, create_data, format="json")
+        create_resp = self.client.post(self.url, create_data, format="json")
         self.assertEqual(create_resp.status_code, 200)
         slug = create_resp.data["slug"]
 
-        get_resp = self.client.get(self._detail_url(slug))
+        get_resp = self.client.get(self.get_detail_url(slug))
         self.assertEqual(get_resp.status_code, 200)
         self.assertEqual(len(get_resp.data["component"]), 1)
 
@@ -739,10 +728,10 @@ class TestObservationDefinitionViewSet(CareAPITestBase):
             component=[],
         )
         update_resp = self.client.put(
-            self._detail_url(slug), update_data, format="json"
+            self.get_detail_url(slug), update_data, format="json"
         )
         self.assertEqual(update_resp.status_code, 200)
 
-        get_resp = self.client.get(self._detail_url(slug))
+        get_resp = self.client.get(self.get_detail_url(slug))
         self.assertEqual(get_resp.status_code, 200)
         self.assertEqual(get_resp.data["component"], [])
