@@ -50,6 +50,7 @@ class AccountAPITest(CareAPITestBase):
             "service_period": {"start": default_start, "end": default_end},
             "description": kwargs.get("description", "Test Description"),
             "patient": kwargs.get("patient", self.patient),
+            **kwargs,
         }
 
     def get_account(self, facility, **kwargs):
@@ -236,6 +237,286 @@ class AccountAPITest(CareAPITestBase):
         self.assertIn(
             "Active account already exists for this patient", str(response.data)
         )
+
+    def test_update_new_account_if_no_active_account_exists_for_that_patient(self):
+        self.client.force_authenticate(user=self.superuser)
+        account = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.inactive,
+            billing_status=AccountBillingStatusOptions.closed_completed,
+        )
+        data = self.generate_account_data(
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+            patient=self.patient.external_id,
+        )
+        response = self.client.put(
+            self.get_detail_url(self.facility.external_id, account.external_id),
+            data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(
+            self.get_detail_url(self.facility.external_id, account.external_id)
+        )
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["status"], data["status"])
+        self.assertEqual(get_response.data["patient"]["id"], str(data["patient"]))
+
+    def test_update_with_primary_encounter_different_facility(self):
+        self.client.force_authenticate(user=self.superuser)
+        other_facility = self.create_facility(
+            name="Other Facility", user=self.superuser
+        )
+        other_facility_org = self.create_facility_organization(
+            facility=other_facility, name="Other Facility Org", org_type="root"
+        )
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=other_facility,
+            status="active",
+            organization=other_facility_org,
+        )
+        account = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.inactive,
+            billing_status=AccountBillingStatusOptions.closed_completed,
+        )
+        data = self.generate_account_data(
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+            patient=self.patient.external_id,
+        )
+        data["primary_encounter"] = str(encounter.external_id)
+        response = self.client.put(
+            self.get_detail_url(self.facility.external_id, account.external_id),
+            data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Primary encounter must belong to the same facility", str(response.data)
+        )
+
+    def test_update_with_primary_encounter_different_patient(self):
+        self.client.force_authenticate(user=self.superuser)
+        other_patient = self.create_patient(name="Other Patient")
+        encounter = self.create_encounter(
+            patient=other_patient,
+            facility=self.facility,
+            status="active",
+            organization=self.facility_organization,
+        )
+        account = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.inactive,
+            billing_status=AccountBillingStatusOptions.closed_completed,
+        )
+        data = self.generate_account_data(
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+            patient=self.patient.external_id,
+        )
+        data["primary_encounter"] = str(encounter.external_id)
+        response = self.client.put(
+            self.get_detail_url(self.facility.external_id, account.external_id),
+            data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Primary encounter must belong to the same patient", str(response.data)
+        )
+
+    def test_update_with_primary_encounter_already_linked_to_another_active_account(
+        self,
+    ):
+        self.client.force_authenticate(user=self.superuser)
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            status="active",
+            organization=self.facility_organization,
+        )
+        self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.closed_completed,
+            primary_encounter=encounter,
+        )
+        account2 = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.inactive,
+            billing_status=AccountBillingStatusOptions.closed_completed,
+        )
+        data = self.generate_account_data(
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+            patient=self.patient.external_id,
+            primary_encounter=str(encounter.external_id),
+        )
+        response = self.client.put(
+            self.get_detail_url(self.facility.external_id, account2.external_id),
+            data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Encounter is already associated with an account", str(response.data)
+        )
+
+    def test_default_account_action(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+        )
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            status="active",
+            organization=self.facility_organization,
+        )
+        url = reverse(
+            "account-default-account",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(
+            url,
+            {
+                "patient": str(self.patient.external_id),
+                "facility": str(self.facility.external_id),
+                "encounter": str(encounter.external_id),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_default_account_no_account_found(self):
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.get_detail_url(self.facility.external_id, "non-existent-id")
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertIn("No Account matches the given query", str(response.data))
+
+    def test_default_account_encounter_not_associated_with_patient(self):
+        self.client.force_authenticate(user=self.superuser)
+        other_patient = self.create_patient(name="Other Patient")
+        encounter = self.create_encounter(
+            patient=other_patient,
+            facility=self.facility,
+            status="active",
+            organization=self.facility_organization,
+        )
+        url = reverse(
+            "account-default-account",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(
+            url,
+            {
+                "patient": str(self.patient.external_id),
+                "facility": str(self.facility.external_id),
+                "encounter": str(encounter.external_id),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "Encounter is not associated with the patient", str(response.data)
+        )
+
+    def test_default_account_encounter_not_associated_with_facility(self):
+        self.client.force_authenticate(user=self.superuser)
+        other_facility = self.create_facility(
+            name="Other Facility", user=self.superuser
+        )
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=other_facility,
+            status="active",
+            organization=self.facility_organization,
+        )
+        url = reverse(
+            "account-default-account",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(
+            url,
+            {
+                "patient": str(self.patient.external_id),
+                "facility": str(self.facility.external_id),
+                "encounter": str(encounter.external_id),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "Encounter is not associated with the facility", str(response.data)
+        )
+
+    def test_default_account_with_primary_encounter_exists(self):
+        self.client.force_authenticate(user=self.superuser)
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            status="active",
+            organization=self.facility_organization,
+        )
+        account = self.get_account(
+            self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active,
+            billing_status=AccountBillingStatusOptions.open,
+            primary_encounter=encounter,
+        )
+        url = reverse(
+            "account-default-account",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(
+            url,
+            {
+                "patient": str(self.patient.external_id),
+                "facility": str(self.facility.external_id),
+                "encounter": str(encounter.external_id),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(account.external_id))
+
+    def test_default_account_for_encounter_without_account(self):
+        self.client.force_authenticate(user=self.superuser)
+        encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            status="active",
+            organization=self.facility_organization,
+        )
+        url = reverse(
+            "account-default-account",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        response = self.client.post(
+            url,
+            {
+                "patient": str(self.patient.external_id),
+                "facility": str(self.facility.external_id),
+                "encounter": str(encounter.external_id),
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("No account found", str(response.data["errors"][0]["msg"]))
 
     # Test cases for retrieve account
 
