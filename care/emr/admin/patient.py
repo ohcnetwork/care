@@ -29,7 +29,6 @@ class PatientResource(resources.ModelResource):
             "date_of_birth",
             "year_of_birth",
             "deceased_datetime",
-            "marital_status",
             "blood_group",
             "geo_organization",
         )

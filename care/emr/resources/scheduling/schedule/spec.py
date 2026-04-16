@@ -126,6 +126,7 @@ class ScheduleBaseSpec(EMRResource):
     __exclude__ = ["resource", "facility"]
 
     id: UUID4 | None = None
+    is_public: bool
 
 
 class ScheduleCreateSpec(ScheduleBaseSpec):

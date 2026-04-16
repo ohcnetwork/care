@@ -19,11 +19,12 @@ class PaymentReconciliation(EMRBaseModel):
     method = models.CharField(max_length=100)
     reference_number = models.CharField(max_length=1024, null=True, blank=True)
     authorization = models.CharField(max_length=1024, null=True, blank=True)
-    tendered_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    returned_amount = models.DecimalField(max_digits=10, decimal_places=2)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    tendered_amount = models.DecimalField(max_digits=20, decimal_places=6)
+    returned_amount = models.DecimalField(max_digits=20, decimal_places=6)
+    amount = models.DecimalField(max_digits=20, decimal_places=6)
     note = models.TextField(null=True, blank=True)
     is_credit_note = models.BooleanField(default=False)
     location = models.ForeignKey(
         "emr.FacilityLocation", on_delete=models.PROTECT, null=True, blank=True
     )
+    extensions = models.JSONField(default=dict)

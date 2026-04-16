@@ -18,6 +18,7 @@ from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
 from care.emr.models.supply_request import RequestOrder, SupplyRequest
 from care.emr.resources.inventory.supply_request.request_order import (
     SupplyRequestOrderReadSpec,
+    SupplyRequestOrderStatusOptions,
 )
 from care.emr.resources.inventory.supply_request.spec import (
     SupplyRequestReadSpec,
@@ -83,6 +84,28 @@ class SupplyRequestViewSet(
 
     def authorize_retrieve(self, model_instance):
         self.authorize_order_read(model_instance.order)
+
+    def perform_create(self, instance):
+        if instance.order.status in [
+            SupplyRequestOrderStatusOptions.abandoned.value,
+            SupplyRequestOrderStatusOptions.entered_in_error.value,
+        ]:
+            raise ValidationError("Request order is abandoned or entered in error")
+        if instance.order.status == SupplyRequestOrderStatusOptions.completed.value:
+            raise ValidationError("Request order is completed")
+        return super().perform_create(instance)
+
+    def perform_update(self, instance):
+        old_instance = SupplyRequest.objects.get(id=instance.id)
+        if old_instance.status != instance.status:
+            if old_instance.status in [
+                SupplyRequestOrderStatusOptions.abandoned.value,
+                SupplyRequestOrderStatusOptions.entered_in_error.value,
+            ]:
+                raise ValidationError("Request order is abandoned or entered in error")
+            if old_instance.status == SupplyRequestOrderStatusOptions.completed.value:
+                raise ValidationError("Request order is completed")
+        return super().perform_update(instance)
 
     def authorize_order_read(self, order):
         allowed = False

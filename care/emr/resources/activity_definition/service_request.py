@@ -49,5 +49,9 @@ def apply_ad_charge_definitions(activity_definition, encounter, service_request)
         )
         charge_item.service_resource = ChargeItemResourceOptions.service_request.value
         charge_item.service_resource_id = str(service_request.external_id)
+        charge_item.created_by = service_request.created_by
+        charge_item.updated_by = service_request.created_by
+        if service_request.requester:
+            charge_item.performer_actor = service_request.requester
         charge_item.save()
     return service_request

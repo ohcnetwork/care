@@ -8,6 +8,8 @@ services:
     build:
       context: .
       dockerfile: docker/dev.Dockerfile
+      args:
+        ADDITIONAL_PLUGS: ${ADDITIONAL_PLUGS:-}
     env_file:
       - ./docker/.local.env
     volumes:
