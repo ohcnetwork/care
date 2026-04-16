@@ -193,7 +193,7 @@ class TestMetaArtifactViewSet(CareAPITestBase):
 
     def test_create_meta_artifact_associated_to_encounter_with_permission(self):
         """Users with can_write_encounter permission can create meta artifact associated to encounter"""
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 

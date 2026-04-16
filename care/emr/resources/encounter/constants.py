@@ -20,6 +20,10 @@ COMPLETED_CHOICES = [
     StatusChoices.discontinued.value,
 ]
 
+ERROR_CHOICES = [
+    StatusChoices.entered_in_error.value,
+]
+
 
 class ClassChoices(str, Enum):
     imp = "imp"

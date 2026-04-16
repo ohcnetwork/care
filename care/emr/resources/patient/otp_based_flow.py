@@ -3,6 +3,8 @@ import datetime
 from django.utils import timezone
 from pydantic import UUID4, field_validator, model_validator
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import ExtensionValidator
 from care.emr.models import Organization
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource
@@ -12,6 +14,7 @@ from care.emr.resources.patient.spec import BloodGroupChoices, GenderChoices
 class PatientOTPBaseSpec(EMRResource):
     __model__ = Patient
     __exclude__ = ["geo_organization"]
+    ___extension_resource_type__ = ExtensionResource.patient
     id: UUID4 = None
 
 
@@ -26,6 +29,7 @@ class PatientOTPReadSpec(PatientOTPBaseSpec):
     year_of_birth: int
     geo_organization: dict | None = None
     blood_group: BloodGroupChoices | None = None
+    extensions: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -34,7 +38,7 @@ class PatientOTPReadSpec(PatientOTPBaseSpec):
             mapping["geo_organization"] = obj.geo_organization.get_parent_json()
 
 
-class PatientOTPWriteSpec(PatientOTPBaseSpec):
+class PatientOTPWriteSpec(ExtensionValidator, PatientOTPBaseSpec):
     name: str
     gender: GenderChoices
     date_of_birth: datetime.date | None = None

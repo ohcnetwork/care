@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import models
 
 from care.emr.models import EMRBaseModel
@@ -13,7 +15,9 @@ class InventoryItem(EMRBaseModel):
         on_delete=models.PROTECT,
     )
     status = models.CharField(max_length=255)
-    net_content = models.FloatField(default=0)
+    net_content = models.DecimalField(
+        default=Decimal(0), max_digits=20, decimal_places=6
+    )
 
     def save(self, *args, **kwargs) -> None:
         if (

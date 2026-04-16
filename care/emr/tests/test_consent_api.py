@@ -124,7 +124,7 @@ class TestConsentViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 403)
 
     def test_create_consent_with_permissions(self):
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
         encounter = self.create_encounter(
@@ -135,7 +135,7 @@ class TestConsentViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
 
     def test_create_consent_valid_from_less_than_consent_date(self):
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
         encounter = self.create_encounter(
@@ -161,7 +161,7 @@ class TestConsentViewSet(CareAPITestBase):
         )
 
     def test_create_consent_same_date(self):
-        permissions = [EncounterPermissions.can_write_encounter.name]
+        permissions = [EncounterPermissions.can_write_encounter_clinical_data.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
         encounter = self.create_encounter(
@@ -184,7 +184,7 @@ class TestConsentViewSet(CareAPITestBase):
     def test_retrieve_consent_with_permissions(self):
         permissions = [
             PatientPermissions.can_view_clinical_data.name,
-            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -212,7 +212,7 @@ class TestConsentViewSet(CareAPITestBase):
     def test_update_consent_with_permissions(self):
         permissions = [
             PatientPermissions.can_view_clinical_data.name,
-            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -243,7 +243,7 @@ class TestConsentViewSet(CareAPITestBase):
     def test_delete_consent_with_permissions(self):
         permissions = [
             PatientPermissions.can_view_clinical_data.name,
-            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -270,7 +270,7 @@ class TestConsentViewSet(CareAPITestBase):
     def test_add_verification(self):
         permissions = [
             PatientPermissions.can_view_clinical_data.name,
-            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -309,7 +309,7 @@ class TestConsentViewSet(CareAPITestBase):
     def test_remove_verification(self):
         permissions = [
             PatientPermissions.can_view_clinical_data.name,
-            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -373,7 +373,7 @@ class TestConsentViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 403)
 
         permissions = [
-            EncounterPermissions.can_write_encounter.name,
+            EncounterPermissions.can_write_encounter_clinical_data.name,
         ]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)

@@ -7,13 +7,9 @@ import django.contrib.postgres.fields.jsonb
 import django.core.validators
 import django.db.models.deletion
 import django.utils.timezone
-import simple_history.models
 from django.conf import settings
 from django.db import migrations, models
 
-import care.facility.models.mixins.permissions.asset
-import care.facility.models.mixins.permissions.facility
-import care.facility.models.mixins.permissions.patient
 import care.utils.models.validators
 
 
@@ -2154,7 +2150,6 @@ class Migration(migrations.Migration):
             },
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.facility.FacilityPermissionMixin,
             ),
         ),
         migrations.CreateModel(
@@ -2663,7 +2658,6 @@ class Migration(migrations.Migration):
             ],
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.patient.ConsultationRelatedPermissionMixin,
             ),
         ),
         migrations.CreateModel(
@@ -3354,7 +3348,6 @@ class Migration(migrations.Migration):
             },
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.patient.PatientPermissionMixin,
             ),
         ),
         migrations.CreateModel(
@@ -4549,7 +4542,6 @@ class Migration(migrations.Migration):
             },
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.patient.ConsultationRelatedPermissionMixin,
             ),
         ),
         migrations.CreateModel(
@@ -5133,7 +5125,6 @@ class Migration(migrations.Migration):
             ],
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.facility.FacilityRelatedPermissionMixin,
             ),
         ),
         migrations.CreateModel(
@@ -5745,7 +5736,6 @@ class Migration(migrations.Migration):
                 "ordering": ("-history_date", "-history_id"),
                 "get_latest_by": "history_date",
             },
-            bases=(simple_history.models.HistoricalChanges, models.Model),
         ),
         migrations.CreateModel(
             name="HistoricalFacilityCapacity",
@@ -5842,7 +5832,6 @@ class Migration(migrations.Migration):
                 "ordering": ("-history_date", "-history_id"),
                 "get_latest_by": "history_date",
             },
-            bases=(simple_history.models.HistoricalChanges, models.Model),
         ),
         migrations.CreateModel(
             name="FileUpload",
@@ -6136,7 +6125,6 @@ class Migration(migrations.Migration):
             ],
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.facility.FacilityRelatedPermissionMixin,
             ),
         ),
         migrations.CreateModel(
@@ -6256,7 +6244,6 @@ class Migration(migrations.Migration):
             ],
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.facility.FacilityRelatedPermissionMixin,
             ),
         ),
         migrations.CreateModel(
@@ -6303,7 +6290,6 @@ class Migration(migrations.Migration):
             ],
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.facility.FacilityRelatedPermissionMixin,
             ),
         ),
         migrations.CreateModel(
@@ -6374,7 +6360,6 @@ class Migration(migrations.Migration):
             },
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.facility.FacilityRelatedPermissionMixin,
             ),
         ),
         migrations.AddField(
@@ -6444,7 +6429,6 @@ class Migration(migrations.Migration):
             ],
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.facility.FacilityRelatedPermissionMixin,
             ),
         ),
         migrations.CreateModel(
@@ -6565,7 +6549,6 @@ class Migration(migrations.Migration):
             },
             bases=(
                 models.Model,
-                care.facility.models.mixins.permissions.facility.FacilityRelatedPermissionMixin,
             ),
         ),
         migrations.AddField(

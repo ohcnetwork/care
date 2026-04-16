@@ -12,6 +12,7 @@ from care.emr.models import (
     TokenBooking,
     TokenSlot,
 )
+from care.emr.models.scheduling.token import TokenCategory, TokenQueue
 from care.emr.resources.scheduling.schedule.spec import (
     SchedulableResourceTypeOptions,
     SlotTypeOptions,
@@ -96,6 +97,7 @@ class TestBookingViewSet(CareAPITestBase):
             "name": "Test Schedule",
             "valid_from": datetime.now(UTC) - timedelta(days=30),
             "valid_to": datetime.now(UTC) + timedelta(days=30),
+            "is_public": True,
         }
         data.update(kwargs)
         return Schedule.objects.create(**data)
@@ -603,6 +605,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
             name="Test Schedule",
             valid_from=datetime.now(UTC) - timedelta(days=30),
             valid_to=datetime.now(UTC) + timedelta(days=30),
+            is_public=True,
         )
         self.availability = self.create_availability()
         self.slot = self.create_slot()
@@ -843,6 +846,7 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
             name="Test Schedule",
             valid_from=datetime.now(UTC) - timedelta(days=30),
             valid_to=datetime.now(UTC) + timedelta(days=30),
+            is_public=True,
         )
         self.availability = self.create_availability()
         self.client.force_authenticate(user=self.user)
@@ -1327,6 +1331,7 @@ class TestOtpSlotViewSet(CareAPITestBase):
             name="Test Schedule",
             valid_from=datetime.now(UTC) - timedelta(days=30),
             valid_to=datetime.now(UTC) + timedelta(days=30),
+            is_public=True,
         )
         self.availability = self.create_availability()
         self.slot = self.create_slot()
@@ -1513,3 +1518,212 @@ class TestOtpSlotViewSet(CareAPITestBase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 0)
+
+
+@ignore_warnings(category=RuntimeWarning, message=r".*received a naive datetime.*")
+class TestGenerateTokenApi(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.user)
+        self.organization = self.create_facility_organization(facility=self.facility)
+        self.patient = self.create_patient()
+        self.resource = SchedulableResource.objects.create(
+            resource_type=SchedulableResourceTypeOptions.practitioner.value,
+            user=self.user,
+            facility=self.facility,
+        )
+        self.schedule = Schedule.objects.create(
+            resource=self.resource,
+            name="Test Schedule",
+            valid_from=datetime.now(UTC) - timedelta(days=30),
+            valid_to=datetime.now(UTC) + timedelta(days=30),
+            is_public=True,
+        )
+        self.availability = self.create_availability()
+        self.slot = self.create_slot()
+        self.category = self.create_token_category()
+        self.client.force_authenticate(user=self.user)
+
+    def create_availability(self, **kwargs):
+        return Availability.objects.create(
+            schedule=self.schedule,
+            name=kwargs.get("name", "Test Availability"),
+            slot_type=kwargs.get("slot_type", SlotTypeOptions.appointment.value),
+            slot_size_in_minutes=kwargs.get("slot_size_in_minutes", 30),
+            tokens_per_slot=kwargs.get("tokens_per_slot", 1),
+            create_tokens=kwargs.get("create_tokens", False),
+            reason=kwargs.get("reason", "Regular schedule"),
+            availability=kwargs.get(
+                "availability",
+                [
+                    {"day_of_week": i, "start_time": "00:00:00", "end_time": "23:59:00"}
+                    for i in range(7)
+                ],
+            ),
+        )
+
+    def create_slot(self, **kwargs):
+        data = {
+            "resource": self.resource,
+            "availability": self.availability,
+            "start_datetime": datetime.now(UTC) + timedelta(minutes=30),
+            "end_datetime": datetime.now(UTC) + timedelta(minutes=60),
+            "allocated": 0,
+        }
+        data.update(kwargs)
+        return TokenSlot.objects.create(**data)
+
+    def create_booking(self, **kwargs):
+        data = {
+            "token_slot": self.slot,
+            "patient": self.patient,
+            "booked_by": self.user,
+            "status": BookingStatusChoices.booked.value,
+        }
+        data.update(kwargs)
+        slot = data["token_slot"]
+        slot.allocated += 1
+        slot.save()
+        return TokenBooking.objects.create(**data)
+
+    def create_token_category(self, **kwargs):
+        data = {
+            "facility": self.facility,
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "name": "General",
+            "shorthand": "G",
+        }
+        data.update(kwargs)
+        return TokenCategory.objects.create(**data)
+
+    def _get_generate_token_url(self, booking_id):
+        return reverse(
+            "appointments-generate-token",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": booking_id,
+            },
+        )
+
+    def test_generate_token_with_permission(self):
+        """Users with can_write_booking permission can generate tokens."""
+        permissions = [
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        booking = self.create_booking()
+        data = {"category": str(self.category.external_id)}
+        response = self.client.post(
+            self._get_generate_token_url(booking.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("number", response.data)
+
+    def test_generate_token_without_permission(self):
+        """Users without can_write_booking permission cannot generate tokens."""
+        permissions = [SchedulePermissions.can_list_booking.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        booking = self.create_booking()
+        data = {"category": str(self.category.external_id)}
+        response = self.client.post(
+            self._get_generate_token_url(booking.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_generate_token_without_any_permission(self):
+        """Users without any permission cannot generate tokens."""
+        booking = self.create_booking()
+        data = {"category": str(self.category.external_id)}
+        response = self.client.post(
+            self._get_generate_token_url(booking.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+
+    @override_settings(USE_TZ=True, TIME_ZONE="Asia/Kolkata")
+    def test_generate_token_date_matches_slot_date_in_ist(self):
+        """
+        Token queue date should match the slot's date in IST timezone.
+
+        When a slot starts at 00:00 IST (which is 18:30 UTC previous day),
+        the token's queue date should be the IST date, not the UTC date.
+        """
+        import zoneinfo
+
+        permissions = [
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        ist = zoneinfo.ZoneInfo("Asia/Kolkata")
+
+        # Create a slot that starts at 00:30 IST on a specific date
+        # This is 19:00 UTC the previous day
+        ist_date = datetime(2026, 1, 15, tzinfo=ist).date()
+        slot_start_ist = datetime(2026, 1, 15, 0, 30, tzinfo=ist)
+        slot_end_ist = datetime(2026, 1, 15, 23, 59, tzinfo=ist)
+
+        slot = self.create_slot(
+            start_datetime=slot_start_ist,
+            end_datetime=slot_end_ist,
+        )
+        booking = self.create_booking(token_slot=slot)
+
+        data = {"category": str(self.category.external_id)}
+        response = self.client.post(
+            self._get_generate_token_url(booking.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Verify that the token queue was created with the correct IST date
+        queue = TokenQueue.objects.get(facility=self.facility, resource=self.resource)
+        self.assertEqual(queue.date, ist_date)
+
+    def test_generate_token_already_generated(self):
+        """Cannot generate token if already generated for booking."""
+        permissions = [
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        booking = self.create_booking()
+        data = {"category": str(self.category.external_id)}
+
+        # Generate first token
+        response = self.client.post(
+            self._get_generate_token_url(booking.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Try to generate second token - should fail
+        response = self.client.post(
+            self._get_generate_token_url(booking.external_id), data, format="json"
+        )
+        self.assertContains(response, "Token already generated", status_code=400)
+
+    def test_generate_token_invalid_category(self):
+        """Cannot generate token with invalid category."""
+        import uuid
+
+        permissions = [
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        booking = self.create_booking()
+        data = {"category": str(uuid.uuid4())}
+        response = self.client.post(
+            self._get_generate_token_url(booking.external_id), data, format="json"
+        )
+        self.assertContains(response, "Category not found", status_code=400)

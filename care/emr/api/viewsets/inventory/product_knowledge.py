@@ -1,3 +1,5 @@
+from django.contrib.postgres.search import TrigramSimilarity
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -22,20 +24,40 @@ from care.emr.resources.inventory.product_knowledge.spec import (
 )
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
-from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyCharFilter
+from care.utils.filters.dummy_filter import (
+    DummyBooleanFilter,
+    DummyCharFilter,
+    DummyUUIDFilter,
+)
 from care.utils.filters.null_filter import NullFilter
 from care.utils.shortcuts import get_object_or_404
 
 
+class TrigramFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        queryset = qs
+        if not value:
+            return queryset
+        return (
+            queryset.annotate(
+                similarity=TrigramSimilarity(self.field_name, value),
+            )
+            .filter(similarity__gt=0.1)
+            .order_by("-similarity")
+        )
+
+
 class ProductKnowledgeFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
-    facility = filters.UUIDFilter(field_name="facility__external_id")
-    name = filters.CharFilter(lookup_expr="icontains")  # TODO : Need better searching
+    facility = DummyUUIDFilter()
+    name = TrigramFilter()
+    alternate_names = TrigramFilter(field_name="names_cache")
     product_type = filters.CharFilter(lookup_expr="iexact")
     facility_is_null = NullFilter(field_name="facility")
     alternate_identifier = filters.CharFilter(lookup_expr="iexact")
     category = DummyCharFilter()
     include_children = DummyBooleanFilter()
+    include_instance = DummyBooleanFilter()
 
 
 class ProductKnowledgeViewSet(
@@ -137,6 +159,9 @@ class ProductKnowledgeViewSet(
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.action == "list" and "facility" in self.request.GET:
+            include_instance = (
+                self.request.GET.get("include_instance", "False").lower() == "true"
+            )
             facility = get_object_or_404(
                 Facility, external_id=self.request.GET["facility"]
             )
@@ -146,8 +171,12 @@ class ProductKnowledgeViewSet(
                 facility,
             ):
                 raise PermissionDenied("Cannot read product knowledge")
-
-            queryset = queryset.filter(facility=facility)
+            if include_instance:
+                queryset = queryset.filter(
+                    Q(facility__isnull=True) | Q(facility=facility)
+                )
+            else:
+                queryset = queryset.filter(facility=facility)
             if self.request.GET.get("category"):
                 category = get_object_or_404(
                     ResourceCategory.objects.only("id"),
