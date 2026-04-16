@@ -385,6 +385,7 @@ class TestTagConfigAPI(CareAPITestBase):
                 category=TagCategoryChoices.lab.value,
                 status=TagStatus.archived.value,
                 priority=5,
+                description="",
             ),
             format="json",
         )
@@ -394,6 +395,7 @@ class TestTagConfigAPI(CareAPITestBase):
         self.assertEqual(response.data["id"], get_response.data["id"])
         self.assertEqual(get_response.data["priority"], 5)
         self.assertEqual(get_response.data["status"], TagStatus.archived.value)
+        self.assertEqual(get_response.data["description"], "")
 
     def test_update_tag_config_as_with_facility_as_superuser(self):
         """Test updating a tag config with facility as superuser"""

@@ -1,3 +1,4 @@
+import logging
 import secrets
 import string
 from datetime import timedelta
@@ -16,6 +17,8 @@ from care.utils import sms
 from care.utils.models.validators import mobile_validator
 from care.utils.sms.utils import get_sms_content
 from config.patient_otp_token import PatientToken
+
+logger = logging.getLogger(__name__)
 
 
 def rand_pass(size):
@@ -72,9 +75,7 @@ class OTPLoginView(EMRBaseViewSet):
                     recipients=[data.phone_number],
                 )
             except Exception as e:
-                import logging
-
-                logging.error(e)
+                logger.error(e)
                 return Response(
                     {"error": "Error while sending OTP. Contact admin."}, status=400
                 )

@@ -1,3 +1,36 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "care"
+version = "3.0"
+description = "A Django app for managing healthcare across hospitals and care centers."
+authors = [
+    {name = "Open Healthcare Network", email = "info@ohc.network"}
+]
+license = {text = "MIT"}
+keywords = ["django", "care", "ohc"]
+classifiers = [
+    "Framework :: Django",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+requires-python = "==3.13.*"
+
+[project.urls]
+Homepage = "https://github.com/ohcnetwork/care"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+include = ["care*"]
+
+
 [tool.coverage.run]
 branch = true
 source = ["care", "config", "plugs"]
@@ -23,7 +56,7 @@ omit = ["care/facility/**", "care/users/**", "*/tests/**", "*/migrations*/**"]
 
 [tool.ruff]
 target-version = "py313"
-extend-exclude = ["*/migrations*/*"]
+extend-exclude = ["*/migrations*/*", "care/facility/**"]
 include = ["*.py", "pyproject.toml"]
 
 [tool.ruff.lint]
@@ -59,7 +92,6 @@ select = [
   "SLF", # flake8-self
   "SIM", # flake8-simplify
   "TID", # flake8-tidy-imports
-  "TCH", # flake8-todo
   "INT", # flake8-gettext
   # "ARG",  # flake8-unused-arguments
   "PTH", # flake8-use-pathlib
@@ -78,6 +110,7 @@ ignore = [
   "FBT002",  # boolean-default-value-positional-argument
   "SIM105",  # suppressible-exception
   "PLR0913", # too-many-arguments
+  "PLW1641", # object does not have __hash__ method
   "DJ001",   # django-nullable-model-string-field
   "ISC001",  # conflicts with format
   "COM812",  # conflicts with format
@@ -85,15 +118,10 @@ ignore = [
   "FBT001",  # why not!
   "S106",
   "S105",
-  "UP038",   # this results in slower code
   "EM101",   # Why not!
   "ERA001",  # Lots of commented out code until the big merge!
+  "PLC0415", # TODO: ignore specific warning for top level imports and remove the catchall
 ]
-
-
-[tool.ruff.format]
-line-ending = "lf"
-
 
 [tool.ruff.lint.per-file-ignores]
 "**/__init__.py" = ["E402", "F401"] # for imports
@@ -102,10 +130,12 @@ line-ending = "lf"
 [tool.ruff.lint.flake8-builtins]
 builtins-ignorelist = ["id", "list", "filter"]
 
-
 [tool.ruff.lint.flake8-quotes]
 docstring-quotes = "double"
 
-
 [tool.ruff.lint.flake8-unused-arguments]
 ignore-variadic-names = true
+
+[tool.ruff.format]
+line-ending = "lf"
+quote-style = "double"

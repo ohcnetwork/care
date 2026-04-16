@@ -1,7 +1,8 @@
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import (
@@ -18,7 +19,13 @@ from care.emr.models.supply_delivery import DeliveryOrder
 from care.emr.resources.inventory.supply_delivery.delivery_order import (
     BaseSupplyDeliveryOrderSpec,
     SupplyDeliveryOrderReadSpec,
+    SupplyDeliveryOrderRetrieveSpec,
+    SupplyDeliveryOrderStatusOptions,
     SupplyDeliveryOrderWriteSpec,
+)
+from care.emr.resources.invoice.return_items_invoice import (
+    cancel_return_invoice,
+    generate_return_invoice,
 )
 from care.emr.resources.tag.config_spec import TagResource
 from care.emr.tagging.filters import SingleFacilityTagFilter
@@ -30,13 +37,15 @@ from care.utils.filters.null_filter import NullFilter
 
 class DeliveryOrderFilters(filters.FilterSet):
     status = MultiSelectFilter(field_name="status")
-    created_date = filters.DateRangeFilter()
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     supplier = filters.UUIDFilter(field_name="supplier__external_id")
-
+    created_by = filters.UUIDFilter(field_name="created_by__external_id")
     origin = DummyUUIDFilter()
     destination = DummyUUIDFilter()
     include_children = DummyBooleanFilter()
     origin_isnull = NullFilter(field_name="origin")
+    patient = filters.UUIDFilter(field_name="patient__external_id")
+    patient_isnull = NullFilter(field_name="patient")
 
 
 class DeliveryOrderViewSet(
@@ -52,6 +61,7 @@ class DeliveryOrderViewSet(
     pydantic_model = SupplyDeliveryOrderWriteSpec
     pydantic_update_model = BaseSupplyDeliveryOrderSpec
     pydantic_read_model = SupplyDeliveryOrderReadSpec
+    pydantic_retrieve_model = SupplyDeliveryOrderRetrieveSpec
     filterset_class = DeliveryOrderFilters
     filter_backends = [
         filters.DjangoFilterBackend,
@@ -91,6 +101,31 @@ class DeliveryOrderViewSet(
                 "Origin and destination must be in the same facility"
             )
         return super().perform_create(instance)
+
+    def perform_update(self, instance):
+        with transaction.atomic():
+            old_instance = DeliveryOrder.objects.get(id=instance.id)
+            if old_instance.status != instance.status:
+                if old_instance.status in [
+                    SupplyDeliveryOrderStatusOptions.abandoned.value,
+                    SupplyDeliveryOrderStatusOptions.entered_in_error.value,
+                ]:
+                    raise ValidationError(
+                        "Delivery order already abandoned or entered in error"
+                    )
+                if (
+                    instance.patient
+                    and instance.status
+                    == SupplyDeliveryOrderStatusOptions.completed.value
+                ):
+                    generate_return_invoice(instance)
+                if instance.patient and instance.status in [
+                    SupplyDeliveryOrderStatusOptions.abandoned.value,
+                    SupplyDeliveryOrderStatusOptions.entered_in_error.value,
+                ]:
+                    cancel_return_invoice(instance)
+
+            return super().perform_update(instance)
 
     def authorize_create(self, instance):
         """

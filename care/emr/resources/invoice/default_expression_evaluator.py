@@ -1,3 +1,4 @@
+from care.emr.models.facility_config import FacilityMonetoryConfig
 from care.emr.models.invoice import Invoice
 from care.emr.utils.expression_evaluator import evaluate_expression
 from care.utils.time_util import care_now
@@ -11,9 +12,12 @@ def evaluate_invoice_identifier_default_expression(facility):
         "current_year_yyyy": care_now().year,
         "current_year_yy": care_now().year % 100,
     }
-    if not facility.invoice_number_expression:
+    expression = FacilityMonetoryConfig.get_monetory_config(
+        facility.id
+    ).invoice_number_expression
+    if not expression:
         return ""
-    return evaluate_expression(facility.invoice_number_expression, context)
+    return evaluate_expression(expression, context)
 
 
 def evaluate_invoice_dummy_expression(expression):

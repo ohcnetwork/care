@@ -5,6 +5,8 @@ from django.test.client import RequestFactory
 from django.urls import Resolver404, resolve
 from rest_framework.exceptions import ParseError
 
+logger = logging.getLogger(__name__)
+
 HEADERS_TO_INCLUDE = ["HTTP_USER_AGENT", "HTTP_AUTHORIZATION"]
 DEFAULT_CONTENT_TYPE = "application/json"
 
@@ -25,7 +27,7 @@ def get_response(wsgi_request):
     except Exception as exc:
         data = {"detail": "server_error"}
         headers = {}
-        logging.exception(exc)
+        logger.exception(exc)
         status_code = 500
     return {"status_code": status_code, "headers": headers, "data": data}
 

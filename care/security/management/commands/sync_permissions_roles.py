@@ -41,6 +41,7 @@ class Command(BaseCommand):
                 role_obj.description = role.description
                 role_obj.is_system = True
                 role_obj.temp_deleted = False
+                role_obj.contexts = [context.value for context in role.contexts]
                 role_obj.save()
             RoleModel.objects.filter(temp_deleted=True).delete()
             # Sync permissions to role

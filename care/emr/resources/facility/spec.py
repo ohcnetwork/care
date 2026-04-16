@@ -1,19 +1,25 @@
-from decimal import Decimal
+from typing import Literal
 
 from django.conf import settings
-from pydantic import UUID4, BaseModel, field_validator, model_validator
+from django.db.models.functions import Lower, Trim
+from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
+from pydantic_core.core_schema import ValidationInfo
+from pydantic_extra_types.coordinate import Latitude, Longitude
 
 from care.emr.models import Organization
+from care.emr.models.facility_config import FacilityMonetoryConfig
 from care.emr.models.patient import PatientIdentifierConfigCache
-from care.emr.resources.base import EMRResource, cacheable
+from care.emr.resources.base import EMRResource, cacheable, model_from_cache
 from care.emr.resources.common.coding import Coding
-from care.emr.resources.common.monetary_component import MonetaryComponentDefinition
+from care.emr.resources.common.monetary_component import (
+    DiscountConfiguration,
+    MonetaryComponentDefinition,
+)
 from care.emr.resources.invoice.default_expression_evaluator import (
     evaluate_invoice_dummy_expression,
 )
 from care.emr.resources.organization.spec import OrganizationReadSpec
 from care.emr.resources.permissions import FacilityPermissionsMixin
-from care.emr.resources.user.spec import UserSpec
 from care.facility.models import (
     REVERSE_FACILITY_TYPES,
     REVERSE_REVERSE_FACILITY_TYPES,
@@ -29,10 +35,65 @@ class FacilityBareMinimumSpec(EMRResource):
     name: str
 
 
+class PageMargin(BaseModel):
+    top: float = Field(ge=0)
+    bottom: float = Field(ge=0)
+    left: float = Field(ge=0)
+    right: float = Field(ge=0)
+
+
+class PageConfig(BaseModel):
+    size: Literal["A4", "A5", "Letter", "Legal"] | None = None
+    orientation: Literal["portrait", "landscape"] | None = None
+    margin: PageMargin | None = None
+
+
+class PrintSetupConfig(BaseModel):
+    auto_print: bool | None = None
+
+
+class LogoConfig(BaseModel):
+    url: str
+    width: float | None = None
+    height: float | None = None
+    alignment: Literal["left", "center", "right"]
+
+
+class HeaderImageConfig(BaseModel):
+    url: str
+    height: float | None = None
+
+
+class FooterImageConfig(BaseModel):
+    url: str | None = None
+    height: float | None = None
+
+
+class BrandingConfig(BaseModel):
+    logo: LogoConfig | None = None
+    header_image: HeaderImageConfig | None = None
+    footer_image: FooterImageConfig | None = None
+
+
+class WatermarkConfig(BaseModel):
+    enabled: bool | None = None
+    text: str | None = None
+    opacity: float | None = Field(None, ge=0, le=1)
+    rotation: float | None = None
+
+
+class PrintTemplate(BaseModel):
+    slug: str
+    page: PageConfig | None = None
+    print_setup: PrintSetupConfig | None = None
+    branding: BrandingConfig | None = None
+    watermark: WatermarkConfig | None = None
+
+
 class FacilityBaseSpec(FacilityBareMinimumSpec):
     description: str
-    longitude: Decimal | None = None
-    latitude: Decimal | None = None
+    longitude: Longitude | None = None
+    latitude: Latitude | None = None
     pincode: int
     address: str
     phone_number: str
@@ -63,6 +124,31 @@ class FacilityInvoiceExpressionSpec(BaseModel):
 class FacilityCreateSpec(FacilityBaseSpec):
     geo_organization: UUID4
     features: list[int]
+    print_templates: list[PrintTemplate] = []
+
+    @field_validator("name")
+    @classmethod
+    def validate_name_uniqueness(cls, v, info: ValidationInfo):
+        if not v:
+            return v
+
+        normalized_name = v.strip().lower()
+        context = info.context or {}
+        is_update = context.get("is_update", False)
+        obj = context.get("object")
+
+        qs = Facility.objects.annotate(normalized_name=Lower(Trim("name"))).filter(
+            normalized_name=normalized_name
+        )
+
+        if is_update and obj:
+            qs = qs.exclude(id=obj.id)
+
+        if qs.exists():
+            err = "A facility with this name already exists"
+            raise ValueError(err)
+
+        return v
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.geo_organization = Organization.objects.filter(
@@ -77,14 +163,15 @@ class FacilityReadSpec(FacilityBaseSpec):
     read_cover_image_url: str
     geo_organization: dict = {}
     created_by: dict = {}
-    invoice_number_expression: str | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.user.spec import UserSpec
+
         mapping["id"] = obj.external_id
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
+            mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
@@ -96,6 +183,8 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     flags: list[str] = []
     discount_codes: list[dict] = []
     discount_monetary_components: list[dict] = []
+    discount_configuration: dict | None = None
+
     instance_discount_codes: list[dict] = []
     instance_discount_monetary_components: list[dict] = []
     instance_tax_codes: list[dict] = []
@@ -104,10 +193,28 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     # Identifiers
     patient_instance_identifier_configs: list[dict] = []
     patient_facility_identifier_configs: list[dict] = []
+    invoice_number_expression: str | None = None
+
+    print_templates: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.models.facility_config import FacilityMonetoryConfig
+
         super().perform_extra_serialization(mapping, obj)
+        facility_monetory_config = FacilityMonetoryConfig.get_monetory_config(obj.id)
+
+        mapping["invoice_number_expression"] = (
+            facility_monetory_config.invoice_number_expression
+        )
+        mapping["discount_codes"] = facility_monetory_config.discount_codes
+        mapping["discount_monetary_components"] = (
+            facility_monetory_config.discount_monetary_components
+        )
+        mapping["discount_configuration"] = (
+            facility_monetory_config.discount_configuration
+        )
+
         mapping["flags"] = obj.get_facility_flags()
         mapping["instance_discount_codes"] = settings.DISCOUNT_CODES
         mapping["instance_discount_monetary_components"] = (
@@ -127,11 +234,12 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
 
 
 class FacilityMonetaryCodeSpec(EMRResource):
-    __model__ = Facility
+    __model__ = FacilityMonetoryConfig
     __exclude__ = []
 
     discount_codes: list[Coding]
     discount_monetary_components: list[MonetaryComponentDefinition]
+    discount_configuration: DiscountConfiguration | None
 
     @model_validator(mode="after")
     def validate_count(self):
