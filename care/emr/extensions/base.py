@@ -105,6 +105,15 @@ class CoreEnvExtension(ExtensionBase):
 class PlugExtension(ExtensionBase):
     extension_owner: ExtensionOwners = ExtensionOwners.plug
 
+    def serialize_extensions(self, data, resource=None):
+        return data
+
+    def deserialize_extensions_list(self, data, resource):
+        return data
+
+    def deserialize_extensions_retrieve(self, data, resource):
+        return data
+
 
 for resource_type in ExtensionResource:
     extension_obj = CoreEnvExtension()

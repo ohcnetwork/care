@@ -2,8 +2,7 @@ from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from pydantic import ValidationError
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import (
@@ -20,6 +19,7 @@ from care.emr.models.supply_delivery import DeliveryOrder
 from care.emr.resources.inventory.supply_delivery.delivery_order import (
     BaseSupplyDeliveryOrderSpec,
     SupplyDeliveryOrderReadSpec,
+    SupplyDeliveryOrderRetrieveSpec,
     SupplyDeliveryOrderStatusOptions,
     SupplyDeliveryOrderWriteSpec,
 )
@@ -37,7 +37,7 @@ from care.utils.filters.null_filter import NullFilter
 
 class DeliveryOrderFilters(filters.FilterSet):
     status = MultiSelectFilter(field_name="status")
-    created_date = filters.DateRangeFilter()
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     supplier = filters.UUIDFilter(field_name="supplier__external_id")
     created_by = filters.UUIDFilter(field_name="created_by__external_id")
     origin = DummyUUIDFilter()
@@ -61,6 +61,7 @@ class DeliveryOrderViewSet(
     pydantic_model = SupplyDeliveryOrderWriteSpec
     pydantic_update_model = BaseSupplyDeliveryOrderSpec
     pydantic_read_model = SupplyDeliveryOrderReadSpec
+    pydantic_retrieve_model = SupplyDeliveryOrderRetrieveSpec
     filterset_class = DeliveryOrderFilters
     filter_backends = [
         filters.DjangoFilterBackend,
@@ -123,6 +124,7 @@ class DeliveryOrderViewSet(
                     SupplyDeliveryOrderStatusOptions.entered_in_error.value,
                 ]:
                     cancel_return_invoice(instance)
+
             return super().perform_update(instance)
 
     def authorize_create(self, instance):

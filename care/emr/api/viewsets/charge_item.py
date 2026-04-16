@@ -32,6 +32,7 @@ from care.emr.registries.system_questionnaire.system_questionnaire import (
     InternalQuestionnaireRegistry,
 )
 from care.emr.resources.account.default_account import get_default_account
+from care.emr.resources.account.spec import AccountStatusOptions
 from care.emr.resources.account.sync_items import rebalance_account_task
 from care.emr.resources.charge_item.apply_charge_item_definition import (
     apply_charge_item_definition,
@@ -83,6 +84,7 @@ class ApplyChargeItemDefinitionRequest(BaseModel):
     encounter: UUID4 | None = None
     patient: UUID4 | None = None
     performer_actor: UUID4 | None = None
+    account: UUID4 | None = None
 
     service_resource: ChargeItemResourceOptions | None = None
     service_resource_id: str | None = None
@@ -261,6 +263,7 @@ class ChargeItemViewSet(
             ):
                 self.authorize_cancel(instance)
                 handle_charge_item_cancel(instance)
+                sync = False
             if sync:
                 sync_charge_item_costs(instance)
             super().perform_update(instance)
@@ -359,7 +362,6 @@ class ChargeItemViewSet(
                     )
                 else:
                     raise ValidationError("Patient or encounter is required")
-
                 if (
                     charge_item_request.service_resource
                     and not validate_service_resource(
@@ -371,7 +373,15 @@ class ChargeItemViewSet(
                     )
                 ):
                     raise ValidationError("Invalid service resource")
-                encounter = None
+                kwargs = {}
+                if charge_item_request.account:
+                    kwargs["account"] = get_object_or_404(
+                        Account,
+                        external_id=charge_item_request.account,
+                        facility=facility,
+                        patient=patient,
+                        status=AccountStatusOptions.active.value,
+                    )
                 quantity = charge_item_request.quantity
                 charge_item = apply_charge_item_definition(
                     charge_item_definition,
@@ -380,6 +390,7 @@ class ChargeItemViewSet(
                     encounter=encounter,
                     quantity=quantity,
                     negative_allowed=negative_allowed,
+                    **kwargs,
                 )
                 if charge_item_request.service_resource:
                     charge_item.service_resource = charge_item_request.service_resource

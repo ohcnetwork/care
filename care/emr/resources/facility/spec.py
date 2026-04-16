@@ -1,14 +1,20 @@
+from typing import Literal
+
 from django.conf import settings
 from django.db.models.functions import Lower, Trim
-from pydantic import UUID4, BaseModel, field_validator, model_validator
+from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 from pydantic_core.core_schema import ValidationInfo
 from pydantic_extra_types.coordinate import Latitude, Longitude
 
 from care.emr.models import Organization
+from care.emr.models.facility_config import FacilityMonetoryConfig
 from care.emr.models.patient import PatientIdentifierConfigCache
 from care.emr.resources.base import EMRResource, cacheable, model_from_cache
 from care.emr.resources.common.coding import Coding
-from care.emr.resources.common.monetary_component import MonetaryComponentDefinition
+from care.emr.resources.common.monetary_component import (
+    DiscountConfiguration,
+    MonetaryComponentDefinition,
+)
 from care.emr.resources.invoice.default_expression_evaluator import (
     evaluate_invoice_dummy_expression,
 )
@@ -27,6 +33,61 @@ class FacilityBareMinimumSpec(EMRResource):
     __exclude__ = ["geo_organization"]
     id: UUID4 | None = None
     name: str
+
+
+class PageMargin(BaseModel):
+    top: float = Field(ge=0)
+    bottom: float = Field(ge=0)
+    left: float = Field(ge=0)
+    right: float = Field(ge=0)
+
+
+class PageConfig(BaseModel):
+    size: Literal["A4", "A5", "Letter", "Legal"] | None = None
+    orientation: Literal["portrait", "landscape"] | None = None
+    margin: PageMargin | None = None
+
+
+class PrintSetupConfig(BaseModel):
+    auto_print: bool | None = None
+
+
+class LogoConfig(BaseModel):
+    url: str
+    width: float | None = None
+    height: float | None = None
+    alignment: Literal["left", "center", "right"]
+
+
+class HeaderImageConfig(BaseModel):
+    url: str
+    height: float | None = None
+
+
+class FooterImageConfig(BaseModel):
+    url: str | None = None
+    height: float | None = None
+
+
+class BrandingConfig(BaseModel):
+    logo: LogoConfig | None = None
+    header_image: HeaderImageConfig | None = None
+    footer_image: FooterImageConfig | None = None
+
+
+class WatermarkConfig(BaseModel):
+    enabled: bool | None = None
+    text: str | None = None
+    opacity: float | None = Field(None, ge=0, le=1)
+    rotation: float | None = None
+
+
+class PrintTemplate(BaseModel):
+    slug: str
+    page: PageConfig | None = None
+    print_setup: PrintSetupConfig | None = None
+    branding: BrandingConfig | None = None
+    watermark: WatermarkConfig | None = None
 
 
 class FacilityBaseSpec(FacilityBareMinimumSpec):
@@ -63,6 +124,7 @@ class FacilityInvoiceExpressionSpec(BaseModel):
 class FacilityCreateSpec(FacilityBaseSpec):
     geo_organization: UUID4
     features: list[int]
+    print_templates: list[PrintTemplate] = []
 
     @field_validator("name")
     @classmethod
@@ -101,7 +163,6 @@ class FacilityReadSpec(FacilityBaseSpec):
     read_cover_image_url: str
     geo_organization: dict = {}
     created_by: dict = {}
-    invoice_number_expression: str | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -122,6 +183,8 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     flags: list[str] = []
     discount_codes: list[dict] = []
     discount_monetary_components: list[dict] = []
+    discount_configuration: dict | None = None
+
     instance_discount_codes: list[dict] = []
     instance_discount_monetary_components: list[dict] = []
     instance_tax_codes: list[dict] = []
@@ -130,16 +193,28 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     # Identifiers
     patient_instance_identifier_configs: list[dict] = []
     patient_facility_identifier_configs: list[dict] = []
+    invoice_number_expression: str | None = None
 
-    # Product
-    extensions_schema_product: dict = {}
-    extensions_schema_supply_delivery: dict = {}
-    extensions_schema_supply_delivery_order: dict = {}
-    extensions_schema_account: dict = {}
+    print_templates: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.models.facility_config import FacilityMonetoryConfig
+
         super().perform_extra_serialization(mapping, obj)
+        facility_monetory_config = FacilityMonetoryConfig.get_monetory_config(obj.id)
+
+        mapping["invoice_number_expression"] = (
+            facility_monetory_config.invoice_number_expression
+        )
+        mapping["discount_codes"] = facility_monetory_config.discount_codes
+        mapping["discount_monetary_components"] = (
+            facility_monetory_config.discount_monetary_components
+        )
+        mapping["discount_configuration"] = (
+            facility_monetory_config.discount_configuration
+        )
+
         mapping["flags"] = obj.get_facility_flags()
         mapping["instance_discount_codes"] = settings.DISCOUNT_CODES
         mapping["instance_discount_monetary_components"] = (
@@ -159,11 +234,12 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
 
 
 class FacilityMonetaryCodeSpec(EMRResource):
-    __model__ = Facility
+    __model__ = FacilityMonetoryConfig
     __exclude__ = []
 
     discount_codes: list[Coding]
     discount_monetary_components: list[MonetaryComponentDefinition]
+    discount_configuration: DiscountConfiguration | None
 
     @model_validator(mode="after")
     def validate_count(self):
