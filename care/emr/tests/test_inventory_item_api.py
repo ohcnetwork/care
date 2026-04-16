@@ -50,11 +50,24 @@ class InventoryItemAPITest(CareAPITestBase):
         )
         return location
 
+    def calculate_slug(self, slug_value, facility):
+        if facility:
+            return f"f-{facility.external_id}-{slug_value}"
+        return f"i-{slug_value}"
+
     def create_product_knowledge(self, facility, **kwargs):
-        return baker.make("emr.ProductKnowledge", facility=facility, **kwargs)
+        slug_value = kwargs.get("slug", "default_slug")
+        slug = self.calculate_slug(slug_value, facility)
+        return baker.make(
+            "emr.ProductKnowledge", facility=facility, slug=slug, **kwargs
+        )
 
     def create_charge_item_definition(self, facility, **kwargs):
-        return baker.make("emr.ChargeItemDefinition", facility=facility, **kwargs)
+        slug_value = kwargs.get("slug", "default_slug")
+        slug = self.calculate_slug(slug_value, facility)
+        return baker.make(
+            "emr.ChargeItemDefinition", facility=facility, slug=slug, **kwargs
+        )
 
     def create_product(
         self, facility, product_knowledge, charge_item_definition=None, **kwargs
