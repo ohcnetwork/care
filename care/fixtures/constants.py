@@ -788,6 +788,29 @@ MANAGING_ORG_USERS = [
     {"action": "assign", "username": "care-doctor", "role": "Manager"},
 ]
 
+FACILITY_DEPARTMENTS = [
+    "General Medicine",
+    "Emergency",
+    "Laboratory",
+    "Pharmacy",
+    "Cardiology",
+    "Neurology",
+    "Orthopedics",
+    "Pediatrics",
+    "Obstetrics & Gynecology",
+    "Dermatology",
+    "Ophthalmology",
+    "ENT",
+    "Radiology",
+    "Oncology",
+    "Psychiatry",
+    "Nephrology",
+    "Pulmonology",
+    "Gastroenterology",
+    "Urology",
+    "Endocrinology",
+]
+
 # Default availability: Mon-Sun 09:30-18:30, 18-minute appointment slots, 3 tokens per slot
 DEFAULT_AVAILABILITY = {
     "name": "Default Availability",

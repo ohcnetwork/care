@@ -12,6 +12,7 @@ from care.emr.resources.location.spec import (
 from care.emr.resources.organization.spec import OrganizationTypeChoices
 from care.fixtures.constants import (
     DEFAULT_AVAILABILITY,
+    FACILITY_DEPARTMENTS,
     INVENTORY_ITEMS,
     LAB_TESTS,
     MANAGING_ORG_USERS,
@@ -87,7 +88,7 @@ class Command(BaseCommand):
         admin_org = next((o for o in existing if o.name == "Administration"), None)
         if admin_org:
             departments["Administration"] = admin_org
-        for name in ["General Medicine", "Emergency", "Laboratory", "Pharmacy"]:
+        for name in FACILITY_DEPARTMENTS:
             departments[name] = base.create_facility_organization(
                 facility_id, name=name
             )
