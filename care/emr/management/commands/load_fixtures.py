@@ -1,5 +1,8 @@
+from datetime import timedelta
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 
 from care.emr.resources.encounter.constants import StatusChoices
 from care.emr.resources.location.spec import (
@@ -8,6 +11,7 @@ from care.emr.resources.location.spec import (
 )
 from care.emr.resources.organization.spec import OrganizationTypeChoices
 from care.fixtures.constants import (
+    DEFAULT_AVAILABILITY,
     INVENTORY_ITEMS,
     LAB_TESTS,
     MANAGING_ORG_USERS,
@@ -122,10 +126,11 @@ class Command(BaseCommand):
             ("Volunteer", "care-volunteer"),
             ("Facility Admin", "care-fac-admin"),
         ]
+        created_users = {}
         for role_name, username in default_users:
             if role_name not in roles or role_name not in role_orgs:
                 continue
-            base.create_user(
+            user = base.create_user(
                 geo_organization.id,
                 role_orgs=[
                     {
@@ -137,6 +142,7 @@ class Command(BaseCommand):
                 email=f"{username}@care.test",
                 password=password,
             )
+            created_users[role_name] = user
         log("Loading users completed")
 
         patients = []
@@ -161,6 +167,11 @@ class Command(BaseCommand):
 
         self.load_inventory(base, facility_id, departments, suppliers[0].id)
         log("Loading inventory completed")
+
+        self.load_scheduling(
+            base, facility_id, created_users, patients, departments, roles
+        )
+        log("Loading scheduling completed")
 
         self.setup_managing_organization(base, role_orgs, geo_organization.id, password)
         log("Loading managing organization completed")
@@ -294,3 +305,73 @@ class Command(BaseCommand):
             elif user_def["action"] == "assign":
                 user_data = base.get_user(user_def["username"])
                 base.assign_org_role(managing_org_id, user_data.id, role_id)
+
+    def load_scheduling(
+        self, base, facility_id, created_users, patients, departments, roles
+    ):
+        """Create schedules, token slots, queues, and sample appointments."""
+        now = timezone.now()
+        valid_from = (now + timedelta(days=1)).strftime("%Y-%m-%dT00:00:00")
+        valid_to = (now + timedelta(days=8)).strftime("%Y-%m-%dT23:59:59")
+
+        # Create schedule for the doctor
+        doctor = created_users.get("Doctor")
+        if not doctor:
+            return
+
+        # Doctor must be part of the facility to create a schedule
+        admin_org = departments.get("Administration")
+        doctor_role = roles.get("Doctor")
+        if admin_org and doctor_role:
+            base.add_user_to_facility_organization(
+                facility_id, admin_org.id, doctor.id, doctor_role.id
+            )
+
+        base.create_schedule(
+            facility_id,
+            resource_type="practitioner",
+            resource_id=doctor.id,
+            name="Doctor Consultation Schedule",
+            valid_from=valid_from,
+            valid_to=valid_to,
+            availabilities=[DEFAULT_AVAILABILITY],
+        )
+
+        # Create token queue, sub-queue, and category for the doctor
+        tomorrow = (now + timedelta(days=1)).strftime("%Y-%m-%d")
+        base.create_token_queue(
+            facility_id,
+            resource_type="practitioner",
+            resource_id=doctor.id,
+            date=tomorrow,
+        )
+        base.create_token_sub_queue(
+            facility_id,
+            resource_type="practitioner",
+            resource_id=doctor.id,
+            name="Consultation Room 1",
+        )
+        base.create_token_category(
+            facility_id,
+            resource_type="practitioner",
+            name="General Consultation",
+            shorthand="GEN",
+        )
+
+        # Generate slots for tomorrow and book appointments for some patients
+        slots_response = base.get_slots_for_day(
+            facility_id,
+            resource_type="practitioner",
+            resource_id=doctor.id,
+            day=tomorrow,
+        )
+        slots = slots_response.get("results", [])
+        if slots:
+            booked_patients = patients[: min(3, len(patients), len(slots))]
+            for idx, patient in enumerate(booked_patients):
+                base.create_appointment(
+                    facility_id,
+                    slot_id=slots[idx].id,
+                    patient_id=patient.id,
+                    note=f"Auto-booked fixture appointment {idx + 1}",
+                )

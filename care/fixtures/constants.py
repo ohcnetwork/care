@@ -787,3 +787,16 @@ MANAGING_ORG_USERS = [
     {"action": "assign", "username": "admin", "role": "Admin"},
     {"action": "assign", "username": "care-doctor", "role": "Manager"},
 ]
+
+# Default availability: Mon-Sun 09:30-18:30, 18-minute appointment slots, 3 tokens per slot
+DEFAULT_AVAILABILITY = {
+    "name": "Default Availability",
+    "slot_type": "appointment",
+    "slot_size_in_minutes": 18,
+    "tokens_per_slot": 3,
+    "reason": "",
+    "availability": [
+        {"day_of_week": day, "start_time": "09:30", "end_time": "18:30"}
+        for day in range(7)
+    ],
+}

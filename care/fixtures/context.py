@@ -1,5 +1,6 @@
 import logging
 import sys
+import warnings
 from contextlib import contextmanager
 from unittest.mock import patch
 
@@ -38,7 +39,14 @@ def care_fixture_context():
         with (
             transaction.atomic(),
             patch("care.emr.api.viewsets.patient.PatientCreateLock", _NoOpLock),
+            warnings.catch_warnings(),
         ):
+            warnings.filterwarnings(
+                "ignore",
+                message=r".*received a naive datetime.*",
+                category=RuntimeWarning,
+            )
+
             user_model = get_user_model()
             superuser, _ = user_model.objects.get_or_create(
                 username="admin",
