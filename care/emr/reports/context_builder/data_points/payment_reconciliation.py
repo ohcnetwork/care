@@ -5,6 +5,9 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.invoice import (
+    MinimumInvoiceContextBuilder,
+)
 
 PAYMENT_RECONCILIATION_STATUS = {
     "active": "Active",
@@ -128,6 +131,17 @@ class PaymentReconciliationContextBuilder(QuerysetContextBuilder):
         if p.method
         else "",
         description="Method used for the payment reconciliation",
+    )
+    target_invoice = Field(
+        display="Target Invoice",
+        target_context=MinimumInvoiceContextBuilder,
+        preview_value="",
+        description="Invoice associated with the payment reconciliation",
+    )
+    created_date = Field(
+        display="Created Date",
+        preview_value="2024-01-01T10:00:00Z",
+        description="Timestamp when the payment reconciliation was created",
     )
 
     def get_context(self):

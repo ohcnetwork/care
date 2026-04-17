@@ -182,3 +182,127 @@ class FileUploadTestCase(CareAPITestBase):
 
         with self.assertRaises(FileUpload.DoesNotExist):
             file_obj.refresh_from_db()
+
+    def test_archive_file(self):
+        url = reverse("files-list")
+        response = self.client.post(
+            url,
+            {
+                "name": "file",
+                "original_name": "file.jpg",
+                "file_type": "patient",
+                "file_category": "unspecified",
+                "associating_id": str(self.patient.external_id),
+                "mime_type": self.file_mime_type,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        file_id = response.data["id"]
+
+        self.client.post(
+            reverse("files-mark-upload-completed", args=[file_id]), format="json"
+        )
+
+        archive_url = reverse("files-archive", args=[file_id])
+        response = self.client.post(
+            archive_url, {"archive_reason": "No longer needed"}, format="json"
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertTrue(response.data["is_archived"])
+        self.assertEqual(response.data["archive_reason"], "No longer needed")
+
+    def test_list_files_without_required_params(self):
+        response = self.client.get(reverse("files-list"))
+        self.assertEqual(response.status_code, 403)
+
+    def test_list_files_with_params(self):
+        url = reverse("files-list")
+        self.client.post(
+            url,
+            {
+                "name": "file",
+                "original_name": "file.jpg",
+                "file_type": "patient",
+                "file_category": "unspecified",
+                "associating_id": str(self.patient.external_id),
+                "mime_type": self.file_mime_type,
+            },
+            format="json",
+        )
+        response = self.client.get(
+            url,
+            {
+                "file_type": "patient",
+                "associating_id": str(self.patient.external_id),
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_create_file_with_invalid_mime_type(self):
+        url = reverse("files-list")
+        response = self.client.post(
+            url,
+            {
+                "name": "file",
+                "original_name": "file.exe",
+                "file_type": "patient",
+                "file_category": "unspecified",
+                "associating_id": str(self.patient.external_id),
+                "mime_type": "application/x-msdownload",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_create_file_with_empty_original_name(self):
+        url = reverse("files-list")
+        response = self.client.post(
+            url,
+            {
+                "name": "file",
+                "original_name": "",
+                "file_type": "patient",
+                "file_category": "unspecified",
+                "associating_id": str(self.patient.external_id),
+                "mime_type": self.file_mime_type,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_direct_upload_missing_fields(self):
+        url = reverse("files-upload-file")
+        response = self.client.post(
+            url,
+            {
+                "name": "file",
+                "file_type": "patient",
+                "file_category": "unspecified",
+                "associating_id": str(self.patient.external_id),
+                "mime_type": self.file_mime_type,
+            },
+            format="multipart",
+        )
+        self.assertEqual(response.status_code, 400)
+
+    def test_update_file_name(self):
+        url = reverse("files-list")
+        response = self.client.post(
+            url,
+            {
+                "name": "original_name",
+                "original_name": "file.jpg",
+                "file_type": "patient",
+                "file_category": "unspecified",
+                "associating_id": str(self.patient.external_id),
+                "mime_type": self.file_mime_type,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        file_id = response.data["id"]
+        detail_url = reverse("files-detail", args=[file_id])
+        response = self.client.put(detail_url, {"name": "updated_name"}, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["name"], "updated_name")
