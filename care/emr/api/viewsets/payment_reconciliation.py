@@ -173,7 +173,8 @@ class PaymentReconciliationViewSet(
                 "User does not have permission to cancel payment reconciliation"
             )
         instance.status = request_data.reason
-        instance.save()
+        instance.updated_by = self.request.user
+        instance.save(update_fields=["status", "updated_by", "modified_date"])
         rebalance_account_task(instance.account.id)
         return Response(PaymentReconciliationReadSpec.serialize(instance).to_json())
 
