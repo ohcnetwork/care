@@ -1,18 +1,17 @@
 import datetime
 from enum import Enum
 
-from django.utils.timezone import is_aware, make_aware
 from pydantic import UUID4, field_validator
 
 from care.emr.models.condition import Condition
 from care.emr.models.encounter import Encounter
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.coding import Coding
+from care.emr.resources.common.validators import validate_datetime
 from care.emr.resources.condition.valueset import CARE_CODITION_CODE_VALUESET
 from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.utils.shortcuts import get_object_or_404
-from care.utils.time_util import care_now
 
 
 class ClinicalStatusChoices(str, Enum):
@@ -54,13 +53,10 @@ class ConditionOnSetSpec(EMRResource):
 
     @field_validator("onset_datetime")
     @classmethod
-    def validate_onset_datetime(cls, onset_datetime: datetime.datetime, info):
+    def validate_onset_datetime(cls, onset_datetime: datetime.datetime):
         if onset_datetime:
-            if not is_aware(onset_datetime):
-                onset_datetime = make_aware(onset_datetime)
-            if onset_datetime > care_now():
-                raise ValueError("Onset date cannot be in the future")
-        return onset_datetime
+            return validate_datetime(onset_datetime)
+        return None
 
 
 class ConditionAbatementSpec(EMRResource):

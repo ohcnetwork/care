@@ -8,6 +8,7 @@ from care.emr.models.encounter import Encounter
 from care.emr.resources.allergy_intolerance.valueset import CARE_ALLERGY_CODE_VALUESET
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.coding import Coding
+from care.emr.resources.common.validators import validate_datetime
 from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
@@ -44,6 +45,13 @@ class AllergyIntoleranceOnSetSpec(EMRResource):
     onset_age: int = None
     onset_string: str = None
     note: str
+
+    @field_validator("onset_datetime")
+    @classmethod
+    def validate_onset_datetime(cls, onset_datetime: datetime.datetime, info):
+        if onset_datetime:
+            return validate_datetime(onset_datetime)
+        return None
 
 
 class AllergyIntoleranceTypeOptions(str, Enum):
