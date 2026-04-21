@@ -93,16 +93,32 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
     with transaction.atomic():
         delivery_order.patient_invoice.status = InvoiceStatusOptions.cancelled.value
         delivery_order.patient_invoice.updated_by = delivery_order.updated_by
-        delivery_order.patient_invoice.save(update_fields=["status", "updated_by"])
-        ChargeItem.objects.filter(
+        delivery_order.patient_invoice.save(
+            update_fields=["status", "updated_by", "modified_date"]
+        )
+        charge_item = ChargeItem.objects.filter(
             id__in=delivery_order.patient_invoice.charge_items,
-        ).update(
-            status=ChargeItemStatusOptions.entered_in_error.value,
-            paid_invoice=None,
-            paid_on=None,
+        )
+        charge_item.status = ChargeItemStatusOptions.entered_in_error.value
+        charge_item.paid_invoice = None
+        charge_item.paid_on = None
+        charge_item.updated_by = delivery_order.updated_by
+        charge_item.save(
+            update_fields=[
+                "status",
+                "paid_invoice",
+                "paid_on",
+                "updated_by",
+                "modified_date",
+            ]
         )
         supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
         for supply_delivery in supply_deliveries:
+            supply_delivery.status = SupplyDeliveryStatusOptions.abandoned.value
+            supply_delivery.updated_by = delivery_order.updated_by
+            supply_delivery.save(
+                update_fields=["status", "updated_by", "modified_date"]
+            )
             sync_inventory_item(
                 location=delivery_order.destination,
                 product=supply_delivery.supplied_item,
