@@ -184,20 +184,9 @@ class Facility(BaseModel):
     )
     internal_organization_cache = ArrayField(models.IntegerField(), default=list)
 
-    oxygen_capacity = models.IntegerField(default=0)
-    type_b_cylinders = models.IntegerField(default=0)
-    type_c_cylinders = models.IntegerField(default=0)
-    type_d_cylinders = models.IntegerField(default=0)
-
-    expected_oxygen_requirement = models.IntegerField(default=0)
-    expected_type_b_cylinders = models.IntegerField(default=0)
-    expected_type_c_cylinders = models.IntegerField(default=0)
-    expected_type_d_cylinders = models.IntegerField(default=0)
-
     phone_number = models.CharField(
         max_length=14, blank=True, validators=[mobile_or_landline_number_validator]
     )
-    corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -209,42 +198,11 @@ class Facility(BaseModel):
 
     is_public = models.BooleanField(default=False)
 
-    discount_codes = models.JSONField(default=list)
-    discount_monetary_components = models.JSONField(default=list)
-
-    invoice_number_expression = models.CharField(
-        max_length=1000, blank=True, null=True, default=None
-    )
+    print_templates = models.JSONField(default=list)
 
     class Meta:
         verbose_name_plural = "Facilities"
 
-    @classmethod
-    def get_component_key(cls, component):
-        return component.get("code" , {}).get("system" , "") + "/" + component.get("code" , {}).get("code","")
-
-    @classmethod
-    def get_monetory_component_cache_key(cls , facility_id):
-        return f"facility:{facility_id}:monetory_component"
-
-
-    @classmethod
-    def calculate_monetory_components(cls , components):
-        component_cache = {}
-        for component in components:
-            component_cache[cls.get_component_key(component)] = component
-        return component_cache
-
-    @classmethod
-    def get_monetory_component(cls , facility_id):
-        cached_data = cache.get(cls.get_monetory_component_cache_key(facility_id))
-        if cached_data:
-            return cached_data
-        else:
-            facility = cls.objects.get(id=facility_id)
-            monetory_component = cls.calculate_monetory_components(facility.discount_monetary_components)
-            cache.set(cls.get_monetory_component_cache_key(facility_id), monetory_component)
-            return monetory_component
 
     def read_cover_image_url(self):
         if self.cover_image_url:
@@ -280,7 +238,6 @@ class Facility(BaseModel):
 
     def save(self, *args, **kwargs) -> None:
         is_create = self.pk is None
-        cache.delete(self.get_monetory_component_cache_key(self.id))
         super().save(*args, **kwargs)
 
         if is_create:

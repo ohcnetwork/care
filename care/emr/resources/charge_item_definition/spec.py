@@ -6,7 +6,10 @@ from pydantic import UUID4, field_validator
 from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.resource_category import ResourceCategory
 from care.emr.resources.base import EMRResource
-from care.emr.resources.common.monetary_component import MonetaryComponent
+from care.emr.resources.common.monetary_component import (
+    DiscountConfiguration,
+    MonetaryComponent,
+)
 from care.emr.resources.resource_category.spec import ResourceCategoryReadSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.emr.utils.slug_type import ExtendedSlugType, SlugType
@@ -32,6 +35,7 @@ class ChargeItemDefinitionSpec(EMRResource):
     purpose: str | None = None
     price_components: list[MonetaryComponent]
     can_edit_charge_item: bool
+    discount_configuration: DiscountConfiguration | None
 
 
 class ChargeItemDefinitionWriteSpec(ChargeItemDefinitionSpec):

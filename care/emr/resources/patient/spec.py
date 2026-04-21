@@ -8,7 +8,11 @@ from django.utils import timezone
 from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 
 from care.emr.extensions.base import ExtensionResource
-from care.emr.extensions.validator import ExtensionValidator
+from care.emr.extensions.validator import (
+    ExtensionListRenderer,
+    ExtensionRetrieveRenderer,
+    ExtensionValidator,
+)
 from care.emr.models import Organization
 from care.emr.models.patient import (
     Patient,
@@ -207,7 +211,7 @@ class PatientUpdateSpec(ExtensionValidator, PatientBaseSpec):
         return identifiers
 
 
-class PatientListSpec(PatientBaseSpec):
+class PatientListSpec(ExtensionListRenderer, PatientBaseSpec):
     date_of_birth: datetime.date | None = None
     year_of_birth: datetime.date | None = None
 
@@ -225,6 +229,7 @@ class PatientListSpec(PatientBaseSpec):
             mapping["facility_tags"] = PatientFacilityTagManager(
                 kwargs["facility"]
             ).render_tags(obj)
+        super().perform_extra_serialization(mapping, obj, *args, **kwargs)
 
 
 class PatientPartialSpec(EMRResource):
@@ -247,7 +252,9 @@ class PatientIdentifierResponse(BaseModel):
     value: str
 
 
-class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
+class PatientRetrieveSpec(
+    ExtensionRetrieveRenderer, PatientListSpec, PatientPermissionsMixin
+):
     geo_organization: dict = {}
 
     created_by: dict | None = None

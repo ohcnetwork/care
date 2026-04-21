@@ -1,5 +1,4 @@
 import re
-from enum import Enum
 
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
@@ -12,13 +11,6 @@ from care.emr.resources.base import EMRResource, cacheable, model_from_cache
 from care.emr.resources.patient.spec import GenderChoices
 from care.facility.models.facility import Facility
 from care.security.models import RolePermission
-from care.security.roles.role import (
-    ADMINISTRATOR,
-    DOCTOR_ROLE,
-    NURSE_ROLE,
-    STAFF_ROLE,
-    VOLUNTEER_ROLE,
-)
 from care.users.models import User
 from care.utils.shortcuts import get_object_or_404
 
@@ -26,22 +18,6 @@ from care.utils.shortcuts import get_object_or_404
 def is_valid_username(username):
     pattern = r"^[a-zA-Z0-9_-]{3,}$"
     return bool(re.fullmatch(pattern, username))
-
-
-class UserTypeOptions(str, Enum):
-    doctor = "doctor"
-    nurse = "nurse"
-    staff = "staff"
-    volunteer = "volunteer"
-    administrator = "administrator"
-
-
-class UserTypeRoleMapping(Enum):
-    doctor = DOCTOR_ROLE
-    nurse = NURSE_ROLE
-    staff = STAFF_ROLE
-    volunteer = VOLUNTEER_ROLE
-    administrator = ADMINISTRATOR
 
 
 class UserBaseSpec(EMRResource):
@@ -59,7 +35,6 @@ class UserBaseSpec(EMRResource):
 
 
 class UserUpdateSpec(UserBaseSpec):
-    user_type: UserTypeOptions
     gender: GenderChoices
     phone_number: str = Field(max_length=14)
     geo_organization: UUID4 | None = None
@@ -71,11 +46,17 @@ class UserUpdateSpec(UserBaseSpec):
             )
 
 
+class UserRoleOrgCreateSpec(BaseModel):
+    organization: UUID4
+    role: UUID4
+
+
 class UserCreateSpec(UserUpdateSpec):
     password: str | None = None
     username: str
     email: str
     is_service_account: bool = False
+    role_orgs: list[UserRoleOrgCreateSpec]
 
     @field_validator("username")
     @classmethod
@@ -118,6 +99,7 @@ class UserCreateSpec(UserUpdateSpec):
         return password
 
     def perform_extra_deserialization(self, is_update, obj):
+        obj._role_orgs = self.role_orgs  # noqa SLF001
         obj.set_password(self.password)
 
 
@@ -125,18 +107,19 @@ class UserCreateSpec(UserUpdateSpec):
 class UserSpec(UserBaseSpec):
     last_login: str
     profile_picture_url: str
-    user_type: str
     gender: str
     username: str
     mfa_enabled: bool = False
     phone_number: str = Field(max_length=14)
     deleted: bool = False
+    role_orgs: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User):
         mapping["id"] = str(obj.external_id)
         mapping["profile_picture_url"] = obj.read_profile_picture_url()
         mapping["mfa_enabled"] = obj.is_mfa_enabled()
+        mapping["role_orgs"] = obj.get_cached_role_orgs()
 
 
 class UserRetrieveSpec(UserSpec):
@@ -219,14 +202,15 @@ class CurrentUserRetrieveSpec(UserRetrieveSpec):
 class PublicUserReadSpec(UserBaseSpec):
     last_login: str
     profile_picture_url: str
-    user_type: str
     gender: str
     username: str
+    role_orgs: list[dict]
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User):
         mapping["id"] = str(obj.external_id)
         mapping["profile_picture_url"] = obj.read_profile_picture_url()
+        mapping["role_orgs"] = obj.get_cached_role_orgs()
 
 
 class ResetPasswordCheckRequest(BaseModel):
