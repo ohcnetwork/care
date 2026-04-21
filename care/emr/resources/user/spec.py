@@ -7,7 +7,7 @@ from pydantic import UUID4, BaseModel, Field, field_validator
 
 from care.emr.models import Organization
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
-from care.emr.resources.base import EMRResource, cacheable, model_from_cache
+from care.emr.resources.base import EMRResource, cacheable
 from care.emr.resources.patient.spec import GenderChoices
 from care.facility.models.facility import Facility
 from care.security.models import RolePermission
@@ -124,7 +124,7 @@ class UserSpec(UserBaseSpec):
 
 class UserRetrieveSpec(UserSpec):
     geo_organization: dict
-    created_by: UserSpec
+    created_by: dict | None = None
     email: str
     flags: list[str] = []
     is_service_account: bool
@@ -134,8 +134,7 @@ class UserRetrieveSpec(UserSpec):
         from care.emr.resources.organization.spec import OrganizationReadSpec
 
         super().perform_extra_serialization(mapping, obj)
-        if obj.created_by_id:
-            mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
+        cls.serialize_audit_users(mapping, obj)
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization

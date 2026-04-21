@@ -3,9 +3,8 @@ from datetime import datetime
 from pydantic import UUID4
 
 from care.emr.models import DeviceServiceHistory
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.user.spec import UserSpec
-from care.users.models import User
 
 
 class DeviceServiceHistorySpecBase(EMRResource):
@@ -41,9 +40,8 @@ class DeviceServiceHistoryRetrieveSpec(DeviceServiceHistoryListSpec):
         edit_history = []
         for history in obj.edit_history:
             user = history.get("updated_by")
-            user_obj = User.objects.filter(id=user).first()
-            if user_obj:
-                history["updated_by"] = UserSpec.serialize(user_obj).to_json()
+            if user:
+                history["updated_by"] = model_from_cache(UserSpec, id=user)
             else:
                 history["updated_by"] = {}  # Edge Case
             edit_history.append(history)
