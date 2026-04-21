@@ -147,8 +147,8 @@ class ResourceRequestRetrieveSpec(ResourceRequestBaseSpec):
             mapping["related_patient"] = PatientListSpec.serialize(
                 obj.related_patient
             ).to_json()
-        if obj.assigned_to:
-            mapping["assigned_to"] = model_from_cache(UserSpec, obj.assigned_to_id)
+        if obj.assigned_to_id:
+            mapping["assigned_to"] = model_from_cache(UserSpec, id=obj.assigned_to_id)
 
         cls.serialize_audit_users(mapping, obj)
 

@@ -95,8 +95,8 @@ class FileUploadListSpec(FileUploadBaseSpec):
         mapping["extension"] = obj.get_extension()
         mapping["mime_type"] = obj.meta.get("mime_type")
         cls.serialize_audit_users(mapping, obj)
-        if obj.archived_by:
-            mapping["archived_by"] = model_from_cache(UserSpec, obj.archived_by_id)
+        if obj.archived_by_id:
+            mapping["archived_by"] = model_from_cache(UserSpec, id=obj.archived_by_id)
 
 
 class FileUploadRetrieveSpec(FileUploadListSpec):

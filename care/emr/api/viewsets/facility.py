@@ -57,7 +57,7 @@ class FacilityImageUploadSerializer(serializers.ModelSerializer):
             "cover_images",
             facility.cover_image_url,
         )
-        facility.save(update_fields=["cover_image_url", "modified_date"])
+        facility.save(update_fields=["cover_image_url"])
         return facility
 
 

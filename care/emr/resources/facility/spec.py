@@ -9,7 +9,7 @@ from pydantic_extra_types.coordinate import Latitude, Longitude
 from care.emr.models import Organization
 from care.emr.models.facility_config import FacilityMonetoryConfig
 from care.emr.models.patient import PatientIdentifierConfigCache
-from care.emr.resources.base import EMRResource, cacheable
+from care.emr.resources.base import EMRResource, cacheable, model_from_cache
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.monetary_component import (
     DiscountConfiguration,
@@ -166,6 +166,8 @@ class FacilityReadSpec(FacilityBaseSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.user.spec import UserSpec
+
         mapping["id"] = obj.external_id
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
@@ -173,7 +175,8 @@ class FacilityReadSpec(FacilityBaseSpec):
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
             ).to_json()
-        cls.serialize_audit_users(mapping, obj)
+        if obj.created_by_id:
+            mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
 
 
 class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
