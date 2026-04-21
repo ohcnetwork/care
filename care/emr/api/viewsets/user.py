@@ -60,7 +60,7 @@ class UserImageUploadSerializer(serializers.ModelSerializer):
             "avatars",
             user.profile_picture_url,
         )
-        user.save(update_fields=["profile_picture_url"])
+        user.save(update_fields=["profile_picture_url", "modified_date"])
         return user
 
 
@@ -163,7 +163,7 @@ class UserViewSet(EMRModelViewSet):
     def perform_destroy(self, instance):
         if instance.last_login:
             instance.deleted = True
-            instance.save(update_fields=["deleted"])
+            instance.save(update_fields=["deleted", "modified_date"])
         else:
             instance.delete()
 
@@ -203,7 +203,7 @@ class UserViewSet(EMRModelViewSet):
                 return Response({"detail": "No cover image to delete"}, status=404)
             delete_cover_image(user.profile_picture_url, "avatars")
             user.profile_picture_url = None
-            user.save()
+            user.save(update_fields=["profile_picture_url", "modified_date"])
             return Response(status=204)
         return Response({"detail": "Method not allowed"}, status=405)
 
@@ -226,7 +226,9 @@ class UserViewSet(EMRModelViewSet):
         for field in acceptable_fields:
             if field in request.data:
                 setattr(user, field, request.data[field])
-        user.save()
+        user.save(
+            update_fields=["pf_endpoint", "pf_p256dh", "pf_auth", "modified_date"]
+        )
         return Response({})
 
     @action(detail=True, methods=["POST"])
@@ -289,5 +291,5 @@ class UserViewSet(EMRModelViewSet):
         user = self.request.user
         preferences = UserPreferenceRequest(**request.data)
         user.preferences[preferences.preference] = preferences.value
-        user.save(update_fields=["preferences"])
+        user.save(update_fields=["preferences", "modified_date"])
         return Response(status=201)

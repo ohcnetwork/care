@@ -179,7 +179,7 @@ class FileUploadViewSet(
         obj = self.get_object()
         file_authorizer(request.user, obj.file_type, obj.associating_id, "write")
         obj.upload_completed = True
-        obj.save(update_fields=["upload_completed"])
+        obj.save(update_fields=["upload_completed", "modified_date"])
         return Response(FileUploadListSpec.serialize(obj).to_json())
 
     class ArchiveRequestSpec(BaseModel):
@@ -204,6 +204,7 @@ class FileUploadViewSet(
                 "archive_reason",
                 "archived_datetime",
                 "archived_by",
+                "modified_date",
             ]
         )
         return Response(FileUploadListSpec.serialize(obj).to_json())

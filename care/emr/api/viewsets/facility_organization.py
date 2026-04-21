@@ -218,14 +218,14 @@ class FacilityOrganizationViewSet(EMRModelViewSet, EMRFavoritesMixin):
         with transaction.atomic():
             FacilityOrganizationUser.objects.filter(organization=instance).delete()
             instance.deleted = True
-            instance.save(update_fields=["deleted"])
+            instance.save(update_fields=["deleted", "modified_date"])
 
             parent = instance.parent
             if parent:
                 parent.has_children = FacilityOrganization.objects.filter(
                     parent=parent
                 ).exists()
-                parent.save(update_fields=["has_children"])
+                parent.save(update_fields=["has_children", "modified_date"])
 
     @action(detail=False, methods=["GET"])
     def mine(self, request, *args, **kwargs):

@@ -204,9 +204,9 @@ class DeviceViewSet(EMRModelViewSet):
                 ).first()
                 if old_obj:
                     old_obj.end = timezone.now()
-                    old_obj.save()
+                    old_obj.save(update_fields=["end", "modified_date"])
             device.current_encounter = encounter
-            device.save(update_fields=["current_encounter"])
+            device.save(update_fields=["current_encounter", "modified_date"])
             if encounter:
                 obj = DeviceEncounterHistory.objects.create(
                     device=device,
@@ -251,9 +251,9 @@ class DeviceViewSet(EMRModelViewSet):
                 ).first()
                 if old_obj:
                     old_obj.end = timezone.now()
-                    old_obj.save()
+                    old_obj.save(update_fields=["end", "modified_date"])
             device.current_location = location
-            device.save(update_fields=["current_location"])
+            device.save(update_fields=["current_location", "modified_date"])
             if location:
                 obj = DeviceLocationHistory.objects.create(
                     device=device,
@@ -291,7 +291,11 @@ class DeviceViewSet(EMRModelViewSet):
             raise ValidationError("Organization is already associated with this device")
         device.managing_organization = organization
         device.save(
-            update_fields=["managing_organization", "facility_organization_cache"]
+            update_fields=[
+                "managing_organization",
+                "facility_organization_cache",
+                "modified_date",
+            ]
         )
         return Response({})
 
@@ -315,7 +319,11 @@ class DeviceViewSet(EMRModelViewSet):
 
         device.managing_organization = None
         device.save(
-            update_fields=["managing_organization", "facility_organization_cache"]
+            update_fields=[
+                "managing_organization",
+                "facility_organization_cache",
+                "modified_date",
+            ]
         )
         return Response({})
 

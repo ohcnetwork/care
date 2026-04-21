@@ -221,7 +221,9 @@ class PaymentReconciliationViewSet(
                 source_accounts.append(payment_reconciliation.account_id)
                 payment_reconciliation.account = target_account
                 payment_reconciliation.updated_by = request.user
-                payment_reconciliation.save(update_fields=["account", "updated_by"])
+                payment_reconciliation.save(
+                    update_fields=["account", "updated_by", "modified_date"]
+                )
 
         for account_id in list(set(source_accounts)):
             rebalance_account_task(account_id)

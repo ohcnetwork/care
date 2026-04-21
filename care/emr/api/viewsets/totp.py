@@ -44,7 +44,7 @@ class TOTPViewSet(EMRBaseViewSet):
         uri = totp.provisioning_uri(name=user.email, issuer_name="CARE")
 
         user.totp_secret = secret
-        user.save(update_fields=["totp_secret"])
+        user.save(update_fields=["totp_secret", "modified_date"])
 
         response_data = TOTPSetupResponse(uri=uri, secret_key=secret)
         return Response(response_data.model_dump())
@@ -97,7 +97,7 @@ class TOTPViewSet(EMRBaseViewSet):
                 ],
             }
             user.mfa_settings = mfa_settings
-            user.save(update_fields=["mfa_settings"])
+            user.save(update_fields=["mfa_settings", "modified_date"])
 
             send_totp_enabled_email.delay(user.email, user.username)
 
@@ -134,7 +134,7 @@ class TOTPViewSet(EMRBaseViewSet):
         }
         user.mfa_settings = mfa_settings
         user.totp_secret = None
-        user.save(update_fields=["mfa_settings", "totp_secret"])
+        user.save(update_fields=["mfa_settings", "totp_secret", "modified_date"])
 
         send_totp_disabled_email.delay(user.email, user.username)
 
@@ -174,7 +174,7 @@ class TOTPViewSet(EMRBaseViewSet):
             for code in backup_codes
         ]
         user.mfa_settings = mfa_settings
-        user.save(update_fields=["mfa_settings"])
+        user.save(update_fields=["mfa_settings", "modified_date"])
 
         return Response({"backup_codes": backup_codes})
 

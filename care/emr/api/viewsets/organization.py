@@ -189,14 +189,14 @@ class OrganizationViewSet(EMRModelViewSet):
         with transaction.atomic():
             OrganizationUser.objects.filter(organization=instance).delete()
             instance.deleted = True
-            instance.save(update_fields=["deleted"])
+            instance.save(update_fields=["deleted", "modified_date"])
 
             parent = instance.parent
             if parent:
                 parent.has_children = Organization.objects.filter(
                     parent=parent
                 ).exists()
-                parent.save(update_fields=["has_children"])
+                parent.save(update_fields=["has_children", "modified_date"])
 
     def get_queryset(self):
         queryset = (

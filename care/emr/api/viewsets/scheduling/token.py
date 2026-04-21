@@ -108,7 +108,7 @@ class TokenViewSet(EMRModelViewSet):
                 # Clear current token if the sub queue is changed
                 if obj.sub_queue.current_token == obj:
                     obj.sub_queue.current_token = None
-                    obj.sub_queue.save(update_fields=["current_token"])
+                    obj.sub_queue.save(update_fields=["current_token", "modified_date"])
             super().perform_update(instance)
 
     def perform_destroy(self, instance):

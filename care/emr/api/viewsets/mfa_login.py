@@ -70,6 +70,6 @@ class MFALoginViewSet(EMRBaseViewSet):
 
         matching_code.update({"used": True, "used_at": timezone.now().isoformat()})
         user.mfa_settings = mfa_settings
-        user.save(update_fields=["mfa_settings"])
+        user.save(update_fields=["mfa_settings", "modified_date"])
 
         return create_auth_response(user)

@@ -91,7 +91,7 @@ class FacilityLocationViewSet(EMRModelViewSet):
                 parent.has_children = FacilityLocation.objects.filter(
                     parent=parent
                 ).exists()
-                parent.save(update_fields=["has_children"])
+                parent.save(update_fields=["has_children", "modified_date"])
 
     def validate_data(self, instance, model_obj=None):
         facility = self.get_facility_obj()
@@ -311,7 +311,9 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
         all_encounters = Encounter.objects.filter(current_location=location)
         if active_location_encounter:
             active_location_encounter.encounter.current_location = location
-            active_location_encounter.encounter.save(update_fields=["current_location"])
+            active_location_encounter.encounter.save(
+                update_fields=["current_location", "modified_date"]
+            )
             all_encounters = all_encounters.exclude(
                 id=active_location_encounter.encounter_id
             )
@@ -325,7 +327,13 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
                 LocationAvailabilityStatusChoices.available.value
             )
         all_encounters.update(current_location=None)
-        location.save(update_fields=["current_encounter", "system_availability_status"])
+        location.save(
+            update_fields=[
+                "current_encounter",
+                "system_availability_status",
+                "modified_date",
+            ]
+        )
 
     def authorize_create(self, instance):
         facility = self.get_facility_obj()
