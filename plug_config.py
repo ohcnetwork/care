@@ -32,6 +32,12 @@ plugs = [
         version="@master",
         configs={},
     ),
+    Plug(
+        name="care_kutumba",
+        package_name="git+https://github.com/10bedicu/care_kutumba.git",
+        version="@main",
+        configs={},
+    ),
 ]
 
 manager = PlugManager(plugs)
