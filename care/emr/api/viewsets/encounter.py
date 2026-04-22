@@ -179,8 +179,13 @@ class EncounterViewSet(
                 if instance.appointment.associated_encounter_id:
                     raise ValidationError("Encounter already has an associated booking")
                 instance.appointment.associated_encounter = instance
+                instance.appointment.updated_by = self.request.user
                 instance.appointment.save(
-                    update_fields=["associated_encounter", "modified_date"]
+                    update_fields=[
+                        "associated_encounter",
+                        "updated_by",
+                        "modified_date",
+                    ]
                 )
 
     def perform_update(self, instance):
@@ -266,8 +271,9 @@ class EncounterViewSet(
         ):
             err = f"Encounter cannot be restarted after {settings.ENCOUNTER_RESTART_TIME_LIMIT_HOURS} hours"
             raise ValidationError(err)
+        instance.updated_by = self.request.user
         instance.status = StatusChoices.in_progress.value
-        instance.save(update_fields=["status", "modified_date"])
+        instance.save(update_fields=["status", "updated_by", "modified_date"])
 
         return Response(status=status.HTTP_204_NO_CONTENT)
 
@@ -419,5 +425,13 @@ class EncounterViewSet(
             )
 
         encounter.care_team = members
-        encounter.save(update_fields=["care_team", "care_team_users", "modified_date"])
+        encounter.updated_by = request.user
+        encounter.save(
+            update_fields=[
+                "care_team",
+                "care_team_users",
+                "updated_by",
+                "modified_date",
+            ]
+        )
         return Response({}, status=status.HTTP_200_OK)

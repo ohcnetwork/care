@@ -84,14 +84,17 @@ class FacilityLocationViewSet(EMRModelViewSet):
         # TODO Add validation to check if patient association exists
 
     def perform_destroy(self, instance):
-        parent = instance.parent
         with transaction.atomic():
+            parent = instance.parent
             super().perform_destroy(instance)
             if parent:
                 parent.has_children = FacilityLocation.objects.filter(
                     parent=parent
                 ).exists()
-                parent.save(update_fields=["has_children", "modified_date"])
+                parent.updated_by = self.request.user
+                parent.save(
+                    update_fields=["has_children", "updated_by", "modified_date"]
+                )
 
     def validate_data(self, instance, model_obj=None):
         facility = self.get_facility_obj()
@@ -311,8 +314,9 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
         all_encounters = Encounter.objects.filter(current_location=location)
         if active_location_encounter:
             active_location_encounter.encounter.current_location = location
+            active_location_encounter.encounter.updated_by = self.request.user
             active_location_encounter.encounter.save(
-                update_fields=["current_location", "modified_date"]
+                update_fields=["current_location", "updated_by", "modified_date"]
             )
             all_encounters = all_encounters.exclude(
                 id=active_location_encounter.encounter_id
@@ -326,11 +330,12 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
             location.system_availability_status = (
                 LocationAvailabilityStatusChoices.available.value
             )
-        all_encounters.update(current_location=None)
+        all_encounters.update(current_location=None, updated_by=self.request.user)
         location.save(
             update_fields=[
                 "current_encounter",
                 "system_availability_status",
+                "updated_by",
                 "modified_date",
             ]
         )

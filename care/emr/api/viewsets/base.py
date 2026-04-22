@@ -249,7 +249,9 @@ class EMRDestroyMixin:
 
     def perform_destroy(self, instance):
         instance.deleted = True
-        instance.save(update_fields=["deleted", "modified_date"])
+        instance.updated_by = self.request.user
+
+        instance.save(update_fields=["deleted", "updated_by", "modified_date"])
 
     def validate_destroy(self, instance):
         pass

@@ -179,7 +179,8 @@ class FileUploadViewSet(
         obj = self.get_object()
         file_authorizer(request.user, obj.file_type, obj.associating_id, "write")
         obj.upload_completed = True
-        obj.save(update_fields=["upload_completed", "modified_date"])
+        obj.updated_by = request.user
+        obj.save(update_fields=["upload_completed", "updated_by", "modified_date"])
         return Response(FileUploadListSpec.serialize(obj).to_json())
 
     class ArchiveRequestSpec(BaseModel):
@@ -260,7 +261,10 @@ class FileUploadViewSet(
             try:
                 file_upload.files_manager.put_object(file_upload, uploaded_file)
                 file_upload.upload_completed = True
-                file_upload.save(skip_internal_name=True)
+                file_upload.updated_by = request.user
+                file_upload.save(
+                    update_fields=["upload_completed", "updated_by", "modified_date"]
+                )
             except Exception as e:
                 error_msg = "Failed to upload file to storage"
                 raise ValidationError(error_msg) from e

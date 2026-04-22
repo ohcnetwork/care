@@ -186,17 +186,18 @@ class OrganizationViewSet(EMRModelViewSet):
         return True
 
     def perform_destroy(self, instance):
+        parent = instance.parent
         with transaction.atomic():
             OrganizationUser.objects.filter(organization=instance).delete()
-            instance.deleted = True
-            instance.save(update_fields=["deleted", "modified_date"])
-
-            parent = instance.parent
+            super().perform_destroy(instance)
             if parent:
                 parent.has_children = Organization.objects.filter(
                     parent=parent
                 ).exists()
-                parent.save(update_fields=["has_children", "modified_date"])
+                parent.updated_by = self.request.user
+                parent.save(
+                    update_fields=["has_children", "updated_by", "modified_date"]
+                )
 
     def get_queryset(self):
         queryset = (
