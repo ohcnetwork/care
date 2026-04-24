@@ -149,9 +149,14 @@ class SupplyDeliveryReadSpec(ExtensionListRenderer, BaseSupplyDeliverySpec):
     supplied_item_pack_quantity: int | None = None
     supplied_item_pack_size: int | None = None
     extensions: dict
+    order: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.inventory.supply_delivery.delivery_order import (
+            SupplyDeliveryOrderReadSpec,
+        )
+
         mapping["id"] = obj.external_id
         if obj.supplied_item:
             mapping["supplied_item"] = ProductReadSpec.serialize(
@@ -165,6 +170,8 @@ class SupplyDeliveryReadSpec(ExtensionListRenderer, BaseSupplyDeliverySpec):
             mapping["supply_request"] = SupplyRequestReadSpec.serialize(
                 obj.supply_request
             ).to_json()
+        if obj.order:
+            mapping["order"] = SupplyDeliveryOrderReadSpec.serialize(obj.order).to_json()
         return super().perform_extra_serialization(mapping, obj)
 
 
