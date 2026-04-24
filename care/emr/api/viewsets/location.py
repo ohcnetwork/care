@@ -333,6 +333,7 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
                 LocationAvailabilityStatusChoices.available.value
             )
         all_encounters.update(current_location=None, updated_by=self.request.user)
+        location.updated_by = self.request.user
         location.save(
             update_fields=[
                 "current_encounter",
