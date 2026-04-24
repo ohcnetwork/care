@@ -218,7 +218,9 @@ class FacilityOrganizationViewSet(EMRModelViewSet, EMRFavoritesMixin):
         parent = instance.parent
         with transaction.atomic():
             FacilityOrganizationUser.objects.filter(organization=instance).delete()
-            super().perform_destroy(instance)
+            instance.deleted = True
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["deleted", "updated_by", "modified_date"])
             if parent:
                 parent.has_children = FacilityOrganization.objects.filter(
                     parent=parent

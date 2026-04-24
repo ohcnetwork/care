@@ -111,7 +111,9 @@ class DeviceViewSet(EMRModelViewSet):
                     instance.care_type
                 )
                 care_device_class().handle_delete(instance)
-            super().perform_destroy(instance)
+            instance.deleted = True
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["deleted", "updated_by", "modified_date"])
 
     def get_queryset(self):
         """

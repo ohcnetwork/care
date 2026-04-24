@@ -84,9 +84,11 @@ class FacilityLocationViewSet(EMRModelViewSet):
         # TODO Add validation to check if patient association exists
 
     def perform_destroy(self, instance):
+        parent = instance.parent
         with transaction.atomic():
-            parent = instance.parent
-            super().perform_destroy(instance)
+            instance.deleted = True
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["deleted", "updated_by", "modified_date"])
             if parent:
                 parent.has_children = FacilityLocation.objects.filter(
                     parent=parent
@@ -376,7 +378,9 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
     def perform_destroy(self, instance):
         location = instance.location
         with transaction.atomic(), Lock(f"facility_location:{location.id}"):
-            super().perform_destroy(instance)
+            instance.deleted = True
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["deleted", "updated_by", "modified_date"])
             self.reset_encounter_location_association(instance.location)
 
     def _validate_data(self, instance, model_obj=None):  # noqa PLR0912

@@ -113,8 +113,11 @@ class TokenViewSet(EMRModelViewSet):
 
     def perform_destroy(self, instance):
         instance.status = TokenStatusOptions.ENTERED_IN_ERROR.value
-        instance.save()
-        return super().perform_destroy(instance)
+        instance.deleted = True
+        instance.updated_by = self.request.user
+        instance.save(
+            update_fields=["status", "deleted", "updated_by", "modified_date"]
+        )
 
     def authorize_create(self, instance):
         _, queue = self.get_queue_obj()
