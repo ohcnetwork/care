@@ -171,7 +171,9 @@ class SupplyDeliveryReadSpec(ExtensionListRenderer, BaseSupplyDeliverySpec):
                 obj.supply_request
             ).to_json()
         if obj.order:
-            mapping["order"] = SupplyDeliveryOrderReadSpec.serialize(obj.order).to_json()
+            mapping["order"] = SupplyDeliveryOrderReadSpec.serialize(
+                obj.order
+            ).to_json()
         return super().perform_extra_serialization(mapping, obj)
 
 
