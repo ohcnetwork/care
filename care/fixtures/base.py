@@ -93,6 +93,16 @@ class CareFixtureBase:
             raise FixtureError(msg)
         return to_attr_dict(response.data)
 
+    def patch(self, url, data):
+        response = self.client.patch(url, data, format="json")
+        if response.status_code not in (
+            http_status.HTTP_200_OK,
+            http_status.HTTP_201_CREATED,
+        ):
+            msg = f"PATCH {url} failed ({response.status_code}): {response.data}"
+            raise FixtureError(msg)
+        return to_attr_dict(response.data)
+
     def get(self, url, params=None):
         response = self.client.get(url, params or {}, format="json")
         if response.status_code != http_status.HTTP_200_OK:
@@ -395,6 +405,32 @@ class CareFixtureBase:
         }
         return self.post(url, data)
 
+    def create_request_order(self, facility_id, name, destination, **kwargs):
+        url = reverse(
+            "request-order-list", kwargs={"facility_external_id": facility_id}
+        )
+        data = {
+            "status": "pending",
+            "name": name,
+            "destination": destination,
+            "intent": "order",
+            "category": "central",
+            "priority": "routine",
+            "reason": "ward_stock",
+            **kwargs,
+        }
+        return self.post(url, data)
+
+    def create_supply_request(self, order, item, quantity, **kwargs):
+        data = {
+            "status": "active",
+            "order": order,
+            "item": item,
+            "quantity": quantity,
+            **kwargs,
+        }
+        return self.post(reverse("supply_request-list"), data)
+
     def create_delivery_order(self, facility_id, name, destination, **kwargs):
         url = reverse(
             "delivery-order-list", kwargs={"facility_external_id": facility_id}
@@ -410,13 +446,27 @@ class CareFixtureBase:
 
     def create_supply_delivery(self, order, supplied_item_quantity, **kwargs):
         data = {
-            "status": "completed",
+            "status": "in_progress",
             "order": order,
             "supplied_item_quantity": supplied_item_quantity,
             "extensions": {},
             **kwargs,
         }
         return self.post(reverse("supply_delivery-list"), data)
+
+    def update_supply_delivery(self, delivery_id, **kwargs):
+        url = reverse("supply_delivery-detail", kwargs={"external_id": delivery_id})
+        return self.patch(url, kwargs)
+
+    def list_inventory_items(self, facility_id, location_id, **params):
+        url = reverse(
+            "inventory-item-list",
+            kwargs={
+                "facility_external_id": facility_id,
+                "location_external_id": location_id,
+            },
+        )
+        return self.get(url, params=params).get("results", [])
 
     def create_lab_test(
         self,
@@ -451,8 +501,8 @@ class CareFixtureBase:
             **activity_config,
         )
 
-    def create_inventory_item(self, facility_id, item, category_slugs):
-        """Create a complete inventory item: product_knowledge -> charge_item_definition -> product."""
+    def create_facility_product(self, facility_id, item, category_slugs):
+        """Create a Product (with its ProductKnowledge + ChargeItemDefinition)."""
 
         product_knowledge = self.create_product_knowledge(
             category=category_slugs["product_knowledge"], **item["product_knowledge"]
@@ -462,11 +512,13 @@ class CareFixtureBase:
             category=category_slugs["charge_item_definition"],
             **item["charge_item_definition"],
         )
-        return self.create_product(
+        product = self.create_product(
             facility_id,
             product_knowledge_slug=product_knowledge.slug,
             charge_item_definition=charge_item_definition.slug,
+            **item.get("product_extras", {}),
         )
+        return product, product_knowledge
 
     def link_managing_org(self, role_org_id, managing_org_id):
         url = reverse(

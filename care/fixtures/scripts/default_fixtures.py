@@ -149,7 +149,7 @@ def load_fixtures(base):  # noqa: PLR0915, PLR0912
     load_lab_definitions(base, facility_id, departments)
     log("Loading lab definitions completed")
 
-    load_inventory(base, facility_id, departments, suppliers[0].id)
+    load_inventory(base, facility_id, departments, suppliers, ward)
     log("Loading inventory completed")
 
     load_scheduling(base, facility_id, created_users, patients, departments, roles)
@@ -207,7 +207,7 @@ def load_lab_definitions(base, facility_id, departments):
         )
 
 
-def load_inventory(base, facility_id, departments, supplier_id):
+def load_inventory(base, facility_id, departments, suppliers, transfer_destination):
     pharmacy = departments["Pharmacy"]
 
     pharmacy_location = base.create_location(
@@ -238,28 +238,96 @@ def load_inventory(base, facility_id, departments, supplier_id):
             ).slug,
         }
 
-    products = []
-    for item in INVENTORY_ITEMS:
-        product = base.create_inventory_item(
+    supplier_orders = {}
+    for idx, supplier in enumerate(suppliers):
+        request_order = base.create_request_order(
+            facility_id,
+            name=f"Initial Stock Request — {supplier.name}",
+            destination=pharmacy_location.id,
+            supplier=supplier.id,
+        )
+        delivery_order = base.create_delivery_order(
+            facility_id,
+            name=f"Initial Stock Delivery — {supplier.name}",
+            destination=pharmacy_location.id,
+            supplier=supplier.id,
+        )
+        supplier_orders[idx] = (request_order, delivery_order)
+
+    transfer_seed = None
+    for idx, item in enumerate(INVENTORY_ITEMS):
+        request_order, delivery_order = supplier_orders[idx % len(suppliers)]
+
+        product, product_knowledge = base.create_facility_product(
             facility_id,
             item,
             categories[item["category"]],
         )
-        products.append((product, item["stock_quantity"]))
 
-    order = base.create_delivery_order(
-        facility_id,
-        name="Initial Stock Delivery",
-        destination=pharmacy_location.id,
-        supplier=supplier_id,
-    )
-
-    for product, quantity in products:
-        base.create_supply_delivery(
-            order=order.id,
-            supplied_item_quantity=quantity,
-            supplied_item=product.id,
+        supply_request = base.create_supply_request(
+            order=request_order.id,
+            item=product_knowledge.id,
+            quantity=item["stock_quantity"],
         )
+
+        delivery = base.create_supply_delivery(
+            order=delivery_order.id,
+            supplied_item=product.id,
+            supplied_item_quantity=item["stock_quantity"],
+            supply_request=supply_request.id,
+        )
+
+        base.update_supply_delivery(
+            delivery.id, status="completed", order=delivery_order.id
+        )
+
+        if transfer_seed is None:
+            transfer_seed = (product, item["stock_quantity"])
+
+    if transfer_seed and transfer_destination:
+        product, stock_quantity = transfer_seed
+        transfer_quantity = max(1, stock_quantity // 4)
+
+        pharmacy_inventory_items = base.list_inventory_items(
+            facility_id, pharmacy_location.id
+        )
+        pharmacy_item = next(
+            (
+                ii
+                for ii in pharmacy_inventory_items
+                if ii["product"]["id"] == product.id
+            ),
+            None,
+        )
+        if pharmacy_item:
+            transfer_request_order = base.create_request_order(
+                facility_id,
+                name="Ward Top-up Request",
+                origin=pharmacy_location.id,
+                destination=transfer_destination.id,
+            )
+            transfer_delivery_order = base.create_delivery_order(
+                facility_id,
+                name="Ward Top-up Delivery",
+                origin=pharmacy_location.id,
+                destination=transfer_destination.id,
+            )
+            transfer_supply_request = base.create_supply_request(
+                order=transfer_request_order.id,
+                item=product.product_knowledge["id"],
+                quantity=transfer_quantity,
+            )
+            transfer_delivery = base.create_supply_delivery(
+                order=transfer_delivery_order.id,
+                supplied_inventory_item=pharmacy_item["id"],
+                supplied_item_quantity=transfer_quantity,
+                supply_request=transfer_supply_request.id,
+            )
+            base.update_supply_delivery(
+                transfer_delivery.id,
+                status="completed",
+                order=transfer_delivery_order.id,
+            )
 
 
 def setup_managing_organization(base, role_orgs, geo_id, password):

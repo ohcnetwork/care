@@ -127,9 +127,13 @@ Each method builds the request payload, calls the API, and returns an
 
 - `create_product_knowledge(...)`
 - `create_product(...)`
+- `create_request_order(...)` — purchase or transfer order header (`destination` required, optional `origin` for internal transfers)
+- `create_supply_request(...)` — line item against a request order; `item` is a `ProductKnowledge` external id
 - `create_delivery_order(...)`
-- `create_supply_delivery(...)`
-- `create_inventory_item(...)` — composite that wires product_knowledge → charge_item → product
+- `create_supply_delivery(...)` — defaults to `status="in_progress"`; pass `supplied_item` for external receipts or `supplied_inventory_item` for internal transfers
+- `update_supply_delivery(delivery_id, **kwargs)` — PATCH (used to transition `in_progress → completed`)
+- `list_inventory_items(facility_id, location_id, **params)` — fetch the current inventory at a location (used to reference the source `InventoryItem` for transfers)
+- `create_facility_product(...)` — composite that wires `product_knowledge → charge_item → product` (returns `(product, product_knowledge)`); accepts optional `product_extras` for batch / expiry / purchase price / pack size
 
 ### Scheduling
 
@@ -193,7 +197,7 @@ make_type_tested(specimen_type=..., container=..., ...)
 ### Data arrays
 
 - `LAB_TESTS` — each entry creates a full lab test (specimen → observation → charge → activity) via `base.create_lab_test`.
-- `INVENTORY_ITEMS` — each entry creates product_knowledge → charge_item → product via `base.create_inventory_item`.
+- `INVENTORY_ITEMS` — each entry creates `product_knowledge → charge_item → product` via `base.create_facility_product`. May include a `product_extras` dict (`batch`, `expiration_date`, `purchase_price`, `standard_pack_size`) forwarded to the Product API.
 - `MANAGING_ORG_USERS` — `{"action": "create"|"assign", "username": ..., "role": ...}` entries.
 - `FACILITY_DEPARTMENTS` — list of department names seeded inside the default facility (20 medical specialties).
 - `DEFAULT_AVAILABILITY` — week-long availability (Mon–Sun 09:30–18:30, 18-min slots, 3 tokens/slot) for `create_schedule`.

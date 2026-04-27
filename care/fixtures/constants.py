@@ -728,6 +728,12 @@ INVENTORY_ITEMS = [
             "title": "Amoxicillin 500mg Capsule",
             "price_components": build_price_components(50.0),
         },
+        "product_extras": {
+            "batch": {"lot_number": "AMX-2026-001"},
+            "expiration_date": "2027-12-31T00:00:00Z",
+            "purchase_price": "30.00",
+            "standard_pack_size": 10,
+        },
         "stock_quantity": 20,
     },
     {
@@ -742,6 +748,12 @@ INVENTORY_ITEMS = [
         "charge_item_definition": {
             "title": "Paracetamol 500mg Tablet",
             "price_components": build_price_components(20.0),
+        },
+        "product_extras": {
+            "batch": {"lot_number": "PCM-2026-014"},
+            "expiration_date": "2028-06-30T00:00:00Z",
+            "purchase_price": "12.00",
+            "standard_pack_size": 10,
         },
         "stock_quantity": 50,
     },
@@ -758,6 +770,12 @@ INVENTORY_ITEMS = [
             "title": "Ibuprofen 400mg Tablet",
             "price_components": build_price_components(30.0),
         },
+        "product_extras": {
+            "batch": {"lot_number": "IBU-2026-007"},
+            "expiration_date": "2027-09-30T00:00:00Z",
+            "purchase_price": "18.00",
+            "standard_pack_size": 10,
+        },
         "stock_quantity": 30,
     },
     {
@@ -772,6 +790,12 @@ INVENTORY_ITEMS = [
         "charge_item_definition": {
             "title": "Pair of Gloves",
             "price_components": build_price_components(5.0),
+        },
+        "product_extras": {
+            "batch": {"lot_number": "GLV-2026-022"},
+            "expiration_date": "2029-01-31T00:00:00Z",
+            "purchase_price": "3.00",
+            "standard_pack_size": 100,
         },
         "stock_quantity": 15,
     },
