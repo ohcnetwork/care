@@ -10,6 +10,10 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from care.users.api.otp_viewset.reset_password import (
+    OTPResetConfirmView,
+    OTPResetSendView,
+)
 from care.users.api.viewsets.change_password import ChangePasswordView
 from care.users.reset_password_views import (
     ResetPasswordCheck,
@@ -61,6 +65,16 @@ urlpatterns = [
         "api/v1/password_change/",
         ChangePasswordView.as_view(),
         name="change_password_view",
+    ),
+    path(
+        "api/v1/otp/password_reset/send/",
+        OTPResetSendView.as_view(),
+        name="otp_password_reset_send",
+    ),
+    path(
+        "api/v1/otp/password_reset/confirm/",
+        OTPResetConfirmView.as_view(),
+        name="otp_password_reset_confirm",
     ),
     path("api/v1/", include(api_router.urlpatterns)),
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
