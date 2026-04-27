@@ -26,12 +26,9 @@ class Command(BaseCommand):
 
     def handle(self, *args, path, **options):
         if not settings.DEBUG:
-            self.stderr.write(
-                self.style.ERROR(
-                    "This command should not be run in production. Exiting..."
-                )
-            )
-            return
+            msg = "This command should not be run in production. Exiting..."
+            self.stderr.write(self.style.ERROR(msg))
+            raise CommandError(msg)
 
         script_path = Path(path).expanduser().resolve()
         if not script_path.is_file():

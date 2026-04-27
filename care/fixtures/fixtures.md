@@ -146,6 +146,11 @@ Each method builds the request payload, calls the API, and returns an
 - `get_role_org_roles()`
 - `get_user(username)`
 
+### Reports
+
+- `create_template(...)` — report template (facility-scoped or global).
+- `load_templates_from_file(...)` — bulk-load report templates from a JSON file.
+
 ### Utilities
 
 - `create_resource_category(...)` — categories for grouping resources
@@ -154,6 +159,7 @@ Each method builds the request payload, calls the API, and returns an
 - `load_questionnaires_from_file(...)` — bulk-load from JSON
 - `get_roles()`
 - `get_facility_organizations(facility_id)`
+- `get(...)/post(...)` - if utility unavailable make one can use these to load data
 
 Every `create_*` method accepts `**kwargs` for any additional fields
 the API supports.
@@ -194,7 +200,43 @@ make_type_tested(specimen_type=..., container=..., ...)
 
 ---
 
+## Bundled report templates
+
+Report templates are seeded from a single JSON file:
+
+```
+data/template_fixtures.json
+```
+
+Each entry contains the full template body inline as `template_data`,
+along with metadata (`name`, `slug_value`, `template_type`, `context`,
+`default_format`, `status`, optional `description` / `options`):
+
+```json
+[
+  {
+    "name": "Treatment Summary",
+    "slug_value": "treatment-summary",
+    "template_type": "encounter_report",
+    "context": "encounter_base",
+    "default_format": "pdf",
+    "status": "active",
+    "template_data": "{% set report_title = \"Treatment Summary\" %}\n..."
+  }
+]
+```
+
+`default_fixtures.py` calls `base.load_templates_from_file(facility=facility_id)`
+after questionnaires, so every template is scoped to the seeded facility.
+Add a new template by appending an entry to the JSON file.
+
+---
+
 ## context.py — `care_fixture_context()`
+
+```python
+care_fixture_context(base_cls: type[CareFixtureBase] = CareFixtureBase)
+```
 
 A context manager that handles all setup and teardown:
 
@@ -213,6 +255,25 @@ from care.fixtures.context import care_fixture_context
 with care_fixture_context() as base:
     base.create_organization(name="…")
 ```
+
+Pass `base_cls=YourSubclass` when you want `base` to be an instance of
+a subclass. Can we used for loading fixtures from a plugin:
+
+```python
+from care.fixtures.base import CareFixtureBase
+from care.fixtures.context import care_fixture_context
+
+
+class PluginFixture(CareFixtureBase):
+    def create_plugin_data(self, facility_id, **kwargs):
+        return self.post("/api/v1/plugin-resource/", {"facility": facility_id, **kwargs})
+
+
+with care_fixture_context(base_cls=PluginFixture) as base:
+    base.create_plugin_data(facility_id)
+```
+
+
 
 ---
 

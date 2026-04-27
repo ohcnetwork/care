@@ -143,6 +143,9 @@ def load_fixtures(base):  # noqa: PLR0915, PLR0912
     base.load_questionnaires_from_file([geo_organization.id])
     log("Loading questionnaires completed")
 
+    base.load_templates_from_file(facility=facility_id)
+    log("Loading report templates completed")
+
     load_lab_definitions(base, facility_id, departments)
     log("Loading lab definitions completed")
 

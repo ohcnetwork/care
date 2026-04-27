@@ -4,6 +4,7 @@ import warnings
 from contextlib import contextmanager
 from unittest.mock import patch
 
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.core.management import call_command
 from django.db import transaction
@@ -27,7 +28,11 @@ class _NoOpLock:
 
 
 @contextmanager
-def care_fixture_context():
+def care_fixture_context(base_cls: type[CareFixtureBase] = CareFixtureBase):
+    if not settings.DEBUG:
+        msg = "This command should not be run in production. Exiting..."
+        raise RuntimeError(msg)
+
     audit_logger = logging.getLogger("audit_log")
     original_level = audit_logger.level
     audit_logger.setLevel(logging.WARNING)
@@ -66,6 +71,6 @@ def care_fixture_context():
             client = APIClient()
             client.force_authenticate(user=superuser)
 
-            yield CareFixtureBase(client)
+            yield base_cls(client)
     finally:
         audit_logger.setLevel(original_level)
