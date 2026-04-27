@@ -61,7 +61,7 @@ def to_attr_dict(obj):
     return obj
 
 
-def generate_phone():
+def generate_phone_number():
     prefix = secrets.choice(["6", "7", "8", "9"])
     suffix = "".join(secrets.choice(string.digits) for _ in range(9))
     return f"+91{prefix}{suffix}"
@@ -126,7 +126,7 @@ class CareFixtureBase:
             "facility_type": choice(list(REVERSE_FACILITY_TYPES.values())),
             "address": self.fake.address(),
             "pincode": self.fake.random_int(min=100000, max=999999),
-            "phone_number": self.fake.phone_number()[:14],
+            "phone_number": generate_phone_number(),
             "latitude": float(self.fake.latitude()),
             "longitude": float(self.fake.longitude()),
             "is_public": self.fake.boolean(),
@@ -206,7 +206,7 @@ class CareFixtureBase:
             "last_name": self.fake.last_name(),
             "email": self.fake.email(),
             "password": "Ohcn@123",
-            "phone_number": generate_phone(),
+            "phone_number": generate_phone_number(),
             "gender": GenderChoices.male.value,
             "geo_organization": geo_organization,
             "role_orgs": role_orgs or [],
@@ -218,7 +218,7 @@ class CareFixtureBase:
         data = {
             "name": self.fake.name(),
             "gender": choice([g.value for g in GenderChoices]),
-            "phone_number": generate_phone(),
+            "phone_number": generate_phone_number(),
             "geo_organization": geo_organization,
             "address": self.fake.address(),
             "pincode": self.fake.random_int(min=100000, max=999999),
