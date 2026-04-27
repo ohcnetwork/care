@@ -4,9 +4,14 @@ import string
 from datetime import timedelta
 
 from django.conf import settings
+from django.contrib.auth.password_validation import (
+    get_password_validators,
+    validate_password,
+)
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, Field, field_validator
+from pydantic import ValidationError as PydanticValidationError
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
@@ -15,6 +20,7 @@ from care.users.models import User, UserMobileOTP
 from care.utils import sms
 from care.utils.models.validators import mobile_validator
 from care.utils.sms.utils import get_sms_content
+from config.ratelimit import ratelimit
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +52,7 @@ class OTPResetSendSpec(OTPBaseSpec):
 
 class OTPResetConfirmSpec(OTPBaseSpec):
     otp: str = Field(min_length=settings.OTP_LENGTH, max_length=settings.OTP_LENGTH)
-    password: str = Field(min_length=4)
+    password: str = Field(min_length=8)
 
 
 class OTPResetSendView(GenericAPIView):
@@ -55,7 +61,17 @@ class OTPResetSendView(GenericAPIView):
 
     @extend_schema(request=OTPResetSendSpec)
     def post(self, request):
-        data = OTPResetSendSpec(**request.data)
+        try:
+            data = OTPResetSendSpec(**request.data)
+        except PydanticValidationError as e:
+            raise ValidationError(e.errors()) from e
+
+        if ratelimit(request, "otp-password-reset", ["ip"]):
+            error_message = "Too many requests. Please try again later."
+            return Response(
+                {"detail": error_message},
+                status=429,
+            )
 
         sent_otps = UserMobileOTP.objects.filter(
             created_date__gte=(
@@ -66,27 +82,27 @@ class OTPResetSendView(GenericAPIView):
         )
         if sent_otps.count() >= settings.OTP_MAX_REPEATS_WINDOW:
             raise ValidationError(
-                {"phone_number": "Max OTP requests exceeded. Try again later."}
+                {"error": "Max OTP requests exceeded. Try again later."}
             )
         if not User.objects.filter(phone_number=data.phone_number).exists():
             return Response({"otp": "generated"})
 
         random_otp = rand_pass(settings.OTP_LENGTH)
-        logger.info(random_otp)
-        try:
-            content = get_sms_content(
-                settings.OTP_SMS_RESET_PASSWORD_TEMPLATE_PATH,
-                {"random_otp": random_otp},
-            )
-            sms.send_text_message(
-                content=content,
-                recipients=[data.phone_number],
-            )
-        except Exception as e:
-            logger.error(e)
-            return Response(
-                {"error": "Error while sending OTP. Contact admin."}, status=400
-            )
+        if settings.USE_SMS:
+            try:
+                content = get_sms_content(
+                    settings.OTP_SMS_RESET_PASSWORD_TEMPLATE_PATH,
+                    {"random_otp": random_otp},
+                )
+                sms.send_text_message(
+                    content=content,
+                    recipients=[data.phone_number],
+                )
+            except Exception as e:
+                logger.error(e)
+                return Response(
+                    {"error": "Error while sending OTP. Contact admin."}, status=400
+                )
 
         UserMobileOTP.objects.create(phone_number=data.phone_number, otp=random_otp)
         return Response({"otp": "generated"})
@@ -98,10 +114,19 @@ class OTPResetConfirmView(GenericAPIView):
 
     @extend_schema(request=OTPResetConfirmSpec)
     def post(self, request):
-        data = OTPResetConfirmSpec(**request.data)
+        try:
+            data = OTPResetConfirmSpec(**request.data)
+        except PydanticValidationError as e:
+            raise ValidationError(e.errors()) from e
+        if ratelimit(request, "otp-password-confirm", ["ip"]):
+            error_message = "Too many requests. Please try again later."
+            return Response(
+                {"detail": error_message},
+                status=429,
+            )
         user = User.objects.filter(phone_number=data.phone_number).first()
         if not user:
-            raise ValidationError({"phone_number": "No account found"})
+            raise ValidationError({"error": "No User linked to this phone number"})
         otp_obj = (
             UserMobileOTP.objects.filter(
                 phone_number=data.phone_number,
@@ -116,10 +141,16 @@ class OTPResetConfirmView(GenericAPIView):
         if not otp_obj or otp_obj.otp != data.otp:
             raise ValidationError({"otp": "Invalid OTP"})
 
+        validate_password(
+            data.password,
+            user=user,
+            password_validators=get_password_validators(
+                settings.AUTH_PASSWORD_VALIDATORS
+            ),
+        )
+        user.set_password(data.password)
+        user.save()
         UserMobileOTP.objects.filter(
             phone_number=data.phone_number,
         ).delete()
-
-        user.set_password(data.password)
-        user.save()
         return Response({"message": "Password reset successful"})
