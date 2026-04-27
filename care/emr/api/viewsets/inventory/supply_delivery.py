@@ -138,7 +138,10 @@ class SupplyDeliveryViewSet(
                     raise ValidationError(
                         "Supply delivery is abandoned or entered in error"
                     )
-                if old_instance.status == SupplyDeliveryStatusOptions.completed.value:
+                if (
+                    old_instance.status == SupplyDeliveryStatusOptions.completed.value
+                    and not (instance.order.origin is None and instance.order.patient)
+                ):
                     raise ValidationError("Supply delivery already completed")
                 if (
                     instance.status == SupplyDeliveryStatusOptions.completed.value
