@@ -692,6 +692,10 @@ SMS_BACKEND = "care.utils.sms.backend.sns.SnsBackend"
 
 OTP_SMS_TEMPLATE_PATH = env("OTP_SMS_TEMPLATE", default="sms/otp_sms.txt")
 
+OTP_SMS_RESET_PASSWORD_TEMPLATE_PATH = env(
+    "OTP_SMS_RESET_PASSWORD_TEMPLATE", default="sms/otp_reset_sms.txt"
+)
+
 USER_CREATE_PASSWORD_EMAIL_TEMPLATE_PATH = env(
     "USER_CREATE_PASSWORD_TEMPLATE_PATH", default="email/user_create_password.html"
 )
