@@ -262,9 +262,7 @@ class FileUploadViewSet(
                 file_upload.files_manager.put_object(file_upload, uploaded_file)
                 file_upload.upload_completed = True
                 file_upload.updated_by = request.user
-                file_upload.save(
-                    update_fields=["upload_completed", "updated_by", "modified_date"]
-                )
+                file_upload.save(skip_internal_name=True)
             except Exception as e:
                 error_msg = "Failed to upload file to storage"
                 raise ValidationError(error_msg) from e
