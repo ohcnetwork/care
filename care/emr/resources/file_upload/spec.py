@@ -84,6 +84,7 @@ class FileUploadListSpec(FileUploadBaseSpec):
     archive_reason: str | None = None
     created_date: datetime.datetime
     extension: str
+    uploaded_by: dict | None = None
     created_by: dict | None = None
     updated_by: dict | None = None
 
@@ -95,6 +96,8 @@ class FileUploadListSpec(FileUploadBaseSpec):
         mapping["extension"] = obj.get_extension()
         mapping["mime_type"] = obj.meta.get("mime_type")
         cls.serialize_audit_users(mapping, obj)
+        if obj.created_by_id:
+            mapping["uploaded_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
         if obj.archived_by_id:
             mapping["archived_by"] = model_from_cache(UserSpec, id=obj.archived_by_id)
 
