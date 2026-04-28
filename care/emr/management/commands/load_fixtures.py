@@ -25,7 +25,7 @@ class Command(BaseCommand):
         )
 
     def handle(self, *args, path, **options):
-        if not settings.DEBUG:
+        if settings.IS_PRODUCTION:
             msg = "This command should not be run in production. Exiting..."
             self.stderr.write(self.style.ERROR(msg))
             raise CommandError(msg)
