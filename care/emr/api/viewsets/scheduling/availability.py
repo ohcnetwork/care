@@ -193,7 +193,7 @@ def lock_create_appointment(token_slot, patient, created_by, note):
             charge_item.performer_actor = token_slot.resource.user
             charge_item.save()
             booking.charge_item = charge_item
-            booking.save(update_fields=["charge_item"])
+            booking.save(update_fields=["charge_item", "modified_date"])
         return booking
 
 

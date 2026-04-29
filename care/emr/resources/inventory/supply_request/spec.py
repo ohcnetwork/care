@@ -7,6 +7,9 @@ from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.models.supply_request import RequestOrder, SupplyRequest
 from care.emr.resources.base import EMRResource
 from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledgeReadSpec
+from care.emr.resources.inventory.supply_request.request_order import (
+    SupplyRequestOrderReadSpec,
+)
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -64,9 +67,11 @@ class SupplyRequestReadSpec(BaseSupplyRequestSpec):
     """Supply request read specification"""
 
     quantity: int
-    item: UUID4
+    item: dict
+    order: dict
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["item"] = ProductKnowledgeReadSpec.serialize(obj.item).to_json()
+        mapping["order"] = SupplyRequestOrderReadSpec.serialize(obj.order).to_json()
