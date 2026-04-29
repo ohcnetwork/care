@@ -215,17 +215,20 @@ class FacilityOrganizationViewSet(EMRModelViewSet, EMRFavoritesMixin):
         )
 
     def perform_destroy(self, instance):
+        parent = instance.parent
         with transaction.atomic():
             FacilityOrganizationUser.objects.filter(organization=instance).delete()
             instance.deleted = True
-            instance.save(update_fields=["deleted"])
-
-            parent = instance.parent
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["deleted", "updated_by", "modified_date"])
             if parent:
                 parent.has_children = FacilityOrganization.objects.filter(
                     parent=parent
                 ).exists()
-                parent.save(update_fields=["has_children"])
+                parent.updated_by = self.request.user
+                parent.save(
+                    update_fields=["has_children", "updated_by", "modified_date"]
+                )
 
     @action(detail=False, methods=["GET"])
     def mine(self, request, *args, **kwargs):
