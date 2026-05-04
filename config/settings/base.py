@@ -502,9 +502,17 @@ AUDIT_LOG = {
 
 # OTP
 # ------------------------------------------------------------------------------
-OTP_REPEAT_WINDOW = 6  # OTPs will only be valid for 6 hours to login
-OTP_MAX_REPEATS_WINDOW = 10  # times OTPs can be sent within OTP_REPEAT_WINDOW
 OTP_LENGTH = 5
+
+OTP_SEND_WINDOW_MINUTES = env.int("OTP_SEND_WINDOW_MINUTES", default=60)
+# max no. of otp that can be generated in (OTP_SEND_WINDOW_MINUTES)mins
+OTP_MAX_SENDS_PER_WINDOW = env.int("OTP_MAX_SENDS_PER_WINDOW", default=10)
+# no. of attempts after which the otp is blocked
+OTP_MAX_VERIFY_ATTEMPTS = env.int("OTP_MAX_VERIFY_ATTEMPTS", default=3)
+# max no. of attempts after which the phone number is blocked
+OTP_MAX_FAILURES = env.int("OTP_MAX_FAILURES", default=5)
+# minutes it stays lock when reached OTP_MAX_FAILURES
+OTP_LOCKOUT_MINUTES = env.int("OTP_LOCKOUT_MINUTES", default=30)
 
 # Rate Limiting
 # ------------------------------------------------------------------------------

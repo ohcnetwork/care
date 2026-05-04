@@ -10,3 +10,4 @@ class PatientMobileOTP(BaseModel):
         max_length=14, validators=[mobile_or_landline_number_validator]
     )
     otp = models.CharField(max_length=10)
+    failed_attempts = models.PositiveSmallIntegerField(default=0)
