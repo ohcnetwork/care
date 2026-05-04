@@ -79,7 +79,7 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
         invoice_obj.status = InvoiceStatusOptions.issued.value
         invoice_obj.save()
         delivery_order.patient_invoice = invoice_obj
-        delivery_order.save(update_fields=["patient_invoice"])
+        delivery_order.save(update_fields=["patient_invoice", "modified_date"])
     rebalance_account_task(invoice_obj.account.id)
     return invoice_obj
 
@@ -93,7 +93,9 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
     with transaction.atomic():
         delivery_order.patient_invoice.status = InvoiceStatusOptions.cancelled.value
         delivery_order.patient_invoice.updated_by = delivery_order.updated_by
-        delivery_order.patient_invoice.save(update_fields=["status", "updated_by"])
+        delivery_order.patient_invoice.save(
+            update_fields=["status", "updated_by", "modified_date"]
+        )
         ChargeItem.objects.filter(
             id__in=delivery_order.patient_invoice.charge_items,
         ).update(

@@ -203,7 +203,7 @@ class UserViewSet(EMRModelViewSet):
                 return Response({"detail": "No cover image to delete"}, status=404)
             delete_cover_image(user.profile_picture_url, "avatars")
             user.profile_picture_url = None
-            user.save()
+            user.save(update_fields=["profile_picture_url"])
             return Response(status=204)
         return Response({"detail": "Method not allowed"}, status=405)
 
@@ -226,7 +226,7 @@ class UserViewSet(EMRModelViewSet):
         for field in acceptable_fields:
             if field in request.data:
                 setattr(user, field, request.data[field])
-        user.save()
+        user.save(update_fields=["pf_endpoint", "pf_p256dh", "pf_auth"])
         return Response({})
 
     @action(detail=True, methods=["POST"])
