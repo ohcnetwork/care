@@ -72,7 +72,6 @@ class OTPLoginView(EMRBaseViewSet):
             created_date__gte=(
                 timezone.now() - timedelta(minutes=settings.OTP_SEND_WINDOW_MINUTES)
             ),
-            is_used=False,
             phone_number=data.phone_number,
         )
         if sent_otps.count() >= settings.OTP_MAX_SENDS_PER_WINDOW:
