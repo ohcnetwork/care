@@ -1,11 +1,11 @@
 from datetime import timedelta
 
 from django.test import override_settings
-from django.utils import timezone
 from rest_framework import status
 from rest_framework.test import APITestCase
 
 from care.facility.models.patient import PatientMobileOTP
+from care.utils.time_util import care_now
 
 
 @override_settings(
@@ -16,6 +16,7 @@ from care.facility.models.patient import PatientMobileOTP
     OTP_LOCKOUT_MINUTES=30,
     OTP_SEND_WINDOW_MINUTES=60,
     OTP_MAX_SENDS_PER_WINDOW=10,
+    OTP_VALIDITY_MINUTES=10,
 )
 class OTPLoginFlowTests(APITestCase):
     SEND_URL = "/api/v1/otp/send/"
@@ -152,7 +153,7 @@ class OTPLoginFlowTests(APITestCase):
         self.assertEqual(self._send().status_code, 429)
 
         # age all existing failures past the lockout window
-        old = timezone.now() - timedelta(minutes=31)
+        old = care_now() - timedelta(minutes=31)
         PatientMobileOTP.objects.filter(phone_number=self.PHONE).update(
             modified_date=old
         )
@@ -172,7 +173,7 @@ class OTPLoginFlowTests(APITestCase):
         for _ in range(10):
             self._send()
         # age them past the send window
-        old = timezone.now() - timedelta(minutes=61)
+        old = care_now() - timedelta(minutes=61)
         PatientMobileOTP.objects.filter(phone_number=self.PHONE).update(
             created_date=old
         )
@@ -239,3 +240,27 @@ class OTPLoginFlowTests(APITestCase):
         resp = self._login(self.WRONG_OTP)
         self.assertEqual(resp.status_code, 400)
         self.assertEqual(PatientMobileOTP.objects.count(), 0)
+
+    # ------------------------------------------------------------------ otp validity
+
+    def test_expired_otp_cannot_login(self):
+        self._send()
+        # age the OTP past its validity window
+        old = care_now() - timedelta(minutes=11)
+        PatientMobileOTP.objects.filter(phone_number=self.PHONE).update(
+            created_date=old
+        )
+        resp = self._login(self.DEV_OTP)
+        self.assertEqual(resp.status_code, 400)
+        # row remains unused since it was never picked up by the verify query
+        self.assertFalse(PatientMobileOTP.objects.get(phone_number=self.PHONE).is_used)
+
+    def test_otp_within_validity_window_works(self):
+        self._send()
+        # age the OTP to just inside the validity window
+        recent = care_now() - timedelta(minutes=9)
+        PatientMobileOTP.objects.filter(phone_number=self.PHONE).update(
+            created_date=recent
+        )
+        resp = self._login(self.DEV_OTP)
+        self.assertEqual(resp.status_code, 200)

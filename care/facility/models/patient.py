@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 
 from care.utils.models.base import BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
@@ -16,10 +17,12 @@ class PatientMobileOTP(BaseModel):
         indexes = [
             models.Index(
                 fields=["phone_number", "-created_date"],
-                name="pmo_phone_created_idx",
+                name="pmo_phone_created_active_idx",
+                condition=Q(deleted=False),
             ),
             models.Index(
                 fields=["phone_number", "-modified_date"],
-                name="pmo_phone_modified_idx",
+                name="pmo_phone_modified_active_idx",
+                condition=Q(deleted=False),
             ),
         ]

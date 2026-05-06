@@ -504,15 +504,23 @@ AUDIT_LOG = {
 # ------------------------------------------------------------------------------
 OTP_LENGTH = 5
 
+# The time window (in minutes) for tracking OTP request limits
 OTP_SEND_WINDOW_MINUTES = env.int("OTP_SEND_WINDOW_MINUTES", default=60)
-# max no. of otp that can be generated in (OTP_SEND_WINDOW_MINUTES)mins
+
+# Maximum number of OTPs that can be generated within the window defined above
 OTP_MAX_SENDS_PER_WINDOW = env.int("OTP_MAX_SENDS_PER_WINDOW", default=10)
-# no. of attempts after which the otp is blocked
+
+# Number of failed verification attempts allowed before an OTP is invalidated
 OTP_MAX_VERIFY_ATTEMPTS = env.int("OTP_MAX_VERIFY_ATTEMPTS", default=3)
-# max no. of attempts after which the phone number is blocked
+
+# Maximum total failures allowed before the phone number is restricted
 OTP_MAX_FAILURES = env.int("OTP_MAX_FAILURES", default=5)
-# minutes it stays lock when reached OTP_MAX_FAILURES
-OTP_LOCKOUT_MINUTES = env.int("OTP_LOCKOUT_MINUTES", default=30)
+
+# Duration (in minutes) the account remains locked after reaching maximum failures
+OTP_LOCKOUT_MINUTES = env.int("OTP_LOCKOUT_MINUTES", default=60)
+
+# Duration (in minutes) an OTP remains valid for verification after it is generated
+OTP_VALIDITY_MINUTES = env.int("OTP_VALIDITY_MINUTES", default=10)
 
 # Rate Limiting
 # ------------------------------------------------------------------------------

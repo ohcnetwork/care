@@ -6,11 +6,10 @@ from datetime import timedelta
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Sum
-from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, Field, field_validator
 from rest_framework.decorators import action
-from rest_framework.exceptions import Throttled, ValidationError
+from rest_framework.exceptions import APIException, Throttled, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
@@ -19,12 +18,13 @@ from care.facility.models.patient import PatientMobileOTP
 from care.utils import sms
 from care.utils.models.validators import mobile_validator
 from care.utils.sms.utils import get_sms_content
+from care.utils.time_util import care_now
 from config.patient_otp_token import PatientToken
 
 logger = logging.getLogger(__name__)
 
 
-def rand_pass(size):
+def generate_otp(size):
     return "".join(secrets.choice(string.digits) for _ in range(size))
 
 
@@ -51,7 +51,7 @@ class OTPLoginView(EMRBaseViewSet):
     permission_classes = []
 
     def failure_count(self, phone_number: str) -> int:
-        since = timezone.now() - timedelta(minutes=settings.OTP_LOCKOUT_MINUTES)
+        since = care_now() - timedelta(minutes=settings.OTP_LOCKOUT_MINUTES)
         total = PatientMobileOTP.objects.filter(
             phone_number=phone_number,
             modified_date__gte=since,
@@ -72,7 +72,7 @@ class OTPLoginView(EMRBaseViewSet):
         with OTPSendLock(data.phone_number):
             sent_otps = PatientMobileOTP.objects.filter(
                 created_date__gte=(
-                    timezone.now() - timedelta(minutes=settings.OTP_SEND_WINDOW_MINUTES)
+                    care_now() - timedelta(minutes=settings.OTP_SEND_WINDOW_MINUTES)
                 ),
                 phone_number=data.phone_number,
             )
@@ -81,7 +81,7 @@ class OTPLoginView(EMRBaseViewSet):
 
             random_otp = ""
             if settings.USE_SMS:
-                random_otp = rand_pass(settings.OTP_LENGTH)
+                random_otp = generate_otp(settings.OTP_LENGTH)
                 try:
                     content = get_sms_content(
                         settings.OTP_SMS_TEMPLATE_PATH, {"random_otp": random_otp}
@@ -96,10 +96,10 @@ class OTPLoginView(EMRBaseViewSet):
                         {"error": "Error while sending OTP. Contact admin."},
                         status=400,
                     )
-            elif settings.IS_PRODUCTION:
-                random_otp = rand_pass(settings.OTP_LENGTH)
-            else:
+            elif not settings.IS_PRODUCTION:
                 random_otp = "45612"
+            else:
+                raise APIException("SMS Backend not configured")
 
             # disable all other existing otp before creating a new one
             PatientMobileOTP.objects.filter(
@@ -124,7 +124,12 @@ class OTPLoginView(EMRBaseViewSet):
         with transaction.atomic():
             otp_object = (
                 PatientMobileOTP.objects.select_for_update()
-                .filter(phone_number=data.phone_number, is_used=False)
+                .filter(
+                    phone_number=data.phone_number,
+                    is_used=False,
+                    created_date__gte=care_now()
+                    - timedelta(minutes=settings.OTP_VALIDITY_MINUTES),
+                )
                 .order_by("-created_date")
                 .first()
             )
