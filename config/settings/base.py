@@ -690,10 +690,14 @@ DJANGO_REST_MULTITOKENAUTH_REQUIRE_USABLE_PASSWORD = False
 
 SMS_BACKEND = "care.utils.sms.backend.sns.SnsBackend"
 
-OTP_SMS_TEMPLATE_PATH = env("OTP_SMS_TEMPLATE", default="sms/otp_sms.txt")
+OTP_SMS_CONTENT = env(
+    "OTP_SMS_CONTENT",
+    default="Care OTP for login is {otp}. Please do not share this with anyone.",
+)
 
-OTP_SMS_RESET_PASSWORD_TEMPLATE_PATH = env(
-    "OTP_SMS_RESET_PASSWORD_TEMPLATE", default="sms/otp_reset_sms.txt"
+OTP_SMS_RESET_PASSWORD_CONTENT = env(
+    "OTP_SMS_RESET_PASSWORD_CONTENT",
+    default="Care OTP for password reset is {otp}. Please do not share this with anyone.",
 )
 
 USER_CREATE_PASSWORD_EMAIL_TEMPLATE_PATH = env(

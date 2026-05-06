@@ -1,1 +1,0 @@
-Your CARE password reset OTP is {{random_otp}}. Do not share this with anyone.

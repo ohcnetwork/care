@@ -16,7 +16,6 @@ from care.emr.api.viewsets.base import EMRBaseViewSet
 from care.facility.models.patient import MobileOTP
 from care.utils import sms
 from care.utils.models.validators import mobile_validator
-from care.utils.sms.utils import get_sms_content
 from config.patient_otp_token import PatientToken
 
 logger = logging.getLogger(__name__)
@@ -45,15 +44,9 @@ def send_otp(phone_number, purpose):
         random_otp = rand_pass(settings.OTP_LENGTH)
         try:
             if purpose == OTPType.login:
-                content = get_sms_content(
-                    settings.OTP_SMS_TEMPLATE_PATH,
-                    {"random_otp": random_otp},
-                )
+                content = settings.OTP_SMS_CONTENT.format(otp=random_otp)
             elif purpose == OTPType.reset_password:
-                content = get_sms_content(
-                    settings.OTP_SMS_RESET_PASSWORD_TEMPLATE_PATH,
-                    {"random_otp": random_otp},
-                )
+                content = settings.OTP_SMS_RESET_PASSWORD_CONTENT.format(otp=random_otp)
 
             sms.send_text_message(
                 content=content,
