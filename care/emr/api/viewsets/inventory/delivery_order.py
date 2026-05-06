@@ -116,13 +116,22 @@ class DeliveryOrderViewSet(
                 if (
                     instance.patient
                     and instance.status
+                    == SupplyDeliveryOrderStatusOptions.abandoned.value
+                ):
+                    raise ValidationError(
+                        "Cannot abandon a delivery order with medication return"
+                    )
+                if (
+                    instance.patient
+                    and instance.status
                     == SupplyDeliveryOrderStatusOptions.completed.value
                 ):
                     generate_return_invoice(instance)
-                if instance.patient and instance.status in [
-                    SupplyDeliveryOrderStatusOptions.abandoned.value,
-                    SupplyDeliveryOrderStatusOptions.entered_in_error.value,
-                ]:
+                if (
+                    instance.patient
+                    and instance.status
+                    == SupplyDeliveryOrderStatusOptions.entered_in_error.value
+                ):
                     cancel_return_invoice(instance)
 
             return super().perform_update(instance)
