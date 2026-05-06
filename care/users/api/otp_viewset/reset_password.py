@@ -12,9 +12,9 @@ from pydantic import Field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
-from rest_framework.viewsets import GenericViewSet
 
 from care.emr.api.otp_viewsets.login import OTPRequestBaseSpec, OTPType, send_otp
+from care.emr.api.viewsets.base import EMRBaseViewSet
 from care.facility.models.patient import MobileOTP
 from care.users.models import User
 from config.ratelimit import ratelimit
@@ -31,7 +31,7 @@ class OTPResetConfirmSpec(OTPRequestBaseSpec):
     password: str = Field(min_length=8)
 
 
-class OTPResetPasswordView(GenericViewSet):
+class OTPResetPasswordView(EMRBaseViewSet):
     authentication_classes = []
     permission_classes = []
 
