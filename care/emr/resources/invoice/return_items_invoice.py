@@ -115,7 +115,7 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
             )
         supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
         for supply_delivery in supply_deliveries:
-            supply_delivery.status = delivery_order.status
+            supply_delivery.status = SupplyDeliveryStatusOptions.entered_in_error.value
             supply_delivery.updated_by = delivery_order.updated_by
             supply_delivery.save(
                 update_fields=["status", "updated_by", "modified_date"]
