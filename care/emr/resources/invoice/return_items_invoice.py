@@ -79,7 +79,7 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
         invoice_obj.status = InvoiceStatusOptions.issued.value
         invoice_obj.save()
         delivery_order.patient_invoice = invoice_obj
-        delivery_order.save(update_fields=["patient_invoice"])
+        delivery_order.save(update_fields=["patient_invoice", "modified_date"])
     rebalance_account_task(invoice_obj.account.id)
     return invoice_obj
 

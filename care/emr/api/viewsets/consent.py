@@ -62,7 +62,10 @@ class ConsentViewSet(
             raise ValidationError("Consent is already verified by the user")
 
         instance.verification_details.append(request_data.model_dump())
-        instance.save(update_fields=["verification_details"])
+        instance.updated_by = self.request.user
+        instance.save(
+            update_fields=["verification_details", "updated_by", "modified_date"]
+        )
 
         serialized = ConsentRetrieveSpec.serialize(instance).to_json()
         return Response(serialized)
@@ -88,7 +91,10 @@ class ConsentViewSet(
             raise ValidationError("Consent is not verified by the user")
 
         instance.verification_details.remove(match)
-        instance.save(update_fields=["verification_details"])
+        instance.updated_by = self.request.user
+        instance.save(
+            update_fields=["verification_details", "updated_by", "modified_date"]
+        )
 
         serialized = ConsentRetrieveSpec.serialize(instance).to_json()
         return Response(serialized)
