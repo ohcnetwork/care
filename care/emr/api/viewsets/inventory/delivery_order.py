@@ -118,7 +118,9 @@ class DeliveryOrderViewSet(
                     and instance.status
                     == SupplyDeliveryOrderStatusOptions.abandoned.value
                 ):
-                    raise ValidationError("Cannot abandon a delivery order")
+                    raise ValidationError(
+                        "Cannot abandon a delivery order with medication return"
+                    )
                 if (
                     instance.patient
                     and instance.status
