@@ -178,25 +178,48 @@ class OTPLoginFlowTests(APITestCase):
         )
         self.assertEqual(self._send().status_code, 200)
 
+    def test_send_rate_limit_counts_used_otps(self):
+        """Send cap counts every OTP issued in the window, not just unused ones —
+        otherwise a client that consumes each OTP could bypass the cap entirely."""
+        for _ in range(10):
+            self.assertEqual(self._send().status_code, 200)
+            # consume the OTP so only used rows remain
+            self._login(self.DEV_OTP)
+        resp = self._send()
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
     # ------------------------------------------------------------------ multi-OTP behavior
 
     def test_only_latest_unused_otp_is_validated(self):
-        # First OTP issued and "leaked" to attacker (we know it's 45612 in dev)
+        # First OTP issued
         self._send()
         first_id = PatientMobileOTP.objects.latest("created_date").id
 
-        # User requests a new OTP. Older one should no longer log in.
+        # Issuing a new OTP must invalidate the older one (no two unused OTPs alive at once)
         self._send()
+        first_row = PatientMobileOTP.objects.get(id=first_id)
+        self.assertTrue(first_row.is_used)
 
-        # Attacker tries the older known code against the latest row.
-        # In dev mode both rows have value "45612", so login *will* succeed
-        # against the latest — this just confirms we never read the older row.
+        # Login uses only the newest unused row
         resp = self._login(self.DEV_OTP)
         self.assertEqual(resp.status_code, 200)
 
-        # The older (first) OTP row was not touched by the login
-        first_row = PatientMobileOTP.objects.get(id=first_id)
-        self.assertFalse(first_row.is_used)
+    def test_old_otp_cannot_login_after_new_one_issued(self):
+        """Even if an attacker knows an old OTP code, it must not work after a re-send."""
+        self._send()
+        # User re-requests; old row becomes is_used=True
+        self._send()
+        # Consume the new OTP
+        self.assertEqual(self._login(self.DEV_OTP).status_code, 200)
+        # No unused OTP rows for this phone now
+        self.assertFalse(
+            PatientMobileOTP.objects.filter(
+                phone_number=self.PHONE, is_used=False
+            ).exists()
+        )
+        # Replaying the (same-value) old code must fail — no unused row to match against
+        resp = self._login(self.DEV_OTP)
+        self.assertEqual(resp.status_code, 400)
 
     def test_failure_bumps_only_latest_otp_row(self):
         self._send()

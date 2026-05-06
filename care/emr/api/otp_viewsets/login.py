@@ -14,6 +14,7 @@ from rest_framework.exceptions import Throttled, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
+from care.emr.locks.otp import OTPSendLock
 from care.facility.models.patient import PatientMobileOTP
 from care.utils import sms
 from care.utils.models.validators import mobile_validator
@@ -68,37 +69,45 @@ class OTPLoginView(EMRBaseViewSet):
         if self.failure_count(data.phone_number) >= settings.OTP_MAX_FAILURES:
             raise Throttled(detail="Too many failed login attempts. Try again later.")
 
-        sent_otps = PatientMobileOTP.objects.filter(
-            created_date__gte=(
-                timezone.now() - timedelta(minutes=settings.OTP_SEND_WINDOW_MINUTES)
-            ),
-            phone_number=data.phone_number,
-        )
-        if sent_otps.count() >= settings.OTP_MAX_SENDS_PER_WINDOW:
-            raise ValidationError({"phone_number": "Max Retries has exceeded"})
-        random_otp = ""
-        if settings.USE_SMS:
-            random_otp = rand_pass(settings.OTP_LENGTH)
-            try:
-                content = get_sms_content(
-                    settings.OTP_SMS_TEMPLATE_PATH, {"random_otp": random_otp}
-                )
-                sms.send_text_message(
-                    content=content,
-                    recipients=[data.phone_number],
-                )
-            except Exception as e:
-                logger.error(e)
-                return Response(
-                    {"error": "Error while sending OTP. Contact admin."}, status=400
-                )
-        elif settings.IS_PRODUCTION:
-            random_otp = rand_pass(settings.OTP_LENGTH)
-        else:
-            random_otp = "45612"
+        with OTPSendLock(data.phone_number):
+            sent_otps = PatientMobileOTP.objects.filter(
+                created_date__gte=(
+                    timezone.now() - timedelta(minutes=settings.OTP_SEND_WINDOW_MINUTES)
+                ),
+                phone_number=data.phone_number,
+            )
+            if sent_otps.count() >= settings.OTP_MAX_SENDS_PER_WINDOW:
+                raise ValidationError({"phone_number": "Max Retries has exceeded"})
 
-        otp_obj = PatientMobileOTP(phone_number=data.phone_number, otp=random_otp)
-        otp_obj.save()
+            random_otp = ""
+            if settings.USE_SMS:
+                random_otp = rand_pass(settings.OTP_LENGTH)
+                try:
+                    content = get_sms_content(
+                        settings.OTP_SMS_TEMPLATE_PATH, {"random_otp": random_otp}
+                    )
+                    sms.send_text_message(
+                        content=content,
+                        recipients=[data.phone_number],
+                    )
+                except Exception as e:
+                    logger.error(e)
+                    return Response(
+                        {"error": "Error while sending OTP. Contact admin."},
+                        status=400,
+                    )
+            elif settings.IS_PRODUCTION:
+                random_otp = rand_pass(settings.OTP_LENGTH)
+            else:
+                random_otp = "45612"
+
+            # disable all other existing otp before creating a new one
+            PatientMobileOTP.objects.filter(
+                phone_number=data.phone_number, is_used=False
+            ).update(is_used=True)
+            PatientMobileOTP.objects.create(
+                phone_number=data.phone_number, otp=random_otp
+            )
         return Response({"otp": "generated"})
 
     @extend_schema(

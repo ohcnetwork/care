@@ -11,3 +11,15 @@ class PatientMobileOTP(BaseModel):
     )
     otp = models.CharField(max_length=10)
     failed_attempts = models.PositiveSmallIntegerField(default=0)
+
+    class Meta:
+        indexes = [
+            models.Index(
+                fields=["phone_number", "-created_date"],
+                name="pmo_phone_created_idx",
+            ),
+            models.Index(
+                fields=["phone_number", "-modified_date"],
+                name="pmo_phone_modified_idx",
+            ),
+        ]
