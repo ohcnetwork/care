@@ -266,11 +266,3 @@ class UserFlag(BaseFlag):
     @classmethod
     def get_all_flags(cls, user_id: int) -> tuple[FlagName]:
         return super().get_all_flags(user_id)
-
-
-class UserMobileOTP(BaseModel):
-    is_used = models.BooleanField(default=False)
-    phone_number = models.CharField(
-        max_length=14, validators=[mobile_or_landline_number_validator]
-    )
-    otp = models.CharField(max_length=10)
