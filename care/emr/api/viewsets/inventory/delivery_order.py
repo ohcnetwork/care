@@ -113,7 +113,11 @@ class DeliveryOrderViewSet(
                     raise ValidationError(
                         "Delivery order already abandoned or entered in error"
                     )
-                if instance.status == SupplyDeliveryOrderStatusOptions.abandoned.value:
+                if (
+                    instance.patient
+                    and instance.status
+                    == SupplyDeliveryOrderStatusOptions.abandoned.value
+                ):
                     raise ValidationError("Cannot abandon a delivery order")
                 if (
                     instance.patient
