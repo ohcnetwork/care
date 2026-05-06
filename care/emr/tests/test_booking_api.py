@@ -1067,7 +1067,7 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 4)
 
-    def test_get_slots_for_day_with_multiple_schedules_having_same_availability_composition(
+    def test_get_slots_for_day_with_availabilities_having_same_availability_composition(
         self,
     ):
         """Slots having the same start and end time across availabilities should also show up."""
