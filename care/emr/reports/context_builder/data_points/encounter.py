@@ -1,6 +1,7 @@
 from types import SimpleNamespace
 
 from care.emr.models.encounter import Encounter, EncounterOrganization
+from care.emr.models.tag_config import TagConfig
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.context_builder.data_points.allergy_intolerance import (
     AllergyIntoleranceContextBuilder,
@@ -22,6 +23,7 @@ from care.emr.reports.context_builder.data_points.medication import (
 )
 from care.emr.reports.context_builder.data_points.patient import (
     PatientMinimumContextBuilder,
+    PatientTagContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.questionnaire import (
     QuestionnaireContextBuilder,
@@ -75,6 +77,17 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
         return iter(
             self.__class__(context=SimpleNamespace(user=c["user_id"], role=c["role"]))
             for c in self.context
+        )
+
+
+class EncounterPatientFacilityTagContextBuilder(PatientTagContextBuilder):
+    def get_context(self):
+        return TagConfig.objects.filter(
+            id__in=self.parent_context.patient.facility_tags[
+                str(self.parent_context.facility.id)
+            ],
+            status="active",
+            category="clinical",
         )
 
 
@@ -158,6 +171,12 @@ class BaseEncounterReportContext(SingleObjectContextBuilder):
         mapping="discharge_summary_advice",
         preview_value="Patient is advised to follow up in 2 weeks.",
         description="Discharge summary advice for the encounter",
+    )
+    patient_facility_tags = Field(
+        target_context=EncounterPatientFacilityTagContextBuilder,
+        display="Patient Facility Tags",
+        preview_value="",
+        description="Facility-specific tags associated with the patient for the encounter",
     )
 
 

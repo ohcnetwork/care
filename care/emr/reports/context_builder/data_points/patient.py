@@ -1,4 +1,5 @@
 from care.emr.models.patient import Patient, PatientIdentifierConfig
+from care.emr.models.tag_config import TagConfig
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.context_builder.data_points.base import (
     Field,
@@ -84,6 +85,24 @@ class PatientFacilityIdentifiersContextBuilder(IdentifiersContextBuilder):
         return self.parent_context.facility_identifiers
 
 
+class PatientTagContextBuilder(QuerysetContextBuilder):
+    display = Field(
+        display="Tag Display",
+        preview_value="Diabetic",
+        mapping=lambda t: t.display if t else None,
+        description="Display of the patient tag",
+    )
+
+
+class PatientInstanceTagsContextBuilder(PatientTagContextBuilder):
+    def get_context(self):
+        return TagConfig.objects.filter(
+            id__in=self.parent_context.instance_tags,
+            status="active",
+            category="clinical",
+        )
+
+
 class BasePatientContextBuilder(SingleObjectContextBuilder):
     name = Field(
         display="Patient Name",
@@ -149,6 +168,12 @@ class BasePatientContextBuilder(SingleObjectContextBuilder):
         target_context=PatientFacilityIdentifiersContextBuilder,
         preview_value="",
         description="Facility-specific identifiers associated with the patient",
+    )
+    instance_tags = Field(
+        display="Patient Instance Tags",
+        target_context=PatientInstanceTagsContextBuilder,
+        preview_value="",
+        description="Instance tags associated with the patient",
     )
 
 
