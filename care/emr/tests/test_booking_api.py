@@ -1067,6 +1067,20 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 4)
 
+    def test_get_slots_for_day_with_availabilities_having_same_availability_composition(
+        self,
+    ):
+        """Slots having the same start and end time across availabilities should also show up."""
+        self.create_availability()  # creates another availability for the resource that'd yield 8 more slots
+        data = {
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": self.user.external_id,
+            "day": (datetime.now(UTC) + timedelta(days=1)).strftime("%Y-%m-%d"),
+        }
+        response = self.client.post(self._get_slot_for_day_url(), data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 16)
+
     def test_availability_stats_with_permission(self):
         """Users can get availability statistics for a date range."""
         permissions = [SchedulePermissions.can_list_booking.name]
