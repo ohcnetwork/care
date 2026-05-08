@@ -151,6 +151,14 @@ def load_fixtures(base):  # noqa: PLR0915, PLR0912
                 )
     log("Loading facility organization memberships completed")
 
+    base.create_facility(
+        geo_organization.id,
+        name="SECONDARY FACILITY",
+        facility_type="Private Hospital",
+        is_public=True,
+    )
+    log("Loading secondary facility completed")
+
     base.load_questionnaires_from_file([geo_organization.id])
     log("Loading questionnaires completed")
 
