@@ -41,3 +41,8 @@ class PlugConfigViewset(
         if self.action in ["list", "retrieve"]:
             return []
         return [IsAdminUser()]
+
+    def perform_authentication(self, request):
+        if self.action in ["list"]:
+            return []
+        return super().perform_authentication(request)
