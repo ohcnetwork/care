@@ -170,6 +170,17 @@ class SupplyDeliveryViewSet(
             return False
         return True
 
+    def authorize_location_external_write(self, location_obj, raise_error=True):
+        if not AuthorizationController.call(
+            "can_write_facility_external_supply_delivery",
+            self.request.user,
+            location_obj,
+        ):
+            if raise_error:
+                raise PermissionDenied("Cannot write supply requests")
+            return False
+        return True
+
     def authorize_order_read(self, order):
         allowed = False
         if order.origin:
@@ -188,7 +199,7 @@ class SupplyDeliveryViewSet(
             allowed = allowed or self.authorize_location_write(
                 order.origin, raise_error=False
             )
-        allowed = allowed or self.authorize_location_write(
+        allowed = allowed or self.authorize_location_external_write(
             order.destination, raise_error=False
         )
         if not allowed:

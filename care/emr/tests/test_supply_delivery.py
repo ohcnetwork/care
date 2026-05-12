@@ -78,6 +78,7 @@ class TestSupplyDeliveryViewSet(CareAPITestBase):
             permissions=[
                 SupplyDeliveryPermissions.can_read_supply_delivery.name,
                 SupplyDeliveryPermissions.can_write_supply_delivery.name,
+                SupplyDeliveryPermissions.can_write_external_supply_delivery.name,
             ]
         )
         self.base_url = reverse("supply_delivery-list")
