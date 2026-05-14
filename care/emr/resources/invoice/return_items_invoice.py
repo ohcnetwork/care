@@ -122,14 +122,17 @@ def cancel_related_supply_deliveries(delivery_order: DeliveryOrder):
     """
     Cancel related supply deliveries for a delivery order
     """
-    supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
-    if not supply_deliveries.exists():
-        return
-    for supply_delivery in supply_deliveries:
-        supply_delivery.status = SupplyDeliveryStatusOptions.entered_in_error.value
-        supply_delivery.updated_by = delivery_order.updated_by
-        supply_delivery.save(update_fields=["status", "updated_by", "modified_date"])
-        sync_inventory_item(
-            location=delivery_order.destination,
-            product=supply_delivery.supplied_item,
-        )
+    with transaction.atomic():
+        supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
+        if not supply_deliveries.exists():
+            return
+        for supply_delivery in supply_deliveries:
+            supply_delivery.status = SupplyDeliveryStatusOptions.entered_in_error.value
+            supply_delivery.updated_by = delivery_order.updated_by
+            supply_delivery.save(
+                update_fields=["status", "updated_by", "modified_date"]
+            )
+            sync_inventory_item(
+                location=delivery_order.destination,
+                product=supply_delivery.supplied_item,
+            )
