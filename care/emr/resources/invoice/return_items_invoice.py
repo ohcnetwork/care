@@ -88,10 +88,10 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
     """
     Cancel the return invoice for items based on delivery order
     """
-    cancel_related_supply_deliveries(delivery_order)
-    if not delivery_order.patient_invoice:
-        return
     with transaction.atomic():
+        cancel_related_supply_deliveries(delivery_order)
+        if not delivery_order.patient_invoice:
+            return
         delivery_order.patient_invoice.status = InvoiceStatusOptions.cancelled.value
         delivery_order.patient_invoice.updated_by = delivery_order.updated_by
         delivery_order.patient_invoice.save(
@@ -122,17 +122,14 @@ def cancel_related_supply_deliveries(delivery_order: DeliveryOrder):
     """
     Cancel related supply deliveries for a delivery order
     """
-    with transaction.atomic():
-        supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
-        if not supply_deliveries.exists():
-            return
-        for supply_delivery in supply_deliveries:
-            supply_delivery.status = SupplyDeliveryStatusOptions.entered_in_error.value
-            supply_delivery.updated_by = delivery_order.updated_by
-            supply_delivery.save(
-                update_fields=["status", "updated_by", "modified_date"]
-            )
-            sync_inventory_item(
-                location=delivery_order.destination,
-                product=supply_delivery.supplied_item,
-            )
+    supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
+    if not supply_deliveries.exists():
+        return
+    for supply_delivery in supply_deliveries:
+        supply_delivery.status = SupplyDeliveryStatusOptions.entered_in_error.value
+        supply_delivery.updated_by = delivery_order.updated_by
+        supply_delivery.save(update_fields=["status", "updated_by", "modified_date"])
+        sync_inventory_item(
+            location=delivery_order.destination,
+            product=supply_delivery.supplied_item,
+        )
