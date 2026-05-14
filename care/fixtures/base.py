@@ -183,6 +183,16 @@ class CareFixtureBase:
         }
         return self.post(url, data)
 
+    def add_organization_to_location(self, facility_id, location_id, organization_id):
+        url = reverse(
+            "location-organizations-add",
+            kwargs={
+                "facility_external_id": facility_id,
+                "external_id": location_id,
+            },
+        )
+        return self.post(url, {"organization": organization_id})
+
     def create_device(self, facility_id, **kwargs):
         url = reverse("device-list", kwargs={"facility_external_id": facility_id})
         data = {
