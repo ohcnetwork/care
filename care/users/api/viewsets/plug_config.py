@@ -37,12 +37,12 @@ class PlugConfigViewset(
         cache.delete(self.cache_key)
         instance.delete()
 
+    def get_authenticators(self):
+        if self.request.method in ["GET"] and not self.kwargs.get("slug"):
+            return []
+        return super().get_authenticators()
+
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
             return []
         return [IsAdminUser()]
-
-    def perform_authentication(self, request):
-        if self.action in ["list"]:
-            return []
-        return super().perform_authentication(request)
