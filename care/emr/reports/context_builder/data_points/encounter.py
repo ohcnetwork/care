@@ -26,6 +26,9 @@ from care.emr.reports.context_builder.data_points.patient import (
 from care.emr.reports.context_builder.data_points.questionnaire import (
     QuestionnaireContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.service_request import (
+    ServiceRequestBaseContextBuilder,
+)
 from care.emr.reports.context_builder.data_points.symptom import SymptomsContextBuilder
 from care.emr.reports.context_builder.data_points.user import SingleUserIdContextBuilder
 
@@ -222,6 +225,13 @@ class EncounterReportContext(BaseEncounterReportContext):
         target_context=MedicationPrescriptionContextBuilder,
         preview_value="",
         description="Medication prescriptions of the encounter",
+    )
+
+    service_requests = Field(
+        display="Service Requests",
+        target_context=ServiceRequestBaseContextBuilder,
+        preview_value="",
+        description="Service requests associated with the encounter",
     )
 
 

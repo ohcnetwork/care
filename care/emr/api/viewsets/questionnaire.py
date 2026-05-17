@@ -182,7 +182,10 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
                 ).exists():
                     raise ValidationError("Form submission already has a response")
                 response.form_submission = form_submission
-                response.save(update_fields=["form_submission"])
+                response.updated_by = request.user
+                response.save(
+                    update_fields=["form_submission", "updated_by", "modified_date"]
+                )
         return Response(QuestionnaireResponseReadSpec.serialize(response).to_json())
 
     @action(detail=True, methods=["GET"])
@@ -221,7 +224,8 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
         for tag in request_data.tags:
             tags.append(get_object_or_404(QuestionnaireTag, slug=tag).id)
         questionnaire.tags = tags
-        questionnaire.save(update_fields=["tags"])
+        questionnaire.updated_by = request.user
+        questionnaire.save(update_fields=["tags", "updated_by", "modified_date"])
         return Response({})
 
     class QuestionnaireOrganizationUpdateSchema(BaseModel):

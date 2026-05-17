@@ -5,7 +5,6 @@ from pydantic import UUID4, field_validator
 
 from care.emr.models import MetaArtifact
 from care.emr.resources.base import EMRResource
-from care.emr.resources.user.spec import UserSpec
 
 
 class MetaArtifactAssociatingTypeChoices(str, Enum):
@@ -36,16 +35,13 @@ class MetaArtifactReadSpec(MetaArtifactBaseSpec):
     name: str
     created_date: datetime
     modified_date: datetime
-    created_by: UserSpec
-    updated_by: UserSpec
+    created_by: dict | None = None
+    updated_by: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        cls.serialize_audit_users(mapping, obj)
 
 
 class MetaArtifactCreateSpec(MetaArtifactBaseSpec):

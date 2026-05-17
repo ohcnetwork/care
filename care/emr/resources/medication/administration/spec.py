@@ -16,7 +16,6 @@ from care.emr.resources.medication.valueset.administration_method import (
 from care.emr.resources.medication.valueset.body_site import CARE_BODY_SITE_VALUESET
 from care.emr.resources.medication.valueset.medication import CARE_MEDICATION_VALUESET
 from care.emr.resources.medication.valueset.route import CARE_ROUTE_VALUESET
-from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.users.models import User
 
@@ -174,7 +173,8 @@ class MedicationAdministrationUpdateSpec(EMRResource):
 
 
 class MedicationAdministrationReadSpec(BaseMedicationAdministrationSpec):
-    created_by: UserSpec = dict
+    created_by: dict | None = None
+    updated_by: dict | None = None
     created_date: datetime
     modified_date: datetime
 
@@ -190,6 +190,4 @@ class MedicationAdministrationReadSpec(BaseMedicationAdministrationSpec):
             mapping["administered_product"] = ProductKnowledgeReadSpec.serialize(
                 obj.administered_product
             )
-
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
+        cls.serialize_audit_users(mapping, obj)
