@@ -140,6 +140,25 @@ def load_fixtures(base):  # noqa: PLR0915, PLR0912
         )
     log("Loading encounters completed")
 
+    admin_org = departments.get("Administration")
+    if admin_org:
+        for role_name in ("Facility Admin", "Nurse", "Staff"):
+            user = created_users.get(role_name)
+            role = roles.get(role_name)
+            if user and role:
+                base.add_user_to_facility_organization(
+                    facility_id, admin_org.id, user.id, role.id
+                )
+    log("Loading facility organization memberships completed")
+
+    base.create_facility(
+        geo_organization.id,
+        name="SECONDARY FACILITY",
+        facility_type="Private Hospital",
+        is_public=True,
+    )
+    log("Loading secondary facility completed")
+
     base.load_questionnaires_from_file([geo_organization.id])
     log("Loading questionnaires completed")
 
@@ -172,6 +191,7 @@ def load_fixtures(base):  # noqa: PLR0915, PLR0912
 
 def load_lab_definitions(base, facility_id, departments):
     laboratory = departments["Laboratory"]
+    administration = departments.get("Administration")
 
     lab_location = base.create_location(
         facility_id,
@@ -180,6 +200,11 @@ def load_lab_definitions(base, facility_id, departments):
         mode=FacilityLocationModeChoices.kind.value,
         organizations=[laboratory.id],
     )
+    base.add_organization_to_location(facility_id, lab_location.id, laboratory.id)
+    if administration:
+        base.add_organization_to_location(
+            facility_id, lab_location.id, administration.id
+        )
 
     lab_charge_category = base.create_resource_category(
         facility_id, "Lab Tests", "charge_item_definition"
