@@ -115,8 +115,6 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
             rebalance_account_task(delivery_order.patient_invoice.account.id)
 
     supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
-    if not supply_deliveries.exists():
-        return
     for supply_delivery in supply_deliveries:
         supply_delivery.status = SupplyDeliveryStatusOptions.entered_in_error.value
         supply_delivery.updated_by = delivery_order.updated_by
