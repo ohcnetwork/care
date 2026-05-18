@@ -19,6 +19,7 @@ class HealthcareServiceInternalType(str, Enum):
     pharmacy = "pharmacy"
     lab = "lab"
     scheduling = "scheduling"
+    store = "store"
 
 
 class BaseHealthcareServiceSpec(EMRResource):
