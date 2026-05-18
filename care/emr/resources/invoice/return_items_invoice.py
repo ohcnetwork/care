@@ -89,39 +89,31 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
     Cancel the return invoice for items based on delivery order
     """
     with transaction.atomic():
-        cancel_related_supply_deliveries(delivery_order)
-        if not delivery_order.patient_invoice:
-            return
-        delivery_order.patient_invoice.status = InvoiceStatusOptions.cancelled.value
-        delivery_order.patient_invoice.updated_by = delivery_order.updated_by
-        delivery_order.patient_invoice.save(
-            update_fields=["status", "updated_by", "modified_date"]
-        )
-        charge_items = ChargeItem.objects.filter(
-            id__in=delivery_order.patient_invoice.charge_items,
-        )
-        for charge_item in charge_items:
-            charge_item.status = ChargeItemStatusOptions.entered_in_error.value
-            charge_item.paid_invoice = None
-            charge_item.paid_on = None
-            charge_item.updated_by = delivery_order.updated_by
-            charge_item.save(
-                update_fields=[
-                    "status",
-                    "paid_invoice",
-                    "paid_on",
-                    "updated_by",
-                    "modified_date",
-                ]
+        if delivery_order.patient_invoice:
+            delivery_order.patient_invoice.status = InvoiceStatusOptions.cancelled.value
+            delivery_order.patient_invoice.updated_by = delivery_order.updated_by
+            delivery_order.patient_invoice.save(
+                update_fields=["status", "updated_by", "modified_date"]
             )
+            charge_items = ChargeItem.objects.filter(
+                id__in=delivery_order.patient_invoice.charge_items,
+            )
+            for charge_item in charge_items:
+                charge_item.status = ChargeItemStatusOptions.entered_in_error.value
+                charge_item.paid_invoice = None
+                charge_item.paid_on = None
+                charge_item.updated_by = delivery_order.updated_by
+                charge_item.save(
+                    update_fields=[
+                        "status",
+                        "paid_invoice",
+                        "paid_on",
+                        "updated_by",
+                        "modified_date",
+                    ]
+                )
+            rebalance_account_task(delivery_order.patient_invoice.account.id)
 
-    rebalance_account_task(delivery_order.patient_invoice.account.id)
-
-
-def cancel_related_supply_deliveries(delivery_order: DeliveryOrder):
-    """
-    Cancel related supply deliveries for a delivery order
-    """
     supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
     if not supply_deliveries.exists():
         return
