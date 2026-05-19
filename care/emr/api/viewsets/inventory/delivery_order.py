@@ -113,6 +113,22 @@ class DeliveryOrderViewSet(
             )
         return super().perform_create(instance)
 
+    def authorize_order_write(self, order):
+        allowed = False
+        if order.origin:
+            allowed = allowed or self.authorize_location_write(
+                order.origin, raise_error=False
+            )
+            allowed = allowed or self.authorize_location_write(
+                order.destination, raise_error=False
+            )
+        else:
+            allowed = allowed or self.authorize_location_external_write(
+                order.destination, raise_error=False
+            )
+        if not allowed:
+            raise PermissionDenied("Cannot write supply requests")
+
     def perform_update(self, instance):
         with transaction.atomic():
             old_instance = DeliveryOrder.objects.get(id=instance.id)
@@ -169,10 +185,7 @@ class DeliveryOrderViewSet(
         else the owner is the origin.
         """
         # TODO: Order Destination permission to be figured out
-        if model_instance.origin:
-            self.authorize_location_write(model_instance.origin)
-        else:
-            self.authorize_location_external_write(model_instance.destination)
+        self.authorize_order_write(model_instance)
 
     def authorize_retrieve(self, model_instance):
         allowed = False
