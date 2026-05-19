@@ -141,9 +141,7 @@ class Question(QuestionnaireBaseSpec):
     repeats: bool | None = None
     read_only: bool | None = None
     max_length: int | None = None
-    answer_constraint: AnswerConstraint | None = Field(
-        alias="answerConstraint", default=None
-    )
+    answer_constraint: AnswerConstraint | None = None
     answer_option: list[AnswerOption] | None = None
     answer_value_set: str | None = None
     is_observation: bool | None = None
