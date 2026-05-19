@@ -37,9 +37,9 @@ def cancel_dispense_order(instance, user):
     related_dispenses = MedicationDispense.objects.filter(order=instance)
     for dispense in related_dispenses:
         if dispense.charge_item:
-            handle_charge_item_cancel(instance.charge_item)
-        dispense.charge_item.status = ChargeItemStatusOptions.aborted.value
-        dispense.charge_item.updated_by = user
+            handle_charge_item_cancel(dispense.charge_item)
+            dispense.charge_item.status = ChargeItemStatusOptions.aborted.value
+            dispense.charge_item.updated_by = user
         dispense.authorizing_request.dispense_status = (
             MedicationRequestDispenseStatus.incomplete.value
         )
