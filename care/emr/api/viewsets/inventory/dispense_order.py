@@ -40,14 +40,15 @@ def cancel_dispense_order(instance, user):
             handle_charge_item_cancel(dispense.charge_item)
             dispense.charge_item.status = ChargeItemStatusOptions.aborted.value
             dispense.charge_item.updated_by = user
-        dispense.authorizing_request.dispense_status = (
-            MedicationRequestDispenseStatus.incomplete.value
-        )
-        dispense.authorizing_request.updated_by = user
-        dispense.authorizing_request.save(
-            update_fields=["dispense_status", "updated_by", "modified_date"]
-        )
-        dispense.authorizing_request = None
+        if dispense.authorizing_request:
+            dispense.authorizing_request.dispense_status = (
+                MedicationRequestDispenseStatus.incomplete.value
+            )
+            dispense.authorizing_request.updated_by = user
+            dispense.authorizing_request.save(
+                update_fields=["dispense_status", "updated_by", "modified_date"]
+            )
+            dispense.authorizing_request = None
         dispense.charge_item.save()
         dispense.save()
 

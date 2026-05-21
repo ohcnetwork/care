@@ -81,11 +81,14 @@ class DispenseOrderAPITestCase(CareAPITestBase):
             facility=order.facility,
             organization=self.facility_organization,
         )
-        authorizing_request = baker.make(
-            MedicationRequest,
-            patient=order.patient,
-            encounter=encounter,
-            dispense_status=MedicationRequestDispenseStatus.complete.value,
+        authorizing_request = overrides.pop(
+            "authorizing_request",
+            baker.make(
+                MedicationRequest,
+                patient=order.patient,
+                encounter=encounter,
+                dispense_status=MedicationRequestDispenseStatus.complete.value,
+            ),
         )
         product = baker.make(Product, facility=order.facility)
         inventory_item = baker.make(
@@ -928,3 +931,41 @@ class DispenseOrderAPITestCase(CareAPITestBase):
             dispense_order.status,
             MedicationDispenseOrderStatusOptions.abandoned.value,
         )
+
+    def test_cancel_completed_dispense_order_with_dispense_missing_authorizing_request(
+        self,
+    ):
+        self.client.force_authenticate(user=self.superuser)
+        dispense_order = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Completed Order",
+            status=MedicationDispenseOrderStatusOptions.completed,
+            facility=self.facility,
+        )
+        dispense_with_request = self.create_medication_dispense_for_order(
+            dispense_order
+        )
+        dispense_without_request = self.create_medication_dispense_for_order(
+            dispense_order, authorizing_request=None
+        )
+        response = self._put_status(
+            dispense_order, MedicationDispenseOrderStatusOptions.abandoned
+        )
+        self.assertEqual(response.status_code, 200)
+        dispense_order.refresh_from_db()
+        self.assertEqual(
+            dispense_order.status,
+            MedicationDispenseOrderStatusOptions.abandoned.value,
+        )
+        # Dispense without an authorizing_request should still have its charge_item
+        # cancelled and remain without an authorizing_request.
+        dispense_without_request.refresh_from_db()
+        self.assertIsNone(dispense_without_request.authorizing_request_id)
+        dispense_without_request.charge_item.refresh_from_db()
+        self.assertEqual(
+            dispense_without_request.charge_item.status,
+            ChargeItemStatusOptions.aborted.value,
+        )
+        # Dispense with an authorizing_request should have full cancel side effects.
+        self._assert_cancelled_side_effects([dispense_with_request])
