@@ -45,10 +45,10 @@ def extended_slug_validator(value: str) -> str:
 
 # Define reusable slug types with different lengths
 SlugType = Annotated[
-    str, Field(min_length=5, max_length=36), AfterValidator(slug_validator)
+    str, Field(min_length=5, max_length=50), AfterValidator(slug_validator)
 ]
 
 
 ExtendedSlugType = Annotated[
-    str, Field(min_length=7, max_length=75), AfterValidator(extended_slug_validator)
+    str, Field(min_length=7, max_length=88), AfterValidator(extended_slug_validator)
 ]
