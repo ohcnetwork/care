@@ -36,6 +36,12 @@ from care.utils.filters.multiselect import MultiSelectFilter
 
 def cancel_dispense_order(instance, user):
     related_dispenses = MedicationDispense.objects.filter(order=instance)
+    if instance.status == MedicationDispenseOrderStatusOptions.abandoned.value:
+        dispense_status = MedicationDispenseStatus.cancelled.value
+    elif instance.status == MedicationDispenseOrderStatusOptions.entered_in_error.value:
+        dispense_status = MedicationDispenseStatus.entered_in_error.value
+    else:
+        raise ValidationError("Dispense order can only be cancelled")
     for dispense in related_dispenses:
         if dispense.charge_item:
             handle_charge_item_cancel(dispense.charge_item)
@@ -51,13 +57,7 @@ def cancel_dispense_order(instance, user):
                 update_fields=["dispense_status", "updated_by", "modified_date"]
             )
             dispense.authorizing_request = None
-        if instance.status == MedicationDispenseOrderStatusOptions.abandoned.value:
-            dispense.status = MedicationDispenseStatus.cancelled.value
-        if (
-            instance.status
-            == MedicationDispenseOrderStatusOptions.entered_in_error.value
-        ):
-            dispense.status = MedicationDispenseStatus.entered_in_error.value
+        dispense.status = dispense_status
         dispense.save()
 
 
