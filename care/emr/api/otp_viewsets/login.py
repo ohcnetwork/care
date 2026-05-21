@@ -2,7 +2,6 @@ import logging
 import secrets
 import string
 from datetime import timedelta
-from enum import Enum
 
 from django.conf import settings
 from django.utils import timezone
@@ -21,16 +20,21 @@ from config.patient_otp_token import PatientToken
 logger = logging.getLogger(__name__)
 
 
-class OTPType(str, Enum):
-    login = "login"
-    reset_password = "reset_password"
+class OTPType:
+    def render_content(self, otp: str) -> str:
+        pass
+
+
+class LoginOTP(OTPType):
+    def render_content(self, otp: str) -> str:
+        return settings.OTP_SMS_LOGIN_CONTENT.format(otp=otp)
 
 
 def rand_pass(size):
     return "".join(secrets.choice(string.digits) for _ in range(size))
 
 
-def send_otp(phone_number, purpose):
+def send_otp(phone_number, otp_type: OTPType):
     sent_otps = MobileOTP.objects.filter(
         created_date__gte=(timezone.now() - timedelta(settings.OTP_REPEAT_WINDOW)),
         is_used=False,
@@ -43,11 +47,7 @@ def send_otp(phone_number, purpose):
     if settings.USE_SMS:
         random_otp = rand_pass(settings.OTP_LENGTH)
         try:
-            if purpose == OTPType.login:
-                content = settings.OTP_SMS_CONTENT.format(otp=random_otp)
-            elif purpose == OTPType.reset_password:
-                content = settings.OTP_SMS_RESET_PASSWORD_CONTENT.format(otp=random_otp)
-
+            content = otp_type.render_content(random_otp)
             sms.send_text_message(
                 content=content,
                 recipients=[phone_number],
@@ -91,7 +91,7 @@ class OTPLoginView(EMRBaseViewSet):
     def send(self, request):
         data = OTPRequestBaseSpec(**request.data)
         try:
-            send_otp(data.phone_number, purpose=OTPType.login)
+            send_otp(data.phone_number, otp_type=LoginOTP())
         except ValueError as e:
             raise ValidationError({"phone_number": str(e)}) from e
         except Exception as e:
