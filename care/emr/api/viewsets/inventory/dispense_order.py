@@ -26,6 +26,7 @@ from care.emr.resources.medication.dispense.dispense_order import (
     MedicationDispenseOrderStatusOptions,
     MedicationDispenseOrderWriteSpec,
 )
+from care.emr.resources.medication.dispense.spec import MedicationDispenseStatus
 from care.emr.resources.medication.request.spec import MedicationRequestDispenseStatus
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
@@ -50,6 +51,13 @@ def cancel_dispense_order(instance, user):
                 update_fields=["dispense_status", "updated_by", "modified_date"]
             )
             dispense.authorizing_request = None
+        if instance.status == MedicationDispenseOrderStatusOptions.abandoned.value:
+            dispense.status = MedicationDispenseStatus.cancelled.value
+        if (
+            instance.status
+            == MedicationDispenseOrderStatusOptions.entered_in_error.value
+        ):
+            dispense.status = MedicationDispenseStatus.entered_in_error.value
         dispense.save()
 
 

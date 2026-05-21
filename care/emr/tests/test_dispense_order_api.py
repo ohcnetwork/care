@@ -13,6 +13,7 @@ from care.emr.resources.location.spec import FacilityLocationModeChoices
 from care.emr.resources.medication.dispense.dispense_order import (
     MedicationDispenseOrderStatusOptions,
 )
+from care.emr.resources.medication.dispense.spec import MedicationDispenseStatus
 from care.emr.resources.medication.request.spec import MedicationRequestDispenseStatus
 from care.security.permissions.medication import MedicationPermissions
 from care.security.permissions.supply_delivery import SupplyDeliveryPermissions
@@ -852,11 +853,12 @@ class DispenseOrderAPITestCase(CareAPITestBase):
             related.charge_item.status, ChargeItemStatusOptions.billable.value
         )
 
-    def _assert_cancelled_side_effects(self, dispenses):
+    def _assert_cancelled_side_effects(self, dispenses, expected_dispense_status):
         for dispense in dispenses:
             original_request_id = dispense.authorizing_request_id
             dispense.refresh_from_db()
             self.assertIsNone(dispense.authorizing_request_id)
+            self.assertEqual(dispense.status, expected_dispense_status)
             dispense.charge_item.refresh_from_db()
             self.assertEqual(
                 dispense.charge_item.status,
@@ -890,7 +892,9 @@ class DispenseOrderAPITestCase(CareAPITestBase):
             dispense_order.status,
             MedicationDispenseOrderStatusOptions.abandoned.value,
         )
-        self._assert_cancelled_side_effects(dispenses)
+        self._assert_cancelled_side_effects(
+            dispenses, MedicationDispenseStatus.cancelled.value
+        )
 
     def test_cancel_completed_dispense_order_via_entered_in_error(self):
         self.client.force_authenticate(user=self.superuser)
@@ -911,7 +915,9 @@ class DispenseOrderAPITestCase(CareAPITestBase):
             dispense_order.status,
             MedicationDispenseOrderStatusOptions.entered_in_error.value,
         )
-        self._assert_cancelled_side_effects(dispenses)
+        self._assert_cancelled_side_effects(
+            dispenses, MedicationDispenseStatus.entered_in_error.value
+        )
 
     def test_cancel_completed_dispense_order_with_no_related_dispenses(self):
         self.client.force_authenticate(user=self.superuser)
@@ -959,13 +965,19 @@ class DispenseOrderAPITestCase(CareAPITestBase):
             MedicationDispenseOrderStatusOptions.abandoned.value,
         )
         # Dispense without an authorizing_request should still have its charge_item
-        # cancelled and remain without an authorizing_request.
+        # cancelled, status set to cancelled, and remain without an authorizing_request.
         dispense_without_request.refresh_from_db()
         self.assertIsNone(dispense_without_request.authorizing_request_id)
+        self.assertEqual(
+            dispense_without_request.status,
+            MedicationDispenseStatus.cancelled.value,
+        )
         dispense_without_request.charge_item.refresh_from_db()
         self.assertEqual(
             dispense_without_request.charge_item.status,
             ChargeItemStatusOptions.aborted.value,
         )
         # Dispense with an authorizing_request should have full cancel side effects.
-        self._assert_cancelled_side_effects([dispense_with_request])
+        self._assert_cancelled_side_effects(
+            [dispense_with_request], MedicationDispenseStatus.cancelled.value
+        )
