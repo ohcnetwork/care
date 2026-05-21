@@ -37,7 +37,7 @@ def send_otp(phone_number, purpose):
         phone_number=phone_number,
     )
     if sent_otps.count() >= settings.OTP_MAX_REPEATS_WINDOW:
-        raise ValidationError({"phone_number": "Max Retries has exceeded"})
+        raise ValueError("Max Retries has exceeded")
 
     random_otp = ""
     if settings.USE_SMS:
@@ -53,17 +53,13 @@ def send_otp(phone_number, purpose):
                 recipients=[phone_number],
             )
         except Exception as e:
-            logger.error(e)
-            return Response(
-                {"error": "Error while sending OTP. Contact admin."}, status=400
-            )
+            raise Exception("Error while sending OTP. Contact admin.") from e
     elif settings.IS_PRODUCTION:
         random_otp = rand_pass(settings.OTP_LENGTH)
     else:
         random_otp = "45612"
 
     MobileOTP.objects.create(phone_number=phone_number, otp=random_otp)
-    return None
 
 
 class OTPRequestBaseSpec(BaseModel):
@@ -94,9 +90,12 @@ class OTPLoginView(EMRBaseViewSet):
     @action(detail=False, methods=["POST"])
     def send(self, request):
         data = OTPRequestBaseSpec(**request.data)
-        error_response = send_otp(data.phone_number, purpose=OTPType.login)
-        if error_response:
-            return error_response
+        try:
+            send_otp(data.phone_number, purpose=OTPType.login)
+        except ValueError as e:
+            raise ValidationError({"phone_number": str(e)}) from e
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
         return Response({"otp": "generated"})
 
     @extend_schema(

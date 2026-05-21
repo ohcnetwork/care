@@ -1,4 +1,3 @@
-import logging
 from datetime import timedelta
 
 from django.conf import settings
@@ -18,8 +17,6 @@ from care.emr.api.viewsets.base import EMRBaseViewSet
 from care.facility.models.patient import MobileOTP
 from care.users.models import User
 from config.ratelimit import ratelimit
-
-logger = logging.getLogger(__name__)
 
 
 class OTPResetSendSpec(OTPRequestBaseSpec):
@@ -50,12 +47,12 @@ class OTPResetPasswordView(EMRBaseViewSet):
         if not User.objects.filter(phone_number=data.phone_number).exists():
             return Response({"otp": "generated"})
 
-        error_response = send_otp(
-            data.phone_number,
-            purpose=OTPType.reset_password,
-        )
-        if error_response:
-            return error_response
+        try:
+            send_otp(data.phone_number, purpose=OTPType.reset_password)
+        except ValueError as e:
+            raise ValidationError({"phone_number": str(e)}) from e
+        except Exception as e:
+            return Response({"error": str(e)}, status=400)
         return Response({"otp": "generated"})
 
     @action(detail=False, methods=["POST"])
@@ -68,9 +65,15 @@ class OTPResetPasswordView(EMRBaseViewSet):
                 {"detail": error_message},
                 status=429,
             )
-        user = User.objects.filter(phone_number=data.phone_number).first()
-        if not user:
+        users = User.objects.filter(phone_number=data.phone_number)
+
+        if not users.exists():
             raise ValidationError({"error": "No User linked to this phone number"})
+        if users.count() > 1:
+            raise ValidationError(
+                {"error": "Multiple users linked to this phone number"}
+            )
+        user = users.first()
         otp_obj = (
             MobileOTP.objects.filter(
                 phone_number=data.phone_number,
