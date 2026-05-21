@@ -26,6 +26,7 @@ from care.emr.resources.medication.dispense.dispense_order import (
     MedicationDispenseOrderStatusOptions,
     MedicationDispenseOrderWriteSpec,
 )
+from care.emr.resources.medication.dispense.spec import MedicationDispenseStatus
 from care.emr.resources.medication.request.spec import MedicationRequestDispenseStatus
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
@@ -35,20 +36,28 @@ from care.utils.filters.multiselect import MultiSelectFilter
 
 def cancel_dispense_order(instance, user):
     related_dispenses = MedicationDispense.objects.filter(order=instance)
+    if instance.status == MedicationDispenseOrderStatusOptions.abandoned.value:
+        dispense_status = MedicationDispenseStatus.cancelled.value
+    elif instance.status == MedicationDispenseOrderStatusOptions.entered_in_error.value:
+        dispense_status = MedicationDispenseStatus.entered_in_error.value
+    else:
+        raise ValidationError("Dispense order can only be cancelled")
     for dispense in related_dispenses:
         if dispense.charge_item:
             handle_charge_item_cancel(dispense.charge_item)
             dispense.charge_item.status = ChargeItemStatusOptions.aborted.value
             dispense.charge_item.updated_by = user
-        dispense.authorizing_request.dispense_status = (
-            MedicationRequestDispenseStatus.incomplete.value
-        )
-        dispense.authorizing_request.updated_by = user
-        dispense.authorizing_request.save(
-            update_fields=["dispense_status", "updated_by", "modified_date"]
-        )
-        dispense.authorizing_request = None
-        dispense.charge_item.save()
+            dispense.charge_item.save()
+        if dispense.authorizing_request:
+            dispense.authorizing_request.dispense_status = (
+                MedicationRequestDispenseStatus.incomplete.value
+            )
+            dispense.authorizing_request.updated_by = user
+            dispense.authorizing_request.save(
+                update_fields=["dispense_status", "updated_by", "modified_date"]
+            )
+            dispense.authorizing_request = None
+        dispense.status = dispense_status
         dispense.save()
 
 
