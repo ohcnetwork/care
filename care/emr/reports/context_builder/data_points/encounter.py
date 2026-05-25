@@ -310,6 +310,7 @@ class BaseEncounterReportContext(SingleObjectContextBuilder):
     )
     external_identifier = Field(
         display="External Identifier",
+        mapping="external_identifier",
         preview_value="1234567890",
         description="External identifier of the encounter",
     )
