@@ -55,15 +55,6 @@ ENCOUNTER_CLASS_DISPLAY = {
     "hh": "Home Health",
 }
 
-ENCOUNTER_CLASS_DISPLAY = {
-    "imp": "Inpatient",
-    "amb": "Outpatient",
-    "obsenc": "Observation",
-    "emer": "Emergency",
-    "vr": "Virtual",
-    "hh": "Home Health",
-}
-
 ENCOUNTER_PRIORITY_DISPLAY = {
     "ASAP": "ASAP",
     "callback_results": "Callback Results",
@@ -142,77 +133,6 @@ class EncounterOrganizationsContextBuilder(QuerysetContextBuilder):
         mapping=lambda o: o.organization.name if o.organization else "",
         description="Organization associated with the encounter",
     )
-
-
-class BaseEncounterReportContext(SingleObjectContextBuilder):
-    status = Field(
-        display="Encounter Status",
-        mapping=lambda e: STATUS_DISPLAY.get(
-            e.status, e.status.title() if e.status else ""
-        ),
-        preview_value="In Progress",
-        description="Current status of the encounter",
-    )
-
-    encounter_class = Field(
-        display="Encounter Class",
-        mapping=lambda e: ENCOUNTER_CLASS_DISPLAY.get(
-            e.encounter_class, e.encounter_class.title() if e.encounter_class else ""
-        ),
-        preview_value="Outpatient",
-        description="Classification of the encounter",
-    )
-    care_team = Field(
-        target_context=EncounterCareTeamContextBuilder,
-        display="Care Team",
-        preview_value="",
-        description="Care team of the encounter",
-    )
-
-    current_location = Field(
-        display="Current Location",
-        target_context=EncounterFacilityLocationContextBuilder,
-        preview_value="",
-        description="Current location within the facility for the encounter",
-    )
-
-    start_time = Field(
-        display="Encounter Start Time",
-        mapping=lambda e: e.period.get("start") if e.period else None,
-        preview_value="2026-01-12T10:01:45.088000Z",
-        description="Start time of the encounter",
-    )
-    end_time = Field(
-        display="Encounter End Time",
-        mapping=lambda e: e.period.get("end")
-        if e.period and e.period.get("end")
-        else "Ongoing",
-        preview_value="2026-01-12T10:01:45.088000Z",
-        description="End time of the encounter",
-    )
-    organizations = Field(
-        display="Associated Organizations",
-        target_context=EncounterOrganizationsContextBuilder,
-        preview_value="",
-        description="Organizations associated with the encounter",
-    )
-    discharge_summary_advice = Field(
-        display="Discharge Summary Advice",
-        mapping="discharge_summary_advice",
-        preview_value="Patient is advised to follow up in 2 weeks.",
-        description="Discharge summary advice for the encounter",
-    )
-    patient_facility_tags = Field(
-        target_context=EncounterPatientFacilityTagContextBuilder,
-        display="Patient Facility Tags",
-        preview_value="",
-        description="Facility-specific tags associated with the patient for the encounter",
-    )
-
-
-class MinimumEncounterReportContext(BaseEncounterReportContext):
-    def get_context(self):
-        return getattr(self.parent_context, self.parent_attribute)
 
 
 HOSPITALIZATION_ADMIT_SOURCE_DISPLAY = {
@@ -296,11 +216,96 @@ class EncounterHospitalizationContextBuilder(SingleObjectContextBuilder):
     )
 
 
+class BaseEncounterReportContext(SingleObjectContextBuilder):
+    status = Field(
+        display="Encounter Status",
+        mapping=lambda e: STATUS_DISPLAY.get(
+            e.status, e.status.title() if e.status else ""
+        ),
+        preview_value="In Progress",
+        description="Current status of the encounter",
+    )
+
+    encounter_class = Field(
+        display="Encounter Class",
+        mapping=lambda e: ENCOUNTER_CLASS_DISPLAY.get(
+            e.encounter_class, e.encounter_class.title() if e.encounter_class else ""
+        ),
+        preview_value="Outpatient",
+        description="Classification of the encounter",
+    )
+    care_team = Field(
+        target_context=EncounterCareTeamContextBuilder,
+        display="Care Team",
+        preview_value="",
+        description="Care team of the encounter",
+    )
+
+    current_location = Field(
+        display="Current Location",
+        target_context=EncounterFacilityLocationContextBuilder,
+        preview_value="",
+        description="Current location within the facility for the encounter",
+    )
+
+    start_time = Field(
+        display="Encounter Start Time",
+        mapping=lambda e: e.period.get("start") if e.period else None,
+        preview_value="2026-01-12T10:01:45.088000Z",
+        description="Start time of the encounter",
+    )
+    end_time = Field(
+        display="Encounter End Time",
+        mapping=lambda e: e.period.get("end")
+        if e.period and e.period.get("end")
+        else "Ongoing",
+        preview_value="2026-01-12T10:01:45.088000Z",
+        description="End time of the encounter",
+    )
+    organizations = Field(
+        display="Associated Organizations",
+        target_context=EncounterOrganizationsContextBuilder,
+        preview_value="",
+        description="Organizations associated with the encounter",
+    )
+    discharge_summary_advice = Field(
+        display="Discharge Summary Advice",
+        mapping="discharge_summary_advice",
+        preview_value="Patient is advised to follow up in 2 weeks.",
+        description="Discharge summary advice for the encounter",
+    )
+    patient_facility_tags = Field(
+        target_context=EncounterPatientFacilityTagContextBuilder,
+        display="Patient Facility Tags",
+        preview_value="",
+        description="Facility-specific tags associated with the patient for the encounter",
+    )
+    priority = Field(
+        display="Priority",
+        mapping=lambda e: ENCOUNTER_PRIORITY_DISPLAY.get(
+            e.priority, e.priority.title() if e.priority else ""
+        ),
+        preview_value="ASAP",
+        description="Priority of the encounter",
+    )
+    hospitalization = Field(
+        target_context=EncounterHospitalizationContextBuilder,
+        display="Hospitalization",
+        preview_value="",
+        description="Hospitalization of the encounter",
+    )
+
+
+class MinimumEncounterReportContext(BaseEncounterReportContext):
+    def get_context(self):
+        return getattr(self.parent_context, self.parent_attribute)
+
+
 class PatientFacilityIdentifiersContextBuilder(IdentifiersContextBuilder):
     def get_context(self):
-        return self.parent_context.facility_identifiers[
-            str(self.parent_context.facility.id)
-        ]
+        return self.parent_context.facility_identifiers.get(
+            str(self.parent_context.facility.id), []
+        )
 
 
 class EncounterReportContext(BaseEncounterReportContext):
