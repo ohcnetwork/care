@@ -112,6 +112,14 @@ class EncounterPatientFacilityTagContextBuilder(PatientTagContextBuilder):
         )
 
 
+class EncounterTagContextBuilder(PatientTagContextBuilder):
+    filterset_class = TagFilter
+    __filterset_backends__ = [filters.DjangoFilterBackend]
+
+    def get_context(self):
+        return TagConfig.objects.filter(id__in=self.parent_context.tags or [])
+
+
 class EncounterFacilityLocationContextBuilder(SingleObjectContextBuilder):
     def get_context(self):
         return getattr(self.parent_context, self.parent_attribute)
@@ -280,6 +288,12 @@ class BaseEncounterReportContext(SingleObjectContextBuilder):
         preview_value="",
         description="Facility-specific tags associated with the patient for the encounter",
     )
+    encounter_tags = Field(
+        target_context=EncounterTagContextBuilder,
+        display="Encounter Tags",
+        preview_value="",
+        description="Tags associated with the encounter",
+    )
     priority = Field(
         display="Priority",
         mapping=lambda e: ENCOUNTER_PRIORITY_DISPLAY.get(
@@ -308,7 +322,7 @@ class MinimumEncounterReportContext(BaseEncounterReportContext):
 
 class PatientFacilityIdentifiersContextBuilder(IdentifiersContextBuilder):
     def get_context(self):
-        return self.parent_context.facility_identifiers.get(
+        return self.parent_context.patient.facility_identifiers.get(
             str(self.parent_context.facility.id), []
         )
 
