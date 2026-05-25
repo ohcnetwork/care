@@ -24,6 +24,7 @@ from care.emr.reports.context_builder.data_points.medication import (
     MedicationPrescriptionContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.patient import (
+    IdentifiersContextBuilder,
     PatientMinimumContextBuilder,
     PatientTagContextBuilder,
     TagFilter,
@@ -52,6 +53,31 @@ ENCOUNTER_CLASS_DISPLAY = {
     "emer": "Emergency",
     "vr": "Virtual",
     "hh": "Home Health",
+}
+
+ENCOUNTER_CLASS_DISPLAY = {
+    "imp": "Inpatient",
+    "amb": "Outpatient",
+    "obsenc": "Observation",
+    "emer": "Emergency",
+    "vr": "Virtual",
+    "hh": "Home Health",
+}
+
+ENCOUNTER_PRIORITY_DISPLAY = {
+    "ASAP": "ASAP",
+    "callback_results": "Callback Results",
+    "callback_for_scheduling": "Callback for Scheduling",
+    "elective": "Elective",
+    "emergency": "Emergency",
+    "preop": "Preop",
+    "as_needed": "As Needed",
+    "routine": "Routine",
+    "rush_reporting": "Rush Reporting",
+    "stat": "Stat",
+    "timing_critical": "Timing Critical",
+    "use_as_directed": "Use as Directed",
+    "urgent": "Urgent",
 }
 
 
@@ -189,6 +215,94 @@ class MinimumEncounterReportContext(BaseEncounterReportContext):
         return getattr(self.parent_context, self.parent_attribute)
 
 
+HOSPITALIZATION_ADMIT_SOURCE_DISPLAY = {
+    "hosp_trans": "Transferred from other hospital",
+    "emd": "From accident/emergency department",
+    "outp": "From outpatient department",
+    "born": "Born in hospital",
+    "gp": "General Practitioner referral",
+    "mp": "Medical Practitioner/physician referral",
+    "nursing": "From nursing home",
+    "psych": "From psychiatric hospital",
+    "rehab": "From rehabilitation facility",
+    "other": "Other",
+}
+
+HOSPITALIZATION_DISCHARGE_DISPOSITION_DISPLAY = {
+    "home": "Home",
+    "alt_home": "Alternate Home",
+    "other_hcf": "Other Health Care Facility",
+    "hosp": "Hospital",
+    "long": "Long-term Care Facility",
+    "aadvice": "Against Medical Advice",
+    "exp": "Expired",
+    "psy": "Psychiatric Hospital",
+    "rehab": "Rehabilitation Facility",
+    "snf": "Skilled Nursing Facility",
+    "oth": "Other",
+}
+
+HOSPITALIZATION_DIET_PREFERENCE_DISPLAY = {
+    "vegetarian": "Vegetarian",
+    "dairy_free": "Dairy Free",
+    "nut_free": "Nut Free",
+    "gluten_free": "Gluten Free",
+    "vegan": "Vegan",
+    "halal": "Halal",
+    "kosher": "Kosher",
+    "none": "None",
+}
+
+
+class EncounterHospitalizationContextBuilder(SingleObjectContextBuilder):
+    def get_context(self):
+        return self.parent_context.hospitalization
+
+    re_admission = Field(
+        display="Re-admission",
+        mapping=lambda h: h.get("re_admission"),
+        preview_value="False",
+        description="Whether the encounter is a re-admission",
+    )
+    admit_source = Field(
+        display="Admit Source",
+        mapping=lambda h: HOSPITALIZATION_ADMIT_SOURCE_DISPLAY.get(
+            h.get("admit_source")
+        )
+        if h.get("admit_source")
+        else "",
+        preview_value="From accident/emergency department",
+        description="Source of admission for the encounter",
+    )
+    discharge_disposition = Field(
+        display="Discharge Disposition",
+        mapping=lambda h: HOSPITALIZATION_DISCHARGE_DISPOSITION_DISPLAY.get(
+            h.get("discharge_disposition")
+        )
+        if h.get("discharge_disposition")
+        else "",
+        preview_value="",
+        description="Disposition of discharge for the encounter",
+    )
+    diet_preference = Field(
+        display="Diet Preference",
+        mapping=lambda h: HOSPITALIZATION_DIET_PREFERENCE_DISPLAY.get(
+            h.get("diet_preference")
+        )
+        if h.get("diet_preference")
+        else "",
+        preview_value="Dairy Free",
+        description="Diet preference for the encounter",
+    )
+
+
+class PatientFacilityIdentifiersContextBuilder(IdentifiersContextBuilder):
+    def get_context(self):
+        return self.parent_context.facility_identifiers[
+            str(self.parent_context.facility.id)
+        ]
+
+
 class EncounterReportContext(BaseEncounterReportContext):
     standalone_context = True
     __slug__ = "encounter_base"
@@ -255,6 +369,13 @@ class EncounterReportContext(BaseEncounterReportContext):
         target_context=ServiceRequestBaseContextBuilder,
         preview_value="",
         description="Service requests associated with the encounter",
+    )
+
+    facility_identifiers = Field(
+        display="Facility Identifiers",
+        target_context=PatientFacilityIdentifiersContextBuilder,
+        preview_value="",
+        description="Facility identifiers associated with the encounter",
     )
 
 
