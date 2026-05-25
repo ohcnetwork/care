@@ -89,9 +89,9 @@ class EncounterPatientFacilityTagContextBuilder(PatientTagContextBuilder):
 
     def get_context(self):
         return TagConfig.objects.filter(
-            id__in=self.parent_context.patient.facility_tags[
-                str(self.parent_context.facility.id)
-            ]
+            id__in=self.parent_context.patient.facility_tags.get(
+                str(self.parent_context.facility.id), []
+            )
         )
 
 
