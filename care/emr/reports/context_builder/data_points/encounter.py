@@ -294,6 +294,11 @@ class BaseEncounterReportContext(SingleObjectContextBuilder):
         preview_value="",
         description="Hospitalization of the encounter",
     )
+    external_identifier = Field(
+        display="External Identifier",
+        preview_value="1234567890",
+        description="External identifier of the encounter",
+    )
 
 
 class MinimumEncounterReportContext(BaseEncounterReportContext):
