@@ -38,7 +38,7 @@ class PlugConfigViewset(
         instance.delete()
 
     def get_authenticators(self):
-        if self.request.method in ["GET"]:
+        if getattr(self, "request", None) and self.request.method == "GET":
             return []
         return super().get_authenticators()
 
