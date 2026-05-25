@@ -1,6 +1,9 @@
 from types import SimpleNamespace
 
+from django_filters import rest_framework as filters
+
 from care.emr.models.encounter import Encounter, EncounterOrganization
+from care.emr.models.tag_config import TagConfig
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.context_builder.data_points.allergy_intolerance import (
     AllergyIntoleranceContextBuilder,
@@ -22,9 +25,14 @@ from care.emr.reports.context_builder.data_points.medication import (
 )
 from care.emr.reports.context_builder.data_points.patient import (
     PatientMinimumContextBuilder,
+    PatientTagContextBuilder,
+    TagFilter,
 )
 from care.emr.reports.context_builder.data_points.questionnaire import (
     QuestionnaireContextBuilder,
+)
+from care.emr.reports.context_builder.data_points.service_request import (
+    ServiceRequestBaseContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.symptom import SymptomsContextBuilder
 from care.emr.reports.context_builder.data_points.user import SingleUserIdContextBuilder
@@ -72,6 +80,18 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
         return iter(
             self.__class__(context=SimpleNamespace(user=c["user_id"], role=c["role"]))
             for c in self.context
+        )
+
+
+class EncounterPatientFacilityTagContextBuilder(PatientTagContextBuilder):
+    filterset_class = TagFilter
+    __filterset_backends__ = [filters.DjangoFilterBackend]
+
+    def get_context(self):
+        return TagConfig.objects.filter(
+            id__in=self.parent_context.patient.facility_tags.get(
+                str(self.parent_context.facility.id), []
+            )
         )
 
 
@@ -156,6 +176,12 @@ class BaseEncounterReportContext(SingleObjectContextBuilder):
         preview_value="Patient is advised to follow up in 2 weeks.",
         description="Discharge summary advice for the encounter",
     )
+    patient_facility_tags = Field(
+        target_context=EncounterPatientFacilityTagContextBuilder,
+        display="Patient Facility Tags",
+        preview_value="",
+        description="Facility-specific tags associated with the patient for the encounter",
+    )
 
 
 class MinimumEncounterReportContext(BaseEncounterReportContext):
@@ -222,6 +248,13 @@ class EncounterReportContext(BaseEncounterReportContext):
         target_context=MedicationPrescriptionContextBuilder,
         preview_value="",
         description="Medication prescriptions of the encounter",
+    )
+
+    service_requests = Field(
+        display="Service Requests",
+        target_context=ServiceRequestBaseContextBuilder,
+        preview_value="",
+        description="Service requests associated with the encounter",
     )
 
 

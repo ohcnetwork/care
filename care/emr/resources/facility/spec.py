@@ -162,7 +162,7 @@ class FacilityReadSpec(FacilityBaseSpec):
     cover_image_url: str
     read_cover_image_url: str
     geo_organization: dict = {}
-    created_by: dict = {}
+    created_by: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -170,13 +170,13 @@ class FacilityReadSpec(FacilityBaseSpec):
 
         mapping["id"] = obj.external_id
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
-        if obj.created_by:
-            mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
             ).to_json()
+        if obj.created_by_id:
+            mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
 
 
 class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
