@@ -184,7 +184,7 @@ HOSPITALIZATION_DIET_PREFERENCE_DISPLAY = {
 
 class EncounterHospitalizationContextBuilder(SingleObjectContextBuilder):
     def get_context(self):
-        return self.parent_context.hospitalization
+        return self.parent_context.hospitalization or {}
 
     re_admission = Field(
         display="Re-admission",
