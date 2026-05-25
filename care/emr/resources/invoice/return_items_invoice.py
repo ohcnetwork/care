@@ -79,7 +79,7 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
         invoice_obj.status = InvoiceStatusOptions.issued.value
         invoice_obj.save()
         delivery_order.patient_invoice = invoice_obj
-        delivery_order.save(update_fields=["patient_invoice"])
+        delivery_order.save(update_fields=["patient_invoice", "modified_date"])
     rebalance_account_task(invoice_obj.account.id)
     return invoice_obj
 
@@ -88,24 +88,38 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
     """
     Cancel the return invoice for items based on delivery order
     """
-    if not delivery_order.patient_invoice:
-        return
     with transaction.atomic():
-        delivery_order.patient_invoice.status = InvoiceStatusOptions.cancelled.value
-        delivery_order.patient_invoice.updated_by = delivery_order.updated_by
-        delivery_order.patient_invoice.save(update_fields=["status", "updated_by"])
-        ChargeItem.objects.filter(
-            id__in=delivery_order.patient_invoice.charge_items,
-        ).update(
-            status=ChargeItemStatusOptions.entered_in_error.value,
-            paid_invoice=None,
-            paid_on=None,
-        )
-        supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
-        for supply_delivery in supply_deliveries:
-            sync_inventory_item(
-                location=delivery_order.destination,
-                product=supply_delivery.supplied_item,
+        if delivery_order.patient_invoice:
+            delivery_order.patient_invoice.status = InvoiceStatusOptions.cancelled.value
+            delivery_order.patient_invoice.updated_by = delivery_order.updated_by
+            delivery_order.patient_invoice.save(
+                update_fields=["status", "updated_by", "modified_date"]
             )
+            charge_items = ChargeItem.objects.filter(
+                id__in=delivery_order.patient_invoice.charge_items,
+            )
+            for charge_item in charge_items:
+                charge_item.status = ChargeItemStatusOptions.entered_in_error.value
+                charge_item.paid_invoice = None
+                charge_item.paid_on = None
+                charge_item.updated_by = delivery_order.updated_by
+                charge_item.save(
+                    update_fields=[
+                        "status",
+                        "paid_invoice",
+                        "paid_on",
+                        "updated_by",
+                        "modified_date",
+                    ]
+                )
+            rebalance_account_task(delivery_order.patient_invoice.account.id)
 
-    rebalance_account_task(delivery_order.patient_invoice.account.id)
+    supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
+    for supply_delivery in supply_deliveries:
+        supply_delivery.status = SupplyDeliveryStatusOptions.entered_in_error.value
+        supply_delivery.updated_by = delivery_order.updated_by
+        supply_delivery.save(update_fields=["status", "updated_by", "modified_date"])
+        sync_inventory_item(
+            location=delivery_order.destination,
+            product=supply_delivery.supplied_item,
+        )

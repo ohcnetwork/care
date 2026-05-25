@@ -175,6 +175,7 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
                 "archive_reason",
                 "archived_datetime",
                 "archived_by",
+                "modified_date",
             ]
         )
         return Response(ReportUploadListSpec.serialize(obj).to_json())

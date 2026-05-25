@@ -36,7 +36,7 @@ teardown:
 
 #TODO: remove alias load-dummy-data
 load-fixtures load-dummy-data:
-	docker compose exec backend bash -c "python manage.py load_fixtures"
+	docker compose exec backend bash -c "python manage.py load_fixtures$(if $(path), --path $(path),)"
 
 list:
 	docker compose -f docker-compose.yaml -f $(docker_config_file) ps

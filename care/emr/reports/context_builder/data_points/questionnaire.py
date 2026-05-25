@@ -1,7 +1,5 @@
 from types import SimpleNamespace
 
-from faker import Faker
-
 from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
 from care.emr.reports.context_builder.data_points.base import (
     Field,
@@ -55,13 +53,13 @@ class QuestionnaireContextBuilder(QuerysetContextBuilder):
     title = Field(
         display="Title",
         mapping=lambda obj: obj.questionnaire.title,
-        preview_fn=lambda: Faker().catch_phrase(),
+        preview_value="Sample Questionnaire Title",
         description="Title of the questionnaire",
     )
     description = Field(
         display="Description",
         mapping=lambda obj: obj.questionnaire.description,
-        preview_fn=lambda: Faker().catch_phrase(),
+        preview_value="Sample questionnaire description",
         description="Description of the questionnaire",
     )
     responses = Field(
