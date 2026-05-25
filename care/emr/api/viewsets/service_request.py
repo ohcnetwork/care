@@ -269,7 +269,7 @@ class ServiceRequestViewSet(
             raise ValidationError("Service request is cancelled")
         instance.status = ServiceRequestStatusChoices.completed.value
         instance.updated_by = self.request.user
-        instance.save(update_fields=["status", "updated_by"])
+        instance.save(update_fields=["status", "updated_by", "modified_date"])
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(methods=["POST"], detail=True)
@@ -292,8 +292,9 @@ class ServiceRequestViewSet(
             ):
                 handle_charge_item_cancel(charge_item)
                 charge_item.status = ChargeItemStatusOptions.aborted.value
+                charge_item.updated_by = self.request.user
                 charge_item.save()
-            instance.save(update_fields=["status", "updated_by"])
+            instance.save(update_fields=["status", "updated_by", "modified_date"])
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @extend_schema(

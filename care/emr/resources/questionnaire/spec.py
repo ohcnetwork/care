@@ -10,7 +10,6 @@ from care.emr.resources.observation.valueset import (
     CARE_OBSERVATION_VALUSET,
     CARE_UCUM_UNITS,
 )
-from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.slug_type import SlugType
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.utils.shortcuts import get_object_or_404
@@ -142,9 +141,7 @@ class Question(QuestionnaireBaseSpec):
     repeats: bool | None = None
     read_only: bool | None = None
     max_length: int | None = None
-    answer_constraint: AnswerConstraint | None = Field(
-        alias="answerConstraint", default=None
-    )
+    answer_constraint: AnswerConstraint | None = None
     answer_option: list[AnswerOption] | None = None
     answer_value_set: str | None = None
     is_observation: bool | None = None
@@ -279,8 +276,8 @@ class QuestionnaireReadSpec(QuestionnaireBaseSpec):
     subject_type: SubjectType
     styling_metadata: dict
     questions: list
-    created_by: UserSpec = {}
-    updated_by: UserSpec = {}
+    created_by: dict | None = None
+    updated_by: dict | None = None
     tags: list[dict] = []
 
     @classmethod
@@ -290,10 +287,7 @@ class QuestionnaireReadSpec(QuestionnaireBaseSpec):
         for tag in obj.tags:
             tags.append(QuestionnaireTag.get_tag(tag))
         mapping["tags"] = tags
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        cls.serialize_audit_users(mapping, obj)
 
 
 # Add this to handle recursive Question type

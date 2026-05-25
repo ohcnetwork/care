@@ -6,7 +6,7 @@ from pydantic import UUID4, model_validator
 from care.emr.models import Patient
 from care.emr.models.organization import FacilityOrganizationUser
 from care.emr.models.resource_request import ResourceRequest, ResourceRequestComment
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.facility.spec import FacilityReadSpec
 from care.emr.resources.patient.spec import PatientListSpec
 from care.emr.resources.user.spec import UserSpec
@@ -147,13 +147,10 @@ class ResourceRequestRetrieveSpec(ResourceRequestBaseSpec):
             mapping["related_patient"] = PatientListSpec.serialize(
                 obj.related_patient
             ).to_json()
-        if obj.assigned_to:
-            mapping["assigned_to"] = UserSpec.serialize(obj.assigned_to).to_json()
+        if obj.assigned_to_id:
+            mapping["assigned_to"] = model_from_cache(UserSpec, id=obj.assigned_to_id)
 
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        cls.serialize_audit_users(mapping, obj)
 
 
 class ResourceRequestCommentBaseSpec(EMRResource):
@@ -173,8 +170,7 @@ class ResourceRequestCommentListSpec(ResourceRequestCommentBaseSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
+        cls.serialize_audit_users(mapping, obj)
 
 
 class ResourceRequestCommentRetrieveSpec(ResourceRequestCommentListSpec):
