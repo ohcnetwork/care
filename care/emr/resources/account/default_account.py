@@ -20,5 +20,6 @@ def get_default_account(patient, facility):
         facility=facility,
         status=AccountStatusOptions.active.value,
         billing_status=AccountBillingStatusOptions.open.value,
+        service_period={"start": care_now().strftime("%Y-%m-%dT%H:%M:%S.%fZ")},
         name=f"{patient.name} {care_now().strftime('%Y-%m-%d')}",
     )
