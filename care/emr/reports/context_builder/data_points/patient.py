@@ -8,9 +8,6 @@ from care.emr.reports.context_builder.data_points.base import (
     QuerysetContextBuilder,
     SingleObjectContextBuilder,
 )
-from care.emr.reports.context_builder.data_points.extension import (
-    ExtensionBuilder,
-)
 
 GENDER_CHOICES = {
     "male": "Male",
@@ -186,9 +183,13 @@ class BasePatientContextBuilder(SingleObjectContextBuilder):
     )
     extensions = Field(
         display="Patient Extensions",
-        target_context=ExtensionBuilder,
-        preview_value="",
-        description="Extensions associated with the patient",
+        mapping=lambda p: p.extensions or {},
+        preview_value={
+            "patient_demographics": {
+                "related_person": "Jane Doe",
+            },
+        },
+        description="Patient extensions as JSON (e.g. patient.extensions.patient_demographics)",
     )
 
 
