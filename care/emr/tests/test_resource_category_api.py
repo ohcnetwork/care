@@ -17,12 +17,12 @@ class ResourceCategoryAPITestCase(CareAPITestBase):
         self.facility_organization = self.create_facility_organization(
             facility=self.facility, org_type="root"
         )
-        self.premissions = [
+        self.permissions = [
             ResourceCategoryPermissions.can_write_resource_category.name,
             ResourceCategoryPermissions.can_read_resource_category.name,
         ]
         self.role = self.create_role_with_permissions(
-            permissions=self.premissions,
+            permissions=self.permissions,
         )
         self.url = reverse(
             "resource_category-list",
@@ -522,4 +522,18 @@ class ResourceCategoryAPITestCase(CareAPITestBase):
                 "monetary_component_type"
             ],
             "tax",
+        )
+
+    def test_create_resource_category_with_duplicate_slug(self):
+        self.client.force_authenticate(user=self.super_user)
+        self.create_resource_category(
+            slug_value="test-resource-category", facility=self.facility
+        )
+        data = self.generate_resource_category_data(slug_value="test-resource-category")
+        response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "Resource category with this slug already exists.",
+            status_code=400,
         )
