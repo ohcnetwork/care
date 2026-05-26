@@ -754,7 +754,7 @@ class RebalanceAccountTests(CareAPITestBase):
             title="Test Category",
             description="Test Charge Item Category",
         )
-        self.charge_item_defintion = baker.make(
+        self.charge_item_definition = baker.make(
             "emr.ChargeItemDefinition",
             facility=self.facility,
             title="Test Charge Item Definition",
@@ -767,7 +767,7 @@ class RebalanceAccountTests(CareAPITestBase):
             "emr.ChargeItem",
             facility=self.facility,
             encounter=self.encounter,
-            charge_item_definition=self.charge_item_defintion,
+            charge_item_definition=self.charge_item_definition,
             account=self.account,
             title="Test Charge Item",
             status="billed",
