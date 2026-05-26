@@ -1,4 +1,7 @@
+from django_filters import rest_framework as filters
+
 from care.emr.models.patient import Patient, PatientIdentifierConfig
+from care.emr.models.tag_config import TagConfig
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.context_builder.data_points.base import (
     Field,
@@ -61,7 +64,6 @@ class IdentifierConfigContextBuilder(SingleObjectContextBuilder):
 class IdentifiersContextBuilder(QuerysetContextBuilder):
     config = Field(
         display="Config",
-        preview_value="Config",
         target_context=IdentifierConfigContextBuilder,
         description="Patient Identifier Configuration",
     )
@@ -79,9 +81,26 @@ class PatientInstanceIdentifiersContextBuilder(IdentifiersContextBuilder):
         return self.parent_context.instance_identifiers
 
 
-class PatientFacilityIdentifiersContextBuilder(IdentifiersContextBuilder):
+class PatientTagContextBuilder(QuerysetContextBuilder):
+    display = Field(
+        display="Tag Display",
+        preview_value="Diabetic",
+        mapping=lambda t: t.display if t else None,
+        description="Display of the patient tag",
+    )
+
+
+class TagFilter(filters.FilterSet):
+    category = filters.CharFilter(field_name="category")
+    status = filters.CharFilter(field_name="status")
+
+
+class PatientInstanceTagsContextBuilder(PatientTagContextBuilder):
+    filterset_class = TagFilter
+    __filterset_backends__ = [filters.DjangoFilterBackend]
+
     def get_context(self):
-        return self.parent_context.facility_identifiers
+        return TagConfig.objects.filter(id__in=self.parent_context.instance_tags)
 
 
 class BasePatientContextBuilder(SingleObjectContextBuilder):
@@ -144,11 +163,11 @@ class BasePatientContextBuilder(SingleObjectContextBuilder):
         preview_value="",
         description="Instance identifiers associated with the patient",
     )
-    facility_identifiers = Field(
-        display="Patient Facility Identifiers",
-        target_context=PatientFacilityIdentifiersContextBuilder,
+    instance_tags = Field(
+        display="Patient Instance Tags",
+        target_context=PatientInstanceTagsContextBuilder,
         preview_value="",
-        description="Facility-specific identifiers associated with the patient",
+        description="Instance tags associated with the patient",
     )
 
 

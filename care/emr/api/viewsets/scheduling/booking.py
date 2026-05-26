@@ -339,7 +339,7 @@ class TokenBookingViewSet(
                 patient=booking.patient,
             )
             booking.token = token
-            booking.save(update_fields=["token"])
+            booking.save(update_fields=["token", "modified_date"])
         return Response(TokenReadSpec.serialize(token).to_json())
 
 
