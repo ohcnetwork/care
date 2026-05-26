@@ -20,13 +20,14 @@ from config.patient_otp_token import PatientToken
 logger = logging.getLogger(__name__)
 
 
-class OTPType:
+class BaseOTPType:
     def render_content(self, otp: str) -> str:
         pass
 
 
-class LoginOTP(OTPType):
-    def render_content(self, otp: str) -> str:
+class LoginOTP(BaseOTPType):
+    @classmethod
+    def render_content(cls, otp: str) -> str:
         return settings.OTP_SMS_LOGIN_CONTENT.format(otp=otp)
 
 
@@ -34,7 +35,7 @@ def rand_pass(size):
     return "".join(secrets.choice(string.digits) for _ in range(size))
 
 
-def send_otp(phone_number, otp_type: OTPType):
+def send_otp(phone_number, otp_type: BaseOTPType):
     sent_otps = MobileOTP.objects.filter(
         created_date__gte=(timezone.now() - timedelta(settings.OTP_REPEAT_WINDOW)),
         is_used=False,
@@ -91,11 +92,11 @@ class OTPLoginView(EMRBaseViewSet):
     def send(self, request):
         data = OTPRequestBaseSpec(**request.data)
         try:
-            send_otp(data.phone_number, otp_type=LoginOTP())
+            send_otp(data.phone_number, otp_type=LoginOTP)
         except ValueError as e:
-            raise ValidationError({"phone_number": str(e)}) from e
-        except Exception as e:
-            return Response({"error": str(e)}, status=400)
+            raise ValidationError({"phone_number": "Unable to send OTP"}) from e
+        except Exception:
+            return Response({"error": "Unable to send OTP"}, status=400)
         return Response({"otp": "generated"})
 
     @extend_schema(

@@ -12,7 +12,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from care.emr.api.otp_viewsets.login import OTPRequestBaseSpec, OTPType, send_otp
+from care.emr.api.otp_viewsets.login import BaseOTPType, OTPRequestBaseSpec, send_otp
 from care.emr.api.viewsets.base import EMRBaseViewSet
 from care.facility.models.patient import MobileOTP
 from care.users.models import User
@@ -22,8 +22,9 @@ class OTPResetSendSpec(OTPRequestBaseSpec):
     pass
 
 
-class ResetPasswordOTP(OTPType):
-    def render_content(self, otp: str) -> str:
+class ResetPasswordOTP(BaseOTPType):
+    @classmethod
+    def render_content(cls, otp: str) -> str:
         return settings.OTP_SMS_RESET_PASSWORD_CONTENT.format(otp=otp)
 
 
@@ -46,11 +47,11 @@ class OTPResetPasswordView(EMRBaseViewSet):
             return Response({"otp": "generated"})
 
         try:
-            send_otp(data.phone_number, otp_type=ResetPasswordOTP())
+            send_otp(data.phone_number, otp_type=ResetPasswordOTP)
         except ValueError as e:
-            raise ValidationError({"phone_number": str(e)}) from e
-        except Exception as e:
-            return Response({"error": str(e)}, status=400)
+            raise ValidationError({"phone_number": "Unable to send OTP"}) from e
+        except Exception:
+            return Response({"error": "Unable to send OTP"}, status=400)
         return Response({"otp": "generated"})
 
     @action(detail=False, methods=["POST"])
@@ -72,9 +73,10 @@ class OTPResetPasswordView(EMRBaseViewSet):
             raise ValidationError({"otp": "Invalid OTP"})
 
         users = User.objects.filter(phone_number=data.phone_number)
-        if not users.exists():
+        user_count = users.count()
+        if user_count == 0:
             raise ValidationError({"error": "No User linked to this phone number"})
-        if users.count() > 1:
+        if user_count > 1:
             if data.username:
                 users = users.filter(username=data.username)
                 if not users.exists():
