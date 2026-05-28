@@ -3,15 +3,21 @@ from django_filters import rest_framework as filters
 from rest_framework.exceptions import ValidationError
 
 from care.emr.api.viewsets.base import EMRModelViewSet
-from care.emr.resources.role.spec import (
-    RoleCreateSpec,
-    RoleReadSpec,
-)
+from care.emr.resources.role.spec import RoleCreateSpec, RoleReadSpec
 from care.security.models import PermissionModel, RoleModel, RolePermission
+
+
+class RoleContextFilter(filters.CharFilter):
+    def filter(self, qs, value):
+        queryset = qs
+        if not value:
+            return queryset
+        return queryset.filter(contexts__overlap=[value])
 
 
 class RoleFilter(filters.FilterSet):
     name = filters.CharFilter(lookup_expr="icontains")
+    context = RoleContextFilter()
 
 
 class RoleViewSet(EMRModelViewSet):

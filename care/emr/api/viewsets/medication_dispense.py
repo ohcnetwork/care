@@ -114,7 +114,7 @@ class MedicationDispenseViewSet(
                     charge_item.performer_actor = instance.authorizing_request.requester
                 charge_item.save()
                 instance.charge_item = charge_item
-                instance.save(update_fields=["charge_item"])
+                instance.save(update_fields=["charge_item", "modified_date"])
             sync_inventory_item(instance.item.location, instance.item.product)
             if instance._fully_dispensed is not None and instance.authorizing_request:  # noqa
                 if instance._fully_dispensed:  # noqa
@@ -180,7 +180,10 @@ class MedicationDispenseViewSet(
                     instance.authorizing_request.dispense_status = (
                         MedicationRequestDispenseStatus.incomplete.value
                     )
-                    instance.authorizing_request.save(update_fields=["dispense_status"])
+                    instance.updated_by = self.request.user
+                    instance.authorizing_request.save(
+                        update_fields=["dispense_status", "updated_by", "modified_date"]
+                    )
                 instance.authorizing_request = None
                 instance.charge_item.save()
             super().perform_update(instance)
@@ -190,12 +193,18 @@ class MedicationDispenseViewSet(
                     instance.authorizing_request.dispense_status = (
                         MedicationRequestDispenseStatus.complete.value
                     )
-                    instance.authorizing_request.save(update_fields=["dispense_status"])
+                    instance.authorizing_request.updated_by = self.request.user
+                    instance.authorizing_request.save(
+                        update_fields=["dispense_status", "updated_by", "modified_date"]
+                    )
                 elif instance.authorizing_request:
                     instance.authorizing_request.dispense_status = (
                         MedicationRequestDispenseStatus.partial.value
                     )
-                    instance.authorizing_request.save(update_fields=["dispense_status"])
+                    instance.authorizing_request.updated_by = self.request.user
+                    instance.authorizing_request.save(
+                        update_fields=["dispense_status", "updated_by", "modified_date"]
+                    )
             return instance
 
     def authorize_location_read(self, location):

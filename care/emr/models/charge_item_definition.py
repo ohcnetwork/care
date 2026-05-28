@@ -25,3 +25,4 @@ class ChargeItemDefinition(SlugBaseModel):
         null=True,
         blank=True,
     )
+    discount_configuration = models.JSONField(null=True, blank=True, default=None)

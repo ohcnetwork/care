@@ -8,7 +8,6 @@ from care.emr.models.encounter import Encounter
 from care.emr.resources.allergy_intolerance.valueset import CARE_ALLERGY_CODE_VALUESET
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.coding import Coding
-from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 
 
@@ -124,8 +123,8 @@ class AllergyIntoleranceReadSpec(BaseAllergyIntoleranceSpec):
     onset: AllergyIntoleranceOnSetSpec = dict
     last_occurrence: datetime.datetime | None = None
     recorded_date: datetime.datetime | None = None
-    created_by: dict = {}
-    updated_by: dict = {}
+    created_by: dict | None = None
+    updated_by: dict | None = None
     note: str | None = None
     allergy_intolerance_type: str
     created_date: datetime.datetime
@@ -134,9 +133,6 @@ class AllergyIntoleranceReadSpec(BaseAllergyIntoleranceSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
         if obj.encounter:
             mapping["encounter"] = obj.encounter.external_id
+        cls.serialize_audit_users(mapping, obj)

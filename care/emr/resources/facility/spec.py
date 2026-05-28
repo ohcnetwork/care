@@ -7,10 +7,14 @@ from pydantic_core.core_schema import ValidationInfo
 from pydantic_extra_types.coordinate import Latitude, Longitude
 
 from care.emr.models import Organization
+from care.emr.models.facility_config import FacilityMonetoryConfig
 from care.emr.models.patient import PatientIdentifierConfigCache
 from care.emr.resources.base import EMRResource, cacheable, model_from_cache
 from care.emr.resources.common.coding import Coding
-from care.emr.resources.common.monetary_component import MonetaryComponentDefinition
+from care.emr.resources.common.monetary_component import (
+    DiscountConfiguration,
+    MonetaryComponentDefinition,
+)
 from care.emr.resources.invoice.default_expression_evaluator import (
     evaluate_invoice_dummy_expression,
 )
@@ -158,8 +162,7 @@ class FacilityReadSpec(FacilityBaseSpec):
     cover_image_url: str
     read_cover_image_url: str
     geo_organization: dict = {}
-    created_by: dict = {}
-    invoice_number_expression: str | None = None
+    created_by: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -167,19 +170,21 @@ class FacilityReadSpec(FacilityBaseSpec):
 
         mapping["id"] = obj.external_id
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
-        if obj.created_by:
-            mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
             ).to_json()
+        if obj.created_by_id:
+            mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
 
 
 class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     flags: list[str] = []
     discount_codes: list[dict] = []
     discount_monetary_components: list[dict] = []
+    discount_configuration: dict | None = None
+
     instance_discount_codes: list[dict] = []
     instance_discount_monetary_components: list[dict] = []
     instance_tax_codes: list[dict] = []
@@ -188,18 +193,28 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
     # Identifiers
     patient_instance_identifier_configs: list[dict] = []
     patient_facility_identifier_configs: list[dict] = []
-
-    # Product
-    extensions_schema_product: dict = {}
-    extensions_schema_supply_delivery: dict = {}
-    extensions_schema_supply_delivery_order: dict = {}
-    extensions_schema_account: dict = {}
+    invoice_number_expression: str | None = None
 
     print_templates: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.models.facility_config import FacilityMonetoryConfig
+
         super().perform_extra_serialization(mapping, obj)
+        facility_monetory_config = FacilityMonetoryConfig.get_monetory_config(obj.id)
+
+        mapping["invoice_number_expression"] = (
+            facility_monetory_config.invoice_number_expression
+        )
+        mapping["discount_codes"] = facility_monetory_config.discount_codes
+        mapping["discount_monetary_components"] = (
+            facility_monetory_config.discount_monetary_components
+        )
+        mapping["discount_configuration"] = (
+            facility_monetory_config.discount_configuration
+        )
+
         mapping["flags"] = obj.get_facility_flags()
         mapping["instance_discount_codes"] = settings.DISCOUNT_CODES
         mapping["instance_discount_monetary_components"] = (
@@ -219,11 +234,12 @@ class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
 
 
 class FacilityMonetaryCodeSpec(EMRResource):
-    __model__ = Facility
+    __model__ = FacilityMonetoryConfig
     __exclude__ = []
 
     discount_codes: list[Coding]
     discount_monetary_components: list[MonetaryComponentDefinition]
+    discount_configuration: DiscountConfiguration | None
 
     @model_validator(mode="after")
     def validate_count(self):

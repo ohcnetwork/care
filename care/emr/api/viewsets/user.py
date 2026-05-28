@@ -9,7 +9,7 @@ from rest_framework import filters as drf_filters
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
 from rest_framework.decorators import action, parser_classes
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.parsers import MultiPartParser
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -18,12 +18,12 @@ from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models import Organization
 from care.emr.models.organization import OrganizationUser
 from care.emr.resources.common.mail_type import MailTypeChoices
+from care.emr.resources.organization.spec import OrganizationTypeChoices
 from care.emr.resources.user.spec import (
     CurrentUserRetrieveSpec,
     UserCreateSpec,
     UserRetrieveSpec,
     UserSpec,
-    UserTypeRoleMapping,
     UserUpdateSpec,
 )
 from care.emr.utils.reset_password import send_password_reset_email
@@ -86,7 +86,6 @@ class UserFilter(filters.FilterSet):
         field_name="phone_number", lookup_expr="icontains"
     )
     username = filters.CharFilter(field_name="username", lookup_expr="icontains")
-    user_type = filters.CharFilter(field_name="user_type", lookup_expr="iexact")
     is_service_account = DefaultBooleanFilter(
         field_name="is_service_account", default=False
     )
@@ -109,27 +108,32 @@ class UserViewSet(EMRModelViewSet):
     def perform_create(self, instance):
         with transaction.atomic():
             super().perform_create(instance)
-            # Get or create organization with the role
-            org_name = instance.user_type.capitalize()
-            org = Organization.objects.filter(
-                parent__isnull=True,
-                name=org_name,
-                org_type="role",
-                system_generated=True,
-            ).first()
-            if not org:
-                org = Organization.objects.create(
-                    name=org_name, org_type="role", system_generated=True
+
+            # Authorize and add Roles
+            for role_org in instance._role_orgs:  # noqa SLF001
+                role_org_obj = get_object_or_404(
+                    Organization, external_id=role_org.organization
                 )
-            # Add User to organization with default role
-            OrganizationUser.objects.create(
-                organization=org,
-                user=instance,
-                role=RoleModel.objects.get(
-                    is_system=True,
-                    name=UserTypeRoleMapping[instance.user_type].value.name,
-                ),
-            )
+                requested_role = get_object_or_404(RoleModel, external_id=role_org.role)
+
+                if role_org_obj.org_type != OrganizationTypeChoices.role.value:
+                    raise ValidationError(
+                        "Role organization is not a role organization"
+                    )
+
+                if not AuthorizationController.call(
+                    "can_manage_organization_users_obj",
+                    self.request.user,
+                    role_org_obj,
+                    requested_role,
+                ):
+                    raise PermissionDenied("Access denied for requested roles")
+
+                OrganizationUser.objects.create(
+                    organization=role_org_obj,
+                    user=instance,
+                    role=requested_role,
+                )
             if not instance.has_usable_password():
                 try:
                     mail_type = MailTypeChoices.create.value
@@ -199,7 +203,7 @@ class UserViewSet(EMRModelViewSet):
                 return Response({"detail": "No cover image to delete"}, status=404)
             delete_cover_image(user.profile_picture_url, "avatars")
             user.profile_picture_url = None
-            user.save()
+            user.save(update_fields=["profile_picture_url"])
             return Response(status=204)
         return Response({"detail": "Method not allowed"}, status=405)
 
@@ -222,7 +226,7 @@ class UserViewSet(EMRModelViewSet):
         for field in acceptable_fields:
             if field in request.data:
                 setattr(user, field, request.data[field])
-        user.save()
+        user.save(update_fields=["pf_endpoint", "pf_p256dh", "pf_auth"])
         return Response({})
 
     @action(detail=True, methods=["POST"])

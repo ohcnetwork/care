@@ -5,7 +5,7 @@ networks:
 
 services:
   db:
-    image: postgres:alpine
+    image: postgres:17-alpine
     restart: unless-stopped
     env_file:
       - ./docker/.prebuilt.env

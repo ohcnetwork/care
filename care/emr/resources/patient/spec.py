@@ -8,7 +8,11 @@ from django.utils import timezone
 from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 
 from care.emr.extensions.base import ExtensionResource
-from care.emr.extensions.validator import ExtensionValidator
+from care.emr.extensions.validator import (
+    ExtensionListRenderer,
+    ExtensionRetrieveRenderer,
+    ExtensionValidator,
+)
 from care.emr.models import Organization
 from care.emr.models.patient import (
     Patient,
@@ -207,7 +211,7 @@ class PatientUpdateSpec(ExtensionValidator, PatientBaseSpec):
         return identifiers
 
 
-class PatientListSpec(PatientBaseSpec):
+class PatientListSpec(ExtensionListRenderer, PatientBaseSpec):
     date_of_birth: datetime.date | None = None
     year_of_birth: datetime.date | None = None
 
@@ -225,6 +229,7 @@ class PatientListSpec(PatientBaseSpec):
             mapping["facility_tags"] = PatientFacilityTagManager(
                 kwargs["facility"]
             ).render_tags(obj)
+        super().perform_extra_serialization(mapping, obj, *args, **kwargs)
 
 
 class PatientPartialSpec(EMRResource):
@@ -247,7 +252,9 @@ class PatientIdentifierResponse(BaseModel):
     value: str
 
 
-class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
+class PatientRetrieveSpec(
+    ExtensionRetrieveRenderer, PatientListSpec, PatientPermissionsMixin
+):
     geo_organization: dict = {}
 
     created_by: dict | None = None
@@ -261,17 +268,13 @@ class PatientRetrieveSpec(PatientListSpec, PatientPermissionsMixin):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj, *args, **kwargs):
         from care.emr.resources.organization.spec import OrganizationReadSpec
-        from care.emr.resources.user.spec import UserSpec
 
         super().perform_extra_serialization(mapping, obj, *args, **kwargs)
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
             ).to_json()
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by).to_json()
+        cls.serialize_audit_users(mapping, obj)
         if obj.instance_identifiers:
             mapping["instance_identifiers"] = [
                 {

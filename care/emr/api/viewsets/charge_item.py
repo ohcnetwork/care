@@ -263,6 +263,7 @@ class ChargeItemViewSet(
             ):
                 self.authorize_cancel(instance)
                 handle_charge_item_cancel(instance)
+                sync = False
             if sync:
                 sync_charge_item_costs(instance)
             super().perform_update(instance)
@@ -447,7 +448,9 @@ class ChargeItemViewSet(
                 source_accounts.append(charge_item.account_id)
                 charge_item.account = target_account
                 charge_item.updated_by = request.user
-                charge_item.save(update_fields=["account", "updated_by"])
+                charge_item.save(
+                    update_fields=["account", "updated_by", "modified_date"]
+                )
 
         for account_id in list(set(source_accounts)):
             rebalance_account_task(account_id)

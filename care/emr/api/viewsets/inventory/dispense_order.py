@@ -26,6 +26,7 @@ from care.emr.resources.medication.dispense.dispense_order import (
     MedicationDispenseOrderStatusOptions,
     MedicationDispenseOrderWriteSpec,
 )
+from care.emr.resources.medication.dispense.spec import MedicationDispenseStatus
 from care.emr.resources.medication.request.spec import MedicationRequestDispenseStatus
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
@@ -33,18 +34,30 @@ from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyUUIDFilter
 from care.utils.filters.multiselect import MultiSelectFilter
 
 
-def cancel_dispense_order(instance):
+def cancel_dispense_order(instance, user):
     related_dispenses = MedicationDispense.objects.filter(order=instance)
+    if instance.status == MedicationDispenseOrderStatusOptions.abandoned.value:
+        dispense_status = MedicationDispenseStatus.cancelled.value
+    elif instance.status == MedicationDispenseOrderStatusOptions.entered_in_error.value:
+        dispense_status = MedicationDispenseStatus.entered_in_error.value
+    else:
+        raise ValidationError("Dispense order can only be cancelled")
     for dispense in related_dispenses:
         if dispense.charge_item:
-            handle_charge_item_cancel(instance.charge_item)
-        dispense.charge_item.status = ChargeItemStatusOptions.aborted.value
-        dispense.authorizing_request.dispense_status = (
-            MedicationRequestDispenseStatus.incomplete.value
-        )
-        dispense.authorizing_request.save(update_fields=["dispense_status"])
-        dispense.authorizing_request = None
-        dispense.charge_item.save()
+            handle_charge_item_cancel(dispense.charge_item)
+            dispense.charge_item.status = ChargeItemStatusOptions.aborted.value
+            dispense.charge_item.updated_by = user
+            dispense.charge_item.save()
+        if dispense.authorizing_request:
+            dispense.authorizing_request.dispense_status = (
+                MedicationRequestDispenseStatus.incomplete.value
+            )
+            dispense.authorizing_request.updated_by = user
+            dispense.authorizing_request.save(
+                update_fields=["dispense_status", "updated_by", "modified_date"]
+            )
+            dispense.authorizing_request = None
+        dispense.status = dispense_status
         dispense.save()
 
 
@@ -96,6 +109,7 @@ class DispenseOrderViewSet(
 
     def perform_update(self, instance):
         # TODO : Add a Lock to ensure that the dispense order is not updated concurrently
+        user = self.request.user
         with transaction.atomic():
             old_object = DispenseOrder.objects.get(id=instance.id)
             if old_object.status != instance.status:
@@ -115,7 +129,7 @@ class DispenseOrderViewSet(
                         MedicationDispenseOrderStatusOptions.entered_in_error.value,
                     ]:
                         raise ValidationError("Dispense order can only be cancelled")
-                    cancel_dispense_order(instance)
+                    cancel_dispense_order(instance, user)
             return super().perform_update(instance)
 
     def perform_create(self, instance):

@@ -27,3 +27,7 @@ class ExtensionRegistry:
     @classmethod
     def get_extensions(cls):
         return cls._extensions
+
+    @classmethod
+    def get_extensions_for_resource(cls, resource_type):
+        return cls._extensions.get(resource_type, {})

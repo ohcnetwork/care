@@ -190,7 +190,9 @@ class ScheduleViewSet(EMRModelViewSet):
                 resource=instance.resource, availability_id__in=availability_ids
             )
             slots.update(deleted=True)
-            super().perform_destroy(instance)
+            instance.deleted = True
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["deleted", "updated_by", "modified_date"])
 
     def authorize_create(self, instance):
         facility_obj = self.get_facility_obj()
@@ -341,7 +343,9 @@ class AvailabilityViewSet(EMRCreateMixin, EMRDestroyMixin, EMRBaseViewSet):
                     "Cannot delete availability as there are future bookings associated with it"
                 )
             TokenSlot.objects.filter(availability_id=instance.id).update(deleted=True)
-            super().perform_destroy(instance)
+            instance.deleted = True
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["deleted", "updated_by", "modified_date"])
 
     def authorize_create(self, instance):
         schedule_obj = self.get_schedule_obj()
