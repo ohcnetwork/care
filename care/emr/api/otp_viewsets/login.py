@@ -22,9 +22,6 @@ logger = logging.getLogger(__name__)
 
 
 def rand_pass(size):
-    if not settings.USE_SMS:
-        return "45612"
-
     return "".join(secrets.choice(string.digits) for _ in range(size))
 
 
@@ -79,6 +76,8 @@ class OTPLoginView(EMRBaseViewSet):
                 return Response(
                     {"error": "Error while sending OTP. Contact admin."}, status=400
                 )
+        elif settings.IS_PRODUCTION:
+            random_otp = rand_pass(settings.OTP_LENGTH)
         else:
             random_otp = "45612"
 

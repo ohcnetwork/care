@@ -8,6 +8,7 @@ from model_bakery import baker
 from rest_framework import status
 
 from care.emr.models.location import FacilityLocation, FacilityLocationEncounter
+from care.emr.models.patient import PatientIdentifier, PatientIdentifierConfig
 from care.emr.models.scheduling.booking import TokenBooking, TokenSlot
 from care.emr.models.scheduling.schedule import (
     Availability,
@@ -494,6 +495,18 @@ class EncounterAPITests(CareAPITestBase):
         response = self.client.post(url, format="json")
         self.assertEqual(response.status_code, 403)
 
+    def test_restart_encounter_without_permission(self):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        self.encounter.status = StatusChoices.completed.value
+        self.encounter.save(update_fields=["status"])
+        url = reverse(
+            "encounter-restart",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 403)
+
     def test_restart_expired_encounter(self):
         self.client.force_authenticate(user=self.superuser)
         self.encounter.status = StatusChoices.completed.value
@@ -508,6 +521,126 @@ class EncounterAPITests(CareAPITestBase):
         response = self.client.post(url, format="json")
         self.assertEqual(response.status_code, 400)
         self.assertIn("cannot be restarted after", str(response.data))
+
+    def _create_identifier_config(self, facility, **config_overrides):
+        config_data = {
+            "use": "official",
+            "description": "Test Identifier",
+            "system": "test-system",
+            "required": False,
+            "unique": False,
+            "regex": "",
+            "display": "Test ID",
+        }
+        config_data.update(config_overrides)
+        return baker.make(
+            PatientIdentifierConfig,
+            facility=facility,
+            status="active",
+            config=config_data,
+        )
+
+    def test_set_facility_identifier_with_permissions(self):
+        role = self.create_role_with_permissions(
+            permissions=[
+                EncounterPermissions.can_write_encounter.name,
+                EncounterPermissions.can_read_encounter.name,
+                PatientPermissions.can_list_patients.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        identifier_config = self._create_identifier_config(self.facility)
+        url = reverse(
+            "encounter-set-facility-idenitifier",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        data = {
+            "identifier": str(identifier_config.external_id),
+            "value": "TEST-123",
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            PatientIdentifier.objects.filter(
+                patient=self.patient,
+                config=identifier_config,
+                value="TEST-123",
+            ).exists()
+        )
+
+    def test_set_facility_identifier_without_permissions(self):
+        identifier_config = self._create_identifier_config(self.facility)
+        url = reverse(
+            "encounter-set-facility-idenitifier",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        data = {
+            "identifier": str(identifier_config.external_id),
+            "value": "TEST-123",
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+
+    def test_set_facility_identifier_auto_maintained(self):
+        self.client.force_authenticate(user=self.superuser)
+        identifier_config = self._create_identifier_config(
+            self.facility, auto_maintained=True
+        )
+        url = reverse(
+            "encounter-set-facility-idenitifier",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        data = {
+            "identifier": str(identifier_config.external_id),
+            "value": "TEST-123",
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("auto maintained", str(response.data))
+
+    def test_set_facility_identifier_delete_by_null_value(self):
+        self.client.force_authenticate(user=self.superuser)
+        identifier_config = self._create_identifier_config(self.facility)
+        url = reverse(
+            "encounter-set-facility-idenitifier",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        data = {
+            "identifier": str(identifier_config.external_id),
+            "value": "TEST-VALUE",
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            PatientIdentifier.objects.filter(
+                patient=self.patient,
+                config=identifier_config,
+                value="TEST-VALUE",
+            ).exists()
+        )
+
+    def test_set_facility_identifier_with_value_and_set_default(self):
+        self.client.force_authenticate(user=self.superuser)
+        identifier_config = self._create_identifier_config(
+            self.facility,
+            default_value="f'ID-{patient_count}'",
+        )
+        url = reverse(
+            "encounter-set-facility-idenitifier",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        data = {
+            "identifier": str(identifier_config.external_id),
+            "value": "EXPLICIT-VALUE",
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        patient_identifier = PatientIdentifier.objects.get(
+            patient=self.patient, config=identifier_config
+        )
+        self.assertEqual(patient_identifier.value, "EXPLICIT-VALUE")
 
 
 class EncounterOrganizationAPITests(CareAPITestBase):

@@ -7,6 +7,7 @@ from .condition import *  # noqa F403
 from .device import *  # noqa F403
 from .diagnostic_report import *  # noqa F403
 from .encounter import *  # noqa F403
+from .facility_config import *  # noqa F003
 from .file_upload import *  # noqa F403
 from .healthcare_service import *  # noqa F403
 from .inventory_item import *  # noqa F403

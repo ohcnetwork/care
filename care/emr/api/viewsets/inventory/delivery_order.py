@@ -19,6 +19,7 @@ from care.emr.models.supply_delivery import DeliveryOrder
 from care.emr.resources.inventory.supply_delivery.delivery_order import (
     BaseSupplyDeliveryOrderSpec,
     SupplyDeliveryOrderReadSpec,
+    SupplyDeliveryOrderRetrieveSpec,
     SupplyDeliveryOrderStatusOptions,
     SupplyDeliveryOrderWriteSpec,
 )
@@ -60,6 +61,7 @@ class DeliveryOrderViewSet(
     pydantic_model = SupplyDeliveryOrderWriteSpec
     pydantic_update_model = BaseSupplyDeliveryOrderSpec
     pydantic_read_model = SupplyDeliveryOrderReadSpec
+    pydantic_retrieve_model = SupplyDeliveryOrderRetrieveSpec
     filterset_class = DeliveryOrderFilters
     filter_backends = [
         filters.DjangoFilterBackend,
@@ -114,13 +116,22 @@ class DeliveryOrderViewSet(
                 if (
                     instance.patient
                     and instance.status
+                    == SupplyDeliveryOrderStatusOptions.abandoned.value
+                ):
+                    raise ValidationError(
+                        "Cannot abandon a delivery order with medication return"
+                    )
+                if (
+                    instance.patient
+                    and instance.status
                     == SupplyDeliveryOrderStatusOptions.completed.value
                 ):
                     generate_return_invoice(instance)
-                if instance.patient and instance.status in [
-                    SupplyDeliveryOrderStatusOptions.abandoned.value,
-                    SupplyDeliveryOrderStatusOptions.entered_in_error.value,
-                ]:
+                if (
+                    instance.patient
+                    and instance.status
+                    == SupplyDeliveryOrderStatusOptions.entered_in_error.value
+                ):
                     cancel_return_invoice(instance)
 
             return super().perform_update(instance)

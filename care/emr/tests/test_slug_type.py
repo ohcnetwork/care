@@ -28,7 +28,7 @@ class TestSlugTypeValidation(TestCase):
         invalid_slugs = [
             "",
             "ab",
-            "a" * 37,
+            "a" * 51,
             "invalid slug",
             "invalid@slug",
             "invalid.slug",
@@ -40,18 +40,15 @@ class TestSlugTypeValidation(TestCase):
                 TestModel(slug=slug)
 
     def test_uppercase_slug_handling(self):
-        try:
-            model = TestModel(slug="UPPERCASE")
-            self.assertEqual(model.slug, "UPPERCASE")
-        except ValidationError:
-            pass
+        model = TestModel(slug="UPPERCASE")
+        self.assertEqual(model.slug, "UPPERCASE")
 
     def test_length_constraints(self):
         with self.assertRaises(ValidationError):
             TestModel(slug="ab")
 
         with self.assertRaises(ValidationError):
-            TestModel(slug="a" * 37)
+            TestModel(slug="a" * 51)
 
     def test_optional_slug_handling(self):
         model = TestModel(slug="valid-slug", optional_slug=None)

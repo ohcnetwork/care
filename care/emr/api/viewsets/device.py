@@ -52,6 +52,7 @@ class DeviceFilters(filters.FilterSet):
     current_location = filters.UUIDFilter(field_name="current_location__external_id")
     care_type = filters.CharFilter(field_name="care_type")
     include_children = DummyBooleanFilter()
+    identifier = filters.CharFilter(field_name="identifier", lookup_expr="iexact")
 
 
 class DeviceViewSet(EMRModelViewSet):
@@ -111,7 +112,9 @@ class DeviceViewSet(EMRModelViewSet):
                     instance.care_type
                 )
                 care_device_class().handle_delete(instance)
-            super().perform_destroy(instance)
+            instance.deleted = True
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["deleted", "updated_by", "modified_date"])
 
     def get_queryset(self):
         """
@@ -204,9 +207,13 @@ class DeviceViewSet(EMRModelViewSet):
                 ).first()
                 if old_obj:
                     old_obj.end = timezone.now()
-                    old_obj.save()
+                    old_obj.updated_by = request.user
+                    old_obj.save(update_fields=["end", "updated_by", "modified_date"])
             device.current_encounter = encounter
-            device.save(update_fields=["current_encounter"])
+            device.updated_by = request.user
+            device.save(
+                update_fields=["current_encounter", "updated_by", "modified_date"]
+            )
             if encounter:
                 obj = DeviceEncounterHistory.objects.create(
                     device=device,
@@ -251,9 +258,13 @@ class DeviceViewSet(EMRModelViewSet):
                 ).first()
                 if old_obj:
                     old_obj.end = timezone.now()
-                    old_obj.save()
+                    old_obj.updated_by = request.user
+                    old_obj.save(update_fields=["end", "updated_by", "modified_date"])
             device.current_location = location
-            device.save(update_fields=["current_location"])
+            device.updated_by = request.user
+            device.save(
+                update_fields=["current_location", "updated_by", "modified_date"]
+            )
             if location:
                 obj = DeviceLocationHistory.objects.create(
                     device=device,
@@ -290,8 +301,14 @@ class DeviceViewSet(EMRModelViewSet):
         ).exists():
             raise ValidationError("Organization is already associated with this device")
         device.managing_organization = organization
+        device.updated_by = request.user
         device.save(
-            update_fields=["managing_organization", "facility_organization_cache"]
+            update_fields=[
+                "managing_organization",
+                "facility_organization_cache",
+                "updated_by",
+                "modified_date",
+            ]
         )
         return Response({})
 
@@ -314,8 +331,14 @@ class DeviceViewSet(EMRModelViewSet):
             )
 
         device.managing_organization = None
+        device.updated_by = request.user
         device.save(
-            update_fields=["managing_organization", "facility_organization_cache"]
+            update_fields=[
+                "managing_organization",
+                "facility_organization_cache",
+                "updated_by",
+                "modified_date",
+            ]
         )
         return Response({})
 
