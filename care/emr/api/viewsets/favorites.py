@@ -41,7 +41,7 @@ class EMRFavoritesMixin:
             favorite_lists_cache_key(user, self.FAVORITE_RESOURCE, facility)
         )
         if favorite_lists is None:
-            favorite_list = list(
+            favorite_lists = list(
                 dict.fromkeys(
                     UserResourceFavorites.objects.filter(
                         user=user,
@@ -54,7 +54,7 @@ class EMRFavoritesMixin:
             )
             cache.set(
                 favorite_lists_cache_key(user, self.FAVORITE_RESOURCE, facility),
-                favorite_list,
+                favorite_lists,
             )
         return Response({"lists": favorite_lists})
 
