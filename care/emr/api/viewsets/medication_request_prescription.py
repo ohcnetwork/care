@@ -35,6 +35,7 @@ class MedicationRequestPrescriptionFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     status = MultiSelectFilter(field_name="status")
     facility = filters.UUIDFilter(field_name="encounter__facility__external_id")
+    created_date = filters.DateTimeFromToRangeFilter()
 
 
 class MedicationRequestPrescriptionViewSet(
@@ -91,7 +92,8 @@ class MedicationRequestPrescriptionViewSet(
 
     def perform_update(self, instance):
         if getattr(instance, "_pharmacist_mode", False):
-            instance.save(update_fields=["status"])
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["status", "updated_by", "modified_date"])
         else:
             super().perform_update(instance)
 

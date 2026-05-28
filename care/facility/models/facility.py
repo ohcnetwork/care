@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.postgres.fields import ArrayField
+from django.core.cache import cache
 from django.db import models
 from django.db.models import IntegerChoices
 from django.utils.translation import gettext_lazy as _
@@ -183,20 +184,9 @@ class Facility(BaseModel):
     )
     internal_organization_cache = ArrayField(models.IntegerField(), default=list)
 
-    oxygen_capacity = models.IntegerField(default=0)
-    type_b_cylinders = models.IntegerField(default=0)
-    type_c_cylinders = models.IntegerField(default=0)
-    type_d_cylinders = models.IntegerField(default=0)
-
-    expected_oxygen_requirement = models.IntegerField(default=0)
-    expected_type_b_cylinders = models.IntegerField(default=0)
-    expected_type_c_cylinders = models.IntegerField(default=0)
-    expected_type_d_cylinders = models.IntegerField(default=0)
-
     phone_number = models.CharField(
         max_length=14, blank=True, validators=[mobile_or_landline_number_validator]
     )
-    corona_testing = models.BooleanField(default=False)
     created_by = models.ForeignKey(
         User, on_delete=models.SET_NULL, null=True, blank=True
     )
@@ -208,15 +198,11 @@ class Facility(BaseModel):
 
     is_public = models.BooleanField(default=False)
 
-    discount_codes = models.JSONField(default=list)
-    discount_monetary_components = models.JSONField(default=list)
-
-    invoice_number_expression = models.CharField(
-        max_length=1000, blank=True, null=True, default=None
-    )
+    print_templates = models.JSONField(default=list)
 
     class Meta:
         verbose_name_plural = "Facilities"
+
 
     def read_cover_image_url(self):
         if self.cover_image_url:

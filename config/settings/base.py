@@ -371,6 +371,7 @@ REST_FRAMEWORK = {
         "config.authentication.CustomJWTAuthentication",
         "config.authentication.CustomBasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -684,9 +685,6 @@ MIDDLEWARE_REQUEST_TIMEOUT = env.int("MIDDLEWARE_REQUEST_TIMEOUT", 20)
 SNOWSTORM_DEPLOYMENT_URL = env(
     "SNOWSTORM_DEPLOYMENT_URL", default="http://165.22.211.144/fhir"
 )
-
-# Path to the typst binary, see scripts/install_typst.sh
-TYPST_BIN = env("TYPST_BIN", default="typst")
 
 DJANGO_REST_MULTITOKENAUTH_REQUIRE_USABLE_PASSWORD = False
 

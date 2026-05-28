@@ -6,12 +6,13 @@ Tag configs include what tags are available for a resource and their configurati
 from enum import Enum
 
 from django.db.models.signals import post_save
-from pydantic import UUID4, model_validator
+from pydantic import UUID4, BaseModel, model_validator
 from rest_framework.exceptions import ValidationError
 
 from care.emr.models.organization import FacilityOrganization, Organization
 from care.emr.models.tag_config import TagConfig
 from care.emr.resources.base import EMRResource, cacheable, model_string
+from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.tag.cache_invalidation import invalidate_tag_config_cache
 from care.facility.models.facility import Facility
 from care.utils.shortcuts import get_object_or_404
@@ -35,6 +36,7 @@ class TagResource(str, Enum):
     activity_definition = "activity_definition"
     service_request = "service_request"
     charge_item = "charge_item"
+    charge_item_definition = "charge_item_definition"
     patient = "patient"
     token_booking = "token_booking"
     medication_request_prescription = "medication_request_prescription"
@@ -48,6 +50,11 @@ class TagStatus(str, Enum):
     archived = "archived"
 
 
+class TagConfigMetadata(BaseModel):
+    color: str | None = None
+    icon: str | None = None
+
+
 class TagConfigBaseSpec(EMRResource):
     __model__ = TagConfig
     __exclude__ = ["facility", "facility_organization", "organization", "parent"]
@@ -57,6 +64,7 @@ class TagConfigBaseSpec(EMRResource):
     description: str | None
     priority: int = 100
     status: TagStatus
+    metadata: TagConfigMetadata | None = None
 
 
 class TagConfigUpdateSpec(TagConfigBaseSpec):
@@ -152,6 +160,7 @@ class TagConfigReadSpec(TagConfigBaseSpec):
     has_children: bool
     parent: dict | None
     resource: str
+    facility: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -159,6 +168,10 @@ class TagConfigReadSpec(TagConfigBaseSpec):
         parent = obj.get_parent_json()
         if parent:
             mapping["parent"] = parent
+        if obj.facility:
+            mapping["facility"] = FacilityBareMinimumSpec.serialize(
+                obj.facility
+            ).to_json()
 
 
 class TagConfigRetrieveSpec(TagConfigReadSpec):

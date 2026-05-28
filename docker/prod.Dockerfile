@@ -1,7 +1,6 @@
 FROM python:3.13-slim-bookworm AS base
 
 ARG APP_HOME=/app
-ARG TYPST_VERSION=0.12.0
 
 ARG BUILD_ENVIRONMENT="production"
 
@@ -24,9 +23,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   libpango-1.0-0 libharfbuzz0b libpangoft2-1.0-0 libharfbuzz-subset0 libffi-dev libopenjp2-7-dev \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
-
-COPY --chmod=0755 scripts/install_typst.sh $APP_HOME
-RUN TYPST_VERSION=${TYPST_VERSION} $APP_HOME/install_typst.sh
 
 # use pipenv to manage virtualenv
 RUN pip install pipenv==2025.1.1
@@ -54,8 +50,6 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   && rm -rf /var/lib/apt/lists/*
 
 RUN chown django:django $APP_HOME
-
-COPY --from=builder --chmod=0755 /usr/local/bin/typst /usr/local/bin/typst
 
 COPY --from=builder --chown=django:django $APP_HOME/.venv $APP_HOME/.venv
 

@@ -7,6 +7,7 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.favorites import EMRFavoritesMixin
 from care.emr.models import (
     Encounter,
     Organization,
@@ -16,6 +17,8 @@ from care.emr.models import (
     QuestionnaireTag,
 )
 from care.emr.models.questionnaire import FormSubmission, QuestionnaireResponse
+from care.emr.resources.favorites.filters import FavoritesFilter
+from care.emr.resources.favorites.spec import FavoriteResourceChoices
 from care.emr.resources.form_submission.spec import FormSubmissionStatusChoices
 from care.emr.resources.organization.spec import OrganizationReadSpec
 from care.emr.resources.questionnaire.spec import (
@@ -71,14 +74,18 @@ class QuestionnaireFilter(filters.FilterSet):
     status = filters.CharFilter(field_name="status", lookup_expr="iexact")
 
 
-class QuestionnaireViewSet(EMRModelViewSet):
+class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
     database_model = Questionnaire
     pydantic_model = QuestionnaireSpec
     pydantic_read_model = QuestionnaireReadSpec
     pydantic_update_model = QuestionnaireUpdateSpec
     lookup_field = "slug"
     filterset_class = QuestionnaireFilter
-    filter_backends = [filters.DjangoFilterBackend]
+    filter_backends = [filters.DjangoFilterBackend, FavoritesFilter]
+    FAVORITE_RESOURCE = FavoriteResourceChoices.questionnaire.value
+
+    def retrieve_facility_obj(self, obj):
+        return None
 
     def permissions_controller(self, request):
         if self.action in ["list", "retrieve", "get_organizations"]:
@@ -175,7 +182,10 @@ class QuestionnaireViewSet(EMRModelViewSet):
                 ).exists():
                     raise ValidationError("Form submission already has a response")
                 response.form_submission = form_submission
-                response.save(update_fields=["form_submission"])
+                response.updated_by = request.user
+                response.save(
+                    update_fields=["form_submission", "updated_by", "modified_date"]
+                )
         return Response(QuestionnaireResponseReadSpec.serialize(response).to_json())
 
     @action(detail=True, methods=["GET"])
@@ -214,7 +224,8 @@ class QuestionnaireViewSet(EMRModelViewSet):
         for tag in request_data.tags:
             tags.append(get_object_or_404(QuestionnaireTag, slug=tag).id)
         questionnaire.tags = tags
-        questionnaire.save(update_fields=["tags"])
+        questionnaire.updated_by = request.user
+        questionnaire.save(update_fields=["tags", "updated_by", "modified_date"])
         return Response({})
 
     class QuestionnaireOrganizationUpdateSchema(BaseModel):

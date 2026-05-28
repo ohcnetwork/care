@@ -14,6 +14,19 @@
         pkgs = nixpkgs.legacyPackages.${system};
         python = pkgs.python313;
 
+        # procps on Linux provides pgrep/pkill; on Darwin nixpkgs procps is a stub
+        # without those binaries — use the system tools instead.
+        pgrep =
+          if pkgs.stdenv.isDarwin then
+            "/usr/bin/pgrep"
+          else
+            "${pgrep}";
+        pkill =
+          if pkgs.stdenv.isDarwin then
+            "/usr/bin/pkill"
+          else
+            "${pkill}";
+
         # Create a Python environment with pip-installable packages
         pythonEnv = python.withPackages (
           ps: with ps; [
@@ -59,9 +72,10 @@
           FACILITY_S3_BUCKET = "facility-bucket";
 
           # PostgreSQL configuration for compilation (using Nix store paths)
-          PG_CONFIG = "${pkgs.postgresql_15}/bin/pg_config";
-          LDFLAGS = "-L${pkgs.postgresql_15}/lib";
-          CPPFLAGS = "-I${pkgs.postgresql_15}/include";
+          # pg_config is now a separate derivation in nixpkgs (see NixOS/nixpkgs#408785)
+          PG_CONFIG = "${pkgs.postgresql_15.pg_config}/bin/pg_config";
+          LDFLAGS = "-L${pkgs.libpq}/lib";
+          CPPFLAGS = "-I${pkgs.libpq.dev}/include";
         };
 
         # Helper scripts
@@ -78,7 +92,7 @@
           mkdir -p ${postgresDir} ${redisDir} ${minioDir}
 
           echo "🐘 Starting PostgreSQL..."
-          if ! ${pkgs.procps}/bin/pgrep -x "postgres" > /dev/null; then
+          if ! ${pgrep} -x "postgres" > /dev/null; then
             # Check if database directory is corrupted or not properly initialized
             if [ -d ${postgresDir} ] && [ ! -f ${postgresDir}/PG_VERSION ]; then
               echo "Database directory exists but appears corrupted. Cleaning up..."
@@ -103,7 +117,7 @@
           fi
 
           echo "📮 Starting Redis..."
-          if ! ${pkgs.procps}/bin/pgrep -x "redis-server" > /dev/null; then
+          if ! ${pgrep} -x "redis-server" > /dev/null; then
             # Ensure Redis directory exists
             mkdir -p ${redisDir}
 
@@ -118,7 +132,7 @@
           fi
 
           echo "🗄️ Starting MinIO..."
-          if ! ${pkgs.procps}/bin/pgrep -x "minio" > /dev/null; then
+          if ! ${pgrep} -x "minio" > /dev/null; then
             MINIO_ROOT_USER="${envVars.BUCKET_KEY}" \
             MINIO_ROOT_PASSWORD="${envVars.BUCKET_SECRET}" \
             ${pkgs.minio}/bin/minio server ${minioDir} \
@@ -145,14 +159,14 @@
           if [ -f "$POSTGRES_DIR/postmaster.pid" ]; then
             ${pkgs.postgresql_15}/bin/pg_ctl -D "$POSTGRES_DIR" stop
           else
-            ${pkgs.procps}/bin/pkill postgres || true
+            ${pkill} postgres || true
           fi
 
           echo "Stopping Redis..."
-          ${pkgs.procps}/bin/pkill redis-server || true
+          ${pkill} redis-server || true
 
           echo "Stopping MinIO..."
-          ${pkgs.procps}/bin/pkill minio || true
+          ${pkill} minio || true
 
           echo "✅ Services stopped"
         '';
@@ -163,19 +177,19 @@
 
           # Stop Django development server
           echo "Stopping Django development server..."
-          ${pkgs.procps}/bin/pkill -f "runserver_plus" || true
-          ${pkgs.procps}/bin/pkill -f "manage.py runserver" || true
-          ${pkgs.procps}/bin/pkill -f "python.*manage.py" || true
+          ${pkill} -f "runserver_plus" || true
+          ${pkill} -f "manage.py runserver" || true
+          ${pkill} -f "python.*manage.py" || true
 
           # Stop Celery workers and beat
           echo "Stopping Celery workers..."
-          ${pkgs.procps}/bin/pkill -f "celery.*worker" || true
-          ${pkgs.procps}/bin/pkill -f "celery.*beat" || true
-          ${pkgs.procps}/bin/pkill -f "watchmedo.*celery" || true
+          ${pkill} -f "celery.*worker" || true
+          ${pkill} -f "celery.*beat" || true
+          ${pkill} -f "watchmedo.*celery" || true
 
           # Stop debugpy if running
           echo "Stopping debugger..."
-          ${pkgs.procps}/bin/pkill -f "debugpy" || true
+          ${pkill} -f "debugpy" || true
 
           # Stop background services
           echo "Stopping background services..."
@@ -183,16 +197,16 @@
 
           # Clean up any remaining Python processes that might be related
           echo "Cleaning up remaining processes..."
-          ${pkgs.procps}/bin/pkill -f "python.*config.celery_app" || true
+          ${pkill} -f "python.*config.celery_app" || true
 
           # Wait a moment for processes to terminate
           sleep 2
 
           # Force kill any stubborn processes
           echo "Force killing stubborn processes..."
-          ${pkgs.procps}/bin/pkill -9 -f "runserver_plus" 2>/dev/null || true
-          ${pkgs.procps}/bin/pkill -9 -f "celery.*worker" 2>/dev/null || true
-          ${pkgs.procps}/bin/pkill -9 -f "celery.*beat" 2>/dev/null || true
+          ${pkill} -9 -f "runserver_plus" 2>/dev/null || true
+          ${pkill} -9 -f "celery.*worker" 2>/dev/null || true
+          ${pkill} -9 -f "celery.*beat" 2>/dev/null || true
 
           echo "✅ All development processes stopped"
           echo ""
@@ -222,6 +236,11 @@
         setupDev = makeScript "setup-dev" ''
           echo "🏗️  Setting up development environment..."
 
+          # Ensure pg_config is on PATH for building psycopg-c
+          # pg_config is now a separate derivation in nixpkgs (see NixOS/nixpkgs#408785)
+          export PATH="${pkgs.postgresql_15.pg_config}/bin:$PATH"
+          export PG_CONFIG="${pkgs.postgresql_15.pg_config}/bin/pg_config"
+
           # Install Python dependencies
           if [ ! -d ".venv" ]; then
             echo "Creating virtual environment..."
@@ -239,7 +258,7 @@
 
           echo "✅ Development environment setup complete!"
           echo ""
-          echo "Note: Typst ${pkgs.typst.version} and ruff ${pkgs.ruff.version} are available from Nix store"
+          echo "Note: ruff ${pkgs.ruff.version} is available from Nix store"
         '';
 
         # Django management commands
@@ -426,10 +445,10 @@
 
             # Databases and services (from Nix store)
             postgresql_15
+            postgresql_15.pg_config
             libpq
             redis
             minio
-            typst # Typst directly from nixpkgs
             ruff # Ruff from Nix for NixOS compatibility
 
             # System dependencies for building Python packages
@@ -442,8 +461,13 @@
             wget
             git
 
-            # Process management
-            procps
+            # WeasyPrint native dependencies (loaded via cffi dlopen at runtime)
+            glib
+            pango
+            harfbuzz
+            fontconfig
+            freetype
+            cairo
 
             # Development tools
             pre-commit
@@ -451,7 +475,11 @@
             # Build tools
             gcc
             gnumake
-
+          ]
+          ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
+            pkgs.procps # pgrep/pkill (Darwin uses /usr/bin via processUtils above)
+          ]
+          ++ [
             # Development scripts
             setupDev
             startServices
@@ -482,6 +510,16 @@
               pkgs.lib.mapAttrsToList (name: value: "export ${name}='${value}'") envVars
             )}
 
+            # WeasyPrint needs to dlopen native libs (glib, pango, etc.) at runtime
+            export DYLD_FALLBACK_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [
+              pkgs.glib
+              pkgs.pango
+              pkgs.harfbuzz
+              pkgs.fontconfig
+              pkgs.freetype
+              pkgs.cairo
+            ]}''${DYLD_FALLBACK_LIBRARY_PATH:+:$DYLD_FALLBACK_LIBRARY_PATH}"
+
             # Create project data directory
             mkdir -p ${projectDataDir}
 
@@ -496,7 +534,6 @@
             echo "   PostgreSQL: ${pkgs.postgresql_15.version}"
             echo "   Redis: ${pkgs.redis.version}"
             echo "   MinIO: ${pkgs.minio.version}"
-            echo "   Typst: ${pkgs.typst.version}"
             echo "   Ruff: ${pkgs.ruff.version}"
             echo ""
             echo "Available commands:"
@@ -542,7 +579,6 @@
 
             # Verify tools are available
             echo "✅ PostgreSQL development tools available (${pkgs.postgresql_15.version})"
-            echo "✅ Typst available (${pkgs.typst.version})"
             echo "✅ Ruff available (${pkgs.ruff.version})"
           '';
         };
@@ -555,13 +591,27 @@
             pkgs.postgresql_15
             pkgs.redis
             pkgs.minio
-            pkgs.typst
             pkgs.ruff
           ];
           text = ''
             echo "Care development environment package"
             echo "Use 'nix develop' to enter the development shell"
           '';
+        };
+
+        # Production OCI image built with dockerTools.
+        #
+        # In CI the image is built via nix-build with --argstr overrides so
+        # that the pre-built .venv and checked-out source are injected.
+        #
+        # Locally you can test with:
+        #   nix build .#dockerImage
+        # (requires a .venv to exist at the repo root)
+        packages.dockerImage = import ./nix/docker-image.nix {
+          inherit pkgs;
+          appVersion = "dev";
+          venvPath = ./.venv;
+          appSrc = ./.;
         };
       }
     );

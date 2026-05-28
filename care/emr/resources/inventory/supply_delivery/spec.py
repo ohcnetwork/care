@@ -1,10 +1,15 @@
 import datetime
+from decimal import Decimal
 from enum import Enum
 
-from django.conf import settings
-from jsonschema import validate
-from pydantic import UUID4, field_validator, model_validator
+from pydantic import UUID4, Field, model_validator
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import (
+    ExtensionListRenderer,
+    ExtensionRetrieveRenderer,
+    ExtensionValidator,
+)
 from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.product import Product
 from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
@@ -38,6 +43,7 @@ class BaseSupplyDeliverySpec(EMRResource):
     """Base model for supply delivery"""
 
     __model__ = SupplyDelivery
+    ___extension_resource_type__ = ExtensionResource.supply_delivery
     __exclude__ = [
         "supplied_item",
         "supply_request",
@@ -48,19 +54,10 @@ class BaseSupplyDeliverySpec(EMRResource):
 
     status: SupplyDeliveryStatusOptions
     supplied_item_condition: SupplyDeliveryConditionOptions | None = None
-    extensions: dict
-
-    @field_validator("extensions")
-    @classmethod
-    def validate_extensions(cls, v):
-        try:
-            validate(v, settings.SUPPLY_DELIVERY_EXTENSIONS_JSON_SCHEMA)
-        except Exception as e:
-            raise ValueError("Invalid additional metadata") from e
-        return v
+    total_purchase_price: Decimal | None = Field(None, max_digits=20, decimal_places=6)
 
 
-class SupplyDeliveryUpdateSpec(BaseSupplyDeliverySpec):
+class SupplyDeliveryUpdateSpec(ExtensionValidator, BaseSupplyDeliverySpec):
     order: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
@@ -71,15 +68,26 @@ class SupplyDeliveryUpdateSpec(BaseSupplyDeliverySpec):
         return obj
 
 
-class SupplyDeliveryWriteSpec(BaseSupplyDeliverySpec):
+class SupplyDeliveryWriteSpec(ExtensionValidator, BaseSupplyDeliverySpec):
     """Supply delivery write specification"""
 
-    supplied_item_quantity: float
+    supplied_item_pack_quantity: int | None = None
+    supplied_item_pack_size: int | None = None
+
+    supplied_item_quantity: Decimal = Field(max_digits=20, decimal_places=0)
     supplied_item: UUID4 | None = None
     supplied_inventory_item: UUID4 | None = None
 
     supply_request: UUID4 | None = None
     order: UUID4
+
+    @model_validator(mode="after")
+    def validate_quantity(self):
+        if self.supplied_item_pack_quantity and self.supplied_item_pack_size:
+            self.supplied_item_quantity = (
+                self.supplied_item_pack_quantity * self.supplied_item_pack_size
+            )
+        return self
 
     @model_validator(mode="after")
     def validate_supplied_item(self):
@@ -129,7 +137,7 @@ class SupplyDeliveryWriteSpec(BaseSupplyDeliverySpec):
         return obj
 
 
-class SupplyDeliveryReadSpec(BaseSupplyDeliverySpec):
+class SupplyDeliveryReadSpec(ExtensionListRenderer, BaseSupplyDeliverySpec):
     """Supply delivery read specification"""
 
     supplied_item_quantity: int
@@ -138,9 +146,17 @@ class SupplyDeliveryReadSpec(BaseSupplyDeliverySpec):
     modified_date: datetime.datetime
     supplied_inventory_item: dict | None = None
     supply_request: dict | None = None
+    supplied_item_pack_quantity: int | None = None
+    supplied_item_pack_size: int | None = None
+    extensions: dict
+    order: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.inventory.supply_delivery.delivery_order import (
+            SupplyDeliveryOrderReadSpec,
+        )
+
         mapping["id"] = obj.external_id
         if obj.supplied_item:
             mapping["supplied_item"] = ProductReadSpec.serialize(
@@ -154,9 +170,14 @@ class SupplyDeliveryReadSpec(BaseSupplyDeliverySpec):
             mapping["supply_request"] = SupplyRequestReadSpec.serialize(
                 obj.supply_request
             ).to_json()
+        if obj.order:
+            mapping["order"] = SupplyDeliveryOrderReadSpec.serialize(
+                obj.order
+            ).to_json()
+        return super().perform_extra_serialization(mapping, obj)
 
 
-class SupplyDeliveryRetrieveSpec(SupplyDeliveryReadSpec):
+class SupplyDeliveryRetrieveSpec(ExtensionRetrieveRenderer, SupplyDeliveryReadSpec):
     """Supply delivery retrieve specification"""
 
     created_by: UserSpec = {}

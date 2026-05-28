@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django_filters import rest_framework as filters
 
 from care.emr.models.medication_request import (
@@ -11,6 +13,7 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.user import (
     SingleUserRelatedContextBuilder,
 )
+from care.utils.filters.multiselect import MultiSelectFilter
 
 STATUS_DISPLAY = {
     "active": "Active",
@@ -43,9 +46,10 @@ PRIORITY_DISPLAY = {
 
 
 class MedicationRequestReportFilter(filters.FilterSet):
-    status = filters.CharFilter(lookup_expr="iexact")
     intent = filters.CharFilter(lookup_expr="iexact")
     priority = filters.CharFilter(lookup_expr="iexact")
+    status = MultiSelectFilter(field_name="status")
+    exclude_status = MultiSelectFilter(field_name="status", exclude=True)
 
 
 class MedicationPrescriptionReportFilter(filters.FilterSet):
@@ -59,7 +63,7 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
     dosage = Field(
         display="Dosage",
         mapping=lambda d: (
-            f"{int(d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', 0)) if d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', 0) % 1 == 0 else d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', '')} "
+            f"{int(d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', 0)) if Decimal(d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', 0)) % 1 == 0 else d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', '')} "
             f"{d.get('dose_and_rate', {}).get('dose_quantity', {}).get('unit', {}).get('display', '')}"
             if d.get("dose_and_rate")
             and d.get("dose_and_rate", {}).get("dose_quantity")
@@ -71,9 +75,13 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
 
     frequency = Field(
         display="Frequency",
-        mapping=lambda d: f"{d.get('timing', {}).get('code', {}).get('display', '')}"
-        if d.get("timing") and d.get("timing").get("code")
-        else "",
+        mapping=lambda d: (
+            d.get("timing", {}).get("code", {}).get("display", "")
+            if d.get("timing")
+            and d.get("timing").get("code")
+            and d.get("timing", {}).get("code", {}).get("display")
+            else "As Per Needed"
+        ),
         preview_value="3 times every 1 day",
         description="Frequency of the medication dosage",
     )
@@ -81,7 +89,7 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
     duration = Field(
         display="Duration",
         mapping=lambda d: (
-            f"{int(d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', 0)) if d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', 0) % 1 == 0 else d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', '')} "
+            f"{int(d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', 0)) if Decimal(d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', 0)) % 1 == 0 else d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', '')} "
             f"{d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('unit', '')}"
             if d.get("timing", {}).get("repeat", {}).get("bounds_duration")
             else ""

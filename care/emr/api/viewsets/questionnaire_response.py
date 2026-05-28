@@ -1,12 +1,20 @@
+from datetime import timedelta
+
+from django.conf import settings
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied
 
-from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet
+from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet, EMRUpdateMixin
 from care.emr.models import Encounter, Patient
 from care.emr.models.questionnaire import QuestionnaireResponse
-from care.emr.resources.questionnaire_response.spec import QuestionnaireResponseReadSpec
+from care.emr.resources.questionnaire_response.spec import (
+    QuestionnaireResponseReadSpec,
+    QuestionnaireResponseStatusChoices,
+    QuestionnaireResponseUpdate,
+)
 from care.security.authorization import AuthorizationController
 from care.utils.shortcuts import get_object_or_404
+from care.utils.time_util import care_now
 
 
 class QuestionnaireResponseFilters(filters.FilterSet):
@@ -15,14 +23,30 @@ class QuestionnaireResponseFilters(filters.FilterSet):
     questionnaire = filters.UUIDFilter(field_name="questionnaire__external_id")
     questionnaire_slug = filters.CharFilter(field_name="questionnaire__slug")
     form_submission = filters.UUIDFilter(field_name="form_submission__external_id")
+    status = filters.CharFilter(field_name="status")
 
 
-class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet):
+class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet, EMRUpdateMixin):
     database_model = QuestionnaireResponse
     pydantic_model = QuestionnaireResponseReadSpec
     pydantic_read_model = QuestionnaireResponseReadSpec
+    pydantic_update_model = QuestionnaireResponseUpdate
     filterset_class = QuestionnaireResponseFilters
     filter_backends = [filters.DjangoFilterBackend]
+
+    def authorize_update(self, request_obj, model_instance):
+        if (
+            model_instance.status
+            == QuestionnaireResponseStatusChoices.entered_in_error.value
+        ):
+            raise PermissionDenied("Questionnaire Response cannot be edited")
+        if self.request.user.is_superuser:
+            return True
+        if care_now() > model_instance.created_date + timedelta(
+            minutes=settings.QUESTIONNAIRE_ERRORED_TIME_LIMIT_MINUTES
+        ):
+            raise PermissionDenied("Questionnaire Response cannot be edited")
+        return super().authorize_update(request_obj, model_instance)
 
     def get_queryset(self):
         queryset = (

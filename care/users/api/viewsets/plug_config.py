@@ -37,6 +37,11 @@ class PlugConfigViewset(
         cache.delete(self.cache_key)
         instance.delete()
 
+    def get_authenticators(self):
+        if getattr(self, "request", None) and self.request.method == "GET":
+            return []
+        return super().get_authenticators()
+
     def get_permissions(self):
         if self.action in ["list", "retrieve"]:
             return []
