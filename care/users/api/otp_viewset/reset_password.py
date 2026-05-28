@@ -69,13 +69,11 @@ class OTPResetPasswordView(EMRBaseViewSet):
             .order_by("-created_date")
             .first()
         )
+        users = User.objects.filter(phone_number=data.phone_number)
+        user_count = users.count()
         if not otp_obj or otp_obj.otp != data.otp:
             raise ValidationError({"otp": "Invalid OTP"})
 
-        users = User.objects.filter(phone_number=data.phone_number)
-        user_count = users.count()
-        if user_count == 0:
-            raise ValidationError({"error": "No User linked to this phone number"})
         if user_count > 1:
             if data.username:
                 users = users.filter(username=data.username)
