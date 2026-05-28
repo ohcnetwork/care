@@ -64,7 +64,6 @@ class IdentifierConfigContextBuilder(SingleObjectContextBuilder):
 class IdentifiersContextBuilder(QuerysetContextBuilder):
     config = Field(
         display="Config",
-        preview_value="Config",
         target_context=IdentifierConfigContextBuilder,
         description="Patient Identifier Configuration",
     )
@@ -80,11 +79,6 @@ class IdentifiersContextBuilder(QuerysetContextBuilder):
 class PatientInstanceIdentifiersContextBuilder(IdentifiersContextBuilder):
     def get_context(self):
         return self.parent_context.instance_identifiers
-
-
-class PatientFacilityIdentifiersContextBuilder(IdentifiersContextBuilder):
-    def get_context(self):
-        return self.parent_context.facility_identifiers
 
 
 class PatientTagContextBuilder(QuerysetContextBuilder):
@@ -169,17 +163,21 @@ class BasePatientContextBuilder(SingleObjectContextBuilder):
         preview_value="",
         description="Instance identifiers associated with the patient",
     )
-    facility_identifiers = Field(
-        display="Patient Facility Identifiers",
-        target_context=PatientFacilityIdentifiersContextBuilder,
-        preview_value="",
-        description="Facility-specific identifiers associated with the patient",
-    )
     instance_tags = Field(
         display="Patient Instance Tags",
         target_context=PatientInstanceTagsContextBuilder,
         preview_value="",
         description="Instance tags associated with the patient",
+    )
+    extensions = Field(
+        display="Patient Extensions",
+        mapping=lambda p: p.extensions or {},
+        preview_value={
+            "patient_demographics": {
+                "related_person": "Jane Doe",
+            },
+        },
+        description="Patient extensions as JSON (e.g. patient.extensions.patient_demographics)",
     )
 
 
