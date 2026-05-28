@@ -2,9 +2,7 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 
-from django.conf import settings
-from jsonschema import validate
-from pydantic import UUID4, BaseModel, Field, field_validator
+from pydantic import UUID4, BaseModel, Field
 
 from care.emr.extensions.base import ExtensionResource
 from care.emr.extensions.validator import ExtensionValidator
