@@ -441,6 +441,23 @@ class ResetPasswordAPITest(CareAPITestBase):
                 status_code=429,
             )
 
+    def test_reset_password_request_email_failure(self):
+        """
+        Test that a 400 is returned when the email fails to send.
+        """
+        from unittest.mock import patch
+
+        with patch(
+            "care.users.reset_password_views.send_password_reset_email",
+            side_effect=Exception("Connection unexpectedly closed"),
+        ):
+            response = self.client.post(
+                self.reset_password_request_url,
+                {"username": "testuser"},
+                format="json",
+            )
+            self.assertEqual(response.status_code, 400)
+
     def test_change_password_with_leading_whitespace(self):
         """
         Test that password with leading whitespace is handled consistently.
