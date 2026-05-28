@@ -442,7 +442,7 @@ class TestChargeItemViewSet(CareAPITestBase):
             status=ChargeItemStatusOptions.billable.value, title="Billable Item"
         )
         self.create_charge_item(
-            status=ChargeItemStatusOptions.planned.value, title="Planned Item"
+            status=ChargeItemStatusOptions.billed.value, title="Billed Item"
         )
 
         response = self.client.get(f"{self.base_url}?status=billable")
@@ -634,6 +634,75 @@ class TestChargeItemViewSet(CareAPITestBase):
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertNotEqual(response.data["id"], first_id)
+
+    def test_create_charge_item_overflow_quantity_returns_400(self):
+        """Test that API returns 400 (not 500) for overflowing quantity values."""
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        data = self.get_valid_charge_item_data(
+            quantity="10000000000000000000000.00"  # 22 integer digits, exceeds max
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_create_charge_item_overflow_amount_returns_400(self):
+        """Test that API returns 400 (not 500) for overflowing amount values."""
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        data = self.get_valid_charge_item_data(
+            unit_price_components=[
+                {
+                    "monetary_component_type": "base",
+                    "currency": "INR",
+                    "amount": "10000000000000000000000.00",  # Overflow
+                    "code": {
+                        "system": "http://test.system.com",
+                        "code": "test-code-001",
+                        "display": "Test Code",
+                    },
+                }
+            ]
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_upsert_charge_item_overflow_quantity_returns_400(self):
+        """Test that upsert API returns 400 (not 500) for overflowing quantity values."""
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        upsert_url = f"{self.base_url}upsert/"
+        data = {
+            "datapoints": [
+                {
+                    "title": "Test Charge Item",
+                    "description": "Test description",
+                    "status": ChargeItemStatusOptions.billable.value,
+                    "quantity": "10000000000000000000000.00",  # Overflow
+                    "unit_price_components": [
+                        {
+                            "monetary_component_type": "base",
+                            "amount": "10.00",
+                        }
+                    ],
+                    "encounter": str(self.encounter.external_id),
+                    "account": str(self.account.external_id),
+                }
+            ]
+        }
+        response = self.client.post(upsert_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
 
 class TestChargeItemModelValidation(CareAPITestBase):
@@ -879,6 +948,109 @@ class TestChargeItemSpecValidation(CareAPITestBase):
         serialized = ChargeItemReadSpec.serialize(charge_item)
         self.assertEqual(serialized.title, "Test Charge Item")
         self.assertEqual(serialized.id, charge_item.external_id)
+
+    def test_charge_item_spec_overflow_quantity(self):
+        """Test that overflowing quantity values are rejected with validation error."""
+        with self.assertRaises(PydanticValidationError) as context:
+            ChargeItemWriteSpec(
+                title="Test Charge Item",
+                status=ChargeItemStatusOptions.billable.value,
+                quantity=Decimal(
+                    "10000000000000000000000.00"
+                ),  # 22 integer digits, exceeds max_digits=20
+                unit_price_components=[self.get_valid_monetary_component()],
+                encounter=self.encounter.external_id,
+            )
+        self.assertIn("decimal", str(context.exception).lower())
+
+    def test_charge_item_spec_valid_max_quantity(self):
+        """Test that maximum valid quantity (14 integer digits + 6 decimal places) is accepted."""
+        spec = ChargeItemWriteSpec(
+            title="Test Charge Item",
+            status=ChargeItemStatusOptions.billable.value,
+            quantity=Decimal(
+                "99999999999999.999999"
+            ),  # 14 integer digits + 6 decimal places = 20 total
+            unit_price_components=[self.get_valid_monetary_component()],
+            encounter=self.encounter.external_id,
+        )
+        self.assertEqual(spec.quantity, Decimal("99999999999999.999999"))
+
+    def test_monetary_component_overflow_amount(self):
+        """Test that overflowing amount values in monetary component are rejected."""
+        with self.assertRaises(PydanticValidationError) as context:
+            ChargeItemWriteSpec(
+                title="Test Charge Item",
+                status=ChargeItemStatusOptions.billable.value,
+                quantity=Decimal("1.00"),
+                unit_price_components=[
+                    {
+                        "monetary_component_type": "base",
+                        "amount": Decimal("10000000000000000000000.00"),  # Overflow
+                        "code": {
+                            "system": "http://test.system.com",
+                            "code": "test-base",
+                            "display": "Test Base",
+                        },
+                    }
+                ],
+                encounter=self.encounter.external_id,
+            )
+        self.assertIn("decimal", str(context.exception).lower())
+
+    def test_monetary_component_overflow_factor(self):
+        """Test that overflowing factor values in monetary component are rejected."""
+        with self.assertRaises(PydanticValidationError) as context:
+            ChargeItemWriteSpec(
+                title="Test Charge Item",
+                status=ChargeItemStatusOptions.billable.value,
+                quantity=Decimal("1.00"),
+                unit_price_components=[
+                    {
+                        "monetary_component_type": "base",
+                        "amount": Decimal("100.00"),
+                        "code": {
+                            "system": "http://test.system.com",
+                            "code": "test-base",
+                            "display": "Test Base",
+                        },
+                    },
+                    {
+                        "monetary_component_type": "tax",
+                        "factor": Decimal("10000000000000000000000.00"),  # Overflow
+                        "code": {
+                            "system": "http://test.system.com",
+                            "code": "test-tax",
+                            "display": "Test Tax",
+                        },
+                    },
+                ],
+                encounter=self.encounter.external_id,
+            )
+        self.assertIn("decimal", str(context.exception).lower())
+
+    def test_monetary_component_valid_max_amount(self):
+        """Test that maximum valid amount is accepted."""
+        spec = ChargeItemWriteSpec(
+            title="Test Charge Item",
+            status=ChargeItemStatusOptions.billable.value,
+            quantity=Decimal("1.00"),
+            unit_price_components=[
+                {
+                    "monetary_component_type": "base",
+                    "amount": Decimal("99999999999999.999999"),  # Max valid amount
+                    "code": {
+                        "system": "http://test.system.com",
+                        "code": "test-base",
+                        "display": "Test Base",
+                    },
+                }
+            ],
+            encounter=self.encounter.external_id,
+        )
+        self.assertEqual(
+            spec.unit_price_components[0].amount, Decimal("99999999999999.999999")
+        )
 
 
 class TestChargeItemBusinessLogicValidation(CareAPITestBase):

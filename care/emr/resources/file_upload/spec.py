@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from pydantic import UUID4, field_validator
 
 from care.emr.models import FileUpload
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.user.spec import UserSpec
 from care.utils.models.validators import file_name_validator
 
@@ -84,7 +84,10 @@ class FileUploadListSpec(FileUploadBaseSpec):
     archive_reason: str | None = None
     created_date: datetime.datetime
     extension: str
-    uploaded_by: dict
+    uploaded_by: dict | None = None
+    created_by: dict | None = None
+    updated_by: dict | None = None
+
     mime_type: str
 
     @classmethod
@@ -92,10 +95,11 @@ class FileUploadListSpec(FileUploadBaseSpec):
         mapping["id"] = obj.external_id
         mapping["extension"] = obj.get_extension()
         mapping["mime_type"] = obj.meta.get("mime_type")
-        if obj.created_by:
-            mapping["uploaded_by"] = UserSpec.serialize(obj.created_by)
-        if obj.archived_by:
-            mapping["archived_by"] = UserSpec.serialize(obj.archived_by)
+        cls.serialize_audit_users(mapping, obj)
+        if obj.created_by_id:
+            mapping["uploaded_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
+        if obj.archived_by_id:
+            mapping["archived_by"] = model_from_cache(UserSpec, id=obj.archived_by_id)
 
 
 class FileUploadRetrieveSpec(FileUploadListSpec):
@@ -111,9 +115,6 @@ class FileUploadRetrieveSpec(FileUploadListSpec):
             mapping["signed_url"] = obj.files_manager.signed_url(obj)
         else:
             mapping["read_signed_url"] = obj.files_manager.read_signed_url(obj)
-
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
 
 
 class ConsentFileUploadCreateSpec(FileUploadBaseSpec):

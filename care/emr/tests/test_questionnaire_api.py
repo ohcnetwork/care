@@ -189,7 +189,7 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             "string": "Jane Smith",
             "text": "Persistent cough with fever",
             "date": "2023-12-31",
-            "dateTime": "2023-12-31T15:30:00",
+            "dateTime": "2023-12-31T15:30:00+05:30",
             "time": "15:30:00",
             "choice": "EXCELLENT",
             "url": "http://example.com",
@@ -2542,7 +2542,7 @@ class QuestionnaireRepeatableEnableWhenAllBehaviorTests(CareAPITestBase):
     def _create_questionnaire(self):
         data = {
             "title": "Appointment New",
-            "slug": "Appointment",
+            "slug": "appointment",
             "status": "active",
             "subject_type": "encounter",
             "organizations": [str(self.organization.external_id)],
@@ -2698,7 +2698,7 @@ class QuestionnaireRepeatableEnableWhenAnyBehaviorTests(CareAPITestBase):
     def _create_questionnaire(self):
         data = {
             "title": "Appointment New - Any",
-            "slug": "Appointment-any",
+            "slug": "appointment-any",
             "status": "active",
             "subject_type": "encounter",
             "organizations": [str(self.organization.external_id)],

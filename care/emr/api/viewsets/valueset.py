@@ -151,7 +151,7 @@ class ValueSetViewSet(EMRModelViewSet):
         if not any(fav.get("code") == code_obj.code for fav in favs):
             favs.append(code_obj.model_dump())
             pref.favorite_codes = favs
-            pref.save(update_fields=["favorite_codes"])
+            pref.save(update_fields=["favorite_codes", "modified_date"])
             cache.set(cache_key, favs)
             message = f"Code {code_obj.code} added to favourites"
         else:
@@ -172,7 +172,7 @@ class ValueSetViewSet(EMRModelViewSet):
             favs = pref.favorite_codes
             new_favs = [fav for fav in favs if fav.get("code") != code_obj.code]
             pref.favorite_codes = new_favs
-            pref.save(update_fields=["favorite_codes"])
+            pref.save(update_fields=["favorite_codes", "modified_date"])
             cache.set(cache_key, new_favs)
             message = f"Code {code_obj.code} removed from favourites"
         except UserValueSetPreference.DoesNotExist:
@@ -189,7 +189,7 @@ class ValueSetViewSet(EMRModelViewSet):
                 user=user, valueset=self.get_object()
             )
             pref.favorite_codes = []
-            pref.save(update_fields=["favorite_codes"])
+            pref.save(update_fields=["favorite_codes", "modified_date"])
             cache.delete(cache_key)
             message = "All favourites cleared"
         except UserValueSetPreference.DoesNotExist:

@@ -1,3 +1,4 @@
+from datetime import datetime
 from enum import Enum
 
 from pydantic import UUID4
@@ -103,6 +104,10 @@ class SupplyRequestOrderReadSpec(BaseSupplyRequestOrderSpec):
     origin: dict | None = None
     destination: dict
     tags: list[dict] = []
+    created_date: datetime
+    modified_date: datetime
+    created_by: dict | None = None
+    updated_by: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -115,3 +120,4 @@ class SupplyRequestOrderReadSpec(BaseSupplyRequestOrderSpec):
             obj.destination
         ).to_json()
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+        cls.serialize_audit_users(mapping, obj)

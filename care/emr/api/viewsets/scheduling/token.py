@@ -1,5 +1,5 @@
 from django.db import transaction
-from django_filters import DateFilter, FilterSet, UUIDFilter
+from django_filters import CharFilter, DateFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
@@ -33,6 +33,8 @@ class TokenFilters(FilterSet):
     status = MultiSelectFilter(field_name="status")
     sub_queue_is_null = NullFilter(field_name="sub_queue")
     date = DateFilter(field_name="queue__date")  # For dependent filtering only
+    patient_name = CharFilter(field_name="patient__name", lookup_expr="icontains")
+    patient = UUIDFilter(field_name="patient__external_id")
 
 
 class TokenViewSet(EMRModelViewSet):
@@ -106,13 +108,16 @@ class TokenViewSet(EMRModelViewSet):
                 # Clear current token if the sub queue is changed
                 if obj.sub_queue.current_token == obj:
                     obj.sub_queue.current_token = None
-                    obj.sub_queue.save(update_fields=["current_token"])
+                    obj.sub_queue.save(update_fields=["current_token", "modified_date"])
             super().perform_update(instance)
 
     def perform_destroy(self, instance):
         instance.status = TokenStatusOptions.ENTERED_IN_ERROR.value
-        instance.save()
-        return super().perform_destroy(instance)
+        instance.deleted = True
+        instance.updated_by = self.request.user
+        instance.save(
+            update_fields=["status", "deleted", "updated_by", "modified_date"]
+        )
 
     def authorize_create(self, instance):
         _, queue = self.get_queue_obj()

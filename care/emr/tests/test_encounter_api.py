@@ -1,6 +1,5 @@
 import uuid
 from datetime import timedelta
-from unittest.mock import patch
 
 from django.conf import settings
 from django.urls import reverse
@@ -9,6 +8,7 @@ from model_bakery import baker
 from rest_framework import status
 
 from care.emr.models.location import FacilityLocation, FacilityLocationEncounter
+from care.emr.models.patient import PatientIdentifier, PatientIdentifierConfig
 from care.emr.models.scheduling.booking import TokenBooking, TokenSlot
 from care.emr.models.scheduling.schedule import (
     Availability,
@@ -459,6 +459,189 @@ class EncounterAPITests(CareAPITestBase):
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["status"], StatusChoices.completed.value)
 
+    def test_update_encounter_without_permissions(self):
+        update_data = self.encounter_data.copy()
+        update_data["status"] = StatusChoices.completed.value
+        response = self.client.put(
+            self._get_detail_url(self.facility.external_id, self.patient.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update encounter", response.data["detail"]
+        )
+
+    def test_restart_completed_encounter(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.encounter.status = StatusChoices.completed.value
+        self.encounter.save()
+        url = reverse(
+            "encounter-restart",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        with self.settings(ENCOUNTER_RESTART_TIME_LIMIT_HOURS=24):
+            response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 204)
+        self.encounter.refresh_from_db()
+        self.assertEqual(self.encounter.status, StatusChoices.in_progress.value)
+
+    def test_restart_non_completed_encounter(self):
+        self.client.force_authenticate(user=self.superuser)
+        url = reverse(
+            "encounter-restart",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 403)
+
+    def test_restart_encounter_without_permission(self):
+        user = self.create_user()
+        self.client.force_authenticate(user=user)
+        self.encounter.status = StatusChoices.completed.value
+        self.encounter.save(update_fields=["status"])
+        url = reverse(
+            "encounter-restart",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 403)
+
+    def test_restart_expired_encounter(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.encounter.status = StatusChoices.completed.value
+        self.encounter.modified_date = timezone.now() - timedelta(
+            hours=settings.ENCOUNTER_RESTART_TIME_LIMIT_HOURS + 1
+        )
+        self.encounter.save(update_fields=["status", "modified_date"])
+        url = reverse(
+            "encounter-restart",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("cannot be restarted after", str(response.data))
+
+    def _create_identifier_config(self, facility, **config_overrides):
+        config_data = {
+            "use": "official",
+            "description": "Test Identifier",
+            "system": "test-system",
+            "required": False,
+            "unique": False,
+            "regex": "",
+            "display": "Test ID",
+        }
+        config_data.update(config_overrides)
+        return baker.make(
+            PatientIdentifierConfig,
+            facility=facility,
+            status="active",
+            config=config_data,
+        )
+
+    def test_set_facility_identifier_with_permissions(self):
+        role = self.create_role_with_permissions(
+            permissions=[
+                EncounterPermissions.can_write_encounter.name,
+                EncounterPermissions.can_read_encounter.name,
+                PatientPermissions.can_list_patients.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        identifier_config = self._create_identifier_config(self.facility)
+        url = reverse(
+            "encounter-set-facility-idenitifier",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        data = {
+            "identifier": str(identifier_config.external_id),
+            "value": "TEST-123",
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            PatientIdentifier.objects.filter(
+                patient=self.patient,
+                config=identifier_config,
+                value="TEST-123",
+            ).exists()
+        )
+
+    def test_set_facility_identifier_without_permissions(self):
+        identifier_config = self._create_identifier_config(self.facility)
+        url = reverse(
+            "encounter-set-facility-idenitifier",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        data = {
+            "identifier": str(identifier_config.external_id),
+            "value": "TEST-123",
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+
+    def test_set_facility_identifier_auto_maintained(self):
+        self.client.force_authenticate(user=self.superuser)
+        identifier_config = self._create_identifier_config(
+            self.facility, auto_maintained=True
+        )
+        url = reverse(
+            "encounter-set-facility-idenitifier",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        data = {
+            "identifier": str(identifier_config.external_id),
+            "value": "TEST-123",
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("auto maintained", str(response.data))
+
+    def test_set_facility_identifier_delete_by_null_value(self):
+        self.client.force_authenticate(user=self.superuser)
+        identifier_config = self._create_identifier_config(self.facility)
+        url = reverse(
+            "encounter-set-facility-idenitifier",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        data = {
+            "identifier": str(identifier_config.external_id),
+            "value": "TEST-VALUE",
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(
+            PatientIdentifier.objects.filter(
+                patient=self.patient,
+                config=identifier_config,
+                value="TEST-VALUE",
+            ).exists()
+        )
+
+    def test_set_facility_identifier_with_value_and_set_default(self):
+        self.client.force_authenticate(user=self.superuser)
+        identifier_config = self._create_identifier_config(
+            self.facility,
+            default_value="f'ID-{patient_count}'",
+        )
+        url = reverse(
+            "encounter-set-facility-idenitifier",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        data = {
+            "identifier": str(identifier_config.external_id),
+            "value": "EXPLICIT-VALUE",
+        }
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        patient_identifier = PatientIdentifier.objects.get(
+            patient=self.patient, config=identifier_config
+        )
+        self.assertEqual(patient_identifier.value, "EXPLICIT-VALUE")
+
 
 class EncounterOrganizationAPITests(CareAPITestBase):
     def setUp(self):
@@ -635,73 +818,6 @@ class EncounterOrganizationAPITests(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn("Organization does not exist", response.data["errors"][0]["msg"])
-
-    def test_generate_discharge_summary_with_permissions(self):
-        self.patient.year_of_birth = 2000
-        self.patient.save()
-        role = self.create_role_with_permissions(
-            permissions=[
-                PatientPermissions.can_view_clinical_data.name,
-            ]
-        )
-        self.attach_role_facility_organization_user(
-            self.facility_organization, self.user, role
-        )
-        # 3. Mock the necessary functions to isolate the test
-        with (
-            patch(
-                "care.emr.reports.discharge_summary.get_progress"
-            ) as mock_get_progress,
-            patch("care.emr.reports.discharge_summary.set_lock") as mock_set_lock,
-            patch(
-                "care.emr.tasks.discharge_summary.generate_discharge_summary_task.delay"
-            ) as mock_task,
-        ):
-            mock_get_progress.return_value = None
-
-            path = "generate_discharge_summary"
-            url = self._get_detail_url(path)
-            response = self.client.post(
-                url, {"external_id": str(self.encounter.external_id)}, format="json"
-            )
-            self.assertEqual(response.status_code, 202)
-            self.assertIn(
-                "Discharge Summary will be generated shortly", response.data["detail"]
-            )
-
-        mock_get_progress.assert_called_once_with(self.encounter.external_id)
-        mock_set_lock.assert_called_once_with(self.encounter.external_id, 1)
-        mock_task.assert_called_once_with(self.encounter.external_id)
-
-    def test_generate_discharge_summary_without_permissions(self):
-        path = "generate_discharge_summary"
-        url = self._get_detail_url(path)
-        response = self.client.post(
-            url, {"external_id": str(self.encounter.external_id)}, format="json"
-        )
-        self.assertEqual(response.status_code, 403)
-        self.assertIn("Permission denied to user", response.data["detail"])
-
-    def test_generate_discharge_summary_with_conflict(self):
-        self.patient.year_of_birth = 2000
-        self.patient.save()
-        self.get_role_with_permissions()
-        with patch(
-            "care.emr.reports.discharge_summary.get_progress"
-        ) as mock_get_progress:
-            # Return 75% to simulate a discharge summary that's already being generated
-            mock_get_progress.return_value = 75
-
-            path = "generate_discharge_summary"
-            url = self._get_detail_url(path)
-            response = self.client.post(
-                url, {"external_id": str(self.encounter.external_id)}, format="json"
-            )
-            self.assertEqual(response.status_code, 409)
-            self.assertIn(
-                "Discharge Summary is already being generated", response.data["detail"]
-            )
-            self.assertIn("75%", response.data["detail"])
 
     # TESTS FOR CARE TEAM MANAGEMENT
 

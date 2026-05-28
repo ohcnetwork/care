@@ -11,7 +11,6 @@ def compute_observation_interpretation(model_instance, metrics_cache):
         evaluator = InterpretationEvaluator(
             model_instance.observation_definition.qualified_ranges, metrics_cache
         )
-
         interpretation, ranges = evaluator.evaluate(
             evaluation_context, model_instance.value
         )
@@ -19,7 +18,7 @@ def compute_observation_interpretation(model_instance, metrics_cache):
             model_instance.interpretation = interpretation
             model_instance.reference_range = ranges
         else:
-            model_instance.interpretation = None
+            model_instance.interpretation = {}
             model_instance.reference_range = []
         metrics_cache = evaluator.metric_cache
         # Handle Components
@@ -47,7 +46,7 @@ def compute_observation_interpretation(model_instance, metrics_cache):
                 component["interpretation"] = interpretation
                 component["reference_range"] = ranges
             else:
-                component["interpretation"] = None
+                component["interpretation"] = {}
                 component["reference_range"] = []
             metrics_cache = evaluator.metric_cache
     except Exception as e:
