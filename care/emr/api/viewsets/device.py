@@ -52,7 +52,7 @@ class DeviceFilters(filters.FilterSet):
     current_location = filters.UUIDFilter(field_name="current_location__external_id")
     care_type = filters.CharFilter(field_name="care_type")
     include_children = DummyBooleanFilter()
-    identifier = filters.CharFilter(field_name="identifier", lookup_expr="icontains")
+    identifier = filters.CharFilter(field_name="identifier", lookup_expr="iexact")
 
 
 class DeviceViewSet(EMRModelViewSet):
