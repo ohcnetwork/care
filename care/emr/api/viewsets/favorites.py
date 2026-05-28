@@ -41,7 +41,7 @@ class EMRFavoritesMixin:
             favorite_lists_cache_key(user, self.FAVORITE_RESOURCE, facility)
         )
         if favorite_lists is None:
-            favorite_lists = list(
+            favorite_list = list(
                 dict.fromkeys(
                     UserResourceFavorites.objects.filter(
                         user=user,
@@ -54,9 +54,8 @@ class EMRFavoritesMixin:
             )
             cache.set(
                 favorite_lists_cache_key(user, self.FAVORITE_RESOURCE, facility),
-                favorite_lists,
+                favorite_list,
             )
-
         return Response({"lists": favorite_lists})
 
     @action(detail=True, methods=["POST"])
@@ -65,15 +64,14 @@ class EMRFavoritesMixin:
         favorite_list = request_data.favorite_list
         obj = self.get_object()
         user = self.request.user
-
         favorite_list_obj, _ = UserResourceFavorites.objects.get_or_create(
             user=user,
             favorite_list=favorite_list,
             resource_type=self.FAVORITE_RESOURCE,
             facility=self.retrieve_facility_obj(obj),
         )
-
         favorite_list_obj.favorites.insert(0, obj.id)
+        # trim favorites list to max allowed
         favorite_list_obj.favorites = list(dict.fromkeys(favorite_list_obj.favorites))[
             : settings.MAX_FAVORITES_PER_LIST
         ]
@@ -90,20 +88,16 @@ class EMRFavoritesMixin:
         obj = self.get_object()
         user = self.request.user
         facility = self.retrieve_facility_obj(obj)
-
         favorite_list_obj = UserResourceFavorites.objects.filter(
             user=user,
             favorite_list=favorite_list,
             resource_type=self.FAVORITE_RESOURCE,
             facility=facility,
         ).first()
-
         if not favorite_list_obj:
             raise ValidationError("Favorite List not found")
-
         favorite_list_obj_favorites = dict.fromkeys(favorite_list_obj.favorites)
         favorite_list_obj_favorites.pop(obj.id, None)
-
         if len(favorite_list_obj_favorites) == 0:
             cache.delete(
                 favorite_lists_cache_key(user, self.FAVORITE_RESOURCE, facility)
@@ -118,7 +112,6 @@ class EMRFavoritesMixin:
             )
             UserResourceFavorites.objects.filter(id=favorite_list_obj.id).delete()
             return Response({})
-
         favorite_list_obj.favorites = list(favorite_list_obj_favorites)
         favorite_list_obj.updated_by = self.request.user
         favorite_list_obj.save(
