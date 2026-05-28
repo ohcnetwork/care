@@ -35,7 +35,7 @@ class BaseHealthcareServiceSpec(EMRResource):
     internal_type: HealthcareServiceInternalType | None = None
     name: str
     styling_metadata: dict = {}
-    extra_details: str = ""
+    extra_details: str
 
 
 class HealthcareServiceWriteSpec(BaseHealthcareServiceSpec):
