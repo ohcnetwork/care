@@ -1,4 +1,5 @@
 import hashlib
+import logging
 from datetime import timedelta
 
 import jwt
@@ -9,6 +10,8 @@ from django.utils import timezone
 
 from care.emr.resources.common.mail_type import MailTypeChoices
 from care.users.models import User
+
+logger = logging.getLogger(__name__)
 
 
 def generate_password_reset_token(user):
@@ -65,28 +68,32 @@ def send_password_reset_email(user, mail_type):
     """
     Sends the password reset email to the user.
     """
-    token = generate_password_reset_token(user)
-    context = {
-        "current_user": user,
-        "username": user.username,
-        "email": user.email,
-        "reset_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{token}",
-    }
-    if mail_type == MailTypeChoices.create.value:
-        email_html_message = render_to_string(
-            settings.USER_CREATE_PASSWORD_EMAIL_TEMPLATE_PATH, context
+    try:
+        token = generate_password_reset_token(user)
+        context = {
+            "current_user": user,
+            "username": user.username,
+            "email": user.email,
+            "reset_password_url": f"{settings.CURRENT_DOMAIN}/password_reset/{token}",
+        }
+        if mail_type == MailTypeChoices.create.value:
+            email_html_message = render_to_string(
+                settings.USER_CREATE_PASSWORD_EMAIL_TEMPLATE_PATH, context
+            )
+            subject = "Set Up Your Password for Care"
+        else:
+            email_html_message = render_to_string(
+                settings.USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH, context
+            )
+            subject = "Password Reset for Care"
+        msg = EmailMessage(
+            subject,
+            email_html_message,
+            settings.DEFAULT_FROM_EMAIL,
+            (user.email,),
         )
-        subject = "Set Up Your Password for Care"
-    else:
-        email_html_message = render_to_string(
-            settings.USER_RESET_PASSWORD_EMAIL_TEMPLATE_PATH, context
-        )
-        subject = "Password Reset for Care"
-    msg = EmailMessage(
-        subject,
-        email_html_message,
-        settings.DEFAULT_FROM_EMAIL,
-        (user.email,),
-    )
-    msg.content_subtype = "html"
-    msg.send()
+        msg.content_subtype = "html"
+        msg.send()
+    except Exception as e:
+        logger.error("Error sending password reset email: %s", e)
+        raise e

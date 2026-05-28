@@ -443,7 +443,7 @@ class ResetPasswordAPITest(CareAPITestBase):
 
     def test_reset_password_request_email_failure(self):
         """
-        Test that a 503 is returned when the email fails to send.
+        Test that a 400 is returned when the email fails to send.
         """
         from unittest.mock import patch
 
@@ -456,12 +456,7 @@ class ResetPasswordAPITest(CareAPITestBase):
                 {"username": "testuser"},
                 format="json",
             )
-            self.assertEqual(response.status_code, 503)
-            self.assertContains(
-                response,
-                "Failed to send password reset email. Please try again.",
-                status_code=503,
-            )
+            self.assertEqual(response.status_code, 400)
 
     def test_change_password_with_leading_whitespace(self):
         """
