@@ -9,6 +9,7 @@ import django.utils.timezone
 import uuid
 from decimal import Decimal
 from django.conf import settings
+from django.contrib.postgres.operations import TrigramExtension
 from django.db import migrations, models
 
 
@@ -31,6 +32,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        TrigramExtension(),
         migrations.CreateModel(
             name='ChargeItemDefinition',
             fields=[
