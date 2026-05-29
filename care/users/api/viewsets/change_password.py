@@ -1,64 +1,52 @@
-from django.contrib.auth import get_user_model
-from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError as DjangoValidationError
+from django.conf import settings
+from django.contrib.auth.password_validation import (
+    get_password_validators,
+    validate_password,
+)
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from rest_framework import serializers, status
+from pydantic import BaseModel
+from rest_framework import status
 from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
 
-User = get_user_model()
 
-
-class ChangePasswordSerializer(serializers.Serializer):
-    """
-    Serializer for the change password endpoint.
-
-    Validates the new password using Django's built-in password validators.
-    """
-
-    old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)
-
-    def validate_new_password(self, value):
-        """
-        Validate the new password against Django's password policies.
-        """
-        user = self.context["request"].user
-        try:
-            validate_password(value, user=user)
-        except DjangoValidationError as e:
-            raise serializers.ValidationError(e.messages) from e
-        return value
+class ChangePasswordSpec(BaseModel):
+    old_password: str
+    new_password: str
 
 
 @extend_schema_view(
     put=extend_schema(tags=["users"]),
     patch=extend_schema(tags=["users"]),
+    request=ChangePasswordSpec,
 )
 class ChangePasswordView(UpdateAPIView):
     """
     API endpoint for allowing authenticated users to change their password.
     """
 
-    serializer_class = ChangePasswordSerializer
-    model = User
-
     def update(self, request, *args, **kwargs):
         """
         Handle password update request for the authenticated user.
         """
-        self.object = self.request.user
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        if not self.object.check_password(
-            serializer.validated_data.get("old_password")
-        ):
+        data = ChangePasswordSpec(**request.data)
+        if not request.user.check_password(data.old_password):
             return Response(
-                {"old_password": ["Wrong password entered. Please check your password."]},
+                {
+                    "old_password": [
+                        "Wrong password entered. Please check your password."
+                    ]
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
+        validate_password(
+            data.new_password,
+            user=request.user,
+            password_validators=get_password_validators(
+                settings.AUTH_PASSWORD_VALIDATORS
+            ),
+        )
 
-        self.object.set_password(serializer.validated_data.get("new_password"))
-        self.object.save()
+        request.user.set_password(data.new_password)
+        request.user.save()
         return Response({"message": "Password updated successfully"})
