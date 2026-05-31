@@ -25,10 +25,9 @@ class UserChangePasswordTestCase(CareAPITestBase):
         self.payload["old_password"] = "wrongpassword"
         response = self.client.put(self.url, self.payload, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertIn("old_password", response.data)
         self.assertEqual(
-            response.data["old_password"][0],
-            "Wrong password entered. Please check your password.",
+            response.data["errors"][0]["msg"],
+            "Value error, Wrong password entered. Please check your password.",
         )
 
     def test_change_password_weak_new_password(self):

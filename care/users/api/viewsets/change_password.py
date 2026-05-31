@@ -3,9 +3,9 @@ from django.contrib.auth.password_validation import (
     get_password_validators,
     validate_password,
 )
+from django.core.exceptions import ValidationError as DjangoValidationError
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from pydantic import BaseModel, field_validator
-from rest_framework import status
+from pydantic import BaseModel, ValidationInfo, field_validator, model_validator
 from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
 
@@ -24,6 +24,27 @@ class ChangePasswordSpec(BaseModel):
             return v.strip()
         return v
 
+    @model_validator(mode="after")
+    def validate_passwords(self, info: ValidationInfo):
+        user = info.context.get("user")
+
+        if not user.check_password(self.old_password):
+            msg = "Wrong password entered. Please check your password."
+            raise ValueError(msg)
+
+        try:
+            validate_password(
+                self.new_password,
+                user=user,
+                password_validators=get_password_validators(
+                    settings.AUTH_PASSWORD_VALIDATORS
+                ),
+            )
+        except DjangoValidationError as e:
+            raise ValueError(e.messages) from e
+
+        return self
+
 
 @extend_schema_view(
     put=extend_schema(tags=["users"], request=ChangePasswordSpec),
@@ -41,23 +62,8 @@ class ChangePasswordView(UpdateAPIView):
         """
         Handle password update request for the authenticated user.
         """
-        data = ChangePasswordSpec(**request.data)
-
-        if not request.user.check_password(data.old_password):
-            return Response(
-                {
-                    "old_password": [
-                        "Wrong password entered. Please check your password."
-                    ]
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-        validate_password(
-            data.new_password,
-            user=request.user,
-            password_validators=get_password_validators(
-                settings.AUTH_PASSWORD_VALIDATORS
-            ),
+        data = ChangePasswordSpec.model_validate(
+            request.data, context={"user": request.user}
         )
 
         request.user.set_password(data.new_password)
