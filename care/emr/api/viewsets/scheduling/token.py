@@ -70,6 +70,8 @@ class TokenViewSet(EMRModelViewSet):
             raise ValidationError("Category and Queue are not in the same facility")
         if instance.sub_queue and instance.sub_queue.facility != queue.facility:
             raise ValidationError("Sub Queue and Queue are not in the same facility")
+        if instance.sub_queue and instance.sub_queue.resource != queue.resource:
+            raise ValidationError("Sub Queue and Queue are not in the same resource")
         with Lock(f"booking:token:{queue.id}"), transaction.atomic():
             instance.number = (
                 Token.objects.filter(queue=queue, category=instance.category).count()
@@ -98,10 +100,6 @@ class TokenViewSet(EMRModelViewSet):
             raise ValidationError("Sub Queue and Queue are not in the same facility")
         with transaction.atomic():
             obj = self.get_object()
-            if instance.sub_queue and instance.sub_queue.resource != obj.queue.resource:
-                raise ValidationError(
-                    "Sub Queue and Queue are not in the same resource"
-                )
             if obj.sub_queue and obj.sub_queue != instance.sub_queue:
                 if (
                     instance.sub_queue

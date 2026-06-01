@@ -11,12 +11,22 @@ from care.emr.models.scheduling.token import (
     TokenSubQueue,
 )
 from care.emr.resources.scheduling.token.spec import TokenStatusOptions
+from care.emr.signals.patient.facility_name_identifier import (
+    FacilityPatientNameIdentifierConfig,
+)
+from care.emr.signals.patient.name_identifier import NameIdentifierConfig
+from care.emr.signals.patient.phone_number_identifier import (
+    PhoneNumberIdentifierConfig,
+)
 from care.security.permissions.token import TokenPermissions
 from care.utils.tests.base import CareAPITestBase
 
 
 class TokenAPITests(CareAPITestBase):
     def setUp(self):
+        NameIdentifierConfig.CACHED_CONFIG = {}
+        PhoneNumberIdentifierConfig.CACHED_CONFIG = {}
+        FacilityPatientNameIdentifierConfig.CACHED_CONFIG = {}
         self.user = self.create_user()
         self.superuser = self.create_super_user()
         self.facility = self.create_facility(user=self.superuser)
@@ -220,6 +230,34 @@ class TokenAPITests(CareAPITestBase):
             response.data["errors"][0]["msg"],
         )
 
+    def test_create_token_with_different_resource_for_subqueue_and_queue(self):
+        """Test creating a token with different resource for subqueue and queue."""
+        another_user = self.create_user()
+        another_resource = self.create_schedule_resource(
+            facility=self.facility, user=another_user
+        )
+        subqueue = self.create_subqueue(
+            facility=self.facility,
+            resource=another_resource,
+            name="Sub Queue 1",
+        )
+        self.client.force_authenticate(user=self.superuser)
+        token_data = self.generate_token_data(
+            patient=self.patient.external_id,
+            category=self.token_category.external_id,
+            sub_queue=subqueue.external_id,
+        )
+        response = self.client.post(
+            self.token_url,
+            data=token_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Sub Queue and Queue are not in the same resource",
+            response.data["errors"][0]["msg"],
+        )
+
     # Testcases for Token update
 
     def test_update_token_as_superuser(self):
@@ -356,80 +394,6 @@ class TokenAPITests(CareAPITestBase):
             response.data["errors"][0]["msg"],
         )
 
-    def test_update_token_with_existing_subqueue_with_different_resource_than_queue(
-        self,
-    ):
-        """Test updating a token with different resource for subqueue and queue with existing subqueue."""
-        self.client.force_authenticate(user=self.superuser)
-        another_user = self.create_user()
-        token = self.create_token(
-            patient=self.patient,
-            category=self.token_category,
-            queue=self.token_queue,
-            facility=self.facility,
-        )
-        another_resource = self.create_schedule_resource(
-            facility=self.facility, user=another_user
-        )
-        subqueue = self.create_subqueue(
-            facility=self.facility,
-            resource=another_resource,
-            name="Sub Queue 1",
-        )
-        token_data = {
-            "sub_queue": subqueue.external_id,
-        }
-        response = self.client.put(
-            self.generate_detail_url(
-                str(self.facility.external_id),
-                str(self.token_queue.external_id),
-                str(token.external_id),
-            ),
-            data=token_data,
-            format="json",
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(
-            "Sub Queue and Queue are not in the same resource",
-            response.data["errors"][0]["msg"],
-        )
-
-    def test_update_token_with_subqueue_with_different_resource_than_queue(self):
-        """Test updating a token with different resource for subqueue and queue."""
-        self.client.force_authenticate(user=self.superuser)
-        token = self.create_token(
-            patient=self.patient,
-            category=self.token_category,
-            queue=self.token_queue,
-            facility=self.facility,
-        )
-        another_user = self.create_user()
-        another_resource = self.create_schedule_resource(
-            facility=self.facility, user=another_user
-        )
-        subqueue = self.create_subqueue(
-            facility=self.facility,
-            resource=another_resource,
-            name="Sub Queue 1",
-        )
-        token_data = {
-            "sub_queue": subqueue.external_id,
-        }
-        response = self.client.put(
-            self.generate_detail_url(
-                str(self.facility.external_id),
-                str(self.token_queue.external_id),
-                str(token.external_id),
-            ),
-            data=token_data,
-            format="json",
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(
-            "Sub Queue and Queue are not in the same resource",
-            response.data["errors"][0]["msg"],
-        )
-
     def test_update_token_with_existing_sub_queue_with_different_resource_than_sub_queue(
         self,
     ):
@@ -447,14 +411,14 @@ class TokenAPITests(CareAPITestBase):
         )
         subqueue1 = self.create_subqueue(
             facility=self.facility,
-            resource=another_resource,
+            resource=self.schedule_resource,
             name="Sub Queue 1",
         )
         token.sub_queue = subqueue1
         token.save(update_fields=["sub_queue"])
         subqueue2 = self.create_subqueue(
             facility=self.facility,
-            resource=self.schedule_resource,
+            resource=another_resource,
             name="Sub Queue 2",
         )
         token_data = {

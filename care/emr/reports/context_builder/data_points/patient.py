@@ -169,6 +169,16 @@ class BasePatientContextBuilder(SingleObjectContextBuilder):
         preview_value="",
         description="Instance tags associated with the patient",
     )
+    extensions = Field(
+        display="Patient Extensions",
+        mapping=lambda p: p.extensions or {},
+        preview_value={
+            "patient_demographics": {
+                "related_person": "Jane Doe",
+            },
+        },
+        description="Patient extensions as JSON (e.g. patient.extensions.patient_demographics)",
+    )
 
 
 class PatientMinimumContextBuilder(BasePatientContextBuilder):

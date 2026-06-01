@@ -336,6 +336,8 @@ class CareFixtureBase:
             "healthcare_service-list",
             kwargs={"facility_external_id": facility_id},
         )
+        if "extra_details" not in kwargs:
+            kwargs["extra_details"] = ""
         data = {
             "name": name,
             "managing_organization": None,
