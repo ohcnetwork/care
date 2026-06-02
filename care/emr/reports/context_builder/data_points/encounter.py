@@ -85,9 +85,9 @@ class EncounterCareTeamContextBuilder(QuerysetContextBuilder):
     role = Field(
         display="Role",
         preview_value="Primary care physician",
-        mapping=lambda c: c.role.get("display")
-        if c.role and c.role.get("display")
-        else "",
+        mapping=lambda c: (
+            c.role.get("display") if c.role and c.role.get("display") else ""
+        ),
         description="Role of the user in the encounter care team",
     )
 
@@ -194,31 +194,33 @@ class EncounterHospitalizationContextBuilder(SingleObjectContextBuilder):
     )
     admit_source = Field(
         display="Admit Source",
-        mapping=lambda h: HOSPITALIZATION_ADMIT_SOURCE_DISPLAY.get(
-            h.get("admit_source")
-        )
-        if h.get("admit_source")
-        else "",
+        mapping=lambda h: (
+            HOSPITALIZATION_ADMIT_SOURCE_DISPLAY.get(h.get("admit_source"))
+            if h.get("admit_source")
+            else ""
+        ),
         preview_value="From accident/emergency department",
         description="Source of admission for the encounter",
     )
     discharge_disposition = Field(
         display="Discharge Disposition",
-        mapping=lambda h: HOSPITALIZATION_DISCHARGE_DISPOSITION_DISPLAY.get(
-            h.get("discharge_disposition")
-        )
-        if h.get("discharge_disposition")
-        else "",
+        mapping=lambda h: (
+            HOSPITALIZATION_DISCHARGE_DISPOSITION_DISPLAY.get(
+                h.get("discharge_disposition")
+            )
+            if h.get("discharge_disposition")
+            else ""
+        ),
         preview_value="",
         description="Disposition of discharge for the encounter",
     )
     diet_preference = Field(
         display="Diet Preference",
-        mapping=lambda h: HOSPITALIZATION_DIET_PREFERENCE_DISPLAY.get(
-            h.get("diet_preference")
-        )
-        if h.get("diet_preference")
-        else "",
+        mapping=lambda h: (
+            HOSPITALIZATION_DIET_PREFERENCE_DISPLAY.get(h.get("diet_preference"))
+            if h.get("diet_preference")
+            else ""
+        ),
         preview_value="Dairy Free",
         description="Diet preference for the encounter",
     )
@@ -264,9 +266,9 @@ class BaseEncounterReportContext(SingleObjectContextBuilder):
     )
     end_time = Field(
         display="Encounter End Time",
-        mapping=lambda e: e.period.get("end")
-        if e.period and e.period.get("end")
-        else "Ongoing",
+        mapping=lambda e: (
+            e.period.get("end") if e.period and e.period.get("end") else "Ongoing"
+        ),
         preview_value="2026-01-12T10:01:45.088000Z",
         description="End time of the encounter",
     )
@@ -313,6 +315,16 @@ class BaseEncounterReportContext(SingleObjectContextBuilder):
         mapping="external_identifier",
         preview_value="1234567890",
         description="External identifier of the encounter",
+    )
+    extensions = Field(
+        display="Encounter Extensions",
+        mapping=lambda e: e.extensions or {},
+        preview_value={
+            "encounter_attender": {
+                "attender_name": "Jane Doe",
+            },
+        },
+        description="Encounter extensions as JSON (e.g. encounter.extensions.encounter_attender)",
     )
 
 
