@@ -4,15 +4,10 @@ on:
   pull_request:
     types: [opened, reopened, edited]
 
-permissions:
-  pull-requests: write
-
 jobs:
   validate-jira-ticket:
     runs-on: ubuntu-24.04-arm
-    if: >
-      github.event.pull_request.user.type != 'Bot' &&
-      github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event.pull_request.user.type != 'Bot'
 
     steps:
       - name: Validate JIRA Ticket in PR Title
