@@ -188,23 +188,19 @@ class MedicationDispenseViewSet(
                 instance.charge_item.save()
             super().perform_update(instance)
             sync_inventory_item(instance.item.location, instance.item.product)
-            if instance.authorizing_request:
-                if instance._fully_dispensed is not None and instance._fully_dispensed:  # noqa
+            if instance.authorizing_request and instance._fully_dispensed is not None:  # noqa
+                if instance._fully_dispensed:  # noqa
                     instance.authorizing_request.dispense_status = (
                         MedicationRequestDispenseStatus.complete.value
                     )
-                    instance.authorizing_request.updated_by = self.request.user
-                    instance.authorizing_request.save(
-                        update_fields=["dispense_status", "updated_by", "modified_date"]
-                    )
-                elif instance.authorizing_request:
+                else:
                     instance.authorizing_request.dispense_status = (
                         MedicationRequestDispenseStatus.partial.value
                     )
-                    instance.authorizing_request.updated_by = self.request.user
-                    instance.authorizing_request.save(
-                        update_fields=["dispense_status", "updated_by", "modified_date"]
-                    )
+                instance.authorizing_request.updated_by = self.request.user
+                instance.authorizing_request.save(
+                    update_fields=["dispense_status", "updated_by", "modified_date"]
+                )
             return instance
 
     def authorize_location_read(self, location):

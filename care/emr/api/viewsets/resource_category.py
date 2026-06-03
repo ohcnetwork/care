@@ -79,9 +79,7 @@ class ResourceCategoryViewSet(
         queryset = queryset.filter(slug__iexact=slug)
 
         if queryset.exists():
-            raise ValidationError(
-                "Charge Item Definition with this slug already exists."
-            )
+            raise ValidationError("Resource category with this slug already exists.")
 
         if not model_obj and instance.parent:
             parent = instance.parent
@@ -115,7 +113,7 @@ class ResourceCategoryViewSet(
             self.request.user,
             self.get_facility_obj(),
         ):
-            raise PermissionDenied("Access Denied to Charge Item Definition Category")
+            raise PermissionDenied("Access denied to resource category")
 
     def authorize_update(self, request_obj, model_instance):
         if not AuthorizationController.call(
@@ -123,7 +121,7 @@ class ResourceCategoryViewSet(
             self.request.user,
             model_instance.facility,
         ):
-            raise PermissionDenied("Access Denied to Charge Item Definition Category")
+            raise PermissionDenied("Access denied to resource category")
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -135,7 +133,7 @@ class ResourceCategoryViewSet(
             self.request.user,
             facility_obj,
         ):
-            raise PermissionDenied("Access Denied to Charge Item Definition Category")
+            raise PermissionDenied("Access denied to resource category")
         return queryset.filter(facility=facility_obj)
 
     @action(detail=True, methods=["POST"])
