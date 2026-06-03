@@ -55,7 +55,11 @@ class ChangePasswordView(UpdateAPIView):
             serializer.validated_data.get("old_password")
         ):
             return Response(
-                {"old_password": ["Wrong password entered. Please check your password."]},
+                {
+                    "old_password": [
+                        "Wrong password entered. Please check your password."
+                    ]
+                },
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
