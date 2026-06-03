@@ -120,16 +120,18 @@ class DispenseOrderViewSet(
                     raise ValidationError(
                         "Dispense order already abandoned or entered in error"
                     )
-                if (
+                if instance.status in [
+                    MedicationDispenseOrderStatusOptions.abandoned.value,
+                    MedicationDispenseOrderStatusOptions.entered_in_error.value,
+                ]:
+                    cancel_dispense_order(instance, user)
+                elif (
                     old_object.status
                     == MedicationDispenseOrderStatusOptions.completed.value
                 ):
-                    if instance.status not in [
-                        MedicationDispenseOrderStatusOptions.abandoned.value,
-                        MedicationDispenseOrderStatusOptions.entered_in_error.value,
-                    ]:
-                        raise ValidationError("Dispense order can only be cancelled")
-                    cancel_dispense_order(instance, user)
+                    raise ValidationError(
+                        "Completed dispense order can only be cancelled"
+                    )
             return super().perform_update(instance)
 
     def perform_create(self, instance):
