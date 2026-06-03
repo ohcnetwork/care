@@ -193,18 +193,14 @@ class MedicationDispenseViewSet(
                     instance.authorizing_request.dispense_status = (
                         MedicationRequestDispenseStatus.complete.value
                     )
-                    instance.authorizing_request.updated_by = self.request.user
-                    instance.authorizing_request.save(
-                        update_fields=["dispense_status", "updated_by", "modified_date"]
-                    )
                 else:
                     instance.authorizing_request.dispense_status = (
                         MedicationRequestDispenseStatus.partial.value
                     )
-                    instance.authorizing_request.updated_by = self.request.user
-                    instance.authorizing_request.save(
-                        update_fields=["dispense_status", "updated_by", "modified_date"]
-                    )
+                instance.authorizing_request.updated_by = self.request.user
+                instance.authorizing_request.save(
+                    update_fields=["dispense_status", "updated_by", "modified_date"]
+                )
             return instance
 
     def authorize_location_read(self, location):
