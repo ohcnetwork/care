@@ -19,7 +19,7 @@ jobs:
     name: Build docs
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Install dependencies
         run: sudo apt-get install -y libpq-dev
@@ -40,7 +40,7 @@ jobs:
           make -C ./docs html
 
       - name: Upload sphinx documentation
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: sphinx-docs
           path: ./docs/_build/html
@@ -54,10 +54,10 @@ jobs:
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Download sphinx documentation
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           name: sphinx-docs
           path: ./build

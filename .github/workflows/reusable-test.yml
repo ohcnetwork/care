@@ -16,14 +16,14 @@ jobs:
     name: Test
     runs-on: ubuntu-24.04-arm
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
+        uses: docker/setup-buildx-action@v4
 
       - name: Restore Docker layers cache
         id: cache-restore
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v5
         with:
           path: |
             ${{ runner.temp }}/.buildx-cache
@@ -33,7 +33,7 @@ jobs:
             ${{ runner.os }}-${{ runner.arch }}-buildx-dev-
 
       - name: inject cache into docker
-        uses: reproducible-containers/buildkit-cache-dance@v3.3.0
+        uses: reproducible-containers/buildkit-cache-dance@v3.4.0
         with:
           cache-map: |
             {
@@ -77,7 +77,7 @@ jobs:
         run: make test-coverage
 
       - name: Upload coverage report
-        uses: codecov/codecov-action@v5
+        uses: codecov/codecov-action@v6
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
@@ -88,7 +88,7 @@ jobs:
 
       - name: Save Docker layers cache
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' && steps.cache-restore.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v5
         with:
           path: |
             ${{ runner.temp }}/.buildx-cache
@@ -102,7 +102,7 @@ jobs:
 
       - name: Upload db artifact
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' }}
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: care-db-dump
           path: care_db.dump
