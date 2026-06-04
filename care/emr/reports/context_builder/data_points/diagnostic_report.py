@@ -25,6 +25,15 @@ class ServiceRequestContextBuilder(SingleObjectContextBuilder):
     )
 
 
+STATUS_DISPLAY = {
+    "registered": "Registered",
+    "partial": "Partial",
+    "preliminary": "Preliminary",
+    "modified": "Modified",
+    "final": "Final",
+}
+
+
 class DiagnosticReportFilter(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
 
@@ -40,9 +49,23 @@ class DiagnosticReportContextBuilder(QuerysetContextBuilder):
         display="Title",
         preview_value="Chest X-Ray Report",
         description="Title of the diagnostic report",
-        mapping=lambda dr: dr.code.get("display")
-        if dr.code and dr.code.get("display")
-        else "",
+        mapping=lambda dr: (
+            dr.code.get("display") if dr.code and dr.code.get("display") else ""
+        ),
+    )
+    status = Field(
+        display="Status",
+        mapping=lambda e: STATUS_DISPLAY.get(
+            e.status, e.status.title() if e.status else ""
+        ),
+        preview_value="In Progress",
+        description="Current status of the Diagnostic Report",
+    )
+    category = Field(
+        display="Category",
+        mapping=lambda c: c.code.get("display") if c.code else "",
+        preview_value="Audiology",
+        description="Service category of the report",
     )
     observations = Field(
         display="Observations",

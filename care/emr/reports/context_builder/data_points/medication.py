@@ -2,10 +2,12 @@ from decimal import Decimal
 
 from django_filters import rest_framework as filters
 
+from care.emr.models import TagConfig
 from care.emr.models.medication_request import (
     MedicationRequest,
     MedicationRequestPrescription,
 )
+from care.emr.reports.context_builder import TagFilter
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
@@ -182,10 +184,42 @@ class MedicationRequestContextBuilder(QuerysetContextBuilder):
         return MedicationRequest.objects.filter(prescription=self.parent_context)
 
 
+class MedicationPrescriptionTagContextBuilder(QuerysetContextBuilder):
+    filterset_class = TagFilter
+    __filterset_backends__ = [filters.DjangoFilterBackend]
+
+    display = Field(
+        display="Tag Display",
+        preview_value="Preparing",
+        mapping=lambda t: t.display if t else None,
+        description="Display of the medication prescription tag",
+    )
+
+    def get_context(self):
+        return TagConfig.objects.filter(id__in=self.parent_context.tags)
+
+
+MEDICATION_PRESCRIPTION_STATUS_DISPLAY = {
+    "active": "Active",
+    "on_hold": "On Hold",
+    "ended": "Ended",
+    "stopped": "Stopped",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "entered_in_error": "Entered in Error",
+    "draft": "Draft",
+}
+
+
 class MedicationPrescriptionContextBuilder(QuerysetContextBuilder):
     filterset_class = MedicationPrescriptionReportFilter
     __filterset_backends__ = [filters.DjangoFilterBackend]
 
+    name = Field(
+        display="Name",
+        preview_value="",
+        description="Name of the medication prescription",
+    )
     medications = Field(
         display="Medication",
         preview_value="",
@@ -194,14 +228,25 @@ class MedicationPrescriptionContextBuilder(QuerysetContextBuilder):
     )
     status = Field(
         display="Status",
-        preview_value="active",
+        preview_value="Active",
         description="Status of the medication prescription",
+        mapping=lambda m: (
+            MEDICATION_PRESCRIPTION_STATUS_DISPLAY.get(m.status, m.status.title())
+            if m.status
+            else ""
+        ),
     )
     prescribed_by = Field(
         display="Prescribed By",
         preview_value="",
         target_context=SingleUserRelatedContextBuilder,
         description="Details of the prescriber",
+    )
+    tags = Field(
+        display="Prescription Tags",
+        target_context=MedicationPrescriptionTagContextBuilder,
+        preview_value="",
+        description="Tags associated with the prescription",
     )
     note = Field(
         display="Note",

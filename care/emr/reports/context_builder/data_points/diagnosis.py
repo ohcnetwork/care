@@ -18,6 +18,12 @@ CLINICAL_STATUS_DISPLAY = {
     "unknown": "Unknown",
 }
 
+SEVERITY_DISPLAY = {
+    "mild": "Mild",
+    "moderate": "Moderate",
+    "severe": "Severe",
+}
+
 VERIFICATION_STATUS_DISPLAY = {
     "unconfirmed": "Unconfirmed",
     "provisional": "Provisional",
@@ -46,21 +52,29 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
     clinical_status = Field(
         display="Clinical Status",
         preview_value="Active",
-        mapping=lambda c: CLINICAL_STATUS_DISPLAY.get(
-            c.clinical_status, c.clinical_status.title()
-        )
-        if c.clinical_status
-        else "",
+        mapping=lambda c: (
+            CLINICAL_STATUS_DISPLAY.get(c.clinical_status, c.clinical_status.title())
+            if c.clinical_status
+            else ""
+        ),
         description="Clinical status of the condition",
+    )
+    severity = Field(
+        display="Severity",
+        preview_value="Mild",
+        mapping=lambda c: SEVERITY_DISPLAY.get(c.severity, c.severity.title()),
+        description="Severity of the diagnosis",
     )
     verification_status = Field(
         display="Verification Status",
         preview_value="Confirmed",
-        mapping=lambda c: VERIFICATION_STATUS_DISPLAY.get(
-            c.verification_status, c.verification_status.title()
-        )
-        if c.verification_status
-        else "",
+        mapping=lambda c: (
+            VERIFICATION_STATUS_DISPLAY.get(
+                c.verification_status, c.verification_status.title()
+            )
+            if c.verification_status
+            else ""
+        ),
         description="Verification status of the condition",
     )
     name = Field(
