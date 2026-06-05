@@ -35,3 +35,9 @@ class SupplyDeliveryPermissions(enum.Enum):
             PHARMACIST_ROLE,
         ],
     )
+    can_write_external_supply_delivery = Permission(
+        "Can Create External Supply Delivery on Facility",
+        "",
+        PermissionContext.FACILITY,
+        [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
+    )
