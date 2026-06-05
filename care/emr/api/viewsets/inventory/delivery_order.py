@@ -114,13 +114,10 @@ class DeliveryOrderViewSet(
         return super().perform_create(instance)
 
     def authorize_order_write(self, order):
-        allowed = False
         if order.origin:
-            allowed = allowed or self.authorize_location_write(
-                order.origin, raise_error=False
-            )
+            allowed = self.authorize_location_write(order.origin, raise_error=False)
         else:
-            allowed = allowed or self.authorize_location_external_write(
+            allowed = self.authorize_location_external_write(
                 order.destination, raise_error=False
             )
         if not allowed:
