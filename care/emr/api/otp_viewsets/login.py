@@ -42,7 +42,9 @@ class LoginOTP(BaseOTPType):
 
 def send_otp(phone_number, otp_type: BaseOTPType):
     sent_otps = MobileOTP.objects.filter(
-        created_date__gte=(timezone.now() - timedelta(settings.OTP_REPEAT_WINDOW)),
+        created_date__gte=(
+            timezone.now() - timedelta(hours=settings.OTP_REPEAT_WINDOW)
+        ),
         is_used=False,
         phone_number=phone_number,
     )
