@@ -6,21 +6,21 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('facility', '0484_remove_facility_discount_codes_and_more'),
+        ('facility', '0485_rename_patientmobileotp_mobileotp'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='patientmobileotp',
+            model_name='mobileotp',
             name='failed_attempts',
             field=models.PositiveSmallIntegerField(default=0),
         ),
         migrations.AddIndex(
-            model_name='patientmobileotp',
+            model_name='mobileotp',
             index=models.Index(condition=models.Q(('deleted', False)), fields=['phone_number', '-created_date'], name='pmo_phone_created_active_idx'),
         ),
         migrations.AddIndex(
-            model_name='patientmobileotp',
+            model_name='mobileotp',
             index=models.Index(condition=models.Q(('deleted', False)), fields=['phone_number', '-modified_date'], name='pmo_phone_modified_active_idx'),
         ),
     ]
