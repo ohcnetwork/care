@@ -107,17 +107,17 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
 
     method = Field(
         display="Method",
-        mapping=lambda d: d.get("method", {}).get("display", "")
-        if d.get("method")
-        else "",
+        mapping=lambda d: (
+            d.get("method", {}).get("display", "") if d.get("method") else ""
+        ),
         preview_value="Injection",
         description="Method of administration for the medication",
     )
     route = Field(
         display="Route",
-        mapping=lambda d: d.get("route", {}).get("display", "")
-        if d.get("route")
-        else "",
+        mapping=lambda d: (
+            d.get("route", {}).get("display", "") if d.get("route") else ""
+        ),
         preview_value="Peritumoural route",
         description="Route of administration for the medication",
     )
@@ -140,25 +140,25 @@ class MedicationRequestContextBuilder(QuerysetContextBuilder):
     status = Field(
         display="Status",
         preview_value="Active",
-        mapping=lambda m: STATUS_DISPLAY.get(m.status, m.status.title())
-        if m.status
-        else "",
+        mapping=lambda m: (
+            STATUS_DISPLAY.get(m.status, m.status.title()) if m.status else ""
+        ),
         description="Status of the medication",
     )
     intent = Field(
         display="Intent",
         preview_value="Order",
-        mapping=lambda m: INTENT_DISPLAY.get(m.intent, m.intent.title())
-        if m.intent
-        else "",
+        mapping=lambda m: (
+            INTENT_DISPLAY.get(m.intent, m.intent.title()) if m.intent else ""
+        ),
         description="Intent of the medication",
     )
     priority = Field(
         display="Priority",
         preview_value="Routine",
-        mapping=lambda m: PRIORITY_DISPLAY.get(m.priority, m.priority.title())
-        if m.priority
-        else "",
+        mapping=lambda m: (
+            PRIORITY_DISPLAY.get(m.priority, m.priority.title()) if m.priority else ""
+        ),
         description="Priority of the medication",
     )
     authored_on = Field(
@@ -202,6 +202,11 @@ class MedicationPrescriptionContextBuilder(QuerysetContextBuilder):
         preview_value="",
         target_context=SingleUserRelatedContextBuilder,
         description="Details of the prescriber",
+    )
+    note = Field(
+        display="Note",
+        preview_value="",
+        description="Additional notes about the prescription",
     )
 
     def get_context(self):
