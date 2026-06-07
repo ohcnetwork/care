@@ -8,9 +8,17 @@ services:
         ADDITIONAL_PLUGS: ${ADDITIONAL_PLUGS:-}
     env_file:
       - ./docker/.local.env
+    environment:
+      ADDITIONAL_PLUGS: '[{"name":"booking_notifications","package_name":"booking_notifications","version":""}]'
     volumes:
       - .:/app
-    entrypoint: ["bash", "scripts/start-dev.sh"]
+      - ../care_booking_notifications_be:/plugs/care_booking_notifications_be
+    entrypoint:
+      - bash
+      - -c
+      - |
+        pip install -e /plugs/care_booking_notifications_be --quiet
+        exec bash scripts/start-dev.sh
     ports:
       - "9000:9000"
       - "9876:9876" #debugpy
@@ -27,10 +35,18 @@ services:
     image: care_local
     env_file:
       - ./docker/.local.env
-    entrypoint: ["bash", "scripts/celery-dev.sh"]
+    environment:
+      ADDITIONAL_PLUGS: '[{"name":"booking_notifications","package_name":"booking_notifications","version":""}]'
+    volumes:
+      - .:/app
+      - ../care_booking_notifications_be:/plugs/care_booking_notifications_be
+    entrypoint:
+      - bash
+      - -c
+      - |
+        pip install -e /plugs/care_booking_notifications_be --quiet
+        exec bash scripts/celery-dev.sh
     restart: unless-stopped
     depends_on:
       - db
       - redis
-    volumes:
-      - .:/app

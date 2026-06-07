@@ -4,7 +4,7 @@ from django.test import override_settings
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from care.facility.models.patient import PatientMobileOTP
+from care.facility.models.patient import MobileOTP
 from care.utils.time_util import care_now
 
 
@@ -44,16 +44,14 @@ class OTPLoginFlowTests(APITestCase):
     def test_send_creates_otp_row(self):
         resp = self._send()
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        self.assertEqual(
-            PatientMobileOTP.objects.filter(phone_number=self.PHONE).count(), 1
-        )
+        self.assertEqual(MobileOTP.objects.filter(phone_number=self.PHONE).count(), 1)
 
     def test_login_with_correct_otp_returns_token(self):
         self._send()
         resp = self._login(self.DEV_OTP)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         self.assertIn("access", resp.data)
-        self.assertTrue(PatientMobileOTP.objects.get(phone_number=self.PHONE).is_used)
+        self.assertTrue(MobileOTP.objects.get(phone_number=self.PHONE).is_used)
 
     def test_used_otp_cannot_be_reused(self):
         self._send()
@@ -74,7 +72,7 @@ class OTPLoginFlowTests(APITestCase):
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("request a new OTP", str(resp.data))
 
-        otp_row = PatientMobileOTP.objects.get(phone_number=self.PHONE)
+        otp_row = MobileOTP.objects.get(phone_number=self.PHONE)
         self.assertTrue(otp_row.is_used)
         self.assertEqual(otp_row.failed_attempts, 3)
 
@@ -154,9 +152,7 @@ class OTPLoginFlowTests(APITestCase):
 
         # age all existing failures past the lockout window
         old = care_now() - timedelta(minutes=31)
-        PatientMobileOTP.objects.filter(phone_number=self.PHONE).update(
-            modified_date=old
-        )
+        MobileOTP.objects.filter(phone_number=self.PHONE).update(modified_date=old)
 
         # window has slid; the phone is unlocked again
         self.assertEqual(self._send().status_code, 200)
@@ -174,9 +170,7 @@ class OTPLoginFlowTests(APITestCase):
             self._send()
         # age them past the send window
         old = care_now() - timedelta(minutes=61)
-        PatientMobileOTP.objects.filter(phone_number=self.PHONE).update(
-            created_date=old
-        )
+        MobileOTP.objects.filter(phone_number=self.PHONE).update(created_date=old)
         self.assertEqual(self._send().status_code, 200)
 
     def test_send_rate_limit_counts_used_otps(self):
@@ -194,11 +188,11 @@ class OTPLoginFlowTests(APITestCase):
     def test_only_latest_unused_otp_is_validated(self):
         # First OTP issued
         self._send()
-        first_id = PatientMobileOTP.objects.latest("created_date").id
+        first_id = MobileOTP.objects.latest("created_date").id
 
         # Issuing a new OTP must invalidate the older one (no two unused OTPs alive at once)
         self._send()
-        first_row = PatientMobileOTP.objects.get(id=first_id)
+        first_row = MobileOTP.objects.get(id=first_id)
         self.assertTrue(first_row.is_used)
 
         # Login uses only the newest unused row
@@ -214,9 +208,7 @@ class OTPLoginFlowTests(APITestCase):
         self.assertEqual(self._login(self.DEV_OTP).status_code, 200)
         # No unused OTP rows for this phone now
         self.assertFalse(
-            PatientMobileOTP.objects.filter(
-                phone_number=self.PHONE, is_used=False
-            ).exists()
+            MobileOTP.objects.filter(phone_number=self.PHONE, is_used=False).exists()
         )
         # Replaying the (same-value) old code must fail — no unused row to match against
         resp = self._login(self.DEV_OTP)
@@ -224,22 +216,22 @@ class OTPLoginFlowTests(APITestCase):
 
     def test_failure_bumps_only_latest_otp_row(self):
         self._send()
-        first_id = PatientMobileOTP.objects.latest("created_date").id
+        first_id = MobileOTP.objects.latest("created_date").id
         self._send()
-        second_id = PatientMobileOTP.objects.latest("created_date").id
+        second_id = MobileOTP.objects.latest("created_date").id
         self.assertNotEqual(first_id, second_id)
 
         self._login(self.WRONG_OTP)
 
-        self.assertEqual(PatientMobileOTP.objects.get(id=first_id).failed_attempts, 0)
-        self.assertEqual(PatientMobileOTP.objects.get(id=second_id).failed_attempts, 1)
+        self.assertEqual(MobileOTP.objects.get(id=first_id).failed_attempts, 0)
+        self.assertEqual(MobileOTP.objects.get(id=second_id).failed_attempts, 1)
 
     # ------------------------------------------------------------------ no-OTP edge
 
     def test_login_with_no_active_otp_returns_400_without_bumping(self):
         resp = self._login(self.WRONG_OTP)
         self.assertEqual(resp.status_code, 400)
-        self.assertEqual(PatientMobileOTP.objects.count(), 0)
+        self.assertEqual(MobileOTP.objects.count(), 0)
 
     # ------------------------------------------------------------------ otp validity
 
@@ -247,20 +239,16 @@ class OTPLoginFlowTests(APITestCase):
         self._send()
         # age the OTP past its validity window
         old = care_now() - timedelta(minutes=11)
-        PatientMobileOTP.objects.filter(phone_number=self.PHONE).update(
-            created_date=old
-        )
+        MobileOTP.objects.filter(phone_number=self.PHONE).update(created_date=old)
         resp = self._login(self.DEV_OTP)
         self.assertEqual(resp.status_code, 400)
         # row remains unused since it was never picked up by the verify query
-        self.assertFalse(PatientMobileOTP.objects.get(phone_number=self.PHONE).is_used)
+        self.assertFalse(MobileOTP.objects.get(phone_number=self.PHONE).is_used)
 
     def test_otp_within_validity_window_works(self):
         self._send()
         # age the OTP to just inside the validity window
         recent = care_now() - timedelta(minutes=9)
-        PatientMobileOTP.objects.filter(phone_number=self.PHONE).update(
-            created_date=recent
-        )
+        MobileOTP.objects.filter(phone_number=self.PHONE).update(created_date=recent)
         resp = self._login(self.DEV_OTP)
         self.assertEqual(resp.status_code, 200)

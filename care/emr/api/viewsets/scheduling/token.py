@@ -5,6 +5,7 @@ from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
+from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models.scheduling.token import Token, TokenQueue, TokenSubQueue
@@ -69,6 +70,8 @@ class TokenViewSet(EMRModelViewSet):
             raise ValidationError("Category and Queue are not in the same facility")
         if instance.sub_queue and instance.sub_queue.facility != queue.facility:
             raise ValidationError("Sub Queue and Queue are not in the same facility")
+        if instance.sub_queue and instance.sub_queue.resource != queue.resource:
+            raise ValidationError("Sub Queue and Queue are not in the same resource")
         with Lock(f"booking:token:{queue.id}"), transaction.atomic():
             instance.number = (
                 Token.objects.filter(queue=queue, category=instance.category).count()
@@ -127,13 +130,19 @@ class TokenViewSet(EMRModelViewSet):
             resource,
             self.request.user,
         ):
-            raise PermissionDenied("You do not have permission to create token queue")
+            raise PermissionDenied("You do not have permission to create token")
 
     def authorize_update(self, request_obj, model_instance):
-        self.authorize_create(model_instance)
+        resource = model_instance.queue.resource
+        if not AuthorizationController.call(
+            "can_write_token",
+            resource,
+            self.request.user,
+        ):
+            raise PermissionDenied("You do not have permission to update token")
 
     def authorize_destroy(self, instance):
-        self.authorize_destroy(instance)
+        self.authorize_update({}, instance)
 
     def authorize_retrieve(self, model_instance):
         _, queue = self.get_queue_obj()
@@ -143,7 +152,7 @@ class TokenViewSet(EMRModelViewSet):
             resource,
             self.request.user,
         ):
-            raise PermissionDenied("You do not have permission to create token queue")
+            raise PermissionDenied("You do not have permission to read token")
 
     def get_queryset(self):
         _, queue = self.get_queue_obj()
@@ -159,9 +168,7 @@ class TokenViewSet(EMRModelViewSet):
                 queue.resource,
                 self.request.user,
             ):
-                raise PermissionDenied(
-                    "You do not have permission to create token queue"
-                )
+                raise PermissionDenied("You do not have permission to list token")
             queryset = queryset.filter(queue=queue)
         return queryset
 
@@ -170,7 +177,7 @@ class TokenViewSet(EMRModelViewSet):
         obj = self.get_object()
         request_obj = SetCurrentTokenRequest(**request.data)
         queue = obj.queue
-        self.authorize_update(None, None)
+        self.authorize_update(None, obj)
         with transaction.atomic():
             sub_queue = get_object_or_404(
                 TokenSubQueue,
@@ -181,4 +188,4 @@ class TokenViewSet(EMRModelViewSet):
             sub_queue.save()
             obj.status = TokenStatusOptions.IN_PROGRESS.value
             obj.save()
-        return self.get_retrieve_pydantic_model().serialize(obj).to_json()
+        return Response(self.get_retrieve_pydantic_model().serialize(obj).to_json())

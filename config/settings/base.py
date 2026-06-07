@@ -522,6 +522,12 @@ OTP_LOCKOUT_MINUTES = env.int("OTP_LOCKOUT_MINUTES", default=60)
 # Duration (in minutes) an OTP remains valid for verification after it is generated
 OTP_VALIDITY_MINUTES = env.int("OTP_VALIDITY_MINUTES", default=10)
 
+# Duration (in hours) an OTP stays valid for the password reset flow
+OTP_REPEAT_WINDOW = env.int("OTP_REPEAT_WINDOW", default=6)
+
+# Maximum number of OTPs that can be sent within OTP_REPEAT_WINDOW (password reset flow)
+OTP_MAX_REPEATS_WINDOW = env.int("OTP_MAX_REPEATS_WINDOW", default=10)
+
 # Rate Limiting
 # ------------------------------------------------------------------------------
 DISABLE_RATELIMIT = env.bool("DISABLE_RATELIMIT", default=False)
@@ -706,7 +712,15 @@ DJANGO_REST_MULTITOKENAUTH_REQUIRE_USABLE_PASSWORD = False
 
 SMS_BACKEND = "care.utils.sms.backend.sns.SnsBackend"
 
-OTP_SMS_TEMPLATE_PATH = env("OTP_SMS_TEMPLATE", default="sms/otp_sms.txt")
+OTP_SMS_LOGIN_CONTENT = env(
+    "OTP_SMS_LOGIN_CONTENT",
+    default="Care OTP for login is {otp}. Please do not share this with anyone.",
+)
+
+OTP_SMS_RESET_PASSWORD_CONTENT = env(
+    "OTP_SMS_RESET_PASSWORD_CONTENT",
+    default="Care OTP for password reset is {otp}. Please do not share this with anyone.",
+)
 
 USER_CREATE_PASSWORD_EMAIL_TEMPLATE_PATH = env(
     "USER_CREATE_PASSWORD_TEMPLATE_PATH", default="email/user_create_password.html"

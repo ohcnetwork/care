@@ -5,7 +5,7 @@ from care.utils.models.base import BaseModel
 from care.utils.models.validators import mobile_or_landline_number_validator
 
 
-class PatientMobileOTP(BaseModel):
+class MobileOTP(BaseModel):
     is_used = models.BooleanField(default=False)
     phone_number = models.CharField(
         max_length=14, validators=[mobile_or_landline_number_validator]
