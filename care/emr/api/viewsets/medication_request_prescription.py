@@ -92,7 +92,8 @@ class MedicationRequestPrescriptionViewSet(
 
     def perform_update(self, instance):
         if getattr(instance, "_pharmacist_mode", False):
-            instance.save(update_fields=["status"])
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["status", "updated_by", "modified_date"])
         else:
             super().perform_update(instance)
 

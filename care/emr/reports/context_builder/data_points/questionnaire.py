@@ -1,7 +1,5 @@
 from types import SimpleNamespace
 
-from faker import Faker
-
 from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
 from care.emr.reports.context_builder.data_points.base import (
     Field,
@@ -9,6 +7,9 @@ from care.emr.reports.context_builder.data_points.base import (
 )
 from care.emr.reports.context_builder.data_points.user import (
     SingleUserRelatedContextBuilder,
+)
+from care.emr.resources.questionnaire_response.spec import (
+    QuestionnaireResponseStatusChoices,
 )
 
 
@@ -55,13 +56,13 @@ class QuestionnaireContextBuilder(QuerysetContextBuilder):
     title = Field(
         display="Title",
         mapping=lambda obj: obj.questionnaire.title,
-        preview_fn=lambda: Faker().catch_phrase(),
+        preview_value="Sample Questionnaire Title",
         description="Title of the questionnaire",
     )
     description = Field(
         display="Description",
         mapping=lambda obj: obj.questionnaire.description,
-        preview_fn=lambda: Faker().catch_phrase(),
+        preview_value="Sample questionnaire description",
         description="Description of the questionnaire",
     )
     responses = Field(
@@ -80,7 +81,9 @@ class QuestionnaireContextBuilder(QuerysetContextBuilder):
 
     def get_context(self):
         return QuestionnaireResponse.objects.filter(
-            encounter=self.parent_context, questionnaire__isnull=False
+            encounter=self.parent_context,
+            questionnaire__isnull=False,
+            status=QuestionnaireResponseStatusChoices.completed.value,
         )
 
     def perform_extra_filters(self, qs, **kwargs):

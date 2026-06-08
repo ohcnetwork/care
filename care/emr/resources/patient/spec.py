@@ -268,17 +268,13 @@ class PatientRetrieveSpec(
     @classmethod
     def perform_extra_serialization(cls, mapping, obj, *args, **kwargs):
         from care.emr.resources.organization.spec import OrganizationReadSpec
-        from care.emr.resources.user.spec import UserSpec
 
         super().perform_extra_serialization(mapping, obj, *args, **kwargs)
         if obj.geo_organization:
             mapping["geo_organization"] = OrganizationReadSpec.serialize(
                 obj.geo_organization
             ).to_json()
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by).to_json()
+        cls.serialize_audit_users(mapping, obj)
         if obj.instance_identifiers:
             mapping["instance_identifiers"] = [
                 {
