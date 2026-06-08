@@ -27,6 +27,14 @@ class ResetPasswordOTP(BaseOTPType):
     def render_content(cls, otp: str) -> str:
         return settings.OTP_SMS_RESET_PASSWORD_CONTENT.format(otp=otp)
 
+    @classmethod
+    def send_window(cls) -> timedelta:
+        return timedelta(hours=settings.OTP_REPEAT_WINDOW)
+
+    @classmethod
+    def max_sends(cls) -> int:
+        return settings.OTP_MAX_REPEATS_WINDOW
+
 
 class OTPResetConfirmSpec(OTPRequestBaseSpec):
     otp: str = Field(min_length=settings.OTP_LENGTH, max_length=settings.OTP_LENGTH)
@@ -46,12 +54,7 @@ class OTPResetPasswordView(EMRBaseViewSet):
         if not User.objects.filter(phone_number=data.phone_number).exists():
             return Response({"otp": "generated"})
 
-        try:
-            send_otp(data.phone_number, otp_type=ResetPasswordOTP)
-        except ValueError as e:
-            raise ValidationError({"phone_number": "Unable to send OTP"}) from e
-        except Exception:
-            return Response({"error": "Unable to send OTP"}, status=400)
+        send_otp(data.phone_number, otp_type=ResetPasswordOTP)
         return Response({"otp": "generated"})
 
     @action(detail=False, methods=["POST"])

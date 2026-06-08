@@ -82,7 +82,8 @@ class OTPResetPasswordAPITestCase(CareAPITestBase):
         response = self._send()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(
-            "Unable to send OTP", response.data["errors"][0]["msg"]["phone_number"]
+            "Max Retries has exceeded",
+            response.data["errors"][0]["msg"]["phone_number"],
         )
 
     def test_confirm_otp_with_valid_otp(self):

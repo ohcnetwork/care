@@ -6,7 +6,6 @@ from datetime import timedelta
 from django.conf import settings
 from django.db import transaction
 from django.db.models import Sum
-from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, Field, field_validator
 from rest_framework.decorators import action
@@ -33,41 +32,27 @@ class BaseOTPType:
     def render_content(cls, otp: str) -> str:
         raise NotImplementedError
 
+    @classmethod
+    def send_window(cls) -> timedelta:
+        raise NotImplementedError
+
+    @classmethod
+    def max_sends(cls) -> int:
+        raise NotImplementedError
+
 
 class LoginOTP(BaseOTPType):
     @classmethod
     def render_content(cls, otp: str) -> str:
         return settings.OTP_SMS_LOGIN_CONTENT.format(otp=otp)
 
+    @classmethod
+    def send_window(cls) -> timedelta:
+        return timedelta(minutes=settings.OTP_SEND_WINDOW_MINUTES)
 
-def send_otp(phone_number, otp_type: BaseOTPType):
-    sent_otps = MobileOTP.objects.filter(
-        created_date__gte=(
-            timezone.now() - timedelta(hours=settings.OTP_REPEAT_WINDOW)
-        ),
-        is_used=False,
-        phone_number=phone_number,
-    )
-    if sent_otps.count() >= settings.OTP_MAX_REPEATS_WINDOW:
-        raise ValueError("Max Retries has exceeded")
-
-    random_otp = ""
-    if settings.USE_SMS:
-        random_otp = generate_otp(settings.OTP_LENGTH)
-        try:
-            content = otp_type.render_content(random_otp)
-            sms.send_text_message(
-                content=content,
-                recipients=[phone_number],
-            )
-        except Exception as e:
-            raise Exception("Error while sending OTP. Contact admin.") from e
-    elif settings.IS_PRODUCTION:
-        random_otp = generate_otp(settings.OTP_LENGTH)
-    else:
-        random_otp = "45612"
-
-    MobileOTP.objects.create(phone_number=phone_number, otp=random_otp)
+    @classmethod
+    def max_sends(cls) -> int:
+        return settings.OTP_MAX_SENDS_PER_WINDOW
 
 
 class OTPRequestBaseSpec(BaseModel):
@@ -88,18 +73,57 @@ class OTPLoginSpec(OTPRequestBaseSpec):
     otp: str = Field(min_length=settings.OTP_LENGTH, max_length=settings.OTP_LENGTH)
 
 
+def failure_count(phone_number: str) -> int:
+    since = care_now() - timedelta(minutes=settings.OTP_LOCKOUT_MINUTES)
+    total = MobileOTP.objects.filter(
+        phone_number=phone_number,
+        modified_date__gte=since,
+        failed_attempts__gt=0,
+    ).aggregate(total=Sum("failed_attempts"))["total"]
+    return total or 0
+
+
+def send_otp(phone_number, otp_type: type[BaseOTPType]):
+    if failure_count(phone_number) >= settings.OTP_MAX_FAILURES:
+        raise Throttled(detail="Too many failed login attempts. Try again later.")
+
+    with OTPSendLock(phone_number):
+        sent_otps = MobileOTP.objects.filter(
+            created_date__gte=care_now() - otp_type.send_window(),
+            phone_number=phone_number,
+        )
+        if sent_otps.count() >= otp_type.max_sends():
+            raise ValidationError({"phone_number": "Max Retries has exceeded"})
+
+        random_otp = ""
+        if settings.USE_SMS:
+            random_otp = generate_otp(settings.OTP_LENGTH)
+            try:
+                content = otp_type.render_content(random_otp)
+                sms.send_text_message(
+                    content=content,
+                    recipients=[phone_number],
+                )
+            except Exception as e:
+                logger.error(e)
+                raise ValidationError(
+                    {"error": "Error while sending OTP. Contact admin."}
+                ) from e
+        elif not settings.IS_PRODUCTION:
+            random_otp = "45612"
+        else:
+            raise APIException("SMS Backend not configured")
+
+        # disable all other existing otp before creating a new one
+        MobileOTP.objects.filter(phone_number=phone_number, is_used=False).update(
+            is_used=True
+        )
+        MobileOTP.objects.create(phone_number=phone_number, otp=random_otp)
+
+
 class OTPLoginView(EMRBaseViewSet):
     authentication_classes = []
     permission_classes = []
-
-    def failure_count(self, phone_number: str) -> int:
-        since = care_now() - timedelta(minutes=settings.OTP_LOCKOUT_MINUTES)
-        total = MobileOTP.objects.filter(
-            phone_number=phone_number,
-            modified_date__gte=since,
-            failed_attempts__gt=0,
-        ).aggregate(total=Sum("failed_attempts"))["total"]
-        return total or 0
 
     @extend_schema(
         request=OTPRequestBaseSpec,
@@ -107,45 +131,7 @@ class OTPLoginView(EMRBaseViewSet):
     @action(detail=False, methods=["POST"])
     def send(self, request):
         data = OTPRequestBaseSpec(**request.data)
-
-        if self.failure_count(data.phone_number) >= settings.OTP_MAX_FAILURES:
-            raise Throttled(detail="Too many failed login attempts. Try again later.")
-
-        with OTPSendLock(data.phone_number):
-            sent_otps = MobileOTP.objects.filter(
-                created_date__gte=(
-                    care_now() - timedelta(minutes=settings.OTP_SEND_WINDOW_MINUTES)
-                ),
-                phone_number=data.phone_number,
-            )
-            if sent_otps.count() >= settings.OTP_MAX_SENDS_PER_WINDOW:
-                raise ValidationError({"phone_number": "Max Retries has exceeded"})
-
-            random_otp = ""
-            if settings.USE_SMS:
-                random_otp = generate_otp(settings.OTP_LENGTH)
-                try:
-                    content = LoginOTP.render_content(random_otp)
-                    sms.send_text_message(
-                        content=content,
-                        recipients=[data.phone_number],
-                    )
-                except Exception as e:
-                    logger.error(e)
-                    return Response(
-                        {"error": "Error while sending OTP. Contact admin."},
-                        status=400,
-                    )
-            elif not settings.IS_PRODUCTION:
-                random_otp = "45612"
-            else:
-                raise APIException("SMS Backend not configured")
-
-            # disable all other existing otp before creating a new one
-            MobileOTP.objects.filter(
-                phone_number=data.phone_number, is_used=False
-            ).update(is_used=True)
-            MobileOTP.objects.create(phone_number=data.phone_number, otp=random_otp)
+        send_otp(data.phone_number, otp_type=LoginOTP)
         return Response({"otp": "generated"})
 
     @extend_schema(
@@ -155,7 +141,7 @@ class OTPLoginView(EMRBaseViewSet):
     def login(self, request):
         data = OTPLoginSpec(**request.data)
 
-        if self.failure_count(data.phone_number) >= settings.OTP_MAX_FAILURES:
+        if failure_count(data.phone_number) >= settings.OTP_MAX_FAILURES:
             raise Throttled(detail="Too many failed login attempts. Try again later.")
 
         expired = False
