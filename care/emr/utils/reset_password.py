@@ -94,6 +94,6 @@ def send_password_reset_email(user, mail_type):
         )
         msg.content_subtype = "html"
         msg.send()
-
-    except Exception as err:
-        logger.error("Failed to send password reset email: %s", err)
+    except Exception as e:
+        logger.error("Error sending password reset email: %s", e)
+        raise e

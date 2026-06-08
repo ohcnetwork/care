@@ -1,5 +1,3 @@
-from faker import Faker
-
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     SingleObjectContextBuilder,
@@ -14,7 +12,7 @@ class SingleUserRelatedContextBuilder(SingleObjectContextBuilder):
     full_name = Field(
         display="Full Name",
         mapping="full_name",
-        preview_fn=lambda: Faker().name(),
+        preview_value="John Doe",
         description="Full name of the user",
     )
     id = Field(

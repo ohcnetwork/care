@@ -124,7 +124,7 @@ class UserSpec(UserBaseSpec):
 
 class UserRetrieveSpec(UserSpec):
     geo_organization: dict
-    created_by: UserSpec
+    created_by: dict | None = None
     email: str
     flags: list[str] = []
     is_service_account: bool
