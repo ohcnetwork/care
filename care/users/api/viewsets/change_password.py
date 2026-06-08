@@ -27,7 +27,6 @@ class ChangePasswordSpec(BaseModel):
     @model_validator(mode="after")
     def validate_passwords(self, info: ValidationInfo):
         user = info.context.get("user")
-
         if not user.check_password(self.old_password):
             msg = "Wrong password entered. Please check your password."
             raise ValueError(msg)
@@ -42,7 +41,6 @@ class ChangePasswordSpec(BaseModel):
             )
         except DjangoValidationError as e:
             raise ValueError(e.messages) from e
-
         return self
 
 
