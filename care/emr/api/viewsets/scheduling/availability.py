@@ -110,7 +110,7 @@ def convert_availability_and_exceptions_to_slots(availabilities, exceptions, day
 
             if not conflicting:
                 slots[
-                    f"{current_time.time()}-{(current_time + datetime.timedelta(minutes=slot_size_in_minutes)).time()}"
+                    f"{availability_id}-{current_time.time()}-{(current_time + datetime.timedelta(minutes=slot_size_in_minutes)).time()}"
                 ] = {
                     "start_time": current_time.time(),
                     "end_time": (
@@ -193,7 +193,7 @@ def lock_create_appointment(token_slot, patient, created_by, note):
             charge_item.performer_actor = token_slot.resource.user
             charge_item.save()
             booking.charge_item = charge_item
-            booking.save(update_fields=["charge_item"])
+            booking.save(update_fields=["charge_item", "modified_date"])
         return booking
 
 
@@ -260,7 +260,7 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         if is_public is True:
             created_slots = created_slots.filter(availability__schedule__is_public=True)
         for slot in created_slots:
-            slot_key = f"{timezone.make_naive(slot.start_datetime).time()}-{timezone.make_naive(slot.end_datetime).time()}"
+            slot_key = f"{slot.availability.id}-{timezone.make_naive(slot.start_datetime).time()}-{timezone.make_naive(slot.end_datetime).time()}"
             if (
                 slot_key in slots
                 and slots[slot_key]["availability_id"] == slot.availability.id

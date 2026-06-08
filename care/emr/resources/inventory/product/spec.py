@@ -2,9 +2,7 @@ import datetime
 from decimal import Decimal
 from enum import Enum
 
-from django.conf import settings
-from jsonschema import validate
-from pydantic import UUID4, BaseModel, Field, field_validator
+from pydantic import UUID4, BaseModel, Field
 
 from care.emr.extensions.base import ExtensionResource
 from care.emr.extensions.validator import ExtensionValidator
@@ -41,15 +39,6 @@ class BaseProductSpec(EMRResource):
     extensions: dict
     standard_pack_size: int | None = None
     purchase_price: Decimal | None = Field(None, max_digits=20, decimal_places=6)
-
-    @field_validator("extensions")
-    @classmethod
-    def validate_extensions(cls, v):
-        try:
-            validate(v, settings.PRODUCT_EXTENSIONS_JSON_SCHEMA)
-        except Exception as e:
-            raise ValueError("Invalid additional metadata") from e
-        return v
 
 
 class ProductWriteSpec(ExtensionValidator, BaseProductSpec):

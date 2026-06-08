@@ -116,21 +116,19 @@ class AccountViewSet(
                 Encounter, external_id=request_obj.primary_encounter
             )
             if encounter.facility != model_instance.facility:
-                raise PermissionDenied(
-                    "Primary encounter is not associated with the facility"
+                raise ValidationError(
+                    "Primary encounter must belong to the same facility"
                 )
             if encounter.patient != model_instance.patient:
-                raise PermissionDenied(
-                    "Primary encounter is not associated with the patient"
+                raise ValidationError(
+                    "Primary encounter must belong to the same patient"
                 )
             if (
                 Account.objects.exclude(id=model_instance.id)
                 .filter(primary_encounter=encounter)
                 .exists()
             ):
-                raise PermissionDenied(
-                    "Encounter is already associated with an account"
-                )
+                raise ValidationError("Encounter is already associated with an account")
         if not AuthorizationController.call(
             "can_update_account_in_facility",
             self.request.user,
