@@ -71,7 +71,8 @@ class ObservationDefinitionViewSet(
         facility = None
         if model_obj:
             queryset = queryset.exclude(id=model_obj.id)
-            facility = str(model_obj.facility.external_id)
+            if model_obj.facility:
+                facility = str(model_obj.facility.external_id)
         else:
             facility = instance.facility
 
