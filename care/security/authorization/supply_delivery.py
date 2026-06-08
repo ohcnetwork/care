@@ -24,5 +24,15 @@ class SupplyDeliveryAccess(AuthorizationHandler):
             orgs=location.facility_organization_cache,
         )
 
+    def can_write_facility_external_supply_delivery(self, user, location):
+        """
+        Check if the user has permission to view supply deliveries in the location
+        """
+        return self.check_permission_in_facility_organization(
+            [SupplyDeliveryPermissions.can_write_external_supply_delivery.name],
+            user,
+            orgs=location.facility_organization_cache,
+        )
+
 
 AuthorizationController.register_internal_controller(SupplyDeliveryAccess)
