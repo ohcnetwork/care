@@ -146,6 +146,9 @@ class TokenViewSet(EMRModelViewSet):
 
     def authorize_retrieve(self, model_instance):
         _, queue = self.get_queue_obj()
+        if queue != model_instance.queue:
+            raise ValidationError("Token does not belong to the specified queue")
+
         resource = queue.resource
         if not AuthorizationController.call(
             "can_list_token",

@@ -629,6 +629,30 @@ class TokenAPITests(CareAPITestBase):
             "You do not have permission to read token", response.data["detail"]
         )
 
+    def test_retrieve_token_with_invalid_queue_external_id(self):
+        """Test retrieving a token with invalid queue external id."""
+        self.client.force_authenticate(user=self.superuser)
+        token = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=self.token_queue,
+            facility=self.facility,
+            status=TokenStatusOptions.CREATED,
+        )
+        another_token_queue = self.create_queue(
+            facility=self.facility,
+            resource=self.schedule_resource,
+            date=timezone.now().date(),
+        )
+        response = self.client.get(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(another_token_queue.external_id),
+                str(token.external_id),
+            )
+        )
+        self.assertEqual(response.status_code, 400)
+
     # Tests for Token Listing
 
     def test_list_tokens_as_superuser(self):
