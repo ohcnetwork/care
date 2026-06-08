@@ -267,7 +267,6 @@ class QuestionnaireReadSpec(QuestionnaireBaseSpec):
     questions: list
     created_by: dict | None = None
     updated_by: dict | None = None
-    tags: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
