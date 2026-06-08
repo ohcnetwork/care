@@ -41,8 +41,8 @@ class EMRFavoritesMixin:
             favorite_lists_cache_key(user, self.FAVORITE_RESOURCE, facility)
         )
         if favorite_lists is None:
-            favorite_list_obj = list(
-                set(
+            favorite_lists = list(
+                dict.fromkeys(
                     UserResourceFavorites.objects.filter(
                         user=user,
                         resource_type=self.FAVORITE_RESOURCE,
@@ -54,7 +54,7 @@ class EMRFavoritesMixin:
             )
             cache.set(
                 favorite_lists_cache_key(user, self.FAVORITE_RESOURCE, facility),
-                favorite_list_obj,
+                favorite_lists,
             )
         return Response({"lists": favorite_lists})
 
@@ -75,7 +75,10 @@ class EMRFavoritesMixin:
         favorite_list_obj.favorites = list(dict.fromkeys(favorite_list_obj.favorites))[
             : settings.MAX_FAVORITES_PER_LIST
         ]
-        favorite_list_obj.save(update_fields=["favorites"])
+        favorite_list_obj.updated_by = self.request.user
+        favorite_list_obj.save(
+            update_fields=["favorites", "updated_by", "modified_date"]
+        )
         return Response({})
 
     @action(detail=True, methods=["POST"])
@@ -110,5 +113,8 @@ class EMRFavoritesMixin:
             UserResourceFavorites.objects.filter(id=favorite_list_obj.id).delete()
             return Response({})
         favorite_list_obj.favorites = list(favorite_list_obj_favorites)
-        favorite_list_obj.save(update_fields=["favorites"])
+        favorite_list_obj.updated_by = self.request.user
+        favorite_list_obj.save(
+            update_fields=["favorites", "updated_by", "modified_date"]
+        )
         return Response({})

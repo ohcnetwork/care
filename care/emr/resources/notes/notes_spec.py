@@ -5,7 +5,6 @@ from pydantic import UUID4
 
 from care.emr.models.notes import NoteMessage
 from care.emr.resources.base import EMRResource
-from care.emr.resources.user.spec import UserSpec
 
 
 class NoteMessageSpec(EMRResource):
@@ -40,16 +39,12 @@ class NoteMessageUpdateSpec(NoteMessageSpec):
 class NoteMessageReadSpec(NoteMessageSpec):
     message_history: dict
 
-    created_by: UserSpec = {}
-    updated_by: UserSpec = {}
+    created_by: dict | None = None
+    updated_by: dict | None = None
     created_date: datetime.datetime
     modified_date: datetime.datetime
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by).to_json()
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by).to_json()
+        cls.serialize_audit_users(mapping, obj)

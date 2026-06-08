@@ -109,6 +109,9 @@ class QuestionnaireResponseTemplateViewSet(
         ):
             raise PermissionDenied("Access Denied to Questionnaire Response Template")
 
+    def authorize_destroy(self, instance):
+        return self.authorize_update(None, instance)
+
     def get_queryset(self):
         base_queryset = super().get_queryset()
         user_organization_ids = list(

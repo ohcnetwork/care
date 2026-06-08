@@ -92,6 +92,17 @@ class DeliveryOrderViewSet(
             return False
         return True
 
+    def authorize_location_external_write(self, location_obj, raise_error=True):
+        if not AuthorizationController.call(
+            "can_write_facility_external_supply_delivery",
+            self.request.user,
+            location_obj,
+        ):
+            if raise_error:
+                raise PermissionDenied("Cannot write supply requests")
+            return False
+        return True
+
     def perform_create(self, instance):
         if (
             instance.origin
@@ -101,6 +112,16 @@ class DeliveryOrderViewSet(
                 "Origin and destination must be in the same facility"
             )
         return super().perform_create(instance)
+
+    def authorize_order_write(self, order):
+        if order.origin:
+            allowed = self.authorize_location_write(order.origin, raise_error=False)
+        else:
+            allowed = self.authorize_location_external_write(
+                order.destination, raise_error=False
+            )
+        if not allowed:
+            raise PermissionDenied("Cannot write supply requests")
 
     def perform_update(self, instance):
         with transaction.atomic():
@@ -116,13 +137,22 @@ class DeliveryOrderViewSet(
                 if (
                     instance.patient
                     and instance.status
+                    == SupplyDeliveryOrderStatusOptions.abandoned.value
+                ):
+                    raise ValidationError(
+                        "Cannot abandon a delivery order with medication return"
+                    )
+                if (
+                    instance.patient
+                    and instance.status
                     == SupplyDeliveryOrderStatusOptions.completed.value
                 ):
                     generate_return_invoice(instance)
-                if instance.patient and instance.status in [
-                    SupplyDeliveryOrderStatusOptions.abandoned.value,
-                    SupplyDeliveryOrderStatusOptions.entered_in_error.value,
-                ]:
+                if (
+                    instance.patient
+                    and instance.status
+                    == SupplyDeliveryOrderStatusOptions.entered_in_error.value
+                ):
                     cancel_return_invoice(instance)
 
             return super().perform_update(instance)
@@ -141,7 +171,7 @@ class DeliveryOrderViewSet(
             destination_location = get_object_or_404(
                 FacilityLocation, external_id=instance.destination
             )
-            self.authorize_location_write(destination_location)
+            self.authorize_location_external_write(destination_location)
 
     def authorize_update(self, request_obj, model_instance):
         """
@@ -149,10 +179,7 @@ class DeliveryOrderViewSet(
         else the owner is the origin.
         """
         # TODO: Order Destination permission to be figured out
-        if model_instance.origin:
-            self.authorize_location_write(model_instance.origin)
-        else:
-            self.authorize_location_write(model_instance.destination)
+        self.authorize_order_write(model_instance)
 
     def authorize_retrieve(self, model_instance):
         allowed = False
