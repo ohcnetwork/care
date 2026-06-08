@@ -109,6 +109,7 @@ from care.emr.api.viewsets.user import UserViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
 from care.security.api.viewsets.permissions import PermissionViewSet
 from care.security.api.viewsets.roles import RoleViewSet
+from care.users.api.otp_viewset.reset_password import OTPResetPasswordView
 from care.users.api.viewsets.plug_config import PlugConfigViewset
 
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()
@@ -123,6 +124,9 @@ router.register("files", FileUploadViewSet, basename="files")
 router.register("meta_artifacts", MetaArtifactViewSet, basename="meta_artifacts")
 
 router.register("otp", OTPLoginView, basename="otp-login")
+router.register(
+    "otp/password_reset", OTPResetPasswordView, basename="otp-password-reset"
+)
 
 router.register("otp/patient", PatientOTPView, basename="otp-patient")
 

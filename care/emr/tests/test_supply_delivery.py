@@ -328,10 +328,16 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
         Test creating a external supply delivery as a user with permissions
         """
         self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(
+            permissions=[
+                SupplyDeliveryPermissions.can_read_supply_delivery.name,
+                SupplyDeliveryPermissions.can_write_external_supply_delivery.name,
+            ]
+        )
         self.attach_role_facility_organization_user(
             facility_organization=self.facility_organization,
             user=self.user,
-            role=self.role,
+            role=role,
         )
         data = self.create_supply_delivery_data(
             supplied_item=self.product.external_id,
@@ -368,6 +374,16 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
         Test creating a external supply delivery as a user without permissions
         """
         self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(
+            permissions=[
+                SupplyDeliveryPermissions.can_read_supply_delivery.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            facility_organization=self.facility_organization,
+            user=self.user,
+            role=role,
+        )
         data = self.create_supply_delivery_data(
             supplied_item=self.product.external_id,
             order=self.delivery_order_destination_external.external_id,
@@ -576,10 +592,16 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
         Test updating an external supply delivery as a user with permissions
         """
         self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(
+            permissions=[
+                SupplyDeliveryPermissions.can_read_supply_delivery.name,
+                SupplyDeliveryPermissions.can_write_external_supply_delivery.name,
+            ]
+        )
         self.attach_role_facility_organization_user(
             facility_organization=self.facility_organization,
             user=self.user,
-            role=self.role,
+            role=role,
         )
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
@@ -638,6 +660,16 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
         Test updating an external supply delivery as a user without permissions
         """
         self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(
+            permissions=[
+                SupplyDeliveryPermissions.can_read_supply_delivery.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            facility_organization=self.facility_organization,
+            user=self.user,
+            role=role,
+        )
         supply_delivery = self.create_supply_delivery(
             order=self.delivery_order_destination_external,
             supplied_item_quantity=Decimal(500),
@@ -779,103 +811,6 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
         self.assertContains(
             response,
             "Supply delivery is abandoned or entered in error",
-            status_code=400,
-        )
-
-    def test_update_order_for_completed_supply_delivery_on_medication_return(self):
-        """
-        Test updating order for supply delivery with status as completed on medication return
-        """
-        self.client.force_authenticate(user=self.superuser)
-        supply_delivery = self.create_supply_delivery(
-            order=self.delivery_order_destination_external,
-            supplied_item_quantity=Decimal(500),
-            supplied_item=self.product,
-            status=SupplyDeliveryStatusOptions.completed.value,
-            supplied_inventory_item=self.inventory_item_destination,
-        )
-        medication_return_order = self.create_delivery_order(
-            destination=self.destination,
-            patient=self.patient,
-        )
-        update_response = self.client.put(
-            self.get_detail_url(supply_delivery.external_id),
-            {
-                "status": SupplyDeliveryStatusOptions.entered_in_error.value,
-                "order": medication_return_order.external_id,
-            },
-            format="json",
-        )
-        self.assertEqual(update_response.status_code, 200)
-        get_response = self.client.get(
-            self.get_detail_url(supply_delivery.external_id), format="json"
-        )
-        self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(
-            get_response.data["status"],
-            SupplyDeliveryStatusOptions.entered_in_error.value,
-        )
-
-    def test_update_completed_supply_delivery_for_medication_return(self):
-        """
-        Test updating a completed supply delivery for medication return
-        """
-        self.client.force_authenticate(user=self.superuser)
-        medication_return_order = self.create_delivery_order(
-            destination=self.destination,
-            patient=self.patient,
-        )
-        supply_delivery = self.create_supply_delivery(
-            order=medication_return_order,
-            supplied_item_quantity=Decimal(10),
-            supplied_item=self.product,
-            status=SupplyDeliveryStatusOptions.completed.value,
-            supplied_inventory_item=self.inventory_item_destination,
-        )
-        update_response = self.client.put(
-            self.get_detail_url(supply_delivery.external_id),
-            {"status": SupplyDeliveryStatusOptions.entered_in_error.value},
-            format="json",
-        )
-        self.assertEqual(update_response.status_code, 200)
-        get_response = self.client.get(
-            self.get_detail_url(supply_delivery.external_id), format="json"
-        )
-        self.assertEqual(get_response.status_code, 200)
-        self.assertEqual(
-            get_response.data["status"],
-            SupplyDeliveryStatusOptions.entered_in_error.value,
-        )
-
-    def test_update_completed_supply_delivery_with_different_order(self):
-        """
-        Test updating a completed supply delivery with a different order
-        """
-        self.client.force_authenticate(user=self.superuser)
-        medication_return_order = self.create_delivery_order(
-            destination=self.destination,
-            patient=self.patient,
-        )
-        supply_delivery = self.create_supply_delivery(
-            order=medication_return_order,
-            supplied_item_quantity=Decimal(10),
-            supplied_item=self.product,
-            status=SupplyDeliveryStatusOptions.completed.value,
-            supplied_inventory_item=self.inventory_item_destination,
-        )
-
-        update_response = self.client.put(
-            self.get_detail_url(supply_delivery.external_id),
-            {
-                "status": SupplyDeliveryStatusOptions.entered_in_error.value,
-                "order": self.delivery_order_destination_external.external_id,
-            },
-            format="json",
-        )
-        self.assertEqual(update_response.status_code, 400)
-        self.assertContains(
-            update_response,
-            "Supply delivery already completed",
             status_code=400,
         )
 

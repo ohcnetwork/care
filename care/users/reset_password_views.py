@@ -7,6 +7,7 @@ from django.contrib.auth.password_validation import (
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema
 from rest_framework import exceptions, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
@@ -179,7 +180,12 @@ class ResetPasswordRequestToken(GenericAPIView):
         if user and user.is_active:
             active_user_found = True
             mail_type = MailTypeChoices.reset.value
-            send_password_reset_email(user, mail_type)
+            try:
+                send_password_reset_email(user, mail_type)
+            except Exception as e:
+                raise ValidationError(
+                    "Failed to send password reset email. Please try again."
+                ) from e
 
         if not active_user_found and not getattr(
             settings, "DJANGO_REST_PASSWORDRESET_NO_INFORMATION_LEAKAGE", False
