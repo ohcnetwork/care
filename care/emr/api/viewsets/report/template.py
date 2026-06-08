@@ -12,7 +12,13 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.base import (
+    EMRBaseViewSet,
+    EMRCreateMixin,
+    EMRListMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+)
 from care.emr.models.report.template import Template
 from care.emr.reports.context_builder import (  # noqa
     Field,
@@ -52,7 +58,13 @@ class PreviewTemplateRequest(BaseModel):
     options: dict = {}
 
 
-class TemplateViewSet(EMRModelViewSet):
+class TemplateViewSet(
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+):
     lookup_field = "slug"
     database_model = Template
     pydantic_model = TemplateCreateSpec
@@ -170,7 +182,8 @@ class TemplateViewSet(EMRModelViewSet):
     )
     @action(detail=False, methods=["POST"])
     def preview(self, request, *args, **kwargs):
-        AuthorizationController.call("can_preview_template", request.user)
+        if not AuthorizationController.call("can_preview_template", request.user):
+            raise PermissionDenied("You do not have permission to preview templates")
 
         request_data = PreviewTemplateRequest.model_validate(request.data)
 
