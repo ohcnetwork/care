@@ -73,7 +73,6 @@ from care.emr.api.viewsets.patient import PatientViewSet
 from care.emr.api.viewsets.patient_identifier import PatientIdentifierConfigViewSet
 from care.emr.api.viewsets.payment_reconciliation import PaymentReconciliationViewSet
 from care.emr.api.viewsets.questionnaire import (
-    QuestionnaireTagsViewSet,
     QuestionnaireViewSet,
 )
 from care.emr.api.viewsets.questionnaire_response import QuestionnaireResponseViewSet
@@ -109,6 +108,7 @@ from care.emr.api.viewsets.user import UserViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
 from care.security.api.viewsets.permissions import PermissionViewSet
 from care.security.api.viewsets.roles import RoleViewSet
+from care.users.api.otp_viewset.reset_password import OTPResetPasswordView
 from care.users.api.viewsets.plug_config import PlugConfigViewset
 
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()
@@ -123,6 +123,9 @@ router.register("files", FileUploadViewSet, basename="files")
 router.register("meta_artifacts", MetaArtifactViewSet, basename="meta_artifacts")
 
 router.register("otp", OTPLoginView, basename="otp-login")
+router.register(
+    "otp/password_reset", OTPResetPasswordView, basename="otp-password-reset"
+)
 
 router.register("otp/patient", PatientOTPView, basename="otp-patient")
 
@@ -141,9 +144,7 @@ questionnaire_nested_router = NestedSimpleRouter(
 )
 
 router.register("form_submission", FormSubmissionViewSet, basename="form_submission")
-router.register(
-    "questionnaire_tag", QuestionnaireTagsViewSet, basename="questionnaire_tags"
-)
+
 router.register("supply_delivery", SupplyDeliveryViewSet, basename="supply_delivery")
 
 router.register("supply_request", SupplyRequestViewSet, basename="supply_request")
