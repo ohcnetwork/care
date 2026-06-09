@@ -63,7 +63,7 @@ class DiagnosticReportContextBuilder(QuerysetContextBuilder):
     )
     category = Field(
         display="Category",
-        mapping=lambda c: c.code.get("display") if c.code else "",
+        mapping=lambda c: c.category.get("display") if c.category else "",
         preview_value="Audiology",
         description="Service category of the report",
     )

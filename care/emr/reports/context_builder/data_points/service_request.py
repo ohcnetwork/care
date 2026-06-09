@@ -116,7 +116,7 @@ class ServiceRequestBaseContextBuilder(QuerysetContextBuilder):
         description="User who requested the service",
     )
     occurance = Field(
-        display="Occurance",
+        display="Occurence",
         preview_value="2023-01-01",
         description="Date and time when service should occur",
     )

@@ -62,7 +62,9 @@ class DiagnosisContextBuilder(QuerysetContextBuilder):
     severity = Field(
         display="Severity",
         preview_value="Mild",
-        mapping=lambda c: SEVERITY_DISPLAY.get(c.severity, c.severity.title()),
+        mapping=lambda c: (
+            SEVERITY_DISPLAY.get(c.severity, c.severity.title()) if c.severity else ""
+        ),
         description="Severity of the diagnosis",
     )
     verification_status = Field(
