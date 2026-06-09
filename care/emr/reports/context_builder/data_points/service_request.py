@@ -2,7 +2,6 @@ from django_filters import rest_framework as filters
 
 from care.emr.models import TagConfig
 from care.emr.models.service_request import ServiceRequest
-from care.emr.reports.context_builder import TagFilter
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
@@ -10,6 +9,7 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.user import (
     SingleUserRelatedContextBuilder,
 )
+from care.emr.reports.context_builder.filters import TagFilter
 from care.utils.filters.multiselect import MultiSelectFilter
 
 STATUS_CHOICE = {

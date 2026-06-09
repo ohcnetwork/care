@@ -27,7 +27,6 @@ from care.emr.reports.context_builder.data_points.patient import (
     IdentifiersContextBuilder,
     PatientMinimumContextBuilder,
     PatientTagContextBuilder,
-    TagFilter,
 )
 from care.emr.reports.context_builder.data_points.questionnaire import (
     QuestionnaireContextBuilder,
@@ -37,6 +36,7 @@ from care.emr.reports.context_builder.data_points.service_request import (
 )
 from care.emr.reports.context_builder.data_points.symptom import SymptomsContextBuilder
 from care.emr.reports.context_builder.data_points.user import SingleUserIdContextBuilder
+from care.emr.reports.context_builder.filters import TagFilter
 
 STATUS_DISPLAY = {
     "planned": "Planned",
