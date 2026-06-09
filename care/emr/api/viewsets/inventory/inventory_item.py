@@ -46,6 +46,12 @@ class InventoryItemViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
             raise PermissionDenied("You do not have permission to read inventory items")
 
     def authorize_retrieve(self, model_instance):
+        location = self.get_location_obj()
+        if location.id != model_instance.location.id:
+            raise PermissionDenied(
+                "Inventory item does not belong to the specified location"
+            )
+
         self.authorize_location_read(model_instance.location)
 
     def get_queryset(self):
