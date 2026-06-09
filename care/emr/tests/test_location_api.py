@@ -984,6 +984,27 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["id"], facility_location_encounter["id"])
 
+    def test_retrieve_facility_location_encounter_with_wrong_location(self):
+        another_location = self.create_facility_location()
+        facility_location_encounter = self.create_facility_location_encounter(
+            self.encounter
+        )
+        self.client.force_authenticate(self.super_user)
+        url = reverse(
+            "association-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "location_external_id": another_location["id"],
+                "external_id": facility_location_encounter["id"],
+            },
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["errors"][0]["msg"],
+            "Bed does not belong to the specified location",
+        )
+
     # DELETE TESTS
     def test_delete_without_permission(self):
         facility_location_encounter = self.create_facility_location_encounter(
