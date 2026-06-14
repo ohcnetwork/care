@@ -35,7 +35,7 @@ class PatientTagsMetric(EvaluationMetricBase):
         facility = self.context.get("facility")
         if not facility:
             return []
-        patient_facility_tags = patient.facility_tags.get(str(facility.external_id), [])
+        patient_facility_tags = patient.facility_tags.get(str(facility.id), [])
         patient_instance_tags = patient.instance_tags
         return [*patient_facility_tags, *patient_instance_tags]
 
