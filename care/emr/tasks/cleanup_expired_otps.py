@@ -17,5 +17,5 @@ def cleanup_expired_otps():
     Hard-deletes MobileOTP rows older than the lockout window
     """
     cutoff = care_now() - timedelta(minutes=settings.OTP_LOCKOUT_MINUTES)
-    count, _ = MobileOTP.objects.filter(created_date__lt=cutoff).delete()
+    count, _ = MobileOTP.objects.filter(modified_date__lt=cutoff).delete()
     logger.info("Deleted %d expired OTP rows", count)

@@ -83,10 +83,10 @@ def failure_count(phone_number: str) -> int:
 
 
 def send_otp(phone_number, otp_type: type[BaseOTPType]):
-    if failure_count(phone_number) >= settings.OTP_MAX_FAILURES:
-        raise Throttled(detail="Too many failed login attempts. Try again later.")
-
     with OTPSendLock(phone_number):
+        if failure_count(phone_number) >= settings.OTP_MAX_FAILURES:
+            raise Throttled(detail="Too many failed login attempts. Try again later.")
+
         sent_otps = MobileOTP.objects.filter(
             created_date__gte=care_now() - otp_type.send_window(),
             phone_number=phone_number,
@@ -140,11 +140,13 @@ class OTPLoginView(EMRBaseViewSet):
     def login(self, request):
         data = OTPLoginSpec(**request.data)
 
-        if failure_count(data.phone_number) >= settings.OTP_MAX_FAILURES:
-            raise Throttled(detail="Too many failed login attempts. Try again later.")
-
         expired = False
         with OTPVerifyLock(data.phone_number):
+            if failure_count(data.phone_number) >= settings.OTP_MAX_FAILURES:
+                raise Throttled(
+                    detail="Too many failed login attempts. Try again later."
+                )
+
             otp_object = (
                 MobileOTP.objects.filter(
                     phone_number=data.phone_number,
