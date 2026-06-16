@@ -120,10 +120,13 @@ class NoteMessageViewSet(
             Patient, external_id=self.kwargs["patient_external_id"]
         )
 
-    def perform_create(self, instance):
-        instance.thread = get_object_or_404(
+    def get_thread_obj(self):
+        return get_object_or_404(
             NoteThread, external_id=self.kwargs["thread_external_id"]
         )
+
+    def perform_create(self, instance):
+        instance.thread = self.get_thread_obj()
         if encounter_id := self.request.data.get("encounter"):
             encounter = get_object_or_404(Encounter, external_id=encounter_id)
             if encounter.patient != instance.thread.patient:
@@ -138,9 +141,7 @@ class NoteMessageViewSet(
         self.authorize_create({})
 
     def authorize_create(self, instance):
-        thread = get_object_or_404(
-            NoteThread, external_id=self.kwargs["thread_external_id"]
-        )
+        thread = self.get_thread_obj()
         if thread.encounter:
             allowed = AuthorizationController.call(
                 "can_update_encounter_clinical_data",
@@ -154,6 +155,11 @@ class NoteMessageViewSet(
         if not allowed:
             raise PermissionDenied("You do not have permission for this action")
 
+    def authorize_retrieve(self, model_instance):
+        thread = self.get_thread_obj()
+        if model_instance.thread != thread:
+            raise ValidationError("Message does not belong to the thread")
+
     def get_queryset(self):
         if not AuthorizationController.call(
             "can_view_clinical_data", self.request.user, self.get_patient_obj()
@@ -166,10 +172,13 @@ class NoteMessageViewSet(
                     raise PermissionDenied("Permission denied to user")
             else:
                 raise PermissionDenied("Permission denied to user")
-
-        return (
+        thread = self.get_thread_obj()
+        queryset = (
             super()
             .get_queryset()
-            .filter(thread__external_id=self.kwargs["thread_external_id"])
-            .order_by("-created_date")
+            .select_related("created_by", "updated_by")
+            .order_by("-modified_date")
         )
+        if self.action == "list":
+            return queryset.filter(thread=thread).order_by("-created_date")
+        return queryset
