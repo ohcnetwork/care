@@ -14,8 +14,8 @@ logger: Logger = get_task_logger(__name__)
 @shared_task
 def cleanup_expired_otps():
     """
-    Soft-deletes MobileOTP rows older than the lockout window
+    Hard-deletes MobileOTP rows older than the lockout window
     """
     cutoff = care_now() - timedelta(minutes=settings.OTP_LOCKOUT_MINUTES)
-    count = MobileOTP.objects.filter(created_date__lt=cutoff).update(deleted=True)
-    logger.info("Soft-deleted %d expired OTP rows", count)
+    count, _ = MobileOTP.objects.filter(created_date__lt=cutoff).delete()
+    logger.info("Deleted %d expired OTP rows", count)

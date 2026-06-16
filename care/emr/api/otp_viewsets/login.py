@@ -4,7 +4,6 @@ import string
 from datetime import timedelta
 
 from django.conf import settings
-from django.db import transaction
 from django.db.models import Sum
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, Field, field_validator
@@ -13,7 +12,7 @@ from rest_framework.exceptions import APIException, Throttled, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRBaseViewSet
-from care.emr.locks.otp import OTPSendLock
+from care.emr.locks.otp import OTPSendLock, OTPVerifyLock
 from care.facility.models.patient import MobileOTP
 from care.utils import sms
 from care.utils.models.validators import mobile_validator
@@ -145,10 +144,9 @@ class OTPLoginView(EMRBaseViewSet):
             raise Throttled(detail="Too many failed login attempts. Try again later.")
 
         expired = False
-        with transaction.atomic():
+        with OTPVerifyLock(data.phone_number):
             otp_object = (
-                MobileOTP.objects.select_for_update()
-                .filter(
+                MobileOTP.objects.filter(
                     phone_number=data.phone_number,
                     is_used=False,
                     created_date__gte=care_now()
