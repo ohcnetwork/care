@@ -68,8 +68,8 @@ class TagConfigBaseSpec(EMRResource):
 
 
 class TagConfigUpdateSpec(TagConfigBaseSpec):
-    facility_organization: UUID4 | None = None
-    organization: UUID4 | None = None
+    facility_organization: UUID4 | None
+    organization: UUID4 | None
 
     def perform_extra_deserialization(self, is_update, obj):
         if self.organization:
