@@ -1,6 +1,6 @@
 from django.db.models import Q
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import EMRBaseViewSet, EMRListMixin, EMRRetrieveMixin
@@ -47,24 +47,25 @@ class InventoryItemViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
 
     def authorize_retrieve(self, model_instance):
         location = self.get_location_obj()
+        self.authorize_location_read(model_instance.location)
         if location.id != model_instance.location.id:
-            raise PermissionDenied(
+            raise ValidationError(
                 "Inventory item does not belong to the specified location"
             )
-
-        self.authorize_location_read(model_instance.location)
 
     def get_queryset(self):
         queryset = super().get_queryset()
         location = self.get_location_obj()
-        self.authorize_location_read(location)
-        include_children = (
-            self.request.GET.get("include_children", "false").lower() == "true"
-        )
-        if include_children:
-            queryset = queryset.filter(
-                Q(location__parent_cache__overlap=[location.id]) | Q(location=location)
+        if self.action == "list":
+            self.authorize_location_read(location)
+            include_children = (
+                self.request.GET.get("include_children", "false").lower() == "true"
             )
-        else:
-            queryset = queryset.filter(location=location)
+            if include_children:
+                queryset = queryset.filter(
+                    Q(location__parent_cache__overlap=[location.id])
+                    | Q(location=location)
+                )
+            else:
+                queryset = queryset.filter(location=location)
         return queryset

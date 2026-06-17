@@ -652,6 +652,10 @@ class TokenAPITests(CareAPITestBase):
             )
         )
         self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Token does not belong to the specified queue",
+        )
 
     # Tests for Token Listing
 

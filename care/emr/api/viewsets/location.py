@@ -306,12 +306,12 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
     def authorize_retrieve(self, model_instance):
         location = self.get_location_obj()
         facility = self.get_facility_obj()
-        if location.id != model_instance.location.id:
-            raise ValidationError("Bed does not belong to the specified location")
         if not AuthorizationController.call(
             "can_list_facility_location_obj", self.request.user, facility, location
         ):
             raise PermissionDenied("You do not have permission to given location")
+        if location.id != model_instance.location.id:
+            raise ValidationError("Bed does not belong to the specified location")
 
     def reset_encounter_location_association(self, location):
         """
@@ -510,9 +510,7 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
                 "can_list_facility_location_obj", self.request.user, facility, location
             ):
                 raise PermissionDenied("You do not have permission to given location")
-            return FacilityLocationEncounter.objects.filter(location=location).order_by(
-                "-created_date"
-            )
+            return queryset.objects.filter(location=location).order_by("-created_date")
         return queryset
 
 

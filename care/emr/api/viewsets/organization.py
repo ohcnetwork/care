@@ -451,14 +451,14 @@ class OrganizationUsersViewSet(EMRModelViewSet):
 
     def authorize_retrieve(self, model_instance):
         organization = self.get_organization_obj()
-        if model_instance.organization != organization:
-            raise ValidationError("User does not belong to the organization")
         if not AuthorizationController.call(
             "can_list_organization_users_obj", self.request.user, organization
         ):
             raise PermissionDenied(
                 "User does not have the required permission to read user"
             )
+        if model_instance.organization != organization:
+            raise ValidationError("User does not belong to the organization")
 
     def get_queryset(self):
         """
@@ -478,5 +478,5 @@ class OrganizationUsersViewSet(EMRModelViewSet):
                 raise PermissionDenied(
                     "User does not have the required permission to list users"
                 )
-            return OrganizationUser.objects.filter(organization=organization)
+            return queryset.filter(organization=organization)
         return queryset

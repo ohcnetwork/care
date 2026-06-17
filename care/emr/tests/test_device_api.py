@@ -709,7 +709,7 @@ class TestDeviceLocationHistoryViewSet(DeviceBaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["count"], 1)
 
-    def test_retrive_device_location_history_with_mismatched_device(self):
+    def test_retrieve_device_location_history_with_mismatched_device(self):
         history = self.associate_location_with_device(self.device, self.location)
         other_device = self.create_device()
         url = reverse(
@@ -788,7 +788,7 @@ class TestDeviceEncounterHistoryViewSet(DeviceBaseTest):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["id"], history["id"])
 
-    def test_retrive_device_encounter_history_with_mismatched_device(self):
+    def test_retrieve_device_encounter_history_with_mismatched_device(self):
         history = self.associate_encounter_with_device(self.device, self.encounter)
         other_device = self.create_device()
         url = reverse(
@@ -931,7 +931,7 @@ class TestDeviceServiceHistoryViewSet(DeviceBaseTest):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 405)  # delete doesn't exist
 
-    def test_retrive_device_service_history_with_mismatched_device(self):
+    def test_retrieve_device_service_history_with_mismatched_device(self):
         history = self.create_device_service_history(self.device)
         other_device = self.create_device()
         url = reverse(

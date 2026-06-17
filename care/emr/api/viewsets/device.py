@@ -352,16 +352,16 @@ class DeviceLocationHistoryViewSet(EMRModelReadOnlyViewSet):
 
     def authorize_retrieve(self, model_instance):
         device = self.get_device()
-        if device.id != model_instance.device_id:
-            raise ValidationError(
-                "device does not match with the device location history"
-            )
         if not AuthorizationController.call(
             "can_read_device",
             self.request.user,
             device,
         ):
             raise PermissionDenied("You do not have permission to access the device")
+        if device.id != model_instance.device_id:
+            raise ValidationError(
+                "device does not match with the device location history"
+            )
 
     def get_queryset(self):
         device = self.get_device()
@@ -397,16 +397,16 @@ class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
 
     def authorize_retrieve(self, model_instance):
         device = self.get_device()
-        if device.id != model_instance.device_id:
-            raise ValidationError(
-                "device does not match with the device encounter history"
-            )
         if not AuthorizationController.call(
             "can_read_device",
             self.request.user,
             device,
         ):
             raise PermissionDenied("You do not have permission to access the device")
+        if device.id != model_instance.device_id:
+            raise ValidationError(
+                "device does not match with the device encounter history"
+            )
 
     def get_queryset(self):
         """
@@ -472,16 +472,16 @@ class DeviceServiceHistoryViewSet(
 
     def authorize_retrieve(self, model_instance):
         device = self.get_device()
-        if device.id != model_instance.device_id:
-            raise ValidationError(
-                "device does not match with the device service history"
-            )
         if not AuthorizationController.call(
             "can_read_device",
             self.request.user,
             device,
         ):
             raise PermissionDenied("You do not have permission to access the device")
+        if device.id != model_instance.device_id:
+            raise ValidationError(
+                "device does not match with the device service history"
+            )
 
     def perform_update(self, instance):
         if instance.edit_history and len(instance.edit_history) >= 50:  # noqa PLR2004
