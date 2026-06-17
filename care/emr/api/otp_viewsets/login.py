@@ -94,11 +94,12 @@ def send_otp(phone_number, otp_type: type[BaseOTPType]):
         if sent_otps.count() >= otp_type.max_sends():
             raise ValidationError({"phone_number": "Max Retries has exceeded"})
 
-        random_otp = ""
+        otp_value = (
+            generate_otp(settings.OTP_LENGTH) if settings.IS_PRODUCTION else "45612"
+        )
         if settings.USE_SMS:
-            random_otp = generate_otp(settings.OTP_LENGTH)
             try:
-                content = otp_type.render_content(random_otp)
+                content = otp_type.render_content(otp_value)
                 sms.send_text_message(
                     content=content,
                     recipients=[phone_number],
@@ -108,16 +109,14 @@ def send_otp(phone_number, otp_type: type[BaseOTPType]):
                 raise ValidationError(
                     {"error": "Error while sending OTP. Contact admin."}
                 ) from e
-        elif not settings.IS_PRODUCTION:
-            random_otp = "45612"
-        else:
+        elif settings.IS_PRODUCTION:
             raise APIException("SMS Backend not configured")
 
         # disable all other existing otp before creating a new one
         MobileOTP.objects.filter(phone_number=phone_number, is_used=False).update(
             is_used=True
         )
-        MobileOTP.objects.create(phone_number=phone_number, otp=random_otp)
+        MobileOTP.objects.create(phone_number=phone_number, otp=otp_value)
 
 
 class OTPLoginView(EMRBaseViewSet):
