@@ -510,7 +510,7 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
                 "can_list_facility_location_obj", self.request.user, facility, location
             ):
                 raise PermissionDenied("You do not have permission to given location")
-            return queryset.objects.filter(location=location).order_by("-created_date")
+            return queryset.filter(location=location).order_by("-created_date")
         return queryset
 
 
