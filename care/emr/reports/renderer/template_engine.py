@@ -37,7 +37,9 @@ class TemplateEngine:
         env.filters["currency"] = self._filter_currency
         env.filters["phone"] = self._filter_phone
 
+        env.globals["current_date"] = self._current_date
         env.globals["current_datetime"] = self._current_datetime
+        env.globals["current_time"] = self._current_time
 
         return env
 
@@ -145,8 +147,16 @@ class TemplateEngine:
         return phone
 
     @staticmethod
+    def _current_date() -> date:
+        return TemplateEngine._filter_date(care_now())
+
+    @staticmethod
     def _current_datetime() -> datetime:
-        return localtime(care_now())
+        return TemplateEngine._filter_datetime(care_now())
+
+    @staticmethod
+    def _current_time() -> str:
+        return TemplateEngine._filter_time(care_now())
 
     def validate_syntax(self, template_string: str) -> tuple[bool, str]:
         try:
