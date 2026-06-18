@@ -137,6 +137,7 @@ LOCAL_APPS = [
     "care.users",
     "care.audit_log",
     "care.emr",
+    "care.beckn",
 ]
 
 PLUGIN_APPS = manager.get_apps()
@@ -147,6 +148,13 @@ PLUGIN_CONFIGS = manager.get_config()
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + PLUGIN_APPS
+
+# Beckn NFH integration
+# Base URL of the ONIX BPP caller used to deliver on_* callbacks to the BAP.
+# When unset, the BPP webhook only returns callbacks synchronously (direct mode).
+BECKN_BPP_CALLER_URL = env("BECKN_BPP_CALLER_URL", default="")
+# Optional username whose User is recorded as created_by/updated_by.
+BECKN_SYSTEM_USERNAME = env("BECKN_SYSTEM_USERNAME", default="")
 
 # MIGRATIONS
 # ------------------------------------------------------------------------------
