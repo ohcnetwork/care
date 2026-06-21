@@ -5,17 +5,23 @@ from django.contrib.auth.password_validation import (
     get_password_validators,
     validate_password,
 )
-from django.utils import timezone
 from drf_spectacular.utils import extend_schema
 from pydantic import Field
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import Throttled, ValidationError
 from rest_framework.response import Response
 
-from care.emr.api.otp_viewsets.login import BaseOTPType, OTPRequestBaseSpec, send_otp
+from care.emr.api.otp_viewsets.login import (
+    BaseOTPType,
+    OTPRequestBaseSpec,
+    failure_count,
+    send_otp,
+)
 from care.emr.api.viewsets.base import EMRBaseViewSet
+from care.emr.locks.otp import OTPVerifyLock
 from care.facility.models.patient import MobileOTP
 from care.users.models import User
+from care.utils.time_util import care_now
 
 
 class OTPResetSendSpec(OTPRequestBaseSpec):
@@ -61,19 +67,37 @@ class OTPResetPasswordView(EMRBaseViewSet):
     @extend_schema(request=OTPResetConfirmSpec)
     def confirm(self, request):
         data = OTPResetConfirmSpec(**request.data)
-        otp_obj = (
-            MobileOTP.objects.filter(
-                phone_number=data.phone_number,
-                is_used=False,
-                created_date__gte=(
-                    timezone.now() - timedelta(hours=settings.OTP_REPEAT_WINDOW)
-                ),
+
+        expired = False
+        with OTPVerifyLock(data.phone_number):
+            if failure_count(data.phone_number) >= settings.OTP_MAX_FAILURES:
+                raise Throttled(detail="Too many failed attempts. Try again later.")
+
+            otp_obj = (
+                MobileOTP.objects.filter(
+                    phone_number=data.phone_number,
+                    is_used=False,
+                    created_date__gte=care_now()
+                    - timedelta(hours=settings.OTP_REPEAT_WINDOW),
+                )
+                .order_by("-created_date")
+                .first()
             )
-            .order_by("-created_date")
-            .first()
-        )
-        if not otp_obj or otp_obj.otp != data.otp:
-            raise ValidationError({"otp": "Invalid OTP"})
+
+            if not otp_obj or otp_obj.otp != data.otp:
+                if otp_obj:
+                    otp_obj.failed_attempts += 1
+                    if otp_obj.failed_attempts >= settings.OTP_MAX_VERIFY_ATTEMPTS:
+                        otp_obj.is_used = True
+                        expired = True
+                    otp_obj.save(
+                        update_fields=["failed_attempts", "is_used", "modified_date"]
+                    )
+                if expired:
+                    raise ValidationError(
+                        {"otp": "Too many wrong attempts. Please request a new OTP."}
+                    )
+                raise ValidationError({"otp": "Invalid OTP"})
 
         users = User.objects.filter(phone_number=data.phone_number)
         user_count = users.count()
@@ -92,6 +116,8 @@ class OTPResetPasswordView(EMRBaseViewSet):
                     status=409,
                 )
         user = users.first()
+        if user is None:
+            raise ValidationError({"otp": "Invalid OTP"})
 
         validate_password(
             data.password,
