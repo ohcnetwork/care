@@ -3,7 +3,6 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.urls import reverse
-from model_bakery import baker
 
 from care.emr.models.questionnaire import QuestionnaireResponse
 from care.security.permissions.encounter import EncounterPermissions
@@ -40,6 +39,7 @@ class QuestionnaireTestBase(CareAPITestBase):
             PatientPermissions.can_view_questionnaire_responses.name,
             PatientPermissions.can_view_clinical_data.name,
             EncounterPermissions.can_read_encounter_clinical_data.name,
+            EncounterPermissions.can_submit_encounter_questionnaire.name,
         ]
         self.role = self.create_role_with_permissions(permissions=self.permissions)
 
@@ -287,11 +287,6 @@ class QuestionnaireTestBase(CareAPITestBase):
         }
         return self._submit_questionnaire(payload)
 
-    def create_questionnaire_tag(self, **kwargs):
-        from care.emr.models import QuestionnaireTag
-
-        return baker.make(QuestionnaireTag, **kwargs)
-
     def _create_questionnaire(self, questions, **kwargs):
         """
         Creates a test questionnaire containing all supported question types.
@@ -311,7 +306,6 @@ class QuestionnaireTestBase(CareAPITestBase):
             "subject_type": kwargs.get("subject_type", "encounter"),
             "organizations": [str(self.organization.external_id)],
             "questions": questions,
-            "tags": [self.create_questionnaire_tag().external_id],
         }
 
         response = self.client.post(
