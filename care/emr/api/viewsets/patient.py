@@ -329,6 +329,7 @@ class PatientViewSet(EMRModelViewSet):
         if not PatientUser.objects.filter(user=user, patient=patient).exists():
             raise ValidationError("User does not exist")
         PatientUser.objects.filter(user=user, patient=patient).delete()
+        patient.save()
         return Response({})
 
     @action(detail=True, methods=["GET"])

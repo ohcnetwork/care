@@ -743,7 +743,7 @@ class DispenseOrderAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn(
-            "Dispense order can only be cancelled",
+            "Completed dispense order can only be cancelled",
             response.data["errors"][0]["msg"],
         )
         dispense_order.refresh_from_db()
@@ -766,7 +766,7 @@ class DispenseOrderAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 400)
         self.assertIn(
-            "Dispense order can only be cancelled",
+            "Completed dispense order can only be cancelled",
             response.data["errors"][0]["msg"],
         )
 
@@ -936,6 +936,32 @@ class DispenseOrderAPITestCase(CareAPITestBase):
         self.assertEqual(
             dispense_order.status,
             MedicationDispenseOrderStatusOptions.abandoned.value,
+        )
+
+    def test_cancel_non_completed_dispense_order_updates_related_records(self):
+        self.client.force_authenticate(user=self.superuser)
+        dispense_order = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Draft Order",
+            status=MedicationDispenseOrderStatusOptions.draft,
+            facility=self.facility,
+        )
+        dispenses = [
+            self.create_medication_dispense_for_order(dispense_order),
+            self.create_medication_dispense_for_order(dispense_order),
+        ]
+        response = self._put_status(
+            dispense_order, MedicationDispenseOrderStatusOptions.abandoned
+        )
+        self.assertEqual(response.status_code, 200)
+        dispense_order.refresh_from_db()
+        self.assertEqual(
+            dispense_order.status,
+            MedicationDispenseOrderStatusOptions.abandoned.value,
+        )
+        self._assert_cancelled_side_effects(
+            dispenses, MedicationDispenseStatus.cancelled.value
         )
 
     def test_cancel_completed_dispense_order_with_dispense_missing_authorizing_request(
