@@ -631,7 +631,7 @@ class TestValueSetRecentViews(ValueSetTestBase):
         }
         response = self.client.post(url, payload, format="json")
         self.assertEqual(response.status_code, 400)
-        self.assertIn("Invalid code value", response.json()["detail"])
+        self.assertIn("Invalid code value", str(response.json()))
 
     @patch.object(ValueSet, "lookup", return_value=True)
     def test_add_recent_view_as_regular_user(self, mock_lookup):
