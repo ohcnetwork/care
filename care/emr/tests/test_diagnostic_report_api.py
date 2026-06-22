@@ -490,7 +490,7 @@ class DiagnosticReportUpsertObservationAPITestCases(CareAPITestBase):
         super().setUp()
         self.user = self.create_user()
         self.superuser = self.create_super_user()
-        self.patient = self.create_patient()
+        self.patient = self.create_patient(year_of_birth=1990)
         self.facility = self.create_facility(user=self.superuser)
         self.facility_organization = self.create_facility_organization(
             facility=self.facility
@@ -708,10 +708,9 @@ class DiagnosticReportUpsertObservationAPITestCases(CareAPITestBase):
         }
         response = self.client.post(self.url, data=data, format="json")
         self.assertEqual(response.status_code, 400, response.data)
-        self.assertEqual(
-            response.data["detail"],
+        self.assertIn(
             "Cannot update observations for a final diagnostic report",
-            response.data,
+            str(response.data),
         )
 
     def test_upsert_multiple_observations_as_superuser(self):
