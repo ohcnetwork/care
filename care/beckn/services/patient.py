@@ -14,6 +14,7 @@ from care.beckn.mappers import (
     map_gender,
 )
 from care.beckn.services.identifiers import (
+    build_instance_identifiers,
     find_patient_by_health_ids,
     upsert_health_id_identifiers,
 )
@@ -37,23 +38,41 @@ def _match_existing_patient(health_ids: list[dict], phone_number: str | None):
     return None
 
 
+def _phone_from_contacts(contacts) -> str | None:
+    """Return a phone value from a list of Beckn ``contacts``/``telecom`` items."""
+    for contact in contacts or []:
+        if not isinstance(contact, dict):
+            continue
+        system = (contact.get("system") or contact.get("type") or "").lower()
+        value = contact.get("value") or contact.get("phone") or contact.get("number")
+        if value and (system in {"phone", "mobile", "sms", "tel", ""} or not system):
+            return value
+    return None
+
+
 def resolve_subject_phone(message: dict, participant: dict | None) -> str:
     """Resolve a phone number for the patient.
 
-    Prefers an explicit phone on the participant (``phone``/``telecom``), then
-    the notification roster SMS channel for the SUBJECT party.
+    Checks, in order: an explicit phone on the participant attributes
+    (``phone``/``phoneNumber``/``telecom``/``contacts``), the participant
+    ``descriptor``/``contacts`` (Beckn core), and finally the notification
+    roster SMS channel for the SUBJECT party. Falls back to a placeholder.
     """
     from care.beckn.mappers import get_contract_attributes
 
-    attributes = (participant or {}).get("participantAttributes", {}) or {}
-    explicit = attributes.get("phone") or attributes.get("phoneNumber")
-    if not explicit:
-        for telecom in attributes.get("telecom", []) or []:
-            if (telecom.get("system") or "").lower() == "phone" and telecom.get(
-                "value"
-            ):
-                explicit = telecom["value"]
-                break
+    participant = participant or {}
+    attributes = participant.get("participantAttributes", {}) or {}
+    descriptor = participant.get("descriptor", {}) or {}
+
+    explicit = (
+        attributes.get("phone")
+        or attributes.get("phoneNumber")
+        or descriptor.get("phone")
+        or descriptor.get("phoneNumber")
+        or _phone_from_contacts(attributes.get("telecom"))
+        or _phone_from_contacts(attributes.get("contacts"))
+        or _phone_from_contacts(participant.get("contacts"))
+    )
     if explicit:
         digits = str(explicit).strip()
         if digits:
@@ -61,7 +80,7 @@ def resolve_subject_phone(message: dict, participant: dict | None) -> str:
 
     contract_attributes = get_contract_attributes(message)
     roster = contract_attributes.get("notificationRoster", []) or []
-    participant_id = (participant or {}).get("id")
+    participant_id = participant.get("id")
     for entry in roster:
         channel = entry.get("channelRef", "") or ""
         if not channel.startswith("sms:"):
@@ -101,7 +120,7 @@ def find_or_create_patient(message: dict, participant: dict | None, facility, us
         phone_number=phone_number,
         date_of_birth=date_of_birth,
         geo_organization=get_default_geo_organization(facility),
-        instance_identifiers=health_ids,
+        instance_identifiers=build_instance_identifiers(health_ids),
         created_by=user,
         updated_by=user,
     )

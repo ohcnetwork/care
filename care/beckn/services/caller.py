@@ -12,6 +12,7 @@ so direct-to-Care testing (without ONIX) keeps working unchanged.
 """
 
 import logging
+import threading
 
 import requests
 from django.conf import settings
@@ -21,18 +22,8 @@ logger = logging.getLogger(__name__)
 DEFAULT_TIMEOUT = 10
 
 
-def deliver_callback(callback_action: str, payload: dict) -> bool:
-    """POST an ``on_*`` payload to the BPP caller, if configured.
-
-    Returns ``True`` when a caller URL is configured and the POST was attempted
-    (delivery mode), ``False`` when no caller is configured (direct mode).
-    Failures are logged but never raised, so the inbound webhook response is
-    unaffected by callback delivery problems.
-    """
-    base_url = getattr(settings, "BECKN_BPP_CALLER_URL", None)
-    if not base_url:
-        return False
-    url = f"{base_url.rstrip('/')}/{callback_action}"
+def _post_callback(url: str, callback_action: str, payload: dict) -> None:
+    """Blocking POST executed inside a background thread."""
     try:
         response = requests.post(url, json=payload, timeout=DEFAULT_TIMEOUT)
         logger.info(
@@ -45,4 +36,25 @@ def deliver_callback(callback_action: str, payload: dict) -> bool:
         logger.exception(
             "Failed to deliver Beckn callback '%s' to %s", callback_action, url
         )
+
+
+def deliver_callback(callback_action: str, payload: dict) -> bool:
+    """Fire-and-forget: spawn a daemon thread to POST the ``on_*`` payload.
+
+    The thread is started **before** the caller returns so the ACK reaches ONIX
+    immediately, avoiding the 502 that occurs when delivery blocks the response.
+    Returns ``True`` when a caller URL is configured (delivery mode), ``False``
+    when no caller is configured (direct mode).
+    """
+    base_url = getattr(settings, "BECKN_BPP_CALLER_URL", None)
+    if not base_url:
+        return False
+    url = f"{base_url.rstrip('/')}/{callback_action}"
+    thread = threading.Thread(
+        target=_post_callback,
+        args=(url, callback_action, payload),
+        daemon=True,
+        name=f"beckn-callback-{callback_action}",
+    )
+    thread.start()
     return True

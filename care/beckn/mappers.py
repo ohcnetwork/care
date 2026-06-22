@@ -3,6 +3,8 @@
 from datetime import date
 
 from care.beckn.constants import (
+    FLOW_APPOINTMENT,
+    FLOW_REFERRAL,
     LIFECYCLE_ACTIVE,
     LIFECYCLE_BOOKING_CONFIRMED,
     LIFECYCLE_CANCELLED,
@@ -94,6 +96,117 @@ def classify_transaction(context: dict, message: dict) -> str:
     if network_id.endswith("-t2"):
         return TXN_BOOKING
     return TXN_REFERRAL
+
+
+def resolve_flow(action: str, context: dict, message: dict) -> str:
+    """Route an inbound shared action to the referral or appointment flow.
+
+    The referral flow (T1/T2) drives a Care ``ResourceRequest``; the appointment
+    flow drives the Care scheduling system. ``select``/``init``/``confirm``/
+    ``status``/``cancel`` are shared between both, so the flow is resolved from
+    the contract discriminator, falling back to a stored-record lookup for thin
+    payloads (e.g. a ``status`` carrying only ``contract.id``).
+    """
+    if action == "discover":
+        return FLOW_APPOINTMENT
+
+    attributes = get_contract_attributes(message)
+    contract_type = (attributes.get("@type") or "").lower()
+    if "healthreferral" in contract_type:
+        return FLOW_REFERRAL
+    if "healthcontract" in contract_type or attributes.get("healthServiceType"):
+        return FLOW_APPOINTMENT
+    # The downstream referral booking (T2) references the T1 referral.
+    if attributes.get("coordinationRef"):
+        return FLOW_REFERRAL
+
+    # Thin payload (only contract.id): resolve against persisted records.
+    return _resolve_flow_by_lookup(context, message)
+
+
+def _resolve_flow_by_lookup(context: dict, message: dict) -> str:
+    """Resolve the flow for a thin payload by matching a persisted record.
+
+    A Care ``TokenBooking`` whose ``external_id`` matches the inbound contract
+    id implies the appointment flow; otherwise an existing ``ResourceRequest``
+    implies the referral flow. Defaults to the referral flow when neither
+    matches, preserving the historical behaviour.
+    """
+    contract_id = get_contract(message).get("id")
+    if contract_id:
+        from care.emr.models.scheduling.booking import TokenBooking
+
+        if TokenBooking.objects.filter(external_id=contract_id).exists():
+            return FLOW_APPOINTMENT
+
+    from care.beckn.services.lookup import find_resource_request
+
+    if find_resource_request(context, message) is not None:
+        return FLOW_REFERRAL
+    return FLOW_REFERRAL
+
+
+def get_selected_resource_id(message: dict) -> str | None:
+    """Return the selected resource id from a contract's first commitment."""
+    contract = get_contract(message)
+    for commitment in contract.get("commitments", []) or []:
+        for resource in commitment.get("resources", []) or []:
+            resource_id = resource.get("id")
+            if resource_id:
+                return resource_id
+    return None
+
+
+def get_selected_slot_id(message: dict) -> str | None:
+    """Return the chosen Care ``TokenSlot`` id carried on the contract.
+
+    The slot id rides on the first performance entry (preferred) or, failing
+    that, the first commitment id, so the chosen slot survives the
+    select -> init -> confirm round trip without protocol changes.
+    """
+    contract = get_contract(message)
+    for performance in contract.get("performance", []) or []:
+        slot_id = performance.get("slotId") or performance.get("id")
+        if slot_id:
+            return slot_id
+    for commitment in contract.get("commitments", []) or []:
+        slot_id = commitment.get("slotId")
+        if slot_id:
+            return slot_id
+    return None
+
+
+def get_confirmed_appointment_time(message: dict) -> str | None:
+    """Return the confirmed appointment time from the first performance entry."""
+    contract = get_contract(message)
+    for performance in contract.get("performance", []) or []:
+        attributes = performance.get("performanceAttributes", {}) or {}
+        confirmed = attributes.get("confirmedAppointmentTime") or attributes.get(
+            "appointmentWindowStart"
+        )
+        if confirmed:
+            return confirmed
+    return None
+
+
+def get_requested_date(context: dict, message: dict) -> str | None:
+    """Return the requested appointment date (ISO date) from the payload.
+
+    Read from the intent's preferred window, the first performance window, or
+    the context timestamp, in that order.
+    """
+    message = message or {}
+    intent = message.get("intent", {}) or {}
+    preferred = intent.get("preferredDate") or intent.get("date")
+    if preferred:
+        return preferred
+    contract = get_contract(message)
+    for performance in contract.get("performance", []) or []:
+        attributes = performance.get("performanceAttributes", {}) or {}
+        window_start = attributes.get("appointmentWindowStart")
+        if window_start:
+            return window_start
+    return (context or {}).get("timestamp")
 
 
 def find_patient_participant(message: dict) -> dict | None:

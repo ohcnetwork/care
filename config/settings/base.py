@@ -155,6 +155,13 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + PLUGIN_APPS
 BECKN_BPP_CALLER_URL = env("BECKN_BPP_CALLER_URL", default="")
 # Optional username whose User is recorded as created_by/updated_by.
 BECKN_SYSTEM_USERNAME = env("BECKN_SYSTEM_USERNAME", default="")
+# Identity used when publishing the Care catalog to the network (via the BPP
+# caller ``publish`` action). These mirror the BPP registration on the network.
+BECKN_BPP_ID = env("BECKN_BPP_ID", default="")
+BECKN_BPP_URI = env("BECKN_BPP_URI", default="")
+BECKN_NETWORK_ID = env("BECKN_NETWORK_ID", default="")
+# Beckn protocol version advertised in published/callback contexts.
+BECKN_VERSION = env("BECKN_VERSION", default="2.0.0")
 
 # MIGRATIONS
 # ------------------------------------------------------------------------------

@@ -77,6 +77,24 @@ def upsert_health_id_identifiers(patient, health_ids: list[dict]) -> None:
             )
 
 
+def build_instance_identifiers(health_ids: list[dict]) -> list[dict]:
+    """Return ``Patient.instance_identifiers`` entries for the health ids.
+
+    The patient serializer expects ``{"config": <config external_id>, "value"}``
+    entries (it resolves the config via ``PatientIdentifierConfigCache``), so the
+    raw ``{system, value}`` health ids must be converted to that shape.
+    """
+    entries = []
+    for item in health_ids or []:
+        value = item.get("value")
+        if not value:
+            continue
+        system_slug, display = _system_slug(item.get("system"))
+        config = _get_or_create_config(system_slug, display)
+        entries.append({"config": str(config.external_id), "value": value})
+    return entries
+
+
 def find_patient_by_health_ids(health_ids: list[dict]):
     """Return a patient matching any health id by identifier system + value."""
     for item in health_ids or []:

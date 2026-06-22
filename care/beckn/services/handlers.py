@@ -1,13 +1,32 @@
 """Per-action handlers for the BPP webhook.
 
 Each handler receives the inbound Beckn ``context`` and ``message`` and returns
-the corresponding ``on_*`` callback payload. ``init`` and ``confirm`` mutate
-Care state (creating/approving a ``ResourceRequest``); ``select`` and
-``status`` are read-only.
+the corresponding ``on_*`` callback payload. The ``select``/``init``/
+``confirm``/``status``/``cancel`` actions are shared between two flows and are
+routed by :func:`care.beckn.mappers.resolve_flow`:
+
+* the **referral** flow (T1/T2) creates/approves a Care ``ResourceRequest``;
+* the **appointment** flow drives the Care scheduling system
+  (``TokenSlot``/``TokenBooking``).
+
+``discover`` is always served by the appointment flow (catalog publish).
 """
 
-from django.db import transaction
+import datetime
 
+from django.db import transaction
+from django.utils import timezone
+from django.utils.dateparse import parse_date, parse_datetime
+from rest_framework.exceptions import ValidationError as DRFValidationError
+
+from care.beckn.builders.catalog import (
+    build_appt_on_cancel,
+    build_appt_on_confirm,
+    build_appt_on_init,
+    build_appt_on_select,
+    build_appt_on_status,
+    build_on_discover,
+)
 from care.beckn.builders.referral import (
     build_on_confirm,
     build_on_init,
@@ -15,14 +34,22 @@ from care.beckn.builders.referral import (
     build_on_status,
 )
 from care.beckn.config import resolve_origin_facility
+from care.beckn.constants import FLOW_APPOINTMENT
 from care.beckn.mappers import (
     find_patient_participant,
+    get_confirmed_appointment_time,
     get_contract,
     get_contract_attributes,
+    get_requested_date,
+    get_selected_resource_id,
+    get_selected_slot_id,
+    resolve_flow,
 )
+from care.beckn.services import scheduling
 from care.beckn.services.lookup import find_resource_request
 from care.beckn.services.patient import find_or_create_patient
 from care.emr.models.resource_request import ResourceRequest
+from care.emr.models.scheduling import SchedulableResource
 from care.emr.resources.resource_request.spec import CategoryChoices, StatusChoices
 
 # NFH clinicalUrgencyTier -> ResourceRequest priority (higher = more urgent).
@@ -37,6 +64,19 @@ class BecknActionError(Exception):
     """Raised when an inbound action cannot be processed."""
 
 
+def _first_validation_message(exc: DRFValidationError) -> str:
+    """Return a readable message from a DRF ``ValidationError``."""
+    detail = getattr(exc, "detail", None)
+    if isinstance(detail, list) and detail:
+        return str(detail[0])
+    if isinstance(detail, dict) and detail:
+        first = next(iter(detail.values()))
+        if isinstance(first, list) and first:
+            return str(first[0])
+        return str(first)
+    return str(detail or exc)
+
+
 def _resolve_system_user():
     from django.conf import settings
 
@@ -46,6 +86,11 @@ def _resolve_system_user():
     if username:
         return User.objects.filter(username=username).first()
     return None
+
+
+# ---------------------------------------------------------------------------
+# Referral flow (T1/T2) — unchanged behaviour, routed when resolve_flow == referral
+# ---------------------------------------------------------------------------
 
 
 def _referral_fields(message: dict) -> dict:
@@ -71,12 +116,12 @@ def _referral_fields(message: dict) -> dict:
     }
 
 
-def handle_select(context: dict, message: dict) -> dict:
+def _referral_select(context: dict, message: dict) -> dict:
     """Echo the selected offer (no state change)."""
     return build_on_select(context, message)
 
 
-def handle_init(context: dict, message: dict) -> dict:
+def _referral_init(context: dict, message: dict) -> dict:
     """Create the patient and a pending ResourceRequest, return on_init."""
     facility = resolve_origin_facility(context, message)
     if facility is None:
@@ -118,7 +163,7 @@ def handle_init(context: dict, message: dict) -> dict:
     return build_on_init(context, message, resource_request)
 
 
-def handle_confirm(context: dict, message: dict) -> dict:
+def _referral_confirm(context: dict, message: dict) -> dict:
     """Approve the referral and return on_confirm."""
     resource_request = find_resource_request(context, message)
     if resource_request is None:
@@ -143,7 +188,7 @@ def handle_confirm(context: dict, message: dict) -> dict:
     return build_on_confirm(context, message, resource_request)
 
 
-def handle_status(context: dict, message: dict) -> dict:
+def _referral_status(context: dict, message: dict) -> dict:
     """Return the current referral state as on_status."""
     resource_request = find_resource_request(context, message)
     if resource_request is None:
@@ -151,9 +196,172 @@ def handle_status(context: dict, message: dict) -> dict:
     return build_on_status(context, message, resource_request)
 
 
+# ---------------------------------------------------------------------------
+# Appointment flow — drives the Care scheduling system
+# ---------------------------------------------------------------------------
+
+
+def _parse_day(value: str | None) -> datetime.date:
+    """Parse an ISO date/date-time into a date, defaulting to today."""
+    if value:
+        parsed_date = parse_date(value[:10])
+        if parsed_date:
+            return parsed_date
+        parsed_dt = parse_datetime(value)
+        if parsed_dt:
+            return parsed_dt.date()
+    return timezone.localdate()
+
+
+def _resolve_schedulable_resource(message: dict):
+    resource_id = get_selected_resource_id(message)
+    if not resource_id:
+        return None
+    return (
+        SchedulableResource.objects.select_related("facility")
+        .filter(external_id=resource_id)
+        .first()
+    )
+
+
+def _appointment_discover(context: dict, message: dict) -> dict:
+    """Publish the catalog of bookable resources as on_discover."""
+    return build_on_discover(context)
+
+
+def _appointment_select(context: dict, message: dict) -> dict:
+    """Return concrete bookable slots for the selected resource as on_select."""
+    resource = _resolve_schedulable_resource(message)
+    if resource is None:
+        raise BecknActionError(
+            "No Care schedulable resource matched the selected resource id"
+        )
+    day = _parse_day(get_requested_date(context, message))
+    slots = scheduling.list_slots_for_day(resource, day)
+    return build_appt_on_select(context, message, slots)
+
+
+def _resolve_chosen_slot(message: dict):
+    slot_id = get_selected_slot_id(message)
+    slot = scheduling.resolve_token_slot(slot_id=slot_id)
+    if slot is not None:
+        return slot
+    confirmed_time = get_confirmed_appointment_time(message)
+    resource = _resolve_schedulable_resource(message)
+    if confirmed_time and resource is not None:
+        start = parse_datetime(confirmed_time)
+        if start is not None:
+            return scheduling.resolve_token_slot(
+                resource=resource, start_datetime=start
+            )
+    return None
+
+
+def _appointment_init(context: dict, message: dict) -> dict:
+    """Resolve the patient and the chosen slot, return on_init (no booking yet)."""
+    slot = _resolve_chosen_slot(message)
+    if slot is None:
+        raise BecknActionError("No Care slot matched the chosen appointment")
+    facility = slot.resource.facility
+    user = _resolve_system_user()
+    participant = find_patient_participant(message)
+    find_or_create_patient(message, participant, facility, user)
+    return build_appt_on_init(context, message, slot)
+
+
+def _appointment_confirm(context: dict, message: dict) -> dict:
+    """Book the chosen slot, generate a token, return on_confirm."""
+    slot = _resolve_chosen_slot(message)
+    if slot is None:
+        raise BecknActionError("No Care slot matched the chosen appointment")
+    facility = slot.resource.facility
+    user = _resolve_system_user()
+    participant = find_patient_participant(message)
+    patient = find_or_create_patient(message, participant, facility, user)
+    if patient is None:
+        raise BecknActionError("No patient participant found to book the appointment")
+
+    try:
+        with transaction.atomic():
+            booking = scheduling.book_appointment(slot, patient, user)
+            scheduling.ensure_token(booking, user)
+            beckn = booking.meta.setdefault("beckn", {})
+            beckn["transactionId"] = (context or {}).get("transactionId")
+            beckn["bapId"] = (context or {}).get("bapId")
+            beckn["bapUri"] = (context or {}).get("bapUri")
+            booking.save(update_fields=["meta", "modified_date"])
+    except DRFValidationError as exc:
+        # Surface the booking rule (slot past/full/duplicate) as a clean NACK.
+        raise BecknActionError(_first_validation_message(exc)) from exc
+
+    booking.refresh_from_db()
+    return build_appt_on_confirm(context, message, booking)
+
+
+def _appointment_status(context: dict, message: dict) -> dict:
+    """Return the current appointment state as on_status."""
+    booking = scheduling.find_booking(get_contract(message).get("id"))
+    if booking is None:
+        raise BecknActionError("Appointment not found for status")
+    return build_appt_on_status(context, message, booking)
+
+
+def _appointment_cancel(context: dict, message: dict) -> dict:
+    """Cancel the appointment and return on_cancel."""
+    booking = scheduling.find_booking(get_contract(message).get("id"))
+    if booking is None:
+        raise BecknActionError("Appointment not found for cancel")
+    user = _resolve_system_user()
+    attributes = get_contract_attributes(message)
+    note = attributes.get("cancellationReason")
+    booking = scheduling.cancel_appointment(booking, user, note=note)
+    return build_appt_on_cancel(context, message, booking)
+
+
+# ---------------------------------------------------------------------------
+# Public action handlers — route shared actions to the resolved flow
+# ---------------------------------------------------------------------------
+
+
+def handle_discover(context: dict, message: dict) -> dict:
+    return _appointment_discover(context, message)
+
+
+def handle_select(context: dict, message: dict) -> dict:
+    if resolve_flow("select", context, message) == FLOW_APPOINTMENT:
+        return _appointment_select(context, message)
+    return _referral_select(context, message)
+
+
+def handle_init(context: dict, message: dict) -> dict:
+    if resolve_flow("init", context, message) == FLOW_APPOINTMENT:
+        return _appointment_init(context, message)
+    return _referral_init(context, message)
+
+
+def handle_confirm(context: dict, message: dict) -> dict:
+    if resolve_flow("confirm", context, message) == FLOW_APPOINTMENT:
+        return _appointment_confirm(context, message)
+    return _referral_confirm(context, message)
+
+
+def handle_status(context: dict, message: dict) -> dict:
+    if resolve_flow("status", context, message) == FLOW_APPOINTMENT:
+        return _appointment_status(context, message)
+    return _referral_status(context, message)
+
+
+def handle_cancel(context: dict, message: dict) -> dict:
+    if resolve_flow("cancel", context, message) == FLOW_APPOINTMENT:
+        return _appointment_cancel(context, message)
+    raise BecknActionError("Cancel is not supported for the referral flow")
+
+
 ACTION_HANDLERS = {
+    "discover": handle_discover,
     "select": handle_select,
     "init": handle_init,
     "confirm": handle_confirm,
     "status": handle_status,
+    "cancel": handle_cancel,
 }
