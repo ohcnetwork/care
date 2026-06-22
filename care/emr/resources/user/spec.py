@@ -99,6 +99,7 @@ class UserCreateSpec(UserUpdateSpec):
         return password
 
     def perform_extra_deserialization(self, is_update, obj):
+        super().perform_extra_deserialization(is_update, obj)
         obj._role_orgs = self.role_orgs  # noqa SLF001
         obj.set_password(self.password)
 

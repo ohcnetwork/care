@@ -73,7 +73,6 @@ from care.emr.api.viewsets.patient import PatientViewSet
 from care.emr.api.viewsets.patient_identifier import PatientIdentifierConfigViewSet
 from care.emr.api.viewsets.payment_reconciliation import PaymentReconciliationViewSet
 from care.emr.api.viewsets.questionnaire import (
-    QuestionnaireTagsViewSet,
     QuestionnaireViewSet,
 )
 from care.emr.api.viewsets.questionnaire_response import QuestionnaireResponseViewSet
@@ -145,9 +144,7 @@ questionnaire_nested_router = NestedSimpleRouter(
 )
 
 router.register("form_submission", FormSubmissionViewSet, basename="form_submission")
-router.register(
-    "questionnaire_tag", QuestionnaireTagsViewSet, basename="questionnaire_tags"
-)
+
 router.register("supply_delivery", SupplyDeliveryViewSet, basename="supply_delivery")
 
 router.register("supply_request", SupplyRequestViewSet, basename="supply_request")
