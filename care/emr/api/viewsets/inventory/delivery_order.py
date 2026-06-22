@@ -99,7 +99,7 @@ class DeliveryOrderViewSet(
             location_obj,
         ):
             if raise_error:
-                raise PermissionDenied("Cannot write supply requests")
+                raise PermissionDenied("Cannot write delivery orders")
             return False
         return True
 
@@ -121,7 +121,7 @@ class DeliveryOrderViewSet(
                 order.destination, raise_error=False
             )
         if not allowed:
-            raise PermissionDenied("Cannot write supply requests")
+            raise PermissionDenied("Cannot write delivery orders")
 
     def perform_update(self, instance):
         with transaction.atomic():

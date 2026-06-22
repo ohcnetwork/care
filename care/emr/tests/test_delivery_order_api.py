@@ -39,6 +39,7 @@ class DeliveryOrderAPITest(CareAPITestBase):
             permissions=[
                 SupplyDeliveryPermissions.can_read_supply_delivery.name,
                 SupplyDeliveryPermissions.can_write_supply_delivery.name,
+                SupplyDeliveryPermissions.can_write_external_supply_delivery.name,
             ]
         )
 
@@ -996,6 +997,7 @@ class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
         self.role = self.create_role_with_permissions(
             permissions=[
                 SupplyDeliveryPermissions.can_write_supply_delivery.name,
+                SupplyDeliveryPermissions.can_write_external_supply_delivery.name,
                 InvoicePermissions.can_read_invoice.name,
                 InvoicePermissions.can_write_invoice.name,
                 ChargeItemPermissions.can_read_charge_item.name,
@@ -1093,7 +1095,7 @@ class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
         )
         self.return_delivery_order_destination.save(update_fields=["status"])
         self.return_delivery_order_data["status"] = (
-            SupplyDeliveryOrderStatusOptions.abandoned.value
+            SupplyDeliveryOrderStatusOptions.entered_in_error.value
         )
         cancel_response = self.client.put(
             self.generate_order_detail_url(
@@ -1222,7 +1224,7 @@ class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
         )
         self.return_delivery_order_destination.save(update_fields=["status"])
         self.return_delivery_order_data["status"] = (
-            SupplyDeliveryOrderStatusOptions.abandoned.value
+            SupplyDeliveryOrderStatusOptions.entered_in_error.value
         )
         cancel_response = self.client.put(
             self.generate_order_detail_url(
@@ -1304,7 +1306,7 @@ class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
         )
         self.return_delivery_order_destination.save(update_fields=["status"])
         self.return_delivery_order_data["status"] = (
-            SupplyDeliveryOrderStatusOptions.abandoned.value
+            SupplyDeliveryOrderStatusOptions.entered_in_error.value
         )
         cancel_response = self.client.put(
             self.generate_order_detail_url(
