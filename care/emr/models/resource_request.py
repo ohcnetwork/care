@@ -52,6 +52,8 @@ class ResourceRequest(EMRBaseModel):
         blank=True,
     )
 
+    extensions = models.JSONField(default=dict)
+
 
 class ResourceRequestComment(EMRBaseModel):
     request = models.ForeignKey(
