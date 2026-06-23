@@ -4,16 +4,14 @@ from typing import Any
 
 from pydantic import UUID4, UUID5, ConfigDict, Field, field_validator, model_validator
 
-from care.emr.models import Questionnaire, QuestionnaireTag, ValueSet
+from care.emr.models import Questionnaire, ValueSet
 from care.emr.resources.base import EMRResource
 from care.emr.resources.observation.valueset import (
     CARE_OBSERVATION_VALUSET,
     CARE_UCUM_UNITS,
 )
-from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.slug_type import SlugType
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
-from care.utils.shortcuts import get_object_or_404
 
 
 class EnableOperator(str, Enum):
@@ -107,6 +105,13 @@ class AnswerOption(QuestionnaireBaseSpec):
         return value.strip()
 
 
+class TemplateConfig(QuestionnaireBaseSpec):
+    name: str
+    content: str
+    structured_content: dict | None = None
+    meta: dict | None = None
+
+
 class Question(QuestionnaireBaseSpec):
     model_config = ConfigDict(populate_by_name=True)
 
@@ -135,9 +140,7 @@ class Question(QuestionnaireBaseSpec):
     repeats: bool | None = None
     read_only: bool | None = None
     max_length: int | None = None
-    answer_constraint: AnswerConstraint | None = Field(
-        alias="answerConstraint", default=None
-    )
+    answer_constraint: AnswerConstraint | None = None
     answer_option: list[AnswerOption] | None = None
     answer_value_set: str | None = None
     is_observation: bool | None = None
@@ -145,6 +148,7 @@ class Question(QuestionnaireBaseSpec):
     questions: list["Question"] = []
     formula: str | None = None
     styling_metadata: dict = {}
+    templates: list[TemplateConfig] = []
     is_component: bool = False
 
     @field_validator("answer_value_set")
@@ -242,16 +246,6 @@ class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
 
 class QuestionnaireSpec(QuestionnaireWriteSpec):
     organizations: list[UUID4] = Field(min_length=1)
-    tags: list[UUID4] = []
-
-    @field_validator("tags")
-    @classmethod
-    def validate_tags(cls, tags):
-        tag_ids = []
-        for external_id in tags:
-            tag = get_object_or_404(QuestionnaireTag, external_id=external_id)
-            tag_ids.append(tag.id)
-        return tag_ids
 
     def perform_extra_deserialization(self, is_update, obj):
         obj._organizations = self.organizations  # noqa SLF001
@@ -271,45 +265,14 @@ class QuestionnaireReadSpec(QuestionnaireBaseSpec):
     subject_type: SubjectType
     styling_metadata: dict
     questions: list
-    created_by: UserSpec = {}
-    updated_by: UserSpec = {}
-    tags: list[dict] = []
+    created_by: dict | None = None
+    updated_by: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        tags = []
-        for tag in obj.tags:
-            tags.append(QuestionnaireTag.get_tag(tag))
-        mapping["tags"] = tags
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        cls.serialize_audit_users(mapping, obj)
 
 
 # Add this to handle recursive Question type
 Question.model_rebuild()
-
-
-class QuestionnaireTagSpec(EMRResource):
-    __model__ = QuestionnaireTag
-    id: UUID4 | None = None
-    name: str
-    slug: SlugType
-
-    @field_validator("slug")
-    @classmethod
-    def validate_slug(cls, slug: str, info):
-        queryset = QuestionnaireTag.objects.filter(slug=slug)
-        context = cls.get_serializer_context(info)
-        if context.get("is_update", False):
-            queryset = queryset.exclude(id=info.context["object"].id)
-        if queryset.exists():
-            err = "Slug must be unique"
-            raise ValueError(err)
-        return slug
-
-    @classmethod
-    def perform_extra_serialization(cls, mapping, obj):
-        mapping["id"] = obj.external_id

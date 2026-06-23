@@ -1,5 +1,7 @@
 from datetime import date, datetime
+from decimal import Decimal
 
+from django.utils.timezone import is_aware, localtime, make_aware
 from jinja2 import BaseLoader, Environment, StrictUndefined, TemplateSyntaxError
 from jinja2.sandbox import SandboxedEnvironment
 
@@ -50,6 +52,10 @@ class TemplateEngine:
                 value = datetime.fromisoformat(value)
             except (ValueError, AttributeError):
                 return value
+        if isinstance(value, datetime):
+            if not is_aware(value):
+                value = make_aware(value)
+            value = localtime(value)
         if isinstance(value, (datetime, date)):
             return value.strftime(format_str)
         return str(value)
@@ -66,6 +72,9 @@ class TemplateEngine:
             except (ValueError, AttributeError):
                 return value
         if isinstance(value, datetime):
+            if not is_aware(value):
+                value = make_aware(value)
+            value = localtime(value)
             return value.strftime(format_str)
         return str(value)
 
@@ -79,6 +88,9 @@ class TemplateEngine:
             except (ValueError, AttributeError):
                 return value
         if isinstance(value, datetime):
+            if not is_aware(value):
+                value = make_aware(value)
+            value = localtime(value)
             return value.strftime(format_str)
         return str(value)
 
@@ -87,7 +99,7 @@ class TemplateEngine:
         if value is None or value == "":
             return ""
         try:
-            amount = float(value)
+            amount = Decimal(value)
         except (ValueError, TypeError):
             return str(value)
 
@@ -135,16 +147,16 @@ class TemplateEngine:
         return phone
 
     @staticmethod
-    def _current_date(format_str: str = "%d/%m/%Y") -> str:
-        return care_now().strftime(format_str)
+    def _current_date() -> date:
+        return TemplateEngine._filter_date(care_now())
 
     @staticmethod
-    def _current_datetime(format_str: str = "%d/%m/%Y %I:%M %p") -> str:
-        return care_now().strftime(format_str)
+    def _current_datetime() -> datetime:
+        return TemplateEngine._filter_datetime(care_now())
 
     @staticmethod
-    def _current_time(format_str: str = "%I:%M %p") -> str:
-        return care_now().strftime(format_str)
+    def _current_time() -> str:
+        return TemplateEngine._filter_time(care_now())
 
     def validate_syntax(self, template_string: str) -> tuple[bool, str]:
         try:

@@ -2,7 +2,7 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
@@ -50,6 +50,7 @@ class BatchUpdateObservationRequest(BaseModel):
 
 class DiagnosticReportFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
+    encounter = filters.UUIDFilter(field_name="encounter__external_id")
 
 
 class DiagnosticReportViewSet(
@@ -87,7 +88,7 @@ class DiagnosticReportViewSet(
             self.request.user,
             get_object_or_404(ServiceRequest, external_id=instance.service_request),
         ):
-            raise ValidationError(
+            raise PermissionDenied(
                 "You do not have permission to write this diagnostic report"
             )
 
@@ -97,7 +98,7 @@ class DiagnosticReportViewSet(
             self.request.user,
             model_instance.service_request,
         ):
-            raise ValidationError(
+            raise PermissionDenied(
                 "You do not have permission to write this diagnostic report"
             )
 
@@ -108,8 +109,8 @@ class DiagnosticReportViewSet(
             model_instance.service_request,
         ):
             return
-        raise ValidationError(
-            "You do not have permission to write this diagnostic report"
+        raise PermissionDenied(
+            "You do not have permission to read this diagnostic report"
         )
 
     def get_queryset(self):
@@ -122,23 +123,39 @@ class DiagnosticReportViewSet(
             encounter = get_object_or_404(
                 Encounter, external_id=self.request.GET.get("encounter")
             )
-            if AuthorizationController.call(
+            if not AuthorizationController.call(
                 "can_read_diagnostic_report_in_encounter",
                 self.request.user,
                 encounter,
             ):
-                return queryset.filter(encounter=encounter)
-        elif self.request.GET.get("service_request"):
+                raise PermissionDenied(
+                    "You do not have permission to read this diagnostic report in this encounter"
+                )
+            return queryset.filter(encounter=encounter)
+        if self.request.GET.get("service_request"):
             service_request = get_object_or_404(
                 ServiceRequest, external_id=self.request.GET.get("service_request")
             )
-            if AuthorizationController.call(
+            if not AuthorizationController.call(
                 "can_read_diagnostic_report",
                 self.request.user,
                 service_request,
             ):
-                return queryset.filter(service_request=service_request)
-        raise ValidationError("Service Request or encounter is required")
+                raise PermissionDenied(
+                    "You do not have permission to read this diagnostic report for this service request"
+                )
+            return queryset.filter(service_request=service_request)
+        # Authorize with Patient
+        patient = self.get_patient_obj()
+        if not AuthorizationController.call(
+            "can_view_clinical_data",
+            self.request.user,
+            patient,
+        ):
+            raise PermissionDenied(
+                "You do not have permission to view clinical data for this patient"
+            )
+        return queryset.filter(patient=patient)
 
     @extend_schema(
         request=BatchUpdateObservationRequest,

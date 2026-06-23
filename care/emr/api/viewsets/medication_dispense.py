@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.db import transaction
 from django.db.models import Count, Q
 from django_filters import rest_framework as filters
@@ -14,6 +16,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.locks.billing import InventoryItemLock
 from care.emr.models.encounter import Encounter
 from care.emr.models.location import FacilityLocation
 from care.emr.models.medication_dispense import MedicationDispense
@@ -34,12 +37,13 @@ from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
 from care.emr.resources.medication.dispense.spec import (
     MEDICATION_DISPENSE_CANCELLED_STATUSES,
     MedicationDispenseReadSpec,
+    MedicationDispenseRetrieveSpec,
     MedicationDispenseUpdateSpec,
     MedicationDispenseWriteSpec,
 )
 from care.emr.resources.medication.request.spec import MedicationRequestDispenseStatus
 from care.security.authorization.base import AuthorizationController
-from care.utils.filters.dummy_filter import DummyBooleanFilter
+from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyUUIDFilter
 from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.shortcuts import get_object_or_404
 
@@ -58,7 +62,7 @@ class MedicationDispenseFilters(filters.FilterSet):
     )
 
     exclude_status = MultiSelectFilter(field_name="status", exclude=True)
-    location = filters.UUIDFilter(field_name="location__external_id")
+    location = DummyUUIDFilter(field_name="location__external_id")
     include_children = DummyBooleanFilter()
     order = filters.UUIDFilter(field_name="order__external_id")
 
@@ -75,12 +79,19 @@ class MedicationDispenseViewSet(
     pydantic_model = MedicationDispenseWriteSpec
     pydantic_update_model = MedicationDispenseUpdateSpec
     pydantic_read_model = MedicationDispenseReadSpec
+    pydantic_retrieve_model = MedicationDispenseRetrieveSpec
     filterset_class = MedicationDispenseFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
     ordering_fields = ["created_date", "modified_date"]
 
+    def get_serializer_create_context(self):
+        return {"user": self.request.user}
+
     def perform_create(self, instance):
-        with transaction.atomic():
+        with transaction.atomic(), InventoryItemLock(instance.item):
+            net_content = instance.item.net_content
+            if Decimal(net_content) < Decimal(instance.quantity):
+                raise ValidationError("Inventory item does not have enough stock")
             super().perform_create(instance)
             if instance.item.product.charge_item_definition:
                 charge_item = apply_charge_item_definition(
@@ -94,9 +105,16 @@ class MedicationDispenseViewSet(
                     ChargeItemResourceOptions.medication_dispense.value
                 )
                 charge_item.service_resource_id = str(instance.external_id)
+                charge_item.created_by = self.request.user
+                charge_item.updated_by = self.request.user
+                if (
+                    instance.authorizing_request
+                    and instance.authorizing_request.requester
+                ):
+                    charge_item.performer_actor = instance.authorizing_request.requester
                 charge_item.save()
                 instance.charge_item = charge_item
-                instance.save(update_fields=["charge_item"])
+                instance.save(update_fields=["charge_item", "modified_date"])
             sync_inventory_item(instance.item.location, instance.item.product)
             if instance._fully_dispensed is not None and instance.authorizing_request:  # noqa
                 if instance._fully_dispensed:  # noqa
@@ -158,19 +176,31 @@ class MedicationDispenseViewSet(
                 # Perform Cancellation of charge items as well
                 handle_charge_item_cancel(instance.charge_item)
                 instance.charge_item.status = ChargeItemStatusOptions.aborted.value
+                if instance.authorizing_request:
+                    instance.authorizing_request.dispense_status = (
+                        MedicationRequestDispenseStatus.incomplete.value
+                    )
+                    instance.updated_by = self.request.user
+                    instance.authorizing_request.save(
+                        update_fields=["dispense_status", "updated_by", "modified_date"]
+                    )
+                instance.authorizing_request = None
                 instance.charge_item.save()
             super().perform_update(instance)
             sync_inventory_item(instance.item.location, instance.item.product)
-            if instance._fully_dispensed is not None and instance._fully_dispensed:  # noqa
-                instance.authorizing_request.dispense_status = (
-                    MedicationRequestDispenseStatus.complete.value
+            if instance.authorizing_request and instance._fully_dispensed is not None:  # noqa
+                if instance._fully_dispensed:  # noqa
+                    instance.authorizing_request.dispense_status = (
+                        MedicationRequestDispenseStatus.complete.value
+                    )
+                else:
+                    instance.authorizing_request.dispense_status = (
+                        MedicationRequestDispenseStatus.partial.value
+                    )
+                instance.authorizing_request.updated_by = self.request.user
+                instance.authorizing_request.save(
+                    update_fields=["dispense_status", "updated_by", "modified_date"]
                 )
-                instance.authorizing_request.save(update_fields=["dispense_status"])
-            elif instance.authorizing_request:
-                instance.authorizing_request.dispense_status = (
-                    MedicationRequestDispenseStatus.partial.value
-                )
-                instance.authorizing_request.save(update_fields=["dispense_status"])
             return instance
 
     def authorize_location_read(self, location):
@@ -225,6 +255,7 @@ class MedicationDispenseViewSet(
         queryset = (
             self.filter_queryset(self.get_queryset())
             .values("encounter_id")
+            .order_by("encounter_id")
             .annotate(dcount=Count("encounter_id"))
         )
         paginator = self.pagination_class()

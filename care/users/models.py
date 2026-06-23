@@ -37,8 +37,8 @@ class CustomUserManager(UserManager):
 
     def create_superuser(self, username, email, password, **extra_fields):
         extra_fields["phone_number"] = "+919696969696"
-        extra_fields["gender"] = 3
-        extra_fields["user_type"] = 40
+        extra_fields["gender"] = "non_binary"
+        extra_fields["user_type"] = "administrator"
         return super().create_superuser(username, email, password, **extra_fields)
 
     def make_random_password(
@@ -165,6 +165,8 @@ class User(AbstractUser):
     prefix = models.CharField(max_length=10, blank=True, null=True)
     suffix = models.CharField(max_length=50, blank=True, null=True)
 
+    is_service_account = models.BooleanField(default=False)
+
     verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
@@ -175,11 +177,27 @@ class User(AbstractUser):
     totp_secret = models.TextField(blank=True, null=True)
     mfa_settings = models.JSONField(default=dict, blank=True)
 
+    # Preferences
+
+    preferences = models.JSONField(default=dict)
+
+    cached_role_orgs = models.JSONField(default=None, null=True, blank=True)
+
     objects = CustomUserManager()
 
     REQUIRED_FIELDS = [
         "email",
     ]
+
+    def get_cached_role_orgs(self):
+        from care.emr.models.organization import OrganizationUser
+
+        if self.cached_role_orgs is not None:
+            return self.cached_role_orgs
+        data = OrganizationUser.get_cached_role_orgs(self.id)
+        self.cached_role_orgs = data
+        self.save(update_fields=["cached_role_orgs"])
+        return data
 
     def read_profile_picture_url(self):
         if self.profile_picture_url:

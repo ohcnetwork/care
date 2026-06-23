@@ -13,6 +13,7 @@ from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet, EMRModelViewSet
 from care.emr.models import Organization, SchedulableResource
+from care.emr.models.facility_config import FacilityMonetoryConfig
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.emr.resources.facility.spec import (
     FacilityCreateSpec,
@@ -139,21 +140,26 @@ class FacilityViewSet(EMRModelViewSet):
         request=FacilityMonetaryCodeSpec,
     )
     @action(methods=["POST"], detail=True)
-    def set_monetary_codes(self, request, *args, **kwargs):
+    def set_monetary_config(self, request, *args, **kwargs):
         instance = self.get_object()
         self.authorize_update({}, instance)
+        facility_monetory_config = FacilityMonetoryConfig.get_monetory_config(
+            instance.id
+        )
         serializer_obj = FacilityMonetaryCodeSpec.model_validate(
             request.data,
             context={
                 "is_update": True,
-                "object": instance,
+                "object": facility_monetory_config,
                 **self.get_serializer_update_context(),
             },
         )
-        model_instance = serializer_obj.de_serialize(obj=instance)
-        self.perform_update(model_instance)
+        model_instance = serializer_obj.de_serialize(obj=facility_monetory_config)
+        model_instance.updated_by = request.user
+        model_instance.save()
+        instance = self.get_object()
         return Response(
-            self.get_retrieve_pydantic_model().serialize(model_instance).to_json()
+            self.get_retrieve_pydantic_model().serialize(instance).to_json()
         )
 
     @extend_schema(
@@ -163,9 +169,16 @@ class FacilityViewSet(EMRModelViewSet):
     def set_invoice_expression(self, request, *args, **kwargs):
         instance = self.get_object()
         self.authorize_update({}, instance)
+        facility_monetory_config = FacilityMonetoryConfig.get_monetory_config(
+            instance.id
+        )
         request_params = FacilityInvoiceExpressionSpec(**request.data)
-        instance.invoice_number_expression = request_params.invoice_number_expression
-        self.perform_update(instance)
+        facility_monetory_config.invoice_number_expression = (
+            request_params.invoice_number_expression
+        )
+        facility_monetory_config.updated_by = request.user
+        facility_monetory_config.save()
+        instance = self.get_object()
         return Response(
             self.get_retrieve_pydantic_model().serialize(instance).to_json()
         )

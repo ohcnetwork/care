@@ -12,9 +12,19 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.base import (
+    EMRBaseViewSet,
+    EMRCreateMixin,
+    EMRListMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+)
 from care.emr.models.report.template import Template
-from care.emr.reports.context_builder import Field, types  # noqa
+from care.emr.reports.context_builder import (  # noqa
+    Field,
+    SingleUserIdContextBuilder,
+    types,
+)
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.context_builder.data_points.utils import build_schema
 from care.emr.reports.renderer.generators import GeneratorRegistry
@@ -48,7 +58,13 @@ class PreviewTemplateRequest(BaseModel):
     options: dict = {}
 
 
-class TemplateViewSet(EMRModelViewSet):
+class TemplateViewSet(
+    EMRCreateMixin,
+    EMRRetrieveMixin,
+    EMRUpdateMixin,
+    EMRListMixin,
+    EMRBaseViewSet,
+):
     lookup_field = "slug"
     database_model = Template
     pydantic_model = TemplateCreateSpec
@@ -166,7 +182,8 @@ class TemplateViewSet(EMRModelViewSet):
     )
     @action(detail=False, methods=["POST"])
     def preview(self, request, *args, **kwargs):
-        AuthorizationController.call("can_preview_template", request.user)
+        if not AuthorizationController.call("can_preview_template", request.user):
+            raise PermissionDenied("You do not have permission to preview templates")
 
         request_data = PreviewTemplateRequest.model_validate(request.data)
 
@@ -186,6 +203,10 @@ class TemplateViewSet(EMRModelViewSet):
             context_class = DataPointRegistry.get(request_data.context)
             preview_context = context_class(is_preview=True)
             context_dict = {context_class.context_key: preview_context}
+
+            context_dict["current_user"] = SingleUserIdContextBuilder(
+                context=request.user,
+            )
 
             rendered_content = Renderer(generator).render(
                 request_data.template_data, context_dict, validated_options

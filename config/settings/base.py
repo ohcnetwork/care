@@ -4,7 +4,7 @@ Base settings to build other settings files upon.
 
 import logging
 import warnings
-from datetime import datetime, timedelta
+from datetime import timedelta
 from pathlib import Path
 
 import environ
@@ -331,8 +331,7 @@ LOGGING = {
     "disable_existing_loggers": False,
     "formatters": {
         "verbose": {
-            "format": "%(levelname)s %(asctime)s %(module)s "
-            "%(process)d %(thread)d %(message)s"
+            "format": "%(levelname)s %(asctime)s %(module)s %(process)d %(thread)d %(message)s"
         },
         "request_time": {
             "format": "INFO %(asctime)s %(message)s",
@@ -372,6 +371,7 @@ REST_FRAMEWORK = {
         "config.authentication.CustomJWTAuthentication",
         "config.authentication.CustomBasicAuthentication",
         "rest_framework.authentication.SessionAuthentication",
+        "rest_framework.authentication.TokenAuthentication",
     ),
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticated",
@@ -506,15 +506,6 @@ OTP_REPEAT_WINDOW = 6  # OTPs will only be valid for 6 hours to login
 OTP_MAX_REPEATS_WINDOW = 10  # times OTPs can be sent within OTP_REPEAT_WINDOW
 OTP_LENGTH = 5
 
-# ICD
-# ------------------------------------------------------------------------------
-ICD_SCRAPER_ROOT_CONCEPTS_URL = (
-    "https://icd.who.int/browse11/l-m/en/JsonGetRootConcepts"
-)
-ICD_SCRAPER_CHILD_CONCEPTS_URL = (
-    "https://icd.who.int/browse11/l-m/en/JsonGetChildrenConcepts"
-)
-
 # Rate Limiting
 # ------------------------------------------------------------------------------
 DISABLE_RATELIMIT = env.bool("DISABLE_RATELIMIT", default=False)
@@ -526,18 +517,6 @@ GOOGLE_CAPTCHA_POST_KEY = "g-recaptcha-response"
 # SMS
 # ------------------------------------------------------------------------------
 USE_SMS = False
-
-# Push Notifications
-# ------------------------------------------------------------------------------
-VAPID_PUBLIC_KEY = env(
-    "VAPID_PUBLIC_KEY",
-    default="BKNxrOpAeB_OBfXI-GlRAlw_vUVCc3mD_AkpE74iZj97twMOHXEFUeJqA7bDqGY10O-RmkvG30NaMf5ZWihnT3k",
-)
-VAPID_PRIVATE_KEY = env(
-    "VAPID_PRIVATE_KEY", default="7mf3OFreFsgFF4jd8A71ZGdVaj8kpJdOto4cFbfAS-s"
-)
-SEND_SMS_NOTIFICATION = False
-NOTIFICATION_RETENTION_DAYS = env.int("NOTIFICATION_RETENTION_DAYS", default=30)
 
 # Cloud and Buckets
 # ------------------------------------------------------------------------------
@@ -692,21 +671,9 @@ FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
     ),
 )
 FACILITY_CDN = env("FACILITY_CDN", default=None)
-# for setting the shifting mode
-PEACETIME_MODE = env.bool("PEACETIME_MODE", default=True)
-
-# we are making this tz aware in the app so no need to make it aware here
-MIN_ENCOUNTER_DATE = env(
-    "MIN_ENCOUNTER_DATE",
-    cast=lambda d: datetime.strptime(d, "%Y-%m-%d"),  # noqa: DTZ007
-    default=datetime(2020, 1, 1),  # noqa: DTZ001
-)
-
-# for exporting csv
-CSV_REQUEST_PARAMETER = "csv"
 
 # current hosted domain
-CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:8000")
+CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:4000")
 BACKEND_DOMAIN = env("BACKEND_DOMAIN", default="localhost:9000")
 
 APP_VERSION = env("APP_VERSION", default="unknown")
@@ -719,14 +686,19 @@ SNOWSTORM_DEPLOYMENT_URL = env(
     "SNOWSTORM_DEPLOYMENT_URL", default="http://165.22.211.144/fhir"
 )
 
-# Path to the typst binary, see scripts/install_typst.sh
-TYPST_BIN = env("TYPST_BIN", default="typst")
-
 DJANGO_REST_MULTITOKENAUTH_REQUIRE_USABLE_PASSWORD = False
 
 SMS_BACKEND = "care.utils.sms.backend.sns.SnsBackend"
 
-OTP_SMS_TEMPLATE_PATH = env("OTP_SMS_TEMPLATE", default="sms/otp_sms.txt")
+OTP_SMS_LOGIN_CONTENT = env(
+    "OTP_SMS_LOGIN_CONTENT",
+    default="Care OTP for login is {otp}. Please do not share this with anyone.",
+)
+
+OTP_SMS_RESET_PASSWORD_CONTENT = env(
+    "OTP_SMS_RESET_PASSWORD_CONTENT",
+    default="Care OTP for password reset is {otp}. Please do not share this with anyone.",
+)
 
 USER_CREATE_PASSWORD_EMAIL_TEMPLATE_PATH = env(
     "USER_CREATE_PASSWORD_TEMPLATE_PATH", default="email/user_create_password.html"

@@ -20,10 +20,6 @@ class UserAdmin(auth_admin.UserAdmin):
             "User",
             {
                 "fields": (
-                    "user_type",
-                    "local_body",
-                    "district",
-                    "state",
                     "phone_number",
                     "alt_phone_number",
                     "gender",

@@ -24,9 +24,11 @@ from care.emr.resources.location.spec import (
     FacilityLocationEncounterUpdateSpec,
     FacilityLocationListSpec,
     FacilityLocationModeChoices,
+    FacilityLocationOperationalStatusChoices,
     FacilityLocationRetrieveSpec,
     FacilityLocationUpdateSpec,
     FacilityLocationWriteSpec,
+    LocationAvailabilityStatusChoices,
     LocationEncounterAvailabilityStatusChoices,
 )
 from care.facility.models import Facility
@@ -84,12 +86,17 @@ class FacilityLocationViewSet(EMRModelViewSet):
     def perform_destroy(self, instance):
         parent = instance.parent
         with transaction.atomic():
-            super().perform_destroy(instance)
+            instance.deleted = True
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["deleted", "updated_by", "modified_date"])
             if parent:
                 parent.has_children = FacilityLocation.objects.filter(
                     parent=parent
                 ).exists()
-                parent.save(update_fields=["has_children"])
+                parent.updated_by = self.request.user
+                parent.save(
+                    update_fields=["has_children", "updated_by", "modified_date"]
+                )
 
     def validate_data(self, instance, model_obj=None):
         facility = self.get_facility_obj()
@@ -300,6 +307,8 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
         """
         Reset encounters to the right location.
         """
+        # TODO : Create a periodic task to reset the system availability
+        # This will ensure that all edge cases are handled ( Every 12 hours )
         active_location_encounter = FacilityLocationEncounter.objects.filter(
             location=location,
             status=LocationEncounterAvailabilityStatusChoices.active.value,
@@ -307,15 +316,32 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
         all_encounters = Encounter.objects.filter(current_location=location)
         if active_location_encounter:
             active_location_encounter.encounter.current_location = location
-            active_location_encounter.encounter.save(update_fields=["current_location"])
+            active_location_encounter.encounter.updated_by = self.request.user
+            active_location_encounter.encounter.save(
+                update_fields=["current_location", "updated_by", "modified_date"]
+            )
             all_encounters = all_encounters.exclude(
                 id=active_location_encounter.encounter_id
             )
             location.current_encounter = active_location_encounter.encounter
+            location.system_availability_status = (
+                LocationAvailabilityStatusChoices.reserved.value
+            )
         else:
             location.current_encounter = None
-        all_encounters.update(current_location=None)
-        location.save(update_fields=["current_encounter"])
+            location.system_availability_status = (
+                LocationAvailabilityStatusChoices.available.value
+            )
+        all_encounters.update(current_location=None, updated_by=self.request.user)
+        location.updated_by = self.request.user
+        location.save(
+            update_fields=[
+                "current_encounter",
+                "system_availability_status",
+                "updated_by",
+                "modified_date",
+            ]
+        )
 
     def authorize_create(self, instance):
         facility = self.get_facility_obj()
@@ -336,23 +362,27 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
 
     def perform_create(self, instance):
         location = self.get_location_obj()
-        with Lock(f"facility_location:{location.id}"):
+        with transaction.atomic(), Lock(f"facility_location:{location.id}"):
             instance.location = location
             self._validate_data(instance)
             super().perform_create(instance)
             self.reset_encounter_location_association(location)
 
     def perform_update(self, instance):
-        location = self.get_location_obj()
-        with Lock(f"facility_location:{location.id}"):
+        location = instance.location
+        with transaction.atomic(), Lock(f"facility_location:{location.id}"):
             # Keep in mind that instance here is an ORM instance and not pydantic
             self._validate_data(instance, self.get_object())
             super().perform_update(instance)
             self.reset_encounter_location_association(location)
 
     def perform_destroy(self, instance):
-        super().perform_destroy(instance)
-        self.reset_encounter_location_association(instance.location)
+        location = instance.location
+        with transaction.atomic(), Lock(f"facility_location:{location.id}"):
+            instance.deleted = True
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["deleted", "updated_by", "modified_date"])
+            self.reset_encounter_location_association(instance.location)
 
     def _validate_data(self, instance, model_obj=None):  # noqa PLR0912
         """
@@ -462,14 +492,29 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
             "can_list_facility_location_obj", self.request.user, facility, location
         ):
             raise PermissionDenied("You do not have permission to given location")
-        return FacilityLocationEncounter.objects.filter(location=location)
+        return FacilityLocationEncounter.objects.filter(location=location).order_by(
+            "-created_date"
+        )
 
 
 def close_related_location_from_encounter(instance):
     if instance.status in COMPLETED_CHOICES:
         with transaction.atomic():
             FacilityLocation.objects.filter(current_encounter=instance).update(
-                current_encounter=None
+                current_encounter=None,
+                system_availability_status=LocationAvailabilityStatusChoices.available.value,
+            )
+            location_ids = (
+                FacilityLocationEncounter.objects.filter(encounter=instance)
+                .exclude(status__in=COMPLETED_CHOICES)
+                .values_list("location_id", flat=True)
+            )
+            FacilityLocation.objects.filter(
+                id__in=location_ids,
+                current_encounter=None,
+                operational_status=FacilityLocationOperationalStatusChoices.O.value,
+            ).update(
+                operational_status=FacilityLocationOperationalStatusChoices.U.value,
             )
             FacilityLocationEncounter.objects.filter(encounter=instance).exclude(
                 status__in=COMPLETED_CHOICES

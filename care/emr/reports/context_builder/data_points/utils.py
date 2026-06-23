@@ -58,7 +58,7 @@ def _extract_fields_from_context(context_class, visited=None):  # noqa: PLR0912
         except Exception:  # noqa: S112
             continue
 
-    return fields
+    return sorted(fields, key=lambda f: f["display"])
 
 
 def _extract_filters_from_context(context_class):

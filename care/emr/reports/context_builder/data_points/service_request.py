@@ -8,6 +8,7 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.user import (
     SingleUserRelatedContextBuilder,
 )
+from care.utils.filters.multiselect import MultiSelectFilter
 
 STATUS_CHOICE = {
     "draft": "Draft",
@@ -33,15 +34,22 @@ CATEGORY_CHOICE = {
     "surgical_procedure": "Surgical Procedure",
 }
 
+PRIORITY_CHOICE = {
+    "routine": "Routine",
+    "urgent": "Urgent",
+    "asap": "ASAP",
+    "stat": "Stat",
+}
+
 
 class ServiceRequestReportFilterSet(filters.FilterSet):
-    status = filters.CharFilter(field_name="status", lookup_expr="iexact")
+    status = MultiSelectFilter(field_name="status")
     intent = filters.CharFilter(field_name="intent", lookup_expr="iexact")
     category = filters.CharFilter(field_name="category", lookup_expr="iexact")
     priority = filters.CharFilter(field_name="priority", lookup_expr="iexact")
 
 
-class ServiceRequestDataPointBuilder(QuerysetContextBuilder):
+class ServiceRequestBaseContextBuilder(QuerysetContextBuilder):
     filterset_class = ServiceRequestReportFilterSet
     __filterset_backends__ = [filters.DjangoFilterBackend]
 
@@ -73,6 +81,15 @@ class ServiceRequestDataPointBuilder(QuerysetContextBuilder):
         if sr.category
         else "",
         description="Category of the service request",
+    )
+
+    priority = Field(
+        display="Priority",
+        preview_value="Routine",
+        mapping=lambda sr: PRIORITY_CHOICE.get(sr.priority, sr.priority.title())
+        if sr.priority
+        else "",
+        description="Priority level of the service request",
     )
 
     requester = Field(

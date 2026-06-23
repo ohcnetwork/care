@@ -3,10 +3,16 @@ from enum import Enum
 
 from pydantic import UUID4, model_validator
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import (
+    ExtensionListRenderer,
+    ExtensionRetrieveRenderer,
+    ExtensionValidator,
+)
 from care.emr.models import Patient
 from care.emr.models.organization import FacilityOrganizationUser
 from care.emr.models.resource_request import ResourceRequest, ResourceRequestComment
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.facility.spec import FacilityReadSpec
 from care.emr.resources.patient.spec import PatientListSpec
 from care.emr.resources.user.spec import UserSpec
@@ -36,6 +42,7 @@ class CategoryChoices(str, Enum):
 
 class ResourceRequestBaseSpec(EMRResource):
     __model__ = ResourceRequest
+    ___extension_resource_type__ = ExtensionResource.resource_request
     __exclude__ = [
         "origin_facility",
         "approving_facility",
@@ -55,7 +62,7 @@ class ResourceRequestBaseSpec(EMRResource):
     priority: int
 
 
-class ResourceRequestCreateSpec(ResourceRequestBaseSpec):
+class ResourceRequestCreateSpec(ExtensionValidator, ResourceRequestBaseSpec):
     origin_facility: UUID4
     approving_facility: UUID4 | None = None
     assigned_facility: UUID4 | None = None
@@ -100,7 +107,7 @@ class ResourceRequestCreateSpec(ResourceRequestBaseSpec):
             obj.assigned_to = get_object_or_404(User, external_id=self.assigned_to)
 
 
-class ResourceRequestListSpec(ResourceRequestBaseSpec):
+class ResourceRequestListSpec(ExtensionListRenderer, ResourceRequestBaseSpec):
     origin_facility: dict
     assigned_facility: dict | None = None
     created_date: datetime.datetime
@@ -118,7 +125,7 @@ class ResourceRequestListSpec(ResourceRequestBaseSpec):
             ).to_json()
 
 
-class ResourceRequestRetrieveSpec(ResourceRequestBaseSpec):
+class ResourceRequestRetrieveSpec(ExtensionRetrieveRenderer, ResourceRequestBaseSpec):
     origin_facility: dict
     approving_facility: dict | None = None
     assigned_facility: dict | None = None
@@ -147,13 +154,10 @@ class ResourceRequestRetrieveSpec(ResourceRequestBaseSpec):
             mapping["related_patient"] = PatientListSpec.serialize(
                 obj.related_patient
             ).to_json()
-        if obj.assigned_to:
-            mapping["assigned_to"] = UserSpec.serialize(obj.assigned_to).to_json()
+        if obj.assigned_to_id:
+            mapping["assigned_to"] = model_from_cache(UserSpec, id=obj.assigned_to_id)
 
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
-        if obj.updated_by:
-            mapping["updated_by"] = UserSpec.serialize(obj.updated_by)
+        cls.serialize_audit_users(mapping, obj)
 
 
 class ResourceRequestCommentBaseSpec(EMRResource):
@@ -173,8 +177,7 @@ class ResourceRequestCommentListSpec(ResourceRequestCommentBaseSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
-        if obj.created_by:
-            mapping["created_by"] = UserSpec.serialize(obj.created_by)
+        cls.serialize_audit_users(mapping, obj)
 
 
 class ResourceRequestCommentRetrieveSpec(ResourceRequestCommentListSpec):

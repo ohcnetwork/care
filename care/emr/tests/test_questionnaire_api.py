@@ -2,7 +2,6 @@ import uuid
 
 from django.conf import settings
 from django.urls import reverse
-from model_bakery import baker
 
 from care.emr.models.observation import Observation
 from care.emr.resources.questionnaire.spec import QuestionType
@@ -89,11 +88,6 @@ class QuestionnaireTestBase(CareAPITestBase):
             ],
         }
 
-    def create_questionnaire_tag(self, **kwargs):
-        from care.emr.models import QuestionnaireTag
-
-        return baker.make(QuestionnaireTag, **kwargs)
-
 
 class QuestionnaireValidationTests(QuestionnaireTestBase):
     """
@@ -159,7 +153,6 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             "subject_type": "patient",
             "organizations": [str(self.organization.external_id)],
             "questions": questions,
-            "tags": [self.create_questionnaire_tag().external_id],
         }
 
         response = self.client.post(
@@ -189,7 +182,7 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             "string": "Jane Smith",
             "text": "Persistent cough with fever",
             "date": "2023-12-31",
-            "dateTime": "2023-12-31T15:30:00",
+            "dateTime": "2023-12-31T15:30:00+05:30",
             "time": "15:30:00",
             "choice": "EXCELLENT",
             "url": "http://example.com",
@@ -1718,7 +1711,6 @@ class RequiredFieldValidationTests(QuestionnaireTestBase):
             "status": "active",
             "subject_type": "patient",
             "organizations": [str(self.organization.external_id)],
-            "tags": [self.create_questionnaire_tag().external_id],
             "questions": [
                 {
                     "link_id": "1",
@@ -2018,7 +2010,6 @@ class RequiredGroupValidationTests(QuestionnaireTestBase):
             "status": "active",
             "subject_type": "patient",
             "organizations": [str(self.organization.external_id)],
-            "tags": [self.create_questionnaire_tag().external_id],
             "questions": [
                 {
                     "styling_metadata": {"layout": "vertical"},
@@ -2106,7 +2097,6 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
             "status": "active",
             "subject_type": "patient",
             "organizations": [str(self.organization.external_id)],
-            "tags": [self.create_questionnaire_tag().external_id],
             "questions": [
                 {
                     "link_id": "1",
@@ -2371,72 +2361,6 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         response = self.client.get(organization_list_url)
         self.assertEqual(response.status_code, 200)
 
-    def test_tag_setting_unauthorized_access(self):
-        """
-        Verifies that users without any permissions cannot set tags on questionnaires.
-
-        """
-        questionnaire = self.create_questionnaire_instance()
-        tag_url = reverse(
-            "questionnaire-set-tags", kwargs={"slug": questionnaire["slug"]}
-        )
-
-        payload = {"tags": [self.create_questionnaire_tag().slug]}
-        response = self.client.post(tag_url, payload, format="json")
-        self.assertEqual(response.status_code, 403)
-
-    def test_tag_setting_read_only_access(self):
-        """
-        Verifies that users with only read permissions cannot set tags on questionnaires.
-
-        """
-        questionnaire = self.create_questionnaire_instance()
-        tag_url = reverse(
-            "questionnaire-set-tags", kwargs={"slug": questionnaire["slug"]}
-        )
-
-        permissions = [QuestionnairePermissions.can_read_questionnaire.name]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_organization_user(self.organization, self.user, role)
-
-        payload = {"tags": [self.create_questionnaire_tag().slug]}
-        response = self.client.post(tag_url, payload, format="json")
-        self.assertEqual(response.status_code, 403)
-
-    def test_tag_setting_invalid_tag_validation(self):
-        """
-        Verifies that attempts to set non-existent tags are properly validated and rejected.
-        """
-        questionnaire = self.create_questionnaire_instance()
-        tag_url = reverse(
-            "questionnaire-set-tags", kwargs={"slug": questionnaire["slug"]}
-        )
-
-        permissions = [
-            QuestionnairePermissions.can_read_questionnaire.name,
-            QuestionnairePermissions.can_write_questionnaire.name,
-        ]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_organization_user(self.organization, self.user, role)
-
-        payload = {"tags": ["non-existing-questionnaire-tag-slug"]}
-        response = self.client.post(tag_url, payload, format="json")
-        self.assertEqual(response.status_code, 404)
-
-    def test_set_tags_for_questionnaire_with_permissions(self):
-        permissions = [
-            QuestionnairePermissions.can_read_questionnaire.name,
-            QuestionnairePermissions.can_write_questionnaire.name,
-        ]
-        role = self.create_role_with_permissions(permissions)
-        self.attach_role_organization_user(self.organization, self.user, role)
-
-        questionnaire = self.create_questionnaire_instance()
-        url = reverse("questionnaire-set-tags", kwargs={"slug": questionnaire["slug"]})
-        payload = {"tags": [self.create_questionnaire_tag().slug]}
-        response = self.client.post(url, payload, format="json")
-        self.assertEqual(response.status_code, 200)
-
     def test_set_organizations_without_authentication(self):
         """Tests that setting organizations without authentication returns 403 forbidden."""
         questionnaire = self.create_questionnaire_instance()
@@ -2542,7 +2466,7 @@ class QuestionnaireRepeatableEnableWhenAllBehaviorTests(CareAPITestBase):
     def _create_questionnaire(self):
         data = {
             "title": "Appointment New",
-            "slug": "Appointment",
+            "slug": "appointment",
             "status": "active",
             "subject_type": "encounter",
             "organizations": [str(self.organization.external_id)],
@@ -2698,7 +2622,7 @@ class QuestionnaireRepeatableEnableWhenAnyBehaviorTests(CareAPITestBase):
     def _create_questionnaire(self):
         data = {
             "title": "Appointment New - Any",
-            "slug": "Appointment-any",
+            "slug": "appointment-any",
             "status": "active",
             "subject_type": "encounter",
             "organizations": [str(self.organization.external_id)],

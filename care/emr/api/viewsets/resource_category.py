@@ -1,6 +1,8 @@
 from django_filters import rest_framework as filters
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
+from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -10,9 +12,17 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
-from care.emr.models.resource_category import ResourceCategory
+from care.emr.models.resource_category import (
+    ResourceCategory,
+    summarise_monetary_components,
+)
+from care.emr.resources.common.monetary_component import (
+    MonetaryComponentsWithoutBase,
+    MonetaryComponentType,
+)
 from care.emr.resources.resource_category.spec import (
     ResourceCategoryReadSpec,
+    ResourceCategoryResourceTypeOptions,
     ResourceCategoryUpdateSpec,
     ResourceCategoryWriteSpec,
 )
@@ -69,9 +79,7 @@ class ResourceCategoryViewSet(
         queryset = queryset.filter(slug__iexact=slug)
 
         if queryset.exists():
-            raise ValidationError(
-                "Charge Item Definition with this slug already exists."
-            )
+            raise ValidationError("Resource category with this slug already exists.")
 
         if not model_obj and instance.parent:
             parent = instance.parent
@@ -105,7 +113,7 @@ class ResourceCategoryViewSet(
             self.request.user,
             self.get_facility_obj(),
         ):
-            raise PermissionDenied("Access Denied to Charge Item Definition Category")
+            raise PermissionDenied("Access denied to resource category")
 
     def authorize_update(self, request_obj, model_instance):
         if not AuthorizationController.call(
@@ -113,7 +121,7 @@ class ResourceCategoryViewSet(
             self.request.user,
             model_instance.facility,
         ):
-            raise PermissionDenied("Access Denied to Charge Item Definition Category")
+            raise PermissionDenied("Access denied to resource category")
 
     def get_queryset(self):
         queryset = super().get_queryset()
@@ -125,5 +133,29 @@ class ResourceCategoryViewSet(
             self.request.user,
             facility_obj,
         ):
-            raise PermissionDenied("Access Denied to Charge Item Definition Category")
+            raise PermissionDenied("Access denied to resource category")
         return queryset.filter(facility=facility_obj)
+
+    @action(detail=True, methods=["POST"])
+    def set_monetary_components(self, request, *args, **kwargs):
+        obj = self.get_object()
+        if (
+            obj.resource_type
+            != ResourceCategoryResourceTypeOptions.charge_item_definition.value
+        ):
+            raise ValidationError("Resource category is not a charge item definition")
+
+        self.authorize_update(None, obj)
+        monetary_components = MonetaryComponentsWithoutBase.model_validate(request.data)
+        for component in monetary_components:
+            if component.monetary_component_type == MonetaryComponentType.base.value:
+                raise ValidationError(
+                    "Base component is not allowed in configured monetary components"
+                )
+        obj.configured_monetary_components = monetary_components.model_dump(
+            mode="json", exclude_defaults=True
+        )
+        obj.save()
+        summarise_monetary_components(obj.id)
+        obj = self.get_object()  # Refresh object to get updated fields
+        return Response(self.get_retrieve_pydantic_model().serialize(obj).to_json())

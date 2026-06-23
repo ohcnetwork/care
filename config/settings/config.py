@@ -255,17 +255,71 @@ ENCOUNTER_RESTART_TIME_LIMIT_HOURS = env.int(
     "ENCOUNTER_RESTART_TIME_LIMIT_HOURS", default=0
 )
 
-PRODUCT_EXTENSIONS_JSON_SCHEMA = env.json(
-    "PRODUCT_EXTENSIONS_JSON_SCHEMA",
-    default={},
+INVOICE_FREE_CANCEL_PERIOD_MINUTES = env.int(
+    "INVOICE_FREE_CANCEL_PERIOD_MINUTES", default=0
 )
 
-SUPPLY_DELIVERY_EXTENSIONS_JSON_SCHEMA = env.json(
-    "SUPPLY_DELIVERY_EXTENSIONS_JSON_SCHEMA",
-    default={},
+CHARGE_ITEM_FREE_CANCEL_PERIOD_MINUTES = env.int(
+    "CHARGE_ITEM_FREE_CANCEL_PERIOD_MINUTES", default=0
 )
 
-SUPPLY_DELIVERY_ORDER_EXTENSIONS_JSON_SCHEMA = env.json(
-    "SUPPLY_DELIVERY_ORDER_EXTENSIONS_JSON_SCHEMA",
-    default={},
+PAYMENT_RECONCILIATION_FREE_CANCEL_PERIOD_MINUTES = env.int(
+    "PAYMENT_RECONCILIATION_FREE_CANCEL_PERIOD_MINUTES", default=0
+)
+
+# Rounding
+
+ACCOUNTING_PRECISION = env.int("ACCOUNTING_PRECISION", default=2)
+
+ACCOUNTING_ROUNDING_METHOD = env(
+    "ACCOUNTING_ROUNDING_METHOD", default="care.utils.rounding.RoundingHalfUp"
+)
+
+
+INVOICE_FINAL_AMOUNT_PRECISION = env.int("INVOICE_FINAL_AMOUNT_PRECISION", default=0)
+
+INVOICE_FINAL_AMOUNT_ROUNDING_METHOD = env(
+    "INVOICE_FINAL_AMOUNT_ROUNDING_METHOD", default="care.utils.rounding.RoundingHalfUp"
+)
+
+PATIENT_GLOBAL_EDIT_ACCESS_ENABLED = env.bool(
+    "PATIENT_GLOBAL_EDIT_ACCESS_ENABLED", default=False
+)
+
+PREFERENCE_SCHEMA = env.json(
+    "PREFERENCE_SCHEMA",
+    default={
+        "facility_quick_links": {
+            "$schema": "http://json-schema.org/draft-07/schema#",
+            "title": "UserPreferences",
+            "type": "object",
+            "additionalProperties": False,
+            "properties": {
+                "blacklist": {
+                    "type": "array",
+                    "items": {"type": "string", "minLength": 1},
+                    "default": [],
+                },
+                "custom_links": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": False,
+                        "required": ["link", "title"],
+                        "properties": {
+                            "link": {"type": "string", "minLength": 1},
+                            "title": {"type": "string", "minLength": 1},
+                            "icon": {"type": "string", "minLength": 1},
+                            "facilityId": {"type": "string", "minLength": 1},
+                        },
+                    },
+                    "default": [],
+                },
+            },
+        }
+    },
+)
+
+QUESTIONNAIRE_ERRORED_TIME_LIMIT_MINUTES = env.int(
+    "QUESTIONNAIRE_ERRORED_TIME_LIMIT_MINUTES", default=120
 )

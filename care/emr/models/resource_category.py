@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+from celery import shared_task
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.utils import timezone
@@ -36,6 +37,11 @@ class ResourceCategory(SlugBaseModel):
         related_name="root",
     )
     has_children = models.BooleanField(default=False)
+
+    # Charge Item Fields
+
+    configured_monetary_components = models.JSONField(default=list)
+    calculated_monetary_components = models.JSONField(default=list)
 
     cache_expiry_days = 15
 
@@ -82,5 +88,53 @@ class ResourceCategory(SlugBaseModel):
         if not self.id:
             super().save(*args, **kwargs)
             self.set_organization_cache()
+            summarise_monetary_components(self)
         else:
             super().save(*args, **kwargs)
+
+
+def merge_monetary_components(parent_components, child_components):
+    no_code_components = []
+    components = {}
+    for component in parent_components:
+        if component.get("code"):
+            key = component.get("code").get("system") + component.get("code").get(
+                "code"
+            )
+            components[key] = component
+        else:
+            no_code_components.append(component)
+    # Override with child components
+    for component in child_components:
+        if component.get("code"):
+            key = component.get("code").get("system") + component.get("code").get(
+                "code"
+            )
+            components[key] = component
+        else:
+            no_code_components.append(component)
+    # Final components
+    final_components = no_code_components
+    for _, component in components.items():
+        final_components.append(component)
+    return final_components
+
+
+@shared_task
+def summarise_monetary_components(category: ResourceCategory | int):
+    if isinstance(category, int):
+        category = ResourceCategory.objects.get(id=category)
+    if not category.parent:
+        category.calculated_monetary_components = (
+            category.configured_monetary_components
+        )
+    else:
+        # Merge parent and child monetary components
+        category.calculated_monetary_components = merge_monetary_components(
+            category.parent.calculated_monetary_components,
+            category.configured_monetary_components,
+        )
+    category.save(update_fields=["calculated_monetary_components"])
+
+    for component in ResourceCategory.objects.filter(parent=category):
+        summarise_monetary_components.delay(component.id)

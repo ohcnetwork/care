@@ -1,11 +1,18 @@
+from datetime import datetime
 from enum import Enum
 
-from django.conf import settings
-from jsonschema import validate
-from pydantic import UUID4, field_validator
+from pydantic import UUID4
+from rest_framework.exceptions import ValidationError
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import (
+    ExtensionListRenderer,
+    ExtensionRetrieveRenderer,
+    ExtensionValidator,
+)
 from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import Organization
+from care.emr.models.patient import Patient
 from care.emr.models.supply_delivery import DeliveryOrder
 from care.emr.resources.base import EMRResource
 from care.emr.resources.location.spec import FacilityLocationListSpec
@@ -13,6 +20,7 @@ from care.emr.resources.organization.spec import (
     OrganizationReadSpec,
     OrganizationTypeChoices,
 )
+from care.emr.resources.patient.spec import PatientListSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.utils.shortcuts import get_object_or_404
 
@@ -33,9 +41,9 @@ SUPPLY_DELIVERY_ORDER_COMPLETED_STATUSES = [
 ]
 
 
-class BaseSupplyDeliveryOrderSpec(EMRResource):
+class BaseSupplyDeliveryOrderSpec(ExtensionValidator, EMRResource):
     __model__ = DeliveryOrder
-
+    ___extension_resource_type__ = ExtensionResource.supply_delivery_order
     id: UUID4 | None = None
 
     status: SupplyDeliveryOrderStatusOptions
@@ -47,16 +55,7 @@ class SupplyDeliveryOrderWriteSpec(BaseSupplyDeliveryOrderSpec):
     supplier: UUID4 | None = None
     origin: UUID4 | None = None
     destination: UUID4
-    extensions: dict
-
-    @field_validator("extensions")
-    @classmethod
-    def validate_extensions(cls, v):
-        try:
-            validate(v, settings.SUPPLY_DELIVERY_ORDER_EXTENSIONS_JSON_SCHEMA)
-        except Exception as e:
-            raise ValueError("Invalid additional metadata") from e
-        return v
+    patient: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.destination = get_object_or_404(
@@ -74,15 +73,32 @@ class SupplyDeliveryOrderWriteSpec(BaseSupplyDeliveryOrderSpec):
                     org_type=OrganizationTypeChoices.product_supplier.value,
                 )
             )
-
+        if self.patient:
+            obj.patient = get_object_or_404(
+                Patient.objects.only("id").filter(external_id=self.patient)
+            )
+        if self.patient and self.origin:
+            raise ValidationError("Patient and origin cannot be provided together")
+        if self.status.value not in [
+            SupplyDeliveryOrderStatusOptions.draft.value,
+            SupplyDeliveryOrderStatusOptions.pending.value,
+        ]:
+            raise ValidationError("Status must be draft or pending on create")
         return obj
 
 
-class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
+class SupplyDeliveryOrderReadSpec(ExtensionListRenderer, BaseSupplyDeliveryOrderSpec):
     origin: dict | None = None
     destination: dict
     supplier: dict | None = None
     tags: list[dict] = []
+    patient: dict | None = None
+    patient_invoice_id: UUID4 | None = None
+    created_date: datetime
+    modified_date: datetime
+
+    created_by: dict | None = None
+    updated_by: dict | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -95,3 +111,15 @@ class SupplyDeliveryOrderReadSpec(BaseSupplyDeliveryOrderSpec):
         if obj.supplier:
             mapping["supplier"] = OrganizationReadSpec.serialize(obj.supplier).to_json()
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
+        if obj.patient:
+            mapping["patient"] = PatientListSpec.serialize(obj.patient).to_json()
+        if obj.patient_invoice:
+            mapping["patient_invoice_id"] = str(obj.patient_invoice.external_id)
+        cls.serialize_audit_users(mapping, obj)
+        return super().perform_extra_serialization(mapping, obj)
+
+
+class SupplyDeliveryOrderRetrieveSpec(
+    ExtensionRetrieveRenderer, SupplyDeliveryOrderReadSpec
+):
+    pass

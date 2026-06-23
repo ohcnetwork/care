@@ -10,6 +10,7 @@ from care.security.permissions.diagnostic_report import DiagnosticReportPermissi
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.medication import MedicationPermissions
 from care.security.permissions.service_request import ServiceRequestPermissions
+from care.security.permissions.template import TemplatePermissions
 
 
 class EncounterAccess(AuthorizationHandler):
@@ -161,6 +162,20 @@ class EncounterAccess(AuthorizationHandler):
             return False
         return self.check_permission_in_encounter(
             user, encounter, ServiceRequestPermissions.can_write_service_request.name
+        )
+
+    def can_generate_report_for_encounter(self, user, encounter):
+        """
+        Check if the user has permission to generate report for this encounter
+        """
+        if encounter.status in COMPLETED_CHOICES:
+            return self.check_permission_in_encounter(
+                user,
+                encounter,
+                TemplatePermissions.can_generate_report_for_completed_encounter.name,
+            )
+        return self.check_permission_in_encounter(
+            user, encounter, EncounterPermissions.can_write_encounter.name
         )
 
     def get_filtered_encounters(self, qs, user, facility):

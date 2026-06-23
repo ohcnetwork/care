@@ -50,6 +50,7 @@ class TestScheduleViewSet(CareAPITestBase):
             name="Test Schedule",
             valid_from=datetime.now(UTC) - timedelta(days=30),
             valid_to=datetime.now(UTC) + timedelta(days=30),
+            is_public=True,
         )
         self.availability = self.generate_availiability()
         self.slot = self.create_slot()
@@ -135,6 +136,7 @@ class TestScheduleViewSet(CareAPITestBase):
             ),
             "resource_id": kwargs.get("resource_id", str(self.user.external_id)),
             "name": "Test Schedule",
+            "is_public": False,
             "valid_from": valid_from.isoformat(),
             "valid_to": valid_to.isoformat(),
             "availabilities": [
@@ -600,6 +602,7 @@ class TestScheduleViewSet(CareAPITestBase):
 
         updated_data = {
             "name": "Updated Schedule Name",
+            "is_public": False,
             "valid_from": self.schedule.valid_from,
             "valid_to": self.schedule.valid_to,
         }
@@ -619,6 +622,7 @@ class TestScheduleViewSet(CareAPITestBase):
 
         updated_data = {
             "name": "Updated Schedule Name",
+            "is_public": False,
             "valid_from": self.schedule.valid_from,
             "valid_to": self.schedule.valid_to,
         }
@@ -811,6 +815,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.create_booking()
         updated_data = {
             "name": "Updated Schedule Name",
+            "is_public": False,
             "valid_from": self.schedule.valid_from,
             "valid_to": self.schedule.valid_to - timedelta(days=1),
         }
@@ -835,6 +840,7 @@ class TestScheduleViewSet(CareAPITestBase):
         )
         updated_data = {
             "name": "Updated Schedule Name",
+            "is_public": False,
             "valid_from": self.schedule.valid_from,
             "valid_to": self.schedule.valid_from + timedelta(days=1),
         }
@@ -1372,6 +1378,7 @@ class TestAvailabilityViewSet(CareAPITestBase):
             name=kwargs.get("name", "Test Schedule"),
             valid_from=kwargs.get("valid_from", datetime.now(UTC)),
             valid_to=kwargs.get("valid_to", datetime.now(UTC) + timedelta(days=30)),
+            is_public=kwargs.get("is_public", True),
         )
         for availability in kwargs.get("availabilities", []):
             schedule.availabilities.create(**availability)

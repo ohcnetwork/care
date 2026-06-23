@@ -1,5 +1,4 @@
 from io import BytesIO
-from secrets import choice
 from unittest.mock import patch
 
 from django.core.files.uploadedfile import SimpleUploadedFile
@@ -8,8 +7,8 @@ from django.utils import timezone
 from PIL import Image
 
 from care.emr.resources.patient.spec import GenderChoices
-from care.emr.resources.user.spec import UserTypeOptions, UserTypeRoleMapping
 from care.security.permissions.user import UserPermissions
+from care.users.models import User
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -27,7 +26,6 @@ class UserviewTestCase(CareAPITestBase):
             first_name="Test",
             last_name="User",
             email="user@example.com",
-            user_type=UserTypeOptions.administrator,
             geo_organization=self.organization,
             gender=GenderChoices.non_binary,
             phone_number="1234432100",
@@ -39,12 +37,6 @@ class UserviewTestCase(CareAPITestBase):
                 UserPermissions.can_list_user.name,
             ],
         )
-        for user_type in UserTypeOptions:
-            role_name = UserTypeRoleMapping[user_type.value].value.name
-            self.create_role(
-                name=role_name,
-                is_system=True,
-            )
         self.url = reverse("users-list")
         self.user_data = {
             "username": "newuser",
@@ -52,10 +44,10 @@ class UserviewTestCase(CareAPITestBase):
             "last_name": "User",
             "email": "testuser@example.com",
             "password": "ComplexP@ssw0rd",
-            "user_type": choice(list(UserTypeOptions)).value,
             "gender": GenderChoices.non_binary,
             "geo_organization": self.organization.external_id,
             "phone_number": "1234567890",
+            "role_orgs": [],
         }
 
     def get_user_detail_url(self, username):
@@ -90,6 +82,12 @@ class UserviewTestCase(CareAPITestBase):
         get_response = self.client.get(self.get_user_detail_url("newuser"))
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(
+            get_response.data["geo_organization"]["id"],
+            str(self.organization.external_id),
+        )
+        created_user = User.objects.get(username="newuser")
+        self.assertEqual(created_user.geo_organization_id, self.organization.id)
 
     def test_create_user_as_user_with_permission(self):
         self.attach_role_organization_user(
@@ -102,6 +100,12 @@ class UserviewTestCase(CareAPITestBase):
         get_response = self.client.get(self.get_user_detail_url("newuser"))
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(
+            get_response.data["geo_organization"]["id"],
+            str(self.organization.external_id),
+        )
+        created_user = User.objects.get(username="newuser")
+        self.assertEqual(created_user.geo_organization_id, self.organization.id)
 
     def test_create_user_as_user_without_permission(self):
         self.client.force_authenticate(user=self.user)
@@ -168,9 +172,6 @@ class UserviewTestCase(CareAPITestBase):
         self.client.force_authenticate(user=self.super_user)
         response = self.client.post(self.url, {}, format="json")
         self.assertEqual(response.status_code, 400)
-
-    # Test cases for update user details
-    "Only super user and the user themselves can update user details"
 
     def test_update_user_as_super_user(self):
         self.client.force_authenticate(user=self.super_user)
@@ -334,18 +335,6 @@ class UserviewTestCase(CareAPITestBase):
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(response.data["results"][0]["phone_number"], "1234432100")
 
-    def test_filter_users_by_user_type(self):
-        self.client.force_authenticate(user=self.super_user)
-        response = self.client.get(
-            self.url, {"user_type": UserTypeOptions.administrator.value}
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data["results"]), 1)
-        self.assertEqual(
-            response.data["results"][0]["user_type"],
-            UserTypeOptions.administrator.value,
-        )
-
     # Test cases for checking username availability
 
     def test_check_username_availability_available(self):
@@ -437,7 +426,6 @@ class UserProfilePictureTestCase(CareAPITestBase):
             first_name="Test",
             last_name="User",
             email="user@example.com",
-            user_type=UserTypeOptions.administrator,
             geo_organization=self.organization,
             gender=GenderChoices.non_binary,
             phone_number="1234432100",
@@ -449,12 +437,6 @@ class UserProfilePictureTestCase(CareAPITestBase):
                 UserPermissions.can_list_user.name,
             ],
         )
-        for user_type in UserTypeOptions:
-            role_name = UserTypeRoleMapping[user_type.value].value.name
-            self.create_role(
-                name=role_name,
-                is_system=True,
-            )
         self.url = reverse(
             "users-profile-picture", kwargs={"username": self.user.username}
         )

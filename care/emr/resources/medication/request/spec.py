@@ -1,4 +1,5 @@
 from datetime import datetime
+from decimal import Decimal
 from enum import Enum
 
 from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
@@ -110,12 +111,12 @@ class DoseType(str, Enum):
 
 
 class DosageQuantity(BaseModel):
-    value: float
+    value: Decimal = Field(max_digits=20, decimal_places=6)
     unit: Coding
 
 
 class TimingQuantity(BaseModel):
-    value: float
+    value: Decimal = Field(max_digits=20, decimal_places=0)
     unit: TimingUnit
 
 
@@ -132,14 +133,14 @@ class DoseAndRate(BaseModel):
 
 class TimingRepeat(BaseModel):
     frequency: int
-    period: float
+    period: Decimal = Field(max_digits=20, decimal_places=0)
     period_unit: TimingUnit
     bounds_duration: TimingQuantity
 
 
 class Timing(BaseModel):
     repeat: TimingRepeat
-    code: Coding
+    code: Coding | None = None
 
 
 class DosageInstruction(BaseModel):
@@ -172,9 +173,7 @@ class MedicationRequestResource(EMRResource):
     ]
 
 
-class BaseMedicationRequestSpec(MedicationRequestResource):
-    id: UUID4 = None
-
+class MedicationRequestAbstractSpec(BaseModel):
     status: MedicationRequestStatus
 
     status_reason: StatusReason | None = None
@@ -194,6 +193,12 @@ class BaseMedicationRequestSpec(MedicationRequestResource):
     note: str | None = Field(None)
 
     dispense_status: MedicationRequestDispenseStatus | None = None
+
+
+class BaseMedicationRequestSpec(
+    MedicationRequestResource, MedicationRequestAbstractSpec
+):
+    id: UUID4 = None
 
 
 class CreatePrescription(BaseModel):
@@ -245,7 +250,9 @@ class MedicationRequestSpec(BaseMedicationRequestSpec):
                 obj.requested_product.facility
                 and obj.requested_product.facility != obj.encounter.facility
             ):
-                raise ValueError("Product not found in facility")
+                raise ValidationError(
+                    {"requested_product": "Product not found in facility"}
+                )
 
         if self.prescription:
             obj.prescription = get_object_or_404(

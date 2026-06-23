@@ -6,7 +6,13 @@ from care.emr.models import EMRBaseModel
 
 class SupplyDelivery(EMRBaseModel):
     status = models.CharField(max_length=255)
-    supplied_item_quantity = models.FloatField(null=True, blank=True)
+    supplied_item_pack_quantity = models.IntegerField(
+        null=True, blank=True, default=None
+    )
+    supplied_item_pack_size = models.IntegerField(null=True, blank=True, default=None)
+    supplied_item_quantity = models.DecimalField(
+        null=True, blank=True, max_digits=20, decimal_places=6
+    )
     supplied_item = models.ForeignKey(
         "emr.Product", on_delete=models.CASCADE, null=True, blank=True
     )
@@ -25,6 +31,9 @@ class SupplyDelivery(EMRBaseModel):
         blank=True,
     )
     extensions = models.JSONField(default=dict)
+    total_purchase_price = models.DecimalField(
+        null=True, blank=True, max_digits=20, decimal_places=6
+    )
 
 
 class DeliveryOrder(EMRBaseModel):
@@ -48,3 +57,9 @@ class DeliveryOrder(EMRBaseModel):
         on_delete=models.CASCADE,
     )
     extensions = models.JSONField(default=dict)
+    patient = models.ForeignKey(
+        "emr.Patient", on_delete=models.PROTECT, null=True, blank=True, default=None
+    )
+    patient_invoice = models.ForeignKey(
+        "emr.Invoice", on_delete=models.PROTECT, null=True, blank=True, default=None
+    )

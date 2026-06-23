@@ -1,0 +1,33 @@
+name: PR Title JIRA Validation
+
+on:
+  pull_request:
+    types: [opened, reopened, edited]
+
+jobs:
+  validate-jira-ticket:
+    runs-on: ubuntu-24.04-arm
+    if: github.event.pull_request.user.type != 'Bot'
+
+    steps:
+      - name: Validate JIRA Ticket in PR Title
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            // Configure JIRA project keys here
+            const jiraProjectKeys = ['ENG'];
+
+            const prTitle = context.payload.pull_request.title;
+
+            // Check that title starts with [ENG-456] format
+            const pattern = new RegExp(`^\\[(${jiraProjectKeys.join('|')})-\\d+\\]`, 'i');
+
+            if (!pattern.test(prTitle)) {
+              const examples = jiraProjectKeys.map(k => `[${k}-123]`).join(', ');
+              core.setFailed(
+                `PR title must start with a JIRA ticket in brackets.\n` +
+                `Expected format: [PROJECT-NUMBER] title\n` +
+                `Examples: ${examples}`
+              );
+            }
