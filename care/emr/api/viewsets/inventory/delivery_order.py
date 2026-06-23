@@ -17,7 +17,7 @@ from care.emr.api.viewsets.base import (
 from care.emr.models.location import FacilityLocation
 from care.emr.models.supply_delivery import DeliveryOrder
 from care.emr.resources.inventory.supply_delivery.delivery_order import (
-    BaseSupplyDeliveryOrderSpec,
+    DeliveryOrderUpdateSpec,
     SupplyDeliveryOrderReadSpec,
     SupplyDeliveryOrderRetrieveSpec,
     SupplyDeliveryOrderStatusOptions,
@@ -59,7 +59,7 @@ class DeliveryOrderViewSet(
 ):
     database_model = DeliveryOrder
     pydantic_model = SupplyDeliveryOrderWriteSpec
-    pydantic_update_model = BaseSupplyDeliveryOrderSpec
+    pydantic_update_model = DeliveryOrderUpdateSpec
     pydantic_read_model = SupplyDeliveryOrderReadSpec
     pydantic_retrieve_model = SupplyDeliveryOrderRetrieveSpec
     filterset_class = DeliveryOrderFilters

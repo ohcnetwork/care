@@ -2,6 +2,7 @@ from datetime import datetime
 from enum import Enum
 
 from pydantic import UUID4
+from pydantic.experimental.missing_sentinel import MISSING
 from rest_framework.exceptions import ValidationError
 
 from care.emr.extensions.base import ExtensionResource
@@ -85,6 +86,12 @@ class SupplyDeliveryOrderWriteSpec(BaseSupplyDeliveryOrderSpec):
         ]:
             raise ValidationError("Status must be draft or pending on create")
         return obj
+
+
+class DeliveryOrderUpdateSpec(BaseSupplyDeliveryOrderSpec):
+    status: SupplyDeliveryOrderStatusOptions | MISSING = MISSING
+    name: str | MISSING = MISSING
+    note: str | None | MISSING = MISSING
 
 
 class SupplyDeliveryOrderReadSpec(ExtensionListRenderer, BaseSupplyDeliveryOrderSpec):
