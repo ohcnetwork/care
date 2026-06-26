@@ -34,6 +34,7 @@ RUN pipenv install --deploy --categories "packages"
 COPY plugs/ $APP_HOME/plugs/
 COPY install_plugins.py plug_config.py $APP_HOME/
 
+ARG PLUGIN_RESOLVED_HASH
 ARG ADDITIONAL_PLUGS=""
 ENV ADDITIONAL_PLUGS=$ADDITIONAL_PLUGS
 RUN python3 $APP_HOME/install_plugins.py
