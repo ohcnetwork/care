@@ -1985,7 +1985,7 @@ class TestSyncChargeItemCostsZeroAmountComponents(CareAPITestBase):
 
     def test_factor_based_components_still_work(self):
         """
-        Verify that factor-based tax components are calculated correctly.
+        Sanity check that non-zero factor-based (percentage) components, which were already handled correctly.
         """
         charge_item = self._build_charge_item(
             [
@@ -1995,6 +1995,26 @@ class TestSyncChargeItemCostsZeroAmountComponents(CareAPITestBase):
         )
         sync_charge_item_costs(charge_item)
         self.assertEqual(charge_item.total_price, Decimal("110.00"))
+
+    def test_zero_factor_component_does_not_raise(self):
+        """
+        A tax component with factor=0 (e.g. a 0% tax bracket) should
+        compute to a zero contribution, not raise "Amount or factor is
+        required". This mirrors the amount=0 cases above but exercises
+        the `factor` branch of `calculate_amount` specifically, since
+        `factor=0` was just as broken as `amount=0` by the original
+        truthy check.
+        """
+        charge_item = self._build_charge_item(
+            [
+                {"monetary_component_type": "base", "amount": "100.00"},
+                {"monetary_component_type": "tax", "factor": "0"},
+            ]
+        )
+
+        sync_charge_item_costs(charge_item)
+
+        self.assertEqual(charge_item.total_price, Decimal("100.00"))
 
     def test_missing_amount_and_factor_still_raises(self):
         """
