@@ -55,7 +55,7 @@ class MonetaryComponent(BaseModel):
 
     @model_validator(mode="after")
     def check_amount_and_factor(self):
-        if self.factor and (self.amount is not None):
+        if (self.factor is not None) and (self.amount is not None):
             raise ValueError(
                 "Only one of 'amount' or 'factor' can be present, not both."
             )
@@ -65,7 +65,7 @@ class MonetaryComponent(BaseModel):
     def check_amount_or_factor(self):
         if self.global_component and self.code:
             return self
-        if not ((self.amount is not None) or self.factor):
+        if not ((self.amount is not None) or (self.factor is not None)):
             raise ValueError("Either 'amount' or 'factor' must be present.")
         return self
 
