@@ -35,7 +35,8 @@ for p in plugs:
                 timeout=15,
             )
             sha = out.stdout.split()[0] if out.stdout else ref
-        except Exception:
+        except Exception as exc:
+            sys.stderr.write(f"warning: git ls-remote failed for {git_url!r} ({exc}); using ref name as cache key\n")
             sha = ref
         resolved.append(f"{pkg}@{sha}")
     else:
