@@ -11,7 +11,7 @@ from care.emr.models.medication_request import (
     MedicationRequestPrescription,
 )
 from care.emr.models.product_knowledge import ProductKnowledge
-from care.emr.resources.base import EMRResource, model_from_cache
+from care.emr.resources.base import EMRResource, PeriodSpec, model_from_cache
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.inventory.product_knowledge.spec import ProductKnowledgeReadSpec
 from care.emr.resources.medication.request_prescription.spec import (
@@ -120,6 +120,11 @@ class TimingQuantity(BaseModel):
     unit: TimingUnit
 
 
+class TimingRange(BaseModel):
+    low: TimingQuantity
+    high: TimingQuantity
+
+
 class DoseRange(BaseModel):
     low: DosageQuantity
     high: DosageQuantity
@@ -135,7 +140,21 @@ class TimingRepeat(BaseModel):
     frequency: int
     period: Decimal = Field(max_digits=20, decimal_places=0)
     period_unit: TimingUnit
-    bounds_duration: TimingQuantity
+    bounds_duration: TimingQuantity | None = None
+    bounds_range: TimingRange | None = None
+    bounds_period: PeriodSpec | None = None
+
+    @model_validator(mode="after")
+    def validate_bounds(self):
+        if (
+            not self.bounds_duration
+            and not self.bounds_range
+            and not self.bounds_period
+        ):
+            raise ValueError(
+                "At least one of bounds_duration, bounds_range, or bounds_period is required"
+            )
+        return self
 
 
 class Timing(BaseModel):

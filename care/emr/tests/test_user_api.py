@@ -8,6 +8,7 @@ from PIL import Image
 
 from care.emr.resources.patient.spec import GenderChoices
 from care.security.permissions.user import UserPermissions
+from care.users.models import User
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -81,6 +82,12 @@ class UserviewTestCase(CareAPITestBase):
         get_response = self.client.get(self.get_user_detail_url("newuser"))
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(
+            get_response.data["geo_organization"]["id"],
+            str(self.organization.external_id),
+        )
+        created_user = User.objects.get(username="newuser")
+        self.assertEqual(created_user.geo_organization_id, self.organization.id)
 
     def test_create_user_as_user_with_permission(self):
         self.attach_role_organization_user(
@@ -93,6 +100,12 @@ class UserviewTestCase(CareAPITestBase):
         get_response = self.client.get(self.get_user_detail_url("newuser"))
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(
+            get_response.data["geo_organization"]["id"],
+            str(self.organization.external_id),
+        )
+        created_user = User.objects.get(username="newuser")
+        self.assertEqual(created_user.geo_organization_id, self.organization.id)
 
     def test_create_user_as_user_without_permission(self):
         self.client.force_authenticate(user=self.user)

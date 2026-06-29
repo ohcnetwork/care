@@ -79,7 +79,7 @@ class DeliveryOrderViewSet(
             "can_list_facility_supply_delivery", self.request.user, location_obj
         ):
             if raise_error:
-                raise PermissionDenied("Cannot list supply requests")
+                raise PermissionDenied("Cannot list delivery orders")
             return False
         return True
 
@@ -88,7 +88,7 @@ class DeliveryOrderViewSet(
             "can_write_facility_supply_delivery", self.request.user, location_obj
         ):
             if raise_error:
-                raise PermissionDenied("Cannot write supply requests")
+                raise PermissionDenied("Cannot write delivery orders")
             return False
         return True
 
@@ -99,7 +99,7 @@ class DeliveryOrderViewSet(
             location_obj,
         ):
             if raise_error:
-                raise PermissionDenied("Cannot write supply requests")
+                raise PermissionDenied("Cannot write delivery orders")
             return False
         return True
 
@@ -121,7 +121,7 @@ class DeliveryOrderViewSet(
                 order.destination, raise_error=False
             )
         if not allowed:
-            raise PermissionDenied("Cannot write supply requests")
+            raise PermissionDenied("Cannot write delivery orders")
 
     def perform_update(self, instance):
         with transaction.atomic():
@@ -182,11 +182,20 @@ class DeliveryOrderViewSet(
         self.authorize_order_write(model_instance)
 
     def authorize_retrieve(self, model_instance):
-        allowed = False
-        if model_instance.origin:
-            allowed = allowed or self.authorize_location_read(model_instance.origin)
-        allowed = allowed or self.authorize_location_read(model_instance.destination)
-        if not allowed:
+        """
+        User should have read access to either origin or destination to read the order.
+        """
+        if not (
+            (
+                model_instance.origin
+                and self.authorize_location_read(
+                    model_instance.origin, raise_error=False
+                )
+            )
+            or self.authorize_location_read(
+                model_instance.destination, raise_error=False
+            )
+        ):
             raise PermissionDenied("Cannot read delivery orders")
 
     def get_location_obj(self, external_id):
