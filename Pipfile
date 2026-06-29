@@ -11,7 +11,7 @@ name = "python-magic-bin"
 [packages]
 argon2-cffi = "==25.1.0"
 authlib = "==1.6.12"
-boto3 = "==1.43.6"
+boto3 = "==1.43.37"
 celery = "==5.6.0"
 django = "==6.0"
 django-anymail = {extras = ["amazon-ses"], version = "*"}
