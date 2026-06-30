@@ -36,18 +36,6 @@ class MedicationFilter(filters.BooleanFilter):
         return qs
 
 
-class NutritionalProductFilter(filters.BooleanFilter):
-    def filter(self, qs, value):
-        if value:
-            return qs.filter(
-                models.Q(
-                    requested_product__product_type__iexact=ProductTypeOptions.nutritional_product.value
-                )
-                | models.Q(requested_product__isnull=True)
-            )
-        return qs
-
-
 class MedicationRequestFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     status = MultiSelectFilter(field_name="status")
@@ -67,7 +55,6 @@ class MedicationRequestFilter(filters.FilterSet):
         field_name="requested_product__product_type", lookup_expr="iexact"
     )
     medications_only = MedicationFilter()
-    nutritional_products_only = NutritionalProductFilter()
 
 
 class MedicationRequestViewSet(
