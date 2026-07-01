@@ -21,7 +21,7 @@ RUN --mount=type=cache,target=/root/.cache/pip pip install pipenv==2025.1.1
 COPY Pipfile Pipfile.lock $APP_HOME/
 RUN --mount=type=cache,target=/root/.cache/pip pipenv  install --system --categories "packages dev-packages docs"
 
-ARG PLUGIN_RESOLVED_HASH
+ARG PLUGIN_RESOLVED_HASH=""
 ARG ADDITIONAL_PLUGS=""
 ENV ADDITIONAL_PLUGS=$ADDITIONAL_PLUGS
 
