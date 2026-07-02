@@ -163,6 +163,17 @@ BECKN_NETWORK_ID = env("BECKN_NETWORK_ID", default="")
 # Beckn protocol version advertised in published/callback contexts.
 BECKN_VERSION = env("BECKN_VERSION", default="2.0.0")
 
+# Care-as-BAP (outbound) — used when Care initiates a Beckn transaction to an
+# external coordination center (CC) acting as BPP, e.g. for "other" category
+# resource requests. Delivery is enabled only when the caller URL is configured.
+BECKN_BAP_CALLER_URL = env("BECKN_BAP_CALLER_URL", default="")
+# Care's own BAP identity and the receiver URI the CC posts on_* callbacks to.
+BECKN_BAP_ID = env("BECKN_BAP_ID", default="")
+BECKN_BAP_URI = env("BECKN_BAP_URI", default="")
+# Target coordination-center (BPP) identity for the outbound referral confirm.
+BECKN_CC_BPP_ID = env("BECKN_CC_BPP_ID", default="")
+BECKN_CC_BPP_URI = env("BECKN_CC_BPP_URI", default="")
+
 # MIGRATIONS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules

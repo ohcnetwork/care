@@ -8,6 +8,7 @@ behaviour as the HTTP scheduling API without going through DRF.
 import datetime
 
 from django.db import transaction
+from django.db.models import F
 from django.utils import timezone
 
 from care.emr.api.viewsets.scheduling.availability import (
@@ -98,8 +99,12 @@ def list_slots_for_day(resource, day: datetime.date, *, public_only: bool = True
         slots = slots.filter(availability__schedule__is_public=True)
     # Only offer slots that are still bookable; a slot whose end has passed can
     # never be booked, so exclude it from on_select so the BAP only sees
-    # actionable options.
+    # actionable options. Past dates and finished time windows are excluded by
+    # the end_datetime filter.
     slots = slots.filter(end_datetime__gt=timezone.now())
+    # Exclude fully-booked slots: a slot is full once its allocations reach the
+    # availability capacity (tokens_per_slot), matching lock_create_appointment.
+    slots = slots.filter(allocated__lt=F("availability__tokens_per_slot"))
     return list(slots.order_by("start_datetime"))
 
 
@@ -126,6 +131,27 @@ def cancel_appointment(booking, user, reason="cancelled", note=None):
     return TokenBookingViewSet.cancel_appointment_handler(
         booking, {"reason": reason, "note": note}, user
     )
+
+
+def reschedule_appointment(booking, new_slot, user, note=""):
+    """Reschedule ``booking`` to ``new_slot`` and return the replacement booking.
+
+    Mirrors the Care reschedule action without going through DRF: the original
+    booking is cancelled with reason ``rescheduled`` and a new booking is created
+    for the chosen slot.
+    """
+    from care.emr.resources.scheduling.slot.spec import BookingStatusChoices
+
+    with transaction.atomic():
+        TokenBookingViewSet.cancel_appointment_handler(
+            booking,
+            {
+                "reason": BookingStatusChoices.rescheduled.value,
+                "note": note or booking.note,
+            },
+            user,
+        )
+        return lock_create_appointment(new_slot, booking.patient, user, note or "")
 
 
 def find_booking(external_id):

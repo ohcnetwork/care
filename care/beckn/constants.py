@@ -38,6 +38,7 @@ ACTION_CALLBACK_MAP = {
     "init": "on_init",
     "confirm": "on_confirm",
     "status": "on_status",
+    "update": "on_update",
     "cancel": "on_cancel",
 }
 

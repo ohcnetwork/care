@@ -146,6 +146,23 @@ def build_appt_on_status(inbound_context: dict, inbound_message: dict, booking) 
     }
 
 
+def build_appt_on_update(inbound_context: dict, inbound_message: dict, booking) -> dict:
+    """Build ``on_update`` for a rescheduled appointment (ACTIVE, new booking).
+
+    Returned in response to a BAP-initiated ``update`` action; the contract id
+    is the replacement booking's id, correlated to the original via the
+    unchanged ``transactionId``.
+    """
+    message = copy.deepcopy(inbound_message or {})
+    contract = message.setdefault("contract", {})
+    contract.setdefault("status", {})["code"] = CONTRACT_STATUS_ACTIVE
+    _inject_booking(contract, booking, _health_service_type(inbound_message))
+    return {
+        "context": build_callback_context(inbound_context, "on_update"),
+        "message": message,
+    }
+
+
 def build_appt_on_cancel(inbound_context: dict, inbound_message: dict, booking) -> dict:
     """Build ``on_cancel`` for a cancelled appointment (CANCELLED)."""
     message = copy.deepcopy(inbound_message or {})

@@ -25,6 +25,7 @@ from care.beckn.builders.catalog import (
     build_appt_on_init,
     build_appt_on_select,
     build_appt_on_status,
+    build_appt_on_update,
     build_on_discover,
 )
 from care.beckn.builders.referral import (
@@ -289,6 +290,11 @@ def _appointment_confirm(context: dict, message: dict) -> dict:
             beckn["transactionId"] = (context or {}).get("transactionId")
             beckn["bapId"] = (context or {}).get("bapId")
             beckn["bapUri"] = (context or {}).get("bapUri")
+            # Persist the full inbound context and message snapshot so that
+            # unsolicited on_status callbacks can be rebuilt and routed back to
+            # the BAP when the booking changes, without the BAP calling status.
+            beckn["context"] = context or {}
+            beckn["message"] = message or {}
             booking.save(update_fields=["meta", "modified_date"])
     except DRFValidationError as exc:
         # Surface the booking rule (slot past/full/duplicate) as a clean NACK.
@@ -316,6 +322,39 @@ def _appointment_cancel(context: dict, message: dict) -> dict:
     note = attributes.get("cancellationReason")
     booking = scheduling.cancel_appointment(booking, user, note=note)
     return build_appt_on_cancel(context, message, booking)
+
+
+def _appointment_update(context: dict, message: dict) -> dict:
+    """Reschedule the appointment to the chosen new slot and return on_update.
+
+    The replacement booking inherits the original's Beckn context (so future
+    Care-side changes still notify the BAP). The unsolicited on_status callbacks
+    are suppressed for this BAP-initiated change: the BAP gets a single
+    on_update carrying the new booking's contract id, correlated to the original
+    via the unchanged transactionId.
+    """
+    booking = scheduling.find_booking(get_contract(message).get("id"))
+    if booking is None:
+        raise BecknActionError("Appointment not found for update")
+    new_slot = _resolve_chosen_slot(message)
+    if new_slot is None:
+        raise BecknActionError("No Care slot matched the requested new appointment")
+    if new_slot.id == booking.token_slot_id:
+        raise BecknActionError("Cannot reschedule to the same slot")
+    user = _resolve_system_user()
+
+    from care.beckn.signals import suppress_beckn_notifications
+    from care.beckn.tasks import carry_beckn_context
+
+    try:
+        with suppress_beckn_notifications(), transaction.atomic():
+            new_booking = scheduling.reschedule_appointment(booking, new_slot, user)
+            carry_beckn_context(booking, new_booking)
+    except DRFValidationError as exc:
+        raise BecknActionError(_first_validation_message(exc)) from exc
+
+    new_booking.refresh_from_db()
+    return build_appt_on_update(context, message, new_booking)
 
 
 # ---------------------------------------------------------------------------
@@ -357,11 +396,18 @@ def handle_cancel(context: dict, message: dict) -> dict:
     raise BecknActionError("Cancel is not supported for the referral flow")
 
 
+def handle_update(context: dict, message: dict) -> dict:
+    if resolve_flow("update", context, message) == FLOW_APPOINTMENT:
+        return _appointment_update(context, message)
+    raise BecknActionError("Update is not supported for the referral flow")
+
+
 ACTION_HANDLERS = {
     "discover": handle_discover,
     "select": handle_select,
     "init": handle_init,
     "confirm": handle_confirm,
     "status": handle_status,
+    "update": handle_update,
     "cancel": handle_cancel,
 }

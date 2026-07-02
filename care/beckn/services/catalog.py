@@ -9,6 +9,7 @@ a bookable ``offer``.
 """
 
 from care.beckn.constants import (
+    CODED_VALUE_CONTEXT,
     DAY_OF_WEEK_NAMES,
     DEFAULT_HEALTH_SERVICE_TYPE,
     HEALTH_OFFER_CONTEXT,
@@ -87,31 +88,58 @@ def _availability_schedule(schedules) -> list[dict]:
     return slots
 
 
+def _is_healthcare_service(resource) -> bool:
+    return (
+        resource.resource_type
+        == SchedulableResourceTypeOptions.healthcare_service.value
+    )
+
+
 def _build_resource(resource, schedules) -> dict:
     health_service_type = _health_service_type(resource, schedules)
+    resource_attributes = {
+        "@context": HEALTH_RESOURCE_CONTEXT,
+        "@type": "hr:HealthResource",
+        "healthServiceType": health_service_type,
+        "availabilitySchedule": _availability_schedule(schedules),
+    }
+    # Healthcare services (labs / diagnostics) carry the clinical delivery unit
+    # and accepted schemes expected by the network for LAB_TEST resources.
+    if _is_healthcare_service(resource):
+        resource_attributes["clinicalDeliveryUnit"] = "TEST"
+        resource_attributes["acceptedSchemes"] = [
+            {
+                "@context": CODED_VALUE_CONTEXT,
+                "@type": "Scheme",
+                "code": "PMJAY",
+            }
+        ]
     return {
         "id": str(resource.external_id),
         "descriptor": {"name": _resource_display_name(resource)},
-        "resourceAttributes": {
-            "@context": HEALTH_RESOURCE_CONTEXT,
-            "@type": "hr:HealthResource",
-            "healthServiceType": health_service_type,
-            "availabilitySchedule": _availability_schedule(schedules),
-        },
+        "resourceAttributes": resource_attributes,
     }
 
 
 def _build_offer(resource, health_service_type: str) -> dict:
+    offer_attributes = {
+        "@context": HEALTH_OFFER_CONTEXT,
+        "@type": "hof:HealthOffer",
+        "healthServiceType": health_service_type,
+        "offerType": "SINGLE_EVENT",
+    }
+    # Diagnostic offers commit to producing an outcome (report) within an SLA.
+    if _is_healthcare_service(resource):
+        offer_attributes["outcomeCommitment"] = {
+            "attendanceToOutcomeSlaHours": 24,
+            "outcomeNoteFormatStandard": "FHIR/DiagnosticReport",
+            "mandatory": True,
+        }
     return {
         "id": f"offer-{resource.external_id}",
         "resourceIds": [str(resource.external_id)],
         "descriptor": {"name": f"Appointment - {_resource_display_name(resource)}"},
-        "offerAttributes": {
-            "@context": HEALTH_OFFER_CONTEXT,
-            "@type": "hof:HealthOffer",
-            "healthServiceType": health_service_type,
-            "offerType": "SINGLE_EVENT",
-        },
+        "offerAttributes": offer_attributes,
     }
 
 

@@ -48,6 +48,15 @@ class BPPWebhookView(APIView):
         # fall back to the context action when called without the suffix.
         action = kwargs.get("action") or context.get("action")
 
+        # Inbound ``on_*`` callbacks are received when this instance is also the
+        # BAP target (e.g. single-instance/loopback testing where the same Care
+        # deployment is registered as both BAP and BPP). They are terminal
+        # acknowledgements, not BPP actions, so ACK them without generating a
+        # further callback instead of NACKing a perfectly valid message.
+        if action and action.startswith("on_"):
+            logger.info("Received Beckn callback '%s'; acknowledging", action)
+            return Response(_ack(), status=http_status.HTTP_200_OK)
+
         if action not in ACTION_CALLBACK_MAP:
             return Response(
                 _nack("70001", f"Unsupported action: {action}"),
