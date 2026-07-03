@@ -21,7 +21,6 @@ import threading
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
-from care.emr.models.resource_request import ResourceRequest
 from care.emr.models.scheduling.booking import TokenBooking
 from care.emr.resources.scheduling.slot.spec import BookingStatusChoices
 
@@ -31,11 +30,13 @@ _PREVIOUS_STATUS_ATTR = "_beckn_previous_status"
 
 # Beckn-originated bookings notify the BAP (via an unsolicited on_status) only
 # when they reach one of these lifecycle states through the Care system:
-#   - cancel       -> cancelled / entered_in_error
-#   - reschedule   -> rescheduled
-#   - fulfilment   -> fulfilled
+#   - review approved -> booked (a held MANUAL_REVIEW booking is confirmed)
+#   - cancel          -> cancelled / entered_in_error
+#   - reschedule      -> rescheduled
+#   - fulfilment      -> fulfilled
 NOTIFY_STATUSES = frozenset(
     {
+        BookingStatusChoices.booked.value,
         BookingStatusChoices.cancelled.value,
         BookingStatusChoices.entered_in_error.value,
         BookingStatusChoices.rescheduled.value,
@@ -150,49 +151,21 @@ def _link_reschedule_replacement(new_booking):
     handle_beckn_reschedule(old_booking, new_booking)
 
 
-# ---------------------------------------------------------------------------
-# Resource request -> outbound BAP confirm (Care as BAP)
-# ---------------------------------------------------------------------------
+@receiver(post_save, sender=TokenBooking, weak=False)
+def complete_referral_on_booking_fulfilled(sender, instance, created, **kwargs):
+    """Complete the originating referral when its appointment booking is fulfilled.
 
-# Categories that route a resource request through the external coordination
-# center (CC) via a Beckn confirm instead of the usual in-Care flow.
-#   - ``other``        -> GENERAL_PRACTITIONER referral
-#   - ``patient_care`` -> FIELD_WORKER referral
-BECKN_REFERRAL_CATEGORIES = frozenset({"other", "patient_care"})
-# Only newly created requests in this status are referred to the CC.
-BECKN_REFERRAL_STATUS = "pending"
-
-
-@receiver(post_save, sender=ResourceRequest, weak=False)
-def initiate_beckn_referral_on_create(sender, instance, created, **kwargs):
-    """Send a Beckn ``confirm`` to the CC when a pending resource request in a
-    referral category is created.
-
-    Only newly created requests in ``pending`` status whose category is one of
-    ``BECKN_REFERRAL_CATEGORIES`` (``other`` or ``patient_care``) are routed to
-    the external coordination center; all other resource requests use the usual
-    in-Care flow untouched.
-
-    The confirm is sent **synchronously inside the create transaction**: if the
-    coordination center rejects it (``nack``) or it cannot be delivered
-    (``error``), a ``ValidationError`` is raised so the resource request creation
-    is rolled back — the request is not persisted in Care. When no BAP caller is
-    configured (``skipped``) the request is created normally.
+    The fulfilment is performed through the normal Care flow (e.g. Care FE
+    updating the booking status), so this reacts to any ``TokenBooking`` save
+    where the status is ``fulfilled`` — independent of the Beckn ``on_status``
+    delivery path. Correlation uses the referral coordination id stored on
+    ``booking.meta['beckn']['coordinationRef']`` at booking time; bookings that
+    carry no reference (or whose referral is already completed) are a no-op, so
+    the handler is safe to run on every save.
     """
-    if not created:
-        return
-    if instance.status != BECKN_REFERRAL_STATUS:
-        return
-    if instance.category not in BECKN_REFERRAL_CATEGORIES:
+    if instance.status != BookingStatusChoices.fulfilled.value:
         return
 
-    from rest_framework.exceptions import ValidationError
+    from care.beckn.tasks import complete_referral_for_booking
 
-    from care.beckn.tasks import submit_resource_request_referral
-
-    result = submit_resource_request_referral(instance)
-    if result in ("nack", "error"):
-        raise ValidationError(
-            "Unable to initiate the referral with the coordination center; "
-            "the resource request was not created."
-        )
+    complete_referral_for_booking(instance)

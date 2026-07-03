@@ -1,20 +1,20 @@
-"""BAP receiver endpoint for the Care-as-BAP resource-request referral flow.
+"""BAP receiver endpoint for the Care-as-BAP orchestration flow.
 
-When Care initiates an outbound ``confirm`` to an external coordination center
-(CC, acting as BPP) for a ``pending``/``other`` resource request, the CC
-processes it and posts an ``on_confirm`` callback back to this endpoint (the
-configured ``BECKN_BAP_URI``).
+Care drives a Beckn ``discover -> select -> confirm`` exchange as a BAP (for the
+Care frontend). The counterparty routes ``on_discover``/``on_select``/
+``on_confirm`` callbacks back to this endpoint. Each callback is correlated to
+the in-flight transaction by the Beckn ``transactionId`` (the Redis key set when
+``discover`` was initiated) and recorded so the frontend poller can advance.
 
-Correlation uses the Beckn ``transactionId``, which Care set to the resource
-request's ``external_id`` when sending the confirm. On an ``on_confirm`` whose
-``message.contract.status.code`` is ``ACTIVE``, the resource request is moved
-from ``pending`` to ``approved``.
+* ``on_discover`` — the BPP routing identifiers are learned here and reused for
+  the subsequent ``select``/``confirm``.
+* ``on_confirm`` — the flow adapter persists the durable domain object (e.g. a
+  ``ResourceRequest`` for the consultation flow).
 
 Authentication is intentionally open (the network layer verifies signatures);
 deployments should additionally restrict access by network/IP.
 """
 
-import json
 import logging
 
 from rest_framework import status as http_status
@@ -22,22 +22,15 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from care.beckn.constants import CONTRACT_STATUS_ACTIVE
-from care.emr.models.resource_request import ResourceRequest
-from care.emr.resources.resource_request.spec import CategoryChoices, StatusChoices
+from care.beckn.builders.outbound import extract_routing
+from care.beckn.services import txn_store
+from care.beckn.services.flows import FlowError, get_adapter
 
 logger = logging.getLogger(__name__)
 
 
 def _ack() -> dict:
     return {"message": {"ack": {"status": "ACK"}}}
-
-
-def _nack(code: str, message: str) -> dict:
-    return {
-        "message": {"ack": {"status": "NACK"}},
-        "error": {"type": "DOMAIN-ERROR", "code": code, "message": message},
-    }
 
 
 class BAPReceiverView(APIView):
@@ -52,59 +45,51 @@ class BAPReceiverView(APIView):
         transaction_id = context.get("transactionId")
 
         logger.info(
-            "Beckn BAP receiver <- '%s' (transactionId=%s)\nbody=%s",
-            action,
-            transaction_id,
-            json.dumps(body, default=str)[:2000],
+            "Beckn BAP receiver <- '%s' (transactionId=%s)", action, transaction_id
         )
 
-        if not transaction_id:
-            return Response(
-                _nack("70001", "Missing transactionId"),
-                status=http_status.HTTP_200_OK,
-            )
-
-        resource_request = ResourceRequest.objects.filter(
-            external_id=transaction_id,
-            category__in=(
-                CategoryChoices.other.value,
-                CategoryChoices.patient_care.value,
-            ),
-        ).first()
-        if resource_request is None:
+        record = txn_store.get_transaction(transaction_id)
+        if record is None:
             logger.warning(
-                "Beckn BAP receiver: no resource request for transaction %s",
+                "Beckn BAP receiver: no in-flight transaction for %s (action=%s)",
+                transaction_id,
+                action,
+            )
+            return Response(_ack(), status=http_status.HTTP_200_OK)
+
+        try:
+            self._handle_callback(record, action, context, message)
+        except Exception:
+            logger.exception(
+                "Beckn BAP receiver failed handling '%s' for %s",
+                action,
                 transaction_id,
             )
-            return Response(
-                _nack("70002", "Unknown transaction"),
-                status=http_status.HTTP_200_OK,
-            )
-
-        if action == "on_confirm":
-            self._handle_on_confirm(resource_request, message)
 
         return Response(_ack(), status=http_status.HTTP_200_OK)
 
     @staticmethod
-    def _handle_on_confirm(resource_request, message: dict) -> None:
-        contract = (message or {}).get("contract", {}) or {}
-        code = ((contract.get("status", {}) or {}).get("code") or "").upper()
-        if (
-            code == CONTRACT_STATUS_ACTIVE
-            and resource_request.status == StatusChoices.pending.value
-        ):
-            resource_request.status = StatusChoices.approved.value
-            resource_request.save(update_fields=["status", "modified_date"])
-            logger.info(
-                "Beckn on_confirm approved resource request %s (status -> approved)",
-                resource_request.external_id,
-            )
-        else:
-            logger.info(
-                "Beckn on_confirm no-op for resource request %s "
-                "(contract.status=%s, current status=%s)",
-                resource_request.external_id,
-                code,
-                resource_request.status,
-            )
+    def _handle_callback(
+        record: dict, action: str, context: dict, message: dict
+    ) -> None:
+        transaction_id = record["transactionId"]
+        body = {"context": context, "message": message}
+
+        # Learn the counterparty routing from the discovery reply so the
+        # subsequent select/confirm can be addressed to the right BPP.
+        if action == "on_discover":
+            txn_store.set_routing(transaction_id, extract_routing(context))
+
+        txn_store.record_response(transaction_id, action, body)
+
+        if action == "on_confirm":
+            adapter = get_adapter(record["serviceType"])
+            try:
+                resource_request_id = adapter.on_confirmed(record, message)
+            except FlowError:
+                logger.exception(
+                    "Beckn on_confirm side effect failed for %s", transaction_id
+                )
+                return
+            if resource_request_id:
+                txn_store.set_resource_request(transaction_id, resource_request_id)

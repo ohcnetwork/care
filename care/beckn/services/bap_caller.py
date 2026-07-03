@@ -21,15 +21,19 @@ logger = logging.getLogger(__name__)
 DEFAULT_TIMEOUT = 10
 
 
-def deliver_bap_action(action: str, payload: dict) -> str:
+def deliver_bap_action(action: str, payload: dict) -> tuple[str, dict]:
     """POST an outbound Beckn ``action`` to the BAP caller.
 
-    Returns the delivery result:
+    Returns ``(result, detail)`` where ``result`` is one of:
 
     * ``"ack"``     — the BAP caller accepted the action (HTTP 200, ACK);
     * ``"nack"``    — the BAP caller rejected it (non-200 or a NACK body);
     * ``"error"``   — the POST itself failed (network/timeout);
     * ``"skipped"`` — no BAP caller configured (delivery not attempted).
+
+    ``detail`` explains a non-ack result: ``{"reason": ...}`` and, when the
+    caller responded, ``{"statusCode": int, "body": <parsed body or text>,
+    "error": <Beckn error object if present>}``.
     """
     base_url = getattr(settings, "BECKN_BAP_CALLER_URL", "")
     if not base_url:
@@ -37,7 +41,7 @@ def deliver_bap_action(action: str, payload: dict) -> str:
             "Beckn BAP action '%s' skipped: BECKN_BAP_CALLER_URL not configured",
             action,
         )
-        return "skipped"
+        return "skipped", {"reason": "BECKN_BAP_CALLER_URL not configured"}
     url = f"{base_url.rstrip('/')}/{action}"
     transaction_id = (payload.get("context", {}) or {}).get("transactionId")
     logger.info(
@@ -49,9 +53,9 @@ def deliver_bap_action(action: str, payload: dict) -> str:
     )
     try:
         response = requests.post(url, json=payload, timeout=DEFAULT_TIMEOUT)
-    except requests.RequestException:
+    except requests.RequestException as exc:
         logger.exception("Beckn BAP action '%s' delivery to %s failed", action, url)
-        return "error"
+        return "error", {"reason": f"delivery failed: {exc}"}
 
     logger.info(
         "Beckn BAP <- '%s' response from %s: status=%s body=%s",
@@ -60,16 +64,21 @@ def deliver_bap_action(action: str, payload: dict) -> str:
         response.status_code,
         response.text[:2000],
     )
-    if response.status_code != HTTPStatus.OK:
-        return "nack"
     try:
         body = response.json()
     except ValueError:
-        body = {}
-    message = body.get("message", {}) or {}
+        body = response.text
+
+    detail = {"statusCode": response.status_code, "body": body}
+    if isinstance(body, dict) and body.get("error"):
+        detail["error"] = body["error"]
+
+    if response.status_code != HTTPStatus.OK:
+        return "nack", detail
+    message = body.get("message", {}) or {} if isinstance(body, dict) else {}
     ack_status = (
         message.get("status") or (message.get("ack", {}) or {}).get("status") or ""
     ).upper()
     if ack_status == "NACK":
-        return "nack"
-    return "ack"
+        return "nack", detail
+    return "ack", detail

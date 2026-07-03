@@ -99,3 +99,12 @@ LIFECYCLE_FULFILLED = "FULFILLED"
 
 # HealthParticipant participantRole values.
 PARTICIPANT_ROLE_PATIENT = "PATIENT"
+
+# NFH ServiceCoordinationResource.acceptanceMode: whether a booking auto-confirms
+# on ``confirm`` (AUTO) or is held pending a human (care coordinator) review
+# before it is confirmed (MANUAL_REVIEW). Advertised per resource in the catalog
+# (``resourceAttributes.acceptanceMode``) so a BAP can filter for coordinator
+# resources, and enforced on the inbound ``confirm``.
+ACCEPTANCE_MODE_AUTO = "AUTO"
+ACCEPTANCE_MODE_MANUAL_REVIEW = "MANUAL_REVIEW"
+DEFAULT_ACCEPTANCE_MODE = ACCEPTANCE_MODE_AUTO

@@ -23,6 +23,9 @@ from care.beckn.services.catalog import build_catalogs
 # Care TokenBooking.status values that map to a completed appointment.
 COMPLETED_BOOKING_STATUSES = {"fulfilled", "checked_in", "in_consultation"}
 CANCELLED_BOOKING_STATUSES = {"cancelled", "entered_in_error", "rescheduled"}
+# Held awaiting a human care-coordinator review (acceptanceMode=MANUAL_REVIEW);
+# reported as a DRAFT contract until the review approves it.
+PENDING_BOOKING_STATUSES = {"pending", "proposed", "waitlist"}
 
 
 def _health_service_type(inbound_message: dict) -> str:
@@ -117,16 +120,24 @@ def _contract_status_for_booking(booking) -> str:
         return CONTRACT_STATUS_CANCELLED
     if booking.status in COMPLETED_BOOKING_STATUSES:
         return CONTRACT_STATUS_COMPLETE
+    if booking.status in PENDING_BOOKING_STATUSES:
+        return CONTRACT_STATUS_DRAFT
     return CONTRACT_STATUS_ACTIVE
 
 
 def build_appt_on_confirm(
     inbound_context: dict, inbound_message: dict, booking
 ) -> dict:
-    """Build ``on_confirm`` for a booked appointment (ACTIVE, contract.id=booking)."""
+    """Build ``on_confirm`` for the confirmed appointment.
+
+    An auto-accepted booking reports ACTIVE; a booking held for a human
+    care-coordinator review (``MANUAL_REVIEW``) is created ``pending`` and
+    reported as DRAFT until the review approves it (an unsolicited ``on_status``
+    with ACTIVE follows once the coordinator books it in Care).
+    """
     message = copy.deepcopy(inbound_message or {})
     contract = message.setdefault("contract", {})
-    contract.setdefault("status", {})["code"] = CONTRACT_STATUS_ACTIVE
+    contract.setdefault("status", {})["code"] = _contract_status_for_booking(booking)
     _inject_booking(contract, booking, _health_service_type(inbound_message))
     return {
         "context": build_callback_context(inbound_context, "on_confirm"),

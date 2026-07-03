@@ -8,9 +8,12 @@ availability (merged from all its ``Availability`` rows) in the Beckn-native
 a bookable ``offer``.
 """
 
+from django.conf import settings
+
 from care.beckn.constants import (
     CODED_VALUE_CONTEXT,
     DAY_OF_WEEK_NAMES,
+    DEFAULT_ACCEPTANCE_MODE,
     DEFAULT_HEALTH_SERVICE_TYPE,
     HEALTH_OFFER_CONTEXT,
     HEALTH_RESOURCE_CONTEXT,
@@ -51,11 +54,9 @@ def _health_service_type(resource, schedules) -> str:
     (``Schedule.meta["beckn"]["healthServiceType"]``), then a type derived from
     the resource kind, then the default.
     """
-    for schedule in schedules:
-        meta = schedule.meta or {}
-        override = (meta.get("beckn", {}) or {}).get("healthServiceType")
-        if override:
-            return override
+    override = _beckn_override(schedules, "healthServiceType")
+    if override:
+        return override
     if (
         resource.resource_type
         == SchedulableResourceTypeOptions.healthcare_service.value
@@ -64,6 +65,25 @@ def _health_service_type(resource, schedules) -> str:
     if resource.resource_type == SchedulableResourceTypeOptions.location.value:
         return HEALTH_SERVICE_PHYSICAL_CONSULTATION
     return DEFAULT_HEALTH_SERVICE_TYPE
+
+
+def _beckn_override(schedules, key: str):
+    """Return the first ``Schedule.meta['beckn'][key]`` set across schedules."""
+    for schedule in schedules:
+        value = ((schedule.meta or {}).get("beckn", {}) or {}).get(key)
+        if value:
+            return value
+    return None
+
+
+def _acceptance_mode(schedules) -> str:
+    """Resolve the acceptanceMode advertised for a resource.
+
+    Read from ``Schedule.meta["beckn"]["acceptanceMode"]`` (a resource whose
+    schedule is flagged ``MANUAL_REVIEW`` acts as a care-coordinator resource:
+    its bookings are held pending a human review), defaulting to ``AUTO``.
+    """
+    return _beckn_override(schedules, "acceptanceMode") or DEFAULT_ACCEPTANCE_MODE
 
 
 def _availability_schedule(schedules) -> list[dict]:
@@ -101,6 +121,7 @@ def _build_resource(resource, schedules) -> dict:
         "@context": HEALTH_RESOURCE_CONTEXT,
         "@type": "hr:HealthResource",
         "healthServiceType": health_service_type,
+        "acceptanceMode": _acceptance_mode(schedules),
         "availabilitySchedule": _availability_schedule(schedules),
     }
     # Healthcare services (labs / diagnostics) carry the clinical delivery unit
@@ -173,15 +194,27 @@ def build_catalogs(public_only: bool = True) -> list[dict]:
         facility = facility_bucket["facility"]
         resources = []
         offers = []
+        facility_schedules = []
         for resource_bucket in facility_bucket["resources"].values():
             resource = resource_bucket["resource"]
             resource_schedules = resource_bucket["schedules"]
+            facility_schedules.extend(resource_schedules)
             resources.append(_build_resource(resource, resource_schedules))
             offers.append(
                 _build_offer(
                     resource, _health_service_type(resource, resource_schedules)
                 )
             )
+        # Downstream routing for a consuming BAP (fan-out): where to send
+        # select/confirm for this provider. A provider can point at its own BPP
+        # via ``Schedule.meta["beckn"]["bppId"/"bppUri"]``; otherwise Care itself
+        # is the BPP for the catalog it publishes.
+        bpp_id = _beckn_override(facility_schedules, "bppId") or (
+            getattr(settings, "BECKN_BPP_ID", "") or None
+        )
+        bpp_uri = _beckn_override(facility_schedules, "bppUri") or (
+            getattr(settings, "BECKN_BPP_URI", "") or None
+        )
         catalogs.append(
             {
                 "id": f"catalog-{facility.external_id}",
@@ -190,8 +223,25 @@ def build_catalogs(public_only: bool = True) -> list[dict]:
                     "id": str(facility.external_id),
                     "descriptor": {"name": facility.name},
                 },
+                # Routing for a consuming BAP: where to send select/confirm for
+                # this provider (Care acts as the BPP for its own catalog).
+                "bppId": bpp_id,
+                "bppUri": bpp_uri,
+                "bapId": getattr(settings, "BECKN_BAP_ID", "") or None,
+                "bapUri": getattr(settings, "BECKN_BAP_URI", "") or None,
                 "resources": resources,
                 "offers": offers,
             }
         )
     return catalogs
+
+
+def resource_acceptance_mode(resource) -> str:
+    """Return the acceptanceMode advertised for a schedulable resource.
+
+    Used on the inbound ``confirm`` to decide whether the booking auto-confirms
+    (``AUTO``) or is held pending a human care-coordinator review
+    (``MANUAL_REVIEW``).
+    """
+    schedules = Schedule.objects.filter(resource=resource)
+    return _acceptance_mode(schedules)

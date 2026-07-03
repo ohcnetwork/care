@@ -150,28 +150,30 @@ def send_appointment_on_status(booking_id: int) -> None:
         )
 
 
-def submit_resource_request_referral(resource_request) -> str:
-    """Synchronously send a Beckn ``confirm`` to the CC/BPP for a resource request.
+def complete_referral_for_booking(booking) -> None:
+    """Mark the originating referral completed when its appointment is fulfilled.
 
-    Care acts as the BAP: the resource request's ``external_id`` is used as the
-    Beckn ``transactionId`` so the eventual ``on_confirm`` callback can be
-    correlated back to the request without any extra stored state.
-
-    Runs inline (not as a Celery task) so it executes inside the create
-    transaction: the caller can roll back the resource request when the referral
-    is rejected. Returns the delivery result: ``"ack"``, ``"nack"``, ``"error"``
-    or ``"skipped"`` (see :func:`deliver_bap_action`).
+    The booking -> referral link is held in Redis (keyed by booking id, set when
+    the appointment is booked over Beckn); see
+    :func:`care.beckn.services.txn_store.link_booking_referral`. When the booking
+    is fulfilled, the linked ``ResourceRequest`` is transitioned to
+    ``completed``. No-op when the booking carries no link or the referral cannot
+    be found / is already completed.
     """
-    from care.beckn.builders.referral_request import build_referral_confirm
-    from care.beckn.services.bap_caller import deliver_bap_action
+    from care.beckn.services import txn_store
+    from care.beckn.services.lookup import find_resource_request_by_coordination_id
+    from care.emr.resources.resource_request.spec import StatusChoices
 
-    payload = build_referral_confirm(
-        resource_request, str(resource_request.external_id)
-    )
-    result = deliver_bap_action("confirm", payload)
+    coordination_id = txn_store.get_booking_referral(booking.id)
+    resource_request = find_resource_request_by_coordination_id(coordination_id)
+    if resource_request is None:
+        return
+    if resource_request.status == StatusChoices.completed.value:
+        return
+    resource_request.status = StatusChoices.completed.value
+    resource_request.save(update_fields=["status", "modified_date"])
     logger.info(
-        "Beckn resource-request confirm for %s result=%s",
+        "Beckn referral %s marked completed (booking %s fulfilled)",
         resource_request.external_id,
-        result,
+        booking.id,
     )
-    return result

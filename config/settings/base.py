@@ -154,7 +154,7 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + PLUGIN_APPS
 # When unset, the BPP webhook only returns callbacks synchronously (direct mode).
 BECKN_BPP_CALLER_URL = env("BECKN_BPP_CALLER_URL", default="")
 # Optional username whose User is recorded as created_by/updated_by.
-BECKN_SYSTEM_USERNAME = env("BECKN_SYSTEM_USERNAME", default="")
+BECKN_SYSTEM_USERNAME = env("BECKN_SYSTEM_USERNAME", default="beckn_system")
 # Identity used when publishing the Care catalog to the network (via the BPP
 # caller ``publish`` action). These mirror the BPP registration on the network.
 BECKN_BPP_ID = env("BECKN_BPP_ID", default="")

@@ -41,12 +41,13 @@ from care.beckn.mappers import (
     get_confirmed_appointment_time,
     get_contract,
     get_contract_attributes,
+    get_coordination_id,
     get_requested_date,
     get_selected_resource_id,
     get_selected_slot_id,
     resolve_flow,
 )
-from care.beckn.services import scheduling
+from care.beckn.services import scheduling, txn_store
 from care.beckn.services.lookup import find_resource_request
 from care.beckn.services.patient import find_or_create_patient
 from care.emr.models.resource_request import ResourceRequest
@@ -286,6 +287,16 @@ def _appointment_confirm(context: dict, message: dict) -> dict:
         with transaction.atomic():
             booking = scheduling.book_appointment(slot, patient, user)
             scheduling.ensure_token(booking, user)
+            # Care-coordinator resources (acceptanceMode=MANUAL_REVIEW) hold the
+            # booking pending a human review instead of auto-confirming; the BAP
+            # gets an on_confirm reporting DRAFT and, once a coordinator books it
+            # in Care, an unsolicited on_status with ACTIVE.
+            from care.beckn.constants import ACCEPTANCE_MODE_MANUAL_REVIEW
+            from care.beckn.services.catalog import resource_acceptance_mode
+            from care.emr.resources.scheduling.slot.spec import BookingStatusChoices
+
+            if resource_acceptance_mode(slot.resource) == ACCEPTANCE_MODE_MANUAL_REVIEW:
+                booking.status = BookingStatusChoices.pending.value
             beckn = booking.meta.setdefault("beckn", {})
             beckn["transactionId"] = (context or {}).get("transactionId")
             beckn["bapId"] = (context or {}).get("bapId")
@@ -295,12 +306,15 @@ def _appointment_confirm(context: dict, message: dict) -> dict:
             # the BAP when the booking changes, without the BAP calling status.
             beckn["context"] = context or {}
             beckn["message"] = message or {}
-            booking.save(update_fields=["meta", "modified_date"])
+            booking.save(update_fields=["meta", "status", "modified_date"])
     except DRFValidationError as exc:
         # Surface the booking rule (slot past/full/duplicate) as a clean NACK.
         raise BecknActionError(_first_validation_message(exc)) from exc
 
     booking.refresh_from_db()
+    # Link the booking to its originating referral in Redis (no core scheduling
+    # change): when this appointment is fulfilled, the referral is completed.
+    txn_store.link_booking_referral(booking.id, get_coordination_id(context, message))
     return build_appt_on_confirm(context, message, booking)
 
 

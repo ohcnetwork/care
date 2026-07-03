@@ -10,6 +10,7 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from care.beckn.api.bap_webhook import BAPReceiverView
 from care.users.api.viewsets.change_password import ChangePasswordView
 from care.users.reset_password_views import (
     ResetPasswordCheck,
@@ -64,6 +65,19 @@ urlpatterns = [
     ),
     path("api/v1/", include(api_router.urlpatterns)),
     path("api/v1/beckn/", include("care.beckn.urls")),
+    # Root-level aliases for the Beckn BAP receiver. Some ONIX adapters POST
+    # callbacks to the prefix-less path (e.g. /bap/receiver/on_discover) instead
+    # of /api/v1/beckn/... — accept both so inbound on_* are never dropped.
+    path(
+        "api/v1/beckn/bap/receiver",
+        BAPReceiverView.as_view(),
+        name="beckn-bap-receiver-root",
+    ),
+    path(
+        "api/v1/beckn/bap/receiver/<str:action>",
+        BAPReceiverView.as_view(),
+        name="beckn-bap-receiver-root-action",
+    ),
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]
 

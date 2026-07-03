@@ -10,6 +10,17 @@ from care.beckn.mappers import get_coordination_id
 from care.emr.models.resource_request import ResourceRequest
 
 
+def find_resource_request_by_coordination_id(
+    coordination_id: str | None,
+) -> ResourceRequest | None:
+    """Find the referral whose stored Beckn ``coordinationId`` matches."""
+    if not coordination_id:
+        return None
+    return ResourceRequest.objects.filter(
+        extensions__beckn__coordinationId=coordination_id
+    ).first()
+
+
 def find_resource_request(context: dict, message: dict) -> ResourceRequest | None:
     """Find the referral by coordination id (T1 ``coordinationId`` / T2
     ``coordinationRef``), then by transaction id."""
