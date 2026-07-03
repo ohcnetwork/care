@@ -40,7 +40,7 @@ class ChangePasswordSpec(BaseModel):
                 ),
             )
         except DjangoValidationError as e:
-            raise ValueError(e.messages) from e
+            raise ValueError(", ".join(e.messages)) from e
         return self
 
 
