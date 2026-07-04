@@ -27,7 +27,7 @@ ENV ADDITIONAL_PLUGS=$ADDITIONAL_PLUGS
 
 COPY . $APP_HOME/
 
-RUN --mount=type=cache,target=/root/.cache/pip python3 $APP_HOME/install_plugins.py
+RUN --mount=type=cache,target=/root/.cache/pip PLUGIN_RESOLVED_HASH=$PLUGIN_RESOLVED_HASH python3 $APP_HOME/install_plugins.py
 
 HEALTHCHECK \
   --interval=10s \

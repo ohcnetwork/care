@@ -18,7 +18,7 @@ if not plugs:
 
 resolved = []
 for p in plugs:
-    ver = p.get("version", "@main")
+    ver = p.get("version") or "@main"
     pkg = p.get("package_name")
     if not pkg:
         sys.stderr.write(f"plugin entry {p!r} is missing 'package_name'\n")
@@ -36,7 +36,9 @@ for p in plugs:
             )
             sha = out.stdout.split()[0] if out.stdout else ref
         except Exception as exc:
-            sys.stderr.write(f"warning: git ls-remote failed for {git_url!r} ({exc}); using ref name as cache key\n")
+            sys.stderr.write(
+                f"warning: git ls-remote failed for {git_url!r} ({exc}); using ref name as cache key\n"
+            )
             sha = ref
         resolved.append(f"{pkg}@{sha}")
     else:

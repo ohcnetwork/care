@@ -40,6 +40,8 @@ jobs:
           ADDITIONAL_PLUGS: ${{ env.ADDITIONAL_PLUGS }}
 
       - name: Build images
+        env:
+          ADDITIONAL_PLUGS: ${{ env.ADDITIONAL_PLUGS }}
         run: |
           CACHE_TO=""
           if [[ '${{ github.event_name }}' == 'push' ]]; then
@@ -49,7 +51,7 @@ jobs:
             --file docker/dev.Dockerfile \
             --tag care_local \
             --build-arg PLUGIN_RESOLVED_HASH=${{ steps.plugin-hash.outputs.resolved_hash }} \
-            --build-arg ADDITIONAL_PLUGS=${{ env.ADDITIONAL_PLUGS }} \
+            --build-arg "ADDITIONAL_PLUGS=$ADDITIONAL_PLUGS" \
             --cache-from=type=registry,ref=ghcr.io/${{ github.repository }}:$CACHE_TAG \
             $CACHE_TO \
             --platform linux/arm64 \

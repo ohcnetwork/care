@@ -37,7 +37,7 @@ COPY install_plugins.py plug_config.py $APP_HOME/
 ARG PLUGIN_RESOLVED_HASH=""
 ARG ADDITIONAL_PLUGS=""
 ENV ADDITIONAL_PLUGS=$ADDITIONAL_PLUGS
-RUN python3 $APP_HOME/install_plugins.py
+RUN PLUGIN_RESOLVED_HASH=$PLUGIN_RESOLVED_HASH python3 $APP_HOME/install_plugins.py
 
 # ---
 FROM base AS runtime
