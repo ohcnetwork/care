@@ -58,6 +58,7 @@ class InvoiceFilters(filters.FilterSet):
     is_refund = filters.BooleanFilter()
     payment_reconciliation_present = DummyBooleanFilter()
     created_by = filters.UUIDFilter(field_name="created_by__external_id")
+    created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
 
 
 class AttachChargeItemToInvoiceRequest(BaseModel):
