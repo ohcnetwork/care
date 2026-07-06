@@ -268,7 +268,7 @@ class OrganizationViewSet(EMRModelViewSet):
 
         roles = RolePermission.objects.filter(
             permission__slug__in=[
-                OrganizationPermissions.can_manage_organization_users.name
+                OrganizationPermissions.can_manage_connected_role_organizations.name
             ]
         ).values_list("role_id", flat=True)
 

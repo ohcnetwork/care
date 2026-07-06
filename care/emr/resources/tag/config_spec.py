@@ -76,12 +76,16 @@ class TagConfigUpdateSpec(TagConfigBaseSpec):
             obj.organization = get_object_or_404(
                 Organization.objects.only("id"), external_id=self.organization
             )
+        else:
+            obj.organization = None
         if self.facility_organization:
             obj.facility_organization = get_object_or_404(
                 FacilityOrganization.objects.only("id"),
                 external_id=self.facility_organization,
                 facility=obj.facility,
             )
+        else:
+            obj.facility_organization = None
 
 
 class TagConfigWriteSpec(TagConfigBaseSpec):

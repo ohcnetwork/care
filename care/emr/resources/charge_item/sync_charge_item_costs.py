@@ -9,11 +9,11 @@ from care.utils.rounding.rounding import care_round
 
 
 def calculate_amount(component, quantity, base):
-    if component.amount:
+    if component.amount is not None:
         component.amount = convert_to_decimal(component.amount)
         component.amount = care_round(component.amount * quantity)
         return component
-    if component.factor:
+    if component.factor is not None:
         component.factor = convert_to_decimal(component.factor)
         component.amount = care_round(base * component.factor / 100)
         return component
