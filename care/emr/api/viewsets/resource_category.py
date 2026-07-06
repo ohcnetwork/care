@@ -1,3 +1,4 @@
+from django.db import transaction
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -112,10 +113,9 @@ class ResourceCategoryViewSet(
         )
         super().perform_update(instance)
 
-    def perform_destroy(self, instance):
+    def validate_destroy(self, instance):
         if instance.children.exists():
             raise ValidationError("Cannot delete a resource category with children")
-
         resource_type = instance.resource_type
         if (
             (
@@ -137,7 +137,21 @@ class ResourceCategoryViewSet(
             raise ValidationError(
                 "Cannot delete a resource category associated with a resource"
             )
-        super().perform_destroy(instance)
+
+    def perform_destroy(self, instance):
+        parent = instance.parent
+        with transaction.atomic():
+            instance.deleted = True
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["deleted", "updated_by", "modified_date"])
+            if parent:
+                parent.has_children = ResourceCategory.objects.filter(
+                    parent=parent
+                ).exists()
+                parent.updated_by = self.request.user
+                parent.save(
+                    update_fields=["has_children", "updated_by", "modified_date"]
+                )
 
     def authorize_create(self, instance):
         if not AuthorizationController.call(
