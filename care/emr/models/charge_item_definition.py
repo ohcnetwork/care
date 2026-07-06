@@ -21,7 +21,7 @@ class ChargeItemDefinition(SlugBaseModel):
     can_edit_charge_item = models.BooleanField(default=True)
     category = models.ForeignKey(
         "emr.ResourceCategory",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True,
         blank=True,
     )
