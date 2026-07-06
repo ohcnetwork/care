@@ -1,6 +1,9 @@
 from django.urls import reverse
 from model_bakery import baker
 
+from care.emr.models.activity_definition import ActivityDefinition
+from care.emr.models.charge_item_definition import ChargeItemDefinition
+from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.models.resource_category import ResourceCategory
 from care.security.permissions.resource_category import ResourceCategoryPermissions
 from care.utils.tests.base import CareAPITestBase
@@ -536,4 +539,112 @@ class ResourceCategoryAPITestCase(CareAPITestBase):
             response,
             "Resource category with this slug already exists.",
             status_code=400,
+        )
+
+    def test_delete_resource_category_as_super_user(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="test-category", facility=self.facility
+        )
+        url = self.get_detail_url(self.facility, resource_category)
+        response = self.client.delete(url, format="json")
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(
+            ResourceCategory.objects.filter(id=resource_category.id).exists()
+        )
+
+    def test_delete_resource_category_as_regular_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        resource_category = self.create_resource_category(
+            slug_value="test-category", facility=self.facility
+        )
+        url = self.get_detail_url(self.facility, resource_category)
+        response = self.client.delete(url, format="json")
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(
+            ResourceCategory.objects.filter(id=resource_category.id).exists()
+        )
+
+    def test_delete_resource_category_as_regular_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        resource_category = self.create_resource_category(
+            slug_value="test-category", facility=self.facility
+        )
+        url = self.get_detail_url(self.facility, resource_category)
+        response = self.client.delete(url, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Access denied to resource category")
+        self.assertTrue(
+            ResourceCategory.objects.filter(id=resource_category.id).exists()
+        )
+
+    def test_delete_resource_category_with_associated_product_knowledge(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="test-category",
+            facility=self.facility,
+            resource_type="product_knowledge",
+        )
+        # Create a ProductKnowledge associated with the resource category
+        baker.make(
+            ProductKnowledge,
+            facility=self.facility,
+            name="Test Product",
+            slug=self.calculate_slug("test-product", self.facility),
+            category=resource_category,
+        )
+        url = self.get_detail_url(self.facility, resource_category)
+        response = self.client.delete(url, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot delete a resource category associated with a resource",
+        )
+
+    def test_delete_resource_category_with_associated_activity_definition(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="test-category",
+            facility=self.facility,
+            resource_type="activity_definition",
+        )
+        # Create an ActivityDefinition associated with the resource category
+        baker.make(
+            ActivityDefinition,
+            title="Test Activity",
+            facility=self.facility,
+            slug=self.calculate_slug("test-activity", self.facility),
+            category=resource_category,
+        )
+        url = self.get_detail_url(self.facility, resource_category)
+        response = self.client.delete(url, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot delete a resource category associated with a resource",
+        )
+
+    def test_delete_resource_category_with_associated_charge_item_definition(self):
+        self.client.force_authenticate(user=self.super_user)
+        resource_category = self.create_resource_category(
+            slug_value="test-category",
+            facility=self.facility,
+            resource_type="charge_item_definition",
+        )
+        baker.make(
+            ChargeItemDefinition,
+            facility=self.facility,
+            title="Test Charge Item",
+            slug=self.calculate_slug("test-charge-item", self.facility),
+            category=resource_category,
+        )
+        url = self.get_detail_url(self.facility, resource_category)
+        response = self.client.delete(url, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot delete a resource category associated with a resource",
         )
