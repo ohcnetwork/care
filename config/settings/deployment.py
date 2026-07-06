@@ -79,22 +79,36 @@ LOGGING = {
             "%(process)d %(thread)d %(message)s"
         }
     },
+    "filters": {
+        "below_error": {
+            "()": "django.utils.log.CallbackFilter",
+            "callback": lambda record: record.levelno < logging.ERROR,
+        },
+    },
     "handlers": {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
+            "stream": "ext://sys.stdout",
             "formatter": "verbose",
-        }
+            "filters": ["below_error"],
+        },
+        "console_error": {
+            "level": "ERROR",
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stderr",
+            "formatter": "verbose",
+        },
     },
-    "root": {"level": "INFO", "handlers": ["console"]},
+    "root": {"level": "INFO", "handlers": ["console", "console_error"]},
     "loggers": {
         "django.db.backends": {
             "level": "ERROR",
-            "handlers": ["console"],
+            "handlers": ["console_error"],
             "propagate": False,
         },
         # Errors logged by the SDK itself
-        "sentry_sdk": {"level": "ERROR", "handlers": ["console"], "propagate": False},
+        "sentry_sdk": {"level": "ERROR", "handlers": ["console_error"], "propagate": False},
     },
 }
 

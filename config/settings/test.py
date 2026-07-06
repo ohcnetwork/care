@@ -1,5 +1,6 @@
 import base64
 import json
+import logging
 
 from authlib.jose import JsonWebKey
 
@@ -66,28 +67,42 @@ LOGGING = {
     "formatters": {
         "verbose": {"format": "%(levelname)s %(asctime)s %(module)s %(message)s"}
     },
+    "filters": {
+        "below_error": {
+            "()": "django.utils.log.CallbackFilter",
+            "callback": lambda record: record.levelno < logging.ERROR,
+        },
+    },
     "handlers": {
         "console": {
             "level": "DEBUG",
             "class": "logging.StreamHandler",
+            "stream": "ext://sys.stdout",
             "formatter": "verbose",
-        }
+            "filters": ["below_error"],
+        },
+        "console_error": {
+            "level": "ERROR",
+            "class": "logging.StreamHandler",
+            "stream": "ext://sys.stderr",
+            "formatter": "verbose",
+        },
     },
     "loggers": {
         "django.request": {
-            "handlers": ["console"],
+            "handlers": ["console_error"],
             "level": "ERROR",
         },
         "audit_log": {
-            "handlers": ["console"],
+            "handlers": ["console_error"],
             "level": "ERROR",
         },
         "celery": {
-            "handlers": ["console"],
+            "handlers": ["console_error"],
             "level": "ERROR",
         },
     },
-    "root": {"level": "INFO", "handlers": ["console"]},
+    "root": {"level": "INFO", "handlers": ["console", "console_error"]},
 }
 
 CELERY_TASK_ALWAYS_EAGER = True
