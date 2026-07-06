@@ -83,10 +83,25 @@ def extract_routing(context: dict) -> dict:
 
 def health_service_jsonpath(value: str) -> dict:
     """Build the ONIX JSONPath catalog filter for a ``healthServiceType``."""
-    expression = (
-        "$.catalogs[*].resources[*] ? "
-        f'(@.resourceAttributes.healthServiceType == "{value}")'
-    )
+    return resource_attribute_jsonpath({"healthServiceType": value})
+
+
+def resource_attribute_jsonpath(conditions: dict) -> dict:
+    """Build a JSONPath catalog filter matching ``resourceAttributes`` conditions.
+
+    ``conditions`` maps a ``resourceAttributes`` key to its required value; all
+    present conditions are AND-combined, e.g.
+    ``{"healthServiceType": "PHYSICAL_CONSULTATION", "acceptanceMode": "MANUAL_REVIEW"}``
+    -> ``$.catalogs[*].resources[*] ? (@.resourceAttributes.healthServiceType ==
+    "PHYSICAL_CONSULTATION" && @.resourceAttributes.acceptanceMode ==
+    "MANUAL_REVIEW")``.
+    """
+    clauses = [
+        f'@.resourceAttributes.{key} == "{value}"'
+        for key, value in conditions.items()
+        if value
+    ]
+    expression = "$.catalogs[*].resources[*] ? (" + " && ".join(clauses) + ")"
     return {"type": "jsonpath", "expression": expression}
 
 
@@ -94,9 +109,15 @@ def build_discover_intent(query: dict) -> dict:
     """Build the ``message.intent`` for a discover from the frontend query.
 
     ``query`` fields:
-    * ``healthServiceType`` — builds the JSONPath ``filters`` expression;
     * ``textSearch`` — free-text search passed through;
-    * ``filters`` — a ready-made filter object (overrides ``healthServiceType``).
+    * ``filters`` — a ready-made filter object (overrides the built ones);
+    * ``healthServiceType`` — HealthResource catalog filter (appointment flow);
+    * ``acceptanceMode`` — ServiceCoordinationResource catalog filter, e.g.
+      ``MANUAL_REVIEW`` to discover care-coordinator resources (consultation /
+      coordination flow).
+
+    ``healthServiceType`` and ``acceptanceMode`` are AND-combined when both are
+    given.
     """
     query = query or {}
     intent: dict = {}
@@ -104,6 +125,11 @@ def build_discover_intent(query: dict) -> dict:
         intent["textSearch"] = query["textSearch"]
     if query.get("filters"):
         intent["filters"] = query["filters"]
-    elif query.get("healthServiceType"):
-        intent["filters"] = health_service_jsonpath(query["healthServiceType"])
+        return intent
+    conditions = {
+        "healthServiceType": query.get("healthServiceType"),
+        "acceptanceMode": query.get("acceptanceMode"),
+    }
+    if any(conditions.values()):
+        intent["filters"] = resource_attribute_jsonpath(conditions)
     return intent

@@ -18,6 +18,10 @@ REGISTRY: dict[str, FlowAdapter] = {
     AppointmentFlow.service_type: AppointmentFlow(),
 }
 
+# ``coordination`` is an alias for the consultation flow (both use the
+# ServiceCoordinationResource discover schema); the frontend may pass either.
+REGISTRY["coordination"] = REGISTRY[ConsultationFlow.service_type]
+
 
 def get_adapter(service_type: str) -> FlowAdapter:
     """Return the adapter for ``service_type`` or raise :class:`FlowError`."""

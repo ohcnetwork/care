@@ -11,6 +11,7 @@ from drf_spectacular.views import (
 )
 
 from care.beckn.api.bap_webhook import BAPReceiverView
+from care.beckn.api.webhook import BPPWebhookView
 from care.users.api.viewsets.change_password import ChangePasswordView
 from care.users.reset_password_views import (
     ResetPasswordCheck,
@@ -77,6 +78,20 @@ urlpatterns = [
         "api/v1/beckn/bap/receiver/<str:action>",
         BAPReceiverView.as_view(),
         name="beckn-bap-receiver-root-action",
+    ),
+    # Root-level aliases for the Beckn BPP receiver. ONIX/callers forward
+    # inbound actions to the advertised bppUri, which may be the prefix-less
+    # /bpp/receiver[/<action>] path; route both to the BPP webhook so
+    # select/init/confirm addressed to Care's own BPP are handled.
+    path(
+        "api/v1/beckn/bpp/receiver",
+        BPPWebhookView.as_view(),
+        name="beckn-bpp-receiver-root",
+    ),
+    path(
+        "api/v1/beckn/bpp/receiver/<str:action>",
+        BPPWebhookView.as_view(),
+        name="beckn-bpp-receiver-root-action",
     ),
     *static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT),
 ]
