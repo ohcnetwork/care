@@ -268,6 +268,28 @@ class ResourceCategoryAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.data["results"][0]["title"], "Child Category")
 
+    def test_list_resource_categories_with_parent_filter_no_results(self):
+        self.client.force_authenticate(user=self.super_user)
+        parent_category = self.create_resource_category(
+            slug_value="parent-category",
+            facility=self.facility,
+            title="Parent Category",
+        )
+        self.create_resource_category(
+            slug_value="child-category",
+            facility=self.facility,
+            title="Child Category",
+            parent=parent_category,
+        )
+        response = self.client.get(
+            self.get_url(self.facility) + "?parent=", format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(parent_category.external_id)
+        )
+
     # Test cases for retrieve resource category api
 
     def test_retrieve_resource_category_as_super_user(self):
@@ -647,4 +669,25 @@ class ResourceCategoryAPITestCase(CareAPITestBase):
         self.assertEqual(
             response.data["errors"][0]["msg"],
             "Cannot delete a resource category associated with a resource",
+        )
+
+    def test_delete_resource_category_with_children(self):
+        self.client.force_authenticate(user=self.super_user)
+        parent_category = self.create_resource_category(
+            slug_value="parent-category",
+            facility=self.facility,
+            title="Parent Category",
+        )
+        self.create_resource_category(
+            slug_value="child-category",
+            facility=self.facility,
+            title="Child Category",
+            parent=parent_category,
+        )
+        url = self.get_detail_url(self.facility, parent_category)
+        response = self.client.delete(url, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot delete a resource category with children",
         )
