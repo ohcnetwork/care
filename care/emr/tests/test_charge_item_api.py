@@ -26,6 +26,9 @@ from care.emr.resources.charge_item.spec import (
     ChargeItemStatusOptions,
     ChargeItemWriteSpec,
 )
+from care.emr.resources.charge_item.sync_charge_item_costs import (
+    sync_charge_item_costs,
+)
 from care.emr.resources.charge_item_definition.spec import (
     ChargeItemDefinitionStatusOptions,
 )
@@ -1896,3 +1899,132 @@ class TestChargeItemPydanticValidation(CareAPITestBase):
         self.assertIsNone(request.patient)
         self.assertIsNone(request.service_resource)
         self.assertIsNone(request.service_resource_id)
+
+
+class TestSyncChargeItemCostsZeroAmountComponents(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.user)
+        self.organization = self.create_facility_organization(facility=self.facility)
+        self.patient = self.create_patient()
+        self.encounter = self.create_encounter(
+            patient=self.patient, facility=self.facility, organization=self.organization
+        )
+        self.account = Account.objects.create(
+            facility=self.facility,
+            patient=self.patient,
+            name=f"Account for {self.patient.name}",
+            status=AccountStatusOptions.active.value,
+            billing_status=AccountBillingStatusOptions.open.value,
+        )
+
+    def _build_charge_item(self, unit_price_components, quantity=Decimal("1.00")):
+        return ChargeItem(
+            facility=self.facility,
+            title="Test Item",
+            patient=self.patient,
+            account=self.account,
+            status="billable",
+            quantity=quantity,
+            unit_price_components=unit_price_components,
+        )
+
+    def test_zero_amount_tax_component_does_not_raise(self):
+        """
+        Verify that a tax component with amount=0 does not raise and contributes 0.
+        """
+        charge_item = self._build_charge_item(
+            [
+                {"monetary_component_type": "base", "amount": "100.00"},
+                {"monetary_component_type": "tax", "amount": "0.00"},
+            ]
+        )
+        sync_charge_item_costs(charge_item)
+        self.assertEqual(charge_item.total_price, Decimal("100.00"))
+
+    def test_zero_amount_surcharge_component_does_not_raise(self):
+        """
+        Verify that a surcharge component with amount=0 does not raise and contributes 0.
+        """
+        charge_item = self._build_charge_item(
+            [
+                {"monetary_component_type": "base", "amount": "100.00"},
+                {"monetary_component_type": "surcharge", "amount": "0.00"},
+            ]
+        )
+        sync_charge_item_costs(charge_item)
+        self.assertEqual(charge_item.total_price, Decimal("100.00"))
+
+    def test_zero_amount_discount_component_does_not_raise(self):
+        """
+        Verify that a discount component with amount=0 does not raise and contributes 0.
+        """
+        charge_item = self._build_charge_item(
+            [
+                {"monetary_component_type": "base", "amount": "100.00"},
+                {"monetary_component_type": "discount", "amount": "0.00"},
+            ]
+        )
+        sync_charge_item_costs(charge_item)
+        self.assertEqual(charge_item.total_price, Decimal("100.00"))
+
+    def test_nonzero_amount_components_still_work(self):
+        """
+        Verify that non-zero discount and tax amounts are correctly calculated.
+        """
+        charge_item = self._build_charge_item(
+            [
+                {"monetary_component_type": "base", "amount": "100.00"},
+                {"monetary_component_type": "tax", "amount": "10.00"},
+                {"monetary_component_type": "discount", "amount": "5.00"},
+            ]
+        )
+        sync_charge_item_costs(charge_item)
+        self.assertEqual(charge_item.total_price, Decimal("105.00"))
+
+    def test_factor_based_components_still_work(self):
+        """
+        Sanity check that non-zero factor-based (percentage) components, which were already handled correctly.
+        """
+        charge_item = self._build_charge_item(
+            [
+                {"monetary_component_type": "base", "amount": "100.00"},
+                {"monetary_component_type": "tax", "factor": "10.00"},
+            ]
+        )
+        sync_charge_item_costs(charge_item)
+        self.assertEqual(charge_item.total_price, Decimal("110.00"))
+
+    def test_zero_factor_component_does_not_raise(self):
+        """
+        A tax component with factor=0 (e.g. a 0% tax bracket) should
+        compute to a zero contribution, not raise "Amount or factor is
+        required". This mirrors the amount=0 cases above but exercises
+        the `factor` branch of `calculate_amount` specifically, since
+        `factor=0` was just as broken as `amount=0` by the original
+        truthy check.
+        """
+        charge_item = self._build_charge_item(
+            [
+                {"monetary_component_type": "base", "amount": "100.00"},
+                {"monetary_component_type": "tax", "factor": "0"},
+            ]
+        )
+
+        sync_charge_item_costs(charge_item)
+
+        self.assertEqual(charge_item.total_price, Decimal("100.00"))
+
+    def test_missing_amount_and_factor_still_raises(self):
+        """
+        Verify that a component missing both amount and factor raises Pydantic ValidationError.
+        """
+        charge_item = self._build_charge_item(
+            [
+                {"monetary_component_type": "base", "amount": "100.00"},
+                {"monetary_component_type": "tax"},
+            ]
+        )
+        with self.assertRaises(PydanticValidationError):
+            sync_charge_item_costs(charge_item)
