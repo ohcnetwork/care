@@ -123,32 +123,39 @@ class DiagnosticReportViewSet(
             encounter = get_object_or_404(
                 Encounter, external_id=self.request.GET.get("encounter")
             )
-            if AuthorizationController.call(
+            if not AuthorizationController.call(
                 "can_read_diagnostic_report_in_encounter",
                 self.request.user,
                 encounter,
             ):
-                return queryset.filter(encounter=encounter)
-        elif self.request.GET.get("service_request"):
+                raise PermissionDenied(
+                    "You do not have permission to read this diagnostic report in this encounter"
+                )
+            return queryset.filter(encounter=encounter)
+        if self.request.GET.get("service_request"):
             service_request = get_object_or_404(
                 ServiceRequest, external_id=self.request.GET.get("service_request")
             )
-            if AuthorizationController.call(
+            if not AuthorizationController.call(
                 "can_read_diagnostic_report",
                 self.request.user,
                 service_request,
             ):
-                return queryset.filter(service_request=service_request)
-        else:
-            # Authorize with Patient
-            patient = self.get_patient_obj()
-            if AuthorizationController.call(
-                "can_view_clinical_data",
-                self.request.user,
-                patient,
-            ):
-                return queryset.filter(patient=patient)
-        raise ValidationError("Authorization Failed, Request Denied")
+                raise PermissionDenied(
+                    "You do not have permission to read this diagnostic report for this service request"
+                )
+            return queryset.filter(service_request=service_request)
+        # Authorize with Patient
+        patient = self.get_patient_obj()
+        if not AuthorizationController.call(
+            "can_view_clinical_data",
+            self.request.user,
+            patient,
+        ):
+            raise PermissionDenied(
+                "You do not have permission to view clinical data for this patient"
+            )
+        return queryset.filter(patient=patient)
 
     @extend_schema(
         request=BatchUpdateObservationRequest,
