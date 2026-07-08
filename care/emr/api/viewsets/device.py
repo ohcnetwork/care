@@ -368,7 +368,7 @@ class DeviceLocationHistoryViewSet(EMRModelReadOnlyViewSet):
         queryset = (
             super()
             .get_queryset()
-            .select_related("created_by", "updated_by")
+            .select_related("created_by", "updated_by", "location")
             .order_by("-modified_date")
         )
         if self.action == "list":
@@ -416,7 +416,13 @@ class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
         queryset = (
             super()
             .get_queryset()
-            .select_related("created_by", "updated_by")
+            .select_related(
+                "created_by",
+                "encounter",
+                "encounter__patient",
+                "encounter__facility",
+                "encounter__current_location",
+            )
             .order_by("-modified_date")
         )
         if self.action == "list":
@@ -431,7 +437,10 @@ class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
             return (
                 DeviceEncounterHistory.objects.filter(device=device)
                 .select_related(
-                    "encounter", "encounter__patient", "encounter__facility"
+                    "encounter",
+                    "encounter__patient",
+                    "encounter__facility",
+                    "encounter__current_location",
                 )
                 .order_by("-end")
             )
@@ -468,6 +477,11 @@ class DeviceServiceHistoryViewSet(
             raise PermissionDenied("You do not have permission to access the device")
 
     def authorize_update(self, request_obj, model_instance):
+        device = self.get_device()
+        if device.id != model_instance.device_id:
+            raise ValidationError(
+                "device does not match with the device service history"
+            )
         self.authorize_create(model_instance)
 
     def authorize_retrieve(self, model_instance):

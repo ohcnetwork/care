@@ -420,6 +420,9 @@ class OrganizationUsersViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied("User does not have permission for this action")
 
+        if model_instance.organization != organization:
+            raise ValidationError("User does not belong to the organization")
+
     def authorize_destroy(self, instance):
         organization = self.get_organization_obj()
         if not AuthorizationController.call(
@@ -429,6 +432,9 @@ class OrganizationUsersViewSet(EMRModelViewSet):
             instance.role,
         ):
             raise PermissionDenied("User does not have permission for this action")
+
+        if instance.organization != organization:
+            raise ValidationError("User does not belong to the organization")
 
     def authorize_create(self, instance):
         """
@@ -464,14 +470,14 @@ class OrganizationUsersViewSet(EMRModelViewSet):
         """
         Only users part of the organization can access its users
         """
-        organization = self.get_organization_obj()
         queryset = (
             super()
             .get_queryset()
-            .select_related("created_by", "updated_by")
+            .select_related("created_by", "updated_by", "user", "role")
             .order_by("-modified_date")
         )
         if self.action == "list":
+            organization = self.get_organization_obj()
             if not AuthorizationController.call(
                 "can_list_organization_users_obj", self.request.user, organization
             ):

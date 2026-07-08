@@ -298,10 +298,13 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
         )
 
     def authorize_update(self, request_obj, model_instance):
+        location = self.get_location_obj()
+        if location.id != model_instance.location_id:
+            raise ValidationError("Bed does not belong to the specified location")
         return self.authorize_create(model_instance)
 
     def authorize_destroy(self, instance):
-        return self.authorize_create(instance)
+        return self.authorize_update({}, instance)
 
     def authorize_retrieve(self, model_instance):
         location = self.get_location_obj()
@@ -501,7 +504,16 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
         queryset = (
             super()
             .get_queryset()
-            .select_related("created_by", "updated_by")
+            .select_related(
+                "created_by",
+                "updated_by",
+                "location",
+                "encounter",
+                "encounter__patient",
+                "encounter__facility",
+                "encounter__current_location",
+                "encounter__appointment",
+            )
             .order_by("-modified_date")
         )
 
