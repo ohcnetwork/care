@@ -33,10 +33,23 @@ class Command(BaseCommand):
             action="store_true",
             help="Include non-public schedules (default: public schedules only).",
         )
+        parser.add_argument(
+            "--coordination",
+            action="store_true",
+            help=(
+                "Publish the Care-coordinator ('front desk') "
+                "ServiceCoordinationResource catalog instead of the facility "
+                "HealthResource catalogs."
+            ),
+        )
 
     def handle(self, *args, **options):
         public_only = not options["all"]
-        result = publish_catalog(public_only=public_only, dry_run=options["dry_run"])
+        result = publish_catalog(
+            public_only=public_only,
+            dry_run=options["dry_run"],
+            coordination=options["coordination"],
+        )
         if result["status"] == "dry_run":
             self.stdout.write(json.dumps(result["payload"], indent=2, default=str))
             self.stdout.write(

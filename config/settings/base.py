@@ -174,6 +174,21 @@ BECKN_BAP_URI = env("BECKN_BAP_URI", default="")
 BECKN_CC_BPP_ID = env("BECKN_CC_BPP_ID", default="")
 BECKN_CC_BPP_URI = env("BECKN_CC_BPP_URI", default="")
 
+# Care coordinator ("front desk") catalog — a ServiceCoordinationResource that
+# Care-as-BPP publishes so referrers can discover and route referrals to a desk
+# that reviews them manually. Scope values are optional; sensible defaults apply.
+BECKN_COORDINATOR_NAME = env("BECKN_COORDINATOR_NAME", default="Care Coordination Desk")
+BECKN_COORDINATOR_ID = env("BECKN_COORDINATOR_ID", default="")
+BECKN_COORDINATOR_TARGET_SERVICE_TYPES = env.list(
+    "BECKN_COORDINATOR_TARGET_SERVICE_TYPES",
+    default=["CONSULTATION", "INVESTIGATION", "DISPENSING"],
+)
+BECKN_COORDINATOR_PROGRAMMES = env.list(
+    "BECKN_COORDINATOR_PROGRAMMES", default=["PMJAY"]
+)
+# Optional LGD district scope, e.g. "507:Nashik" (code:display). Empty = omitted.
+BECKN_COORDINATOR_DISTRICT = env("BECKN_COORDINATOR_DISTRICT", default="")
+
 # MIGRATIONS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules

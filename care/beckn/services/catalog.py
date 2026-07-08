@@ -11,6 +11,7 @@ a bookable ``offer``.
 from django.conf import settings
 
 from care.beckn.constants import (
+    ACCEPTANCE_MODE_MANUAL_REVIEW,
     CODED_VALUE_CONTEXT,
     DAY_OF_WEEK_NAMES,
     DEFAULT_ACCEPTANCE_MODE,
@@ -19,6 +20,8 @@ from care.beckn.constants import (
     HEALTH_RESOURCE_CONTEXT,
     HEALTH_SERVICE_LAB_TEST,
     HEALTH_SERVICE_PHYSICAL_CONSULTATION,
+    SERVICE_COORDINATION_OFFER_CONTEXT,
+    SERVICE_COORDINATION_RESOURCE_CONTEXT,
 )
 from care.emr.models.scheduling.schedule import Availability, Schedule
 from care.emr.resources.scheduling.schedule.spec import (
@@ -245,3 +248,97 @@ def resource_acceptance_mode(resource) -> str:
     """
     schedules = Schedule.objects.filter(resource=resource)
     return _acceptance_mode(schedules)
+
+
+def _coded_value(type_: str, code: str, display: str | None = None) -> dict:
+    """Build a Beckn coded value (``@context``/``@type``/``code``[/``display``])."""
+    value = {"@context": CODED_VALUE_CONTEXT, "@type": type_, "code": code}
+    if display:
+        value["display"] = display
+    return value
+
+
+# Coordination SLA windows (hours) advertised on the coordinator offer, per
+# urgency tier: how long before the referral lapses / breaches SLA.
+_COORDINATION_SLA_WINDOWS = [
+    {"urgencyTier": "ROUTINE", "lapseWindowHours": 168, "slaBreachWindowHours": 168},
+    {"urgencyTier": "URGENT", "lapseWindowHours": 48, "slaBreachWindowHours": 48},
+    {"urgencyTier": "EMERGENCY", "lapseWindowHours": 1, "slaBreachWindowHours": 1},
+]
+
+
+def build_coordination_catalog() -> dict:
+    """Build the Care-coordinator ("front desk") ``ServiceCoordinationResource`` catalog.
+
+    Advertises a single desk provider that accepts referrals for manual review
+    (``acceptanceMode=MANUAL_REVIEW``). Identity comes from Care's BPP settings;
+    the coordination scope (target service types, programmes, optional district)
+    is configurable via ``BECKN_COORDINATOR_*`` settings, with sensible defaults.
+    """
+    bpp_id = getattr(settings, "BECKN_BPP_ID", "") or None
+    bpp_uri = getattr(settings, "BECKN_BPP_URI", "") or None
+    name = getattr(settings, "BECKN_COORDINATOR_NAME", "") or "Care Coordination Desk"
+    provider_id = (
+        getattr(settings, "BECKN_COORDINATOR_ID", "")
+        or f"coordinator-{bpp_id or 'care'}"
+    )
+    resource_id = f"{provider_id}-resource"
+    offer_id = f"{provider_id}-offer"
+
+    target_service_types = [
+        _coded_value("TargetServiceType", code)
+        for code in getattr(settings, "BECKN_COORDINATOR_TARGET_SERVICE_TYPES", [])
+    ]
+    programme_scope = [
+        _coded_value("Scheme", code)
+        for code in getattr(settings, "BECKN_COORDINATOR_PROGRAMMES", [])
+    ]
+    coordination_scope = {
+        "referralCategories": [
+            _coded_value("ReferralCategory", "CLINICAL", "Clinical referral")
+        ],
+        "targetServiceTypes": target_service_types,
+        "programmeScope": programme_scope,
+    }
+    district = getattr(settings, "BECKN_COORDINATOR_DISTRICT", "") or ""
+    if district:
+        code, _, display = district.partition(":")
+        coordination_scope["geographyScope"] = [
+            _coded_value("LGDDistrict", code.strip(), (display or code).strip())
+        ]
+
+    return {
+        "id": f"catalog-{provider_id}",
+        "bppId": bpp_id,
+        "bppUri": bpp_uri,
+        "descriptor": {"name": name},
+        "provider": {"id": provider_id, "descriptor": {"name": name}},
+        "resources": [
+            {
+                "id": resource_id,
+                "descriptor": {"name": f"{name} Coordination"},
+                "resourceAttributes": {
+                    "@context": SERVICE_COORDINATION_RESOURCE_CONTEXT,
+                    "@type": "scres:ServiceCoordinationResource",
+                    "coordinationScope": coordination_scope,
+                    "acceptanceMode": ACCEPTANCE_MODE_MANUAL_REVIEW,
+                    "supportedUrgencyTiers": ["ROUTINE", "URGENT", "EMERGENCY"],
+                },
+            }
+        ],
+        "offers": [
+            {
+                "id": offer_id,
+                "resourceIds": [resource_id],
+                "descriptor": {"name": f"{name} — standard"},
+                "offerAttributes": {
+                    "@context": SERVICE_COORDINATION_OFFER_CONTEXT,
+                    "@type": "scoff:ServiceCoordinationOffer",
+                    "coordinationSlaWindows": _COORDINATION_SLA_WINDOWS,
+                    "retryPolicy": "ONE_SILENT_RETRY",
+                    "handoffSupported": True,
+                    "maxActiveReferrals": 500,
+                },
+            }
+        ],
+    }

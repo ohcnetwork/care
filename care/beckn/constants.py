@@ -23,6 +23,15 @@ HEALTH_PERFORMANCE_CONTEXT = (
 )
 HEALTH_CONTRACT_CONTEXT = "https://schema.beckn.io/HealthContract/v2.1/context.jsonld"
 SERVICE_RESOURCE_CONTEXT = "https://schema.beckn.io/ServiceResource/v2.1/context.jsonld"
+# Care-coordinator (front desk) catalog contexts: a ServiceCoordinationResource
+# advertises a desk that accepts referrals for manual review; its offer carries
+# the coordination SLA/handoff terms.
+SERVICE_COORDINATION_RESOURCE_CONTEXT = (
+    "https://schema.beckn.io/ServiceCoordinationResource/v2.1/context.jsonld"
+)
+SERVICE_COORDINATION_OFFER_CONTEXT = (
+    "https://schema.beckn.io/ServiceCoordinationOffer/v2.1/context.jsonld"
+)
 CODED_VALUE_CONTEXT = (
     "https://raw.githubusercontent.com/beckn/DHP-Specs/main/devkit/stub/context.jsonld"
 )

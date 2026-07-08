@@ -22,7 +22,7 @@ import requests
 from django.conf import settings
 from django.utils import timezone
 
-from care.beckn.services.catalog import build_catalogs
+from care.beckn.services.catalog import build_catalogs, build_coordination_catalog
 
 logger = logging.getLogger(__name__)
 
@@ -43,13 +43,21 @@ def build_publish_context() -> dict:
     }
 
 
-def build_publish_payload(public_only: bool = True) -> dict:
-    """Return the full ``{context, message}`` ``catalog/publish`` payload."""
+def build_publish_payload(public_only: bool = True, coordination: bool = False) -> dict:
+    """Return the full ``{context, message}`` ``catalog/publish`` payload.
+
+    ``coordination=True`` publishes the Care-coordinator ("front desk")
+    ``ServiceCoordinationResource`` catalog instead of the facility/practitioner
+    ``HealthResource`` catalogs.
+    """
     bpp_id = getattr(settings, "BECKN_BPP_ID", "") or None
     bpp_uri = getattr(settings, "BECKN_BPP_URI", "") or None
     network_id = getattr(settings, "BECKN_NETWORK_ID", "") or None
 
-    catalogs = build_catalogs(public_only=public_only)
+    if coordination:
+        catalogs = [build_coordination_catalog()]
+    else:
+        catalogs = build_catalogs(public_only=public_only)
     directives = []
     for catalog in catalogs:
         # Each catalog repeats the publisher identity per the publish contract.
@@ -73,13 +81,16 @@ def build_publish_payload(public_only: bool = True) -> dict:
     }
 
 
-def publish_catalog(public_only: bool = True, dry_run: bool = False) -> dict:
+def publish_catalog(
+    public_only: bool = True, dry_run: bool = False, coordination: bool = False
+) -> dict:
     """Build and (unless ``dry_run``) POST the catalog to the BPP caller.
 
+    ``coordination=True`` publishes the Care-coordinator ("front desk") catalog.
     Returns a small result dict describing the outcome. Raises
     ``RuntimeError`` when no BPP caller URL is configured and not a dry run.
     """
-    payload = build_publish_payload(public_only=public_only)
+    payload = build_publish_payload(public_only=public_only, coordination=coordination)
     catalog_count = len(payload["message"]["catalogs"])
 
     if dry_run:
