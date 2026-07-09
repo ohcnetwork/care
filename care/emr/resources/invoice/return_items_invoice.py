@@ -118,24 +118,29 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
                 )
             rebalance_account_task(delivery_order.patient_invoice.account.id)
 
-    supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
-    for supply_delivery in supply_deliveries:
-        inventory_item = create_inventory_item(
-            product=supply_delivery.supplied_item, location=delivery_order.destination
-        )
-        with InventoryItemLock(inventory_item):
-            inventory_item.refresh_from_db(fields=["net_content"])
-            if (
-                supply_delivery.status == SupplyDeliveryStatusOptions.completed.value
-                and inventory_item.net_content < supply_delivery.supplied_item_quantity
-            ):
-                raise ValidationError("Inventory item does not have enough stock")
-            supply_delivery.status = SupplyDeliveryStatusOptions.entered_in_error.value
-            supply_delivery.updated_by = delivery_order.updated_by
-            supply_delivery.save(
-                update_fields=["status", "updated_by", "modified_date"]
-            )
-            sync_inventory_item(
-                location=delivery_order.destination,
+        supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
+        for supply_delivery in supply_deliveries:
+            inventory_item = create_inventory_item(
                 product=supply_delivery.supplied_item,
+                location=delivery_order.destination,
             )
+            with InventoryItemLock(inventory_item):
+                inventory_item.refresh_from_db(fields=["net_content"])
+                if (
+                    supply_delivery.status
+                    == SupplyDeliveryStatusOptions.completed.value
+                    and inventory_item.net_content
+                    < supply_delivery.supplied_item_quantity
+                ):
+                    raise ValidationError("Inventory item does not have enough stock")
+                supply_delivery.status = (
+                    SupplyDeliveryStatusOptions.entered_in_error.value
+                )
+                supply_delivery.updated_by = delivery_order.updated_by
+                supply_delivery.save(
+                    update_fields=["status", "updated_by", "modified_date"]
+                )
+                sync_inventory_item(
+                    location=delivery_order.destination,
+                    product=supply_delivery.supplied_item,
+                )
