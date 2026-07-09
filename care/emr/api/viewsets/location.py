@@ -505,8 +505,6 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
             super()
             .get_queryset()
             .select_related(
-                "created_by",
-                "updated_by",
                 "location",
                 "encounter",
                 "encounter__patient",
@@ -516,7 +514,6 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
             )
             .order_by("-modified_date")
         )
-
         if self.action == "list":
             if not AuthorizationController.call(
                 "can_list_facility_location_obj", self.request.user, facility, location

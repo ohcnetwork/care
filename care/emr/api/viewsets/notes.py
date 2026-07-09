@@ -175,13 +175,8 @@ class NoteMessageViewSet(
                     raise PermissionDenied("Permission denied to user")
             else:
                 raise PermissionDenied("Permission denied to user")
-        queryset = (
-            super()
-            .get_queryset()
-            .select_related("created_by", "updated_by")
-            .order_by("-modified_date")
-        )
+        queryset = super().get_queryset().select_related("thread")
         if self.action == "list":
             thread = self.get_thread_obj()
             return queryset.filter(thread=thread).order_by("-created_date")
-        return queryset
+        return queryset.order_by("-modified_date")
