@@ -301,7 +301,9 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
         self.authorize_create(model_instance)
         location = self.get_location_obj()
         if location.id != model_instance.location_id:
-            raise ValidationError("Bed does not belong to the specified location")
+            raise ValidationError(
+                "Location encounter does not belong to the specified location"
+            )
 
     def authorize_destroy(self, instance):
         return self.authorize_update({}, instance)
@@ -314,7 +316,9 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied("You do not have permission to given location")
         if location.id != model_instance.location.id:
-            raise ValidationError("Bed does not belong to the specified location")
+            raise ValidationError(
+                "Location encounter does not belong to the specified location"
+            )
 
     def reset_encounter_location_association(self, location):
         """

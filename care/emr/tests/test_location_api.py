@@ -1002,7 +1002,7 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
             response.json()["errors"][0]["msg"],
-            "Bed does not belong to the specified location",
+            "Location encounter does not belong to the specified location",
         )
 
     # DELETE TESTS
