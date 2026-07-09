@@ -37,6 +37,7 @@ from care.beckn.builders.referral import (
 from care.beckn.config import resolve_origin_facility
 from care.beckn.constants import FLOW_APPOINTMENT
 from care.beckn.mappers import (
+    extract_health_ids,
     find_patient_participant,
     get_confirmed_appointment_time,
     get_contract,
@@ -47,6 +48,7 @@ from care.beckn.mappers import (
     resolve_flow,
 )
 from care.beckn.services import scheduling
+from care.beckn.services.identifiers import attach_abha_identifier
 from care.beckn.services.lookup import find_resource_request
 from care.beckn.services.patient import find_or_create_patient
 from care.emr.models.resource_request import ResourceRequest
@@ -185,6 +187,13 @@ def _referral_confirm(context: dict, message: dict) -> dict:
             beckn["participants"] = contract["participants"]
         resource_request.extensions = extensions
         resource_request.save()
+
+        # ABHA may be carried on the confirm; record it idempotently.
+        if resource_request.related_patient_id:
+            participant = find_patient_participant(message)
+            attach_abha_identifier(
+                resource_request.related_patient, extract_health_ids(participant)
+            )
 
     return build_on_confirm(context, message, resource_request)
 

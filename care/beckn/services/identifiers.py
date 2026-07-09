@@ -15,7 +15,7 @@ from care.emr.resources.patient_identifier.spec import (
 # Instance-level identifier system for the ABHA number (use ``official``). The
 # config is created on first use so upcoming bookings record the ABHA number and
 # can be matched back to an existing patient.
-ABHA_IDENTIFIER_SYSTEM = "care.ohc.network/patient-abha-number"
+ABHA_IDENTIFIER_SYSTEM = "https://care.ohc.network/abha_number"
 
 _CONFIG_CACHE: dict[str, PatientIdentifierConfig] = {}
 
@@ -80,10 +80,24 @@ def attach_abha_identifier(patient, health_ids: list[dict]) -> PatientIdentifier
         patient=patient, config=config, value=abha_value
     ).first()
     if existing:
-        return existing
-    return PatientIdentifier.objects.create(
-        patient=patient, config=config, value=abha_value
-    )
+        identifier = existing
+    else:
+        identifier = PatientIdentifier.objects.create(
+            patient=patient, config=config, value=abha_value
+        )
+
+    # Reflect the identifier in ``Patient.instance_identifiers`` so it shows in
+    # the patient API/UI (which reads that JSON, not the identifier rows).
+    _sync_instance_identifiers(patient)
+    return identifier
+
+
+def _sync_instance_identifiers(patient) -> None:
+    """Rebuild ``patient.instance_identifiers`` from its identifier rows."""
+    current = patient.instance_identifiers or []
+    patient.build_instance_identifiers()
+    if patient.instance_identifiers != current:
+        patient.save()
 
 
 def find_patient_by_abha(health_ids: list[dict]):
