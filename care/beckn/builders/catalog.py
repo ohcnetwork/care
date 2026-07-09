@@ -17,12 +17,47 @@ from care.beckn.constants import (
     CONTRACT_STATUS_DRAFT,
     DEFAULT_HEALTH_SERVICE_TYPE,
     HEALTH_PERFORMANCE_CONTEXT,
+    PARTICIPANT_ROLE_PATIENT,
 )
 from care.beckn.services.catalog import build_catalogs
+from care.beckn.services.identifiers import get_patient_abha_value
 
 # Care TokenBooking.status values that map to a completed appointment.
 COMPLETED_BOOKING_STATUSES = {"fulfilled", "checked_in", "in_consultation"}
 CANCELLED_BOOKING_STATUSES = {"cancelled", "entered_in_error", "rescheduled"}
+
+
+def _inject_patient_health_ids(contract: dict, patient) -> None:
+    """Ensure the contract's PATIENT participant carries the ABHA ``healthIds``.
+
+    Status/retrieve callbacks may echo an inbound contract without the patient's
+    ABHA, so the stored identifier is merged into (or added as) the PATIENT
+    participant. No-op when the patient has no ABHA identifier.
+    """
+    abha_value = get_patient_abha_value(patient)
+    if not abha_value:
+        return
+
+    abha_entry = {"system": "ABHA", "value": abha_value}
+    participants = contract.setdefault("participants", [])
+    for participant in participants:
+        attributes = participant.setdefault("participantAttributes", {})
+        if attributes.get("participantRole") == PARTICIPANT_ROLE_PATIENT:
+            health_ids = attributes.setdefault("healthIds", [])
+            if not any((h.get("system") or "").upper() == "ABHA" for h in health_ids):
+                health_ids.append(abha_entry)
+            return
+
+    participants.append(
+        {
+            "id": f"participant-patient-{patient.external_id}",
+            "descriptor": {"name": patient.name},
+            "participantAttributes": {
+                "participantRole": PARTICIPANT_ROLE_PATIENT,
+                "healthIds": [abha_entry],
+            },
+        }
+    )
 
 
 def _health_service_type(inbound_message: dict) -> str:
@@ -110,6 +145,7 @@ def _inject_booking(contract: dict, booking, health_service_type: str) -> None:
     """
     contract["id"] = str(booking.external_id)
     contract["performance"] = [_booking_performance(booking, health_service_type)]
+    _inject_patient_health_ids(contract, getattr(booking, "patient", None))
 
 
 def _contract_status_for_booking(booking) -> str:

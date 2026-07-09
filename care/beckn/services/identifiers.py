@@ -141,9 +141,9 @@ def _get_or_create_abha_config() -> PatientIdentifierConfig:
 def attach_abha_identifier(patient, health_ids: list[dict]) -> PatientIdentifier | None:
     """Attach the ABHA number as a ``PatientIdentifier`` on the patient.
 
-    The ``official`` ABHA identifier config is created on first use. If the
-    patient already has an ABHA identifier it is reused (and refreshed when the
-    value changed); otherwise a new one is created.
+    The ``official`` ABHA identifier config is created on first use. The patient
+    is searched for an ABHA identifier carrying this exact value; if one is not
+    already present, a new identifier is created.
     """
     if patient is None:
         return None
@@ -152,11 +152,10 @@ def attach_abha_identifier(patient, health_ids: list[dict]) -> PatientIdentifier
         return None
 
     config = _get_or_create_abha_config()
-    existing = PatientIdentifier.objects.filter(patient=patient, config=config).first()
+    existing = PatientIdentifier.objects.filter(
+        patient=patient, config=config, value=abha_value
+    ).first()
     if existing:
-        if existing.value != abha_value:
-            existing.value = abha_value
-            existing.save(update_fields=["value", "modified_date"])
         return existing
     return PatientIdentifier.objects.create(
         patient=patient, config=config, value=abha_value

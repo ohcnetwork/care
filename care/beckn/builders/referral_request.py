@@ -19,6 +19,7 @@ from care.beckn.constants import (
     LIFECYCLE_ACTIVE,
     PARTICIPANT_ROLE_PATIENT,
 )
+from care.beckn.services.identifiers import get_patient_abha_value
 from care.emr.resources.resource_request.spec import CategoryChoices
 
 # ResourceRequest.priority at or above this level maps to an URGENT tier.
@@ -81,14 +82,18 @@ def build_confirm_context(transaction_id: str) -> dict:
 
 
 def _patient_participant(patient) -> dict:
+    attributes = {
+        "@context": HEALTH_PARTICIPANT_CONTEXT,
+        "@type": "hpa:HealthParticipant",
+        "participantRole": PARTICIPANT_ROLE_PATIENT,
+    }
+    abha_value = get_patient_abha_value(patient)
+    if abha_value:
+        attributes["healthIds"] = [{"system": "ABHA", "value": abha_value}]
     return {
         "id": f"participant-patient-{patient.external_id}",
         "descriptor": {"name": patient.name},
-        "participantAttributes": {
-            "@context": HEALTH_PARTICIPANT_CONTEXT,
-            "@type": "hpa:HealthParticipant",
-            "participantRole": PARTICIPANT_ROLE_PATIENT,
-        },
+        "participantAttributes": attributes,
     }
 
 
