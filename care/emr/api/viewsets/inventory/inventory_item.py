@@ -49,10 +49,7 @@ class InventoryItemViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
         location = self.get_location_obj()
         item_location = model_instance.location
         self.authorize_location_read(item_location)
-        if (
-            location.id != item_location.id
-            and location.id not in item_location.parent_cache
-        ):
+        if location.id != item_location.id:
             raise ValidationError(
                 "Inventory item does not belong to the specified location"
             )
