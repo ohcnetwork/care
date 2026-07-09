@@ -15,10 +15,7 @@ from care.beckn.mappers import (
 )
 from care.beckn.services.identifiers import (
     attach_abha_identifier,
-    build_instance_identifiers,
     find_patient_by_abha,
-    find_patient_by_health_ids,
-    upsert_health_id_identifiers,
 )
 from care.emr.models import Patient
 
@@ -28,16 +25,12 @@ PLACEHOLDER_PHONE_NUMBER = "0000000000"
 
 
 def _match_existing_patient(health_ids: list[dict]):
-    """Reuse an existing patient by health-id identifier.
+    """Reuse an existing patient by ABHA identifier.
 
     Phone-number matching is intentionally omitted: the Beckn network spec does
     not currently carry a patient phone number, so it is never a real value.
     """
-    patient = find_patient_by_abha(health_ids)
-    if patient:
-        return patient
-
-    return find_patient_by_health_ids(health_ids)
+    return find_patient_by_abha(health_ids)
 
 
 def _phone_from_contacts(contacts) -> str | None:
@@ -110,8 +103,7 @@ def find_or_create_patient(message: dict, participant: dict | None, facility, us
 
     existing = _match_existing_patient(health_ids)
     if existing:
-        # Keep identifiers in sync on reuse (e.g. a new health id arrived).
-        upsert_health_id_identifiers(existing, health_ids)
+        # Keep the ABHA identifier in sync on reuse.
         attach_abha_identifier(existing, health_ids)
         return existing
 
@@ -123,7 +115,6 @@ def find_or_create_patient(message: dict, participant: dict | None, facility, us
         phone_number=phone_number,
         date_of_birth=date_of_birth,
         geo_organization=get_default_geo_organization(facility),
-        instance_identifiers=build_instance_identifiers(health_ids),
         created_by=user,
         updated_by=user,
     )
@@ -134,6 +125,5 @@ def find_or_create_patient(message: dict, participant: dict | None, facility, us
         }
     }
     patient.save()
-    upsert_health_id_identifiers(patient, health_ids)
     attach_abha_identifier(patient, health_ids)
     return patient
