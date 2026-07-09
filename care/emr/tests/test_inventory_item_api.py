@@ -131,6 +131,46 @@ class InventoryItemAPITest(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(inventory_item.external_id))
 
+    def test_retrieve_inventory_item_from_child_location_with_parent_location(self):
+        self.client.force_authenticate(user=self.super_user)
+        child_location = self.create_facility_location(
+            facility=self.facility, parent=self.facility_location
+        )
+        child_location.parent_cache = [self.facility_location.id]
+        child_location.save()
+        inventory_item = self.create_inventory_item(
+            facility=self.facility, location=child_location
+        )
+        response = self.client.get(
+            self.get_detail_url(
+                facility=self.facility.external_id,
+                location=self.facility_location.external_id,
+                external_id=inventory_item.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(inventory_item.external_id))
+
+    def test_retrieve_inventory_item_with_invalid_location(self):
+        self.client.force_authenticate(user=self.super_user)
+        other_location = self.create_facility_location(facility=self.facility)
+        inventory_item = self.create_inventory_item(
+            facility=self.facility, location=self.facility_location
+        )
+        response = self.client.get(
+            self.get_detail_url(
+                facility=self.facility.external_id,
+                location=other_location.external_id,
+                external_id=inventory_item.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertContains(
+            response,
+            "Inventory item does not belong to the specified location",
+            status_code=400,
+        )
+
     def test_retrieve_inventory_item_as_user_without_permission(self):
         self.client.force_authenticate(user=self.user)
         inventory_item = self.create_inventory_item(

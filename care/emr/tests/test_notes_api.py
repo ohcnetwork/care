@@ -459,6 +459,28 @@ class NoteMessageApiTestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 403, response.data)
         self.assertContains(response, "Permission denied to user", status_code=403)
 
+    def test_update_note_with_invalid_thread_without_write_permission(self):
+        role = self.create_role_with_permissions(
+            permissions=[PatientPermissions.can_view_clinical_data.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        thread = self._create_thread()
+        other_thread = self._create_thread()
+        note = self._create_note(thread)
+        url = self._get_note_detail_url(other_thread.external_id, note.external_id)
+        data = {
+            "message": "Updated Note",
+            "created_date": note.created_date.isoformat(),
+            "modified_date": note.modified_date.isoformat(),
+        }
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertContains(
+            response, "You do not have permission for this action", status_code=403
+        )
+
     def test_create_note_after_encounter_complete(self):
         encounter = self.create_encounter(
             patient=self.patient,

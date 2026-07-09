@@ -139,16 +139,7 @@ class NoteMessageViewSet(
         instance.patient = instance.thread.patient
         super().perform_create(instance)
 
-    def authorize_update(self, request_obj, model_instance):
-        if self.request.user != model_instance.created_by:
-            raise PermissionDenied("Cannot Update Message Created by Other User")
-        thread = self.get_thread_obj()
-        if model_instance.thread != thread:
-            raise ValidationError("Message does not belong to the thread")
-        self.authorize_create({})
-
-    def authorize_create(self, instance):
-        thread = self.get_thread_obj()
+    def authorize_thread_write(self, thread):
         if thread.encounter:
             allowed = AuthorizationController.call(
                 "can_update_encounter_clinical_data",
@@ -161,6 +152,18 @@ class NoteMessageViewSet(
             )
         if not allowed:
             raise PermissionDenied("You do not have permission for this action")
+
+    def authorize_update(self, request_obj, model_instance):
+        if self.request.user.id != model_instance.created_by_id:
+            raise PermissionDenied("Cannot Update Message Created by Other User")
+        thread = self.get_thread_obj()
+        self.authorize_thread_write(thread)
+        if model_instance.thread_id != thread.id:
+            raise ValidationError("Message does not belong to the thread")
+
+    def authorize_create(self, instance):
+        thread = self.get_thread_obj()
+        self.authorize_thread_write(thread)
 
     def authorize_retrieve(self, model_instance):
         thread = self.get_thread_obj()
