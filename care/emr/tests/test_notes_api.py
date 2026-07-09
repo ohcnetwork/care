@@ -232,6 +232,27 @@ class NoteMessageApiTestCase(CareAPITestBase):
             },
         )
 
+    def _get_note_list_url_for_patient(self, patient_external_id, thread_external_id):
+        return reverse(
+            "note-list",
+            kwargs={
+                "patient_external_id": patient_external_id,
+                "thread_external_id": thread_external_id,
+            },
+        )
+
+    def _get_note_detail_url_for_patient(
+        self, patient_external_id, thread_external_id, note_external_id
+    ):
+        return reverse(
+            "note-detail",
+            kwargs={
+                "patient_external_id": patient_external_id,
+                "thread_external_id": thread_external_id,
+                "external_id": note_external_id,
+            },
+        )
+
     def _create_thread(self, encounter=None):
         return baker.make(
             NoteThread,
@@ -261,6 +282,19 @@ class NoteMessageApiTestCase(CareAPITestBase):
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, 200, response.data)
         self.assertContains(response, note.message, status_code=200)
+
+    def test_list_notes_with_patient_thread_mismatch(self):
+        self.client.force_authenticate(user=self.superuser)
+        thread = self._create_thread()
+        other_patient = self.create_patient()
+        url = self._get_note_list_url_for_patient(
+            other_patient.external_id, thread.external_id
+        )
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertContains(
+            response, "Thread does not belong to the patient", status_code=400
+        )
 
     def test_list_notes_on_thread_without_permission(self):
         thread = self._create_thread()
@@ -303,6 +337,20 @@ class NoteMessageApiTestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 400, response.data)
         self.assertContains(
             response, "Message does not belong to the thread", status_code=400
+        )
+
+    def test_get_note_details_with_patient_thread_mismatch(self):
+        self.client.force_authenticate(user=self.superuser)
+        thread = self._create_thread()
+        note = self._create_note(thread)
+        other_patient = self.create_patient()
+        url = self._get_note_detail_url_for_patient(
+            other_patient.external_id, thread.external_id, note.external_id
+        )
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertContains(
+            response, "Thread does not belong to the patient", status_code=400
         )
 
     def test_create_note_on_encounter_with_permission(self):

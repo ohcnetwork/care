@@ -121,9 +121,13 @@ class NoteMessageViewSet(
         )
 
     def get_thread_obj(self):
-        return get_object_or_404(
+        patient = self.get_patient_obj()
+        thread = get_object_or_404(
             NoteThread, external_id=self.kwargs["thread_external_id"]
         )
+        if thread.patient_id != patient.id:
+            raise ValidationError("Thread does not belong to the patient")
+        return thread
 
     def perform_create(self, instance):
         instance.thread = self.get_thread_obj()
