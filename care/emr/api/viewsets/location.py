@@ -298,10 +298,27 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
         )
 
     def authorize_update(self, request_obj, model_instance):
-        return self.authorize_create(model_instance)
+        self.authorize_create(model_instance)
+        location = self.get_location_obj()
+        if location.id != model_instance.location_id:
+            raise ValidationError(
+                "Location encounter does not belong to the specified location"
+            )
 
     def authorize_destroy(self, instance):
-        return self.authorize_create(instance)
+        return self.authorize_update({}, instance)
+
+    def authorize_retrieve(self, model_instance):
+        location = self.get_location_obj()
+        facility = self.get_facility_obj()
+        if not AuthorizationController.call(
+            "can_list_facility_location_obj", self.request.user, facility, location
+        ):
+            raise PermissionDenied("You do not have permission to given location")
+        if location.id != model_instance.location.id:
+            raise ValidationError(
+                "Location encounter does not belong to the specified location"
+            )
 
     def reset_encounter_location_association(self, location):
         """
@@ -488,13 +505,26 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
     def get_queryset(self):
         location = self.get_location_obj()
         facility = self.get_facility_obj()
-        if not AuthorizationController.call(
-            "can_list_facility_location_obj", self.request.user, facility, location
-        ):
-            raise PermissionDenied("You do not have permission to given location")
-        return FacilityLocationEncounter.objects.filter(location=location).order_by(
-            "-created_date"
+        queryset = (
+            super()
+            .get_queryset()
+            .select_related(
+                "location",
+                "encounter",
+                "encounter__patient",
+                "encounter__facility",
+                "encounter__current_location",
+                "encounter__appointment",
+            )
+            .order_by("-modified_date")
         )
+        if self.action == "list":
+            if not AuthorizationController.call(
+                "can_list_facility_location_obj", self.request.user, facility, location
+            ):
+                raise PermissionDenied("You do not have permission to given location")
+            return queryset.filter(location=location).order_by("-created_date")
+        return queryset
 
 
 def close_related_location_from_encounter(instance):
