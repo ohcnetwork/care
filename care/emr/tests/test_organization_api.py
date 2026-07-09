@@ -812,8 +812,26 @@ class OrganizationUsersTestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 403)
         self.assertContains(
             response,
-            "User does not have the required permissions to list users",
+            "User does not have the required permission to read user",
             status_code=403,
+        )
+
+    def test_get_users_in_organization_with_invalid_organization(self):
+        """Test that getting users in an invalid organization returns a 400."""
+        self.client.force_authenticate(user=self.super_user)
+        another_org = self.create_organization(
+            user=self.super_user, name="Another Organization", org_type="govt"
+        )
+        org_user = self.attach_role_organization_user(
+            self.root_organization, self.user, self.administrator_role
+        )
+        response = self.client.get(
+            self.get_detail_url(another_org.external_id, org_user.external_id)
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "User does not belong to the organization",
         )
 
     # getting User List in Organization
@@ -863,7 +881,7 @@ class OrganizationUsersTestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 403)
         self.assertContains(
             response,
-            "User does not have the required permissions to list users",
+            "User does not have the required permission to list users",
             status_code=403,
         )
 
@@ -968,7 +986,7 @@ class OrganizationUsersTestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 403)
         self.assertContains(
             response,
-            "User does not have the required permissions to list users",
+            "User does not have permission for this action",
             status_code=403,
         )
 
