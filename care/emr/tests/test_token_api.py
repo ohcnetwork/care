@@ -361,6 +361,63 @@ class TokenAPITests(CareAPITestBase):
             response.data["detail"],
         )
 
+    def test_update_token_with_invalid_queue_without_url_resource_permission(self):
+        """Test wrong-queue updates deny before exposing queue mismatch."""
+        self.client.force_authenticate(user=self.user)
+        actual_resource_user = self.create_user()
+        self.attach_role_facility_organization_user(
+            user=actual_resource_user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        actual_resource = self.create_schedule_resource(
+            facility=self.facility,
+            user=actual_resource_user,
+        )
+        actual_queue = self.create_queue(
+            facility=self.facility,
+            resource=actual_resource,
+            date=timezone.now().date(),
+        )
+        token = self.create_token(
+            patient=self.patient,
+            category=self.token_category,
+            queue=actual_queue,
+            facility=self.facility,
+        )
+        url_resource = self.create_schedule_resource(
+            facility=self.facility,
+            user=self.create_user(),
+        )
+        url_queue = self.create_queue(
+            facility=self.facility,
+            resource=url_resource,
+            date=timezone.now().date(),
+        )
+        token_data = {
+            "status": TokenStatusOptions.IN_PROGRESS,
+            "note": "Token is in progress",
+            "sub_queue": None,
+        }
+        response = self.client.put(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(url_queue.external_id),
+                str(token.external_id),
+            ),
+            data=token_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.data["detail"], "You do not have permission to update token"
+        )
+
     def test_update_token_with_different_facility_for_subqueue_and_queue(self):
         """Test updating a token with different facility for subqueue and queue."""
         self.client.force_authenticate(user=self.superuser)

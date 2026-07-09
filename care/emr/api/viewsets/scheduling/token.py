@@ -134,7 +134,7 @@ class TokenViewSet(EMRModelViewSet):
 
     def authorize_update(self, request_obj, model_instance):
         _, queue = self.get_queue_obj()
-        resource = model_instance.queue.resource
+        resource = queue.resource
         if not AuthorizationController.call(
             "can_write_token",
             resource,
