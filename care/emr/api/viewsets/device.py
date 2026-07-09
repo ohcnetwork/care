@@ -460,12 +460,12 @@ class DeviceServiceHistoryViewSet(
             raise PermissionDenied("You do not have permission to access the device")
 
     def authorize_update(self, request_obj, model_instance):
+        self.authorize_create(model_instance)
         device = self.get_device()
         if device.id != model_instance.device_id:
             raise ValidationError(
                 "device does not match with the device service history"
             )
-        self.authorize_create(model_instance)
 
     def authorize_retrieve(self, model_instance):
         device = self.get_device()

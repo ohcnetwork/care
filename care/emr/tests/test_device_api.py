@@ -918,6 +918,26 @@ class TestDeviceServiceHistoryViewSet(DeviceBaseTest):
             response_data["errors"][0]["msg"], "Cannot Edit instance anymore"
         )
 
+    def test_update_device_service_history_with_mismatched_device_without_permission(
+        self,
+    ):
+        history = self.create_device_service_history(self.device)
+        other_device = self.create_device()
+        url = reverse(
+            "device_service_history-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "device_external_id": other_device["id"],
+                "external_id": history["id"],
+            },
+        )
+        data = self.generate_data_for_device_service_history()
+        response = self.client.put(url, data=data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json()["detail"], "You do not have permission to access the device"
+        )
+
     def test_delete_device_service_history(self):
         history = self.create_device_service_history(self.device)
         url = reverse(

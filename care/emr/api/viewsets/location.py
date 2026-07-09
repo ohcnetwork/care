@@ -298,10 +298,10 @@ class FacilityLocationEncounterViewSet(EMRModelViewSet):
         )
 
     def authorize_update(self, request_obj, model_instance):
+        self.authorize_create(model_instance)
         location = self.get_location_obj()
         if location.id != model_instance.location_id:
             raise ValidationError("Bed does not belong to the specified location")
-        return self.authorize_create(model_instance)
 
     def authorize_destroy(self, instance):
         return self.authorize_update({}, instance)

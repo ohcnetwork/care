@@ -1024,6 +1024,25 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
             response.json()["detail"], "You do not have permission to given location"
         )
 
+    def test_delete_wrong_location_without_permission(self):
+        another_location = self.create_facility_location()
+        facility_location_encounter = self.create_facility_location_encounter(
+            self.encounter
+        )
+        url = reverse(
+            "association-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "location_external_id": another_location["id"],
+                "external_id": facility_location_encounter["id"],
+            },
+        )
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json()["detail"], "You do not have permission to given location"
+        )
+
     def test_delete_with_permission(self):
         self.authenticate_with_permissions(
             [
@@ -1060,6 +1079,28 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
             kwargs={
                 "facility_external_id": self.facility.external_id,
                 "location_external_id": self.location["id"],
+                "external_id": facility_location_encounter["id"],
+            },
+        )
+        data = self.generate_facility_location_encounter_data(
+            self.encounter.external_id
+        )
+        response = self.client.put(url, data=data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json()["detail"], "You do not have permission to given location"
+        )
+
+    def test_update_wrong_location_without_permission(self):
+        another_location = self.create_facility_location()
+        facility_location_encounter = self.create_facility_location_encounter(
+            self.encounter
+        )
+        url = reverse(
+            "association-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "location_external_id": another_location["id"],
                 "external_id": facility_location_encounter["id"],
             },
         )
