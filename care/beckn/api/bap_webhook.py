@@ -23,6 +23,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from care.beckn.constants import CONTRACT_STATUS_ACTIVE
+from care.beckn.mappers import extract_health_ids, find_patient_participant
+from care.beckn.services.identifiers import attach_abha_identifier
 from care.emr.models.resource_request import ResourceRequest
 from care.emr.resources.resource_request.spec import CategoryChoices, StatusChoices
 
@@ -96,6 +98,7 @@ class BAPReceiverView(APIView):
         ):
             resource_request.status = StatusChoices.approved.value
             resource_request.save(update_fields=["status", "modified_date"])
+            BAPReceiverView._record_abha_identifier(resource_request, message)
             logger.info(
                 "Beckn on_confirm approved resource request %s (status -> approved)",
                 resource_request.external_id,
@@ -108,3 +111,13 @@ class BAPReceiverView(APIView):
                 code,
                 resource_request.status,
             )
+
+    @staticmethod
+    def _record_abha_identifier(resource_request, message: dict) -> None:
+        """Persist the patient's ABHA number carried on the ``on_confirm``."""
+        patient = resource_request.related_patient
+        if patient is None:
+            return
+        participant = find_patient_participant(message)
+        health_ids = extract_health_ids(participant)
+        attach_abha_identifier(patient, health_ids)

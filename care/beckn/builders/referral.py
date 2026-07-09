@@ -16,6 +16,7 @@ from care.beckn.constants import (
     LIFECYCLE_DRAFT,
 )
 from care.beckn.mappers import map_status_to_lifecycle
+from care.beckn.services.identifiers import get_patient_abha_value
 
 
 def _set_contract_status(contract: dict, code: str) -> None:
@@ -52,11 +53,15 @@ def _inject_referral(contract: dict, resource_request) -> None:
         referral["originFacilityId"] = str(resource_request.origin_facility.external_id)
     if resource_request.related_patient_id:
         patient = resource_request.related_patient
-        referral["patient"] = {
+        patient_block = {
             "id": str(patient.external_id),
             "name": patient.name,
             "gender": patient.gender,
         }
+        abha_value = get_patient_abha_value(patient)
+        if abha_value:
+            patient_block["healthIds"] = [{"system": "ABHA", "value": abha_value}]
+        referral["patient"] = patient_block
     attributes = contract.setdefault("contractAttributes", {})
     attributes["referral"] = referral
 
