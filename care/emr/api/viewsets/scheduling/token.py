@@ -91,17 +91,11 @@ class TokenViewSet(EMRModelViewSet):
                 ).exists()
                 if existing_current:
                     raise ValidationError("Sub Queue already has a current token")
-
             if (
                 instance.sub_queue
                 and instance.status == TokenStatusOptions.IN_PROGRESS.value
             ):
-                new_current = get_object_or_404(
-                    TokenSubQueue,
-                    external_id=instance.sub_queue,
-                )
-                if new_current.current_token and new_current.current_token != model_obj:
-                    raise ValidationError("Sub Queue already has a current token")
+                raise ValidationError("Use set_next endpoint to assign a token.")
 
         return super().validate_data(instance, model_obj)
 
@@ -110,14 +104,6 @@ class TokenViewSet(EMRModelViewSet):
             raise ValidationError("Sub Queue and Queue are not in the same facility")
         with transaction.atomic():
             obj = self.get_object()
-            if (
-                instance.sub_queue
-                and obj.sub_queue != instance.sub_queue
-                and instance.status == TokenStatusOptions.IN_PROGRESS.value
-            ):
-                raise ValidationError(
-                    "Use set_next endpoint to change the sub queue of a token"
-                )
             if (
                 obj.sub_queue
                 and obj.sub_queue != instance.sub_queue
@@ -207,6 +193,8 @@ class TokenViewSet(EMRModelViewSet):
     @action(detail=True, methods=["POST"])
     def set_next(self, request, *args, **kwargs):
         obj = self.get_object()
+        if obj.status != TokenStatusOptions.CREATED.value:
+            raise ValidationError("Token in serving state cannot be set next")
         request_obj = SetCurrentTokenRequest(**request.data)
         queue = obj.queue
         self.authorize_update(None, obj)
@@ -216,8 +204,11 @@ class TokenViewSet(EMRModelViewSet):
                 external_id=request_obj.sub_queue,
                 resource=queue.resource,
             )
+            if sub_queue.current_token and sub_queue.current_token != obj:
+                raise ValidationError("Sub Queue already has a current token")
             sub_queue.current_token = obj
             sub_queue.save()
             obj.status = TokenStatusOptions.IN_PROGRESS.value
+            obj.sub_queue = sub_queue
             obj.save()
         return Response(self.get_retrieve_pydantic_model().serialize(obj).to_json())
