@@ -126,7 +126,7 @@ class MedicationDispenseWriteSpec(BaseMedicationDispenseSpec):
     location: UUID4
     authorizing_request: UUID4 | None = None
     item: UUID4
-    quantity: Decimal = Field(max_digits=20, decimal_places=0)
+    quantity: Decimal = Field(max_digits=20, decimal_places=0, ge=1)
     days_supply: Decimal | None = Field(default=None, max_digits=20, decimal_places=0)
     fully_dispensed: bool | None = None
     order: UUID4 | None = None
