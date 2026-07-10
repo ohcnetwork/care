@@ -232,8 +232,12 @@ class TokenQueueViewSet(EMRModelViewSet):
             ).order_by("created_date")
             if category:
                 tokens_qs = tokens_qs.filter(category=category)
-            if tokens_qs.exists():
-                next_token = tokens_qs.first()
+            tokens_in_waiting_qs = tokens_qs.filter(sub_queue__isnull=True)
+            tokens_in_calling_qs = tokens_qs.filter(sub_queue=sub_queue)
+            if tokens_in_calling_qs.exists():
+                next_token = tokens_in_calling_qs.first()
+            elif tokens_in_waiting_qs.exists():
+                next_token = tokens_in_waiting_qs.first()
             else:
                 raise ValidationError("No tokens found")
             sub_queue.current_token = next_token
