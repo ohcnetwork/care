@@ -71,6 +71,8 @@ def care_fixture_context(base_cls: type[CareFixtureBase] = CareFixtureBase):
             client = APIClient()
             client.force_authenticate(user=superuser)
 
-            yield base_cls(client)
+            fixture_base = base_cls(client)
+            fixture_base.user = superuser
+            yield fixture_base
     finally:
         audit_logger.setLevel(original_level)
