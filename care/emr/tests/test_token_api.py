@@ -342,7 +342,7 @@ class TokenAPITests(CareAPITestBase):
             name="Sub Queue 1",
         )
         token_data = {
-            "status": TokenStatusOptions.IN_PROGRESS,
+            "status": TokenStatusOptions.CREATED,
             "note": "Token is in progress",
             "sub_queue": subqueue.external_id,
         }

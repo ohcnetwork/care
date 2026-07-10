@@ -198,12 +198,12 @@ class TokenViewSet(EMRModelViewSet):
         request_obj = SetCurrentTokenRequest(**request.data)
         queue = obj.queue
         self.authorize_update(None, obj)
-        with transaction.atomic():
-            sub_queue = get_object_or_404(
-                TokenSubQueue,
-                external_id=request_obj.sub_queue,
-                resource=queue.resource,
-            )
+        sub_queue = get_object_or_404(
+            TokenSubQueue,
+            external_id=request_obj.sub_queue,
+            resource=queue.resource,
+        )
+        with Lock(f"token:set_next:{sub_queue.id}"), transaction.atomic():
             if sub_queue.current_token and sub_queue.current_token != obj:
                 raise ValidationError("Sub Queue already has a current token")
             sub_queue.current_token = obj
