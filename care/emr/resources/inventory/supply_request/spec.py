@@ -33,7 +33,7 @@ class BaseSupplyRequestSpec(EMRResource):
 
     status: SupplyRequestStatusOptions
 
-    quantity: Decimal = Field(max_digits=20, decimal_places=0)
+    quantity: Decimal = Field(max_digits=20, decimal_places=0, ge=1)
 
 
 class SupplyRequestWriteSpec(BaseSupplyRequestSpec):

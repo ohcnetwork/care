@@ -350,18 +350,35 @@ class DeviceLocationHistoryViewSet(EMRModelReadOnlyViewSet):
     def get_device(self):
         return get_object_or_404(Device, external_id=self.kwargs["device_external_id"])
 
-    def get_queryset(self):
+    def authorize_retrieve(self, model_instance):
         device = self.get_device()
         if not AuthorizationController.call(
-            "can_read_device", self.request.user, device
+            "can_read_device",
+            self.request.user,
+            device,
         ):
             raise PermissionDenied("You do not have permission to access the device")
+        if device.id != model_instance.device_id:
+            raise ValidationError(
+                "device does not match with the device location history"
+            )
 
-        return (
-            DeviceLocationHistory.objects.filter(device=device)
-            .select_related("location")
-            .order_by("-end")
+    def get_queryset(self):
+        device = self.get_device()
+        queryset = (
+            super().get_queryset().select_related("location").order_by("-modified_date")
         )
+        if self.action == "list":
+            if not AuthorizationController.call(
+                "can_read_device",
+                self.request.user,
+                device,
+            ):
+                raise PermissionDenied(
+                    "You do not have permission to access the device"
+                )
+            return queryset.filter(device=device).order_by("-end")
+        return queryset
 
 
 class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
@@ -371,10 +388,7 @@ class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
     def get_device(self):
         return get_object_or_404(Device, external_id=self.kwargs["device_external_id"])
 
-    def get_queryset(self):
-        """
-        Encounter history access is limited to everyone within the location or associated with the managing org
-        """
+    def authorize_retrieve(self, model_instance):
         device = self.get_device()
         if not AuthorizationController.call(
             "can_read_device",
@@ -382,11 +396,38 @@ class DeviceEncounterHistoryViewSet(EMRModelReadOnlyViewSet):
             device,
         ):
             raise PermissionDenied("You do not have permission to access the device")
-        return (
-            DeviceEncounterHistory.objects.filter(device=device)
-            .select_related("encounter", "encounter__patient", "encounter__facility")
-            .order_by("-end")
+        if device.id != model_instance.device_id:
+            raise ValidationError(
+                "device does not match with the device encounter history"
+            )
+
+    def get_queryset(self):
+        """
+        Encounter history access is limited to everyone within the location or associated with the managing org
+        """
+        device = self.get_device()
+        queryset = (
+            super()
+            .get_queryset()
+            .select_related(
+                "encounter",
+                "encounter__patient",
+                "encounter__facility",
+                "encounter__current_location",
+            )
+            .order_by("-modified_date")
         )
+        if self.action == "list":
+            if not AuthorizationController.call(
+                "can_read_device",
+                self.request.user,
+                device,
+            ):
+                raise PermissionDenied(
+                    "You do not have permission to access the device"
+                )
+            return queryset.filter(device=device).order_by("-end")
+        return queryset
 
 
 class DeviceServiceHistoryViewSet(
@@ -420,6 +461,24 @@ class DeviceServiceHistoryViewSet(
 
     def authorize_update(self, request_obj, model_instance):
         self.authorize_create(model_instance)
+        device = self.get_device()
+        if device.id != model_instance.device_id:
+            raise ValidationError(
+                "device does not match with the device service history"
+            )
+
+    def authorize_retrieve(self, model_instance):
+        device = self.get_device()
+        if not AuthorizationController.call(
+            "can_read_device",
+            self.request.user,
+            device,
+        ):
+            raise PermissionDenied("You do not have permission to access the device")
+        if device.id != model_instance.device_id:
+            raise ValidationError(
+                "device does not match with the device service history"
+            )
 
     def perform_update(self, instance):
         if instance.edit_history and len(instance.edit_history) >= 50:  # noqa PLR2004
@@ -441,15 +500,18 @@ class DeviceServiceHistoryViewSet(
         Encounter history access is limited to everyone within the location or associated with the managing org
         """
         device = self.get_device()
-        if not AuthorizationController.call(
-            "can_read_device",
-            self.request.user,
-            device,
-        ):
-            raise PermissionDenied("You do not have permission to access the device")
-        return DeviceServiceHistory.objects.filter(device=device).order_by(
-            "-serviced_on"
-        )
+        queryset = super().get_queryset().order_by("-modified_date")
+        if self.action == "list":
+            if not AuthorizationController.call(
+                "can_read_device",
+                self.request.user,
+                device,
+            ):
+                raise PermissionDenied(
+                    "You do not have permission to access the device"
+                )
+            return queryset.filter(device=device).order_by("-serviced_on")
+        return queryset
 
 
 def disassociate_device_from_encounter(instance):

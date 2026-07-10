@@ -2,6 +2,11 @@ from django.urls import reverse
 from model_bakery import baker
 
 from care.emr.models.notes import NoteMessage, NoteThread
+from care.emr.signals.patient.facility_name_identifier import (
+    FacilityPatientNameIdentifierConfig,
+)
+from care.emr.signals.patient.name_identifier import NameIdentifierConfig
+from care.emr.signals.patient.phone_number_identifier import PhoneNumberIdentifierConfig
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
@@ -191,7 +196,11 @@ class NoteThreadApiTestCase(CareAPITestBase):
 class NoteMessageApiTestCase(CareAPITestBase):
     def setUp(self):
         super().setUp()
+        NameIdentifierConfig.CACHED_CONFIG = {}
+        PhoneNumberIdentifierConfig.CACHED_CONFIG = {}
+        FacilityPatientNameIdentifierConfig.CACHED_CONFIG = {}
         self.user = self.create_user()
+        self.superuser = self.create_super_user()
         self.facility = self.create_facility(user=self.user)
         self.facility_organization = self.create_facility_organization(
             facility=self.facility
@@ -218,6 +227,27 @@ class NoteMessageApiTestCase(CareAPITestBase):
             "note-detail",
             kwargs={
                 "patient_external_id": self.patient.external_id,
+                "thread_external_id": thread_external_id,
+                "external_id": note_external_id,
+            },
+        )
+
+    def _get_note_list_url_for_patient(self, patient_external_id, thread_external_id):
+        return reverse(
+            "note-list",
+            kwargs={
+                "patient_external_id": patient_external_id,
+                "thread_external_id": thread_external_id,
+            },
+        )
+
+    def _get_note_detail_url_for_patient(
+        self, patient_external_id, thread_external_id, note_external_id
+    ):
+        return reverse(
+            "note-detail",
+            kwargs={
+                "patient_external_id": patient_external_id,
                 "thread_external_id": thread_external_id,
                 "external_id": note_external_id,
             },
@@ -253,6 +283,19 @@ class NoteMessageApiTestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 200, response.data)
         self.assertContains(response, note.message, status_code=200)
 
+    def test_list_notes_with_patient_thread_mismatch(self):
+        self.client.force_authenticate(user=self.superuser)
+        thread = self._create_thread()
+        other_patient = self.create_patient()
+        url = self._get_note_list_url_for_patient(
+            other_patient.external_id, thread.external_id
+        )
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertContains(
+            response, "Thread does not belong to the patient", status_code=400
+        )
+
     def test_list_notes_on_thread_without_permission(self):
         thread = self._create_thread()
         self._create_note(thread)
@@ -277,6 +320,38 @@ class NoteMessageApiTestCase(CareAPITestBase):
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, 200, response.data)
         self.assertContains(response, note.message, status_code=200)
+
+    def test_get_note_details_with_invalid_thread(self):
+        self.client.force_authenticate(user=self.superuser)
+        thread = self._create_thread()
+        note = self._create_note(thread)
+        url = reverse(
+            "note-detail",
+            kwargs={
+                "patient_external_id": self.patient.external_id,
+                "thread_external_id": self._create_thread().external_id,
+                "external_id": note.external_id,
+            },
+        )
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertContains(
+            response, "Message does not belong to the thread", status_code=400
+        )
+
+    def test_get_note_details_with_patient_thread_mismatch(self):
+        self.client.force_authenticate(user=self.superuser)
+        thread = self._create_thread()
+        note = self._create_note(thread)
+        other_patient = self.create_patient()
+        url = self._get_note_detail_url_for_patient(
+            other_patient.external_id, thread.external_id, note.external_id
+        )
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertContains(
+            response, "Thread does not belong to the patient", status_code=400
+        )
 
     def test_create_note_on_encounter_with_permission(self):
         role = self.create_role_with_permissions(
@@ -383,6 +458,28 @@ class NoteMessageApiTestCase(CareAPITestBase):
         response = self.client.put(url, data, format="json")
         self.assertEqual(response.status_code, 403, response.data)
         self.assertContains(response, "Permission denied to user", status_code=403)
+
+    def test_update_note_with_invalid_thread_without_write_permission(self):
+        role = self.create_role_with_permissions(
+            permissions=[PatientPermissions.can_view_clinical_data.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        thread = self._create_thread()
+        other_thread = self._create_thread()
+        note = self._create_note(thread)
+        url = self._get_note_detail_url(other_thread.external_id, note.external_id)
+        data = {
+            "message": "Updated Note",
+            "created_date": note.created_date.isoformat(),
+            "modified_date": note.modified_date.isoformat(),
+        }
+        response = self.client.put(url, data, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertContains(
+            response, "You do not have permission for this action", status_code=403
+        )
 
     def test_create_note_after_encounter_complete(self):
         encounter = self.create_encounter(
