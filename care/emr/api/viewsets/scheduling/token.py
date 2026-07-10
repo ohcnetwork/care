@@ -93,25 +93,52 @@ class TokenViewSet(EMRModelViewSet):
             if existing_current:
                 raise ValidationError("Sub Queue already has a current token")
 
+        if (
+            instance.sub_queue
+            and instance.status == TokenStatusOptions.IN_PROGRESS.value
+        ):
+            new_current = get_object_or_404(
+                TokenSubQueue,
+                external_id=instance.sub_queue,
+            )
+            if new_current.current_token and new_current.current_token != model_obj:
+                raise ValidationError("Sub Queue already has a current token")
+
         return super().validate_data(instance, model_obj)
 
     def perform_update(self, instance):
+        obj = self.get_object()
+        if (
+            instance.sub_queue
+            and obj.sub_queue != instance.sub_queue
+            and instance.status == TokenStatusOptions.IN_PROGRESS.value
+        ):
+            raise ValidationError(
+                "Use set_next endpoint to change the sub queue of a token"
+            )
         if instance.sub_queue and instance.sub_queue.facility != instance.facility:
             raise ValidationError("Sub Queue and Queue are not in the same facility")
         with transaction.atomic():
-            obj = self.get_object()
-            if obj.sub_queue and obj.sub_queue != instance.sub_queue:
-                if (
-                    instance.sub_queue
-                    and obj.sub_queue.resource != instance.sub_queue.resource
-                ):
-                    raise ValidationError(
-                        "Sub Queue and Queue are not in the same resource"
-                    )
-                # Clear current token if the sub queue is changed
-                if obj.sub_queue.current_token == obj:
-                    obj.sub_queue.current_token = None
-                    obj.sub_queue.save(update_fields=["current_token", "modified_date"])
+            if (
+                obj.sub_queue
+                and obj.sub_queue != instance.sub_queue
+                and instance.sub_queue
+                and obj.sub_queue.resource != instance.sub_queue.resource
+            ):
+                raise ValidationError(
+                    "Sub Queue and Queue are not in the same resource"
+                )
+            # Clear current token if the sub queue is changed
+            if (
+                obj.sub_queue
+                and obj.sub_queue.current_token == obj
+                and (
+                    obj.sub_queue != instance.sub_queue
+                    or instance.status != TokenStatusOptions.IN_PROGRESS.value
+                )
+            ):
+                obj.sub_queue.current_token = None
+                obj.sub_queue.save(update_fields=["current_token", "modified_date"])
             super().perform_update(instance)
 
     def perform_destroy(self, instance):
