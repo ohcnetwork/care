@@ -275,7 +275,7 @@ class TokenAPITests(CareAPITestBase):
             name="Sub Queue 1",
         )
         token_data = {
-            "status": TokenStatusOptions.IN_PROGRESS,
+            "status": TokenStatusOptions.CREATED,
             "note": "Token is in progress",
             "sub_queue": subqueue.external_id,
         }
@@ -289,7 +289,7 @@ class TokenAPITests(CareAPITestBase):
             format="json",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["status"], TokenStatusOptions.IN_PROGRESS.value)
+        self.assertEqual(response.data["status"], TokenStatusOptions.CREATED.value)
 
     def test_update_token_as_user_with_permission(self):
         """Test updating a token as a user with permission."""
@@ -311,7 +311,7 @@ class TokenAPITests(CareAPITestBase):
             name="Sub Queue 1",
         )
         token_data = {
-            "status": TokenStatusOptions.IN_PROGRESS,
+            "status": TokenStatusOptions.CREATED,
             "note": "Token is in progress",
             "sub_queue": subqueue.external_id,
         }
@@ -325,7 +325,7 @@ class TokenAPITests(CareAPITestBase):
             format="json",
         )
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.data["status"], TokenStatusOptions.IN_PROGRESS.value)
+        self.assertEqual(response.data["status"], TokenStatusOptions.CREATED.value)
 
     def test_update_token_as_user_without_permission(self):
         """Test updating a token as a user without permission."""

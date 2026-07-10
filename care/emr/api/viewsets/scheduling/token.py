@@ -81,44 +81,43 @@ class TokenViewSet(EMRModelViewSet):
             super().perform_create(instance)
 
     def validate_data(self, instance, model_obj=None):
-        if (
-            model_obj
-            and instance.sub_queue
-            and model_obj.sub_queue
-            and instance.sub_queue != model_obj.sub_queue.external_id
-        ):
-            existing_current = TokenSubQueue.objects.filter(
-                current_token=model_obj
-            ).exists()
-            if existing_current:
-                raise ValidationError("Sub Queue already has a current token")
+        if model_obj and instance.sub_queue:
+            if (
+                model_obj.sub_queue
+                and instance.sub_queue != model_obj.sub_queue.external_id
+            ):
+                existing_current = TokenSubQueue.objects.filter(
+                    current_token=model_obj
+                ).exists()
+                if existing_current:
+                    raise ValidationError("Sub Queue already has a current token")
 
-        if (
-            instance.sub_queue
-            and instance.status == TokenStatusOptions.IN_PROGRESS.value
-        ):
-            new_current = get_object_or_404(
-                TokenSubQueue,
-                external_id=instance.sub_queue,
-            )
-            if new_current.current_token and new_current.current_token != model_obj:
-                raise ValidationError("Sub Queue already has a current token")
+            if (
+                instance.sub_queue
+                and instance.status == TokenStatusOptions.IN_PROGRESS.value
+            ):
+                new_current = get_object_or_404(
+                    TokenSubQueue,
+                    external_id=instance.sub_queue,
+                )
+                if new_current.current_token and new_current.current_token != model_obj:
+                    raise ValidationError("Sub Queue already has a current token")
 
         return super().validate_data(instance, model_obj)
 
     def perform_update(self, instance):
-        obj = self.get_object()
-        if (
-            instance.sub_queue
-            and obj.sub_queue != instance.sub_queue
-            and instance.status == TokenStatusOptions.IN_PROGRESS.value
-        ):
-            raise ValidationError(
-                "Use set_next endpoint to change the sub queue of a token"
-            )
         if instance.sub_queue and instance.sub_queue.facility != instance.facility:
             raise ValidationError("Sub Queue and Queue are not in the same facility")
         with transaction.atomic():
+            obj = self.get_object()
+            if (
+                instance.sub_queue
+                and obj.sub_queue != instance.sub_queue
+                and instance.status == TokenStatusOptions.IN_PROGRESS.value
+            ):
+                raise ValidationError(
+                    "Use set_next endpoint to change the sub queue of a token"
+                )
             if (
                 obj.sub_queue
                 and obj.sub_queue != instance.sub_queue
