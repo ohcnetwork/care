@@ -144,14 +144,14 @@ class ResourceCategoryViewSet(
             instance.deleted = True
             instance.updated_by = self.request.user
             instance.save(update_fields=["deleted", "updated_by", "modified_date"])
-            if parent:
-                parent.has_children = ResourceCategory.objects.filter(
-                    parent=parent
+            if (
+                parent
+                and not ResourceCategory.objects.filter(
+                    parent=parent, deleted=False
                 ).exists()
-                parent.updated_by = self.request.user
-                parent.save(
-                    update_fields=["has_children", "updated_by", "modified_date"]
-                )
+            ):
+                parent.has_children = False
+                parent.save(update_fields=["has_children", "modified_date"])
 
     def authorize_create(self, instance):
         if not AuthorizationController.call(
