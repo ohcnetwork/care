@@ -20,7 +20,7 @@ class ProductKnowledge(SlugBaseModel):
     base_unit = models.JSONField(default=dict, null=True, blank=True)
     category = models.ForeignKey(
         "emr.ResourceCategory",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True,
         blank=True,
     )
