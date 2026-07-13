@@ -298,7 +298,7 @@ class InvoiceViewSet(
                     account=invoice.account,
                     status=ChargeItemStatusOptions.billable.value,
                 )
-                invoice.charge_items = charge_items.values_list("id", flat=True)
+                invoice.charge_items = list(charge_items.values_list("id", flat=True))
                 sync_invoice_items(invoice)
                 invoice.updated_by = self.request.user
                 invoice.save()
