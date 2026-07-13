@@ -134,7 +134,7 @@ Each method builds the request payload, calls the API, and returns an
 - `create_invoice(facility_id, account_id, charge_items, created_date=None, **kwargs)` — an invoice linking `billable` charge items on the account.
   - The invoice is created through the API as `draft` (the viewset forces `draft` and marks the linked charge items `billed`, then syncs totals).
   - **`created_date` caveat:** the API stamps `created_date` to `now`. When `created_date` is passed, the helper backdates it via a direct ORM `update()` after creation — a deliberate exception to the API-only fixture rule, needed so the invoice list date-range filter has data spread across known dates.
-- `issue_invoice(facility_id, invoice)` — transitions a draft invoice to `issued` (snapshots line items and totals).
+- `issue_invoice(facility_id, invoice, issue_date=None)` — transitions a draft invoice to `issued` (snapshots line items and totals). Pass an ISO datetime string to backdate `issue_date` alongside backdated fixture invoices.
 - `balance_invoice(facility_id, invoice)` — transitions an issued invoice to `balanced` (marks its charge items `paid`).
 - `cancel_invoice(facility_id, invoice, reason="cancelled")` — voids an invoice via the cancel action; `reason` is `cancelled` or `entered_in_error` (reverts its charge items to `billable`).
 - `set_invoice_expression(facility_id, expression)` — sets the facility's invoice-number expression (e.g. `"f'#INV-{invoice_count + 100}-{current_year_yy}'"`, evaluated as a Python f-string) so generated invoices get numbers.
