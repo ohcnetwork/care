@@ -103,7 +103,17 @@ class PatientInstanceTagsContextBuilder(PatientTagContextBuilder):
         return TagConfig.objects.filter(id__in=self.parent_context.instance_tags)
 
 
-class BasePatientContextBuilder(SingleObjectContextBuilder):
+class PatientContextBuilder(SingleObjectContextBuilder):
+    standalone_context = True
+    __slug__ = "patient_base"
+    __associating_model__ = Patient
+    __display_name__ = "Patient Report"
+    __description__ = "Report context for patient-based reports"
+    context_key = "patient"
+
+    def get_context(self):
+        return getattr(self.parent_context, self.parent_attribute)
+
     name = Field(
         display="Patient Name",
         preview_value="John Doe",
@@ -181,18 +191,4 @@ class BasePatientContextBuilder(SingleObjectContextBuilder):
     )
 
 
-class PatientMinimumContextBuilder(BasePatientContextBuilder):
-    def get_context(self):
-        return getattr(self.parent_context, self.parent_attribute)
-
-
-class PatientContextBuilderBase(BasePatientContextBuilder):
-    standalone_context = True
-    __slug__ = "patient_base"
-    __associating_model__ = Patient
-    __display_name__ = "Patient Report"
-    __description__ = "Report context for patient-based reports"
-    context_key = "patient"
-
-
-DataPointRegistry.register(PatientContextBuilderBase)
+DataPointRegistry.register(PatientContextBuilder)

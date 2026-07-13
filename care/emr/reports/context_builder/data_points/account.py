@@ -9,7 +9,7 @@ from care.emr.reports.context_builder.data_points.charge_items import (
     AccountChargeItemContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.encounter import (
-    MinimumEncounterReportContext,
+    EncounterReportContext,
 )
 from care.emr.reports.context_builder.data_points.facility import FacilityContextBuilder
 from care.emr.reports.context_builder.data_points.invoice import (
@@ -19,7 +19,7 @@ from care.emr.reports.context_builder.data_points.monetary_component import (
     MonetaryComponentContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.patient import (
-    PatientMinimumContextBuilder,
+    PatientContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.payment_reconciliation import (
     PaymentReconciliationContextBuilder,
@@ -42,7 +42,17 @@ BILLING_STATUS_DISPLAY = {
 }
 
 
-class BaseAccountContextBuilder(SingleObjectContextBuilder):
+class AccountContextBuilder(SingleObjectContextBuilder):
+    standalone_context = True
+    __slug__ = "account_base"
+    __associating_model__ = Account
+    __display_name__ = "Account Report"
+    __description__ = "Report context for account-based reports"
+    context_key = "account"
+
+    def get_context(self):
+        return getattr(self.parent_context, self.parent_attribute)
+
     external_id = Field(
         display="Account External ID",
         preview_value="beff3ce1-e1be-41bc-8fb9-07ce2ebe42a6",
@@ -139,22 +149,13 @@ class BaseAccountContextBuilder(SingleObjectContextBuilder):
     primary_encounter = Field(
         display="Primary Encounter",
         preview_value="",
-        target_context=MinimumEncounterReportContext,
+        target_context=EncounterReportContext,
         description="Primary encounter associated with the account",
     )
 
-
-class AccountContextBuilder(BaseAccountContextBuilder):
-    standalone_context = True
-    __slug__ = "account_base"
-    __associating_model__ = Account
-    __display_name__ = "Account Report"
-    __description__ = "Report context for account-based reports"
-    context_key = "account"
-
     patient = Field(
         display="Patient Details",
-        target_context=PatientMinimumContextBuilder,
+        target_context=PatientContextBuilder,
         preview_value="",
         description="Details of the patient associated with the account",
     )
