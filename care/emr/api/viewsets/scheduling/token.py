@@ -119,7 +119,10 @@ class TokenViewSet(EMRModelViewSet):
                 and obj.sub_queue.current_token == obj
                 and (
                     obj.sub_queue != instance.sub_queue
-                    or instance.status != TokenStatusOptions.IN_PROGRESS.value
+                    or (
+                        obj.status == TokenStatusOptions.IN_PROGRESS.value
+                        and instance.status != TokenStatusOptions.IN_PROGRESS.value
+                    )
                 )
             ):
                 obj.sub_queue.current_token = None
@@ -198,14 +201,12 @@ class TokenViewSet(EMRModelViewSet):
         request_obj = SetCurrentTokenRequest(**request.data)
         queue = obj.queue
         self.authorize_update(None, obj)
-        sub_queue = get_object_or_404(
-            TokenSubQueue,
-            external_id=request_obj.sub_queue,
-            resource=queue.resource,
-        )
-        with Lock(f"token:set_next:{sub_queue.id}"), transaction.atomic():
-            if sub_queue.current_token and sub_queue.current_token != obj:
-                raise ValidationError("Sub Queue already has a current token")
+        with transaction.atomic():
+            sub_queue = get_object_or_404(
+                TokenSubQueue,
+                external_id=request_obj.sub_queue,
+                resource=queue.resource,
+            )
             sub_queue.current_token = obj
             sub_queue.save()
             obj.status = TokenStatusOptions.IN_PROGRESS.value

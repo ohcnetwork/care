@@ -1,7 +1,9 @@
 from django.db import transaction
 from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.api.viewsets.scheduling.schedule import (
@@ -9,7 +11,8 @@ from care.emr.api.viewsets.scheduling.schedule import (
     get_schedulable_resource,
     validate_resource,
 )
-from care.emr.models.scheduling.token import TokenSubQueue
+from care.emr.models.scheduling.token import Token, TokenSubQueue
+from care.emr.resources.scheduling.token.spec import TokenReadSpec, TokenStatusOptions
 from care.emr.resources.scheduling.token_sub_queue.spec import (
     TokenSubQueueBaseSpec,
     TokenSubQueueCreateSpec,
@@ -17,6 +20,7 @@ from care.emr.resources.scheduling.token_sub_queue.spec import (
 )
 from care.facility.models import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.lock import Lock
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -124,3 +128,22 @@ class TokenSubQueueViewSet(EMRModelViewSet):
             self.can_read_resource_token(resource)
             queryset = queryset.filter(resource=resource)
         return queryset
+
+    @action(detail=True, methods=["POST"])
+    def set_next_token(self, request, *args, **kwargs):
+        obj = self.get_object()
+        self.authorize_update(None, obj)
+
+        with Lock(f"sub_queue:next_token:{obj.id}"), transaction.atomic():
+            tokens_qs = Token.objects.filter(
+                sub_queue=obj, status__in=[TokenStatusOptions.CREATED.value]
+            ).order_by("created_date")
+            next_token = tokens_qs.first()
+            if not next_token:
+                raise ValidationError("No tokens found")
+            obj.current_token = next_token
+            obj.save()
+            next_token.status = TokenStatusOptions.IN_PROGRESS.value
+            next_token.sub_queue = obj
+            next_token.save()
+        return Response(TokenReadSpec.serialize(next_token).to_json())

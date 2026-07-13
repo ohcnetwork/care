@@ -228,14 +228,14 @@ class TokenQueueViewSet(EMRModelViewSet):
             )
         with Lock(f"queue:next_token:{obj.id}"), transaction.atomic():
             tokens_qs = Token.objects.filter(
-                queue=obj, status__in=[TokenStatusOptions.CREATED.value]
+                queue=obj,
+                status__in=[TokenStatusOptions.CREATED.value],
+                sub_queue__isnull=True,
             ).order_by("created_date")
             if category:
                 tokens_qs = tokens_qs.filter(category=category)
-            tokens_in_waiting_qs = tokens_qs.filter(sub_queue__isnull=True)
-            tokens_in_calling_qs = tokens_qs.filter(sub_queue=sub_queue)
-            next_token = tokens_in_calling_qs.first() or tokens_in_waiting_qs.first()
-            if next_token is None:
+            next_token = tokens_qs.first()
+            if not next_token:
                 raise ValidationError("No tokens found")
             sub_queue.current_token = next_token
             sub_queue.save()
