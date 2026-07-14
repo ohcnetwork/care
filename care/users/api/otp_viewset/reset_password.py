@@ -74,6 +74,8 @@ class OTPResetPasswordView(EMRBaseViewSet):
 
         users = User.objects.filter(phone_number=data.phone_number)
         user_count = users.count()
+        if user_count == 0:
+            raise ValidationError({"error": "No user linked to this phone number"})
         if user_count > 1:
             if data.username:
                 users = users.filter(username=data.username)
