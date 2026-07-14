@@ -169,3 +169,19 @@ class OTPResetPasswordAPITestCase(CareAPITestBase):
             "No User with this username linked to this phone number",
             response.data["errors"][0]["msg"]["error"],
         )
+
+    def test_confirm_otp_with_no_user_linked_to_phone_number(self):
+        """
+        If a valid OTP exists for a phone number but no user account is
+        linked to that number (e.g. the account was deleted after the OTP
+        was generated), confirm should return 400 with a validation error
+        instead of crashing with AttributeError on user.set_password().
+        """
+        phone_number = "+919876543211"
+        MobileOTP.objects.create(phone_number=phone_number, otp=self.otp)
+        response = self._confirm(otp=self.otp, phone_number=phone_number)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data["errors"][0]["msg"]["error"],
+            "No user linked to this phone number",
+        )
