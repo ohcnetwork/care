@@ -142,8 +142,8 @@ class TokenSubQueueViewSet(EMRModelViewSet):
             if not next_token:
                 raise ValidationError("No tokens found")
             obj.current_token = next_token
-            obj.save()
+            obj.save(update_fields=["current_token", "modified_date"])
             next_token.status = TokenStatusOptions.IN_PROGRESS.value
             next_token.sub_queue = obj
-            next_token.save()
+            next_token.save(update_fields=["status", "sub_queue", "modified_date"])
         return Response(TokenReadSpec.serialize(next_token).to_json())

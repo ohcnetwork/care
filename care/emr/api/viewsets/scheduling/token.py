@@ -201,15 +201,15 @@ class TokenViewSet(EMRModelViewSet):
         request_obj = SetCurrentTokenRequest(**request.data)
         queue = obj.queue
         self.authorize_update(None, obj)
-        with transaction.atomic():
-            sub_queue = get_object_or_404(
-                TokenSubQueue,
-                external_id=request_obj.sub_queue,
-                resource=queue.resource,
-            )
+        sub_queue = get_object_or_404(
+            TokenSubQueue,
+            external_id=request_obj.sub_queue,
+            resource=queue.resource,
+        )
+        with Lock(f"sub_queue:next_token:{sub_queue.id}"), transaction.atomic():
             sub_queue.current_token = obj
-            sub_queue.save()
+            sub_queue.save(update_fields=["current_token", "modified_date"])
             obj.status = TokenStatusOptions.IN_PROGRESS.value
             obj.sub_queue = sub_queue
-            obj.save()
+            obj.save(update_fields=["status", "sub_queue", "modified_date"])
         return Response(self.get_retrieve_pydantic_model().serialize(obj).to_json())
