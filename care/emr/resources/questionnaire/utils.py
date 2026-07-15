@@ -12,13 +12,34 @@ from care.emr.models.encounter import Encounter
 from care.emr.models.observation import Observation
 from care.emr.models.patient import Patient
 from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
-from care.emr.registries.care_valueset.care_valueset import validate_valueset
+from care.emr.models.valueset import ValueSet
 from care.emr.resources.observation.spec import ObservationSpec, ObservationStatus
-from care.emr.resources.questionnaire.spec import QuestionType
+from care.emr.resources.questionnaire.spec import QuestionnaireAuthContext, QuestionType
+from care.emr.resources.valueset.spec import ValueSetAuthContext
 from care.utils.rounding.covert_type import convert_to_decimal
 
 BOOLEAN_TRUE_STRINGS = ("true", "on", "ok", "y", "yes", "1")
 BOOLEAN_FALSE_STRINGS = ("false", "off", "no", "n", "0")
+
+
+def validate_questionnaire_valueset(valueset_config, code):
+    if isinstance(valueset_config, str):
+        valueset = ValueSet.objects.filter(
+            slug=valueset_config, auth_context=ValueSetAuthContext.instance
+        ).first()
+    elif valueset_config.get("external_id"):
+        valueset = ValueSet.objects.filter(
+            external_id=valueset_config["external_id"]
+        ).first()
+    else:
+        valueset = ValueSet.objects.filter(
+            slug=valueset_config.get("slug"),
+            auth_context="instance",
+        ).first()
+
+    if not valueset or not valueset.lookup(code):
+        raise ValueError("Code does not exist in the value set")
+    return code
 
 
 def create_responses_mapping(results_list):
@@ -306,8 +327,7 @@ def validate_question_result(  # noqa: PLR0911, PLR0912
                 # Validate code
                 if "answer_value_set" in questionnaire:
                     try:
-                        validate_valueset(
-                            "",
+                        validate_questionnaire_valueset(
                             questionnaire["answer_value_set"],
                             value.coding,
                         )
@@ -335,8 +355,7 @@ def validate_question_result(  # noqa: PLR0911, PLR0912
                 # TODO : Validate for options created by user as well
                 if "answer_value_set" in questionnaire:
                     try:
-                        validate_valueset(
-                            "",
+                        validate_questionnaire_valueset(
                             questionnaire["answer_value_set"],
                             value.coding,
                         )
@@ -452,6 +471,96 @@ def convert_to_observation_spec(
     return constructed_observation_mapping
 
 
+def _dump_coding(coding):
+    if not coding:
+        return None
+    return coding.model_dump(exclude_defaults=True, exclude_none=True)
+
+
+def _coerce_cleaned_value(raw_value, question_type):
+    if raw_value is None:
+        return None
+    if question_type == QuestionType.boolean.value:
+        return normalize_boolean_value(raw_value)
+    if question_type == QuestionType.integer.value:
+        return int(raw_value)
+    if question_type in [QuestionType.decimal.value, QuestionType.quantity.value]:
+        return float(convert_to_decimal(raw_value))
+    return raw_value
+
+
+def _clean_result_value(question, value):
+    question_type = question["type"]
+    coding = _dump_coding(value.coding)
+    unit = _dump_coding(value.unit)
+    cleaned_value = _coerce_cleaned_value(value.value, question_type)
+
+    if coding or unit:
+        cleaned = {}
+        if cleaned_value is not None:
+            cleaned["value"] = cleaned_value
+        if coding:
+            cleaned["coding"] = coding
+        if unit:
+            cleaned["unit"] = unit
+        return cleaned
+
+    return cleaned_value
+
+
+def _clean_question_response(question, response):
+    values = getattr(response, "values", None) or []
+    cleaned_values = [
+        _clean_result_value(question, value)
+        for value in values
+        if value.value is not None or value.coding or value.unit
+    ]
+    if not cleaned_values:
+        return None
+    if question.get("repeats", False) or len(cleaned_values) > 1:
+        return cleaned_values
+    return cleaned_values[0]
+
+
+def build_cleaned_response(questions, responses):
+    """
+    Build a query-friendly response projection keyed by questionnaire link_id.
+    """
+    cleaned_response = {}
+    for question in questions:
+        link_id = question["link_id"]
+        response = responses.get(question["id"])
+
+        if question["type"] == QuestionType.group.value:
+            if question.get("repeats", False):
+                if not response or not getattr(response, "sub_results", None):
+                    continue
+                group_values = []
+                for sub_results in response.sub_results:
+                    group_value = build_cleaned_response(
+                        question.get("questions", []),
+                        create_responses_mapping(sub_results),
+                    )
+                    if group_value:
+                        group_values.append(group_value)
+                if group_values:
+                    cleaned_response[link_id] = group_values
+            else:
+                cleaned_response.update(
+                    build_cleaned_response(question.get("questions", []), responses)
+                )
+            continue
+
+        if not response:
+            continue
+
+        cleaned_value = _clean_question_response(question, response)
+        if cleaned_value is not None:
+            cleaned_response[link_id] = cleaned_value
+
+    return cleaned_response
+
+
 def collect_and_validate_enable_when_questions(
     questions, responses, questionnaire_obj, errors, parent=None
 ):
@@ -547,6 +656,10 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):
     # Construct questionnaire response
 
     if questionnaire_obj.subject_type == "patient":
+        if questionnaire_obj.auth_context != QuestionnaireAuthContext.instance:
+            raise ValidationError(
+                "Patient questionnaires are only supported at the instance level"
+            )
         encounter = None
     else:
         encounter = Encounter.objects.filter(external_id=results.encounter).first()
@@ -609,6 +722,7 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):
         encounter=encounter,
         patient=patient,
         responses=json_results["results"],
+        cleaned_response=build_cleaned_response(questionnaire_obj.questions, responses),
         created_by=user,
         updated_by=user,
     )

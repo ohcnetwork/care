@@ -1,24 +1,61 @@
 import json
 
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django_redis import get_redis_connection
 
 from care.emr.fhir.resources.valueset import ValueSetResource
 from care.emr.models import EMRBaseModel
+from care.emr.models.organization import FacilityOrganization
 from care.emr.resources.common.valueset import ValueSetCompose
 
 
 class ValueSet(EMRBaseModel):
-    slug = models.SlugField(max_length=255, unique=True, db_index=True)
+    facility = models.ForeignKey(
+        "facility.Facility", on_delete=models.CASCADE, null=True, blank=True
+    )
+    facility_organization = models.ForeignKey(
+        "emr.FacilityOrganization", on_delete=models.CASCADE, null=True, blank=True
+    )
+    parent = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True)
+    auth_context = models.CharField(max_length=255, default="instance")
+    slug = models.SlugField(max_length=255)
+    inherited = models.BooleanField(default=False)
     name = models.CharField(max_length=255)
     description = models.TextField(default="")
     compose = models.JSONField(default=dict)
     status = models.CharField(max_length=255)
     is_system_defined = models.BooleanField(default=False)
+    internal_organization_cache = ArrayField(models.IntegerField(), default=list)
 
-    def create_composition(self):
-        systems = {}
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["slug"],
+                condition=models.Q(deleted=False, auth_context="instance"),
+                name="unique_valueset_slug_instance",
+            ),
+            models.UniqueConstraint(
+                fields=["slug", "facility", "created_by"],
+                condition=models.Q(deleted=False, auth_context="user"),
+                name="unique_valueset_slug_user",
+            ),
+            models.UniqueConstraint(
+                fields=["slug", "facility"],
+                condition=models.Q(deleted=False, auth_context="facility"),
+                name="unique_valueset_slug_facility",
+            ),
+            models.UniqueConstraint(
+                fields=["slug", "facility_organization"],
+                condition=models.Q(deleted=False, auth_context="facility_organization"),
+                name="unique_valueset_slug_facility_organization",
+            ),
+        ]
+
+    def create_composition(self, systems=None):
+        if systems is None:
+            systems = {}
         compose = self.compose
         if type(self.compose) is dict:
             compose = ValueSetCompose(**self.compose)
@@ -34,6 +71,8 @@ class ValueSet(EMRBaseModel):
             elif "exclude" not in systems[system]:
                 systems[system]["exclude"] = []
             systems[system]["exclude"].append(exclude.model_dump(exclude_defaults=True))
+        if self.parent:
+            systems = self.parent.create_composition(systems)
         return systems
 
     def search(self, search="", count=10, display_language=None):
@@ -54,6 +93,39 @@ class ValueSet(EMRBaseModel):
         for system in systems:
             results.append(ValueSetResource().filter(**systems[system]).lookup(code))
         return any(results)
+
+    def sync_facility_org_cache(self):
+        value_set_organization_objects = ValueSetFacilityOrganization.objects.filter(
+            valueset=self
+        )
+        cache = []
+        for value_set_organization in value_set_organization_objects:
+            cache.extend(value_set_organization.organization.parent_cache)
+            cache.append(value_set_organization.organization.id)
+        cache = list(set(cache))
+        self.internal_organization_cache = cache
+        self.save(update_fields=["internal_organization_cache"])
+
+
+class ValueSetFacilityOrganization(EMRBaseModel):
+    valueset = models.ForeignKey(ValueSet, on_delete=models.CASCADE)
+    organization = models.ForeignKey(FacilityOrganization, on_delete=models.CASCADE)
+
+
+class UserFacilityValueSetPreference(EMRBaseModel):
+    user = models.ForeignKey("users.User", on_delete=models.CASCADE)
+    slug = models.SlugField(max_length=255)
+    facility = models.ForeignKey("facility.Facility", on_delete=models.CASCADE)
+    valueset = models.ForeignKey("emr.ValueSet", on_delete=models.CASCADE)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["slug", "facility", "user"],
+                condition=models.Q(deleted=False),
+                name="unique_user_facility_valueset_preference",
+            ),
+        ]
 
 
 class UserValueSetPreference(EMRBaseModel):

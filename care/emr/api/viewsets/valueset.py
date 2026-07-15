@@ -1,27 +1,57 @@
 from django.core.cache import cache
+from django.core.exceptions import PermissionDenied
+from django.db import transaction
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
-from pydantic import BaseModel, Field
+from pydantic import UUID4, BaseModel, Field
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.fhir.resources.code_concept import CodeConceptResource, MinimalCodeConcept
+from care.emr.models.organization import FacilityOrganization
 from care.emr.models.valueset import (
     RecentViewsManager,
+    UserFacilityValueSetPreference,
     UserValueSetPreference,
     ValueSet,
+    ValueSetFacilityOrganization,
 )
 from care.emr.resources.common.coding import Coding
-from care.emr.resources.valueset.spec import ValueSetReadSpec, ValueSetSpec
+from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
+from care.emr.resources.valueset.spec import (
+    ValueSetAuthContext,
+    ValueSetCreateSpec,
+    ValuesetDatabaseModel,
+    ValueSetReadSpec,
+    ValueSetSpec,
+    ValueSetUpdateSpec,
+)
+from care.facility.models.facility import Facility
+from care.security.authorization.base import AuthorizationController
+from care.utils.shortcuts import get_object_or_404
 
 
 class ExpandRequest(BaseModel):
     search: str = ""
     count: int = Field(10, gt=0, lt=100)
     display_language: str = "en-gb"
+
+
+class ExpandSlugRequest(BaseModel):
+    slug: str
+    facility: UUID4 | None = None
+    search: str = ""
+    count: int = Field(10, gt=0, lt=100)
+    display_language: str = "en-gb"
+
+
+class ValueSetSlugPreference(BaseModel):
+    slug: str
+    facility: UUID4
 
 
 class ValueSetFilter(filters.FilterSet):
@@ -31,41 +61,192 @@ class ValueSetFilter(filters.FilterSet):
 
 class ValueSetViewSet(EMRModelViewSet):
     database_model = ValueSet
-    pydantic_model = ValueSetSpec
+    pydantic_model = ValueSetCreateSpec
+    pydantic_update_model = ValueSetUpdateSpec
     pydantic_read_model = ValueSetReadSpec
     filterset_class = ValueSetFilter
     filter_backends = [DjangoFilterBackend]
-    lookup_field = "slug"
 
-    def permissions_controller(self, request):
-        if self.action in [
-            "list",
-            "retrieve",
-            "lookup_code",
-            "expand",
-            "validate_code",
-            "preview_search",
-            "favourites",
-            "add_favourite",
-            "remove_favourite",
-            "clear_favourites",
-            "recent_views",
-            "add_recent_view",
-            "remove_recent_view",
-            "clear_recent_views",
-        ]:
-            return True
-        # Only superusers have write permission over valuesets
-        return request.user.is_superuser
+    def authorize_create(self, instance):
+        if (
+            instance.auth_context == ValueSetAuthContext.instance
+            and not self.request.user.is_superuser
+        ):
+            raise PermissionDenied("You are not authorized to create a value set")
+        if instance.auth_context == ValueSetAuthContext.facility:
+            facility = get_object_or_404(Facility, external_id=instance.facility)
+            if not AuthorizationController.call(
+                "can_access_facility_valueset",
+                self.request.user,
+                facility,
+                None,
+                read_only=False,
+            ):
+                raise PermissionDenied("You are not authorized to create a value set")
+        if instance.auth_context == ValueSetAuthContext.facility_organization:
+            facility_organization = get_object_or_404(
+                FacilityOrganization, external_id=instance.facility_organization
+            )
+            if not AuthorizationController.call(
+                "can_access_facility_organization_valueset",
+                self.request.user,
+                facility_organization,
+                read_only=False,
+            ):
+                raise PermissionDenied("You are not authorized to create a value set")
+        if instance.auth_context == ValueSetAuthContext.user:
+            facility = get_object_or_404(Facility, external_id=instance.facility)
+            if not AuthorizationController.call(
+                "can_access_user_valueset_in_faciltiy",
+                self.request.user,
+                facility,
+                read_only=False,
+            ):
+                raise PermissionDenied("You are not authorized to create a value set")
+
+        return super().authorize_create(instance)
+
+    def authorize_update(self, request_obj, model_instance):
+        if (
+            model_instance.auth_context == ValueSetAuthContext.instance
+            and not self.request.user.is_superuser
+        ):
+            raise PermissionDenied("You are not authorized to create a value set")
+        if (
+            model_instance.auth_context == ValueSetAuthContext.facility
+            and not AuthorizationController.call(
+                "can_access_facility_valueset",
+                self.request.user,
+                model_instance.facility,
+                None,
+                read_only=False,
+            )
+        ):
+            raise PermissionDenied("You are not authorized to create a value set")
+        if (
+            model_instance.auth_context == ValueSetAuthContext.facility_organization
+            and not AuthorizationController.call(
+                "can_access_facility_organization_valueset",
+                self.request.user,
+                model_instance.facility_organization,
+                read_only=False,
+            )
+        ):
+            raise PermissionDenied("You are not authorized to create a value set")
+        if (
+            model_instance.auth_context == ValueSetAuthContext.user
+            and not AuthorizationController.call(
+                "can_access_user_valueset_in_faciltiy",
+                self.request.user,
+                model_instance.facility,
+                read_only=False,
+            )
+        ):
+            raise PermissionDenied("You are not authorized to create a value set")
+        if (
+            model_instance.auth_context == ValueSetAuthContext.user
+            and model_instance.created_by != self.request.user
+        ):
+            raise PermissionDenied("Only the creator of the value set can update it")
+
+    def authorize_destroy(self, instance):
+        self.authorize_update(self.request, instance)
+
+    def perform_update(self, instance):
+        if instance.inherited:
+            old_obj = ValuesetDatabaseModel.objects.get(id=instance.id)
+            instance.slug = old_obj.slug
+        return super().perform_update(instance)
 
     def get_queryset(self):
-        return super().get_queryset().select_related("created_by", "updated_by")
+        queryset = super().get_queryset()
+        return AuthorizationController.call(
+            "get_filtered_valuesets", queryset, self.request.user
+        )
 
-    def get_recent_view_cache_key(self, valueset_slug, user_id):
-        return f"user_valueset_code_prefs:{valueset_slug}:{user_id}:recent_views"
+    @action(detail=True, methods=["GET"])
+    def get_facility_organizations(self, request, *args, **kwargs):
+        valueset = self.get_object()
+        if not valueset.auth_context == ValueSetAuthContext.facility:
+            raise PermissionDenied(
+                "Facility organizations can only be set for facility level questionnaires"
+            )
+        self.authorize_update(None, valueset)
+        questionnaire_organizations = ValueSetFacilityOrganization.objects.filter(
+            valueset=valueset
+        ).select_related("organization")
+        organizations_serialized = [
+            FacilityOrganizationReadSpec.serialize(obj.organization).to_json()
+            for obj in questionnaire_organizations
+        ]
+        return Response(
+            {
+                "count": len(organizations_serialized),
+                "results": organizations_serialized,
+            }
+        )
 
-    def get_favourites_cache_key(self, valueset_slug, user_id):
-        return f"user_valueset_code_prefs:{valueset_slug}:{user_id}:favourites"
+    class ValueSetFacilityOrganizationUpdateSchema(BaseModel):
+        facility_organizations: list[UUID4]
+
+    @extend_schema(request=ValueSetFacilityOrganizationUpdateSchema)
+    @action(detail=True, methods=["POST"])
+    def set_facility_organizations(self, request, *args, **kwargs):
+        valueset = self.get_object()
+        if not valueset.auth_context == ValueSetAuthContext.facility:
+            raise PermissionDenied(
+                "Facility organizations can only be set for facility level questionnaires"
+            )
+        self.authorize_update(None, valueset)
+        request_params = self.ValueSetFacilityOrganizationUpdateSchema(**request.data)
+        with transaction.atomic():
+            ValueSetFacilityOrganization.objects.filter(valueset=valueset).delete()
+            for org in request_params.facility_organizations:
+                organization = get_object_or_404(
+                    FacilityOrganization.objects.only("id"),
+                    external_id=org,
+                    facility=valueset.facility,
+                )
+                ValueSetFacilityOrganization.objects.create(
+                    valueset=valueset, organization=organization
+                )
+            valueset.sync_facility_org_cache()
+        return Response({})
+
+    def get_recent_view_cache_key(self, valueset_uuid, user_id):
+        return f"user_valueset_code_prefs:{valueset_uuid}:{user_id}:recent_views"
+
+    def get_favourites_cache_key(self, valueset_uuid, user_id):
+        return f"user_valueset_code_prefs:{valueset_uuid}:{user_id}:favourites"
+
+    @extend_schema(
+        request=ValueSetSlugPreference, responses={200: None}, methods=["POST"]
+    )
+    @action(detail=True, methods=["POST"])
+    def set_slug_preference(self, request, *args, **kwargs):
+        request_data = ValueSetSlugPreference(**request.data)
+        obj = self.get_object()
+        facility = get_object_or_404(Facility, external_id=request_data.facility)
+        if obj.facility and obj.facility != facility:
+            raise ValidationError(
+                "Cannot set preference for different facility's valueset"
+            )
+        preference = UserFacilityValueSetPreference.objects.filter(
+            user=request.user,
+            facility=facility,
+            slug=request_data.slug,
+        ).first()
+        if not preference:
+            preference = UserFacilityValueSetPreference(
+                user=request.user,
+                facility=facility,
+                slug=request_data.slug,
+                valueset=obj,
+            )
+        else:
+            preference.valueset = obj
+        preference.save()
+        return Response({})
 
     @extend_schema(request=ExpandRequest, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])
@@ -73,6 +254,53 @@ class ValueSetViewSet(EMRModelViewSet):
         request_params = ExpandRequest(**request.data).model_dump()
         results = self.get_object().search(**request_params)
         return Response({"results": [result.model_dump() for result in results]})
+
+    @extend_schema(request=ExpandSlugRequest, responses={200: None}, methods=["POST"])
+    @action(detail=False, methods=["POST"])
+    def expand_slug(self, request, *args, **kwargs):
+        request_data = ExpandSlugRequest(**request.data)
+        request_params = request_data.model_dump(exclude={"slug", "facility"})
+
+        valuesets = self.get_queryset().filter(slug=request_data.slug)
+        valueset = None
+        if request_data.facility:
+            preference = UserFacilityValueSetPreference.objects.filter(
+                user=request.user,
+                facility__external_id=request_data.facility,
+                slug=request_data.slug,
+            ).first()
+            preferred_valueset = None
+            if preference:
+                preferred_valueset = valuesets.filter(id=preference.valueset.id).first()
+            if preferred_valueset:
+                valueset = preferred_valueset
+            else:
+                valuesets = valuesets.filter(
+                    Q(
+                        auth_context=ValueSetAuthContext.facility,
+                        facility__external_id=request_data.facility,
+                    )
+                    | Q(
+                        auth_context=ValueSetAuthContext.instance,
+                    )
+                )
+        else:
+            valuesets = valuesets.filter(
+                auth_context=ValueSetAuthContext.instance,
+            )
+        if not valueset:
+            for valueset_option in valuesets.order_by("auth_context"):
+                valueset = valueset_option
+                break
+        if not valueset:
+            raise ValidationError("No valueset found")
+        results = valueset.search(**request_params)
+        return Response(
+            {
+                "valueset": ValueSetReadSpec.serialize(valueset).to_json(),
+                "results": [result.model_dump() for result in results],
+            }
+        )
 
     @extend_schema(request=ValueSetSpec, responses={200: None}, methods=["POST"])
     @action(detail=False, methods=["POST"])
@@ -118,9 +346,9 @@ class ValueSetViewSet(EMRModelViewSet):
 
     @action(detail=True, methods=["GET"])
     def favourites(self, request, *args, **kwargs):
-        valueset_slug = kwargs.get(self.lookup_field)
+        valueset_uuid = kwargs.get(self.lookup_field)
         user_id = request.user.external_id
-        cache_key = self.get_favourites_cache_key(valueset_slug, user_id)
+        cache_key = self.get_favourites_cache_key(valueset_uuid, user_id)
         favs = cache.get(cache_key)
         if favs is None:
             try:
@@ -135,9 +363,9 @@ class ValueSetViewSet(EMRModelViewSet):
 
     @action(detail=True, methods=["POST"])
     def add_favourite(self, request, *args, **kwargs):
-        valueset_slug = kwargs.get(self.lookup_field)
+        valueset_uuid = kwargs.get(self.lookup_field)
         user = request.user
-        cache_key = self.get_favourites_cache_key(valueset_slug, user.external_id)
+        cache_key = self.get_favourites_cache_key(valueset_uuid, user.external_id)
         code_obj = MinimalCodeConcept(**request.data)
 
         valueset = self.get_object()
@@ -160,9 +388,9 @@ class ValueSetViewSet(EMRModelViewSet):
 
     @action(detail=True, methods=["POST"])
     def remove_favourite(self, request, *args, **kwargs):
-        valueset_slug = kwargs.get(self.lookup_field)
+        valueset_uuid = kwargs.get(self.lookup_field)
         user = request.user
-        cache_key = self.get_favourites_cache_key(valueset_slug, user.external_id)
+        cache_key = self.get_favourites_cache_key(valueset_uuid, user.external_id)
         code_obj = MinimalCodeConcept(**request.data)
 
         valueset = self.get_object()
@@ -181,9 +409,9 @@ class ValueSetViewSet(EMRModelViewSet):
 
     @action(detail=True, methods=["POST"])
     def clear_favourites(self, request, *args, **kwargs):
-        valueset_slug = kwargs.get(self.lookup_field)
+        valueset_uuid = kwargs.get(self.lookup_field)
         user = request.user
-        cache_key = self.get_favourites_cache_key(valueset_slug, user.external_id)
+        cache_key = self.get_favourites_cache_key(valueset_uuid, user.external_id)
         try:
             pref = UserValueSetPreference.objects.get(
                 user=user, valueset=self.get_object()
@@ -199,9 +427,9 @@ class ValueSetViewSet(EMRModelViewSet):
     @extend_schema(request=MinimalCodeConcept, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])
     def add_recent_view(self, request, *args, **kwargs):
-        valueset_slug = kwargs.get(self.lookup_field)
+        valueset_uuid = kwargs.get(self.lookup_field)
         user_id = request.user.external_id
-        cache_key = self.get_recent_view_cache_key(valueset_slug, user_id)
+        cache_key = self.get_recent_view_cache_key(valueset_uuid, user_id)
         code_obj = MinimalCodeConcept(**request.data)
         valueset = self.get_object()
         if not valueset.lookup(code_obj):
@@ -212,24 +440,24 @@ class ValueSetViewSet(EMRModelViewSet):
     @extend_schema(request=MinimalCodeConcept, responses={200: None}, methods=["POST"])
     @action(detail=True, methods=["POST"])
     def remove_recent_view(self, request, *args, **kwargs):
-        valueset_slug = kwargs.get(self.lookup_field)
+        valueset_uuid = kwargs.get(self.lookup_field)
         user_id = request.user.external_id
-        cache_key = self.get_recent_view_cache_key(valueset_slug, user_id)
+        cache_key = self.get_recent_view_cache_key(valueset_uuid, user_id)
         code_obj = MinimalCodeConcept(**request.data)
         RecentViewsManager.remove_recent_view(cache_key, code_obj.model_dump())
         return Response({"message": f"Code {code_obj.code} removed from recent views"})
 
     @action(detail=True, methods=["GET"])
     def recent_views(self, request, *args, **kwargs):
-        valueset_slug = kwargs.get(self.lookup_field)
+        valueset_uuid = kwargs.get(self.lookup_field)
         user_id = request.user.external_id
-        cache_key = self.get_recent_view_cache_key(valueset_slug, user_id)
+        cache_key = self.get_recent_view_cache_key(valueset_uuid, user_id)
         return Response(RecentViewsManager.get_recent_views(cache_key))
 
     @action(detail=True, methods=["POST"])
     def clear_recent_views(self, request, *args, **kwargs):
-        valueset_slug = kwargs.get(self.lookup_field)
+        valueset_uuid = kwargs.get(self.lookup_field)
         user_id = request.user.external_id
-        cache_key = self.get_recent_view_cache_key(valueset_slug, user_id)
+        cache_key = self.get_recent_view_cache_key(valueset_uuid, user_id)
         RecentViewsManager.clear_recent_views(cache_key)
         return Response({"message": "All recent views cleared"})

@@ -1,12 +1,13 @@
 from datetime import timedelta
 
 from django.conf import settings
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied
 
 from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet, EMRUpdateMixin
 from care.emr.models import Encounter, Patient
-from care.emr.models.questionnaire import QuestionnaireResponse
+from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
 from care.emr.resources.questionnaire_response.spec import (
     QuestionnaireResponseReadSpec,
     QuestionnaireResponseStatusChoices,
@@ -17,10 +18,25 @@ from care.utils.shortcuts import get_object_or_404
 from care.utils.time_util import care_now
 
 
+class QuestionnaireFilter(filters.UUIDFilter):
+    def filter(self, qs, value):
+        if value is None:
+            return qs
+        questionnaire = (
+            Questionnaire.objects.only("id").filter(external_id=value).first()
+        )
+        if not questionnaire:
+            return qs.none()
+        return qs.filter(
+            Q(questionnaire=questionnaire)
+            | Q(questionnaire__latest_revision_id=questionnaire.id)
+        )
+
+
 class QuestionnaireResponseFilters(filters.FilterSet):
     encounter = filters.CharFilter(field_name="encounter__external_id")
     subject_type = filters.CharFilter(field_name="questionnaire__subject_type")
-    questionnaire = filters.UUIDFilter(field_name="questionnaire__external_id")
+    questionnaire = QuestionnaireFilter()
     questionnaire_slug = filters.CharFilter(field_name="questionnaire__slug")
     form_submission = filters.UUIDFilter(field_name="form_submission__external_id")
     status = filters.CharFilter(field_name="status")
@@ -72,7 +88,7 @@ class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet, EMRUpdateMixin):
                 patient__external_id=self.kwargs["patient_external_id"],
             )
             .order_by("-created_date")
-            .select_related("questionnaire", "encounter", "created_by", "updated_by")
+            .select_related("questionnaire", "encounter")
         )
         patient = None
         encounter = None
