@@ -66,12 +66,12 @@ class ValueSetAccess(AuthorizationHandler):
         facility_organization_ids = list(
             FacilityOrganizationUser.objects.filter(
                 user=user, role_id__in=roles
-            ).values_list("facility_organization_id", flat=True)
+            ).values_list("organization_id", flat=True)
         )
         return qs.filter(
             Q(auth_context="instance")
             | Q(internal_organization_cache__overlap=facility_organization_ids)
-            | Q(created_by=user)
+            | Q(auth_context="user", created_by=user)
         )
 
 

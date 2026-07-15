@@ -87,6 +87,7 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
             ) from e
         try:
             with transaction.atomic():
+                instance.refresh_from_db()
                 transaction.on_commit(lock.release)
                 return super().handle_update(instance, request_data)
         except Exception:
@@ -252,6 +253,7 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
                     FormSubmission,
                     status=FormSubmissionStatusChoices.draft.value,
                     external_id=request_params.form_submission,
+                    questionnaire=questionnaire,
                     **form_submission_params,
                 )
                 if QuestionnaireResponse.objects.filter(
