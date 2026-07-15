@@ -1941,7 +1941,7 @@ class TestRevisitDiscountTimedeltaCalculation(CareAPITestBase):
 
         new_slot = self.create_slot(
             start_datetime=base_time
-            + timedelta(days=5, hours=1),  # 1am on Jan 6 (4 days 2 hours after paid_on)
+            + timedelta(days=5, hours=1),  # 1am on day 6 (4 days 2 hours after paid_on)
             end_datetime=base_time + timedelta(days=5, hours=2),
         )
 
