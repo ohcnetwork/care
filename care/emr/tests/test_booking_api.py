@@ -7,12 +7,20 @@ from django.utils import timezone
 from care.emr.models import (
     Availability,
     AvailabilityException,
+    ChargeItemDefinition,
     SchedulableResource,
     Schedule,
     TokenBooking,
     TokenSlot,
 )
 from care.emr.models.scheduling.token import TokenCategory, TokenQueue
+from care.emr.resources.charge_item.apply_charge_item_definition import (
+    apply_charge_item_definition,
+)
+from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
+from care.emr.resources.charge_item_definition.spec import (
+    ChargeItemDefinitionStatusOptions,
+)
 from care.emr.resources.scheduling.schedule.spec import (
     SchedulableResourceTypeOptions,
     SlotTypeOptions,
@@ -1741,3 +1749,257 @@ class TestGenerateTokenApi(CareAPITestBase):
             self._get_generate_token_url(booking.external_id), data, format="json"
         )
         self.assertContains(response, "Category not found", status_code=400)
+
+
+class TestRevisitDiscountTimedeltaCalculation(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.facility = self.create_facility(user=self.user)
+        self.organization = self.create_facility_organization(facility=self.facility)
+        self.patient = self.create_patient()
+        self.resource = self.create_resource(user=self.user, facility=self.facility)
+
+        self.full_price_definition = ChargeItemDefinition.objects.create(
+            facility=self.facility,
+            status=ChargeItemDefinitionStatusOptions.active.value,
+            title="Full Price Appointment",
+            slug=f"f-{self.facility.external_id}-full-price-def",
+            price_components=[
+                {
+                    "monetary_component_type": "base",
+                    "currency": "INR",
+                    "amount": "500.00",
+                }
+            ],
+        )
+        self.revisit_price_definition = ChargeItemDefinition.objects.create(
+            facility=self.facility,
+            status=ChargeItemDefinitionStatusOptions.active.value,
+            title="Revisit Discount Appointment",
+            slug=f"f-{self.facility.external_id}-revisit-price-def",
+            price_components=[
+                {
+                    "monetary_component_type": "base",
+                    "currency": "INR",
+                    "amount": "200.00",
+                }
+            ],
+        )
+
+        self.schedule = self.create_schedule(
+            resource=self.resource,
+            charge_item_definition=self.full_price_definition,
+            revisit_charge_item_definition=self.revisit_price_definition,
+            revisit_allowed_days=3,
+        )
+        self.availability = self.create_availability(schedule=self.schedule)
+        self.client.force_authenticate(user=self.user)
+
+    def create_resource(self, **kwargs):
+        data = {
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "user": self.user,
+            "facility": self.facility,
+        }
+        data.update(kwargs)
+        return SchedulableResource.objects.create(**data)
+
+    def create_schedule(self, **kwargs):
+        data = {
+            "resource": self.resource,
+            "name": "Test Schedule",
+            "valid_from": datetime.now(UTC) - timedelta(days=30),
+            "valid_to": datetime.now(UTC) + timedelta(days=30),
+            "is_public": True,
+        }
+        data.update(kwargs)
+        return Schedule.objects.create(**data)
+
+    def create_availability(self, **kwargs):
+        data = {
+            "schedule": self.schedule,
+            "name": "Test Availability",
+            "slot_type": SlotTypeOptions.appointment.value,
+            "slot_size_in_minutes": 120,
+            "tokens_per_slot": 30,
+            "create_tokens": False,
+            "reason": "",
+            "availability": [
+                {"day_of_week": 0, "start_time": "09:00:00", "end_time": "13:00:00"},
+            ],
+        }
+        data.update(kwargs)
+        return Availability.objects.create(**data)
+
+    def create_slot(self, **kwargs):
+        data = {
+            "resource": self.resource,
+            "availability": self.availability,
+            "start_datetime": datetime.now(UTC) + timedelta(minutes=30),
+            "end_datetime": datetime.now(UTC) + timedelta(minutes=60),
+            "allocated": 0,
+        }
+        data.update(kwargs)
+        return TokenSlot.objects.create(**data)
+
+    def create_booking(self, **kwargs):
+        data = {
+            "token_slot": kwargs.get("token_slot"),
+            "patient": self.patient,
+            "booked_by": self.user,
+            "status": BookingStatusChoices.booked.value,
+        }
+        data.update(kwargs)
+        if data["status"] not in CANCELLED_STATUS_CHOICES:
+            slot = data["token_slot"]
+            slot.allocated += 1
+            slot.save()
+        return TokenBooking.objects.create(**data)
+
+    def test_revisit_discount_applied_when_paid_evening_new_slot_morning(self):
+        """
+        Patient paid at 11pm on day 1, new slot at 1am on day 5 (3 days and 2 hours later).
+        With revisit_allowed_days=3, the discount should be applied because taking
+        abs(timedelta).days gives 3 days (not 4 days).
+        """
+        base_time = datetime.now(UTC).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        ) + timedelta(days=1)
+        past_slot = self.create_slot(
+            start_datetime=base_time,
+            end_datetime=base_time + timedelta(hours=1),
+        )
+        past_booking = self.create_booking(token_slot=past_slot, patient=self.patient)
+
+        past_charge_item = apply_charge_item_definition(
+            self.full_price_definition,
+            self.patient,
+            self.facility,
+            quantity=1,
+        )
+        past_charge_item.status = ChargeItemStatusOptions.paid.value
+        past_charge_item.paid_on = base_time + timedelta(hours=23)  # 11pm on base day
+        past_charge_item.save()
+
+        past_booking.charge_item = past_charge_item
+        past_booking.save()
+
+        from care.emr.api.viewsets.scheduling.availability import (
+            lock_create_appointment,
+        )
+
+        new_slot = self.create_slot(
+            start_datetime=base_time
+            + timedelta(days=4, hours=1),  # 1am on Jan 5 (3 days 2 hours after paid_on)
+            end_datetime=base_time + timedelta(days=4, hours=2),
+        )
+
+        new_booking = lock_create_appointment(
+            token_slot=new_slot,
+            patient=self.patient,
+            created_by=self.user,
+            note="New booking",
+        )
+
+        self.assertIsNotNone(new_booking.charge_item)
+        self.assertEqual(
+            new_booking.charge_item.charge_item_definition,
+            self.revisit_price_definition,
+        )
+
+    def test_revisit_discount_not_applied_outside_window(self):
+        """
+        Patient paid at 11pm on day 1, new slot at 1am on day 6 (4 days and 2 hours later).
+        With revisit_allowed_days=3, the discount should not be applied.
+        """
+        base_time = datetime.now(UTC).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        ) + timedelta(days=1)
+        past_slot = self.create_slot(
+            start_datetime=base_time,
+            end_datetime=base_time + timedelta(hours=1),
+        )
+        past_booking = self.create_booking(token_slot=past_slot, patient=self.patient)
+
+        past_charge_item = apply_charge_item_definition(
+            self.full_price_definition,
+            self.patient,
+            self.facility,
+            quantity=1,
+        )
+        past_charge_item.status = ChargeItemStatusOptions.paid.value
+        past_charge_item.paid_on = base_time + timedelta(hours=23)  # 11pm on base day
+        past_charge_item.save()
+
+        past_booking.charge_item = past_charge_item
+        past_booking.save()
+
+        from care.emr.api.viewsets.scheduling.availability import (
+            lock_create_appointment,
+        )
+
+        new_slot = self.create_slot(
+            start_datetime=base_time
+            + timedelta(days=5, hours=1),  # 1am on Jan 6 (4 days 2 hours after paid_on)
+            end_datetime=base_time + timedelta(days=5, hours=2),
+        )
+
+        new_booking = lock_create_appointment(
+            token_slot=new_slot,
+            patient=self.patient,
+            created_by=self.user,
+            note="New booking outside window",
+        )
+
+        self.assertIsNotNone(new_booking.charge_item)
+        self.assertEqual(
+            new_booking.charge_item.charge_item_definition,
+            self.full_price_definition,
+        )
+
+    def test_revisit_discount_not_applied_when_no_previous_booking(self):
+        """
+        Without a previous booking, the full price definition should be used.
+        """
+        base_time = datetime.now(UTC).replace(
+            hour=0, minute=0, second=0, microsecond=0
+        ) + timedelta(days=1)
+        from care.emr.api.viewsets.scheduling.availability import (
+            lock_create_appointment,
+        )
+
+        new_slot = self.create_slot(
+            start_datetime=base_time + timedelta(days=4, hours=1),
+            end_datetime=base_time + timedelta(days=4, hours=2),
+        )
+
+        new_booking = lock_create_appointment(
+            token_slot=new_slot,
+            patient=self.patient,
+            created_by=self.user,
+            note="New booking without previous",
+        )
+
+        self.assertIsNotNone(new_booking.charge_item)
+        self.assertEqual(
+            new_booking.charge_item.charge_item_definition,
+            self.full_price_definition,
+        )
+
+    def test_timedelta_days_calculation_is_correct(self):
+        """
+        Verify that abs(timedelta).days gives the correct day gap regardless
+        of time-of-day, which is what lock_create_appointment now uses.
+        Previously the code used abs(timedelta.days) which floors toward
+        negative infinity on negative timedeltas, giving the wrong answer
+        when time-of-day crosses midnight.
+        """
+        paid_on = datetime(2024, 1, 1, 23, 0, tzinfo=UTC)
+        new_slot = datetime(2024, 1, 5, 1, 0, tzinfo=UTC)
+        diff = paid_on - new_slot
+
+        # Bug check: abs(diff.days) = 4 (wrong)
+        self.assertNotEqual(abs(diff.days), abs(diff).days)
+        # Fix check: abs(diff).days = 3 (correct)
+        self.assertEqual(abs(diff).days, 3)

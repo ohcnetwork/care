@@ -168,13 +168,13 @@ def lock_create_appointment(token_slot, patient, created_by, note):
                 diff_days = None
             else:
                 new_booking_start_time = token_slot.start_datetime
-                diff_days = (booking_start_time - new_booking_start_time).days
+                diff_days = abs(booking_start_time - new_booking_start_time).days
         else:
             diff_days = None
         if (
             schedule.revisit_allowed_days
             and diff_days is not None
-            and abs(diff_days) <= schedule.revisit_allowed_days
+            and diff_days <= schedule.revisit_allowed_days
         ):
             charge_item_definition = schedule.revisit_charge_item_definition
         else:
