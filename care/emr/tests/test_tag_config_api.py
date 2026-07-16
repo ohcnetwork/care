@@ -439,6 +439,7 @@ class TestTagConfigAPI(CareAPITestBase):
             self.get_detail_url(tag_config.external_id),
             self.generate_tag_config_data(
                 resource=TagResource.encounter.value,
+                facility=self.facility.external_id,
             ),
             format="json",
         )

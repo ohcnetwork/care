@@ -479,6 +479,7 @@ class QuestionnaireTestBase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 200)
         results = response.json()["results"]
+        self.assertEqual(len(results), 1)
         result_ids = [res["id"] for res in results]
         self.assertIn(response_a["id"], result_ids)
         self.assertNotIn(response_b["id"], result_ids)
@@ -489,6 +490,7 @@ class QuestionnaireTestBase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 200)
         results = response.json()["results"]
+        self.assertEqual(len(results), 1)
         result_ids = [res["id"] for res in results]
         self.assertIn(response_b["id"], result_ids)
         self.assertNotIn(response_a["id"], result_ids)
