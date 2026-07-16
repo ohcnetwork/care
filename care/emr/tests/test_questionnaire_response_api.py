@@ -7,6 +7,7 @@ from django.urls import reverse
 from care.emr.models.questionnaire import QuestionnaireResponse
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
+from care.security.permissions.questionnaire import QuestionnairePermissions
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -424,6 +425,73 @@ class QuestionnaireTestBase(CareAPITestBase):
         self.assertEqual(
             response_data["results"][0]["id"], self.questionnaire_response["id"]
         )
+
+    def test_list_questionnaire_responses_with_created_by_filter(self):
+        """
+        Verify the created_by filter returns only responses created by the
+        specified user, identified by their external_id UUID.
+        """
+        user_a = self.create_user(username="usera")
+        user_b = self.create_user(username="userb")
+
+        permissions = [
+            *self.permissions,
+            QuestionnairePermissions.can_read_questionnaire.name,
+        ]
+        role = self.create_role_with_permissions(permissions=permissions)
+
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            user_a,
+            role,
+        )
+        self.attach_role_organization_user(
+            self.organization,
+            user_a,
+            role,
+        )
+
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            user_b,
+            role,
+        )
+        self.attach_role_organization_user(
+            self.organization,
+            user_b,
+            role,
+        )
+
+        # Force-authenticate as user_a and submit
+        self.client.force_authenticate(user=user_a)
+        response_a = self._submit(self.responses)
+
+        # Force-authenticate as user_b and submit
+        self.client.force_authenticate(user=user_b)
+        response_b = self._submit(self.responses)
+
+        # Force-authenticate back as self.user (superuser) to call list endpoint
+        self.client.force_authenticate(user=self.user)
+
+        # Filter by user_a
+        response = self.client.get(
+            self.get_url(), {"created_by": str(user_a.external_id)}
+        )
+        self.assertEqual(response.status_code, 200)
+        results = response.json()["results"]
+        result_ids = [res["id"] for res in results]
+        self.assertIn(response_a["id"], result_ids)
+        self.assertNotIn(response_b["id"], result_ids)
+
+        # Filter by user_b
+        response = self.client.get(
+            self.get_url(), {"created_by": str(user_b.external_id)}
+        )
+        self.assertEqual(response.status_code, 200)
+        results = response.json()["results"]
+        result_ids = [res["id"] for res in results]
+        self.assertIn(response_b["id"], result_ids)
+        self.assertNotIn(response_a["id"], result_ids)
 
     def test_list_questionnaire_responses_without_encounter_permission(self):
         """

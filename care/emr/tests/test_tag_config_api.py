@@ -397,6 +397,55 @@ class TestTagConfigAPI(CareAPITestBase):
         self.assertEqual(get_response.data["status"], TagStatus.archived.value)
         self.assertEqual(get_response.data["description"], "")
 
+    def test_update_tag_config_clears_organization_when_omitted(self):
+        """
+        Verify that updating a tag config without supplying `organization`
+        clears the existing organization to None (the [ENG-580] behavior).
+        Previously, omitting the field would leave it unchanged; now it
+        explicitly nullifies it.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        tag_config = self.create_tag_config(
+            resource=TagResource.encounter,
+            organization=self.organization,
+        )
+        self.assertEqual(tag_config.organization, self.organization)
+
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                resource=TagResource.encounter.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        tag_config.refresh_from_db()
+        self.assertIsNone(tag_config.organization)
+
+    def test_update_tag_config_clears_facility_organization_when_omitted(self):
+        """
+        Verify that updating a tag config without supplying
+        `facility_organization` clears the existing value to None.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        tag_config = self.create_tag_config(
+            resource=TagResource.encounter,
+            facility=self.facility,
+            facility_organization=self.facility_organization,
+        )
+        self.assertEqual(tag_config.facility_organization, self.facility_organization)
+
+        response = self.client.put(
+            self.get_detail_url(tag_config.external_id),
+            self.generate_tag_config_data(
+                resource=TagResource.encounter.value,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        tag_config.refresh_from_db()
+        self.assertIsNone(tag_config.facility_organization)
+
     def test_update_tag_config_as_with_facility_as_superuser(self):
         """Test updating a tag config with facility as superuser"""
         self.client.force_authenticate(user=self.superuser)
