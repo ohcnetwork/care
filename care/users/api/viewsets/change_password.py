@@ -1,68 +1,69 @@
-from django.contrib.auth import get_user_model
-from django.contrib.auth.password_validation import validate_password
+from django.conf import settings
+from django.contrib.auth.password_validation import (
+    get_password_validators,
+    validate_password,
+)
 from django.core.exceptions import ValidationError as DjangoValidationError
 from drf_spectacular.utils import extend_schema, extend_schema_view
-from rest_framework import serializers, status
+from pydantic import BaseModel, ValidationInfo, field_validator, model_validator
 from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
 
-User = get_user_model()
+from care.emr.api.viewsets.base import emr_exception_handler
 
 
-class ChangePasswordSerializer(serializers.Serializer):
-    """
-    Serializer for the change password endpoint.
+class ChangePasswordSpec(BaseModel):
+    old_password: str
+    new_password: str
 
-    Validates the new password using Django's built-in password validators.
-    """
+    @field_validator("old_password", "new_password", mode="before")
+    @classmethod
+    def strip_passwords(cls, v):
+        """Strip leading and trailing whitespace from passwords."""
+        if isinstance(v, str):
+            return v.strip()
+        return v
 
-    old_password = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True)
+    @model_validator(mode="after")
+    def validate_passwords(self, info: ValidationInfo):
+        user = info.context.get("user")
+        if not user.check_password(self.old_password):
+            msg = "Wrong password entered. Please check your password."
+            raise ValueError(msg)
 
-    def validate_new_password(self, value):
-        """
-        Validate the new password against Django's password policies.
-        """
-        user = self.context["request"].user
         try:
-            validate_password(value, user=user)
+            validate_password(
+                self.new_password,
+                user=user,
+                password_validators=get_password_validators(
+                    settings.AUTH_PASSWORD_VALIDATORS
+                ),
+            )
         except DjangoValidationError as e:
-            raise serializers.ValidationError(e.messages) from e
-        return value
+            raise ValueError(", ".join(e.messages)) from e
+        return self
 
 
 @extend_schema_view(
-    put=extend_schema(tags=["users"]),
-    patch=extend_schema(tags=["users"]),
+    put=extend_schema(tags=["users"], request=ChangePasswordSpec),
+    patch=extend_schema(tags=["users"], request=ChangePasswordSpec),
 )
 class ChangePasswordView(UpdateAPIView):
     """
     API endpoint for allowing authenticated users to change their password.
     """
 
-    serializer_class = ChangePasswordSerializer
-    model = User
+    def get_exception_handler(self):
+        return emr_exception_handler
 
     def update(self, request, *args, **kwargs):
         """
         Handle password update request for the authenticated user.
         """
-        self.object = self.request.user
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
+        data = ChangePasswordSpec.model_validate(
+            request.data, context={"user": request.user}
+        )
 
-        if not self.object.check_password(
-            serializer.validated_data.get("old_password")
-        ):
-            return Response(
-                {
-                    "old_password": [
-                        "Wrong password entered. Please check your password."
-                    ]
-                },
-                status=status.HTTP_400_BAD_REQUEST,
-            )
-
-        self.object.set_password(serializer.validated_data.get("new_password"))
-        self.object.save()
+        request.user.set_password(data.new_password)
+        request.user.save()
         return Response({"message": "Password updated successfully"})
