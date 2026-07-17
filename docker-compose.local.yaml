@@ -8,26 +8,9 @@ services:
         ADDITIONAL_PLUGS: ${ADDITIONAL_PLUGS:-}
     env_file:
       - ./docker/.local.env
-    environment:
-      # Registers the plug in INSTALLED_APPS + mounts /api/care_notifications/.
-      # No version => install() (build-time only) is skipped; the editable
-      # install in the entrypoint below provides the importable package.
-      ADDITIONAL_PLUGS: '[{"name":"care_notifications","package_name":"care_notifications","version":""}]'
-      # Web push VAPID config (dev-only keys; supply real secrets via env in prod, never commit).
-      WEBPUSH_VAPID_PUBLIC_KEY: "BBskSTz9mq8H6RP7CncmiR8zxod_xcQNuj5PRarxG7llZWw8MgGsq7tavnbV9t0DP8qRTTGzDTzmatpJ1ivLyiM"
-      WEBPUSH_VAPID_PRIVATE_KEY: "qc2LzQC0wVlVEjZ2poBDsIKKz-niUflY3Zkw2VtTt8o"
-      WEBPUSH_VAPID_ADMIN_EMAIL: "ops@ohc.network"
     volumes:
       - .:/app
-      # Live plug source: edits on the host are reflected in the container.
-      - /Users/praffulsharma/Development/work/care_booking_notifications_be:/plugs/care_notifications_be
-    entrypoint:
-      - bash
-      - -c
-      - |
-        set -e
-        pip install -e /plugs/care_notifications_be
-        exec bash scripts/start-dev.sh
+    entrypoint: ["bash", "scripts/start-dev.sh"]
     ports:
       - "9000:9000"
       - "9876:9876" #debugpy
@@ -44,39 +27,10 @@ services:
     image: care_local
     env_file:
       - ./docker/.local.env
-    environment:
-      # Celery's app (config/celery_app.py) defaults DJANGO_SETTINGS_MODULE to
-      # config.settings.production; force local here so the worker matches the
-      # backend (ConsoleBackend SMS etc.) instead of the AWS SNS backend.
-      DJANGO_SETTINGS_MODULE: config.settings.local
-      ADDITIONAL_PLUGS: '[{"name":"care_notifications","package_name":"care_notifications","version":""}]'
-      WEBPUSH_VAPID_PUBLIC_KEY: "BBskSTz9mq8H6RP7CncmiR8zxod_xcQNuj5PRarxG7llZWw8MgGsq7tavnbV9t0DP8qRTTGzDTzmatpJ1ivLyiM"
-      WEBPUSH_VAPID_PRIVATE_KEY: "qc2LzQC0wVlVEjZ2poBDsIKKz-niUflY3Zkw2VtTt8o"
-      WEBPUSH_VAPID_ADMIN_EMAIL: "ops@ohc.network"
-    entrypoint:
-      - bash
-      - -c
-      # Mirrors scripts/celery-dev.sh but adds the plug dir to watchmedo so
-      # edits to plug *task* code hot-restart the worker too (the core script
-      # only watches /app). Keeps /tmp/container-role for the healthcheck.
-      - |
-        set -euo pipefail
-        pip install -e /plugs/care_notifications_be
-        printf "celery" > /tmp/container-role
-        ./scripts/wait_for_db.sh
-        ./scripts/wait_for_redis.sh
-        python manage.py migrate --noinput
-        python manage.py compilemessages -v 0
-        python manage.py sync_permissions_roles
-        python manage.py sync_valueset
-        exec watchmedo auto-restart \
-          --directory=./ --directory=/plugs/care_notifications_be \
-          --pattern=*.py --recursive -- \
-          celery --workdir=/app -A config.celery_app worker -B --loglevel=INFO
+    entrypoint: ["bash", "scripts/celery-dev.sh"]
     restart: unless-stopped
     depends_on:
       - db
       - redis
     volumes:
       - .:/app
-      - /Users/praffulsharma/Development/work/care_booking_notifications_be:/plugs/care_notifications_be
