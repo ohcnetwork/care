@@ -33,7 +33,7 @@ class ActivityDefinition(SlugBaseModel):
     tags = ArrayField(models.IntegerField(), default=list)
     category = models.ForeignKey(
         "emr.ResourceCategory",
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         null=True,
         blank=True,
     )
