@@ -61,8 +61,21 @@ class ConsultationFlow(FlowAdapter):
     def build_select(
         self, transaction_id: str, routing: dict, record: dict, params: dict
     ) -> dict:
-        """Select a coordinator offer returned in the ``on_discover`` catalog."""
-        offer_id = params.get("offerId") or params.get("offer_id")
+        """Select a coordinator offer returned in the ``on_discover`` catalog.
+
+        The frontend may pass the entire catalog object (from ``on_discover``) as
+        ``contract``.  The first offer id is extracted automatically from
+        ``contract.offers[0].id``.  Alternatively ``offerId`` may be supplied
+        directly.  BPP routing is managed by the frontend via ``context``
+        overrides and the polling endpoint.
+        """
+        catalog = params.get("contract") or {}
+        offers = catalog.get("offers") or []
+        offer_id = (
+            params.get("offerId")
+            or params.get("offer_id")
+            or (offers[0].get("id") if offers else None)
+        )
         if not offer_id:
             raise FlowError("offerId is required to select a coordinator")
         contract = {
@@ -119,7 +132,16 @@ class ConsultationFlow(FlowAdapter):
         }
 
     def on_confirmed(self, record: dict, message: dict) -> str | None:
-        """Create the durable ``ResourceRequest`` referral for a confirmed exchange."""
+        """Apply the ``on_confirm`` side effect for the consultation flow.
+
+        When Care is also the BPP (loopback / single-instance deployment), the
+        BPP ``init`` handler has already created a ``ResourceRequest`` with
+        ``status=pending``.  Here we just find that record and mark it approved.
+
+        When Care is a pure BAP (no local BPP), no record exists yet, so we
+        fall through and create it directly with ``status=approved``.
+        """
+        from care.beckn.services.lookup import find_resource_request
         from care.emr.models.patient import Patient
         from care.emr.models.resource_request import ResourceRequest
         from care.emr.resources.resource_request.spec import (
@@ -127,6 +149,24 @@ class ConsultationFlow(FlowAdapter):
             StatusChoices,
         )
         from care.facility.models import Facility
+
+        # Loopback path: BPP init already created the record — find it strictly
+        # by the contract id (== ResourceRequest.external_id) and mark approved.
+        existing = find_resource_request(record, message)
+        if existing:
+            if existing.status != StatusChoices.approved.value:
+                existing.status = StatusChoices.approved.value
+                existing.save(update_fields=["status"])
+                logger.info(
+                    "Consultation on_confirm: approved existing ResourceRequest %s",
+                    existing.external_id,
+                )
+            else:
+                logger.info(
+                    "Consultation on_confirm: ResourceRequest %s already approved",
+                    existing.external_id,
+                )
+            return str(existing.external_id)
 
         contract = (message or {}).get("contract", {}) or {}
         code = ((contract.get("status", {}) or {}).get("code") or "").upper()

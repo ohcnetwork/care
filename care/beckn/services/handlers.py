@@ -34,7 +34,7 @@ from care.beckn.builders.referral import (
     build_on_select,
     build_on_status,
 )
-from care.beckn.config import resolve_origin_facility
+from care.beckn.config import resolve_assigned_facility, resolve_origin_facility
 from care.beckn.constants import FLOW_APPOINTMENT
 from care.beckn.mappers import (
     find_patient_participant,
@@ -95,11 +95,32 @@ def _resolve_system_user():
 # ---------------------------------------------------------------------------
 
 
+def _referral_contact(message: dict) -> dict:
+    """Extract referring-facility contact from a non-patient participant."""
+    contract = get_contract(message)
+    for participant in contract.get("participants", []) or []:
+        attributes = participant.get("participantAttributes", {}) or {}
+        role = attributes.get("participantRole")
+        if role in ("REFERRER", "PROVIDER", "COORDINATOR", "PRACTITIONER"):
+            descriptor = participant.get("descriptor", {}) or {}
+            telecom = attributes.get("telecom") or attributes.get("phone") or ""
+            return {
+                "referring_facility_contact_name": (descriptor.get("name") or "")[:255],
+                "referring_facility_contact_number": str(telecom)[:14],
+            }
+    return {
+        "referring_facility_contact_name": "",
+        "referring_facility_contact_number": "",
+    }
+
+
 def _referral_fields(message: dict) -> dict:
     attributes = get_contract_attributes(message)
     contract = get_contract(message)
-    urgency = attributes.get("clinicalUrgencyTier")
     target_criteria = attributes.get("targetCriteria", {}) or {}
+    urgency = attributes.get("clinicalUrgencyTier") or target_criteria.get(
+        "urgencyTier"
+    )
     specialty = (target_criteria.get("specialty", {}) or {}).get("display") or (
         target_criteria.get("specialty", {}) or {}
     ).get("code")
@@ -115,6 +136,7 @@ def _referral_fields(message: dict) -> dict:
         "emergency": urgency == "EMERGENCY",
         "priority": URGENCY_PRIORITY.get(urgency),
         "category": CategoryChoices.patient_care.value,
+        **_referral_contact(message),
     }
 
 
@@ -137,6 +159,7 @@ def _referral_init(context: dict, message: dict) -> dict:
     attributes = get_contract_attributes(message)
     coordination_id = attributes.get("coordinationId") or contract.get("id")
     transaction_id = (context or {}).get("transactionId")
+    assigned_facility = resolve_assigned_facility(context, message)
 
     with transaction.atomic():
         participant = find_patient_participant(message)
@@ -145,6 +168,7 @@ def _referral_init(context: dict, message: dict) -> dict:
         fields = _referral_fields(message)
         resource_request = ResourceRequest(
             origin_facility=facility,
+            assigned_facility=assigned_facility,
             related_patient=patient,
             status=StatusChoices.pending.value,
             created_by=user,
@@ -173,8 +197,11 @@ def _referral_confirm(context: dict, message: dict) -> dict:
 
     contract = get_contract(message)
     attributes = get_contract_attributes(message)
+    assigned_facility = resolve_assigned_facility(context, message)
     with transaction.atomic():
         resource_request.status = StatusChoices.approved.value
+        if assigned_facility is not None:
+            resource_request.assigned_facility = assigned_facility
         extensions = resource_request.extensions or {}
         beckn = extensions.setdefault("beckn", {})
         # Persist the confirmed contract snapshot for status callbacks.

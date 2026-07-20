@@ -28,6 +28,18 @@ def _facility_external_id_candidates(context: dict, message: dict) -> list:
     ]
 
 
+def _assigned_facility_external_id_candidates(context: dict, message: dict) -> list:
+    context = context or {}
+    attributes = ((message or {}).get("contract", {}) or {}).get(
+        "contractAttributes", {}
+    ) or {}
+    return [
+        context.get("assignedFacilityId"),
+        attributes.get("assignedFacilityId"),
+        attributes.get("targetFacilityId"),
+    ]
+
+
 def _resolve_facility(context: dict, message: dict) -> Facility | None:
     for external_id in _facility_external_id_candidates(context, message):
         facility = _facility_by_external_id(external_id)
@@ -54,11 +66,21 @@ def resolve_origin_facility(context: dict, message: dict) -> Facility | None:
 def resolve_assigned_facility(context: dict, message: dict) -> Facility | None:
     """Resolve the assigned/target facility for a downstream booking (T2).
 
-    Reads the same ``facilityId`` candidates as the origin facility but does
-    **not** fall back to a default: when the target facility is unknown the
+    Reads the assigned/target facility ``external_id`` from the payload, in
+    order:
+
+    1. ``context.assignedFacilityId``
+    2. ``message.contract.contractAttributes.assignedFacilityId``
+    3. ``message.contract.contractAttributes.targetFacilityId``
+
+    Does **not** fall back to a default: when the target facility is unknown the
     referral's ``assigned_facility`` is left unchanged.
     """
-    return _resolve_facility(context, message)
+    for external_id in _assigned_facility_external_id_candidates(context, message):
+        facility = _facility_by_external_id(external_id)
+        if facility:
+            return facility
+    return None
 
 
 def get_default_geo_organization(facility: Facility | None):
