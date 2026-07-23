@@ -1,13 +1,16 @@
 from datetime import timedelta
 
 from django.conf import settings
+from django.db import transaction
 from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied
 
 from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet, EMRUpdateMixin
 from care.emr.models import Encounter, Patient
+from care.emr.models.observation import Observation
 from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
+from care.emr.resources.observation_definition.spec import ObservationStatusChoices
 from care.emr.resources.questionnaire_response.spec import (
     QuestionnaireResponseReadSpec,
     QuestionnaireResponseStatusChoices,
@@ -79,6 +82,18 @@ class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet, EMRUpdateMixin):
             raise PermissionDenied("Permission Denied to update patient questionnaire")
 
         return super().authorize_update(request_obj, model_instance)
+
+    def perform_update(self, instance, validated_data):
+        with transaction.atomic():
+            old_obj = QuestionnaireResponse.objects.get(id=instance.id)
+            if (
+                old_obj.status != instance.status
+                and instance.status
+                == QuestionnaireResponseStatusChoices.entered_in_error.value
+            ):
+                Observation.objects.filter(questionnaire_response=instance).update(
+                    status=ObservationStatusChoices.entered_in_error.value
+                )
 
     def get_queryset(self):
         queryset = (
