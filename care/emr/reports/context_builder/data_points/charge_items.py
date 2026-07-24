@@ -117,7 +117,7 @@ class ChargeItemContextBuilder(QuerysetContextBuilder):
     )
 
     def get_context(self):
-        return ChargeItem.objects.filter(patient=self.parent_context)
+        return getattr(self.parent_context, self.parent_attribute)
 
 
 class AccountChargeItemContextBuilder(ChargeItemContextBuilder):
