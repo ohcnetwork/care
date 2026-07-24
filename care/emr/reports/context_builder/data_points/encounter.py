@@ -248,8 +248,8 @@ class PatientFacilityAppointmentContextBuilder(TokenBookingContextBuilder):
 
 class EncounterAssociatedAppointmentContextBuilder(SingleTokenBookingContextBuilder):
     def get_context(self):
-        return TokenBooking.objects.get(
-            associated_encounter_id=self.parent_context.id,
+        return TokenBooking.objects.filter(
+            associated_encounter_id=self.parent_context.id
         )
 
 

@@ -26,6 +26,9 @@ class ScheduleResourceContextBuilder(SingleObjectContextBuilder):
     resource_type = Field(
         display="Resource Type",
         description="Type of the resource associated with the schedule",
+        mapping=lambda r: RESOURCE_TYPE_CHOICES.get(
+            r.resource_type, r.resource_type.replace("_", " ").title()
+        ),
     )
     user = Field(
         display="User",

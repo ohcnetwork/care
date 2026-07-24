@@ -4,7 +4,7 @@ from care.emr.reports.context_builder.data_points.base import (
     SingleObjectContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.charge_items import (
-    ChargeItemContextBuilder,
+    SingleChargeItemContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.schedule import (
     AvailabilityContextBuilder,
@@ -43,9 +43,6 @@ class TokenSlotContextBuilder(SingleObjectContextBuilder):
 
 
 class TokenBookingContextFields:
-    def get_context(self):
-        return getattr(self.parent_context, self.parent_attribute)
-
     token_slot = Field(
         display="Token Slot",
         description="The token slot associated with the booking",
@@ -72,7 +69,7 @@ class TokenBookingContextFields:
     charge_item = Field(
         display="Charge Item",
         description="The charge item associated with the booking",
-        target_context=ChargeItemContextBuilder,
+        target_context=SingleChargeItemContextBuilder,
     )
     token = Field(
         display="Token",
