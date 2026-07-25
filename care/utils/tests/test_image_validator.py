@@ -60,3 +60,37 @@ class CoverImageValidatorTests(TestCase):
                 "Image size is greater than the maximum allowed size of 2 MB.",
             ],
         )
+
+    def _image_file(self, reported_size: int) -> UploadedFile:
+        image = Image.new("RGB", (10, 10))
+        file = io.BytesIO()
+        image.save(file, format="JPEG")
+        return UploadedFile(file, "test.jpg", "image/jpeg", reported_size)
+
+    def test_min_size_limit_is_reported_verbatim(self):
+        for min_size, expected in [
+            (500, "500 B"),
+            (1536, "1.5 KB"),
+            (10 * 1024, "10 KB"),
+            (10 * 1024 * 1024, "10 MB"),
+        ]:
+            with self.subTest(min_size=min_size):
+                validator = ImageSizeValidator(min_size=min_size)
+                with self.assertRaises(ValidationError) as cm:
+                    validator(self._image_file(1))
+                self.assertEqual(
+                    cm.exception.messages,
+                    [
+                        "Image size is less than the minimum allowed size of "
+                        f"{expected}.",
+                    ],
+                )
+
+    def test_max_size_limit_is_reported_verbatim(self):
+        validator = ImageSizeValidator(max_size=10 * 1024 * 1024)
+        with self.assertRaises(ValidationError) as cm:
+            validator(self._image_file(20 * 1024 * 1024))
+        self.assertEqual(
+            cm.exception.messages,
+            ["Image size is greater than the maximum allowed size of 10 MB."],
+        )
