@@ -1,8 +1,9 @@
 from datetime import date
+from enum import Enum
 
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
-from pydantic import BaseModel, StrictInt
+from pydantic import BaseModel, StrictInt, model_validator
 
 from care.utils.evaluators.evaluation_metric.base import EvaluationMetricBase
 from care.utils.registries.evaluation_metric import (
@@ -11,15 +12,27 @@ from care.utils.registries.evaluation_metric import (
 )
 
 
+class ValueType(str, Enum):
+    years = "years"
+    months = "months"
+    days = "days"
+
+
 class ValueSpec(BaseModel):
     value: StrictInt
-    value_type: str = "years"
+    value_type: ValueType = ValueType.years
 
 
 class RangeSpec(BaseModel):
     min: StrictInt
     max: StrictInt
-    value_type: str = "years"
+    value_type: ValueType = ValueType.years
+
+    @model_validator(mode="after")
+    def validate_range(self):
+        if self.min > self.max:
+            raise ValueError("min value cannot be greater than max value")
+        return self
 
 
 class PatientAgeMetric(EvaluationMetricBase):
@@ -47,11 +60,11 @@ class PatientAgeMetric(EvaluationMetricBase):
         return relativedelta(end, start).normalized()
 
     def convert_value_to_units(self, value, value_type):
-        if value_type == "years":
+        if value_type == ValueType.years:
             return value.years
-        if value_type == "months":
+        if value_type == ValueType.months:
             return value.years * 12 + value.months
-        if value_type == "days":
+        if value_type == ValueType.days:
             return value.years * 365 + value.months * 30 + value.days
         raise ValueError("Invalid value type")
 
