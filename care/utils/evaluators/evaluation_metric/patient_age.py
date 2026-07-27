@@ -2,12 +2,24 @@ from datetime import date
 
 from dateutil.relativedelta import relativedelta
 from django.utils import timezone
+from pydantic import BaseModel, StrictInt
 
 from care.utils.evaluators.evaluation_metric.base import EvaluationMetricBase
 from care.utils.registries.evaluation_metric import (
     AllowedOperations,
     EvaluatorMetricsRegistry,
 )
+
+
+class ValueSpec(BaseModel):
+    value: StrictInt
+    value_type: str = "years"
+
+
+class RangeSpec(BaseModel):
+    min: StrictInt
+    max: StrictInt
+    value_type: str = "years"
 
 
 class PatientAgeMetric(EvaluationMetricBase):
@@ -18,6 +30,14 @@ class PatientAgeMetric(EvaluationMetricBase):
         AllowedOperations.in_range.value,
         AllowedOperations.equality.value,
     ]
+
+    @classmethod
+    def validate_rule(cls, operation, value):
+        super().validate_rule(operation, value)
+        if operation == AllowedOperations.equality.value:
+            ValueSpec.model_validate(value)
+        elif operation == AllowedOperations.in_range.value:
+            RangeSpec.model_validate(value)
 
     def get_value(self):
         start = self.context_object.date_of_birth or date(
