@@ -83,7 +83,7 @@ class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet, EMRUpdateMixin):
 
         return super().authorize_update(request_obj, model_instance)
 
-    def perform_update(self, instance, validated_data):
+    def perform_update(self, instance):
         with transaction.atomic():
             old_obj = QuestionnaireResponse.objects.get(id=instance.id)
             if (
@@ -94,6 +94,7 @@ class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet, EMRUpdateMixin):
                 Observation.objects.filter(questionnaire_response=instance).update(
                     status=ObservationStatus.entered_in_error.value
                 )
+            super().perform_update(instance)
 
     def get_queryset(self):
         queryset = (

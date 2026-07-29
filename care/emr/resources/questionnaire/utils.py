@@ -9,10 +9,15 @@ from django.utils import timezone
 from rest_framework.exceptions import ValidationError
 
 from care.emr.models.encounter import Encounter
+from care.emr.models.facility_resource import (
+    FacilityResourceObservation,
+    FacilityResourceQuestionnaireResponse,
+)
 from care.emr.models.observation import Observation
 from care.emr.models.patient import Patient
 from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
 from care.emr.models.valueset import ValueSet
+from care.emr.resources.observation.resource_spec import ResourceObservationSpec
 from care.emr.resources.observation.spec import ObservationSpec, ObservationStatus
 from care.emr.resources.questionnaire.spec import QuestionnaireAuthContext, QuestionType
 from care.emr.resources.valueset.spec import ValueSetAuthContext
@@ -738,5 +743,85 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):
             bulk.append(temp)
 
         Observation.objects.bulk_create(bulk)
+
+    return questionnaire_response
+
+
+def handle_resource_response(questionnaire_obj: Questionnaire, results, user, facility):
+    """
+    Generate observations and questionnaire responses after validation for resource questionnaires
+    """
+    if questionnaire_obj.status != "active":
+        raise ValidationError(
+            {"type": "questionnaire_inactive", "msg": "Questionnaire is inactive"}
+        )
+
+    # Construct questionnaire response
+
+    questionnaire_mapping = {}
+    errors = []
+
+    responses = create_responses_mapping(results.results)
+    if not responses:
+        raise ValidationError(
+            {
+                "type": "questionnaire_empty",
+                "msg": "Empty Questionnaire cannot be submitted",
+            }
+        )
+
+    questionnaire_obj.questions = collect_and_validate_enable_when_questions(
+        questionnaire_obj.questions, responses, questionnaire_obj, errors
+    )
+
+    for question in questionnaire_obj.questions:
+        validate_question_result(
+            question,
+            responses,
+            errors,
+            parent=None,
+            questionnaire_mapping=questionnaire_mapping,
+        )
+    if errors:
+        raise ValidationError({"errors": errors})
+    # Validate and create observation objects
+    observations = convert_to_observation_spec(
+        {"questions": questionnaire_obj.questions}, responses
+    )
+
+    # Create questionnaire response
+    json_results = results.model_dump(mode="json", exclude_defaults=True)
+    questionnaire_response = FacilityResourceQuestionnaireResponse.objects.create(
+        facility=facility,
+        questionnaire=questionnaire_obj,
+        subject_type=questionnaire_obj.subject_type,
+        subject_id=results.resource_id,
+        responses=json_results["results"],
+        cleaned_response=build_cleaned_response(questionnaire_obj.questions, responses),
+        created_by=user,
+        updated_by=user,
+    )
+
+    # Bulk create observations
+    observations_objects = [
+        ResourceObservationSpec(
+            **observation,
+            subject_type=questionnaire_obj.subject_type,
+            subject_id=results.resource_id,
+            data_entered_by_id=user.id,
+            created_by_id=user.id,
+            updated_by_id=user.id,
+            facility_id=facility.id,
+            questionnaire_response_id=questionnaire_response.id,
+        )
+        for observation in observations
+    ]
+    # Serialize and return questionnaire response
+    bulk = []
+    for observation in observations_objects:
+        temp = observation.de_serialize()
+        bulk.append(temp)
+
+    FacilityResourceObservation.objects.bulk_create(bulk)
 
     return questionnaire_response

@@ -88,6 +88,9 @@ class QuestionnaireStatus(str, Enum):
 class SubjectType(str, Enum):
     patient = "patient"
     encounter = "encounter"
+    location = "location"
+    device = "device"
+    facility = "facility"
 
 
 class QuestionnaireBaseSpec(EMRResource):

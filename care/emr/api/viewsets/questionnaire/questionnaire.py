@@ -8,6 +8,10 @@ from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.api.viewsets.favorites import EMRFavoritesMixin
+from care.emr.api.viewsets.questionnaire.resource_authz import (
+    authorize_resource_questionnaire_submission,
+    get_resource_facility,
+)
 from care.emr.locks.questionnaire import QuestionnaireLock
 from care.emr.models import (
     Encounter,
@@ -16,6 +20,8 @@ from care.emr.models import (
     Questionnaire,
     QuestionnaireOrganization,
 )
+from care.emr.models.device import Device
+from care.emr.models.location import FacilityLocation
 from care.emr.models.organization import FacilityOrganization
 from care.emr.models.questionnaire import (
     FormSubmission,
@@ -34,7 +40,14 @@ from care.emr.resources.questionnaire.spec import (
     QuestionnaireUpdateSpec,
     SubjectType,
 )
-from care.emr.resources.questionnaire.utils import handle_response
+from care.emr.resources.questionnaire.utils import (
+    handle_resource_response,
+    handle_response,
+)
+from care.emr.resources.questionnaire_response.resource_spce import (
+    ResourceQuestionnaireResponseReadSpec,
+    ResourceQuestionnaireSubmitRequest,
+)
 from care.emr.resources.questionnaire_response.spec import (
     QuestionnaireResponseReadSpec,
     QuestionnaireSubmitRequest,
@@ -196,6 +209,50 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
         queryset = super().get_queryset()
         return AuthorizationController.call(
             "get_filtered_questionnaires", queryset, self.request.user
+        )
+
+    @extend_schema(
+        request=ResourceQuestionnaireSubmitRequest,
+        responses=ResourceQuestionnaireResponseReadSpec,
+    )
+    @action(detail=True, methods=["POST"])
+    def submit_resource(self, request, *args, **kwargs):
+        request_params = ResourceQuestionnaireSubmitRequest(**request.data)
+        questionnaire = self.get_object()
+        if questionnaire.latest_revision:
+            raise ValidationError(
+                "This Questionniare is a past revision, please submit to the latest revision"
+            )
+        resource = None
+        if questionnaire.subject_type == SubjectType.location:
+            resource = get_object_or_404(
+                FacilityLocation, external_id=request_params.resource_id
+            )
+        elif questionnaire.subject_type == SubjectType.device:
+            resource = get_object_or_404(Device, external_id=request_params.resource_id)
+        elif questionnaire.subject_type == SubjectType.facility:
+            resource = get_object_or_404(
+                Facility, external_id=request_params.resource_id
+            )
+        else:
+            err = f"Invalid resource type: {questionnaire.subject_type}"
+            raise ValidationError(err)
+        authorize_resource_questionnaire_submission(
+            questionnaire.subject_type, resource, request.user
+        )
+        facility = get_resource_facility(questionnaire.subject_type, resource)
+        if questionnaire.facility_id and facility.id != questionnaire.facility_id:
+            raise PermissionDenied(
+                "Resource facility does not match questionnaire facility"
+            )
+        with transaction.atomic():
+            response = handle_resource_response(
+                questionnaire, request_params, request.user, facility
+            )
+            response.revision = questionnaire.internal_revision
+            response.save(update_fields=["revision"])
+        return Response(
+            ResourceQuestionnaireResponseReadSpec.serialize(response).to_json()
         )
 
     @extend_schema(
