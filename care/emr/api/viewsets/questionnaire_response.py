@@ -10,7 +10,7 @@ from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet, EMRUpdateMixin
 from care.emr.models import Encounter, Patient
 from care.emr.models.observation import Observation
 from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
-from care.emr.resources.observation_definition.spec import ObservationStatusChoices
+from care.emr.resources.observation.spec import ObservationStatus
 from care.emr.resources.questionnaire_response.spec import (
     QuestionnaireResponseReadSpec,
     QuestionnaireResponseStatusChoices,
@@ -92,7 +92,7 @@ class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet, EMRUpdateMixin):
                 == QuestionnaireResponseStatusChoices.entered_in_error.value
             ):
                 Observation.objects.filter(questionnaire_response=instance).update(
-                    status=ObservationStatusChoices.entered_in_error.value
+                    status=ObservationStatus.entered_in_error.value
                 )
 
     def get_queryset(self):
