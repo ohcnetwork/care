@@ -59,6 +59,43 @@ class ValueSetFilter(filters.FilterSet):
     status = filters.CharFilter(field_name="status", lookup_expr="iexact")
 
 
+def get_closest_valueset(queryset, slug, user, facility=None):
+    valuesets = queryset.filter(slug=slug)
+    valueset = None
+    if facility:
+        preference = UserFacilityValueSetPreference.objects.filter(
+            user=user,
+            facility__external_id=facility,
+            slug=slug,
+        ).first()
+        preferred_valueset = None
+        if preference:
+            preferred_valueset = valuesets.filter(id=preference.valueset.id).first()
+        if preferred_valueset:
+            valueset = preferred_valueset
+        else:
+            valuesets = valuesets.filter(
+                Q(
+                    auth_context=ValueSetAuthContext.facility,
+                    facility__external_id=facility,
+                )
+                | Q(
+                    auth_context=ValueSetAuthContext.instance,
+                )
+            )
+    else:
+        valuesets = valuesets.filter(
+            auth_context=ValueSetAuthContext.instance,
+        )
+    if not valueset:
+        for valueset_option in valuesets.order_by("auth_context"):
+            valueset = valueset_option
+            break
+    if not valueset:
+        raise ValidationError("No valueset found")
+    return valueset
+
+
 class ValueSetViewSet(EMRModelViewSet):
     database_model = ValueSet
     pydantic_model = ValueSetCreateSpec
@@ -262,38 +299,9 @@ class ValueSetViewSet(EMRModelViewSet):
         request_params = request_data.model_dump(exclude={"slug", "facility"})
 
         valuesets = self.get_queryset().filter(slug=request_data.slug)
-        valueset = None
-        if request_data.facility:
-            preference = UserFacilityValueSetPreference.objects.filter(
-                user=request.user,
-                facility__external_id=request_data.facility,
-                slug=request_data.slug,
-            ).first()
-            preferred_valueset = None
-            if preference:
-                preferred_valueset = valuesets.filter(id=preference.valueset.id).first()
-            if preferred_valueset:
-                valueset = preferred_valueset
-            else:
-                valuesets = valuesets.filter(
-                    Q(
-                        auth_context=ValueSetAuthContext.facility,
-                        facility__external_id=request_data.facility,
-                    )
-                    | Q(
-                        auth_context=ValueSetAuthContext.instance,
-                    )
-                )
-        else:
-            valuesets = valuesets.filter(
-                auth_context=ValueSetAuthContext.instance,
-            )
-        if not valueset:
-            for valueset_option in valuesets.order_by("auth_context"):
-                valueset = valueset_option
-                break
-        if not valueset:
-            raise ValidationError("No valueset found")
+        valueset = get_closest_valueset(
+            valuesets, request_data.slug, request.user, facility=request_data.facility
+        )
         results = valueset.search(**request_params)
         return Response(
             {
@@ -354,6 +362,30 @@ class ValueSetViewSet(EMRModelViewSet):
             try:
                 pref = UserValueSetPreference.objects.get(
                     user=request.user, valueset=self.get_object()
+                )
+                favs = pref.favorite_codes
+            except UserValueSetPreference.DoesNotExist:
+                favs = []
+            cache.set(cache_key, favs)
+        return Response(favs)
+
+    @action(detail=False, methods=["GET"])
+    def favourites_by_slug(self, request, *args, **kwargs):
+        facility = request.GET.get("facility")
+        closest_valueset = get_closest_valueset(
+            self.get_queryset(),
+            request.GET.get("slug"),
+            request.user,
+            facility=facility,
+        )
+        valueset_uuid = str(closest_valueset.external_id)
+        user_id = request.user.external_id
+        cache_key = self.get_favourites_cache_key(valueset_uuid, user_id)
+        favs = cache.get(cache_key)
+        if favs is None:
+            try:
+                pref = UserValueSetPreference.objects.get(
+                    user=request.user, valueset=closest_valueset
                 )
                 favs = pref.favorite_codes
             except UserValueSetPreference.DoesNotExist:
@@ -450,6 +482,20 @@ class ValueSetViewSet(EMRModelViewSet):
     @action(detail=True, methods=["GET"])
     def recent_views(self, request, *args, **kwargs):
         valueset_uuid = kwargs.get(self.lookup_field)
+        user_id = request.user.external_id
+        cache_key = self.get_recent_view_cache_key(valueset_uuid, user_id)
+        return Response(RecentViewsManager.get_recent_views(cache_key))
+
+    @action(detail=False, methods=["GET"])
+    def recent_views_by_slug(self, request, *args, **kwargs):
+        facility = request.GET.get("facility")
+        closest_valueset = get_closest_valueset(
+            self.get_queryset(),
+            request.GET.get("slug"),
+            request.user,
+            facility=facility,
+        )
+        valueset_uuid = str(closest_valueset.external_id)
         user_id = request.user.external_id
         cache_key = self.get_recent_view_cache_key(valueset_uuid, user_id)
         return Response(RecentViewsManager.get_recent_views(cache_key))
