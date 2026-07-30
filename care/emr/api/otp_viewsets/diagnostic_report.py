@@ -16,6 +16,7 @@ class OTPDiagnosticReportFilters(filters.FilterSet):
     patient = filters.UUIDFilter(field_name="patient__external_id")
     status = filters.CharFilter(lookup_expr="iexact")
     facility = filters.UUIDFilter(field_name="facility__external_id")
+    encounter = filters.UUIDFilter(field_name="encounter__external_id")
     created_date = filters.DateTimeFromToRangeFilter()
 
 

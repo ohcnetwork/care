@@ -17,6 +17,7 @@ class OTPMedicationPrescriptionFilter(filters.FilterSet):
     status = MultiSelectFilter(field_name="status")
     facility = filters.UUIDFilter(field_name="encounter__facility__external_id")
     patient = filters.UUIDFilter(field_name="patient__external_id")
+    encounter = filters.UUIDFilter(field_name="encounter__external_id")
     created_date = filters.DateTimeFromToRangeFilter()
 
 
