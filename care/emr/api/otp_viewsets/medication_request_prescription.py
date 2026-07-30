@@ -1,5 +1,4 @@
 from django_filters import rest_framework as filters
-from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import EMRBaseViewSet, EMRListMixin, EMRRetrieveMixin
 from care.emr.api.viewsets.medication_request_prescription import (
@@ -25,10 +24,11 @@ class OTPMedicationRequestPrescriptionViewSet(
     pydantic_read_model = MedicationRequestPrescriptionReadSpec
     pydantic_retrieve_model = MedicationRequestPrescriptionRetrieveMedicationsSpec
     filterset_class = MedicationRequestPrescriptionFilter
-    ordering_fields = ["created_date", "modified_date"]
-    filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
+    filter_backends = [filters.DjangoFilterBackend]
 
     def get_queryset(self):
-        return MedicationRequestPrescription.objects.filter(
-            patient__phone_number=self.request.user.phone_number
+        return (
+            super()
+            .get_queryset()
+            .filter(patient__phone_number=self.request.user.phone_number)
         )

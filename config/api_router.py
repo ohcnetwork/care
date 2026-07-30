@@ -144,7 +144,7 @@ router.register(
 router.register(
     "otp/medication_prescription",
     OTPMedicationRequestPrescriptionViewSet,
-    basename="otp-medication-request-prescription",
+    basename="otp-medication-prescription",
 )
 
 router.register("batch_requests", BatchRequestView, basename="batch-requests")
