@@ -1,7 +1,6 @@
 from django_filters import rest_framework as filters
 
 from care.emr.api.viewsets.base import EMRBaseViewSet, EMRListMixin, EMRRetrieveMixin
-from care.emr.api.viewsets.diagnostic_report import DiagnosticReportFilters
 from care.emr.models.diagnostic_report import DiagnosticReport
 from care.emr.resources.diagnostic_report.spec import (
     DiagnosticReportListSpec,
@@ -13,13 +12,20 @@ from config.patient_otp_authentication import (
 )
 
 
+class OTPDiagnosticReportFilters(filters.FilterSet):
+    patient = filters.UUIDFilter(field_name="patient__external_id")
+    status = filters.CharFilter(lookup_expr="iexact")
+    facility = filters.UUIDFilter(field_name="facility__external_id")
+    created_date = filters.DateTimeFromToRangeFilter()
+
+
 class OTPDiagnosticReportViewSet(EMRRetrieveMixin, EMRBaseViewSet, EMRListMixin):
     authentication_classes = [JWTTokenPatientAuthentication]
     permission_classes = [OTPAuthenticatedPermission]
     database_model = DiagnosticReport
     pydantic_read_model = DiagnosticReportListSpec
     pydantic_retrieve_model = DiagnosticReportRetrieveSpec
-    filterset_class = DiagnosticReportFilters
+    filterset_class = OTPDiagnosticReportFilters
     filter_backends = [filters.DjangoFilterBackend]
 
     def get_queryset(self):
