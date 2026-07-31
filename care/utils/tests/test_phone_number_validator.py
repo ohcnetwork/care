@@ -131,13 +131,13 @@ class PhoneNumberValidatorTests(TestCase):
             with self.assertRaises(ValidationError, msg=f"Failed for {number}"):
                 self.support_validator(number)
 
-    def test_types_must_be_non_empty_iterable(self):
-        invalid_types = ["mobile", ()]
+    def test_types_must_be_non_empty_collection(self):
+        invalid_types = ["mobile", (), (type_ for type_ in ("mobile",))]
 
         for types in invalid_types:
             with self.assertRaisesMessage(
                 ValueError,
-                "The `types` argument must be a non-empty iterable.",
+                "The `types` argument must be a non-empty collection.",
             ):
                 PhoneNumberValidator(types=types)
 
@@ -148,9 +148,22 @@ class PhoneNumberValidatorTests(TestCase):
         ):
             PhoneNumberValidator(types=("mobile", "pager"))
 
-    def test_types_accepts_generator(self):
-        types = (type_ for type_ in ("mobile", "landline"))
-        validator = PhoneNumberValidator(types=types)
+    def test_unhashable_types_raise_value_error(self):
+        with self.assertRaisesMessage(
+            ValueError,
+            "Unsupported phone number type(s): [].",
+        ):
+            PhoneNumberValidator(types=([],))
+
+    def test_non_string_types_raise_value_error(self):
+        with self.assertRaisesMessage(
+            ValueError,
+            "Unsupported phone number type(s): 1.",
+        ):
+            PhoneNumberValidator(types=(1,))
+
+    def test_types_accepts_reiterable_collection(self):
+        validator = PhoneNumberValidator(types=["mobile", "landline"])
 
         self.assertIsNone(validator("+919876543210"))
         self.assertIsNone(validator("+914902626488"))

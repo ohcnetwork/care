@@ -1,5 +1,5 @@
 import re
-from collections.abc import Iterable
+from collections.abc import Collection, Iterable
 from fractions import Fraction
 from pathlib import Path
 
@@ -103,19 +103,23 @@ class PhoneNumberValidator(RegexValidator):
         "support": support_number_regex,
     }
 
-    def __init__(self, types: Iterable[str], *args, **kwargs):
-        if not isinstance(types, Iterable) or isinstance(types, str):
-            msg = "The `types` argument must be a non-empty iterable."
+    def __init__(self, types: Collection[str], *args, **kwargs):
+        if not isinstance(types, Collection) or isinstance(types, str):
+            msg = "The `types` argument must be a non-empty collection."
             raise ValueError(msg)
 
         types = tuple(types)
         if not types:
-            msg = "The `types` argument must be a non-empty iterable."
+            msg = "The `types` argument must be a non-empty collection."
             raise ValueError(msg)
 
-        unsupported_types = [type_ for type_ in types if type_ not in self.regex_map]
+        unsupported_types = [
+            type_
+            for type_ in types
+            if not isinstance(type_, str) or type_ not in self.regex_map
+        ]
         if unsupported_types:
-            msg = f"Unsupported phone number type(s): {', '.join(unsupported_types)}."
+            msg = f"Unsupported phone number type(s): {', '.join(str(type_) for type_ in unsupported_types)}."
             raise ValueError(msg)
 
         self.types = types
