@@ -104,8 +104,18 @@ class PhoneNumberValidator(RegexValidator):
     }
 
     def __init__(self, types: Iterable[str], *args, **kwargs):
-        if not isinstance(types, Iterable) or isinstance(types, str) or len(types) == 0:
+        if not isinstance(types, Iterable) or isinstance(types, str):
             msg = "The `types` argument must be a non-empty iterable."
+            raise ValueError(msg)
+
+        types = tuple(types)
+        if not types:
+            msg = "The `types` argument must be a non-empty iterable."
+            raise ValueError(msg)
+
+        unsupported_types = [type_ for type_ in types if type_ not in self.regex_map]
+        if unsupported_types:
+            msg = f"Unsupported phone number type(s): {', '.join(unsupported_types)}."
             raise ValueError(msg)
 
         self.types = types
