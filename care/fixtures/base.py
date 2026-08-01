@@ -1,4 +1,5 @@
 import json
+import logging
 import re
 import secrets
 import string
@@ -29,6 +30,8 @@ from care.emr.resources.location.spec import (
 from care.emr.resources.location.spec import StatusChoices as LocationStatusChoices
 from care.emr.resources.patient.spec import BloodGroupChoices, GenderChoices
 from care.facility.models.facility import REVERSE_FACILITY_TYPES, FacilityFeature
+
+logger = logging.getLogger(__name__)
 
 
 class FixtureError(Exception):
@@ -257,8 +260,19 @@ class CareFixtureBase:
         return self.post(reverse("encounter-list"), data)
 
     def create_questionnaire(self, organizations, data):
-        questionnaire_data = {**data, "organizations": organizations}
-        return self.post(reverse("questionnaire-list"), questionnaire_data)
+        # QuestionnaireCreateSpec does not accept "organizations"; visibility is
+        # granted through the set_organizations action after creation.
+        questionnaire_data = {k: v for k, v in data.items() if k != "organizations"}
+        questionnaire = self.post(reverse("questionnaire-list"), questionnaire_data)
+        if organizations:
+            self.post(
+                reverse(
+                    "questionnaire-set-organizations",
+                    kwargs={"external_id": questionnaire.id},
+                ),
+                {"organizations": organizations},
+            )
+        return questionnaire
 
     def load_questionnaires_from_file(
         self, organizations, path="data/questionnaire_fixtures.json"
@@ -273,8 +287,12 @@ class CareFixtureBase:
             try:
                 result = self.create_questionnaire(organizations, questionnaire_data)
                 results.append(result)
-            except FixtureError:
-                pass
+            except FixtureError as exc:
+                logger.warning(
+                    "Skipped questionnaire fixture %r: %s",
+                    questionnaire_data.get("slug", "<no slug>"),
+                    exc,
+                )
         return results
 
     def create_resource_category(self, facility_id, title, resource_type, **kwargs):
@@ -660,6 +678,10 @@ class CareFixtureBase:
         for entry in templates:
             try:
                 results.append(self.create_template(facility=facility, **entry))
-            except FixtureError:
-                pass
+            except FixtureError as exc:
+                logger.warning(
+                    "Skipped template fixture %r: %s",
+                    entry.get("slug_value", "<no slug>"),
+                    exc,
+                )
         return results
