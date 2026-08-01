@@ -34,6 +34,11 @@ What it seeds:
   Yes/No, numeric greater/less, string equals, 2-condition "any"
   behavior, a protected ``disabled_display``), repeating questions and a
   LOINC-bound observation question.
+- ``e2e-units`` — unit-semantics coverage: integer/decimal questions with
+  a question-level ``unit`` and a quantity question whose
+  ``answer_value_set`` is the ``e2e-dose-units`` instance valueset (three
+  enumerated UCUM units: mg/g/kg — small enough to render as inline unit
+  chips in the frontend).
 - ``e2e-subject-location`` / ``e2e-subject-device`` /
   ``e2e-subject-facility`` — minimal facility questionnaires covering the
   remaining subject types.
@@ -65,6 +70,7 @@ from care.emr.resources.encounter.constants import (
 from care.emr.resources.encounter.constants import (
     StatusChoices as EncounterStatusChoices,
 )
+from care.emr.models.valueset import ValueSet
 from care.fixtures.base import CareFixtureBase, FixtureError
 from care.fixtures.context import care_fixture_context
 
@@ -86,6 +92,29 @@ UCUM_MG = {
     "code": "mg",
     "display": "milligram",
 }
+UCUM_G = {
+    "system": "http://unitsofmeasure.org",
+    "code": "g",
+    "display": "gram",
+}
+UCUM_KG = {
+    "system": "http://unitsofmeasure.org",
+    "code": "kg",
+    "display": "kilogram",
+}
+UCUM_PER_MIN = {
+    "system": "http://unitsofmeasure.org",
+    "code": "/min",
+    "display": "per minute",
+}
+UCUM_CEL = {
+    "system": "http://unitsofmeasure.org",
+    "code": "Cel",
+    "display": "degree Celsius",
+}
+
+UNITS_VALUESET_SLUG = "e2e-dose-units"
+UNITS_QUESTIONNAIRE_SLUG = "e2e-units"
 LOINC_HEART_RATE = {
     "system": "http://loinc.org",
     "code": "8867-4",
@@ -243,6 +272,24 @@ def kitchen_sink_questions(slug):
     ]
 
 
+def units_questions(slug):
+    """Unit-semantics coverage: integer/decimal with a question-level unit
+    (label display) and a quantity whose ``answer_value_set`` is a small,
+    bounded unit valueset (renders as inline unit chips in the frontend)."""
+    q = lambda *args, **kwargs: simple_question(slug, *args, **kwargs)  # noqa: E731
+    return [
+        q("q-int-unit", "integer", "Resting heart rate", unit=UCUM_PER_MIN),
+        q("q-dec-unit", "decimal", "Body temperature", unit=UCUM_CEL),
+        q(
+            "q-qty-vs",
+            "quantity",
+            "Dose given",
+            answer_value_set={"slug": UNITS_VALUESET_SLUG},
+            unit=UCUM_MG,
+        ),
+    ]
+
+
 def questionnaire_definition(slug, title, questions, subject_type="encounter"):
     return {
         "slug": slug,
@@ -342,6 +389,47 @@ class QuestionnaireE2EFixtures(CareFixtureBase):
         return self.put(url, data)
 
 
+def seed_units_valueset(base):
+    """Instance valueset with three enumerated UCUM dose units (mg/g/kg).
+
+    Referenced by slug from the ``e2e-units`` quantity question, so it must
+    exist before the questionnaires are created (the questionnaire spec
+    validates slug references against instance valuesets). The fixture
+    client is a superuser, which instance-valueset creation requires.
+    """
+    if ValueSet.objects.filter(
+        slug=UNITS_VALUESET_SLUG, auth_context="instance", deleted=False
+    ).exists():
+        log(f"  valueset {UNITS_VALUESET_SLUG}: exists, skipping")
+        return
+    base.post(
+        reverse("value-set-list"),
+        {
+            "slug": UNITS_VALUESET_SLUG,
+            "name": "E2E Dose Units",
+            "description": "E2E fixture: bounded UCUM dose units (mg/g/kg)",
+            "status": "active",
+            "auth_context": "instance",
+            "inherited": False,
+            "compose": {
+                "include": [
+                    {
+                        "system": "http://unitsofmeasure.org",
+                        "concept": [
+                            {"code": code["code"], "display": code["display"]}
+                            for code in (UCUM_MG, UCUM_G, UCUM_KG)
+                        ],
+                    }
+                ],
+                # Explicit empty exclude: ValueSet.create_composition iterates
+                # compose.exclude unguarded, so omitting it breaks $expand.
+                "exclude": [],
+            },
+        },
+    )
+    log(f"  valueset {UNITS_VALUESET_SLUG}: created")
+
+
 def seed_questionnaires(base, existing, facility, general_medicine, admin_org, geo_org):
     facility_org_ids = [admin_org["id"], general_medicine["id"]]
 
@@ -375,6 +463,16 @@ def seed_questionnaires(base, existing, facility, general_medicine, admin_org, g
             "e2e-kitchen-sink-facility",
             "E2E Kitchen Sink (Facility)",
             kitchen_sink_questions("e2e-kitchen-sink-facility"),
+        ),
+        auth_context="facility",
+        tag_orgs=True,
+    )
+
+    create(
+        questionnaire_definition(
+            UNITS_QUESTIONNAIRE_SLUG,
+            "E2E Units Questionnaire",
+            units_questions(UNITS_QUESTIONNAIRE_SLUG),
         ),
         auth_context="facility",
         tag_orgs=True,
@@ -547,6 +645,9 @@ def load_fixtures(base):
     geo_org = base.find_geo_organization(GEO_ORG_NAME)
     existing = base.existing_questionnaires_by_slug()
     log("Resolved facility, organizations and existing questionnaires")
+
+    seed_units_valueset(base)
+    log("Loading E2E units valueset completed")
 
     seed_questionnaires(
         base, existing, facility, general_medicine, admin_org, geo_org
