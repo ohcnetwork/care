@@ -96,6 +96,16 @@ class CareFixtureBase:
             raise FixtureError(msg)
         return to_attr_dict(response.data)
 
+    def put(self, url, data):
+        response = self.client.put(url, data, format="json")
+        if response.status_code not in (
+            http_status.HTTP_200_OK,
+            http_status.HTTP_201_CREATED,
+        ):
+            msg = f"PUT {url} failed ({response.status_code}): {response.data}"
+            raise FixtureError(msg)
+        return to_attr_dict(response.data)
+
     def patch(self, url, data):
         response = self.client.patch(url, data, format="json")
         if response.status_code not in (
