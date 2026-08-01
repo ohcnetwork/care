@@ -54,6 +54,7 @@ from care.emr.resources.questionnaire_response.spec import (
 )
 from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
+from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.lock import ObjectLocked
 from care.utils.shortcuts import get_object_or_404
 
@@ -67,7 +68,9 @@ class ParentRevisionFilter(filters.UUIDFilter):
 
 class QuestionnaireFilter(filters.FilterSet):
     title = filters.CharFilter(field_name="title", lookup_expr="icontains")
-    subject_type = filters.CharFilter(field_name="subject_type", lookup_expr="iexact")
+    subject_type = MultiSelectFilter(field_name="subject_type")
+    auth_context = filters.CharFilter(field_name="auth_context", lookup_expr="iexact")
+    facility = filters.UUIDFilter(field_name="facility__external_id")
     status = filters.CharFilter(field_name="status", lookup_expr="iexact")
     parent_revision = ParentRevisionFilter()
 

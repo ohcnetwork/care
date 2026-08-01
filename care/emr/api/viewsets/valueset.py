@@ -57,6 +57,8 @@ class ValueSetSlugPreference(BaseModel):
 class ValueSetFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
     status = filters.CharFilter(field_name="status", lookup_expr="iexact")
+    auth_context = filters.CharFilter(field_name="auth_context", lookup_expr="iexact")
+    facility = filters.UUIDFilter(field_name="facility__external_id")
 
 
 def get_closest_valueset(queryset, slug, user, facility=None):
