@@ -37,9 +37,12 @@ class QuerysetEnablerMixin:
         return self.get_env_value(self.config_key())
 
     def apply_default_filters(self, queryset):
+        read_filters = self.get_read_filters()
+        if not read_filters:
+            return queryset.none()
         query_params = self.request.query_params
         allowed_filters = set(getattr(self.filterset_class, "base_filters", {}))
-        for filter_config in self.get_read_filters():
+        for filter_config in read_filters:
             filter_name = filter_config.get("name")
             properties = filter_config.get("properties", {})
             if not filter_name or filter_name in query_params:
@@ -63,4 +66,7 @@ class QuerysetEnablerMixin:
     def get_queryset(self):
         if not settings.OTP_QUERYSET_ENABLED:
             return self.database_model.objects.none()
-        return self.apply_default_filters(super().get_queryset())
+        queryset = super().get_queryset()
+        if self.action == "list":
+            return self.apply_default_filters(queryset)
+        return queryset
