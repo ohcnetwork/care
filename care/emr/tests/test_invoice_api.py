@@ -200,6 +200,147 @@ class InvoiceAPITestBase(CareAPITestBase):
             "Account is not associated with the facility",
         )
 
+        # testcases for update invoice
+
+    def test_update_invoice_with_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        invoice = self.create_invoice()
+        data = self.generate_invoice_data(title="Updated Invoice Title")
+        response = self.client.put(
+            self.get_detail_url(invoice.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertEqual(response_data["title"], "Updated Invoice Title")
+
+    def test_update_invoice_with_user_without_write_permission(self):
+        self.client.force_authenticate(user=self.user)
+        permissions = [
+            InvoicePermissions.can_read_invoice.name,
+        ]
+        self.role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        data = self.generate_invoice_data(title="Updated Invoice Title")
+        response = self.client.put(
+            self.get_detail_url(invoice.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Cannot write invoice")
+
+    def test_update_invoice_with_user_with_permission(self):
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        data = self.generate_invoice_data(title="Updated Invoice Title")
+        response = self.client.put(
+            self.get_detail_url(invoice.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertEqual(response_data["title"], "Updated Invoice Title")
+
+    def test_update_invoice_with_cancelled_status(self):
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice(status=InvoiceStatusOptions.cancelled.value)
+        data = self.generate_invoice_data(title="Updated Invoice Title")
+        response = self.client.put(
+            self.get_detail_url(invoice.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"], "Invoice is already cancelled"
+        )
+
+    def test_update_invoice_to_cancelled_status(self):
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        data = self.generate_invoice_data(status=InvoiceStatusOptions.cancelled.value)
+        response = self.client.put(
+            self.get_detail_url(invoice.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        response_data = response.data
+        self.assertEqual(
+            response_data["errors"][0]["msg"],
+            "Call the cancel invoice API to cancel the invoice",
+        )
+
+    def test_update_invoice_with_no_charge_items_and_issued_status(self):
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice(charge_items=[])
+        data = self.generate_invoice_data(status=InvoiceStatusOptions.issued.value)
+        response = self.client.put(
+            self.get_detail_url(invoice.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        response_data = response.data
+        self.assertEqual(
+            response_data["errors"][0]["msg"],
+            "Invoice must have at least one charge item",
+        )
+
+    def test_update_issued_invoice_to_draft_status(self):
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice(status=InvoiceStatusOptions.issued.value)
+        data = self.generate_invoice_data(status=InvoiceStatusOptions.draft.value)
+        response = self.client.put(
+            self.get_detail_url(invoice.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        response_data = response.data
+        self.assertEqual(response_data["errors"][0]["msg"], "Invoice is already issued")
+
+    def test_update_balanced_invoice(self):
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice(status=InvoiceStatusOptions.balanced.value)
+        data = self.generate_invoice_data(title="Updated Invoice Title")
+        response = self.client.put(
+            self.get_detail_url(invoice.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        response_data = response.data
+        self.assertEqual(
+            response_data["errors"][0]["msg"], "Invoice is already balanced"
+        )
+
+    def test_update_invoice_from_draft_to_balanced_status(self):
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        data = self.generate_invoice_data(status=InvoiceStatusOptions.balanced.value)
+        response = self.client.put(
+            self.get_detail_url(invoice.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        response_data = response.data
+        self.assertEqual(
+            response_data["errors"][0]["msg"],
+            "Invoice needs to be issued before balancing",
+        )
+
 
 # class TestAttachAccountToInvoice(CareAPITestBase):
 #     def setUp(self):
