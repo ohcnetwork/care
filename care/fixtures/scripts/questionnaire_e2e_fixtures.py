@@ -63,10 +63,12 @@ What it seeds:
   ``time_of_death``, ``encounter``) so the required-section-blocks-submit
   path has a fixture to exercise; the other six types already have
   row-level validation coverage and don't need a dedicated variant.
-- ``e2e-structured-unknown`` — a required structured question whose
+- ``e2e-structured-unknown`` / ``e2e-structured-unknown-optional`` — a
+  required (resp. non-required) structured question whose
   ``structured_type`` (``x_e2e.missing``) is a namespaced plugin id no
-  build registers, plus a plain string question, for hard-block /
-  unknown-type specs.
+  build registers, plus a plain string question, pinning both halves of
+  hard-block behavior: required blocks Save with a named error;
+  non-required is skipped and Save succeeds with only the plain answer.
 - ``e2e-structured-kitchen-sink`` — several structured types (allergy,
   diagnosis, medication request, encounter, files) plus plain questions
   in one questionnaire, for session/draft/merge specs.
@@ -371,9 +373,12 @@ def structured_type_questions(slug, structured_type, label, *, required):
     ]
 
 
-def unknown_structured_questions(slug):
-    """A required structured question of an unregistered plugin type, plus
-    a plain string question — for hard-block / unknown-type specs."""
+def unknown_structured_questions(slug, *, required):
+    """A structured question of an unregistered plugin type, plus a plain
+    string question — for hard-block / unknown-type specs. ``required``
+    picks which half of the hard-block behavior the fixture pins: required
+    blocks Save with a named error, non-required is skipped and Save
+    succeeds with only the plain answer."""
     q = lambda *args, **kwargs: simple_question(slug, *args, **kwargs)  # noqa: E731
     return [
         structured_question(
@@ -381,7 +386,7 @@ def unknown_structured_questions(slug):
             "q-structured",
             UNKNOWN_STRUCTURED_TYPE,
             "Missing Plugin Section",
-            required=True,
+            required=required,
         ),
         q("q-note", "string", "Clinical Note"),
     ]
@@ -690,7 +695,16 @@ def seed_structured_questionnaires(
         questionnaire_definition(
             "e2e-structured-unknown",
             "E2E Structured Unknown Plugin",
-            unknown_structured_questions("e2e-structured-unknown"),
+            unknown_structured_questions("e2e-structured-unknown", required=True),
+        )
+    )
+    create(
+        questionnaire_definition(
+            "e2e-structured-unknown-optional",
+            "E2E Structured Unknown Plugin (Optional)",
+            unknown_structured_questions(
+                "e2e-structured-unknown-optional", required=False
+            ),
         )
     )
 
