@@ -751,3 +751,189 @@ class InvoiceAPITestBase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data["detail"], "Cannot cancel invoice")
+
+    # def testcases for attach and detach charge items to invoice
+
+    def get_attach_charge_items_url(self, external_id):
+        return reverse(
+            "invoice-attach-items-to-invoice",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": external_id,
+            },
+        )
+
+    def get_remove_charge_items_url(self, external_id):
+        return reverse(
+            "invoice-remove-item-from-invoice",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": external_id,
+            },
+        )
+
+    def test_attach_charge_items_to_invoice_with_superuser(self):
+        """
+        Test attaching charge items to an invoice with a superuser.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        invoice = self.create_invoice()
+        new_charge_item = self.create_charge_item()
+        url = self.get_attach_charge_items_url(invoice.external_id)
+        data = {"charge_items": [str(new_charge_item.external_id)]}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertEqual(len(response_data["charge_items"]), 2)
+        self.assertIn(
+            str(new_charge_item.external_id),
+            [str(item["id"]) for item in response_data["charge_items"]],
+        )
+
+    def test_attach_charge_items_to_invoice_with_user_without_permission(self):
+        """
+        Test attaching charge items to an invoice with a user without write permission.
+        """
+        permissions = [
+            InvoicePermissions.can_read_invoice.name,
+        ]
+        self.role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        new_charge_item = self.create_charge_item()
+        url = self.get_attach_charge_items_url(invoice.external_id)
+        data = {"charge_items": [str(new_charge_item.external_id)]}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Cannot write invoice")
+
+    def test_attach_charge_items_to_invoice_with_user_with_permission(self):
+        """
+        Test attaching charge items to an invoice with a user with write permission.
+        """
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        new_charge_item = self.create_charge_item()
+        url = self.get_attach_charge_items_url(invoice.external_id)
+        data = {"charge_items": [str(new_charge_item.external_id)]}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertEqual(len(response_data["charge_items"]), 2)
+        self.assertIn(
+            str(new_charge_item.external_id),
+            [str(item["id"]) for item in response_data["charge_items"]],
+        )
+
+    def test_remove_charge_items_from_invoice_with_superuser(self):
+        """
+        Test removing charge items from an invoice with a superuser.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        invoice = self.create_invoice()
+        url = self.get_remove_charge_items_url(invoice.external_id)
+        data = {"charge_item": str(self.charge_item.external_id)}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertEqual(len(response_data["charge_items"]), 0)
+
+    def test_remove_charge_items_from_invoice_with_user_without_permission(self):
+        """
+        Test removing charge items from an invoice with a user without write permission.
+        """
+        permissions = [
+            InvoicePermissions.can_read_invoice.name,
+        ]
+        self.role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        url = self.get_remove_charge_items_url(invoice.external_id)
+        data = {"charge_item": str(self.charge_item.external_id)}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Cannot write invoice")
+
+    def test_remove_charge_items_from_invoice_with_user_with_permission(self):
+        """
+        Test removing charge items from an invoice with a user with write permission.
+        """
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        url = self.get_remove_charge_items_url(invoice.external_id)
+        data = {"charge_item": str(self.charge_item.external_id)}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertEqual(len(response_data["charge_items"]), 0)
+
+    def test_remove_charge_items_from_invoice_non_draft_status(self):
+        """
+        Test removing charge items from an invoice with a non-draft status.
+        """
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice(status=InvoiceStatusOptions.issued.value)
+        url = self.get_remove_charge_items_url(invoice.external_id)
+        data = {"charge_item": str(self.charge_item.external_id)}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        response_data = response.data
+        self.assertEqual(
+            response_data["errors"][0]["msg"],
+            "Invoice is not in draft",
+        )
+
+    def test_attach_charge_items_to_invoice_non_draft_status(self):
+        """
+        Test attaching charge items to an invoice with a non-draft status.
+        """
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice(status=InvoiceStatusOptions.issued.value)
+        new_charge_item = self.create_charge_item()
+        url = self.get_attach_charge_items_url(invoice.external_id)
+        data = {"charge_items": [str(new_charge_item.external_id)]}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        response_data = response.data
+        self.assertEqual(
+            response_data["errors"][0]["msg"],
+            "Invoice is not in draft",
+        )
+
+    def test_remove_charge_items_from_invoice_with_non_related_charge_item(self):
+        """
+        Test removing charge items from an invoice with a non-existent charge item.
+        """
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        charge_item = self.create_charge_item()
+        url = self.get_remove_charge_items_url(invoice.external_id)
+        data = {"charge_item": str(charge_item.external_id)}
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        response_data = response.data
+        self.assertEqual(
+            response_data["errors"][0]["msg"],
+            "Charge item not found in invoice",
+        )
