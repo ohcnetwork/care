@@ -51,6 +51,28 @@ What it seeds:
   (``internal_revision`` 3).
 - ``e2e-pagination-001`` … ``e2e-pagination-018`` — tiny active facility
   questionnaires to page past the default page size of 14.
+- ``e2e-structured-<type>`` for all 11 core structured types
+  (``allergy_intolerance``, ``symptom``, ``diagnosis``,
+  ``medication_request``, ``medication_statement``, ``encounter``,
+  ``appointment``, ``files``, ``time_of_death``, ``service_request``,
+  ``charge_item``) — encounter-subject, one structured question of that
+  type plus one plain string question. ``-required`` variants
+  (``e2e-structured-<type>-required``) exist for the five types the
+  structured-rearchitecture test plan takes from zero to full coverage
+  (``medication_statement``, ``files``, ``appointment``,
+  ``time_of_death``, ``encounter``) so the required-section-blocks-submit
+  path has a fixture to exercise; the other six types already have
+  row-level validation coverage and don't need a dedicated variant.
+- ``e2e-structured-unknown`` — a required structured question whose
+  ``structured_type`` (``x_e2e.missing``) is a namespaced plugin id no
+  build registers, plus a plain string question, for hard-block /
+  unknown-type specs.
+- ``e2e-structured-kitchen-sink`` — several structured types (allergy,
+  diagnosis, medication request, encounter, files) plus plain questions
+  in one questionnaire, for session/draft/merge specs.
+- ``e2e-subject-patient`` — instance-scoped, ``subject_type: "patient"``
+  (the only scope patient questionnaires are allowed in), a couple of
+  plain questions.
 - One patient (phone ``+919999888777``) with one ``planned`` and one
   ``in_progress`` encounter in "FACILITY WITH PATIENTS" / "General
   Medicine", mirroring the default fixture wiring.
@@ -120,6 +142,42 @@ LOINC_HEART_RATE = {
     "code": "8867-4",
     "display": "Heart rate",
 }
+
+# The 11 core structured question types (registry parity with the
+# frontend's QuestionnaireV2/structured/registry.ts).
+STRUCTURED_TYPES = [
+    ("allergy_intolerance", "Allergy Intolerance"),
+    ("symptom", "Symptom"),
+    ("diagnosis", "Diagnosis"),
+    ("medication_request", "Medication Request"),
+    ("medication_statement", "Medication Statement"),
+    ("encounter", "Encounter"),
+    ("appointment", "Appointment"),
+    ("files", "Files"),
+    ("time_of_death", "Time of Death"),
+    ("service_request", "Service Request"),
+    ("charge_item", "Charge Item"),
+]
+
+# Types that get an additional `-required` questionnaire variant: per the
+# structured-rearchitecture test plan these five go from zero test
+# coverage to the full per-type matrix (add/edit/remove/validation/
+# draft/submit), which includes proving a required, unanswered structured
+# section blocks submit. The other six types already have row-level
+# validation specs (e.g. medicationRequest.spec.ts's "Dosage* This field
+# is required") that exercise validation on the plain, optional fixture —
+# they don't need a dedicated required questionnaire.
+STRUCTURED_REQUIRED_VARIANT_TYPES = {
+    "medication_statement",
+    "files",
+    "appointment",
+    "time_of_death",
+    "encounter",
+}
+
+# Namespaced plugin id (`{slug}.{name}`) that no build registers a
+# component for, so the frontend always resolves it as `unknown_type`.
+UNKNOWN_STRUCTURED_TYPE = "x_e2e.missing"
 
 
 def log(message):
@@ -287,6 +345,71 @@ def units_questions(slug):
             answer_value_set={"slug": UNITS_VALUESET_SLUG},
             unit=UCUM_MG,
         ),
+    ]
+
+
+def structured_question(slug, link_id, structured_type, text, **kwargs):
+    return simple_question(
+        slug, link_id, "structured", text, structured_type=structured_type, **kwargs
+    )
+
+
+def structured_type_questions(slug, structured_type, label, *, required):
+    """One structured question of ``structured_type`` plus one plain string
+    question, so specs can assert the plain answer submits while the
+    structured section is exercised."""
+    q = lambda *args, **kwargs: simple_question(slug, *args, **kwargs)  # noqa: E731
+    return [
+        structured_question(
+            slug,
+            "q-structured",
+            structured_type,
+            f"{label} section",
+            required=required,
+        ),
+        q("q-note", "string", "Plain note"),
+    ]
+
+
+def unknown_structured_questions(slug):
+    """A required structured question of an unregistered plugin type, plus
+    a plain string question — for hard-block / unknown-type specs."""
+    q = lambda *args, **kwargs: simple_question(slug, *args, **kwargs)  # noqa: E731
+    return [
+        structured_question(
+            slug,
+            "q-structured",
+            UNKNOWN_STRUCTURED_TYPE,
+            "Missing Plugin Section",
+            required=True,
+        ),
+        q("q-note", "string", "Clinical Note"),
+    ]
+
+
+def structured_kitchen_sink_questions(slug):
+    """Several structured types plus plain questions in one questionnaire,
+    for session/draft/merge specs."""
+    q = lambda *args, **kwargs: simple_question(slug, *args, **kwargs)  # noqa: E731
+    return [
+        q("q-note", "string", "Chief complaint"),
+        structured_question(slug, "q-allergy", "allergy_intolerance", "Allergies"),
+        structured_question(slug, "q-diagnosis", "diagnosis", "Diagnoses"),
+        structured_question(
+            slug, "q-medication-request", "medication_request", "Medications"
+        ),
+        structured_question(slug, "q-encounter", "encounter", "Encounter details"),
+        structured_question(slug, "q-files", "files", "Attachments"),
+        q("q-boolean", "boolean", "Ready for discharge?"),
+    ]
+
+
+def patient_subject_questions(slug):
+    """A couple of plain questions for the patient-subject fixture."""
+    q = lambda *args, **kwargs: simple_question(slug, *args, **kwargs)  # noqa: E731
+    return [
+        q("q-note", "string", "Note"),
+        q("q-detail", "text", "Additional detail"),
     ]
 
 
@@ -516,6 +639,82 @@ def seed_questionnaires(base, existing, facility, general_medicine, admin_org, g
         )
 
 
+def seed_structured_questionnaires(
+    base, existing, facility, general_medicine, admin_org, geo_org
+):
+    """Structured-rearchitecture fixtures (design doc §8): per-type
+    encounter-subject questionnaires for all 11 core structured types
+    (plus required variants for the five types getting full new test
+    coverage), an unknown-plugin-type fixture, a structured kitchen-sink,
+    and the patient-subject fixture."""
+    facility_org_ids = [admin_org["id"], general_medicine["id"]]
+
+    def create(
+        definition, *, auth_context="facility", organizations=None, tag_orgs=True
+    ):
+        slug = definition["slug"]
+        if slug in existing:
+            log(f"  {slug}: exists, skipping")
+            return existing[slug]
+        payload = {**definition, "auth_context": auth_context}
+        if auth_context == "facility":
+            payload["facility"] = facility["id"]
+        questionnaire = base.create_questionnaire(organizations or [], payload)
+        if tag_orgs and auth_context == "facility":
+            base.set_facility_organizations(questionnaire["id"], facility_org_ids)
+        log(f"  {slug}: created")
+        return questionnaire
+
+    for structured_type, label in STRUCTURED_TYPES:
+        slug = f"e2e-structured-{structured_type}"
+        create(
+            questionnaire_definition(
+                slug,
+                f"E2E Structured {label}",
+                structured_type_questions(slug, structured_type, label, required=False),
+            )
+        )
+        if structured_type in STRUCTURED_REQUIRED_VARIANT_TYPES:
+            required_slug = f"{slug}-required"
+            create(
+                questionnaire_definition(
+                    required_slug,
+                    f"E2E Structured {label} (Required)",
+                    structured_type_questions(
+                        required_slug, structured_type, label, required=True
+                    ),
+                )
+            )
+
+    create(
+        questionnaire_definition(
+            "e2e-structured-unknown",
+            "E2E Structured Unknown Plugin",
+            unknown_structured_questions("e2e-structured-unknown"),
+        )
+    )
+
+    create(
+        questionnaire_definition(
+            "e2e-structured-kitchen-sink",
+            "E2E Structured Kitchen Sink",
+            structured_kitchen_sink_questions("e2e-structured-kitchen-sink"),
+        )
+    )
+
+    create(
+        questionnaire_definition(
+            "e2e-subject-patient",
+            "E2E Patient Questionnaire",
+            patient_subject_questions("e2e-subject-patient"),
+            subject_type="patient",
+        ),
+        auth_context="instance",
+        organizations=[geo_org["id"]],
+        tag_orgs=False,
+    )
+
+
 def seed_user_scope_questionnaire(base, existing, facility, admin_org):
     """Create the user-scoped questionnaire as care-fac-admin.
 
@@ -653,6 +852,11 @@ def load_fixtures(base):
         base, existing, facility, general_medicine, admin_org, geo_org
     )
     log("Loading E2E questionnaires completed")
+
+    seed_structured_questionnaires(
+        base, existing, facility, general_medicine, admin_org, geo_org
+    )
+    log("Loading E2E structured questionnaires completed")
 
     seed_user_scope_questionnaire(base, existing, facility, admin_org)
     log("Loading E2E user-scoped questionnaire completed")
