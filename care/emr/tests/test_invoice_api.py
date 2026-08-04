@@ -1,12 +1,14 @@
 import random
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
+from unittest.mock import patch
 
 from django.test import override_settings
 from django.urls import reverse
 from model_bakery import baker
 
 from care.emr.models import Account, ChargeItem, ChargeItemDefinition
+from care.emr.models.facility_config import FacilityMonetoryConfig
 from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.resources.account.spec import (
     AccountBillingStatusOptions,
@@ -24,6 +26,7 @@ from care.emr.signals.patient.facility_name_identifier import (
 from care.emr.signals.patient.name_identifier import NameIdentifierConfig
 from care.emr.signals.patient.phone_number_identifier import PhoneNumberIdentifierConfig
 from care.security.permissions.invoice import InvoicePermissions
+from care.utils.lock import ObjectLocked
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -117,7 +120,7 @@ class InvoiceAPITestBase(CareAPITestBase):
             "account": self.account,
             "charge_item_definition": self.charge_item_definition,
             "facility": self.facility,
-            "status": ChargeItemStatusOptions.billable.value,
+            "status": kwargs.get("status", ChargeItemStatusOptions.billable.value),
             "quantity": Decimal("1.00"),
             "unit_price_components": [
                 {
@@ -161,6 +164,36 @@ class InvoiceAPITestBase(CareAPITestBase):
         self.assertEqual(
             Decimal(response_data["total_gross"]), self.charge_item.total_price
         )
+
+    def test_create_invoice_without_number_auto_generates(self):
+        """
+        Test that omitting number triggers auto-generation via the configured expression.
+        """
+        config = FacilityMonetoryConfig.get_monetory_config(self.facility.id)
+        config.invoice_number_expression = (
+            "f'INV-{invoice_count + 1}-{current_year_yy}'"
+        )
+        config.save()
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_invoice_data()
+        data.pop("number")
+        response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.data["number"])
+
+    def test_create_invoice_fails_when_create_lock_is_held(self):
+        """
+        Test that invoice creation returns a validation error when the global create lock is held.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_invoice_data()
+        with patch(
+            "care.emr.api.viewsets.invoice.InvoiceCreateLock.__enter__",
+            side_effect=ObjectLocked,
+        ):
+            response = self.client.post(self.url, data, format="json")
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["errors"][0]["msg"], "Invoice creation failed")
 
     def test_create_invoice_with_user_without_permission(self):
         """
@@ -263,7 +296,7 @@ class InvoiceAPITestBase(CareAPITestBase):
             self.organization, self.user, self.role
         )
         self.client.force_authenticate(user=self.user)
-        invoice = self.create_invoice()
+        invoice = self.create_invoice(status=InvoiceStatusOptions.draft.value)
         data = self.generate_invoice_data(title="Updated Invoice Title")
         response = self.client.put(
             self.get_detail_url(invoice.external_id), data, format="json"
@@ -385,6 +418,45 @@ class InvoiceAPITestBase(CareAPITestBase):
             response_data["errors"][0]["msg"],
             "Invoice needs to be issued before balancing",
         )
+
+    def test_update_invoice_from_issued_to_balanced_status(self):
+        """
+        Test updating an invoice from issued to balanced status.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        charge_item = self.create_charge_item(
+            status=ChargeItemStatusOptions.billed.value
+        )
+
+        invoice = self.create_invoice(
+            status=InvoiceStatusOptions.issued.value, charge_items=[charge_item.id]
+        )
+        data = self.generate_invoice_data(
+            status=InvoiceStatusOptions.balanced.value,
+            charge_items=[charge_item.external_id],
+        )
+        response = self.client.put(
+            self.get_detail_url(invoice.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertEqual(response_data["status"], InvoiceStatusOptions.balanced.value)
+
+    def test_update_invoice_from_draft_to_issued_status(self):
+        """
+        Test updating an invoice from draft to issued status.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        invoice = self.create_invoice(status=InvoiceStatusOptions.draft.value)
+        data = self.generate_invoice_data(
+            status=InvoiceStatusOptions.issued.value,
+            charge_items=[self.charge_item.external_id],
+        )
+        response = self.client.put(
+            self.get_detail_url(invoice.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["status"], InvoiceStatusOptions.issued.value)
 
     # Testcase for listing invoices
 
@@ -626,6 +698,59 @@ class InvoiceAPITestBase(CareAPITestBase):
         response = self.client.get(
             f"{self.get_detail_url(invoice.external_id)}?payment_reconciliation_present=false&account={self.account.external_id}",
             format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertEqual(response_data["id"], str(invoice.external_id))
+
+    def test_retrive_locked_invoice_with_superuser(self):
+        """
+        Test retrieving a locked invoice with a superuser.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        invoice = self.create_invoice(locked=True)
+        response = self.client.get(
+            self.get_detail_url(invoice.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertEqual(response_data["id"], str(invoice.external_id))
+
+    def test_retrive_locked_invoice_with_user_without_permission(self):
+        """
+        Test retrieving a locked invoice with a user without read permission.
+        """
+        permissions = [
+            InvoicePermissions.can_read_invoice.name,
+        ]
+        self.role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice(locked=True)
+        response = self.client.get(
+            self.get_detail_url(invoice.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Locked invoice permission denied.")
+
+    def test_retrive_locked_invoice_with_user_with_permission(self):
+        """
+        Test retrieving a locked invoice with a user with locked invoice management permission.
+        """
+        permissions = [
+            InvoicePermissions.can_read_invoice.name,
+            InvoicePermissions.can_manage_locked_invoice.name,
+        ]
+        self.role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice(locked=True)
+        response = self.client.get(
+            self.get_detail_url(invoice.external_id), format="json"
         )
         self.assertEqual(response.status_code, 200)
         response_data = response.data
