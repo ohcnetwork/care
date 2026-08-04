@@ -505,6 +505,131 @@ class InvoiceAPITestBase(CareAPITestBase):
         self.assertEqual(len(response_data), 1)
         self.assertEqual(response_data[0]["id"], str(invoice.external_id))
 
+    # Testcases for retrieve api
+
+    def test_retrieve_invoice_with_superuser(self):
+        """
+        Test retrieving an invoice with a superuser.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        invoice = self.create_invoice()
+        response = self.client.get(
+            self.get_detail_url(invoice.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertEqual(response_data["id"], str(invoice.external_id))
+
+    def test_retrieve_invoice_with_user_without_permission(self):
+        """
+        Test retrieving an invoice with a user without read permission.
+        """
+        permissions = [
+            InvoicePermissions.can_write_invoice.name,
+        ]
+        self.role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        response = self.client.get(
+            self.get_detail_url(invoice.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Cannot read invoice")
+
+    def test_retrieve_invoice_with_user_with_permission(self):
+        """
+        Test retrieving an invoice with a user with read permission.
+        """
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        response = self.client.get(
+            self.get_detail_url(invoice.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertEqual(response_data["id"], str(invoice.external_id))
+
+    def test_retrieve_invoice_with_payment_reconciliation_present_and_account_filter(
+        self,
+    ):
+        """
+        Test retrieving an invoice with the payment_reconciliation_present and account filter.
+        """
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        # Create a payment reconciliation for the invoice
+        PaymentReconciliation.objects.create(
+            facility=self.facility,
+            account=self.account,
+            status="completed",
+            amount=invoice.total_gross,
+            tendered_amount=invoice.total_gross,
+            returned_amount=Decimal("0.00"),
+            target_invoice=invoice,
+        )
+        response = self.client.get(
+            f"{self.get_detail_url(invoice.external_id)}?payment_reconciliation_present=true&account={self.account.external_id}",
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertEqual(response_data["id"], str(invoice.external_id))
+
+    def test_retrieve_invoice_with_only_payment_reconciliation_present(self):
+        """
+        Test retrieving an invoice with only the payment_reconciliation_present filter.
+        """
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        # Create a payment reconciliation for the invoice
+        PaymentReconciliation.objects.create(
+            facility=self.facility,
+            account=self.account,
+            status="completed",
+            amount=invoice.total_gross,
+            tendered_amount=invoice.total_gross,
+            returned_amount=Decimal("0.00"),
+            target_invoice=invoice,
+        )
+        response = self.client.get(
+            f"{self.get_detail_url(invoice.external_id)}?payment_reconciliation_present=true",
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Account is required when payment reconciliation filter is present",
+        )
+
+    def test_retrieve_invoice_with_account_filter(self):
+        """
+        Test retrieving an invoice with an account filter.
+        """
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        response = self.client.get(
+            f"{self.get_detail_url(invoice.external_id)}?payment_reconciliation_present=false&account={self.account.external_id}",
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertEqual(response_data["id"], str(invoice.external_id))
+
 
 # class TestAttachAccountToInvoice(CareAPITestBase):
 #     def setUp(self):
