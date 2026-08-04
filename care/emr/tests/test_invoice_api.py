@@ -94,6 +94,7 @@ class InvoiceAPITestBase(CareAPITestBase):
             title=kwargs.get("title", "Test Invoice"),
             number=kwargs.get("number", f"INV-{random.randint(1000, 9999)}"),  # noqa: S311
             issue_date=kwargs.get("issue_date", datetime.now(UTC).isoformat()),
+            locked=kwargs.get("locked", False),
         )
         sync_invoice_items(invoice)
         invoice.save()
@@ -936,4 +937,150 @@ class InvoiceAPITestBase(CareAPITestBase):
         self.assertEqual(
             response_data["errors"][0]["msg"],
             "Charge item not found in invoice",
+        )
+
+    # Testcases for invoice lock and unlock
+
+    def get_lock_invoice_url(self, external_id):
+        return reverse(
+            "invoice-lock",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": external_id,
+            },
+        )
+
+    def get_unlock_invoice_url(self, external_id):
+        return reverse(
+            "invoice-unlock",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": external_id,
+            },
+        )
+
+    def test_lock_invoice_with_superuser(self):
+        """
+        Test locking an invoice with a superuser.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        invoice = self.create_invoice()
+        url = self.get_lock_invoice_url(invoice.external_id)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertTrue(response_data["locked"])
+
+    def test_lock_invoice_with_user_without_permission(self):
+        """
+        Test locking an invoice with a user without write permission.
+        """
+        permissions = [
+            InvoicePermissions.can_read_invoice.name,
+        ]
+        self.role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        url = self.get_lock_invoice_url(invoice.external_id)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Locked invoice permission denied.")
+
+    def test_lock_invoice_with_user_with_permission(self):
+        """
+        Test locking an invoice with a user with write permission.
+        """
+        permissions = [
+            InvoicePermissions.can_read_invoice.name,
+            InvoicePermissions.can_manage_locked_invoice.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        url = self.get_lock_invoice_url(invoice.external_id)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertTrue(response_data["locked"])
+
+    def test_lock_invoice_with_already_locked_invoice(self):
+        """
+        Test locking an invoice that is already locked.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        invoice = self.create_invoice(locked=True)
+        url = self.get_lock_invoice_url(invoice.external_id)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 400)
+        response_data = response.data
+        self.assertEqual(
+            response_data["errors"][0]["msg"],
+            "Invoice is already locked",
+        )
+
+    def test_unlock_invoice_with_superuser(self):
+        """
+        Test unlocking an invoice with a superuser.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        invoice = self.create_invoice(locked=True)
+        url = self.get_unlock_invoice_url(invoice.external_id)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertFalse(response_data["locked"])
+
+    def test_unlock_invoice_with_user_without_permission(self):
+        """
+        Test unlocking an invoice with a user without write permission.
+        """
+        permissions = [
+            InvoicePermissions.can_read_invoice.name,
+        ]
+        self.role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice(locked=True)
+        url = self.get_unlock_invoice_url(invoice.external_id)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Locked invoice permission denied.")
+
+    def test_unlock_invoice_with_user_with_permission(self):
+        """
+        Test unlocking an invoice with a user with write permission.
+        """
+        permissions = [
+            InvoicePermissions.can_read_invoice.name,
+            InvoicePermissions.can_manage_locked_invoice.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice(locked=True)
+        url = self.get_unlock_invoice_url(invoice.external_id)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        response_data = response.data
+        self.assertFalse(response_data["locked"])
+
+    def test_unlock_invoice_with_already_unlocked_invoice(self):
+        """
+        Test unlocking an invoice that is already unlocked.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        invoice = self.create_invoice(locked=False)
+        url = self.get_unlock_invoice_url(invoice.external_id)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 400)
+        response_data = response.data
+        self.assertEqual(
+            response_data["errors"][0]["msg"],
+            "Invoice is not locked",
         )
