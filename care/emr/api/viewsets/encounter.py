@@ -351,7 +351,7 @@ class EncounterViewSet(
         set_default: bool = False
 
     @action(detail=True, methods=["POST"])
-    def set_facility_idenitifier(self, request, *args, **kwargs):
+    def set_facility_identifier(self, request, *args, **kwargs):
         request_data = self.EncounterFacilityIdentifierWriteSpec(**request.data)
         encounter = self.get_object()
         self.authorize_update({}, encounter)
