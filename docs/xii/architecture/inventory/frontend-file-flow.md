@@ -1,19 +1,24 @@
 ---
 title: Frontend File-Flow Inventory
 document: inventory/frontend-file-flow
-version: 0.1.0
+version: 0.2.0
 status: Draft
-phase: 0
+phase: 1
 source_repository: https://github.com/ohcnetwork/care
 source_branch: gcp
 source_commit: 6a2976dc2512c2c532fcc70628c5690fbbbe3f3d
-reviewed: 2026-08-05
+reviewed: 2026-08-06
 ---
 
 # Frontend File-Flow Inventory
 
 The file-related API contract as it exists today, and the exact changes required
-to route all file traffic through Django. No API was modified in this phase.
+to route all file traffic through Django.
+
+**IS-01 changed no API and no response field.** It moved object *persistence*
+onto Django Storage underneath these flows. Sections 1-10 remain accurate as the
+transport contract; **section 11 records what moved and what IS-02 must still
+do**, and corrects the file and line references that IS-01 relocated.
 
 Evidence labels: **verified** / **inferred** / **unknown**.
 
@@ -376,3 +381,100 @@ change**, not an additive one, unless both URL fields are retained as Django URL
 under their existing names. Retaining the names is the lower-risk path and would
 let the backend migrate before the frontend, but it leaves the misleading
 `signed_url` naming in place.
+
+---
+
+## 11. After IS-01
+
+Recorded 2026-08-06. **No route, request field or response field changed.** The
+transport contract in §§1-10 is intact; only what happens beneath it moved.
+
+### 11.1 Relocated references
+
+The code these sections point at moved. Substitute as follows:
+
+| §§ referring to | Now lives at |
+| --- | --- |
+| `care/emr/utils/file_manager.py:35-50` (`signed_url`) | `care/emr/utils/legacy_signed_urls.py:signed_url` |
+| `care/emr/utils/file_manager.py:52-69` (`read_signed_url`) | `care/emr/utils/legacy_signed_urls.py:read_signed_url` |
+| `care/emr/utils/file_manager.py:11-20` (`SAFE_INLINE_FORMATS`) | `care/emr/utils/legacy_signed_urls.py:SAFE_INLINE_FORMATS` |
+| `obj.files_manager.signed_url(obj)` in both specs | `legacy_signed_urls.signed_url(obj)` |
+| `obj.files_manager.read_signed_url(obj)` in both specs and the data point | `legacy_signed_urls.read_signed_url(obj)` |
+| `care/emr/utils/file_manager.py:90-94` (`file_contents`, D3) | same file, now `Storage.open().read()` |
+
+**verified** §7's statement that the suite expects `ClientError` at
+`test_file_upload_api.py:180` is superseded: the test now asserts the object does
+not exist and that opening it raises `FileNotFoundError`. The four URL-presence
+assertions at lines 77, 102, 137 and 165 are **unchanged**, so T1 in §9.4 is
+still entirely IS-02 work.
+
+**verified** The `@override_settings` at `test_file_upload_api.py:19` is also
+unchanged, so T2 remains IS-02 work. It is still required, because signed URLs
+are still generated against the external endpoint.
+
+### 11.2 What now uses Django Storage
+
+| Flow | Transport | Persistence after IS-01 |
+| --- | --- | --- |
+| Path A, presigned PUT | unchanged — browser writes directly to the bucket | none: Django never sees the bytes |
+| Path A, step 1 `signed_url` | unchanged | `legacy_signed_urls`, boto3, S3 only |
+| Path B, base64 `upload-file` | unchanged — still base64, still buffered | **`Storage.save()`** via `storages["patient"]` |
+| Download `read_signed_url` | unchanged | `legacy_signed_urls`, boto3, S3 only |
+| Report generation | not a browser flow | **`Storage.save()`** via `storages["report"]` |
+| Cover image / avatar upload | unchanged multipart | **`Storage.save()`** via `storages["facility"]`, now streamed rather than buffered |
+| Cover image / avatar URLs | unchanged string concatenation | not storage persistence; still bypasses the alias |
+| Cleanup task | not a browser flow | **`Storage.delete()`** |
+
+### 11.3 Flows remaining for IS-02
+
+**Signed upload (browser-to-bucket PUT) — remains.** Callers:
+
+- `care/emr/resources/file_upload/spec.py` (`FileUploadRetrieveSpec`)
+- `care/emr/resources/report/report_upload/spec.py` (`ReportUploadRetrieveSpec`)
+
+**Signed download (browser-from-bucket GET) — remains.** Callers:
+
+- `care/emr/resources/file_upload/spec.py`
+- `care/emr/resources/report/report_upload/spec.py`
+- `care/emr/reports/context_builder/data_points/fileupload.py`
+
+**Base64 upload — remains, unchanged as transport.** `POST /api/v1/files/upload-file/`
+(`care/emr/api/viewsets/file_upload.py`) still accepts a base64 `file_data`
+string and still holds the decoded file in memory; only the write beneath it
+moved to `Storage.save()`. Its alias is `patient`. It is still absent from the
+OpenAPI schema (§6).
+
+**Unsigned public URLs — remain.** `Facility.read_cover_image_url` and
+`User.read_profile_picture_url` still concatenate bucket URLs. Public-read is now
+configured on the `facility` alias via `BUCKET_HAS_FINE_ACL` instead of being set
+per object, so §9.3 item C3 is resolved at the settings layer; C1 and C2 remain
+open decisions.
+
+### 11.4 Effect on the §9 change list
+
+| Item | Status after IS-01 |
+| --- | --- |
+| U1, U2, U3, U4 | unchanged — IS-02 |
+| U5 remove presigned write | unchanged, but now a single isolated function |
+| D1, D2, D4, D5, D6 | unchanged — IS-02 |
+| D3 stream rather than buffer | **partly done.** `get_object` returns a stream and is the default; `file_contents` is now an explicit opt-in with no production caller |
+| C1, C2 | unchanged — open decisions |
+| C3 ACL under uniform bucket-level access | **resolved at the settings layer.** No per-object ACL is set; under `gcs` the alias never sends one |
+| T1, T2 | unchanged — IS-02 |
+| S1, S2 | unchanged — IS-02 |
+
+**verified** The §10 contract-impact summary is unaffected: still 4 response
+fields, at least 2 new endpoints, 1 endpoint whose meaning changes, 4 assertions
+to rewrite.
+
+### 11.5 One new constraint for IS-02
+
+**verified** `legacy_signed_urls` is S3-only. Selecting
+`CARE_STORAGE_BACKEND=gcs` configures persistence against Google Cloud Storage
+but leaves both signed-URL flows non-functional, because they construct a boto3
+client directly.
+
+**inferred** This makes IS-02 a prerequisite for any real GCS deployment, not an
+independent improvement. IS-01 deliberately did not paper over it: ES-01 §21
+forbids adding signed-URL methods to storage subclasses, and reproducing GCS
+signing would build exactly the provider-specific code ADR-0001 rejects.

@@ -127,6 +127,13 @@ has survived.
 **unknown** Whether this is intentional consolidation or an unnoticed
 copy-paste. **Recommend** raising upstream before diverging.
 
+**Partly resolved in IS-01.** The `patient` and `report` storage aliases now read
+`FILE_UPLOAD_REGION`, `FILE_UPLOAD_KEY` and `FILE_UPLOAD_SECRET`, so those three
+settings are no longer dead and per-bucket credentials are configurable.
+`get_patient_bucket_config` and `get_report_bucket_config` still contain the
+original defect, but are now reached only by the legacy signed-URL path, which
+IS-02 removes. See `storage-call-sites.md` §11.4 for the behaviour change.
+
 ### B2. LocMem/Dummy cache shims silently disable locking
 
 **verified** `config/caches.py:6-9` and `:12-16` accept the `nx` kwarg, ignore it,
@@ -221,15 +228,14 @@ off `FileUpload` rows — and the row no longer exists.
 **inferred** Inherent to the presigned-PUT design: Django never observes the
 upload. A Django-proxied upload path removes this class of problem entirely.
 
-### B10. `delete_objects` is dead code
+### B10. `delete_objects` is dead code — RESOLVED (IS-01)
 
-**verified** `care/emr/utils/file_manager.py:112-133` has no caller. Grep returns
-only the definition.
+**verified** `care/emr/utils/file_manager.py:112-133` had no caller and carried a
+GCP-specific `NotImplemented` branch.
 
-**verified** It already carries a GCP-specific `NotImplemented` branch
-(`:128-133`).
-
-**inferred** Delete rather than port.
+**Removed in IS-01.** It was deleted rather than ported: it had no caller, and
+ES-01 §17 forbids provider-specific batch calls. Django Storage defines no
+portable bulk delete; a future caller should iterate `Storage.delete()`.
 
 ### B11. Celery beat health check is a liveness lie
 
@@ -250,6 +256,61 @@ the current runtime may have silently failing schedules.
 
 **Impact:** cosmetic. Recorded because it produces a false positive in any
 cache-usage grep.
+
+---
+
+## Part B2 — Storage issues open after IS-01
+
+Recorded 2026-08-06. Only issues that remain genuinely unresolved after the
+storage seam moved onto Django Storage. Full detail in
+`storage-call-sites.md` §11.
+
+### S1. The GCS profile cannot serve files end to end
+
+**verified** `care/emr/utils/legacy_signed_urls.py` constructs a boto3 client
+directly and is S3-only. `CARE_STORAGE_BACKEND=gcs` configures persistence
+against Google Cloud Storage, but both signed-URL flows stop working.
+
+**inferred** IS-02 is therefore a prerequisite for a real GCS deployment, not an
+independent improvement. Deliberately not papered over: ES-01 §21 forbids adding
+signed-URL methods to storage subclasses, and reproducing GCS signing by hand
+would build exactly the provider-specific code ADR-0001 rejects.
+
+### S2. Report generation does not retry under GCS
+
+**verified** `care/emr/tasks/report_generation.py:13` uses
+`autoretry_for=(ClientError,)`. Under `s3` this still works, because
+django-storages raises `botocore` errors from inside `Storage.save`. Under `gcs`
+the failures are `google.api_core.exceptions.*` and no retry occurs.
+
+**Not changed in IS-01** — ES-01 §31 excludes Celery changes, and widening
+`autoretry_for` alters retry semantics beyond the storage seam.
+
+**Decision needed** before the GCS profile is used: a provider-neutral retry
+predicate, or an explicit translation at the storage boundary.
+
+### S3. Overwrite safety depends on a backend option, not on Django Storage
+
+**verified** `Storage.save()` renames on collision unless the backend is
+configured otherwise; `InMemoryStorage` demonstrably does. CARE relies on
+overwrite semantics, which are supplied by `file_overwrite: True` on each alias
+in `config/storage.py`.
+
+**inferred** Any future alias, or any backend swapped in for testing, must set it
+or CARE will silently write to a renamed object while the database keeps the
+original `internal_name`. Asserted in `care/utils/tests/test_storage_config.py`.
+
+### S4. Still true after IS-01, unchanged by it
+
+These were recorded in Part B and remain accurate; IS-01 changed the persistence
+call underneath them but not the behaviour:
+
+| # | Item | Note |
+| --- | --- | --- |
+| B4 | `cleanup_incomplete_file_uploads` aborts the batch on one storage error | Semantics preserved deliberately, per ES-01 §17 |
+| B5 | Report generation is not idempotent under retry | Untouched |
+| B8 | Storage writes are not covered by the surrounding transaction | Untouched; still orphans objects on commit failure |
+| B9 | `mark_upload_completed` trusts the client | Inherent to the presigned design; IS-02 |
 
 ---
 
@@ -384,24 +445,56 @@ Disposition of the blockers recorded in the previous revision:
 | E5 | Redis not running | **resolved** — supplied by the compose `redis` service, healthy |
 | E6 | `.env` absent | **withdrawn — the claim was wrong.** No root `.env` is required. `docker compose config` resolves with no warnings; every interpolation has a default. The real env files, `docker/.local.env` and `docker/.prebuilt.env`, are **tracked in git**. There are no `.example` variants of either. |
 
-### E7. `test_password_request_rate_limiting` is flaky under `--parallel`
+### E7. Shared-Redis test isolation failures under `--parallel`
 
-**verified** `care/emr/tests/test_reset_password_api.py:375` failed once in three
-full-suite runs with `AssertionError: 200 != 429`. It passes deterministically in
-isolation and serially.
+**Scope corrected 2026-08-06 (during IS-01).** Originally recorded as a single
+flaky test. It is a defect *class* affecting at least **six** tests in **two**
+families, and it fires far more often than the first sample suggested.
 
-**verified** `config/ratelimit.py:9` returns the constant key `"ratelimit"`, so
-the rate-limit counter is global; `config/settings/test.py:45-56` shares one Redis
-cache across all 16 parallel workers under `KEY_PREFIX = "test_"`; and
-`cache.clear()` runs in `setUp` at `test_reset_password_api.py:24` and
-`test_valueset_api.py:23, 52`.
+**verified** Root cause: `config/settings/test.py:45-56` points the cache at
+Redis with a single `KEY_PREFIX = "test_"`, shared by all 16 parallel workers,
+while `cache.clear()` runs in `setUp` at `care/emr/tests/test_reset_password_api.py:24`
+and `care/emr/tests/test_valueset_api.py:23, 52`. A clear in one worker discards
+cache state another worker is mid-way through asserting on.
 
-**inferred** A concurrent worker's `cache.clear()` resets the shared counter
-mid-test. Upstream CI runs the same `--parallel --shuffle` combination
-(`.github/workflows/reusable-test.yml:77`), so this can occur there too.
+**verified** Affected tests observed failing:
 
-**Not fixed** — pre-existing upstream defect, outside the scope of recording a
-baseline. **unknown** whether it is known upstream.
+| Family | Test | Mechanism |
+| --- | --- | --- |
+| Rate limiting | `test_password_request_rate_limiting` | `config/ratelimit.py:9` returns the constant key `"ratelimit"`, so the counter is global and a concurrent clear resets it — `200 != 429` |
+| Rate limiting | `test_password_check_rate_limiting` | same |
+| Rate limiting | `test_password_confirm_rate_limiting` | same |
+| Favorites | `test_add_favorite` | asserts on values read back from the shared cache (`care/emr/api/viewsets/favorites.py:40-56`) |
+| Favorites | `test_remove_favorite_single` | same |
+| Favorites | `test_favorite_lists_returns_list_on_first_call` | same |
+
+**verified** Measured on `feature/django-storages` at 1962 tests:
+
+| Configuration | Result |
+| --- | --- |
+| Full suite, serial (`--shuffle`, no `--parallel`) | **1962/1962 OK** |
+| Full suite, `--parallel --shuffle`, 6 runs | 1 green, 5 with 1-2 failures |
+| Only `test_favorites_api`, `test_valueset_api`, `test_reset_password_api` in parallel, 4 runs | **4/4 failed** (76 tests, no storage code involved) |
+
+**verified** That last row is the decisive one: the defect reproduces with the
+three cache-touching modules alone, so it is independent of any other change.
+
+**inferred** The observed rate rose from 1-in-3 during the Phase 0 baseline to
+5-in-6 here. No cache, lock or rate-limit code changed between the two. The
+likeliest explanation is scheduling: more tests and slower ones (MinIO round
+trips) alter how work is distributed across the 16 workers and widen the window
+in which a concurrent `cache.clear()` can land. The isolated reproduction above
+shows the defect does not need those tests to be present at all.
+
+**Not fixed.** ES-01 §31 explicitly excludes fixing rate limiting, and the
+favorites half is equally out of scope. Upstream CI runs the same
+`--parallel --shuffle` combination (`.github/workflows/reusable-test.yml:77`), so
+it can occur there too. **unknown** whether it is known upstream.
+
+**Recommended fix, for whoever owns it:** give each parallel worker its own cache
+namespace, e.g. derive `KEY_PREFIX` from the worker's database suffix in
+`config/settings/test.py`. That removes the whole class rather than the six
+symptoms.
 
 **inferred, separate concern:** a globally-keyed rate limit is not only a test
 problem — it means the limit is shared across all callers rather than per client.

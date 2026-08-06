@@ -683,29 +683,43 @@ The settings module MAY use provider selection to construct `STORAGES`.
 
 ## 11.2 `CARE_STORAGE_BACKEND`
 
-Recommended configuration value.
+**Implemented in IS-01** (`config/storage.py`, `config/settings/base.py`).
 
 Supported values:
 
 ```text
-gcs
 s3
-filesystem
+gcs
 ```
 
 Intended use:
 
 ```text
-gcs        -> GCP production
-s3         -> MinIO, AWS S3 or compatible service
-filesystem -> tests or explicitly supported local scenarios
+s3   -> MinIO, AWS S3 or compatible service  (default)
+gcs  -> GCP production
 ```
+
+Default:
+
+```text
+CARE_STORAGE_BACKEND=s3
+```
+
+The default preserves the existing local MinIO behaviour, so no local
+configuration change is required.
 
 Production GCP value:
 
 ```text
 CARE_STORAGE_BACKEND=gcs
 ```
+
+An unsupported value raises `ImproperlyConfigured` at startup, naming the
+supported values.
+
+`filesystem` is **not** a supported value. Per ES-01 §9 a filesystem backend may
+remain test-only and is not exposed as a production option; tests substitute
+`django.core.files.storage.InMemoryStorage` through `override_settings` instead.
 
 ## 11.3 `CARE_PATIENT_STORAGE_ALIAS`
 
@@ -801,16 +815,33 @@ provider URLs.
 
 The value SHALL reflect CARE's object-name policy.
 
-If object names must remain unique and immutable:
+**Resolved in IS-01: overwrite SHALL be enabled, on every object-storage alias
+and on both backends.** `config/storage.py` sets `file_overwrite: True`
+unconditionally; it is not driven by an environment variable.
 
-```text
-false
-```
+The earlier suggestion that `false` "may be appropriate" for unique, immutable
+names is **incorrect**, and tested to be so. `file_overwrite = False` does not
+reject a duplicate name — Django's `Storage.get_available_name` silently *renames*
+the object, returning e.g. `patient/<internal_name>_a1b2c3`. CARE derives the key
+from `internal_name` on every subsequent read, so the rename is never recorded
+and the database row would point at an object that does not exist. That is
+precisely the "duplicate-name handling affects database object references"
+hazard this section warns about, and `false` causes it rather than preventing it.
 
-may be appropriate.
+`True` also matches the behaviour being replaced: `boto3.put_object` overwrote
+unconditionally.
 
-The exact behavior SHALL be tested because duplicate-name handling affects
-database object references.
+In practice collisions do not occur — `internal_name` is a UUID plus a timestamp
+— so the setting matters only as a guarantee.
+
+Verified by:
+
+- `care/utils/tests/test_storage_config.py` — every alias is built with
+  `file_overwrite: True`;
+- `care/emr/tests/test_storage.py` — against real MinIO, re-saving returns the
+  same name and replaces the content;
+- the same file demonstrates the failure mode: `InMemoryStorage`, which has no
+  such option, renames on collision.
 
 ## 12.9 `GCS_MAX_MEMORY_SIZE`
 

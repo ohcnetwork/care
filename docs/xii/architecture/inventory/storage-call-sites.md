@@ -1,19 +1,22 @@
 ---
 title: Storage Call-Site Inventory
 document: inventory/storage-call-sites
-version: 0.1.0
+version: 0.2.0
 status: Draft
-phase: 0
+phase: 1
 source_repository: https://github.com/ohcnetwork/care
 source_branch: gcp
 source_commit: 6a2976dc2512c2c532fcc70628c5690fbbbe3f3d
-reviewed: 2026-08-05
+reviewed: 2026-08-06
 ---
 
 # Storage Call-Site Inventory
 
-Every object-storage call site in the repository, enumerated. No storage code was
-modified in this phase.
+Every object-storage call site in the repository, enumerated.
+
+Sections 1-8 are the Phase 0 snapshot, recorded before any storage code was
+modified. **Section 11 records what IS-01 changed** and marks the migration
+status of every call site. Where the two disagree, section 11 is current.
 
 Evidence labels used throughout:
 
@@ -327,3 +330,131 @@ never branched on anywhere in the repository.
 **inferred** 8 of 19 call sites port mechanically. The remaining 11 are the actual
 migration work, and 9 of those exist only to hand object-storage URLs to the
 browser — which the target architecture forbids.
+
+---
+
+## 11. IS-01 migration status
+
+Recorded 2026-08-06 on `feature/django-storages`. The prediction in §8 held: the
+8 mechanical sites migrated, the 2 dead ones were deleted, and the 9 URL-handing
+sites remain for IS-02.
+
+### 11.1 Status of every call site
+
+Numbering follows the §3 table.
+
+| # | Symbol | Status |
+| --- | --- | --- |
+| 1 | `signed_url` | `legacy_signed_url_only` — moved to `care/emr/utils/legacy_signed_urls.py` |
+| 2 | `read_signed_url` | `legacy_signed_url_only` — moved to the same module |
+| 3 | `put_object` | `migrated_to_django_storage` — `Storage.save()` |
+| 4 | `get_object` | `migrated_to_django_storage` — `Storage.open()` |
+| 5 | `file_contents` | `migrated_to_django_storage` — `Storage.open().read()`; still no caller |
+| 6 | `delete_object` | `migrated_to_django_storage` — `Storage.delete()` |
+| 7 | `delete_objects` | **removed** — dead code, and §17 forbids provider batch calls |
+| 8 | `delete_cover_image` | `migrated_to_django_storage` — `storages["facility"].delete()` |
+| 9 | `upload_cover_image` | `migrated_to_django_storage` — `storages["facility"].save()` |
+| 10 | `FileUpload.files_manager` | `temporary_wrapper` — now `FilesManager("patient")` |
+| 11 | `ReportUpload.files_manager` | `temporary_wrapper` — now `FilesManager("report")` |
+| 12 | `FileUploadViewSet.upload_file` | `migrated_to_django_storage` — persistence only; base64 transport untouched |
+| 13 | `FileUploadRetrieveSpec` signed_url | `legacy_signed_url_only` |
+| 14 | `FileUploadRetrieveSpec` read_signed_url | `legacy_signed_url_only` |
+| 15 | `ReportUploadRetrieveSpec` signed_url | `legacy_signed_url_only` |
+| 16 | `ReportUploadRetrieveSpec` read_signed_url | `legacy_signed_url_only` |
+| 17 | `generate_and_upload_report` | `migrated_to_django_storage` — `Storage.save()` with `ContentFile` |
+| 18 | `cleanup_incomplete_file_uploads` | `migrated_to_django_storage` — `Storage.delete()` |
+| 19 | report data point `read_signed_url` | `legacy_signed_url_only` |
+| — | `facility.py:211`, `users/models.py:206` | `not_storage_persistence` — unsigned URL construction, unchanged; IS-02 item C2 |
+
+Totals: **9 migrated**, **7 legacy signed URL only**, **2 temporary wrapper**,
+**1 removed**, **1 not storage persistence**.
+
+Nothing is `blocked`.
+
+### 11.2 Architecture now in place
+
+**verified** Application code addresses logical aliases; the provider is chosen
+in settings alone.
+
+| Alias | Physical bucket setting | Consumers |
+| --- | --- | --- |
+| `patient` | `CARE_PATIENT_STORAGE_BUCKET` (defaults to `FILE_UPLOAD_BUCKET`) | `FileUpload.files_manager` |
+| `facility` | `CARE_FACILITY_STORAGE_BUCKET` (defaults to `FACILITY_S3_BUCKET`) | `care/utils/file_uploads/cover_image.py` |
+| `report` | `CARE_REPORT_STORAGE_BUCKET` (defaults to `FILE_UPLOAD_BUCKET`) | `ReportUpload.files_manager` |
+| `staticfiles` | — | WhiteNoise, unchanged |
+
+**verified** `CARE_STORAGE_BACKEND` selects `s3` (default) or `gcs`. An
+unsupported value raises `ImproperlyConfigured` naming the supported values.
+
+**verified** `report` and `patient` still resolve to the same physical bucket, as
+before, but are independently configurable.
+
+### 11.3 Object-name generation
+
+**verified** `care/emr/utils/file_manager.py:get_storage_name` is the single
+provider-neutral name helper. The `<file_type>/<internal_name>` convention is
+preserved byte-for-byte; names are relative and carry no bucket, URL or endpoint.
+Traversal, absolute paths and empty components raise `SuspiciousFileOperation`.
+
+**verified** Cover images and avatars keep their own unrelated convention,
+`<folder>/<external_id>_<token>.<ext>`, and are addressed through the alias
+directly rather than through `FilesManager`.
+
+### 11.4 §2.1 credential defect — corrected
+
+**verified** The defect recorded in §2.1 is fixed. The `patient` and `report`
+aliases now read `FILE_UPLOAD_REGION`, `FILE_UPLOAD_KEY` and
+`FILE_UPLOAD_SECRET`; `facility` reads the `FACILITY_S3_*` set. The three
+`FILE_UPLOAD_*` credential settings listed as dead in §7 are now live.
+
+**Behaviour change.** Locally every one of these resolves to the same MinIO
+value, so there is no local change. A deployment that sets `FACILITY_S3_KEY` to
+something other than `BUCKET_KEY` *without* also setting `FILE_UPLOAD_KEY` will
+now use `BUCKET_KEY` for patient and report objects and must set
+`FILE_UPLOAD_KEY` explicitly.
+
+**verified** `get_patient_bucket_config` and `get_report_bucket_config` in
+`care/utils/csp/config.py` still contain the original defect. They are now
+reached only by the legacy signed-URL path, which is why they were left alone;
+IS-02 removes them.
+
+### 11.5 Provider SDK use remaining
+
+**verified** After IS-01, `boto3` / `botocore` appear in exactly two non-test
+modules:
+
+| File | Line | Use | Why retained |
+| --- | --- | --- | --- |
+| `care/emr/utils/legacy_signed_urls.py` | 28 | `boto3.client("s3")` for presigned URLs | Django Storage has no portable presigned operation; removed by IS-02 |
+| `care/emr/tasks/report_generation.py` | 1 | `ClientError` in `autoretry_for` | Retry configuration only; never instantiates a client. Under `s3`, django-storages raises `ClientError` from inside `Storage.save`, so retry behaviour is unchanged. See §11.7 |
+
+**verified** `care/utils/sms/backend/sns.py` also imports `boto3`, for SNS. Not
+storage; out of scope.
+
+**verified** No module imports `google.cloud.storage` directly. GCS is reached
+only through `django-storages`.
+
+### 11.6 Whole-file reads remaining
+
+Updated from §5.
+
+| Site | File | Status |
+| --- | --- | --- |
+| 5 | `file_manager.file_contents` | Retained as an explicit opt-in; still no production caller. `get_object` returns a stream and is the default. |
+| 12 | `file_upload.py` base64 decode | **Remains.** Inherent to the base64 transport; IS-02 replaces it with multipart streaming. |
+| 17 | `report_utils.py` `output_bytes` | **Remains.** The renderer returns complete bytes; ES-01 §18 explicitly does not require redesigning report generation. |
+
+**verified** `upload_cover_image` no longer buffers: the `UploadedFile` is passed
+to `Storage.save()` directly instead of `image.file` being handed to
+`put_object`.
+
+### 11.7 Known gap — retry under the GCS profile
+
+**verified** `care/emr/tasks/report_generation.py:13` retries on
+`botocore.exceptions.ClientError`. Under `CARE_STORAGE_BACKEND=gcs`, storage
+failures raise `google.api_core.exceptions.*`, so report generation would not
+retry.
+
+**Not changed in IS-01.** ES-01 §31 excludes Celery changes, and altering
+`autoretry_for` changes retry semantics beyond the storage seam. Recorded in
+`unresolved-items.md`.

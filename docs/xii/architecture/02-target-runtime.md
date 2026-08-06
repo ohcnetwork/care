@@ -478,6 +478,27 @@ Cloud SQL is expected to represent the principal permanent baseline cost.
 
 ## 11. Storage Architecture
 
+**Django Storage API is the architecture.** It is the single application-level
+abstraction for object persistence. Providers are implementation details behind
+it, selected by configuration alone.
+
+Stated explicitly, because these are four separate claims and only the third and
+fourth concern GCP:
+
+1. **Django Storage API is the architecture** — not S3, not GCS, not MinIO.
+2. **MinIO through `storages.backends.s3.S3Storage` is the default local
+   profile.** `CARE_STORAGE_BACKEND` defaults to `s3`, so a local checkout keeps
+   working with no configuration change and no GCP value of any kind.
+3. **Generic S3-compatible storage remains supported** — AWS S3, MinIO and other
+   providers `django-storages` supports, as a first-class deployment profile
+   rather than a legacy path.
+4. **GCS is the initial GCP storage profile, not the only supported provider.**
+   It is one implementation of the abstraction; adding another provider is a
+   settings change, not an application change.
+
+**Implemented in IS-01.** `config/storage.py` builds the aliases;
+`config/settings/base.py` selects the backend.
+
 All CARE file storage SHALL use Django's Storage API.
 
 The implementation SHALL use:
@@ -494,6 +515,21 @@ migration.
 
 The application SHALL NOT use `google-cloud-storage` directly outside the
 storage backend implementation.
+
+**Status after IS-01.** All three hold for persistence: no provider client is
+constructed for any read, write or delete, and nothing imports
+`google-cloud-storage` at all. Two transitional exceptions remain, both scheduled
+for removal by IS-02:
+
+- `care/emr/utils/legacy_signed_urls.py` builds a `boto3` client for presigned
+  upload and download URLs. Django Storage has no portable presigned operation,
+  and ES-01 §21 forbids adding one to a storage subclass. It is S3-only, so the
+  GCS profile cannot yet serve files end to end.
+- `care/emr/tasks/report_generation.py` imports `botocore`'s `ClientError` for
+  Celery retry configuration. It constructs no client.
+
+See `inventory/storage-call-sites.md` §11.5 and `inventory/unresolved-items.md`
+S1-S2.
 
 ---
 
