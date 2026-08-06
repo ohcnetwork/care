@@ -1,13 +1,14 @@
 ---
 title: Unresolved Items
 document: inventory/unresolved-items
-version: 0.1.0
+version: 0.2.0
 status: Draft
 phase: 0
 source_repository: https://github.com/ohcnetwork/care
 source_branch: gcp
 source_commit: 6a2976dc2512c2c532fcc70628c5690fbbbe3f3d
-reviewed: 2026-08-05
+baseline_commit: 2fe40cd16
+reviewed: 2026-08-06
 ---
 
 # Unresolved Items
@@ -359,23 +360,59 @@ public API or an internal affordance is **unknown**.
 | D5 | Meaning of `PLUGIN_CONFIGS` keys | No consumer in this repository |
 | D6 | Typical file sizes and report generation duration | No instrumentation or metrics in the repository |
 | D7 | Whether B1 and B3 are known upstream | Requires checking the upstream issue tracker |
-| D8 | Green baseline test count and duration | Baseline blocked — see `runtime-and-deployment.md` §11 |
+| ~~D8~~ | ~~Green baseline test count and duration~~ | **Resolved 2026-08-06** — 1912 tests, 0 skipped, ~21-29 s with `--keepdb --parallel`; see `runtime-and-deployment.md` §11.9 |
 
 ---
 
 ## Part E — Baseline blockers
 
-**verified** No baseline command was executed. Full detail in
+**RESOLVED 2026-08-06.** A green baseline exists. Full record in
 `runtime-and-deployment.md` §11.
 
-| # | Blocker | Evidence |
-| --- | --- | --- |
-| E1 | Docker daemon not running | `docker info` → cannot connect to `npipe:////./pipe/dockerDesktopLinuxEngine` |
-| E2 | `make` not installed | `make --version` → command not found |
-| E3 | No Python environment | no `.venv`; no `pipenv`; `import django` fails |
-| E4 | Host Python is 3.14.5, project requires `==3.13.*` | `pyproject.toml:22` |
-| E5 | Redis not running | `localhost:6379` refused; `config/settings/test.py:45-46` requires it |
-| E6 | `.env` absent | `Makefile` and compose both expect it |
+Baseline: commit `2fe40cd16`, all five compose services healthy, 312 migrations
+applied, `makemigrations --check` clean, fixtures loaded, **1912 tests, 0 skipped**,
+green on 2 of 3 runs. See E7 for the single flake.
 
-**This is the highest-priority item in this document.** Every subsequent phase
-needs a green baseline to attribute failures against, and none exists.
+Disposition of the blockers recorded in the previous revision:
+
+| # | Blocker | Disposition |
+| --- | --- | --- |
+| E1 | Docker daemon not running | **resolved** — Docker Desktop started; engine 29.6.2, Compose v5.3.1 |
+| E2 | `make` not installed | **not a blocker** — every `Makefile` target was translated to its underlying `docker compose` command; see `runtime-and-deployment.md` §11.3 |
+| E3 | No Python environment | **not applicable** — all execution happens inside the container |
+| E4 | Host Python 3.14.5 vs required `==3.13.*` | **not applicable** — the image ships Python 3.13.14 |
+| E5 | Redis not running | **resolved** — supplied by the compose `redis` service, healthy |
+| E6 | `.env` absent | **withdrawn — the claim was wrong.** No root `.env` is required. `docker compose config` resolves with no warnings; every interpolation has a default. The real env files, `docker/.local.env` and `docker/.prebuilt.env`, are **tracked in git**. There are no `.example` variants of either. |
+
+### E7. `test_password_request_rate_limiting` is flaky under `--parallel`
+
+**verified** `care/emr/tests/test_reset_password_api.py:375` failed once in three
+full-suite runs with `AssertionError: 200 != 429`. It passes deterministically in
+isolation and serially.
+
+**verified** `config/ratelimit.py:9` returns the constant key `"ratelimit"`, so
+the rate-limit counter is global; `config/settings/test.py:45-56` shares one Redis
+cache across all 16 parallel workers under `KEY_PREFIX = "test_"`; and
+`cache.clear()` runs in `setUp` at `test_reset_password_api.py:24` and
+`test_valueset_api.py:23, 52`.
+
+**inferred** A concurrent worker's `cache.clear()` resets the shared counter
+mid-test. Upstream CI runs the same `--parallel --shuffle` combination
+(`.github/workflows/reusable-test.yml:77`), so this can occur there too.
+
+**Not fixed** — pre-existing upstream defect, outside the scope of recording a
+baseline. **unknown** whether it is known upstream.
+
+**inferred, separate concern:** a globally-keyed rate limit is not only a test
+problem — it means the limit is shared across all callers rather than per client.
+
+### E8. Transient wheel corruption in the BuildKit pip cache
+
+**verified** The first image build failed with
+`zipfile.BadZipFile: Bad CRC-32 for file '_brotli.cpython-313-x86_64-linux-gnu.so'`
+during `pipenv install` at `docker/dev.Dockerfile:22`.
+
+**verified** Resolved by pruning only BuildKit cache mounts
+(`docker builder prune --filter type=exec.cachemount`). The rebuild succeeded and
+it has not recurred. **inferred** transient corruption, not a repository defect —
+recorded only so the same symptom is recognised quickly if it reappears.
