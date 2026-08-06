@@ -8,6 +8,7 @@ from pydantic import UUID4, field_validator
 from care.emr.models import FileUpload
 from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils import legacy_signed_urls
 from care.utils.models.validators import file_name_validator
 
 
@@ -112,9 +113,9 @@ class FileUploadRetrieveSpec(FileUploadListSpec):
         super().perform_extra_serialization(mapping, obj)
         if getattr(obj, "_just_created", False):
             # Calculate Write URL and return it
-            mapping["signed_url"] = obj.files_manager.signed_url(obj)
+            mapping["signed_url"] = legacy_signed_urls.signed_url(obj)
         else:
-            mapping["read_signed_url"] = obj.files_manager.read_signed_url(obj)
+            mapping["read_signed_url"] = legacy_signed_urls.read_signed_url(obj)
 
 
 class ConsentFileUploadCreateSpec(FileUploadBaseSpec):

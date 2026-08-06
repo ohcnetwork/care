@@ -7,6 +7,7 @@ from care.emr.reports import report_types  # noqa: F401 - Trigger registration
 from care.emr.resources.base import EMRResource
 from care.emr.resources.report.template.spec import TemplateReadSpec
 from care.emr.resources.user.spec import UserSpec
+from care.emr.utils import legacy_signed_urls
 
 
 class ReportUploadBaseSpec(EMRResource):
@@ -49,6 +50,6 @@ class ReportUploadRetrieveSpec(ReportUploadListSpec):
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
         if getattr(obj, "_just_created", False):
-            mapping["signed_url"] = obj.files_manager.signed_url(obj)
+            mapping["signed_url"] = legacy_signed_urls.signed_url(obj)
         else:
-            mapping["read_signed_url"] = obj.files_manager.read_signed_url(obj)
+            mapping["read_signed_url"] = legacy_signed_urls.read_signed_url(obj)

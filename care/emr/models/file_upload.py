@@ -4,9 +4,8 @@ from uuid import uuid4
 from django.db import models
 
 from care.emr.models import EMRBaseModel
-from care.emr.utils.file_manager import S3FilesManager
+from care.emr.utils.file_manager import FilesManager
 from care.users.models import User
-from care.utils.csp.config import BucketType
 from care.utils.models.validators import parse_file_extension
 
 
@@ -30,7 +29,7 @@ class FileUpload(EMRBaseModel):
         related_name="archived_files",
     )
 
-    files_manager = S3FilesManager(BucketType.PATIENT)
+    files_manager = FilesManager("patient")
 
     def get_extension(self):
         extensions = parse_file_extension(self.internal_name)

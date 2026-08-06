@@ -1,133 +1,128 @@
+"""
+Object persistence for CARE's file models.
+
+ADR-0001 makes Django's Storage API the object-persistence abstraction, so this
+module contains no provider SDK import and no provider branch. The provider is
+selected entirely in settings; see ``config/storage.py``.
+
+Presigned-URL generation is deliberately *not* here. It is provider-specific and
+lives in :mod:`care.emr.utils.legacy_signed_urls` until IS-02 replaces those
+flows with Django-served transfers.
+"""
+
 import logging
 
-import boto3
-from botocore.exceptions import ClientError
-
-from care.utils.csp.config import get_client_config
+from django.core.exceptions import SuspiciousFileOperation
+from django.core.files.storage import storages
 
 logger = logging.getLogger(__name__)
 
 
-SAFE_INLINE_FORMATS = {
-    "image/jpeg",
-    "image/png",
-    "image/gif",
-    "image/webp",
-    "image/tiff",
-    "image/bmp",
-    "image/x-icon",
-    "application/pdf",
-}
-
-
-class FileManager:
+def get_storage_name(file_obj) -> str:
     """
-    A utility class to manage all file management related operations
+    Return the provider-neutral object name for ``file_obj``.
+
+    The convention is ``<file_type>/<internal_name>``, unchanged from the boto3
+    key this replaces. The result is relative: it carries no bucket, no URL and
+    no provider endpoint.
+
+    Both components are server-controlled in practice -- ``file_type`` is a
+    bounded choice (``FileTypeChoices`` for uploads, the report-type registry
+    for reports) and ``internal_name`` is generated from a UUID. The traversal
+    guard below is defence in depth, so that a future caller cannot quietly
+    write outside the intended prefix.
+    """
+    file_type = str(file_obj.file_type or "").strip()
+    internal_name = str(file_obj.internal_name or "").strip()
+
+    if not file_type or not internal_name:
+        msg = "Cannot build a storage name without both file_type and internal_name"
+        raise SuspiciousFileOperation(msg)
+
+    name = f"{file_type}/{internal_name}"
+
+    # Reject anything that could escape the prefix. Names are not otherwise
+    # normalised: existing objects must stay addressable byte-for-byte.
+    if name.startswith(("/", "\\")) or any(
+        segment in {"..", ""} for segment in name.replace("\\", "/").split("/")
+    ):
+        msg = f"Detected path traversal attempt in storage name: {name!r}"
+        raise SuspiciousFileOperation(msg)
+
+    return name
+
+
+class FilesManager:
+    """
+    Transitional wrapper binding a CARE file model to a logical storage alias.
+
+    Retained rather than removed because ``files_manager`` is a class attribute
+    on ``FileUpload`` and ``ReportUpload`` and is referenced from viewsets,
+    tasks and report generation; rewriting every caller to use ``storages[...]``
+    directly would be a wider change than IS-01 warrants.
+
+    It resolves the alias, generates a provider-neutral object name and
+    delegates to Django Storage. It holds no provider SDK import, no provider
+    branch, and returns no provider response object. It is *not* the permanent
+    storage abstraction -- ``django.core.files.storage.storages`` is.
     """
 
+    def __init__(self, storage_alias: str):
+        self.storage_alias = storage_alias
 
-class S3FilesManager(FileManager):
-    bucket_type = None
+    @property
+    def storage(self):
+        """The Django ``Storage`` backing this alias."""
+        return storages[self.storage_alias]
 
-    def __init__(self, bucket_type):
-        self.bucket_type = bucket_type
+    def put_object(self, file_obj, file, content_type: str | None = None) -> str:
+        """
+        Write ``file`` and return the stored object name.
 
-    def signed_url(self, file_obj, duration=60 * 60, mime_type=None):
-        config, bucket_name = get_client_config(self.bucket_type, external=True)
-        s3 = boto3.client("s3", **config)
-        params = {
-            "Bucket": bucket_name,
-            "Key": f"{file_obj.file_type}/{file_obj.internal_name}",
-        }
+        ``file`` may be any Django file or file-like object; it is passed
+        through without being read into memory here.
 
-        _mime_type = file_obj.meta.get("mime_type") or mime_type
-        if _mime_type:
-            params["ContentType"] = _mime_type
-        return s3.generate_presigned_url(
-            "put_object",
-            Params=params,
-            ExpiresIn=duration,  # seconds
-        )
+        ``content_type`` is an optional hint. ``S3Storage`` prefers it over the
+        name; ``GoogleCloudStorage`` derives the type from the name's extension
+        instead, so the extension carried by ``internal_name`` remains the
+        portable signal.
+        """
+        name = get_storage_name(file_obj)
+        if content_type is not None:
+            file.content_type = content_type
+        return self.storage.save(name, file)
 
-    def read_signed_url(self, file_obj, duration=60 * 60):
-        config, bucket_name = get_client_config(self.bucket_type, external=True)
-        s3 = boto3.client("s3", **config)
+    def get_object(self, file_obj, mode: str = "rb"):
+        """
+        Open the object and return a file-like object.
 
-        mime_type = file_obj.meta.get("mime_type")
-        content_disposition = (
-            "inline" if mime_type in SAFE_INLINE_FORMATS else "attachment"
-        )
+        Raises ``FileNotFoundError`` when the object does not exist. The caller
+        is responsible for closing it; prefer using it as a context manager.
+        """
+        return self.storage.open(get_storage_name(file_obj), mode)
 
-        return s3.generate_presigned_url(
-            "get_object",
-            Params={
-                "Bucket": bucket_name,
-                "Key": f"{file_obj.file_type}/{file_obj.internal_name}",
-                "ResponseContentDisposition": f"{content_disposition}; filename={file_obj.name}{file_obj.get_extension()}",
-            },
-            ExpiresIn=duration,  # seconds
-        )
+    def file_contents(self, file_obj) -> bytes:
+        """
+        Read the whole object into memory.
 
-    def put_object(self, file_obj, file, **kwargs):
-        config, bucket_name = get_client_config(self.bucket_type)
-        s3 = boto3.client("s3", **config)
-        return s3.put_object(
-            Body=file,
-            Bucket=bucket_name,
-            Key=f"{file_obj.file_type}/{file_obj.internal_name}",
-            **kwargs,
-        )
+        Only for callers that genuinely need the complete bytes. Prefer
+        :meth:`get_object` as a context manager.
+        """
+        with self.get_object(file_obj) as file:
+            return file.read()
 
-    def get_object(self, file_obj, **kwargs):
-        config, bucket_name = get_client_config(self.bucket_type)
-        s3 = boto3.client("s3", **config)
-        return s3.get_object(
-            Bucket=bucket_name,
-            Key=f"{file_obj.file_type}/{file_obj.internal_name}",
-            **kwargs,
-        )
+    def delete_object(self, file_obj) -> None:
+        """
+        Delete the object.
 
-    def file_contents(self, file_obj):
-        response = self.get_object(file_obj)
-        content_type = response["ContentType"]
-        content = response["Body"].read()
-        return content_type, content
+        Deleting a missing object is not an error. That matches Django Storage
+        on both backends and the behaviour it replaces: S3 ``delete_object`` is
+        idempotent, so the previous ``NoSuchKey`` branch never actually fired.
+        """
+        self.storage.delete(get_storage_name(file_obj))
 
-    def delete_object(self, file_obj, quiet=False, **kwargs):
-        config, bucket_name = get_client_config(self.bucket_type)
-        s3 = boto3.client("s3", **config)
+    def exists(self, file_obj) -> bool:
+        return self.storage.exists(get_storage_name(file_obj))
 
-        try:
-            return s3.delete_object(
-                Bucket=bucket_name,
-                Key=f"{file_obj.file_type}/{file_obj.internal_name}",
-                **kwargs,
-            )
-        except s3.exceptions.NoSuchKey as e:
-            if not quiet:
-                raise e
-            msg = f"Object not found: {file_obj.file_type}/{file_obj.internal_name}"
-            logger.debug(msg)
-
-    def delete_objects(self, file_obj_list, quiet=False, **kwargs):
-        config, bucket_name = get_client_config(self.bucket_type)
-        s3 = boto3.client("s3", **config)
-
-        keys = [
-            f"{file_obj.file_type}/{file_obj.internal_name}"
-            for file_obj in file_obj_list
-        ]
-        objects = [{"Key": key} for key in keys]
-
-        try:
-            return s3.delete_objects(
-                Bucket=bucket_name,
-                Delete={"Objects": objects, "Quiet": quiet},
-                **kwargs,
-            )
-        except ClientError as e:
-            if e.response["Error"]["Code"] == "NotImplemented":
-                # bulk delete is not supported by some providers: GCP
-                msg = f"Batch delete objects not implemented for {self.bucket_type.value} bucket"
-                raise NotImplementedError(msg) from e
-            raise
+    def size(self, file_obj) -> int:
+        return self.storage.size(get_storage_name(file_obj))

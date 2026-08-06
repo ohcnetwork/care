@@ -3,7 +3,6 @@ import io
 from datetime import timedelta
 
 import requests
-from botocore.exceptions import ClientError
 from django.conf import settings
 from django.test import override_settings
 from django.urls import reverse
@@ -176,9 +175,11 @@ class FileUploadTestCase(CareAPITestBase):
 
         cleanup_incomplete_file_uploads.delay()
 
-        with self.assertRaises(ClientError) as ce:
+        # Provider-neutral assertions: the object is gone, and opening it
+        # raises the standard Django Storage error rather than a boto3 one.
+        self.assertFalse(file_obj.files_manager.exists(file_obj))
+        with self.assertRaises(FileNotFoundError):
             file_obj.files_manager.get_object(file_obj)
-        self.assertEqual(ce.exception.response["Error"]["Code"], "NoSuchKey")
 
         with self.assertRaises(FileUpload.DoesNotExist):
             file_obj.refresh_from_db()

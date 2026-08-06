@@ -6,6 +6,7 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
 )
+from care.emr.utils import legacy_signed_urls
 
 
 class FileUploadReportFilter(filters.FilterSet):
@@ -26,7 +27,7 @@ class FileUploadContextBuilder(QuerysetContextBuilder):
     url = Field(
         display="File URL",
         preview_value="https://s3.amazonaws.com/bucket/patient/12345/file.pdf",
-        mapping=lambda f: f.files_manager.read_signed_url(f)
+        mapping=lambda f: legacy_signed_urls.read_signed_url(f)
         if f.upload_completed
         else None,
         description="URL to access the uploaded file",
