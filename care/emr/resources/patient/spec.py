@@ -87,7 +87,7 @@ def validate_identifier_config(config, value, obj=None):
         queryset = queryset.filter(config__external_id=config["id"])
     if obj:
         queryset = queryset.exclude(patient=obj)
-    if config["config"]["unique"] and queryset.exists():
+    if value and config["config"]["unique"] and queryset.exists():
         err = f"Identifier config {config['config']['system']} is not unique"
         raise ValueError(err)
     if (
