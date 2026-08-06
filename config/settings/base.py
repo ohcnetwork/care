@@ -696,8 +696,9 @@ CARE_REPORT_STORAGE_BUCKET = env(
     "CARE_REPORT_STORAGE_BUCKET", default=FILE_UPLOAD_BUCKET
 )
 
-# Optional; Application Default Credentials are used when unset.
-CARE_GCS_PROJECT_ID = env("CARE_GCS_PROJECT_ID", default="")
+# Optional; Application Default Credentials are used when unset. Named per
+# 07-configuration-reference.md section 12.4.
+GCS_PROJECT_ID = env("GCS_PROJECT_ID", default="")
 
 # Role-based AWS credentials: omit key/secret and let boto3 resolve them, which
 # is what the boto3 client construction this replaces did.
@@ -723,7 +724,7 @@ STORAGES = {
         access_key=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_KEY,
         secret_key=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_SECRET,
         endpoint_url=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_BUCKET_ENDPOINT,
-        project_id=CARE_GCS_PROJECT_ID,
+        project_id=GCS_PROJECT_ID,
     ),
     "facility": build_object_storage(
         CARE_STORAGE_BACKEND,
@@ -732,7 +733,7 @@ STORAGES = {
         access_key=None if _ROLE_BASED_BUCKET else FACILITY_S3_KEY,
         secret_key=None if _ROLE_BASED_BUCKET else FACILITY_S3_SECRET,
         endpoint_url=None if _ROLE_BASED_BUCKET else FACILITY_S3_BUCKET_ENDPOINT,
-        project_id=CARE_GCS_PROJECT_ID,
+        project_id=GCS_PROJECT_ID,
         default_acl=_FACILITY_DEFAULT_ACL,
     ),
     "report": build_object_storage(
@@ -742,7 +743,7 @@ STORAGES = {
         access_key=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_KEY,
         secret_key=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_SECRET,
         endpoint_url=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_BUCKET_ENDPOINT,
-        project_id=CARE_GCS_PROJECT_ID,
+        project_id=GCS_PROJECT_ID,
     ),
 }
 
