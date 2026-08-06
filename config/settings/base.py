@@ -16,6 +16,7 @@ from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
 from care.utils.csp import config as csp_config
+from config.storage import build_object_storage, validate_storage_backend
 from plug_config import manager
 
 from .config import *  # noqa F403
@@ -671,6 +672,79 @@ FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
     ),
 )
 FACILITY_CDN = env("FACILITY_CDN", default=None)
+
+
+# Portable object storage (ADR-0001)
+# ------------------------------------------------------------------------------
+# Provider selection is configuration-only. Application code addresses the
+# logical aliases below and never learns which provider implements them.
+CARE_STORAGE_BACKEND = validate_storage_backend(
+    env("CARE_STORAGE_BACKEND", default="s3").strip().lower()
+)
+
+# Provider-neutral bucket names. Each falls back to the pre-existing setting so
+# that no local or deployed configuration has to be rewritten. `report` shares
+# the patient bucket, matching the behaviour it replaces, but stays a separate
+# alias so it can be pointed elsewhere without touching application code.
+CARE_PATIENT_STORAGE_BUCKET = env(
+    "CARE_PATIENT_STORAGE_BUCKET", default=FILE_UPLOAD_BUCKET
+)
+CARE_FACILITY_STORAGE_BUCKET = env(
+    "CARE_FACILITY_STORAGE_BUCKET", default=FACILITY_S3_BUCKET
+)
+CARE_REPORT_STORAGE_BUCKET = env(
+    "CARE_REPORT_STORAGE_BUCKET", default=FILE_UPLOAD_BUCKET
+)
+
+# Optional; Application Default Credentials are used when unset.
+CARE_GCS_PROJECT_ID = env("CARE_GCS_PROJECT_ID", default="")
+
+# Role-based AWS credentials: omit key/secret and let boto3 resolve them, which
+# is what the boto3 client construction this replaces did.
+_ROLE_BASED_BUCKET = csp_config.CSProvider.AWS_ROLE_BASED.value == BUCKET_PROVIDER
+
+# Facility objects (cover images, avatars) are read through unsigned URLs built
+# by Facility.read_cover_image_url and User.read_profile_picture_url, so the
+# opt-in public ACL is preserved here at the alias level. It was previously
+# applied per object in care/utils/file_uploads/cover_image.py. The facility
+# alias is the only writer of that bucket, so this is equivalent. Ignored under
+# GCS, which requires uniform bucket-level access.
+_FACILITY_DEFAULT_ACL = "public-read" if BUCKET_HAS_FINE_ACL else None
+
+STORAGES = {
+    # staticfiles is configured near the top of this file and stays on
+    # WhiteNoise; only the object-storage aliases are added here because they
+    # depend on the bucket settings defined above.
+    **STORAGES,
+    "patient": build_object_storage(
+        CARE_STORAGE_BACKEND,
+        CARE_PATIENT_STORAGE_BUCKET,
+        region_name=FILE_UPLOAD_REGION,
+        access_key=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_KEY,
+        secret_key=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_SECRET,
+        endpoint_url=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_BUCKET_ENDPOINT,
+        project_id=CARE_GCS_PROJECT_ID,
+    ),
+    "facility": build_object_storage(
+        CARE_STORAGE_BACKEND,
+        CARE_FACILITY_STORAGE_BUCKET,
+        region_name=FACILITY_S3_REGION,
+        access_key=None if _ROLE_BASED_BUCKET else FACILITY_S3_KEY,
+        secret_key=None if _ROLE_BASED_BUCKET else FACILITY_S3_SECRET,
+        endpoint_url=None if _ROLE_BASED_BUCKET else FACILITY_S3_BUCKET_ENDPOINT,
+        project_id=CARE_GCS_PROJECT_ID,
+        default_acl=_FACILITY_DEFAULT_ACL,
+    ),
+    "report": build_object_storage(
+        CARE_STORAGE_BACKEND,
+        CARE_REPORT_STORAGE_BUCKET,
+        region_name=FILE_UPLOAD_REGION,
+        access_key=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_KEY,
+        secret_key=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_SECRET,
+        endpoint_url=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_BUCKET_ENDPOINT,
+        project_id=CARE_GCS_PROJECT_ID,
+    ),
+}
 
 # current hosted domain
 CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:4000")
