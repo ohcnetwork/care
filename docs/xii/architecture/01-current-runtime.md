@@ -1,12 +1,13 @@
-````markdown
 ---
 title: Current CARE Runtime
 document: 01-current-runtime
-version: 0.2.0
+version: 0.2.1
 status: Draft
 source_repository: https://github.com/ohcnetwork/care
 source_branch: develop
 reviewed: 2026-08-05
+verified_against_commit: 6a2976dc2512c2c532fcc70628c5690fbbbe3f3d
+verified: 2026-08-05
 ---
 
 # Current CARE Runtime
@@ -32,7 +33,7 @@ The reviewed repository is:
 
 ```text
 https://github.com/ohcnetwork/care
-````
+```
 
 The default development branch is:
 
@@ -946,6 +947,18 @@ report_generation.py
 totp.py
 ```
 
+Three further task definitions exist outside this package:
+
+```text
+care/emr/models/location.py:159            handle_cascade
+care/emr/models/resource_category.py:123   summarise_monetary_components
+care/emr/resources/account/sync_items.py:81 rebalance_account_task
+```
+
+These three are decorated with `@app.task` or `@shared_task` but are invoked as
+ordinary function calls at nearly every call site, without `.delay()`. They
+execute inline in the calling process.
+
 ---
 
 ## 27. Periodic Task Registration
@@ -1277,16 +1290,27 @@ Reports currently use the same configured bucket as patient files.
 
 ## 38. Patient File Bucket Configuration
 
-Patient files use:
+Patient files use the following settings for the bucket name and endpoints:
 
 ```text
 FILE_UPLOAD_BUCKET
-FILE_UPLOAD_REGION
-FILE_UPLOAD_KEY
-FILE_UPLOAD_SECRET
 FILE_UPLOAD_BUCKET_ENDPOINT
 FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT
 ```
+
+The credentials and region are **not** taken from the `FILE_UPLOAD_*` settings.
+
+`get_patient_bucket_config` in `care/utils/csp/config.py:46-56` reads:
+
+```text
+FACILITY_S3_REGION
+FACILITY_S3_KEY
+FACILITY_S3_SECRET
+```
+
+The settings `FILE_UPLOAD_REGION`, `FILE_UPLOAD_KEY` and `FILE_UPLOAD_SECRET`
+are defined at `config/settings/base.py:537-539` and are read by no code in the
+repository.
 
 The local environment points these values to MinIO.
 
@@ -1312,7 +1336,10 @@ The setting names retain S3 terminology.
 
 ## 40. Report Bucket Configuration
 
-Reports use the same bucket and endpoint configuration as patient files.
+Reports use the same bucket and endpoint configuration as patient files, and
+therefore also read the `FACILITY_S3_*` credentials described in section 38.
+
+`get_report_bucket_config` is defined at `care/utils/csp/config.py:59-70`.
 
 The bucket type remains separately identified as:
 
@@ -1930,7 +1957,7 @@ It intentionally does not decide:
 Those decisions belong in:
 
 ```text
-docs/gcp/02-target-runtime.md
+docs/xii/architecture/02-target-runtime.md
 ```
 
 and supporting Architecture Decision Records.
@@ -1942,7 +1969,7 @@ and supporting Architecture Decision Records.
 The next document is:
 
 ```text
-docs/xii/gcp/02-target-runtime.md
+docs/xii/architecture/02-target-runtime.md
 ```
 
 It will define the intended GCP runtime, including:
@@ -1961,6 +1988,3 @@ It will define the intended GCP runtime, including:
 * Artifact Registry;
 * IAM and service accounts;
 * scaling and cost boundaries.
-
-```
-```
