@@ -821,6 +821,26 @@ class InvoiceAPITestBase(CareAPITestBase):
         response_data = response.data
         self.assertEqual(response_data["status"], InvoiceStatusOptions.cancelled.value)
 
+    @override_settings(INVOICE_FREE_CANCEL_PERIOD_MINUTES=5)
+    def test_cancel_invoice_with_user_without_permission_within_period(self):
+        """
+        Test cancelling an invoice with a user without write permission.
+        """
+        permissions = [
+            InvoicePermissions.can_read_invoice.name,
+        ]
+        self.role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice()
+        response = self.cancel_invoice(
+            invoice.external_id, InvoiceStatusOptions.cancelled.value
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Cannot cancel invoice")
+
     def test_cancel_invoice_with_already_cancelled_invoice(self):
         """
         Test cancelling an invoice that is already cancelled.
@@ -835,6 +855,17 @@ class InvoiceAPITestBase(CareAPITestBase):
         self.assertEqual(
             response_data["errors"][0]["msg"], "Invoice is already cancelled"
         )
+
+    def test_cancel_invoice_with_invalid_reason(self):
+        """
+        Test cancelling an invoice with invalid reason.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        invoice = self.create_invoice()
+        response = self.cancel_invoice(invoice.external_id, "invalid_reason")
+        self.assertEqual(response.status_code, 400)
+        response_data = response.data
+        self.assertEqual(response_data["errors"][0]["msg"], "Invalid reason")
 
     @override_settings(INVOICE_FREE_CANCEL_PERIOD_MINUTES=5)
     def test_cancel_invoice_with_user_with_permission_outside_period(self):
@@ -1209,3 +1240,60 @@ class InvoiceAPITestBase(CareAPITestBase):
             response_data["errors"][0]["msg"],
             "Invoice is not locked",
         )
+
+    # Testcases for attach account to invoice
+
+    def get_attach_account_url(self, external_id):
+        return reverse(
+            "invoice-attach-account-to-invoice",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": external_id,
+            },
+        )
+
+    def test_attach_account_to_invoice_as_superuser(self):
+        """
+        Test attaching account to an invoice as superuser
+        """
+        self.client.force_authenticate(user=self.superuser)
+        invoice = self.create_invoice()
+        url = self.get_attach_account_url(invoice.external_id)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["charge_items"][0]["id"], str(self.charge_item.external_id)
+        )
+
+    def test_attach_account_to_invoice_as_user_with_permissions(self):
+        """
+        Test attaching account to an invoice as user with permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, self.role
+        )
+        invoice = self.create_invoice()
+        url = self.get_attach_account_url(invoice.external_id)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["charge_items"][0]["id"], str(self.charge_item.external_id)
+        )
+
+    def test_attach_account_to_invoice_as_user_without_permissions(self):
+        """
+        Test attaching account to an invoice as user with permissions
+        """
+        self.client.force_authenticate(user=self.user)
+        permissions = [
+            InvoicePermissions.can_read_invoice.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        invoice = self.create_invoice()
+        url = self.get_attach_account_url(invoice.external_id)
+        response = self.client.post(url, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.data["detail"], "Cannot write invoice")
