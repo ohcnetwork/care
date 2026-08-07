@@ -4,7 +4,7 @@ from django.db import transaction
 from django.utils import timezone
 from django_filters import rest_framework as filters
 from drf_spectacular.types import OpenApiTypes
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema, extend_schema_field
 from pydantic import BaseModel
 from rest_framework import filters as rest_framework_filters
 from rest_framework import serializers
@@ -118,6 +118,18 @@ class FileUploadFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
 
+@extend_schema_field(OpenApiTypes.BINARY)
+class BinaryFileField(serializers.FileField):
+    """
+    A `FileField` that documents itself as binary.
+
+    drf-spectacular renders `FileField` as `format: uri` by default, because
+    DRF serialises it to a URL on *output*. In a multipart request body it is
+    raw bytes, so the annotation is applied here rather than by flipping
+    COMPONENT_SPLIT_REQUEST, which would reshape every schema in the project.
+    """
+
+
 class FileUploadMultipartSerializer(serializers.Serializer):
     """
     `multipart/form-data` upload request (ADR-0002).
@@ -128,7 +140,7 @@ class FileUploadMultipartSerializer(serializers.Serializer):
     this serializer does not restate those rules.
     """
 
-    file = serializers.FileField(
+    file = BinaryFileField(
         help_text="The file itself, sent as a normal multipart file part."
     )
     name = serializers.CharField(help_text="Display name for the file.")
