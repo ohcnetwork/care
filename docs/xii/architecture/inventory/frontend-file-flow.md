@@ -533,7 +533,7 @@ holds a storage-provider URL of any kind.
 
 ### 12.2 Upload contract
 
-```
+```http
 POST /api/v1/files/upload-file/
 Content-Type: multipart/form-data
 ```

@@ -1,4 +1,3 @@
-```markdown
 # ES-02: File Transport Modernization
 
 - **Status:** Draft
@@ -92,17 +91,17 @@ Do not reset, rebase, merge unrelated work or push automatically.
 Read these documents before implementation:
 
 ```text
-docs/architecture/00-scope.md
-docs/architecture/01-current-runtime.md
-docs/architecture/02-target-runtime.md
-docs/architecture/03-migration-plan.md
-docs/architecture/04-testing.md
-docs/architecture/07-configuration.md
+docs/xii/architecture/00-scope-and-goals.md
+docs/xii/architecture/01-current-runtime.md
+docs/xii/architecture/02-target-runtime.md
+docs/xii/architecture/03-migration-plan.md
+docs/xii/architecture/04-testing.md
+docs/xii/architecture/07-configuration-reference.md
 
-docs/adr/ADR-0001-portable-storage.md
-docs/adr/ADR-0002-file-transport.md
+docs/xii/adr/ADR-0001-django-storage.md
+docs/xii/adr/ADR-0002-file-transport.md
 
-docs/specifications/ES-01-storage-modernization.md
+docs/xii/implementation/ES-01-storage.md
 
 docs/xii/architecture/inventory/storage-call-sites.md
 docs/xii/architecture/inventory/frontend-file-flow.md
@@ -1068,7 +1067,7 @@ only if transport changes affect documented call sites.
 Update:
 
 ```text
-docs/adr/ADR-0002-file-transport.md
+docs/xii/adr/ADR-0002-file-transport.md
 ```
 
 implementation checklist.
@@ -1177,4 +1176,3 @@ NOT READY TO MERGE
 Stop after ES-02.
 
 Do not begin ES-03.
-```

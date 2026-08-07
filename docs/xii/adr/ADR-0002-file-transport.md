@@ -1,4 +1,3 @@
-```markdown
 # ADR-0002: Server-Mediated File Transport
 
 - **Status:** Accepted
@@ -535,4 +534,3 @@ or tested here.
 **Not addressed by this ADR.** `POST /api/v1/files/` and `mark_upload_completed`
 survive from the presigned flow and are now vestigial; nothing writes to storage
 between them. Recorded in the frontend file-flow inventory §12.5.
-```
