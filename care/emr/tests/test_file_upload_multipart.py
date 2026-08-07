@@ -20,7 +20,7 @@ from PIL import Image
 
 from care.emr.models.file_upload import FileUpload
 from care.emr.utils.file_manager import FilesManager, get_storage_name
-from care.utils.tests.base import CareAPITestBase
+from care.utils.tests.base import CareAPITestBase, response_content
 
 
 def jpeg_bytes(size=(800, 800)) -> bytes:
@@ -103,7 +103,7 @@ class SuccessfulUploadTests(MultipartUploadTestBase):
         response = self.upload()
         download = self.client.get(response.data["download_url"])
         self.assertEqual(download.status_code, 200)
-        self.assertEqual(b"".join(download.streaming_content), self.payload_bytes)
+        self.assertEqual(response_content(download), self.payload_bytes)
 
     def test_response_is_provider_neutral(self):
         response = self.upload()
@@ -260,7 +260,7 @@ class UploadHandlerTests(MultipartUploadTestBase):
         response = self.upload()
         self.assertEqual(response.status_code, 200, response.data)
         download = self.client.get(response.data["download_url"])
-        self.assertEqual(b"".join(download.streaming_content), self.payload_bytes)
+        self.assertEqual(response_content(download), self.payload_bytes)
 
 
 class FailureConsistencyTests(MultipartUploadTestBase):
@@ -369,7 +369,7 @@ class ProviderNeutralTransportTests(MultipartUploadTestBase):
         response = self.upload()
         download = self.client.get(response.data["download_url"])
         self.assertEqual(download.status_code, 200)
-        self.assertEqual(b"".join(download.streaming_content), self.payload_bytes)
+        self.assertEqual(response_content(download), self.payload_bytes)
 
     def test_transport_modules_do_not_branch_on_the_configured_provider(self):
         # Inspect the AST rather than the text: these modules legitimately

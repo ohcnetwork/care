@@ -11,12 +11,7 @@ from care.emr.models.file_upload import FileUpload
 from care.emr.tasks.cleanup_incomplete_file_uploads import (
     cleanup_incomplete_file_uploads,
 )
-from care.utils.tests.base import CareAPITestBase
-
-
-def response_content(response) -> bytes:
-    """Collect a streaming FileResponse body."""
-    return b"".join(response.streaming_content)
+from care.utils.tests.base import CareAPITestBase, response_content
 
 
 class FileUploadTestCase(CareAPITestBase):

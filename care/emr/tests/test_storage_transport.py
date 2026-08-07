@@ -19,7 +19,7 @@ from PIL import Image
 
 from care.emr.models.file_upload import FileUpload
 from care.emr.utils.file_manager import FilesManager, S3FilesManager
-from care.utils.tests.base import CareAPITestBase
+from care.utils.tests.base import CareAPITestBase, response_content
 
 #: Substrings that would betray a storage-provider URL or endpoint in a response.
 PROVIDER_URL_MARKERS = (
@@ -40,10 +40,6 @@ def assert_no_provider_url(testcase, payload):
     text = str(payload)
     for marker in PROVIDER_URL_MARKERS:
         testcase.assertNotIn(marker, text, f"provider URL marker {marker!r} leaked")
-
-
-def response_content(response) -> bytes:
-    return b"".join(response.streaming_content)
 
 
 class NoProviderUrlInResponsesTests(CareAPITestBase):
