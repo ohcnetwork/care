@@ -1,3 +1,4 @@
+```markdown
 # ADR-0002: Server-Mediated File Transport
 
 - **Status:** Accepted
@@ -6,40 +7,56 @@
 - **Supersedes:** None
 - **Superseded by:** None
 
+---
+
 ## Context
 
-CARE currently supports more than one file-transfer flow.
+CARE historically supported multiple file-transfer mechanisms.
 
-The verified runtime includes:
+The verified runtime included:
 
-- direct browser-to-object-storage uploads using presigned URLs;
-- direct downloads using provider-generated URLs;
-- an upload endpoint that sends file content through Django encoded as base64;
-- custom S3-compatible persistence implemented with `boto3`.
+- direct browser-to-object-storage uploads through presigned URLs;
+- direct downloads through provider-generated or provider-facing URLs;
+- a Django-proxied upload endpoint that transmitted complete file contents as base64;
+- provider-specific transport behavior coupled to S3/MinIO concepts.
 
-ADR-0001 defines Django Storage API as the application-level object-persistence abstraction. It does not define how file bytes travel between clients and CARE.
+ADR-0001 established Django Storage API as the single application-level abstraction for object persistence.
 
-The existing transport mechanisms create several problems:
+After completion of ES-01:
 
-- the frontend must understand provider-specific upload workflows;
-- browser clients communicate directly with MinIO or another object-storage provider;
-- bucket endpoints and signed URLs become part of the public application contract;
-- authorization is divided between CARE and temporary provider credentials;
-- base64 increases request size and memory use;
-- complete files may be materialized in memory;
-- provider changes can affect frontend behavior;
-- direct uploads make validation and audit behavior more difficult to centralize;
-- local and cloud deployments may expose different file-transfer behavior.
+- ordinary object persistence uses Django Storage API;
+- MinIO is supported locally through `S3Storage`;
+- generic S3-compatible storage remains supported;
+- GCS is supported through `GoogleCloudStorage`;
+- signed upload URLs have been removed;
+- signed download URLs have been removed;
+- downloads are mediated by CARE;
+- provider-specific bucket URLs are no longer part of the client contract.
 
-The initial deployment is greenfield. There is no production frontend or existing file population that requires preservation of the current transport contract.
+The remaining transport issue is the upload representation.
+
+The current Django-mediated upload path still transports complete file contents encoded as base64.
+
+Base64 file transport has several disadvantages:
+
+- approximately 33% representation overhead before additional JSON overhead;
+- complete file contents tend to be materialized in memory;
+- normal browser and HTTP file-upload facilities are bypassed;
+- Django upload handlers cannot be used naturally;
+- large-file handling becomes less efficient;
+- API schemas represent binary content as application JSON instead of file content.
+
+The application should expose one provider-independent HTTP file contract regardless of which object-storage backend is configured.
+
+---
 
 ## Decision
 
-All supported file uploads and downloads SHALL pass through authenticated CARE Django endpoints.
+All supported file uploads and downloads SHALL be mediated by CARE.
 
-The frontend SHALL communicate only with CARE.
+Clients SHALL communicate only with CARE.
 
-CARE SHALL communicate with object storage through Django Storage API as established by ADR-0001.
+CARE SHALL communicate with object storage exclusively through Django Storage API as established by ADR-0001.
 
 The target upload flow is:
 
@@ -50,12 +67,15 @@ Client
   v
 CARE Django API
   |
-  | Django UploadedFile / upload handlers
+  | UploadedFile / Django upload handlers
+  v
+CARE validation and authorization
+  |
   v
 Django Storage API
   |
   v
-Configured storage backend
+Configured object-storage backend
 ```
 
 The target download flow is:
@@ -76,191 +96,396 @@ Django Storage API
 streaming HTTP response
 ```
 
-## Upload transport
+The public HTTP contract SHALL be independent of:
 
-Uploads SHALL use:
+- MinIO;
+- AWS S3;
+- S3-compatible providers;
+- Google Cloud Storage;
+- future Django-compatible storage providers.
+
+---
+
+## Upload Transport
+
+File uploads SHALL use:
 
 ```text
 multipart/form-data
 ```
 
-CARE SHALL use Django upload handlers and `UploadedFile` objects.
+CARE SHALL receive uploaded content through Django's normal upload facilities.
 
-CARE SHALL avoid loading complete supported files into memory when temporary-file or streaming behavior is available.
+The implementation SHOULD use:
 
-The base64 upload contract SHALL be removed from the target production API.
+- `UploadedFile`;
+- `InMemoryUploadedFile`;
+- `TemporaryUploadedFile`;
+- Django upload handlers;
+- DRF file fields where applicable.
 
-## Download transport
+CARE SHALL NOT require complete file contents to be embedded inside JSON.
 
-Downloads SHALL be returned by CARE using a streaming response such as Django's `FileResponse` or an equivalent implementation.
+The existing base64 file-content transport SHALL be removed from the target API.
 
-CARE SHALL determine:
+---
 
-- authorization;
-- content type;
-- content disposition;
-- safe filename;
-- missing-object behavior.
+## Download Transport
 
-The storage provider SHALL not define the public application response.
+Downloads SHALL continue to pass through authenticated CARE endpoints.
 
-## Direct object-storage access
+CARE SHALL:
 
-The frontend SHALL NOT:
+1. authenticate the caller;
+2. authorize access;
+3. resolve the logical storage alias;
+4. open the object through Django Storage;
+5. return the object using a streaming response such as `FileResponse`;
+6. set appropriate content type;
+7. set safe content disposition;
+8. handle missing objects consistently.
+
+The storage provider SHALL not define the public download contract.
+
+---
+
+## Direct Object-Storage Access
+
+Clients SHALL NOT:
 
 - request presigned upload URLs;
+- request presigned download URLs;
 - upload directly to MinIO;
-- upload directly to S3;
+- upload directly to AWS S3;
 - upload directly to GCS;
+- download directly from provider-generated storage URLs as the normal application flow;
 - receive storage credentials;
-- select a bucket;
-- depend on a storage-provider endpoint;
-- use provider-generated download URLs as the normal download flow.
+- select storage buckets;
+- depend on storage-provider endpoints.
 
-Presigned upload and download endpoints SHALL be removed from the target API.
+Provider-specific URLs SHALL NOT be part of the normal CARE API contract.
 
-## Provider portability
+---
 
-The HTTP file contract SHALL remain identical regardless of whether the configured storage backend is:
+## Provider Portability
 
-- MinIO;
-- AWS S3;
-- another S3-compatible provider;
-- Google Cloud Storage;
-- another future Django-compatible storage backend.
+The same upload and download API SHALL work with any configured Django Storage backend supported by CARE.
 
-Changing the storage provider SHALL not require frontend changes.
+Changing:
+
+```text
+CARE_STORAGE_BACKEND=s3
+```
+
+to:
+
+```text
+CARE_STORAGE_BACKEND=gcs
+```
+
+or another future supported backend SHALL NOT require frontend changes.
+
+Provider selection remains a server-side deployment concern.
+
+---
 
 ## Authorization
 
-CARE SHALL authenticate and authorize every upload and download.
+CARE SHALL remain the authorization boundary for file access.
 
-Object-storage possession or knowledge of an object name SHALL not constitute application authorization.
+Knowledge of:
 
-Authorization SHALL continue to follow CARE's existing domain and permission model.
+- an object name;
+- a bucket name;
+- a previous download path;
 
-This ADR does not redesign CARE permissions.
+SHALL NOT constitute authorization.
+
+Uploads and downloads SHALL continue using CARE's existing permission and domain model.
+
+This ADR does not redesign authorization.
+
+---
 
 ## Validation
 
 Uploads SHALL pass through CARE validation.
 
-The implementation SHALL enforce the applicable existing policies for:
+The implementation SHALL preserve or enforce applicable rules for:
 
-- file size;
-- filename;
+- file presence;
+- maximum file size;
 - file extension;
 - MIME type;
+- logical file type;
+- associated patient or facility;
 - ownership;
-- patient or facility association;
-- allowed operation.
+- authorization;
+- filename safety.
 
-The browser-supplied MIME type SHALL not automatically be treated as authoritative.
+Browser-provided MIME metadata SHALL not automatically be treated as authoritative when stronger existing validation exists.
 
-## Memory and temporary files
+This ADR does not require adding heavyweight content-inspection or antivirus infrastructure.
 
-CARE SHALL configure explicit request and upload limits.
+---
 
-The implementation SHALL use Django's upload-handler behavior to move sufficiently large uploads to temporary files.
+## Upload Memory Management
 
-Temporary filesystem storage is ephemeral and SHALL not be considered durable.
+The implementation SHALL use Django upload-handler behavior rather than base64-decoding complete request bodies.
 
-Supported maximum file size SHALL be measured and documented.
+Small files MAY remain in memory.
 
-Very large media-transfer workflows are outside the initial scope.
+Larger supported files SHOULD be represented by temporary-file-backed uploads according to Django configuration.
 
-## Streaming
+Relevant limits SHALL be explicit.
 
-Downloads SHALL be streamed where possible.
+Examples include:
 
-The implementation SHALL not call `.read()` on an entire storage object merely to build a normal HTTP response.
+```text
+CARE_MAX_UPLOAD_SIZE
+FILE_UPLOAD_MAX_MEMORY_SIZE
+DATA_UPLOAD_MAX_MEMORY_SIZE
+```
 
-Whole-file reads may remain in internal operations that explicitly require complete bytes, such as a rendering library, but they SHALL not be the default transport pattern.
+Exact setting names SHALL follow the project's configuration reference.
 
-## HTTP range requests
+Temporary files are ephemeral and SHALL NOT be treated as durable storage.
 
-Range-request support is not guaranteed by this decision.
+---
 
-If video or audio seeking requires ranges, that capability SHALL be implemented and tested explicitly.
+## Persistence
 
-The initial transport implementation MAY document range requests as unsupported.
+After HTTP validation, file persistence SHALL continue through Django Storage API.
+
+Where possible, the `UploadedFile` or equivalent file-like object SHOULD be passed directly to:
+
+```python
+storage.save(name, uploaded_file)
+```
+
+The transport layer SHOULD NOT perform an unnecessary complete `.read()` followed by a second in-memory representation.
+
+Object naming and logical storage-alias selection remain governed by ADR-0001 / ES-01.
+
+---
+
+## Database and Storage Consistency
+
+PostgreSQL and object storage do not participate in a shared atomic transaction.
+
+The implementation SHALL therefore define failure behavior for cases such as:
+
+- storage write fails;
+- database update fails after storage write;
+- object exists but metadata creation fails;
+- incomplete upload state remains.
+
+The implementation SHALL use the smallest correct compensation or cleanup strategy.
+
+This ADR does not introduce distributed transactions.
+
+---
+
+## Response Contract
+
+Successful upload responses SHALL remain provider-neutral.
+
+They MAY expose application-level values such as:
+
+- CARE file identifier;
+- filename;
+- MIME type;
+- size;
+- metadata;
+- CARE-relative `download_url`;
+- logical processing status.
+
+They SHALL NOT expose:
+
+- bucket URL;
+- storage endpoint;
+- S3 URL;
+- GCS URL;
+- signed URL;
+- storage credentials.
+
+---
+
+## Streaming Downloads
+
+Normal downloads SHOULD be streamed.
+
+The application SHALL NOT read complete objects into memory merely to construct ordinary file responses.
+
+Whole-file reads may remain inside internal processing operations that explicitly require complete bytes.
+
+Those internal processing cases are not considered HTTP file transport.
+
+---
+
+## HTTP Range Requests
+
+HTTP range support is not guaranteed by this decision.
+
+If media seeking or large-file requirements later require byte ranges, that capability SHALL be designed and tested explicitly.
+
+Range support SHALL not be assumed merely because the underlying object-storage provider supports it.
+
+---
+
+## Static Files
+
+This ADR does not apply to Django static assets.
+
+Static files continue using the existing Django/WhiteNoise configuration established by the project.
+
+---
 
 ## Consequences
 
 ### Positive
 
-- The frontend becomes storage-provider independent.
-- CARE remains the single authorization boundary.
-- File validation is centralized.
-- Storage credentials and bucket endpoints remain server-side.
+- The client is completely independent of the storage provider.
+- CARE remains the single authentication and authorization boundary.
 - Base64 overhead is removed.
-- MinIO and GCS use the same application API.
-- File operations are easier to audit.
-- Provider changes do not alter the client contract.
+- Django upload handlers become usable.
+- Large supported uploads can avoid unnecessary in-memory duplication.
+- MinIO, S3 and GCS share the same HTTP contract.
+- Provider changes do not require frontend changes.
+- Storage credentials remain server-side.
+- Validation and audit behavior remain centralized.
 
 ### Negative
 
-- File bytes pass through CARE and Cloud Run or the selected application runtime.
-- API bandwidth, request duration and resource use increase.
-- Large files require careful upload-handler and timeout configuration.
-- Direct provider acceleration is not used.
-- Cloud Run request limits constrain supported file sizes and durations.
+- All file traffic passes through the CARE application runtime.
+- Application bandwidth usage increases compared with direct-to-bucket transfers.
+- File-transfer duration contributes to request execution time.
+- Large-file support requires explicit runtime sizing and limits.
+- Extremely large uploads may eventually require a different transport design.
+
+---
 
 ## Alternatives Considered
 
-### Preserve presigned browser uploads
+### Preserve Base64 Uploads
 
 Rejected.
 
-It exposes storage-provider behavior to clients and conflicts with the selected provider-neutral CARE API boundary.
+Base64 is inefficient for general binary HTTP transport and prevents natural use of Django upload handlers.
 
-### Preserve base64 uploads
+### Reintroduce Presigned Uploads
 
 Rejected.
 
-Base64 increases payload size, increases memory pressure and is not an appropriate general file-transfer mechanism.
+Presigned uploads expose storage-provider behavior to clients and break the selected provider-neutral application boundary.
 
-### Use presigned uploads only for large files
+### Use Presigned Uploads Only for GCS or S3
+
+Rejected.
+
+The client contract must not depend on the configured provider.
+
+### Use Presigned Uploads Only for Large Files
 
 Deferred.
 
-The initial scope prioritizes a single simple transport contract. A separate ADR may reconsider exceptionally large-object workflows after real requirements and measurements exist.
+A future ADR may introduce a specialized large-object transport if actual requirements demonstrate that the server-mediated model is insufficient.
 
-### Stream uploads directly from the request to storage without Django upload handlers
+### Build a Custom Streaming Upload Framework
 
-Rejected as a general requirement.
+Rejected.
 
-The implementation should use Django's established request and upload abstractions unless measurements prove they are insufficient.
+Django already provides established multipart and upload-handler abstractions.
+
+### Use Provider-Native Multipart or Resumable Uploads
+
+Deferred.
+
+These mechanisms increase provider coupling and are unnecessary for the initial verified requirements.
+
+---
 
 ## Out of Scope
 
 This ADR does not define:
 
-- the configured object-storage provider;
+- object-storage provider selection;
+- storage backend implementation;
 - Cloud Tasks;
-- cache backends;
+- Celery migration;
+- report-generation retry behavior;
+- Redis;
+- cache;
 - distributed locks;
+- rate limiting;
 - Cloud Run deployment;
+- Cloud SQL;
 - Terraform;
-- antivirus or malware-scanning services;
-- very large video ingestion;
-- resumable or multipart provider-native uploads;
-- CDN delivery.
+- CI/CD;
+- CDN architecture;
+- antivirus scanning;
+- resumable provider-native uploads;
+- very large video ingestion.
+
+These concerns are governed by separate ADRs and Engineering Specifications.
+
+---
+
+## Relationship to ADR-0001
+
+ADR-0001 answers:
+
+> How does CARE persist and retrieve objects independently of the storage provider?
+
+Answer:
+
+```text
+Django Storage API
+```
+
+ADR-0002 answers:
+
+> How do file bytes travel between clients and CARE?
+
+Answer:
+
+```text
+multipart upload through CARE
+streaming download through CARE
+```
+
+The two concerns are intentionally separate.
+
+---
 
 ## Related Documents
 
 - ADR-0001: Portable Object Storage using Django Storage API
-- IS-01: Storage Modernization
-- IS-02: File Transport Modernization
-- Storage call-site inventory
-- Frontend file-flow inventory
+- ES-01: Portable Storage Modernization
+- ES-02: File Transport Modernization
+- Frontend File Flow Inventory
+- Storage Call-Site Inventory
+- Configuration Reference
+- Testing Strategy
+
+---
 
 ## Implementation Status
 
-- [x] Decision accepted.
-- [ ] Multipart upload API implemented.
-- [ ] Streaming download API implemented.
-- [ ] Base64 upload removed.
-- [ ] Presigned upload API removed.
-- [ ] Presigned download API removed.
-- [ ] Frontend contract updated.
+Current state after ES-01:
+
+- [x] Provider-specific signed uploads removed.
+- [x] Provider-specific signed downloads removed.
+- [x] Downloads mediated by CARE.
+- [x] Download persistence uses Django Storage.
+- [x] Provider URLs removed from the normal client contract.
+- [ ] Base64 upload transport removed.
+- [ ] Multipart upload implemented.
+- [ ] Django upload handlers verified.
+- [ ] Upload size limits verified/configured.
+- [ ] Multipart API schema implemented.
+- [ ] Upload authorization regression tests completed.
+- [ ] MinIO multipart round trip verified.
+- [ ] Provider-neutral GCS multipart behavior verified.
+- [ ] ES-02 completed.
+```
