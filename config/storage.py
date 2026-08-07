@@ -20,6 +20,10 @@ GCS_BACKEND = "storages.backends.gcloud.GoogleCloudStorage"
 #: Values accepted by the ``CARE_STORAGE_BACKEND`` setting.
 SUPPORTED_STORAGE_BACKENDS = ("s3", "gcs")
 
+#: ``BUCKET_PROVIDER`` value meaning "resolve AWS credentials from the instance
+#: role" -- key and secret are then omitted entirely.
+AWS_ROLE_BASED_BUCKET_PROVIDER = "AWS_ROLE_BASED"
+
 
 def validate_storage_backend(backend: str) -> str:
     """Return ``backend`` if supported, otherwise raise ``ImproperlyConfigured``."""
@@ -42,7 +46,6 @@ def build_object_storage(
     secret_key: str | None = None,
     endpoint_url: str | None = None,
     project_id: str | None = None,
-    default_acl: str | None = None,
 ) -> dict:
     """
     Build a single ``STORAGES`` entry for one logical alias.
@@ -57,6 +60,9 @@ def build_object_storage(
     default. CARE generates a unique ``internal_name`` per object and the
     behaviour it replaces (``boto3.put_object``) overwrites unconditionally, so
     Django must not rename on collision.
+
+    No alias is ever public. Every object is served by CARE through Django
+    Storage (ADR-0001), so buckets can and should be private.
     """
     validate_storage_backend(backend)
 
@@ -74,8 +80,8 @@ def build_object_storage(
     options = {
         "bucket_name": bucket_name,
         "file_overwrite": True,
-        # Private by default; only set when an operator opts in explicitly.
-        "default_acl": default_acl,
+        # Private: CARE serves every object, so no public ACL is ever needed.
+        "default_acl": None,
     }
     if region_name:
         options["region_name"] = region_name

@@ -3,6 +3,7 @@ import logging
 from django.utils import timezone
 from django_filters import BooleanFilter, CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel, field_validator
 from rest_framework import status
@@ -26,6 +27,7 @@ from care.emr.resources.report.report_upload.spec import (
     ReportUploadRetrieveSpec,
 )
 from care.emr.tasks.report_generation import generate_report_task
+from care.emr.utils.file_download import file_object_response
 from care.security.authorization.base import AuthorizationController
 from care.utils.shortcuts import get_object_or_404
 
@@ -93,6 +95,20 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
         write_report_authorizer(
             self.request.user, model_instance.report_type, model_instance.associating_id
         )
+
+    @extend_schema(
+        description="Download the report through CARE. Reads through Django Storage; "
+        "no storage-provider URL is exposed.",
+        responses={(200, "application/octet-stream"): OpenApiTypes.BINARY},
+        tags=["report"],
+    )
+    @action(detail=True, methods=["GET"])
+    def download(self, request, *args, **kwargs):
+        obj = self.get_object()
+        # get_queryset() only authorizes the list action, so a detail action
+        # must authorize explicitly or it would serve any report to any user.
+        read_report_authorizer(request.user, obj.report_type, obj.associating_id)
+        return file_object_response(obj)
 
     @extend_schema(
         description="Generate a report from a template with patient/encounter data",

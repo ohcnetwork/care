@@ -2,7 +2,6 @@ import secrets
 import string
 import uuid
 
-from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
@@ -200,10 +199,17 @@ class User(AbstractUser):
         return data
 
     def read_profile_picture_url(self):
+        """
+        CARE route serving the avatar (ADR-0001).
+
+        Never a storage-provider URL: the bytes are read through Django Storage
+        so the bucket can stay private and the provider interchangeable.
+        """
         if self.profile_picture_url:
-            if settings.FACILITY_CDN:
-                return f"{settings.FACILITY_CDN}/{self.profile_picture_url}"
-            return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.profile_picture_url}"
+            return reverse(
+                "user-profile-picture-asset",
+                kwargs={"username": self.username},
+            )
         return None
 
     def is_mfa_enabled(self):

@@ -4,6 +4,7 @@ from django.contrib.postgres.fields import ArrayField
 from django.core.cache import cache
 from django.db import models
 from django.db.models import IntegerChoices
+from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
 from care.emr.models import FacilityOrganization
@@ -205,10 +206,17 @@ class Facility(BaseModel):
 
 
     def read_cover_image_url(self):
+        """
+        CARE route serving the cover image (ADR-0001).
+
+        Never a storage-provider URL: the bytes are read through Django Storage
+        so the bucket can stay private and the provider interchangeable.
+        """
         if self.cover_image_url:
-            if settings.FACILITY_CDN:
-                return f"{settings.FACILITY_CDN}/{self.cover_image_url}"
-            return f"{settings.FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT}/{settings.FACILITY_S3_BUCKET}/{self.cover_image_url}"
+            return reverse(
+                "facility-cover-image-asset",
+                kwargs={"external_id": self.external_id},
+            )
         return None
 
     def __str__(self):

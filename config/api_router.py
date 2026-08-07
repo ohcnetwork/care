@@ -33,6 +33,10 @@ from care.emr.api.viewsets.facility_organization import (
     FacilityOrganizationUsersViewSet,
     FacilityOrganizationViewSet,
 )
+from care.emr.api.viewsets.file_assets import (
+    FacilityCoverImageView,
+    UserProfilePictureView,
+)
 from care.emr.api.viewsets.file_upload import FileUploadViewSet
 from care.emr.api.viewsets.form_submission import FormSubmissionViewSet
 from care.emr.api.viewsets.healthcare_service import HealthcareServiceViewSet
@@ -502,6 +506,19 @@ router.register("template_reports", ReportUploadViewSet, basename="template-repo
 router.register("extensions", ExtensionsViewSet, basename="extensions")
 app_name = "api"
 urlpatterns = [
+    # Public image delivery (ADR-0001): CARE serves the bytes so that no
+    # storage-provider URL is handed to a client. Unauthenticated, matching the
+    # world-readable bucket objects these replace.
+    path(
+        "assets/facility/<uuid:external_id>/cover_image/",
+        FacilityCoverImageView.as_view(),
+        name="facility-cover-image-asset",
+    ),
+    path(
+        "assets/user/<str:username>/profile_picture/",
+        UserProfilePictureView.as_view(),
+        name="user-profile-picture-asset",
+    ),
     path("", include(router.urls)),
     path("", include(user_nested_router.urls)),
     path("", include(facility_nested_router.urls)),

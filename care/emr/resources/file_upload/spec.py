@@ -8,7 +8,7 @@ from pydantic import UUID4, field_validator
 from care.emr.models import FileUpload
 from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.user.spec import UserSpec
-from care.emr.utils import legacy_signed_urls
+from care.emr.utils.file_download import file_download_url
 from care.utils.models.validators import file_name_validator
 
 
@@ -104,18 +104,15 @@ class FileUploadListSpec(FileUploadBaseSpec):
 
 
 class FileUploadRetrieveSpec(FileUploadListSpec):
-    signed_url: str | None = None
-    read_signed_url: str | None = None
+    # ADR-0001: CARE mediates all object transport. This is a CARE route, never
+    # a storage-provider URL. Uploads go to POST /api/v1/files/upload-file/.
+    download_url: str | None = None
     internal_name: str  # Not sure if this needs to be returned
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        if getattr(obj, "_just_created", False):
-            # Calculate Write URL and return it
-            mapping["signed_url"] = legacy_signed_urls.signed_url(obj)
-        else:
-            mapping["read_signed_url"] = legacy_signed_urls.read_signed_url(obj)
+        mapping["download_url"] = file_download_url(obj)
 
 
 class ConsentFileUploadCreateSpec(FileUploadBaseSpec):

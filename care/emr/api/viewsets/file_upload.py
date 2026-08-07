@@ -6,6 +6,7 @@ from django.core.files.base import ContentFile
 from django.db import transaction
 from django.utils import timezone
 from django_filters import rest_framework as filters
+from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
 from rest_framework import filters as rest_framework_filters
@@ -31,6 +32,7 @@ from care.emr.resources.file_upload.spec import (
     FileUploadRetrieveSpec,
     FileUploadUpdateSpec,
 )
+from care.emr.utils.file_download import file_object_response
 from care.security.authorization import AuthorizationController
 from care.utils.shortcuts import get_object_or_404
 
@@ -172,6 +174,18 @@ class FileUploadViewSet(
         obj = get_object_or_404(FileUpload, external_id=self.kwargs["external_id"])
         file_authorizer(self.request.user, obj.file_type, obj.associating_id, "read")
         return super().get_queryset()
+
+    @extend_schema(
+        description="Download the file through CARE. Reads through Django Storage; "
+        "no storage-provider URL is exposed.",
+        responses={(200, "application/octet-stream"): OpenApiTypes.BINARY},
+    )
+    @action(detail=True, methods=["GET"])
+    def download(self, request, *args, **kwargs):
+        # get_object() -> get_queryset(), which runs file_authorizer(..., "read")
+        # for every detail action.
+        obj = self.get_object()
+        return file_object_response(obj)
 
     @extend_schema(responses={200: FileUploadListSpec})
     @action(detail=True, methods=["POST"])

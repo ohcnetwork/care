@@ -41,8 +41,7 @@ def upload_cover_image(
         f"{folder}/{object_external_id}_{secrets.token_hex(8)}.{image_extension}"
     )
 
-    # Public read, when enabled, is configured on the facility alias via
-    # BUCKET_HAS_FINE_ACL rather than set per object here; the facility bucket
-    # has no other writer. The uploaded file is passed through rather than read
-    # into memory.
+    # No ACL is set: the object is private and served by CARE through the
+    # public asset routes (ADR-0001). The uploaded file is passed through
+    # rather than read into memory.
     return storage.save(image_key, image)

@@ -15,8 +15,11 @@ from healthy_django.healthcheck.celery_queue_length import (
 from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
-from care.utils.csp import config as csp_config
-from config.storage import build_object_storage, validate_storage_backend
+from config.storage import (
+    AWS_ROLE_BASED_BUCKET_PROVIDER,
+    build_object_storage,
+    validate_storage_backend,
+)
 from plug_config import manager
 
 from .config import *  # noqa F403
@@ -523,16 +526,13 @@ USE_SMS = False
 # ------------------------------------------------------------------------------
 
 
+# Credential source. AWS_ROLE_BASED omits the key/secret so that boto3 resolves
+# instance-role credentials itself. Every other value supplies them explicitly.
 BUCKET_PROVIDER = env("BUCKET_PROVIDER", default="aws").upper()
 BUCKET_REGION = env("BUCKET_REGION", default="ap-south-1")
 BUCKET_KEY = env("BUCKET_KEY", default="")
 BUCKET_SECRET = env("BUCKET_SECRET", default="")
 BUCKET_ENDPOINT = env("BUCKET_ENDPOINT", default="")
-BUCKET_EXTERNAL_ENDPOINT = env("BUCKET_EXTERNAL_ENDPOINT", default=BUCKET_ENDPOINT)
-BUCKET_HAS_FINE_ACL = env.bool("BUCKET_HAS_FINE_ACL", default=False)
-
-if BUCKET_PROVIDER not in csp_config.CSProvider.__members__:
-    logger.error("invalid CSP found: %s", BUCKET_PROVIDER)
 
 FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
 FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default=BUCKET_REGION)
@@ -540,12 +540,6 @@ FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default=BUCKET_KEY)
 FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default=BUCKET_SECRET)
 FILE_UPLOAD_BUCKET_ENDPOINT = env(
     "FILE_UPLOAD_BUCKET_ENDPOINT", default=BUCKET_ENDPOINT
-)
-FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT = env(
-    "FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT",
-    default=(
-        BUCKET_EXTERNAL_ENDPOINT if BUCKET_ENDPOINT else FILE_UPLOAD_BUCKET_ENDPOINT
-    ),
 )
 
 ALLOWED_MIME_TYPES = set(
@@ -665,13 +659,6 @@ FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default=BUCKET_SECRET)
 FACILITY_S3_BUCKET_ENDPOINT = env(
     "FACILITY_S3_BUCKET_ENDPOINT", default=BUCKET_ENDPOINT
 )
-FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
-    "FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT",
-    default=(
-        BUCKET_EXTERNAL_ENDPOINT if BUCKET_ENDPOINT else FACILITY_S3_BUCKET_ENDPOINT
-    ),
-)
-FACILITY_CDN = env("FACILITY_CDN", default=None)
 
 
 # Portable object storage (ADR-0001)
@@ -700,17 +687,9 @@ CARE_REPORT_STORAGE_BUCKET = env(
 # 07-configuration-reference.md section 12.4.
 GCS_PROJECT_ID = env("GCS_PROJECT_ID", default="")
 
-# Role-based AWS credentials: omit key/secret and let boto3 resolve them, which
-# is what the boto3 client construction this replaces did.
-_ROLE_BASED_BUCKET = csp_config.CSProvider.AWS_ROLE_BASED.value == BUCKET_PROVIDER
-
-# Facility objects (cover images, avatars) are read through unsigned URLs built
-# by Facility.read_cover_image_url and User.read_profile_picture_url, so the
-# opt-in public ACL is preserved here at the alias level. It was previously
-# applied per object in care/utils/file_uploads/cover_image.py. The facility
-# alias is the only writer of that bucket, so this is equivalent. Ignored under
-# GCS, which requires uniform bucket-level access.
-_FACILITY_DEFAULT_ACL = "public-read" if BUCKET_HAS_FINE_ACL else None
+# Role-based AWS credentials: omit key/secret so the SDK resolves the instance
+# role itself.
+_ROLE_BASED_BUCKET = AWS_ROLE_BASED_BUCKET_PROVIDER == BUCKET_PROVIDER
 
 STORAGES = {
     # staticfiles is configured near the top of this file and stays on
@@ -734,7 +713,6 @@ STORAGES = {
         secret_key=None if _ROLE_BASED_BUCKET else FACILITY_S3_SECRET,
         endpoint_url=None if _ROLE_BASED_BUCKET else FACILITY_S3_BUCKET_ENDPOINT,
         project_id=GCS_PROJECT_ID,
-        default_acl=_FACILITY_DEFAULT_ACL,
     ),
     "report": build_object_storage(
         CARE_STORAGE_BACKEND,
