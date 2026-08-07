@@ -1,13 +1,13 @@
 ---
 title: Plugin Impact Inventory
 document: inventory/plugin-impact
-version: 0.1.0
+version: 0.2.0
 status: Draft
-phase: 0
+phase: 1
 source_repository: https://github.com/ohcnetwork/care
 source_branch: gcp
 source_commit: 6a2976dc2512c2c532fcc70628c5690fbbbe3f3d
-reviewed: 2026-08-05
+reviewed: 2026-08-07
 ---
 
 # Plugin Impact Inventory
@@ -159,7 +159,7 @@ not what one does today.
 | Celery tasks | **no** | `app.autodiscover_tasks()` (`config/celery_app.py:18`) scans every app in `INSTALLED_APPS`. Any plugin `tasks.py` is registered automatically and would need a Cloud Tasks route. |
 | Redis dependencies | **no** | A plugin can import `django_redis` or call `cache.set(..., nx=True)` freely. Nothing constrains it. |
 | Direct S3 / boto3 | **no** | `boto3` is a core dependency, importable by any plugin. |
-| Signed URLs | **no** | `S3FilesManager` is importable from `care.emr.utils.file_manager`. A plugin can mint presigned URLs, bypassing the "all traffic through Django" rule. |
+| Signed URLs | **partly, since ES-01** | CARE no longer generates any. `S3FilesManager` is still importable from `care.emr.utils.file_manager` but exposes no signed-URL method — see §9. A plugin can still construct its own `boto3` client, so the guarantee is CARE's, not the platform's. |
 | Custom health checks | **partly** | `HEALTHY_DJANGO` (`config/settings/base.py:453-467`) is a plain list. A plugin cannot append to it through the plug system — no hook exists. **inferred** plugins cannot register health checks. |
 | Custom startup behavior | **no** | Standard Django `AppConfig.ready()` is available to any plugin app. |
 | Additional migrations | **no** | Plugin apps are ordinary Django apps; their migrations run with `migrate`. Given §2 of `runtime-and-deployment.md`, they would run only in the Celery Beat container. |
@@ -220,3 +220,48 @@ using the same method applied here to core CARE.
 GCP design. Before deploying, run this same inventory against each plugin the
 target deployment actually installs. Document that set in
 `07-configuration-reference.md` rather than assuming the empty default.
+
+---
+
+## 9. Storage API change in ES-01 (deprecation notice)
+
+Recorded 2026-08-07.
+
+**verified** `care.emr.utils.file_manager.S3FilesManager` — the one storage
+symbol this inventory identified as plugin-reachable — still imports and still
+works. It is now a **deprecated** subclass of `FilesManager`.
+
+What changed:
+
+| Aspect | Before | After |
+| --- | --- | --- |
+| Base | own class over `boto3` | `FilesManager`, delegating to Django Storage |
+| Constructor argument | `BucketType.PATIENT` | `"PATIENT"` or `"patient"`; the old enum member still works via its `.value` |
+| `put_object` / `get_object` / `delete_object` | boto3 calls, returned provider response dicts | Django Storage; return a name, a file object, or `None` |
+| `put_object(**kwargs)` | passed provider kwargs through | replaced by an optional `content_type` |
+| `file_contents` | `(content_type, bytes)` tuple | `bytes` |
+| `delete_object(quiet=...)` | argument accepted | removed; deletion is idempotent |
+| `signed_url` / `read_signed_url` | present | **removed** |
+| Unknown bucket argument | n/a | raises `ValueError` |
+
+**Importing it emits a `DeprecationWarning`.** Migrate to
+`FilesManager("patient")` or, better,
+`django.core.files.storage.storages["patient"]`.
+
+**The signed-URL removal is deliberate and will not be restored.** ADR-0001
+requires that no storage-provider URL reach a client. A plugin that needs to
+hand a file to a browser should link to the CARE download route rather than mint
+a bucket URL:
+
+```
+GET /api/v1/files/{external_id}/download/
+```
+
+**verified** Nothing prevents a plugin from importing `boto3` itself and
+generating its own presigned URL — `boto3` remains a core dependency for SNS.
+The guarantee ES-01 establishes is that *CARE* generates none; it is not
+enforced against plugin code. **Recommend** adding this to plugin review
+criteria rather than attempting to block the import.
+
+**unknown** Which plugins, if any, import `S3FilesManager`. No plugin source is
+vendored here, so the shim is retained on the assumption that some do.

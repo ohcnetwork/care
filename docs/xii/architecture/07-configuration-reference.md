@@ -862,61 +862,40 @@ These settings apply when:
 CARE_STORAGE_BACKEND=s3
 ```
 
-## 13.1 `S3_ACCESS_KEY`
+**Corrected 2026-08-07 to match the implementation.** Earlier revisions of this
+section specified `S3_ACCESS_KEY`, `S3_SECRET_KEY`, `S3_ENDPOINT_URL`,
+`S3_REGION_NAME`, `S3_ADDRESSING_STYLE` and `S3_SIGNATURE_VERSION`. **No such
+settings exist.** ES-01 §11.1 required reusing the tracked local configuration
+rather than inventing a parallel set, so the credential and endpoint variables
+below are the pre-existing ones.
 
-Required for explicit-key deployments.
+## 13.1 Credentials and endpoints, per alias
 
-Local MinIO MAY use development credentials.
+Each alias draws from its own set. All have defaults, so a local checkout needs
+no new value.
 
-Production credentials SHALL be secret.
+| Alias | Region | Key | Secret | Endpoint |
+| --- | --- | --- | --- | --- |
+| `patient` | `FILE_UPLOAD_REGION` | `FILE_UPLOAD_KEY` | `FILE_UPLOAD_SECRET` | `FILE_UPLOAD_BUCKET_ENDPOINT` |
+| `report` | `FILE_UPLOAD_REGION` | `FILE_UPLOAD_KEY` | `FILE_UPLOAD_SECRET` | `FILE_UPLOAD_BUCKET_ENDPOINT` |
+| `facility` | `FACILITY_S3_REGION_CODE` | `FACILITY_S3_KEY` | `FACILITY_S3_SECRET` | `FACILITY_S3_BUCKET_ENDPOINT` |
 
-## 13.2 `S3_SECRET_KEY`
+Each falls back to the shared `BUCKET_REGION` / `BUCKET_KEY` / `BUCKET_SECRET` /
+`BUCKET_ENDPOINT`. An endpoint is emitted only when set, so AWS S3 works without
+one; MinIO sets `BUCKET_ENDPOINT=http://minio:9000`.
 
-Required secret for explicit-key deployments.
+## 13.2 `BUCKET_PROVIDER`
 
-## 13.3 `S3_ENDPOINT_URL`
-
-Required for MinIO and non-AWS compatible services.
-
-Local example:
-
-```text
-S3_ENDPOINT_URL=http://minio:9000
-```
-
-For AWS role-based access, this MAY be absent.
-
-## 13.4 `S3_REGION_NAME`
-
-Recommended.
-
-Local CARE-compatible value MAY remain:
+Credential source, not provider selection — provider selection is
+`CARE_STORAGE_BACKEND` alone.
 
 ```text
-ap-south-1
+AWS_ROLE_BASED  -> omit key, secret and endpoint; the SDK resolves the
+                   instance role
+anything else   -> supply key and secret explicitly
 ```
 
-until local assumptions are deliberately changed.
-
-## 13.5 `S3_ADDRESSING_STYLE`
-
-MinIO-compatible value:
-
-```text
-path
-```
-
-AWS deployments MAY use provider defaults where appropriate.
-
-## 13.6 `S3_SIGNATURE_VERSION`
-
-Optional.
-
-Use only when provider compatibility requires it.
-
-## 13.7 Bucket variables
-
-The same logical variables SHOULD be used:
+## 13.3 Bucket variables
 
 ```text
 CARE_PATIENT_STORAGE_BUCKET
@@ -924,7 +903,20 @@ CARE_FACILITY_STORAGE_BUCKET
 CARE_REPORT_STORAGE_BUCKET
 ```
 
-This avoids application-level S3-specific names.
+Defaulting to `FILE_UPLOAD_BUCKET`, `FACILITY_S3_BUCKET` and
+`FILE_UPLOAD_BUCKET` respectively. These are the **only** place a bucket name is
+resolved; nothing else derives one.
+
+## 13.4 Not configurable
+
+`addressing_style` and `signature_version` are **not** exposed. botocore's
+defaults are used, which are correct for both AWS S3 and MinIO (verified against
+the local MinIO container).
+
+**Known limitation:** an S3-compatible provider that requires explicit path-style
+addressing or `s3v4` signing cannot currently be configured. No such provider is
+in use. Adding them is a small change to `build_object_storage` in
+`config/storage.py` if one appears.
 
 ---
 

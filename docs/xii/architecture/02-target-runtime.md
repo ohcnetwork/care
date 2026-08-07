@@ -516,20 +516,23 @@ migration.
 The application SHALL NOT use `google-cloud-storage` directly outside the
 storage backend implementation.
 
-**Status after IS-01.** All three hold for persistence: no provider client is
-constructed for any read, write or delete, and nothing imports
-`google-cloud-storage` at all. Two transitional exceptions remain, both scheduled
-for removal by IS-02:
+**Status: all three hold.** No provider client is constructed anywhere for object
+persistence *or* transport, and nothing imports `google-cloud-storage` at all.
 
-- `care/emr/utils/legacy_signed_urls.py` builds a `boto3` client for presigned
-  upload and download URLs. Django Storage has no portable presigned operation,
-  and ES-01 §21 forbids adding one to a storage subclass. It is S3-only, so the
-  GCS profile cannot yet serve files end to end.
-- `care/emr/tasks/report_generation.py` imports `botocore`'s `ClientError` for
-  Celery retry configuration. It constructs no client.
+**Object transport is entirely mediated by CARE.** No application code generates
+a storage-provider URL and no client receives one. Presigned upload and download
+are removed, as are the unsigned bucket URLs that served facility cover images
+and user avatars. Every bucket can be private. `care/utils/csp/` — the
+provider-credential and endpoint resolver that existed for signed URLs — is
+deleted.
 
-See `inventory/storage-call-sites.md` §11.5 and `inventory/unresolved-items.md`
-S1-S2.
+One provider-specific reference remains, outside persistence and transport:
+`care/emr/tasks/report_generation.py` imports `botocore`'s `ClientError` for
+Celery retry configuration. It constructs no client and performs no storage
+operation, but it will not fire under `gcs`. See
+`inventory/unresolved-items.md` S2.
+
+See `inventory/storage-call-sites.md` §11 for the per-call-site record.
 
 ---
 

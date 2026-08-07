@@ -343,33 +343,53 @@ sites remain for IS-02.
 
 Numbering follows the §3 table.
 
+Final status, after the ES-01 completion pass removed the signed-URL transport.
+
 | # | Symbol | Status |
 | --- | --- | --- |
-| 1 | `signed_url` | `legacy_signed_url_only` — moved to `care/emr/utils/legacy_signed_urls.py` |
-| 2 | `read_signed_url` | `legacy_signed_url_only` — moved to the same module |
+| 1 | `signed_url` | **removed** — presigned PUT deleted; uploads use the Django endpoint |
+| 2 | `read_signed_url` | **removed** — replaced by `GET /files/{id}/download/` |
 | 3 | `put_object` | `migrated_to_django_storage` — `Storage.save()` |
 | 4 | `get_object` | `migrated_to_django_storage` — `Storage.open()` |
 | 5 | `file_contents` | `migrated_to_django_storage` — `Storage.open().read()`; still no caller |
 | 6 | `delete_object` | `migrated_to_django_storage` — `Storage.delete()` |
-| 7 | `delete_objects` | **removed** — dead code, and §17 forbids provider batch calls |
+| 7 | `delete_objects` | **removed** — dead code, and no portable batch delete exists |
 | 8 | `delete_cover_image` | `migrated_to_django_storage` — `storages["facility"].delete()` |
-| 9 | `upload_cover_image` | `migrated_to_django_storage` — `storages["facility"].save()` |
-| 10 | `FileUpload.files_manager` | `temporary_wrapper` — now `FilesManager("patient")` |
-| 11 | `ReportUpload.files_manager` | `temporary_wrapper` — now `FilesManager("report")` |
-| 12 | `FileUploadViewSet.upload_file` | `migrated_to_django_storage` — persistence only; base64 transport untouched |
-| 13 | `FileUploadRetrieveSpec` signed_url | `legacy_signed_url_only` |
-| 14 | `FileUploadRetrieveSpec` read_signed_url | `legacy_signed_url_only` |
-| 15 | `ReportUploadRetrieveSpec` signed_url | `legacy_signed_url_only` |
-| 16 | `ReportUploadRetrieveSpec` read_signed_url | `legacy_signed_url_only` |
+| 9 | `upload_cover_image` | `migrated_to_django_storage` — `storages["facility"].save()`, no ACL |
+| 10 | `FileUpload.files_manager` | `temporary_wrapper` — `FilesManager("patient")` |
+| 11 | `ReportUpload.files_manager` | `temporary_wrapper` — `FilesManager("report")` |
+| 12 | `FileUploadViewSet.upload_file` | `migrated_to_django_storage` — persistence only; base64 transport is IS-02 |
+| 13-16 | signed/read URL fields on both retrieve specs | **removed** — replaced by `download_url`, a CARE route |
 | 17 | `generate_and_upload_report` | `migrated_to_django_storage` — `Storage.save()` with `ContentFile` |
 | 18 | `cleanup_incomplete_file_uploads` | `migrated_to_django_storage` — `Storage.delete()` |
-| 19 | report data point `read_signed_url` | `legacy_signed_url_only` |
-| — | `facility.py:211`, `users/models.py:206` | `not_storage_persistence` — unsigned URL construction, unchanged; IS-02 item C2 |
+| 19 | report data point `read_signed_url` | **removed** — embeds a CARE download route instead |
+| — | `facility.py`, `users/models.py` URL builders | `migrated_to_django_storage` — now reverse to CARE asset routes |
 
-Totals: **9 migrated**, **7 legacy signed URL only**, **2 temporary wrapper**,
-**1 removed**, **1 not storage persistence**.
+Totals: **11 migrated**, **2 temporary wrapper** (the two `files_manager`
+bindings), **6 removed**.
 
-Nothing is `blocked`.
+Nothing is `legacy_signed_url_only`. Nothing is `blocked`.
+
+### 11.1a Transport now mediated by CARE
+
+| Route | Serves | Auth |
+| --- | --- | --- |
+| `GET /api/v1/files/{external_id}/download/` | patient files | `file_authorizer` via `get_queryset` |
+| `GET /api/v1/template_reports/{external_id}/download/` | reports | `read_report_authorizer`, called explicitly |
+| `GET /api/v1/assets/facility/{external_id}/cover_image/` | cover images | anonymous |
+| `GET /api/v1/assets/user/{username}/profile_picture/` | avatars | anonymous |
+
+**verified** The two asset routes are anonymous by design. `AllFacilityViewSet`
+and `FacilitySchedulableUsersViewSet` are unauthenticated and already expose
+these images, so who can see them is unchanged. What changed is that CARE reads
+the bytes through Django Storage, which lets the bucket be private. They are
+separate views because `FacilityViewSet` and `UserViewSet` filter their
+querysets by `request.user` and cannot serve an anonymous request.
+
+**verified** All four stream via `FileResponse`; nothing buffers a whole object
+to serve it. The inline-vs-attachment decision that presigned
+`ResponseContentDisposition` used to make is preserved in
+`care/emr/utils/file_download.py`.
 
 ### 11.2 Architecture now in place
 
@@ -400,6 +420,26 @@ Traversal, absolute paths and empty components raise `SuspiciousFileOperation`.
 `<folder>/<external_id>_<token>.<ext>`, and are addressed through the alias
 directly rather than through `FilesManager`.
 
+### 11.3a One source of truth per logical bucket
+
+**verified** Each logical bucket is resolved in exactly one place — the
+`STORAGES` alias built in `config/settings/base.py`. Nothing else derives a
+bucket name.
+
+| Alias | Setting | Fallback |
+| --- | --- | --- |
+| `patient` | `CARE_PATIENT_STORAGE_BUCKET` | `FILE_UPLOAD_BUCKET` |
+| `facility` | `CARE_FACILITY_STORAGE_BUCKET` | `FACILITY_S3_BUCKET` |
+| `report` | `CARE_REPORT_STORAGE_BUCKET` | `FILE_UPLOAD_BUCKET` |
+
+**This closes a defect introduced earlier in IS-01.** While the signed-URL path
+survived, it resolved buckets through `care/utils/csp/`, which read the *old*
+settings. Setting `CARE_PATIENT_STORAGE_BUCKET` therefore moved persistence but
+not the URLs, so uploads and downloads silently addressed different buckets —
+on the default `s3` profile, not only under `gcs`. Removing the signed-URL
+transport removes the second resolver, so the divergence is now structurally
+impossible: `download_url` names a CARE route and carries no bucket at all.
+
 ### 11.4 §2.1 credential defect — corrected
 
 **verified** The defect recorded in §2.1 is fixed. The `patient` and `report`
@@ -420,19 +460,27 @@ IS-02 removes them.
 
 ### 11.5 Provider SDK use remaining
 
-**verified** After IS-01, `boto3` / `botocore` appear in exactly two non-test
-modules:
+**verified** After the ES-01 completion pass, **no storage module imports a
+provider SDK**. `boto3` / `botocore` appear in exactly two non-test modules, and
+neither performs object storage:
 
 | File | Line | Use | Why retained |
 | --- | --- | --- | --- |
-| `care/emr/utils/legacy_signed_urls.py` | 28 | `boto3.client("s3")` for presigned URLs | Django Storage has no portable presigned operation; removed by IS-02 |
-| `care/emr/tasks/report_generation.py` | 1 | `ClientError` in `autoretry_for` | Retry configuration only; never instantiates a client. Under `s3`, django-storages raises `ClientError` from inside `Storage.save`, so retry behaviour is unchanged. See §11.7 |
-
-**verified** `care/utils/sms/backend/sns.py` also imports `boto3`, for SNS. Not
-storage; out of scope.
+| `care/emr/tasks/report_generation.py` | 1 | `ClientError` in `autoretry_for` | Retry configuration only; never instantiates a client. Under `s3` django-storages raises it from inside `Storage.save`, so retry is unchanged; under `gcs` it would not fire. Left alone because the completion pass forbids modifying Celery. See §11.7 |
+| `care/utils/sms/backend/sns.py` | 8-9, 44, 55 | SNS client | SMS delivery, not storage |
 
 **verified** No module imports `google.cloud.storage` directly. GCS is reached
 only through `django-storages`.
+
+**verified** `care/utils/csp/` is deleted. `BucketType`, `CSProvider`,
+`ClientConfig` and `get_client_config` existed only to resolve provider
+credentials and external endpoints for signed URLs, and have no consumer left.
+`BUCKET_PROVIDER` survives as the credential-source switch, compared against a
+literal in `config/storage.py`.
+
+**verified** Settings deleted for want of a consumer: `FACILITY_CDN`,
+`BUCKET_HAS_FINE_ACL`, `BUCKET_EXTERNAL_ENDPOINT`,
+`FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT`, `FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT`.
 
 ### 11.6 Whole-file reads remaining
 
@@ -453,8 +501,24 @@ to `Storage.save()` directly instead of `image.file` being handed to
 **verified** `care/emr/tasks/report_generation.py:13` retries on
 `botocore.exceptions.ClientError`. Under `CARE_STORAGE_BACKEND=gcs`, storage
 failures raise `google.api_core.exceptions.*`, so report generation would not
-retry.
+retry. Generation itself still succeeds; only the retry-on-transient-failure
+behaviour is absent.
 
-**Not changed in IS-01.** ES-01 §31 excludes Celery changes, and altering
-`autoretry_for` changes retry semantics beyond the storage seam. Recorded in
-`unresolved-items.md`.
+**Not changed.** Both ES-01 §31 and the completion pass forbid modifying Celery.
+This is the last provider-specific reference in a storage consumer and is the
+one item that should be resolved before the GCS profile is used in anger.
+Recorded in `unresolved-items.md` S2.
+
+### 11.8 Remaining compatibility layers
+
+**verified** Two, both deliberate:
+
+| Layer | Purpose | Removal |
+| --- | --- | --- |
+| `FilesManager` | Binds `FileUpload` / `ReportUpload` to a logical alias. Pure Django Storage; no provider import or branch. | Optional. It is a convenience, not a portability risk. |
+| `S3FilesManager` | Deprecated subclass kept so external plugins that import the old name keep working. Warns, delegates to Django Storage, exposes **no** signed-URL method, rejects unknown aliases. | After plugin authors migrate; see `plugin-impact.md`. |
+
+**verified** The base64 upload transport at `POST /api/v1/files/upload-file/`
+remains, unchanged as transport. It is not a storage compatibility layer — its
+persistence already goes through Django Storage — but it still buffers the
+decoded file in memory. IS-02 replaces it with multipart streaming.

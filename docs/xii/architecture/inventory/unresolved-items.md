@@ -265,16 +265,22 @@ Recorded 2026-08-06. Only issues that remain genuinely unresolved after the
 storage seam moved onto Django Storage. Full detail in
 `storage-call-sites.md` §11.
 
-### S1. The GCS profile cannot serve files end to end
+### S1. The GCS profile cannot serve files end to end — RESOLVED (2026-08-07)
 
-**verified** `care/emr/utils/legacy_signed_urls.py` constructs a boto3 client
-directly and is S3-only. `CARE_STORAGE_BACKEND=gcs` configures persistence
-against Google Cloud Storage, but both signed-URL flows stop working.
+**Was:** `care/emr/utils/legacy_signed_urls.py` constructed a boto3 client
+directly and was S3-only, so `CARE_STORAGE_BACKEND=gcs` configured persistence
+against Google Cloud Storage while both signed-URL flows silently kept pointing
+at S3/MinIO — and at the *old* bucket names, since they resolved buckets through
+the now-deleted `care/utils/csp/`.
 
-**inferred** IS-02 is therefore a prerequisite for a real GCS deployment, not an
-independent improvement. Deliberately not papered over: ES-01 §21 forbids adding
-signed-URL methods to storage subclasses, and reproducing GCS signing by hand
-would build exactly the provider-specific code ADR-0001 rejects.
+**Resolved** by removing the signed-URL transport outright rather than porting
+it. CARE now serves every object through Django Storage, so `download_url`
+carries neither a provider nor a bucket and both profiles behave identically.
+Verified under `gcs`: persistence resolves to `GoogleCloudStorage` and
+`download_url` is still `/api/v1/files/{id}/download/`.
+
+**Consequence:** IS-02 is no longer a prerequisite for a GCS deployment. Only S2
+below stands between the `gcs` profile and production use.
 
 ### S2. Report generation does not retry under GCS
 
@@ -283,11 +289,14 @@ would build exactly the provider-specific code ADR-0001 rejects.
 django-storages raises `botocore` errors from inside `Storage.save`. Under `gcs`
 the failures are `google.api_core.exceptions.*` and no retry occurs.
 
-**Not changed in IS-01** — ES-01 §31 excludes Celery changes, and widening
-`autoretry_for` alters retry semantics beyond the storage seam.
+**Not changed** — both ES-01 §31 and the completion pass explicitly forbid
+modifying Celery, and widening `autoretry_for` alters retry semantics beyond the
+storage seam.
 
-**Decision needed** before the GCS profile is used: a provider-neutral retry
-predicate, or an explicit translation at the storage boundary.
+**Now the only item blocking the GCS profile**, and the last provider-specific
+reference in any storage consumer. **Decision needed:** a provider-neutral retry
+predicate, or an explicit translation at the storage boundary. Report generation
+still succeeds under `gcs`; only retry-on-transient-failure is absent.
 
 ### S3. Overwrite safety depends on a backend option, not on Django Storage
 
@@ -310,7 +319,7 @@ call underneath them but not the behaviour:
 | B4 | `cleanup_incomplete_file_uploads` aborts the batch on one storage error | Semantics preserved deliberately, per ES-01 §17 |
 | B5 | Report generation is not idempotent under retry | Untouched |
 | B8 | Storage writes are not covered by the surrounding transaction | Untouched; still orphans objects on commit failure |
-| B9 | `mark_upload_completed` trusts the client | Inherent to the presigned design; IS-02 |
+| B9 | `mark_upload_completed` trusts the client | **Largely defused.** No client can write to the bucket any more, so a file marked complete without one is now only a bookkeeping inconsistency, not an unverified external write. The endpoint is redundant; IS-02 decides its fate |
 
 ---
 

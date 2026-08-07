@@ -319,7 +319,28 @@ specifications.
 # Implementation Status
 
 - [x] Decision accepted.
-- [ ] IS-01 completed.
+- [x] IS-01 completed. *(2026-08-07)*
 - [ ] IS-02 completed.
-- [ ] Legacy storage removed.
-- [ ] Legacy signed URL flows removed.
+- [x] Legacy storage removed. *`S3FilesManager` survives only as a deprecated
+  plugin shim delegating to Django Storage; `care/utils/csp/` is deleted.*
+- [x] Legacy signed URL flows removed. *No application code generates a
+  storage-provider URL. Objects are served by CARE through Django Storage.*
+
+## What IS-01 delivered
+
+- Django Storage API is the single object-persistence abstraction; provider
+  implementations come from `django-storages`.
+- `CARE_STORAGE_BACKEND` selects `s3` (default) or `gcs`. Switching is a
+  configuration change only — no application code path differs.
+- Logical aliases `patient`, `facility` and `report`; `staticfiles` unchanged on
+  WhiteNoise.
+- All object transport is mediated by CARE. Presigned upload and download are
+  gone, along with the unsigned bucket URLs that served cover images and
+  avatars. Every bucket can now be private.
+
+## Remaining for IS-02
+
+The base64 upload transport at `POST /api/v1/files/upload-file/` is retained and
+still buffers the decoded file in memory. IS-02 replaces it with
+`multipart/form-data` and Django upload handlers. That is transport
+performance, not provider portability, and does not affect this decision.

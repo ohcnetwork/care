@@ -425,56 +425,71 @@ are still generated against the external endpoint.
 | Cover image / avatar URLs | unchanged string concatenation | not storage persistence; still bypasses the alias |
 | Cleanup task | not a browser flow | **`Storage.delete()`** |
 
-### 11.3 Flows remaining for IS-02
+### 11.3 Flows removed
 
-**Signed upload (browser-to-bucket PUT) — remains.** Callers:
+**Signed upload (browser-to-bucket PUT) — gone.** The `signed_url` field and the
+`_just_created` write branch are deleted from both retrieve specs. Clients upload
+through `POST /api/v1/files/upload-file/`.
 
-- `care/emr/resources/file_upload/spec.py` (`FileUploadRetrieveSpec`)
-- `care/emr/resources/report/report_upload/spec.py` (`ReportUploadRetrieveSpec`)
+**Signed download (browser-from-bucket GET) — gone.** `read_signed_url` is
+replaced by `download_url`, a CARE route, on both specs and in the report data
+point.
 
-**Signed download (browser-from-bucket GET) — remains.** Callers:
-
-- `care/emr/resources/file_upload/spec.py`
-- `care/emr/resources/report/report_upload/spec.py`
-- `care/emr/reports/context_builder/data_points/fileupload.py`
+**Unsigned public bucket URLs — gone.** `Facility.read_cover_image_url` and
+`User.read_profile_picture_url` now reverse to CARE asset routes instead of
+concatenating `{endpoint}/{bucket}/{key}`. `FACILITY_CDN` and
+`BUCKET_HAS_FINE_ACL` are deleted; no object carries a public ACL.
 
 **Base64 upload — remains, unchanged as transport.** `POST /api/v1/files/upload-file/`
-(`care/emr/api/viewsets/file_upload.py`) still accepts a base64 `file_data`
-string and still holds the decoded file in memory; only the write beneath it
-moved to `Storage.save()`. Its alias is `patient`. It is still absent from the
-OpenAPI schema (§6).
-
-**Unsigned public URLs — remain.** `Facility.read_cover_image_url` and
-`User.read_profile_picture_url` still concatenate bucket URLs. Public-read is now
-configured on the `facility` alias via `BUCKET_HAS_FINE_ACL` instead of being set
-per object, so §9.3 item C3 is resolved at the settings layer; C1 and C2 remain
-open decisions.
+still accepts a base64 `file_data` string and still holds the decoded file in
+memory. Its alias is `patient`; its persistence is `Storage.save()`. It is still
+absent from the OpenAPI schema (§6). **This is the whole of IS-02's remit.**
 
 ### 11.4 Effect on the §9 change list
 
-| Item | Status after IS-01 |
+| Item | Status |
 | --- | --- |
-| U1, U2, U3, U4 | unchanged — IS-02 |
-| U5 remove presigned write | unchanged, but now a single isolated function |
-| D1, D2, D4, D5, D6 | unchanged — IS-02 |
-| D3 stream rather than buffer | **partly done.** `get_object` returns a stream and is the default; `file_contents` is now an explicit opt-in with no production caller |
-| C1, C2 | unchanged — open decisions |
-| C3 ACL under uniform bucket-level access | **resolved at the settings layer.** No per-object ACL is set; under `gcs` the alias never sends one |
-| T1, T2 | unchanged — IS-02 |
-| S1, S2 | unchanged — IS-02 |
+| U1 stop returning `signed_url` | **done** |
+| U2 multipart streaming upload | **IS-02** — the only upload item left |
+| U3 fate of the base64 endpoint | **IS-02** |
+| U4 `mark_upload_completed` | **IS-02.** Still client-driven; harmless now that no client can write to the bucket directly, but redundant |
+| U5 remove the presigned write | **done** |
+| D1 authenticated download route | **done** |
+| D2 `Content-Disposition` | **done** — inline/attachment preserved in `file_download.py` |
+| D3 stream rather than buffer | **done** — `FileResponse` streams; `file_contents` is an opt-in with no production caller |
+| D4 authorize the download path | **done** — files reuse `get_queryset`'s `file_authorizer`; reports authorize explicitly |
+| D5 stop returning `read_signed_url` | **done** |
+| D6 report data point | **done** — embeds a CARE route, which also fixes the expiring-URL-inside-a-stored-PDF problem |
+| C1 do these objects stay public | **decided: served by CARE, bucket private.** The routes stay anonymous, so visibility is unchanged |
+| C2 replace both URL builders | **done** |
+| C3 ACL under uniform bucket-level access | **done** — no ACL is ever set |
+| T1, T2 test rewrites | **done** |
+| S1 schema for the upload endpoint | **IS-02** |
+| S2 regenerate and diff the schema | **partly** — `signed_url` and `read_signed_url` are gone from both response models; `download_url` is added |
 
-**verified** The §10 contract-impact summary is unaffected: still 4 response
-fields, at least 2 new endpoints, 1 endpoint whose meaning changes, 4 assertions
-to rewrite.
+### 11.5 Contract impact, as delivered
 
-### 11.5 One new constraint for IS-02
+**Breaking for the frontend.** Response fields removed: `signed_url` and
+`read_signed_url` on both `FileUploadRetrieveSpec` and
+`ReportUploadRetrieveSpec`. Added: `download_url` on both.
 
-**verified** `legacy_signed_urls` is S3-only. Selecting
-`CARE_STORAGE_BACKEND=gcs` configures persistence against Google Cloud Storage
-but leaves both signed-URL flows non-functional, because they construct a boto3
-client directly.
+`read_cover_image_url` and `profile_picture_url` keep their names but now hold a
+CARE path rather than an absolute bucket URL.
 
-**inferred** This makes IS-02 a prerequisite for any real GCS deployment, not an
-independent improvement. IS-01 deliberately did not paper over it: ES-01 §21
-forbids adding signed-URL methods to storage subclasses, and reproducing GCS
-signing would build exactly the provider-specific code ADR-0001 rejects.
+All four are **relative** paths (`/api/v1/...`). The previous values were
+absolute. A client that concatenated them onto an API base will keep working; one
+that used them as absolute URLs must prepend the API origin.
+
+New endpoints: 4 (two downloads, two public assets). `mark_upload_completed`
+retains its meaning for now.
+
+### 11.6 GCS is no longer blocked on transport
+
+**verified** With the signed-URL path gone, selecting `CARE_STORAGE_BACKEND=gcs`
+now yields a fully working file surface: persistence and transport both go
+through Django Storage. The earlier constraint — that IS-02 was a prerequisite
+for any real GCS deployment — no longer holds.
+
+**verified** One provider-specific reference remains outside transport:
+`report_generation.py` retries on `botocore`'s `ClientError`, which will not fire
+under `gcs`. See `storage-call-sites.md` §11.7.
