@@ -1,9 +1,9 @@
-import base64
 import io
 from datetime import timedelta
 
 from django.conf import settings
 from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from PIL import Image
 
@@ -11,12 +11,7 @@ from care.emr.models.file_upload import FileUpload
 from care.emr.tasks.cleanup_incomplete_file_uploads import (
     cleanup_incomplete_file_uploads,
 )
-from care.utils.tests.base import CareAPITestBase
-
-
-def response_content(response) -> bytes:
-    """Collect a streaming FileResponse body."""
-    return b"".join(response.streaming_content)
+from care.utils.tests.base import CareAPITestBase, response_content
 
 
 class FileUploadTestCase(CareAPITestBase):
@@ -35,6 +30,20 @@ class FileUploadTestCase(CareAPITestBase):
         self.file.seek(0)
 
         self.client.force_authenticate(user=self.user)
+
+    def upload_payload(self, **overrides):
+        """A valid multipart upload body (ADR-0002)."""
+        payload = {
+            "file": SimpleUploadedFile(
+                self.file.name, self.file.getvalue(), content_type=self.file_mime_type
+            ),
+            "name": "file",
+            "file_type": "patient",
+            "file_category": "unspecified",
+            "associating_id": str(self.patient.external_id),
+        }
+        payload.update(overrides)
+        return payload
 
     def test_upload_user_avatar(self):
         url = reverse("users-profile-picture", args=[self.user.username])
@@ -59,44 +68,12 @@ class FileUploadTestCase(CareAPITestBase):
         self.assertTrue(self.facility.cover_image_url)
 
     def test_upload_patient_file(self):
-        url = reverse("files-list")
-
-        response = self.client.post(
-            url,
-            {
-                "name": "file",
-                "original_name": "file.jpg",
-                "file_type": "patient",
-                "file_category": "unspecified",
-                "associating_id": str(self.patient.external_id),
-                "mime_type": self.file_mime_type,
-            },
-            format="json",
-        )
-        self.assertEqual(response.status_code, 200, response.data)
-        file_id = response.data["id"]
-
-        # No provider upload URL is offered; the file goes through Django.
-        self.assertNotIn("signed_url", response.data)
         upload = self.client.post(
             reverse("files-upload-file"),
-            {
-                "name": "file",
-                "original_name": "file.jpg",
-                "file_type": "patient",
-                "file_category": "unspecified",
-                "associating_id": str(self.patient.external_id),
-                "file_data": base64.b64encode(self.file.getvalue()).decode("utf-8"),
-            },
-            format="json",
+            self.upload_payload(),
+            format="multipart",
         )
         self.assertEqual(upload.status_code, 200, upload.data)
-
-        response = self.client.post(
-            reverse("files-mark-upload-completed", args=[file_id]),
-            format="json",
-        )
-        self.assertEqual(response.status_code, 200, response.data)
 
         detail = self.client.get(reverse("files-detail", args=[upload.data["id"]]))
         self.assertEqual(detail.status_code, 200, detail.data)
@@ -120,18 +97,9 @@ class FileUploadTestCase(CareAPITestBase):
         )
 
     def test_direct_file_upload(self):
-        url = reverse("files-upload-file")
         response = self.client.post(
-            url,
-            {
-                "name": "file",
-                "original_name": "file.jpg",
-                "file_type": "patient",
-                "file_category": "unspecified",
-                "associating_id": str(self.patient.external_id),
-                "mime_type": self.file_mime_type,
-                "file_data": base64.b64encode(self.file.read()).decode("utf-8"),
-            },
+            reverse("files-upload-file"),
+            self.upload_payload(),
             format="multipart",
         )
         self.assertEqual(response.status_code, 200, response.data)

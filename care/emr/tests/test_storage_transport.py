@@ -6,20 +6,20 @@ object transfer, so no storage-provider URL or endpoint ever reaches a client,
 under either backend profile.
 """
 
-import base64
 import io
 import uuid
 import warnings
 
 from django.core.files.base import ContentFile
 from django.core.files.storage import storages
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import SimpleTestCase
 from django.urls import reverse
 from PIL import Image
 
 from care.emr.models.file_upload import FileUpload
 from care.emr.utils.file_manager import FilesManager, S3FilesManager
-from care.utils.tests.base import CareAPITestBase
+from care.utils.tests.base import CareAPITestBase, response_content
 
 #: Substrings that would betray a storage-provider URL or endpoint in a response.
 PROVIDER_URL_MARKERS = (
@@ -40,10 +40,6 @@ def assert_no_provider_url(testcase, payload):
     text = str(payload)
     for marker in PROVIDER_URL_MARKERS:
         testcase.assertNotIn(marker, text, f"provider URL marker {marker!r} leaked")
-
-
-def response_content(response) -> bytes:
-    return b"".join(response.streaming_content)
 
 
 class NoProviderUrlInResponsesTests(CareAPITestBase):
@@ -67,17 +63,18 @@ class NoProviderUrlInResponsesTests(CareAPITestBase):
         return self.client.post(
             reverse("files-upload-file"),
             {
+                "file": SimpleUploadedFile(
+                    "scan.jpg", self.file.getvalue(), content_type="image/jpeg"
+                ),
                 "name": "scan",
-                "original_name": "scan.jpg",
                 "file_type": "patient",
                 "file_category": "unspecified",
                 "associating_id": str(self.patient.external_id),
-                "file_data": base64.b64encode(self.file.getvalue()).decode(),
             },
-            format="json",
+            format="multipart",
         )
 
-    def test_base64_upload_still_works_and_returns_no_provider_url(self):
+    def test_multipart_upload_works_and_returns_no_provider_url(self):
         response = self._upload()
         self.assertEqual(response.status_code, 200, response.data)
         assert_no_provider_url(self, response.data)

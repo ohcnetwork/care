@@ -358,7 +358,7 @@ Final status, after the ES-01 completion pass removed the signed-URL transport.
 | 9 | `upload_cover_image` | `migrated_to_django_storage` — `storages["facility"].save()`, no ACL |
 | 10 | `FileUpload.files_manager` | `temporary_wrapper` — `FilesManager("patient")` |
 | 11 | `ReportUpload.files_manager` | `temporary_wrapper` — `FilesManager("report")` |
-| 12 | `FileUploadViewSet.upload_file` | `migrated_to_django_storage` — persistence only; base64 transport is IS-02 |
+| 12 | `FileUploadViewSet.upload_file` | `migrated_to_django_storage` — persistence *and* transport; multipart since ES-02 |
 | 13-16 | signed/read URL fields on both retrieve specs | **removed** — replaced by `download_url`, a CARE route |
 | 17 | `generate_and_upload_report` | `migrated_to_django_storage` — `Storage.save()` with `ContentFile` |
 | 18 | `cleanup_incomplete_file_uploads` | `migrated_to_django_storage` — `Storage.delete()` |
@@ -497,7 +497,7 @@ Updated from §5.
 | Site | File | Status |
 | --- | --- | --- |
 | 5 | `file_manager.file_contents` | Retained as an explicit opt-in; still no production caller. `get_object` returns a stream and is the default. |
-| 12 | `file_upload.py` base64 decode | **Remains.** Inherent to the base64 transport; IS-02 replaces it with multipart streaming. |
+| 12 | `file_upload.py` base64 decode | **Gone (ES-02).** Multipart replaced it. Django's upload handlers decide memory vs temporary file; CARE reads only the leading 2048 bytes to sniff the MIME type and hands the `UploadedFile` straight to `Storage.save()`. |
 | 17 | `report_utils.py` `output_bytes` | **Remains.** The renderer returns complete bytes; ES-01 §18 explicitly does not require redesigning report generation. |
 
 **verified** `upload_cover_image` no longer buffers: the `UploadedFile` is passed
@@ -530,7 +530,6 @@ the target runtime rather than an open note.
 | `FilesManager` | Binds `FileUpload` / `ReportUpload` to a logical alias. Pure Django Storage; no provider import or branch. | Optional. It is a convenience, not a portability risk. |
 | `S3FilesManager` | Deprecated subclass kept so external plugins that import the old name keep working. Warns, delegates to Django Storage, exposes **no** signed-URL method, rejects unknown aliases. | After plugin authors migrate; see `plugin-impact.md`. |
 
-**verified** The base64 upload transport at `POST /api/v1/files/upload-file/`
-remains, unchanged as transport. It is not a storage compatibility layer — its
-persistence already goes through Django Storage — but it still buffers the
-decoded file in memory. IS-02 replaces it with multipart streaming.
+**verified** The base64 upload transport at `POST /api/v1/files/upload-file/` was
+removed by ES-02 and replaced with `multipart/form-data`. No upload path buffers
+a complete file any more. See `frontend-file-flow.md` §12.

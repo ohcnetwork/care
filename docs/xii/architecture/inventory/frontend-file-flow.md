@@ -440,10 +440,8 @@ point.
 concatenating `{endpoint}/{bucket}/{key}`. `FACILITY_CDN` and
 `BUCKET_HAS_FINE_ACL` are deleted; no object carries a public ACL.
 
-**Base64 upload — remains, unchanged as transport.** `POST /api/v1/files/upload-file/`
-still accepts a base64 `file_data` string and still holds the decoded file in
-memory. Its alias is `patient`; its persistence is `Storage.save()`. It is still
-absent from the OpenAPI schema (§6). **This is the whole of IS-02's remit.**
+**Base64 upload — gone (ES-02).** `POST /api/v1/files/upload-file/` now accepts
+`multipart/form-data`. See §12.
 
 ### 11.4 Effect on the §9 change list
 
@@ -499,9 +497,9 @@ under `gcs`. See `storage-call-sites.md` §11.7.
 ### 11.7 An incomplete row is not downloadable
 
 **verified** A `FileUpload` row exists before its bytes do: `POST /api/v1/files/`
-creates it with `upload_completed=False`, and only step 3 flips the flag. The
-detail queryset does not filter on that flag (`file_upload.py`, `get_queryset`),
-so such a row is retrievable.
+creates it with `upload_completed=False`, and only `mark_upload_completed` flips
+the flag. The detail queryset does not filter on that flag (`file_upload.py`,
+`get_queryset`), so such a row is retrievable.
 
 `FileUploadRetrieveSpec` therefore returns `download_url: null` until the upload
 completes, and the `download` action raises `NotFound` for an incomplete row
@@ -509,7 +507,120 @@ rather than reaching storage. Previously it advertised a route that could only
 404 — a provider-neutral 404, but still a URL for an object that was never
 written.
 
-This narrows U4 without closing it: `mark_upload_completed` still takes the
-client's word, so a client that calls it without uploading makes the row listable
-and its download route resolvable to a 404. Verifying the object exists — or
-setting the flag server-side — remains IS-02's.
+This bounds the vestigial create/complete pair without removing it: a client that
+calls `mark_upload_completed` without uploading makes the row listable, but it
+exposes nothing, because there is no URL and no route that resolves. See §12.5.
+
+---
+
+## 12. After ES-02 — file transport
+
+Recorded 2026-08-07. ADR-0002 is now fully implemented.
+
+### 12.1 Flow status
+
+| Flow | Status |
+| --- | --- |
+| Signed upload (browser → bucket) | **removed** (ES-01) |
+| Signed download (browser ← bucket) | **removed** (ES-01) |
+| Unsigned public bucket URLs | **removed** (ES-01) |
+| Base64 upload | **removed** (ES-02) |
+| Multipart upload | **implemented** (ES-02) |
+| Server-mediated download | **implemented** (ES-01) |
+
+Every byte in and out of object storage now passes through CARE, and no client
+holds a storage-provider URL of any kind.
+
+### 12.2 Upload contract
+
+```http
+POST /api/v1/files/upload-file/
+Content-Type: multipart/form-data
+```
+
+| Part | Required | Notes |
+| --- | --- | --- |
+| `file` | yes | the binary file part |
+| `name` | yes | display name |
+| `file_type` | yes | `FileTypeChoices` |
+| `file_category` | yes | `FileCategoryChoices` |
+| `associating_id` | yes | external id of the owning object |
+| `original_name` | no | defaults to the uploaded part's filename |
+
+**Removed:** `file_data`. There is no fallback — a base64 body is now rejected.
+
+**verified** `original_name` is newly optional. Multipart supplies a filename;
+base64-over-JSON could not, which is why it used to be mandatory.
+
+Response is unchanged (`FileUploadRetrieveSpec`), including the relative
+`download_url`.
+
+### 12.3 Client migration
+
+The frontend is a separate repository, so the contract change is recorded here
+rather than implemented.
+
+```js
+const body = new FormData();
+body.append("file", fileObject);          // was: file_data, base64 string
+body.append("name", name);
+body.append("file_type", fileType);
+body.append("file_category", fileCategory);
+body.append("associating_id", associatingId);
+
+await fetch("/api/v1/files/upload-file/", { method: "POST", body });
+// Do not set Content-Type; the browser sets the multipart boundary.
+```
+
+**Breaking.** A client still sending `file_data` receives 400.
+
+### 12.4 Memory and size
+
+**verified** The file is never fully materialised by CARE. Django's upload
+handlers decide the representation before the view runs; size comes from
+`UploadedFile.size`; MIME sniffing reads only the leading 2048 bytes; and the
+`UploadedFile` is handed straight to `Storage.save()`.
+
+| Setting | Default | Effect |
+| --- | --- | --- |
+| `MAX_FILE_UPLOAD_SIZE` | 5 (MB) | CARE rejects anything larger, before any write |
+| `FILE_UPLOAD_MAX_MEMORY_SIZE` | 2621440 (2.5 MB) | above this Django spools to a `TemporaryUploadedFile` |
+| `DATA_UPLOAD_MAX_MEMORY_SIZE` | 2621440 (2.5 MB) | bounds the non-file part only; multipart file parts are exempt |
+
+The latter two were previously Django's implicit defaults; ES-02 states them
+explicitly at the same values, so behaviour is unchanged.
+
+**verified, and worth recording:** base64 inflated a 5 MB file to roughly 6.7 MB
+of JSON body, which exceeds `DATA_UPLOAD_MAX_MEMORY_SIZE`. The old endpoint
+could not actually accept a file at its own documented limit over JSON.
+Multipart removes that ceiling because file parts are exempt.
+
+### 12.5 Unchanged by ES-02
+
+**verified** Cover images and avatars already used ordinary multipart
+`ImageField` uploads (`FacilityImageUploadSerializer`,
+`UserImageUploadSerializer`) and never went through the base64 endpoint. They
+are untouched, as ES-02 §26 permits.
+
+**verified** Authorization, object naming, alias selection and persistence are
+unchanged: `authorize_create` → `file_authorizer`, `get_storage_name`, the
+`patient` alias, and `Storage.save()`.
+
+**verified** `POST /api/v1/files/` and `mark_upload_completed` still exist. They
+were the first and third steps of the presigned flow. Nothing writes to storage
+between them any more, so the pair is now vestigial — a row created this way can
+only be completed by a client asserting it, and the assertion is never checked
+against storage.
+
+**Recommend deprecating the pair rather than leaving it as an accepted state.**
+The multipart endpoint creates the row, writes the object and sets the flag in
+one authorized request, so nothing needs the two-step form any more. Leaving it
+in place keeps an endpoint whose entire function is to let a client assert
+something the server could verify — and after ES-02 there is no flow in which
+that assertion is the truth.
+
+It is bounded rather than dangerous: `download_url` is `null` and `download`
+returns 404 while the object is missing (§11.7), so a falsely-completed row
+exposes nothing and merely appears in listings. Out of scope for ES-02. Whoever
+owns the file API next SHOULD either set the flag server-side, verify the object
+exists before setting it, or remove both endpoints.
