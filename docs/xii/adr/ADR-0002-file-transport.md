@@ -472,20 +472,44 @@ The two concerns are intentionally separate.
 
 ## Implementation Status
 
-Current state after ES-01:
+Complete after ES-02 *(2026-08-07)*:
 
-- [x] Provider-specific signed uploads removed.
-- [x] Provider-specific signed downloads removed.
-- [x] Downloads mediated by CARE.
-- [x] Download persistence uses Django Storage.
-- [x] Provider URLs removed from the normal client contract.
-- [ ] Base64 upload transport removed.
-- [ ] Multipart upload implemented.
-- [ ] Django upload handlers verified.
-- [ ] Upload size limits verified/configured.
-- [ ] Multipart API schema implemented.
-- [ ] Upload authorization regression tests completed.
-- [ ] MinIO multipart round trip verified.
-- [ ] Provider-neutral GCS multipart behavior verified.
-- [ ] ES-02 completed.
+- [x] Provider-specific signed uploads removed. *(ES-01)*
+- [x] Provider-specific signed downloads removed. *(ES-01)*
+- [x] Downloads mediated by CARE. *(ES-01)*
+- [x] Download persistence uses Django Storage. *(ES-01)*
+- [x] Provider URLs removed from the normal client contract. *(ES-01)*
+- [x] Base64 upload transport removed. *`file_data` deleted with no fallback.*
+- [x] Multipart upload implemented. *`POST /api/v1/files/upload-file/` accepts
+  `multipart/form-data` with a `file` part.*
+- [x] Django upload handlers verified. *Tested at a lowered
+  `FILE_UPLOAD_MAX_MEMORY_SIZE`: `InMemoryUploadedFile` below the threshold,
+  `TemporaryUploadedFile` above it.*
+- [x] Upload size limits verified/configured. *`MAX_FILE_UPLOAD_SIZE` (5 MB)
+  enforced against `UploadedFile.size`; `FILE_UPLOAD_MAX_MEMORY_SIZE` and
+  `DATA_UPLOAD_MAX_MEMORY_SIZE` stated explicitly at Django's defaults.*
+- [x] Multipart API schema implemented. *`multipart/form-data` only; `file` is
+  `string`/`binary`; `file_data` absent.*
+- [x] Upload authorization regression tests completed. *Unauthenticated and
+  unauthorized uploads are rejected and persist nothing.*
+- [x] MinIO multipart round trip verified. *Upload through Django to `S3Storage`
+  to MinIO, then download back through Django.*
+- [x] Provider-neutral GCS multipart behavior verified. *The flow is exercised
+  against a substituted backend, and the transport modules are asserted by AST
+  to import no provider SDK and never read `CARE_STORAGE_BACKEND`.*
+- [x] ES-02 completed.
+
+### Notes
+
+**Memory.** CARE never materialises the file: size comes from
+`UploadedFile.size`, MIME sniffing reads only the leading 2048 bytes, and the
+`UploadedFile` is passed straight to `Storage.save()`.
+
+**Range requests** remain unsupported, as this ADR states. `FileResponse` may
+advertise ranges for file-backed responses, but no range behaviour is designed
+or tested here.
+
+**Not addressed by this ADR.** `POST /api/v1/files/` and `mark_upload_completed`
+survive from the presigned flow and are now vestigial; nothing writes to storage
+between them. Recorded in the frontend file-flow inventory §12.5.
 ```

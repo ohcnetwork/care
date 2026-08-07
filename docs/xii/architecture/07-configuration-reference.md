@@ -953,88 +953,92 @@ The API SHALL not run it during every instance startup.
 
 # 15. Upload Configuration
 
-## 15.1 `CARE_MAX_UPLOAD_SIZE`
+**Corrected 2026-08-07 to match the implementation.** Earlier revisions
+specified `CARE_MAX_UPLOAD_SIZE`, `CARE_ALLOWED_UPLOAD_MIME_TYPES`,
+`CARE_ALLOWED_UPLOAD_EXTENSIONS` and `CARE_BLOCKED_UPLOAD_EXTENSIONS`. **None
+exists.** ES-02 §12 requires reusing CARE's existing limit rather than inventing
+one, so the settings below are the real ones.
 
-Required to be explicitly defined.
+Uploads use `multipart/form-data` (ADR-0002). See the frontend file-flow
+inventory §12 for the request contract.
 
-Example:
+## 15.1 `MAX_FILE_UPLOAD_SIZE`
+
+The maximum accepted upload, **in megabytes**.
 
 ```text
-CARE_MAX_UPLOAD_SIZE=26214400
+MAX_FILE_UPLOAD_SIZE=5
 ```
 
-This example represents 25 MiB.
+Defined at `config/settings/config.py`. CARE compares it against
+`UploadedFile.size` before anything is written, so an oversized file is rejected
+without touching storage.
 
-The actual limit SHALL be selected after testing.
+Note the unit: this is MB, not bytes, unlike the two Django settings below.
 
 ## 15.2 `FILE_UPLOAD_MAX_MEMORY_SIZE`
 
-Recommended.
-
-Defines when Django moves uploaded content from memory to temporary files.
-
-Example:
+Bytes. Above this, Django's upload handlers spool the upload to a
+`TemporaryUploadedFile` instead of holding it in memory.
 
 ```text
 FILE_UPLOAD_MAX_MEMORY_SIZE=2621440
 ```
 
-The exact parser may require this value through Django settings rather than a
-direct environment variable name.
+Django's own default, stated explicitly by ES-02 so the limit is visible rather
+than implicit. At the defaults, anything over 2.5 MB is temp-file backed while
+`MAX_FILE_UPLOAD_SIZE` still caps the total at 5 MB.
 
 ## 15.3 `DATA_UPLOAD_MAX_MEMORY_SIZE`
 
-Recommended.
+Bytes. Bounds the **non-file** part of a request body.
 
-Controls total request-data memory behavior.
+```text
+DATA_UPLOAD_MAX_MEMORY_SIZE=2621440
+```
 
-It SHALL be large enough for supported requests and smaller than dangerous
-resource-exhaustion levels.
+Multipart file parts are exempt, so this does **not** cap upload size. It did
+cap the previous base64 transport, where the file travelled as JSON: a 5 MB file
+became roughly 6.7 MB of body and exceeded this limit. Multipart removes that
+interaction.
 
 ## 15.4 `FILE_UPLOAD_TEMP_DIR`
 
-Optional.
+Not configured. Django's default temporary directory is used.
 
-Cloud Run's writable filesystem is ephemeral.
+Set it only if a deployment needs temporary uploads on a specific volume.
+Temporary files are ephemeral and SHALL NOT be treated as durable storage.
 
-A temporary directory MAY use:
+## 15.5 `ALLOWED_MIME_TYPES`
 
-```text
-/tmp
-```
+The MIME allowlist, defined at `config/settings/base.py`.
 
-Temporary files SHALL not be treated as durable.
+The value checked against it is **sniffed from the file's leading bytes** with
+`python-magic`, not taken from the request. A browser-declared `Content-Type` is
+never trusted.
 
-## 15.5 `CARE_ALLOWED_UPLOAD_MIME_TYPES`
+## 15.6 Extension rules
 
-Optional override.
-
-The implementation SHOULD continue using CARE's existing allowlists unless
-deployment-specific changes are required.
-
-## 15.6 `CARE_ALLOWED_UPLOAD_EXTENSIONS`
-
-Optional override.
-
-## 15.7 `CARE_BLOCKED_UPLOAD_EXTENSIONS`
-
-Optional override.
-
-Security-sensitive defaults SHALL remain active.
+Not settings. Extension policy lives in `FileNameValidator`
+(`care/utils/models/validators.py`), applied through `FileUploadCreateSpec`.
+Security-sensitive defaults are in code, not deployment configuration.
 
 ---
 
 # 16. Download Configuration
 
-## 16.1 `CARE_INLINE_MIME_TYPES`
+## 16.1 Inline MIME types
 
-Optional.
-
-Defines MIME types returned with:
+**Not a setting.** The inline allowlist is `SAFE_INLINE_FORMATS` in
+`care/emr/utils/file_download.py`. Types in it are served with:
 
 ```text
 Content-Disposition: inline
 ```
+
+and everything else as `attachment`. This preserves the behaviour the presigned
+`ResponseContentDisposition` used to provide. ES-02 §21 forbids broadening it
+without a verified requirement.
 
 Likely candidates:
 
