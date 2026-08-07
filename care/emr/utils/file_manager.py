@@ -5,12 +5,13 @@ ADR-0001 makes Django's Storage API the object-persistence abstraction, so this
 module contains no provider SDK import and no provider branch. The provider is
 selected entirely in settings; see ``config/storage.py``.
 
-Presigned-URL generation is deliberately *not* here. It is provider-specific and
-lives in :mod:`care.emr.utils.legacy_signed_urls` until IS-02 replaces those
-flows with Django-served transfers.
+There is no presigned-URL generation anywhere in CARE. Objects are read back
+through :mod:`care.emr.utils.file_download`, which streams them from Django
+Storage, so no storage-provider URL ever reaches a client.
 """
 
 import logging
+import warnings
 
 from django.core.exceptions import SuspiciousFileOperation
 from django.core.files.storage import storages
@@ -126,3 +127,44 @@ class FilesManager:
 
     def size(self, file_obj) -> int:
         return self.storage.size(get_storage_name(file_obj))
+
+
+class S3FilesManager(FilesManager):
+    """
+    Deprecated. Kept only so that external plugins importing this name keep
+    working; see docs/xii/architecture/inventory/plugin-impact.md.
+
+    Despite the name it is not S3-specific and never was after ADR-0001: it is
+    :class:`FilesManager`, delegating to whichever provider the alias is
+    configured for. It deliberately exposes **no** signed-URL methods -- those
+    were removed with the provider-specific transport. Use ``FilesManager`` or
+    ``django.core.files.storage.storages`` directly.
+
+    Accepts the historical positional argument, which used to be a
+    ``BucketType``. Anything that is not a known alias raises, rather than
+    silently writing to the wrong bucket.
+    """
+
+    #: Historic BucketType.name / .value -> logical alias.
+    _LEGACY_ALIASES = {
+        "PATIENT": "patient",
+        "FACILITY": "facility",
+        "REPORT": "report",
+    }
+
+    def __init__(self, bucket_type):
+        warnings.warn(
+            "S3FilesManager is deprecated and will be removed; use "
+            "FilesManager(alias) or django.core.files.storage.storages.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        alias = getattr(bucket_type, "value", bucket_type)
+        alias = self._LEGACY_ALIASES.get(str(alias).upper(), str(alias))
+        if alias not in self._LEGACY_ALIASES.values():
+            msg = (
+                f"Unknown storage alias {alias!r}. "
+                f"Expected one of: {', '.join(sorted(self._LEGACY_ALIASES.values()))}."
+            )
+            raise ValueError(msg)
+        super().__init__(alias)
