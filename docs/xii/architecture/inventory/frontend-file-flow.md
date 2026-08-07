@@ -91,7 +91,7 @@ matters because `get_queryset` filters list results on `upload_completed=True`
 
 **verified** Request body fields, read at `file_upload.py:215-216, 246-253`:
 
-```
+```text
 original_name      (required)   file_upload.py:215
 file_data          (required)   base64 string, file_upload.py:216
 name                            file_upload.py:248
@@ -450,7 +450,7 @@ concatenating `{endpoint}/{bucket}/{key}`. `FACILITY_CDN` and
 | U1 stop returning `signed_url` | **done** |
 | U2 multipart streaming upload | **IS-02** — the only upload item left |
 | U3 fate of the base64 endpoint | **IS-02** |
-| U4 `mark_upload_completed` | **IS-02.** Still client-driven; harmless now that no client can write to the bucket directly, but redundant |
+| U4 `mark_upload_completed` | **IS-02.** Still client-driven and still unverified against storage. Now bounded rather than fixed: a client can no longer write to the bucket, and an incomplete row advertises no `download_url` and refuses `download` (§11.7), so a falsely-completed row exposes nothing — it only becomes listable |
 | U5 remove the presigned write | **done** |
 | D1 authenticated download route | **done** |
 | D2 `Content-Disposition` | **done** — inline/attachment preserved in `file_download.py` |
@@ -481,6 +481,8 @@ that used them as absolute URLs must prepend the API origin.
 New endpoints: 4 (two downloads, two public assets). `mark_upload_completed`
 retains its meaning for now.
 
+`download_url` is `null` while `upload_completed` is false — see §11.7.
+
 ### 11.6 GCS is no longer blocked on transport
 
 **verified** With the signed-URL path gone, selecting `CARE_STORAGE_BACKEND=gcs`
@@ -491,6 +493,23 @@ for any real GCS deployment — no longer holds.
 **verified** One provider-specific reference remains outside transport:
 `report_generation.py` retries on `botocore`'s `ClientError`, which will not fire
 under `gcs`. See `storage-call-sites.md` §11.7.
+
+### 11.7 An incomplete row is not downloadable
+
+**verified** A `FileUpload` row exists before its bytes do: `POST /api/v1/files/`
+creates it with `upload_completed=False`, and only `mark_upload_completed` flips
+the flag. The detail queryset does not filter on that flag (`file_upload.py`,
+`get_queryset`), so such a row is retrievable.
+
+`FileUploadRetrieveSpec` therefore returns `download_url: null` until the upload
+completes, and the `download` action raises `NotFound` for an incomplete row
+rather than reaching storage. Previously it advertised a route that could only
+404 — a provider-neutral 404, but still a URL for an object that was never
+written.
+
+This bounds the vestigial create/complete pair without removing it: a client that
+calls `mark_upload_completed` without uploading makes the row listable, but it
+exposes nothing, because there is no URL and no route that resolves. See §12.5.
 
 ---
 
@@ -590,5 +609,18 @@ unchanged: `authorize_create` → `file_authorizer`, `get_storage_name`, the
 **verified** `POST /api/v1/files/` and `mark_upload_completed` still exist. They
 were the first and third steps of the presigned flow. Nothing writes to storage
 between them any more, so the pair is now vestigial — a row created this way can
-only be completed by a client asserting it. Out of scope for ES-02; noted for
-whoever owns the file API next.
+only be completed by a client asserting it, and the assertion is never checked
+against storage.
+
+**Recommend deprecating the pair rather than leaving it as an accepted state.**
+The multipart endpoint creates the row, writes the object and sets the flag in
+one authorized request, so nothing needs the two-step form any more. Leaving it
+in place keeps an endpoint whose entire function is to let a client assert
+something the server could verify — and after ES-02 there is no flow in which
+that assertion is the truth.
+
+It is bounded rather than dangerous: `download_url` is `null` and `download`
+returns 404 while the object is missing (§11.7), so a falsely-completed row
+exposes nothing and merely appears in listings. Out of scope for ES-02. Whoever
+owns the file API next SHOULD either set the flag server-side, verify the object
+exists before setting it, or remove both endpoints.

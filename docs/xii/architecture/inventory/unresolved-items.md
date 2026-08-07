@@ -36,8 +36,8 @@ the same target document:
 
 | Line (before correction) | Text |
 | --- | --- |
-| 1933 | `docs/gcp/02-target-runtime.md` |
-| 1945 | `docs/xii/gcp/02-target-runtime.md` |
+| 1933 | `docs/xii/architecture/02-target-runtime.md` |
+| 1945 | `docs/xii/architecture/02-target-runtime.md` |
 
 **Corrected** in this phase — both now read `docs/xii/architecture/02-target-runtime.md`.
 
@@ -280,7 +280,10 @@ Verified under `gcs`: persistence resolves to `GoogleCloudStorage` and
 `download_url` is still `/api/v1/files/{id}/download/`.
 
 **Consequence:** IS-02 is no longer a prerequisite for a GCS deployment. Only S2
-below stands between the `gcs` profile and production use.
+below stands between the `gcs` profile and production use — and until S2 is
+closed, *report generation* SHALL NOT be described as production-ready under
+`gcs`, even though the rest of the file surface is. See
+`02-target-runtime.md` §11.
 
 ### S2. Report generation does not retry under GCS
 
@@ -289,9 +292,15 @@ below stands between the `gcs` profile and production use.
 django-storages raises `botocore` errors from inside `Storage.save`. Under `gcs`
 the failures are `google.api_core.exceptions.*` and no retry occurs.
 
+**Impact (verified):** it does not degrade to "retries less often" — it degrades
+to **no retry at all**, silently. The task carries a retry policy that cannot
+fire, so the first transient upload failure fails the report, and nothing in the
+logs distinguishes that from a policy that fired and exhausted itself.
+
 **Not changed** — both ES-01 §31 and the completion pass explicitly forbid
 modifying Celery, and widening `autoretry_for` alters retry semantics beyond the
-storage seam.
+storage seam. `02-target-runtime.md` §11 records the two acceptable resolutions
+and forbids claiming GCS report generation is production-ready until one lands.
 
 **Now the only item blocking the GCS profile**, and the last provider-specific
 reference in any storage consumer. **Decision needed:** a provider-neutral retry
@@ -341,9 +350,17 @@ cover `sync_permissions_roles` and `sync_valueset`, which run in the same script
 (`care/utils/file_uploads/cover_image.py:49-51`); read via unsigned concatenated
 URLs (`care/facility/models/facility.py:207-212`, `care/users/models.py:202-207`).
 
-**Decision needed.** GCS uniform bucket-level access rejects per-object ACLs. If
-these become private, both URL builders need Django routes, and `FACILITY_CDN`
-(`config/settings/base.py:673`) needs a new meaning.
+**RESOLVED by IS-01 — they stay publicly *readable*, but the bucket does not.**
+No object carries an ACL any more. The bytes are served by CARE through two
+anonymous routes, `facility-cover-image-asset` and `user-profile-picture-asset`
+(`care/emr/api/viewsets/file_assets.py`), so who can see a cover image is
+unchanged while the bucket becomes private and GCS uniform bucket-level access
+is satisfied.
+
+Both URL builders now `reverse()` to those routes. `FACILITY_CDN` and
+`BUCKET_HAS_FINE_ACL` were deleted rather than redefined: with CARE serving the
+bytes, a CDN belongs in front of CARE, which the long-lived `Cache-Control` on
+those responses allows.
 
 ### C3. Is the API allowed to start without Redis?
 
@@ -411,11 +428,19 @@ either way.
 
 ### C10. Base64 upload endpoint is missing from the OpenAPI schema
 
-**verified** `care/emr/api/viewsets/file_upload.py:213` has no `@extend_schema`;
-its body fields are read straight from `request.data`.
+**Still open after IS-01.** The endpoint moved to
+`care/emr/api/viewsets/file_upload.py:230` and its persistence now goes through
+Django Storage, but it is unchanged as transport: it still takes a base64
+`file_data` string, still buffers the decoded file in memory, and still carries
+no `@extend_schema`, with its body fields read straight from `request.data`.
 
 **inferred** Schema-generated clients cannot discover it. Whether it is
 public API or an internal affordance is **unknown**.
+
+The new `download` action *is* annotated, so the download half of the contract
+is discoverable while the upload half is not. IS-02 owns closing this, together
+with replacing the base64 body — annotating a body that is about to change would
+be wasted work.
 
 ---
 

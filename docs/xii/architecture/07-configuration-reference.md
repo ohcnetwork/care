@@ -7,13 +7,13 @@ source_repository: https://github.com/ohcnetwork/care
 target_platform: Google Cloud Platform
 deployment_type: Greenfield
 depends_on:
-  - docs/gcp/00-scope-and-goals.md
-  - docs/gcp/01-current-runtime.md
-  - docs/gcp/02-target-runtime.md
-  - docs/gcp/03-migration-plan.md
-  - docs/gcp/04-testing.md
-  - docs/gcp/05-upstream-sync.md
-  - docs/gcp/06-operations.md
+  - docs/xii/architecture/00-scope-and-goals.md
+  - docs/xii/architecture/01-current-runtime.md
+  - docs/xii/architecture/02-target-runtime.md
+  - docs/xii/architecture/03-migration-plan.md
+  - docs/xii/architecture/04-testing.md
+  - docs/xii/architecture/05-upstream-sync.md
+  - docs/xii/architecture/06-operations.md
 ---
 
 # GCP Configuration Reference
@@ -169,14 +169,12 @@ jobs and schedules
 Required for all GCP roles.
 
 ```text
-DJANGO_SETTINGS_MODULE=config.settings.gcp
+DJANGO_SETTINGS_MODULE=config.settings.deployment
 ```
 
-Accepted GCP value:
-
-```text
-config.settings.gcp
-```
+`config.settings.deployment` is the production settings module the repository
+already ships; GCP introduces no settings module of its own. Provider selection
+is configuration, not code (ADR-0001), so the same module serves AWS and GCP.
 
 The API, worker and jobs SHOULD all use the same settings module unless a
 future role requires a narrowly scoped alternative.
@@ -2293,7 +2291,7 @@ Variables SHALL be injected only where needed where practical.
 Recommended initial configuration:
 
 ```text
-DJANGO_SETTINGS_MODULE=config.settings.gcp
+DJANGO_SETTINGS_MODULE=config.settings.deployment
 CARE_ENVIRONMENT=prod
 DJANGO_DEBUG=false
 
@@ -2344,9 +2342,11 @@ CARE_CACHE_BACKEND=redis
 CARE_RATE_LIMIT_BACKEND=redis
 CARE_TRANSIENT_STATE_BACKEND=redis
 
-S3_ENDPOINT_URL=http://minio:9000
-S3_ACCESS_KEY=minioadmin
-S3_SECRET_KEY=minioadmin
+BUCKET_ENDPOINT=http://minio:9000
+BUCKET_KEY=minioadmin
+BUCKET_SECRET=minioadmin
+FILE_UPLOAD_BUCKET=patient-bucket
+FACILITY_S3_BUCKET=facility-bucket
 
 CELERY_BROKER_URL=redis://redis:6379/0
 CELERY_RESULT_BACKEND=redis://redis:6379/0
@@ -2355,6 +2355,10 @@ REDIS_CACHE_URL=redis://redis:6379/1
 REDIS_RATE_LIMIT_URL=redis://redis:6379/2
 REDIS_TRANSIENT_STATE_URL=redis://redis:6379/3
 ```
+
+The storage variables are the pre-existing ones documented in §13; `S3_*` names
+are not accepted. The shared `BUCKET_*` values serve every alias unless an
+alias-specific `FILE_UPLOAD_*` or `FACILITY_S3_*` value overrides them.
 
 The implementation MAY preserve existing local `REDIS_URL` compatibility while
 introducing more specific variables gradually.
@@ -2420,8 +2424,14 @@ CARE_TASK_BACKEND=fake
 CARE_CACHE_BACKEND=dummy
 CARE_RATE_LIMIT_BACKEND=postgres
 CARE_TRANSIENT_STATE_BACKEND=postgres
-CARE_STORAGE_BACKEND=filesystem
 ```
+
+`CARE_STORAGE_BACKEND` is deliberately absent. Its only accepted values are `s3`
+and `gcs` (§11.2); `filesystem` is not one of them and would raise
+`ImproperlyConfigured` at startup. Tests that must avoid a real bucket
+substitute `django.core.files.storage.InMemoryStorage` through
+`override_settings` on `STORAGES`, which is a test-local override rather than a
+configuration value.
 
 A `fake` task backend MAY exist only in test settings.
 
@@ -2722,7 +2732,7 @@ Undocumented production variables SHALL not be introduced casually.
 Non-secret conceptual values:
 
 ```text
-DJANGO_SETTINGS_MODULE=config.settings.gcp
+DJANGO_SETTINGS_MODULE=config.settings.deployment
 CARE_ENVIRONMENT=prod
 CARE_PROCESS_ROLE=api
 DJANGO_DEBUG=false
@@ -2765,7 +2775,7 @@ SENTRY_DSN, when enabled
 # 61. Example Worker Service Configuration
 
 ```text
-DJANGO_SETTINGS_MODULE=config.settings.gcp
+DJANGO_SETTINGS_MODULE=config.settings.deployment
 CARE_ENVIRONMENT=prod
 CARE_PROCESS_ROLE=task_worker
 
@@ -2798,7 +2808,7 @@ can create follow-up tasks.
 # 62. Example Migration Job Configuration
 
 ```text
-DJANGO_SETTINGS_MODULE=config.settings.gcp
+DJANGO_SETTINGS_MODULE=config.settings.deployment
 CARE_ENVIRONMENT=prod
 CARE_PROCESS_ROLE=job
 CARE_JOB_NAME=migrate
@@ -2844,7 +2854,7 @@ Configuration implementation is complete when:
 The next document is:
 
 ```text
-docs/gcp/08-terraform-architecture.md
+docs/xii/architecture/08-terraform-architecture.md
 ```
 
 It will define:

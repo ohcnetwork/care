@@ -40,7 +40,7 @@ process. `scripts/celery_worker.sh` and `scripts/celery_beat.sh` separate them.
 
 **verified** `Procfile` describes a third shape entirely:
 
-```
+```text
 web: gunicorn config.wsgi:application
 release: python manage.py collectstatic --noinput && python manage.py migrate
 ```
@@ -70,7 +70,7 @@ of starting Celery Beat**. The API container never migrates.
 **verified** `scripts/celery_beat.sh` and `scripts/celery-dev.sh` also run two
 data-seeding commands after migrating:
 
-```
+```bash
 python manage.py sync_permissions_roles
 python manage.py sync_valueset
 ```
@@ -118,6 +118,15 @@ export REDIS_URL="rediss://:${REDIS_AUTH_TOKEN}@${REDIS_HOST}:${REDIS_PORT}/${RE
 **verified** The Redis URL uses the TLS scheme `rediss://` with
 `ssl_cert_reqs=none` — TLS without certificate verification.
 
+**Recommend** treating this as a defect to fix, not a baseline to carry forward.
+`ssl_cert_reqs=none` encrypts the connection but authenticates nothing, so it
+stops passive sniffing and not an active man-in-the-middle — which is most of
+what TLS to a managed Redis endpoint is for. The target runtime SHALL verify
+against the deployment CA (`ssl_cert_reqs=required` plus `ssl_ca_certs`, or the
+system trust store where the provider uses a public CA). If verification must be
+disabled anywhere, it SHALL be scoped to local development, where the endpoint
+is a container on a private network and there is no CA to verify against.
+
 ---
 
 ## 4. Static files and i18n
@@ -149,7 +158,7 @@ serves no HTTP.
 
 **verified** `docker/prod.Dockerfile:65-70` declares:
 
-```
+```dockerfile
 HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=12 CMD ["./healthcheck.sh"]
 ```
 
@@ -325,6 +334,11 @@ code constraint.
 **verified** **Absent** from `Pipfile`: `django-storages`, any
 `google-cloud-*` package, `django-celery-beat`, `django-celery-results`.
 
+**Superseded by IS-01 for the first two.** `Pipfile:55` now carries
+`django-storages = {extras = ["s3", "google"], version = "==1.14.6"}`, which
+brings `google-cloud-storage` in transitively. `django-celery-beat` and
+`django-celery-results` remain absent.
+
 **verified** `django-anymail` is installed with the `amazon-ses` extra.
 **inferred** email delivery is AWS SES today; GCP has no drop-in equivalent, so
 this needs an explicit decision.
@@ -352,6 +366,18 @@ this needs an explicit decision.
 
 **Conclusion (verified):** GCP support does not exist. This is genuinely
 greenfield.
+
+**Superseded by IS-01.** Both rows above are gone: `care/utils/csp/config.py` was
+deleted with the provider-specific bucket configuration, and the `file_manager.py`
+bulk-delete comment went with the boto3 code. Re-running the same search now
+returns matches in `config/storage.py`, `config/settings/base.py`,
+`care/utils/tests/test_storage_config.py` and `Pipfile` — the `gcs` backend
+option and its tests.
+
+The conclusion still holds for everything outside storage: there is still no
+Terraform, no Cloud Build config, no `app.yaml`, no `service.yaml` and no GCP
+credentials handling. Storage is the one axis where GCP is now selectable, and
+selecting it is a settings change rather than a code change.
 
 ---
 
@@ -451,7 +477,7 @@ than an intentional design, but it is not currently broken.
 **The first build attempt failed.** Classified as a **dependency-build** failure,
 not an application defect:
 
-```
+```text
 zipfile.BadZipFile: Bad CRC-32 for file '_brotli.cpython-313-x86_64-linux-gnu.so'
 ERROR: Couldn't install package: {}
 failed to solve: process "/bin/sh -c pipenv  install --system --categories \"packages dev-packages docs\""
@@ -576,7 +602,7 @@ below, not a defect in the application under test.
 
 **verified** Run 1 failed one test:
 
-```
+```text
 care/emr/tests/test_reset_password_api.py:375
   ResetPasswordAPITest.test_password_request_rate_limiting
 AssertionError: 200 != 429

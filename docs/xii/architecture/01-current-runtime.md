@@ -25,6 +25,17 @@ It does not prescribe replacements or migration steps.
 
 Architectural decisions and migration requirements are documented separately.
 
+**This document is a baseline, not a description of this fork.** It is pinned to
+the `verified_against_commit` in the front matter and describes upstream
+`develop` as it was on that date. Work merged into this fork since then has
+already replaced parts of what follows — in particular, IS-01 (ADR-0001)
+replaced the S3-compatible file manager and its signed URLs with Django Storage
+and CARE-served download routes, so §34 and §35 record the *starting* state, not
+the current one. The baseline is deliberately left unrevised: it is what the
+migration is measured against, and rewriting it would erase that reference
+point. For the state after each increment, read the ADRs and the implementation
+specifications under `docs/xii/`.
+
 ---
 
 ## 2. Repository Baseline

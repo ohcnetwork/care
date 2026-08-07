@@ -7,10 +7,10 @@ source_repository: https://github.com/ohcnetwork/care
 target_platform: Google Cloud Platform
 deployment_type: Greenfield
 depends_on:
-  - docs/gcp/00-scope-and-goals.md
-  - docs/gcp/01-current-runtime.md
-  - docs/gcp/02-target-runtime.md
-  - docs/gcp/03-migration-plan.md
+  - docs/xii/architecture/00-scope-and-goals.md
+  - docs/xii/architecture/01-current-runtime.md
+  - docs/xii/architecture/02-target-runtime.md
+  - docs/xii/architecture/03-migration-plan.md
 ---
 
 # GCP Testing Strategy
@@ -229,7 +229,7 @@ profile.
 Test:
 
 ```bash
-DJANGO_SETTINGS_MODULE=config.settings.gcp \
+DJANGO_SETTINGS_MODULE=config.settings.deployment \
 python manage.py check
 ```
 
@@ -1366,14 +1366,24 @@ Verify infrastructure configuration before application deployment.
 
 ## 23.2 Formatting and validation
 
-Run:
+`terraform fmt` and `terraform validate` both act on a single directory.
+`fmt` therefore needs `-recursive` to reach `modules/` and `environments/`, and
+`validate` needs one invocation per initialized directory — there is no
+recursive form.
+
+From `deploy/gcp/terraform/` (layout: 03-migration-plan.md §29):
 
 ```bash
-terraform fmt -check
-terraform validate
+terraform fmt -check -recursive .
+
+for dir in environments/*/; do
+  terraform -chdir="$dir" init -backend=false
+  terraform -chdir="$dir" validate
+done
 ```
 
-for all modules and environments.
+Modules are validated through the environments that instantiate them. A module
+that no environment references SHALL be validated on its own the same way.
 
 ## 23.3 Plan review
 
@@ -1821,6 +1831,11 @@ CARE_CACHE_BACKEND=dummy
 
 for fast unit tests.
 
+`fake` is a **test-only** value. The production backend contract accepts
+`cloud_tasks`, `celery` and `postgres` only, and production settings SHALL
+reject `fake` at startup rather than silently discarding every task. It is
+listed here because test settings are the one place it is permitted.
+
 Integration suites SHALL deliberately select:
 
 ```text
@@ -1962,7 +1977,7 @@ Testing for the initial GCP implementation is complete when:
 The next document is:
 
 ```text
-docs/gcp/05-upstream-sync.md
+docs/xii/architecture/05-upstream-sync.md
 ```
 
 It will define:

@@ -7,12 +7,12 @@ source_repository: https://github.com/ohcnetwork/care
 target_platform: Google Cloud Platform
 deployment_type: Greenfield
 depends_on:
-  - docs/gcp/00-scope-and-goals.md
-  - docs/gcp/01-current-runtime.md
-  - docs/gcp/02-target-runtime.md
-  - docs/gcp/03-migration-plan.md
-  - docs/gcp/04-testing.md
-  - docs/gcp/05-upstream-sync.md
+  - docs/xii/architecture/00-scope-and-goals.md
+  - docs/xii/architecture/01-current-runtime.md
+  - docs/xii/architecture/02-target-runtime.md
+  - docs/xii/architecture/03-migration-plan.md
+  - docs/xii/architecture/04-testing.md
+  - docs/xii/architecture/05-upstream-sync.md
 ---
 
 # GCP Operations Guide
@@ -2371,7 +2371,7 @@ secrets.
 Suggested layout:
 
 ```text
-docs/gcp/runbooks/
+docs/xii/architecture/runbooks/
 ├── deploy.md
 ├── rollback.md
 ├── migrate.md
@@ -2529,7 +2529,7 @@ CARE is operationally ready when:
 The next document is:
 
 ```text
-docs/gcp/07-configuration-reference.md
+docs/xii/architecture/07-configuration-reference.md
 ```
 
 It will define:

@@ -41,14 +41,14 @@ Your task is only to inspect the current repository, verify the existing GCP doc
 Read these documents first:
 
 ```text
-docs/gcp/00-scope-and-goals.md
-docs/gcp/01-current-runtime.md
-docs/gcp/02-target-runtime.md
-docs/gcp/03-migration-plan.md
-docs/gcp/04-testing.md
-docs/gcp/05-upstream-sync.md
-docs/gcp/06-operations.md
-docs/gcp/07-configuration-reference.md
+docs/xii/architecture/00-scope-and-goals.md
+docs/xii/architecture/01-current-runtime.md
+docs/xii/architecture/02-target-runtime.md
+docs/xii/architecture/03-migration-plan.md
+docs/xii/architecture/04-testing.md
+docs/xii/architecture/05-upstream-sync.md
+docs/xii/architecture/06-operations.md
+docs/xii/architecture/07-configuration-reference.md
 ```
 
 The architectural goal is narrowly defined:
@@ -90,7 +90,7 @@ Do not reset, merge, rebase, push or modify branches automatically.
 Create:
 
 ```text
-docs/gcp/inventory/
+docs/xii/architecture/inventory/
 ├── storage-call-sites.md
 ├── task-call-sites.md
 ├── cache-and-redis.md
@@ -308,7 +308,7 @@ Document what can and cannot be determined from the repository.
 Compare the real repository against:
 
 ```text
-docs/gcp/01-current-runtime.md
+docs/xii/architecture/01-current-runtime.md
 ```
 
 Correct factual inaccuracies only.
@@ -332,7 +332,7 @@ contradicts them.
 List any such contradictions in:
 
 ```text
-docs/gcp/inventory/unresolved-items.md
+docs/xii/architecture/inventory/unresolved-items.md
 ```
 
 ## Baseline commands
@@ -368,7 +368,7 @@ Record:
 Store the baseline in:
 
 ```text
-docs/gcp/inventory/runtime-and-deployment.md
+docs/xii/architecture/inventory/runtime-and-deployment.md
 ```
 
 If an external dependency prevents execution, document the exact blocker.

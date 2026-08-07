@@ -52,7 +52,7 @@ The application should expose one provider-independent HTTP file contract regard
 
 ## Decision
 
-All supported file uploads and downloads SHALL be mediated by CARE.
+All supported file uploads and downloads SHALL be mediated by CARE, and authenticated except for the two public asset classes named under [Authorization](#public-asset-exception).
 
 Clients SHALL communicate only with CARE.
 
@@ -132,7 +132,10 @@ The existing base64 file-content transport SHALL be removed from the target API.
 
 ## Download Transport
 
-Downloads SHALL continue to pass through authenticated CARE endpoints.
+Downloads SHALL continue to pass through authenticated CARE endpoints, with the
+sole exception of the two public asset classes described under
+[Authorization](#public-asset-exception). File and report downloads are never
+exempt.
 
 CARE SHALL:
 
@@ -204,6 +207,26 @@ SHALL NOT constitute authorization.
 Uploads and downloads SHALL continue using CARE's existing permission and domain model.
 
 This ADR does not redesign authorization.
+
+### Public asset exception
+
+Two asset classes are deliberately exempt from *authentication*, and only those
+two: **facility cover images** and **user profile pictures**, served by
+`facility-cover-image-asset` and `user-profile-picture-asset`
+(`care/emr/api/viewsets/file_assets.py`).
+
+These objects were already world-readable directly from the bucket before
+ADR-0001. Requiring authentication to read them would be a new restriction
+rather than a preserved one, and the routes exist to make the *bucket* private,
+not to make the images less visible. Who can see them is unchanged; what changed
+is that CARE serves the bytes, so no provider URL is exposed and no object needs
+a public ACL.
+
+Uploading or replacing either asset remains authenticated and authorized.
+
+Every other download — clinical files and generated reports — SHALL require an
+authenticated, authorized CARE request. No further exemption SHALL be added
+without amending this ADR.
 
 ---
 

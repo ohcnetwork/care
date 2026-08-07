@@ -471,7 +471,7 @@ and the name collides. Not a cache call site.
 
 Per-file breakdown of the 52 Django cache API calls:
 
-```
+```text
 6  care/security/models/role.py            4  care/utils/lock.py
 6  care/emr/models/facility_config.py      4  care/emr/resources/base.py
 5  care/users/api/viewsets/plug_config.py  4  care/emr/api/viewsets/favorites.py
