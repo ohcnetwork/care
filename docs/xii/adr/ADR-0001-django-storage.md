@@ -196,12 +196,13 @@ Removed by IS-01:
 Objects are now read back through CARE, which authorizes each request and
 streams the bytes through Django Storage. Every bucket can be private.
 
-Still outstanding, and genuinely out of scope here:
+Left to ADR-0002, and since delivered by ES-02:
 
-- **base64 uploads.** `POST /api/v1/files/upload-file/` still accepts a base64
-  body and still buffers the decoded file in memory. Replacing it with
-  `multipart/form-data` is a transport-performance change that does not affect
-  provider portability, so it belongs to IS-02 under ADR-0002.
+- **base64 uploads.** `POST /api/v1/files/upload-file/` accepted a base64 body
+  and buffered the decoded file in memory. Replacing it with
+  `multipart/form-data` was a transport-performance change that did not affect
+  provider portability, which is why it belonged to ADR-0002 rather than here.
+  It is now multipart; no base64 upload path remains.
 
 ---
 
@@ -329,7 +330,7 @@ specifications.
 
 - [x] Decision accepted.
 - [x] IS-01 completed. *(2026-08-07)*
-- [ ] IS-02 completed.
+- [x] IS-02 completed. *(2026-08-07)* *Delivered as ES-02 under ADR-0002.*
 - [x] Legacy storage removed. *`S3FilesManager` survives only as a deprecated
   plugin shim delegating to Django Storage; `care/utils/csp/` is deleted.*
 - [x] Legacy signed URL flows removed. *No application code generates a
@@ -347,9 +348,16 @@ specifications.
   gone, along with the unsigned bucket URLs that served cover images and
   avatars. Every bucket can now be private.
 
-## Remaining for IS-02
+## What IS-02 delivered
 
-The base64 upload transport at `POST /api/v1/files/upload-file/` is retained and
-still buffers the decoded file in memory. IS-02 replaces it with
-`multipart/form-data` and Django upload handlers. That is transport
-performance, not provider portability, and does not affect this decision.
+The base64 upload transport at `POST /api/v1/files/upload-file/` has been
+replaced with `multipart/form-data` and Django upload handlers, under ADR-0002.
+That was transport performance, not provider portability, so it did not affect
+this decision — the persistence seam established here is unchanged, and the
+multipart path hands its `UploadedFile` to the same `Storage.save()`.
+
+One item outside both specs remains open: `care/emr/tasks/report_generation.py`
+retries on `botocore`'s `ClientError`, which cannot fire under `gcs`. It
+constructs no client and performs no storage operation, so it is not a breach of
+this decision, but it does mean report generation is not yet production-ready on
+GCS. See `02-target-runtime.md` §11 and `unresolved-items.md` S2.

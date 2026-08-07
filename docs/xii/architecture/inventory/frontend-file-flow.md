@@ -15,10 +15,17 @@ reviewed: 2026-08-06
 The file-related API contract as it exists today, and the exact changes required
 to route all file traffic through Django.
 
-**IS-01 changed no API and no response field.** It moved object *persistence*
-onto Django Storage underneath these flows. Sections 1-10 remain accurate as the
-transport contract; **section 11 records what moved and what IS-02 must still
-do**, and corrects the file and line references that IS-01 relocated.
+This document is layered, and later sections supersede earlier ones:
+
+- **Sections 1-10** are the Phase 0 baseline — the contract *before* any storage
+  or transport work. IS-01 changed no API and no response field, so they stayed
+  accurate through it. They describe presigned URLs and a base64 upload, neither
+  of which still exists; read them as history.
+- **Section 11** records what IS-01 moved (persistence onto Django Storage,
+  transport onto CARE routes) and corrects the file and line references it
+  relocated. Its "IS-02" entries were open at the time of writing.
+- **Section 12** records what ES-02 delivered and is **the current contract**.
+  Where 11 and 12 disagree, 12 is current.
 
 Evidence labels: **verified** / **inferred** / **unknown**.
 
@@ -464,6 +471,10 @@ concatenating `{endpoint}/{bucket}/{key}`. `FACILITY_CDN` and
 | T1, T2 test rewrites | **done** |
 | S1 schema for the upload endpoint | **IS-02** |
 | S2 regenerate and diff the schema | **partly** — `signed_url` and `read_signed_url` are gone from both response models; `download_url` is added |
+
+**Every row above marked IS-02 is now closed by ES-02** — U2, U3 and S1 outright,
+U4 by deprecation rather than removal. The table is left as the IS-01 record;
+§12 is the current state.
 
 ### 11.5 Contract impact, as delivered
 

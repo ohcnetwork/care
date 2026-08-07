@@ -431,19 +431,18 @@ either way.
 
 ### C10. Base64 upload endpoint is missing from the OpenAPI schema
 
-**Still open after IS-01.** The endpoint moved to
-`care/emr/api/viewsets/file_upload.py:230` and its persistence now goes through
-Django Storage, but it is unchanged as transport: it still takes a base64
-`file_data` string, still buffers the decoded file in memory, and still carries
-no `@extend_schema`, with its body fields read straight from `request.data`.
+**RESOLVED by ES-02.** The base64 endpoint no longer exists. Its replacement at
+`care/emr/api/viewsets/file_upload.py:294` carries an explicit
+`@extend_schema` declaring `request={"multipart/form-data":
+FileUploadMultipartSerializer}` and `responses={200: FileUploadRetrieveSpec}`,
+so the upload body is now part of the generated schema and discoverable by
+schema-generated clients.
 
-**inferred** Schema-generated clients cannot discover it. Whether it is
-public API or an internal affordance is **unknown**.
+Deferring the annotation until the body changed was the right order: annotating
+a base64 field that was about to be deleted would have been wasted work, and the
+schema now describes a contract that will not immediately move.
 
-The new `download` action *is* annotated, so the download half of the contract
-is discoverable while the upload half is not. IS-02 owns closing this, together
-with replacing the base64 body — annotating a body that is about to change would
-be wasted work.
+Both halves of the file contract are annotated — `download` was already.
 
 ---
 

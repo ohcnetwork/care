@@ -335,9 +335,12 @@ browser — which the target architecture forbids.
 
 ## 11. IS-01 migration status
 
-Recorded 2026-08-06 on `feature/django-storages`. The prediction in §8 held: the
-8 mechanical sites migrated, the 2 dead ones were deleted, and the 9 URL-handing
-sites remain for IS-02.
+Recorded 2026-08-06 on `feature/django-storages`, then revised. The prediction in
+§8 held for the mechanical work: the 8 mechanical sites migrated and the 2 dead
+ones were deleted. It was wrong about the 9 URL-handing sites, which it expected
+to survive into IS-02 — the ES-01 completion pass removed the signed-URL
+transport outright instead, and ES-02 later removed the base64 body. The table
+below is the current status, not the prediction.
 
 ### 11.1 Status of every call site
 
