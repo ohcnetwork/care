@@ -78,7 +78,7 @@ The default local development profile SHALL continue using MinIO.
 
 MinIO SHALL be accessed through:
 
-```
+```text
 storages.backends.s3.S3Storage
 ```
 
@@ -132,7 +132,7 @@ Storage provider selection SHALL be configuration-driven.
 
 A setting similar to:
 
-```
+```text
 CARE_STORAGE_BACKEND
 ```
 
@@ -145,7 +145,7 @@ Initial supported values are expected to include:
 
 The default SHALL remain:
 
-```
+```text
 s3
 ```
 
@@ -177,22 +177,31 @@ for ordinary persistence.
 
 # File transport
 
-This ADR applies only to object persistence.
+This ADR is about object persistence. It does not define the HTTP transport
+layer, which is ADR-0002's subject.
 
-It does not define the HTTP transport layer.
+**Revised 2026-08-07.** As originally written this section said the upload and
+download APIs would remain unchanged until a later transport phase. That did not
+survive contact with the decision itself: presigned URLs are provider-specific
+by construction, so leaving them in place would have left a provider seam in the
+one place this ADR set out to remove it, and would have kept every bucket
+public. The IS-01 completion pass therefore removed them.
 
-Current upload and download APIs remain unchanged until the corresponding
-transport modernization phase.
+Removed by IS-01:
 
-Future work will replace:
-
-- base64 uploads;
 - browser presigned uploads;
 - browser presigned downloads;
+- the unsigned bucket URLs serving cover images and avatars.
 
-with streamed Django-managed transfers.
+Objects are now read back through CARE, which authorizes each request and
+streams the bytes through Django Storage. Every bucket can be private.
 
-That work is intentionally outside the scope of this ADR.
+Still outstanding, and genuinely out of scope here:
+
+- **base64 uploads.** `POST /api/v1/files/upload-file/` still accepts a base64
+  body and still buffers the decoded file in memory. Replacing it with
+  `multipart/form-data` is a transport-performance change that does not affect
+  provider portability, so it belongs to IS-02 under ADR-0002.
 
 ---
 
@@ -310,8 +319,8 @@ specifications.
 - Runtime Inventory
 - Storage Inventory
 - IS-01 Storage Modernization
-- Future ADR: File Transport Modernization
-- Future ADR: Async Task Runtime
+- ADR-0002: Server-Mediated File Transport
+- ADR-0003: Configurable Asynchronous Execution
 - Future ADR: Cache and Distributed Locks
 
 ---

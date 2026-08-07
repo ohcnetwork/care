@@ -11,7 +11,7 @@ from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel
 from rest_framework import filters as rest_framework_filters
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.exceptions import NotFound, PermissionDenied, ValidationError
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -185,6 +185,9 @@ class FileUploadViewSet(
         # get_object() -> get_queryset(), which runs file_authorizer(..., "read")
         # for every detail action.
         obj = self.get_object()
+        if not obj.upload_completed:
+            msg = "File upload is not complete"
+            raise NotFound(msg)
         return file_object_response(obj)
 
     @extend_schema(responses={200: FileUploadListSpec})

@@ -22,6 +22,13 @@ from care.users.models import User
 from care.utils.file_uploads.cover_image import STORAGE_ALIAS
 from care.utils.shortcuts import get_object_or_404
 
+#: ``upload_cover_image`` mints a fresh key containing a random token for every
+#: upload, so the bytes behind a given key never change -- replacing an image
+#: produces a different key. The response is therefore immutable per key and
+#: safe for anonymous browser, CDN and reverse-proxy caches, which is what CARE
+#: serving the bytes would otherwise cost us over reading the bucket directly.
+PUBLIC_ASSET_CACHE_CONTROL = "public, max-age=31536000, immutable"
+
 
 class PublicAssetView(APIView):
     """Unauthenticated read-only delivery of a public image."""
@@ -34,11 +41,13 @@ class PublicAssetView(APIView):
         if not object_key:
             msg = "No image set"
             raise NotFound(msg)
-        return storage_file_response(
+        response = storage_file_response(
             storages[STORAGE_ALIAS],
             object_key,
             filename=object_key.rsplit("/", 1)[-1],
         )
+        response.headers["Cache-Control"] = PUBLIC_ASSET_CACHE_CONTROL
+        return response
 
 
 class FacilityCoverImageView(PublicAssetView):

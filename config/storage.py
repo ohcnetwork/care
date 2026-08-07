@@ -63,10 +63,17 @@ def build_object_storage(
 
     No alias is ever public. Every object is served by CARE through Django
     Storage (ADR-0001), so buckets can and should be private.
+
+    The S3 arguments -- ``region_name``, ``access_key``, ``secret_key`` and
+    ``endpoint_url`` -- have no Google Cloud Storage equivalent and are ignored
+    when ``backend`` is ``"gcs"``. Callers pass the full set unconditionally, so
+    switching a deployment to GCS silently stops using whatever those variables
+    held; GCS authenticates through Application Default Credentials instead.
     """
     validate_storage_backend(backend)
 
     if backend == "gcs":
+        # region/key/secret/endpoint are deliberately dropped here: see docstring.
         options: dict = {
             "bucket_name": bucket_name,
             "file_overwrite": True,

@@ -112,7 +112,12 @@ class FileUploadRetrieveSpec(FileUploadListSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        mapping["download_url"] = file_download_url(obj)
+        # A row that has not completed its upload has no object in storage yet,
+        # so a download route would only ever 404. Advertise it once the bytes
+        # are there; the download action refuses incomplete rows to match.
+        mapping["download_url"] = (
+            file_download_url(obj) if obj.upload_completed else None
+        )
 
 
 class ConsentFileUploadCreateSpec(FileUploadBaseSpec):

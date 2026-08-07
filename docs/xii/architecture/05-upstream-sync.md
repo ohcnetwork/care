@@ -8,11 +8,11 @@ upstream_repository: https://github.com/ohcnetwork/care
 upstream_branch: develop
 integration_branch: gcp
 depends_on:
-  - docs/gcp/00-scope-and-goals.md
-  - docs/gcp/01-current-runtime.md
-  - docs/gcp/02-target-runtime.md
-  - docs/gcp/03-migration-plan.md
-  - docs/gcp/04-testing.md
+  - docs/xii/architecture/00-scope-and-goals.md
+  - docs/xii/architecture/01-current-runtime.md
+  - docs/xii/architecture/02-target-runtime.md
+  - docs/xii/architecture/03-migration-plan.md
+  - docs/xii/architecture/04-testing.md
 ---
 
 # Upstream Synchronization
@@ -340,13 +340,22 @@ git push --force-with-lease origin develop
 
 This is acceptable only because `develop` is designated as an upstream mirror.
 
-Before force-updating it, verify:
+`git reset --hard` discards the **local** `develop` and its uncommitted changes.
+The pre-flight checks SHALL therefore inspect the local branch, not `origin`:
 
 ```bash
-git log --oneline upstream/develop..origin/develop
+git fetch upstream
+
+# 1. Nothing uncommitted is about to be destroyed.
+git status --porcelain   # SHALL be empty
+
+# 2. No local-only commits are about to be destroyed.
+git log --oneline upstream/develop..develop   # SHALL be empty
 ```
 
-The command SHOULD return no intentional local commits.
+Checking `upstream/develop..origin/develop` is not sufficient: it describes what
+the remote carries, while the reset acts on the local branch. A commit made
+locally and never pushed is invisible to that comparison and would be lost.
 
 If local commits exist, they SHALL be:
 
@@ -355,6 +364,16 @@ If local commits exist, they SHALL be:
 - removed from `develop`.
 
 The process SHALL not silently discard valuable work.
+
+After pushing, confirm the mirror is actually a mirror. `git log` in one
+direction only proves the absence of extra commits, not equality of content:
+
+```bash
+git diff --exit-code upstream/develop develop
+git diff --exit-code upstream/develop origin/develop
+```
+
+Both SHALL exit zero.
 
 ---
 
@@ -702,9 +721,9 @@ After synchronization, search documentation for outdated references.
 Examples:
 
 ```bash
-grep -R "S3FilesManager" docs/gcp
-grep -R "CELERY_BROKER_URL" docs/gcp
-grep -R "config.settings.gcp" docs/gcp
+grep -R "S3FilesManager" docs/xii
+grep -R "CELERY_BROKER_URL" docs/xii
+grep -R "config.settings.deployment" docs/xii
 ```
 
 Documentation changes SHALL be included in the synchronization pull request
@@ -884,7 +903,7 @@ If this file is used, it SHALL be updated only during upstream synchronization.
 The project SHOULD maintain:
 
 ```text
-docs/gcp/upstream-conflicts.md
+docs/xii/architecture/upstream-conflicts.md
 ```
 
 For each recurring conflict, record:
@@ -1164,7 +1183,7 @@ An upstream synchronization is complete when:
 The next document is:
 
 ```text
-docs/gcp/06-operations.md
+docs/xii/architecture/06-operations.md
 ```
 
 It will define:

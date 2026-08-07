@@ -49,7 +49,7 @@ and `care/utils/sms/backend/sns.py:8` (SNS, not storage — out of scope).
 
 **verified** `care/utils/csp/config.py:27-30` defines three logical bucket types:
 
-```
+```text
 BucketType.PATIENT
 BucketType.FACILITY
 BucketType.REPORT
@@ -365,8 +365,15 @@ Final status, after the ES-01 completion pass removed the signed-URL transport.
 | 19 | report data point `read_signed_url` | **removed** — embeds a CARE download route instead |
 | — | `facility.py`, `users/models.py` URL builders | `migrated_to_django_storage` — now reverse to CARE asset routes |
 
-Totals: **11 migrated**, **2 temporary wrapper** (the two `files_manager`
-bindings), **6 removed**.
+Totals over all **21** call sites — the 19 numbered in §3 plus the two
+unnumbered URL builders. Two rows above cover more than one site: `13-16` is
+four fields, and the last row is two builders.
+
+| Status | Sites | Which |
+| --- | --- | --- |
+| `migrated_to_django_storage` | **11** | 3, 4, 5, 6, 8, 9, 12, 17, 18, and both URL builders |
+| `temporary_wrapper` | **2** | 10, 11 — the two `files_manager` bindings |
+| **removed** | **8** | 1, 2, 7, 13, 14, 15, 16, 19 |
 
 Nothing is `legacy_signed_url_only`. Nothing is `blocked`.
 
@@ -453,10 +460,11 @@ something other than `BUCKET_KEY` *without* also setting `FILE_UPLOAD_KEY` will
 now use `BUCKET_KEY` for patient and report objects and must set
 `FILE_UPLOAD_KEY` explicitly.
 
-**verified** `get_patient_bucket_config` and `get_report_bucket_config` in
-`care/utils/csp/config.py` still contain the original defect. They are now
-reached only by the legacy signed-URL path, which is why they were left alone;
-IS-02 removes them.
+**verified** `get_patient_bucket_config` and `get_report_bucket_config` carried
+the same defect. An earlier revision of this section recorded them as left in
+place for IS-02 to remove; that is no longer true. The completion pass deleted
+`care/utils/csp/` outright along with the signed-URL path that was their only
+caller, so there is no second resolver left to diverge from settings (§11.5).
 
 ### 11.5 Provider SDK use remaining
 
@@ -501,13 +509,17 @@ to `Storage.save()` directly instead of `image.file` being handed to
 **verified** `care/emr/tasks/report_generation.py:13` retries on
 `botocore.exceptions.ClientError`. Under `CARE_STORAGE_BACKEND=gcs`, storage
 failures raise `google.api_core.exceptions.*`, so report generation would not
-retry. Generation itself still succeeds; only the retry-on-transient-failure
-behaviour is absent.
+retry. Generation on the happy path is unaffected; what is absent is the
+recovery. A transient upload failure that `s3` would ride out fails the report
+outright under `gcs`, on its first attempt, with a retry policy present in the
+code that cannot fire.
 
 **Not changed.** Both ES-01 §31 and the completion pass forbid modifying Celery.
 This is the last provider-specific reference in a storage consumer and is the
 one item that should be resolved before the GCS profile is used in anger.
-Recorded in `unresolved-items.md` S2.
+Recorded in `unresolved-items.md` S2; `02-target-runtime.md` §11 makes closing
+it — or excluding report generation from GCS readiness claims — a requirement of
+the target runtime rather than an open note.
 
 ### 11.8 Remaining compatibility layers
 

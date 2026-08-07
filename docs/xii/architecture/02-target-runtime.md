@@ -17,7 +17,7 @@ Platform.
 It is based on the current runtime described in:
 
 ```text
-docs/gcp/01-current-runtime.md
+docs/xii/architecture/01-current-runtime.md
 ```
 
 The objective is to run CARE without a permanently active virtual machine,
@@ -30,7 +30,7 @@ This document defines the desired end state.
 The detailed implementation sequence is documented in:
 
 ```text
-docs/gcp/03-migration-plan.md
+docs/xii/architecture/03-migration-plan.md
 ```
 
 ---
@@ -531,6 +531,25 @@ One provider-specific reference remains, outside persistence and transport:
 Celery retry configuration. It constructs no client and performs no storage
 operation, but it will not fire under `gcs`. See
 `inventory/unresolved-items.md` S2.
+
+**This is a gap in the target runtime, not merely an inventory note.** Retry
+configuration that names a provider exception type is provider-specific code by
+another route: under `gcs` a transient upload failure raises
+`google.api_core.exceptions.*`, no retry fires, and the report fails on its
+first attempt with no signal that a retry policy was ever intended.
+
+The target runtime SHALL therefore satisfy one of:
+
+- the storage boundary raises a provider-neutral exception type that retry
+  policies name, so a transient failure retries identically under either
+  backend; **or**
+- report generation is excluded from the set of components declared
+  production-ready under `gcs`, and that exclusion is stated wherever readiness
+  is claimed.
+
+Until one holds, `gcs` SHALL NOT be described as production-ready for report
+generation. Both options are outside IS-01's remit: ES-01 §31 forbids modifying
+Celery, and the first option changes behaviour under `s3` as well.
 
 See `inventory/storage-call-sites.md` §11 for the per-call-site record.
 
@@ -1582,7 +1601,7 @@ It SHALL not heavily rewrite `deployment.py`.
 Core variables SHOULD include:
 
 ```text
-DJANGO_SETTINGS_MODULE=config.settings.gcp
+DJANGO_SETTINGS_MODULE=config.settings.deployment
 
 GCP_PROJECT_ID
 GCP_REGION
@@ -1876,7 +1895,7 @@ The target runtime is achieved when:
 The next document is:
 
 ```text
-docs/gcp/03-migration-plan.md
+docs/xii/architecture/03-migration-plan.md
 ```
 
 It will define how to implement:

@@ -253,7 +253,7 @@ requires that no storage-provider URL reach a client. A plugin that needs to
 hand a file to a browser should link to the CARE download route rather than mint
 a bucket URL:
 
-```
+```http
 GET /api/v1/files/{external_id}/download/
 ```
 

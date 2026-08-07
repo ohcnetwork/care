@@ -91,7 +91,7 @@ matters because `get_queryset` filters list results on `upload_completed=True`
 
 **verified** Request body fields, read at `file_upload.py:215-216, 246-253`:
 
-```
+```text
 original_name      (required)   file_upload.py:215
 file_data          (required)   base64 string, file_upload.py:216
 name                            file_upload.py:248
@@ -452,7 +452,7 @@ absent from the OpenAPI schema (§6). **This is the whole of IS-02's remit.**
 | U1 stop returning `signed_url` | **done** |
 | U2 multipart streaming upload | **IS-02** — the only upload item left |
 | U3 fate of the base64 endpoint | **IS-02** |
-| U4 `mark_upload_completed` | **IS-02.** Still client-driven; harmless now that no client can write to the bucket directly, but redundant |
+| U4 `mark_upload_completed` | **IS-02.** Still client-driven and still unverified against storage. Now bounded rather than fixed: a client can no longer write to the bucket, and an incomplete row advertises no `download_url` and refuses `download` (§11.7), so a falsely-completed row exposes nothing — it only becomes listable |
 | U5 remove the presigned write | **done** |
 | D1 authenticated download route | **done** |
 | D2 `Content-Disposition` | **done** — inline/attachment preserved in `file_download.py` |
@@ -483,6 +483,8 @@ that used them as absolute URLs must prepend the API origin.
 New endpoints: 4 (two downloads, two public assets). `mark_upload_completed`
 retains its meaning for now.
 
+`download_url` is `null` while `upload_completed` is false — see §11.7.
+
 ### 11.6 GCS is no longer blocked on transport
 
 **verified** With the signed-URL path gone, selecting `CARE_STORAGE_BACKEND=gcs`
@@ -493,3 +495,21 @@ for any real GCS deployment — no longer holds.
 **verified** One provider-specific reference remains outside transport:
 `report_generation.py` retries on `botocore`'s `ClientError`, which will not fire
 under `gcs`. See `storage-call-sites.md` §11.7.
+
+### 11.7 An incomplete row is not downloadable
+
+**verified** A `FileUpload` row exists before its bytes do: `POST /api/v1/files/`
+creates it with `upload_completed=False`, and only step 3 flips the flag. The
+detail queryset does not filter on that flag (`file_upload.py`, `get_queryset`),
+so such a row is retrievable.
+
+`FileUploadRetrieveSpec` therefore returns `download_url: null` until the upload
+completes, and the `download` action raises `NotFound` for an incomplete row
+rather than reaching storage. Previously it advertised a route that could only
+404 — a provider-neutral 404, but still a URL for an object that was never
+written.
+
+This narrows U4 without closing it: `mark_upload_completed` still takes the
+client's word, so a client that calls it without uploading makes the row listable
+and its download route resolvable to a 404. Verifying the object exists — or
+setting the flag server-side — remains IS-02's.

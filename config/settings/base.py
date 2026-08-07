@@ -688,7 +688,12 @@ CARE_REPORT_STORAGE_BUCKET = env(
 GCS_PROJECT_ID = env("GCS_PROJECT_ID", default="")
 
 # Role-based AWS credentials: omit key/secret so the SDK resolves the instance
-# role itself.
+# role itself. The endpoint is suppressed along with them, preserving the
+# behaviour of the boto3 client this replaces -- a role-based deployment always
+# talked to the default AWS endpoint. A deployment that needs an instance role
+# *and* a custom endpoint (a VPC endpoint, or an S3-compatible gateway) is
+# therefore not expressible today; splitting the two would be a config change,
+# not a refactor, so it is left for whoever first needs it.
 _ROLE_BASED_BUCKET = AWS_ROLE_BASED_BUCKET_PROVIDER == BUCKET_PROVIDER
 
 STORAGES = {

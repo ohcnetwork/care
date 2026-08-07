@@ -282,10 +282,23 @@ The default GCP strategy is:
 | task broker               | Cloud Tasks                           | Celery with Redis        |
 | task result state         | PostgreSQL or domain records          | Redis                    |
 | non-critical cache        | LocMem                                | Redis-compatible service |
-| distributed locks         | PostgreSQL advisory locks             | Redis-compatible service |
+| distributed locks         | *undecided* — see below               | Redis-compatible service |
 | application rate limiting | PostgreSQL or existing CARE mechanism | Redis-compatible service |
 | temporary shared state    | PostgreSQL                            | Redis-compatible service |
 | sessions                  | existing Django configuration         | Redis                    |
+
+Distributed locking has no default yet. PostgreSQL advisory locks are the
+leading candidate, but they are session-scoped rather than TTL-scoped, which is
+a different failure model from the Redis locks CARE holds today: a lock is
+released when the connection drops instead of when a timeout expires, and a
+pooler that multiplexes connections can hand the same session to another
+request. Naming a default before each call site has been examined against that
+difference would be guessing.
+
+A default SHALL be recorded here only once an ADR covering distributed locking
+carries, for every existing lock: what it protects, whether correctness or
+merely duplicated work is at stake, and evidence of its concurrency and hold
+time under load.
 
 ---
 
@@ -355,13 +368,17 @@ Django `FileField` and `default_storage` SHOULD continue using standard Django s
 
 A custom storage adapter SHOULD only be introduced for operations that are not adequately covered by Django storage, such as:
 
-* provider-specific signed upload flows
 * multipart upload coordination
 * direct bucket operations
-* direct `boto3` usage
 * nonstandard object metadata operations
 
 The project MUST NOT create an elaborate storage abstraction if changing Django `STORAGES` is sufficient.
+
+**Superseded by ADR-0001.** Earlier revisions of this list also named
+*provider-specific signed upload flows* and *direct `boto3` usage*. Neither is a
+permitted reason any more: ADR-0001 removed signed-URL transport outright and
+forbids provider SDK use in application code. CARE mediates every transfer, so a
+client never receives a storage-provider URL in either direction.
 
 ---
 
@@ -645,7 +662,7 @@ The GCP deployment MUST follow these minimum rules:
 * Application logs MUST NOT contain complete clinical payloads.
 * Task payloads SHOULD contain identifiers rather than full clinical records.
 * External Redis-compatible services MUST NOT receive unnecessary clinical information.
-* Signed URLs MUST use short, documented expiration periods.
+* Object reads MUST be mediated by CARE, which authorizes each request and streams the bytes through Django Storage. CARE issues no signed URL, so there is no expiry window to get wrong and no URL that outlives the permission that produced it (ADR-0001).
 * Production access MUST be auditable.
 
 ---
@@ -847,7 +864,7 @@ If the answer is no, it does not belong in the initial project.
 The next document is:
 
 ```text
-docs/xii/gcp/01-current-runtime.md
+docs/xii/architecture/01-current-runtime.md
 ```
 
 It will document the current CARE runtime as it actually exists, including:

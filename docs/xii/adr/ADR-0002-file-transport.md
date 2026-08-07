@@ -35,7 +35,7 @@ The initial deployment is greenfield. There is no production frontend or existin
 
 ## Decision
 
-All supported file uploads and downloads SHALL pass through authenticated CARE Django endpoints.
+All supported file uploads and downloads SHALL pass through CARE Django endpoints, authenticated except for the two public asset classes named under [Authorization](#public-asset-exception).
 
 The frontend SHALL communicate only with CARE.
 
@@ -136,6 +136,26 @@ Changing the storage provider SHALL not require frontend changes.
 CARE SHALL authenticate and authorize every upload and download.
 
 Object-storage possession or knowledge of an object name SHALL not constitute application authorization.
+
+### Public asset exception
+
+Two asset classes are deliberately exempt from *authentication*, and only those
+two: **facility cover images** and **user profile pictures**, served by
+`facility-cover-image-asset` and `user-profile-picture-asset`
+(`care/emr/api/viewsets/file_assets.py`).
+
+These objects were already world-readable directly from the bucket before
+ADR-0001. Requiring authentication to read them would be a new restriction
+rather than a preserved one, and the routes exist to make the *bucket* private,
+not to make the images less visible. Who can see them is unchanged; what changed
+is that CARE serves the bytes, so no provider URL is exposed and no object needs
+a public ACL.
+
+Uploading or replacing either asset remains authenticated and authorized.
+
+Every other download — clinical files and generated reports — SHALL require an
+authenticated, authorized CARE request. No further exemption SHALL be added
+without amending this ADR.
 
 Authorization SHALL continue to follow CARE's existing domain and permission model.
 

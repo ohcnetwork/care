@@ -7,9 +7,9 @@ source_repository: https://github.com/ohcnetwork/care
 target_platform: Google Cloud Platform
 deployment_type: Greenfield
 depends_on:
-  - docs/gcp/00-scope-and-goals.md
-  - docs/gcp/01-current-runtime.md
-  - docs/gcp/02-target-runtime.md
+  - docs/xii/architecture/00-scope-and-goals.md
+  - docs/xii/architecture/01-current-runtime.md
+  - docs/xii/architecture/02-target-runtime.md
 ---
 
 # GCP Implementation Plan
@@ -346,7 +346,7 @@ Locate and document:
 Store the results under:
 
 ```text
-docs/gcp/inventory/
+docs/xii/architecture/inventory/
 ```
 
 Recommended files:
@@ -520,7 +520,7 @@ Unsupported values SHALL cause a clear configuration error.
 Phase 2 is complete when:
 
 ```bash
-DJANGO_SETTINGS_MODULE=config.settings.gcp \
+DJANGO_SETTINGS_MODULE=config.settings.deployment \
 python manage.py check
 ```
 
@@ -2010,7 +2010,7 @@ The implementation is complete when:
 The next document is:
 
 ```text
-docs/gcp/04-testing.md
+docs/xii/architecture/04-testing.md
 ```
 
 It will define:

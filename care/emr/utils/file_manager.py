@@ -12,6 +12,7 @@ Storage, so no storage-provider URL ever reaches a client.
 
 import logging
 import warnings
+from typing import ClassVar
 
 from django.core.exceptions import SuspiciousFileOperation
 from django.core.files.storage import storages
@@ -146,7 +147,7 @@ class S3FilesManager(FilesManager):
     """
 
     #: Historic BucketType.name / .value -> logical alias.
-    _LEGACY_ALIASES = {
+    _LEGACY_ALIASES: ClassVar[dict[str, str]] = {
         "PATIENT": "patient",
         "FACILITY": "facility",
         "REPORT": "report",

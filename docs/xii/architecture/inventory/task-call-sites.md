@@ -32,9 +32,18 @@ decorated as Celery tasks but invoked as plain Python function calls at nearly
 every production call site.** They execute inline, inside the request thread,
 and never reach a broker.
 
-**verified** Only **3 tasks are ever dispatched asynchronously** in non-test code:
-`generate_report_task`, `send_totp_enabled_email`, `send_totp_disabled_email`, plus
-`summarise_monetary_components` in its own recursive tail.
+**verified** **4 tasks reach a broker** in non-test code, in two different ways:
+
+- **3 are dispatched asynchronously at every call site** —
+  `generate_report_task`, `send_totp_enabled_email`, `send_totp_disabled_email`.
+- **1 is mixed** — `summarise_monetary_components` is called inline from
+  production code but re-dispatches *itself* asynchronously in its recursive
+  tail, so it reaches a broker only from inside itself.
+
+The distinction matters for migration: the first three can move to a task
+backend by changing their dispatch, while the fourth also needs its recursive
+self-dispatch re-expressed, and that path has no inline equivalent to fall back
+on.
 
 **verified** Celery app: `config/celery_app.py`. Instantiated at
 `celery_app.py:8` as `Celery("care")`, autodiscovery at `celery_app.py:18`.
@@ -108,7 +117,7 @@ the result backend can be dropped rather than ported.
 | Storage effects | `put_object` into `REPORT` bucket (`report_utils.py:124-126`) |
 | Email / external | none |
 | Progress state | `report_utils.set_lock` / `clear_lock` — cache-backed, see `cache-and-redis.md` §4 |
-| Idempotency | **not idempotent** — each run creates a new `ReportUpload` row and a new object keyed by `uuid4()` + timestamp (`report_utils.py:102`). Retries produce orphan rows. |
+| Idempotency | **not idempotent** — each run creates a new `ReportUpload` row and a new object keyed by `uuid4()` + timestamp (`report_utils.py:102`), so a retry duplicates both. It does not *normally* orphan rows: a raising `put_object` deletes the row before re-raising (`report_utils.py:130`). Orphans are possible rather than guaranteed — they need a failure between the row save and the storage write, or one ambiguous enough that the cleanup itself does not run. See the note below. |
 | Periodic | no |
 | Plugin-owned | no |
 | **Classification** | `cloud_tasks_candidate` |

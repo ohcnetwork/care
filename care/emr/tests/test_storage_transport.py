@@ -187,6 +187,47 @@ class NoProviderUrlInResponsesTests(CareAPITestBase):
         )
         self.assertEqual(self.client.get(url).status_code, 404)
 
+    def test_public_asset_is_cacheable(self):
+        # A key is minted per upload, so the bytes behind it never change and
+        # an intermediary cache can hold them. Without this CARE would serve
+        # every avatar view itself, which reading the bucket directly did not.
+        self.client.post(
+            reverse("facility-cover-image", args=[self.facility.external_id]),
+            {"cover_image": self.file},
+            format="multipart",
+        )
+        self.facility.refresh_from_db()
+        served = self.client.get(self.facility.read_cover_image_url())
+        self.assertEqual(served.status_code, 200)
+        self.assertIn("immutable", served.headers["Cache-Control"])
+        self.assertIn("public", served.headers["Cache-Control"])
+
+    def _create_without_uploading(self):
+        return self.client.post(
+            reverse("files-list"),
+            {
+                "name": "scan",
+                "original_name": "scan.jpg",
+                "file_type": "patient",
+                "file_category": "unspecified",
+                "associating_id": str(self.patient.external_id),
+                "mime_type": "image/jpeg",
+            },
+            format="json",
+        )
+
+    def test_incomplete_upload_offers_no_download_url(self):
+        # The row exists before its bytes do. A download route here could only
+        # 404, so it is not advertised.
+        created = self._create_without_uploading()
+        self.assertEqual(created.status_code, 200, created.data)
+        self.assertIsNone(created.data["download_url"])
+
+    def test_incomplete_upload_cannot_be_downloaded(self):
+        created = self._create_without_uploading()
+        response = self.client.get(reverse("files-download", args=[created.data["id"]]))
+        self.assertEqual(response.status_code, 404, response.content)
+
 
 class ProviderNeutralPersistenceTests(SimpleTestCase):
     """Every alias round-trips through Django Storage under the s3 profile."""
