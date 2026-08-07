@@ -113,11 +113,11 @@ the result backend can be dropped rather than ported.
 | Retry policy | 3 retries, only on `botocore` `ClientError` (`:13`) |
 | Expiry | 600 s (`:13`) |
 | Duration | **unknown** — depends on WeasyPrint render time; no instrumentation in repo |
-| DB effects | reads `Template` (`:39`); creates/updates/deletes `ReportUpload` via `report_utils.generate_and_upload_report` (`report_utils.py:104-133`) |
-| Storage effects | `put_object` into `REPORT` bucket (`report_utils.py:124-126`) |
+| DB effects | reads `Template` (`:39`); creates/updates/deletes `ReportUpload` via `report_utils.generate_and_upload_report` (`report_utils.py:105-133`) |
+| Storage effects | `put_object` into `REPORT` bucket (`report_utils.py:127-129`) |
 | Email / external | none |
 | Progress state | `report_utils.set_lock` / `clear_lock` — cache-backed, see `cache-and-redis.md` §4 |
-| Idempotency | **not idempotent** — each run creates a new `ReportUpload` row and a new object keyed by `uuid4()` + timestamp (`report_utils.py:102`), so a retry duplicates both. It does not *normally* orphan rows: a raising `put_object` deletes the row before re-raising (`report_utils.py:130`). Orphans are possible rather than guaranteed — they need a failure between the row save and the storage write, or one ambiguous enough that the cleanup itself does not run. See the note below. |
+| Idempotency | **not idempotent** — each successful run creates a new `ReportUpload` row and a new object keyed by `uuid4()` + timestamp (`report_utils.py:103`), so re-requesting a report duplicates both. A *retry* is narrower: it fires only on `ClientError` from `put_object` (`report_generation.py:13`), and that path deletes the row before re-raising (`report_utils.py:133`), so a normal retry does not leave two rows. It can leave a duplicate **object**: a write ambiguous enough to raise after the bytes landed is never cleaned up, and the retry then writes a second object under a fresh key. Orphan *rows* are possible rather than guaranteed — they need a failure between the row save and the storage write, or one ambiguous enough that the cleanup itself does not run. See the note below. |
 | Periodic | no |
 | Plugin-owned | no |
 | **Classification** | `cloud_tasks_candidate` |
@@ -127,10 +127,10 @@ is internally inconsistent: a task that expires after 10 minutes but retries up
 to 3 times can have its retries discarded on expiry. Recorded in
 `unresolved-items.md` §6.
 
-**verified** Failure path deletes the `ReportUpload` row (`report_utils.py:130`)
+**verified** Failure path deletes the `ReportUpload` row (`report_utils.py:133`)
 but only when `put_object` raises. If the process is killed between
-`report_upload.save(skip_internal_name=True)` (`:121`) and the `put_object`
-(`:124`), the row survives with `upload_completed=False` and no object.
+`report_upload.save(skip_internal_name=True)` (`:122`) and the `put_object`
+(`:127`), the row survives with `upload_completed=False` and no object.
 
 ### 3.2 `send_totp_enabled_email`
 

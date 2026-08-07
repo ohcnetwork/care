@@ -181,13 +181,16 @@ from the database, so the next run retries them — self-healing but non-progres
 **verified** `care/emr/tasks/report_generation.py:12-14` declares
 `autoretry_for=(ClientError,)` with `max_retries: 3`.
 
-**verified** `care/emr/reports/report_utils.py:102, 104-121` creates a **new**
+**verified** `care/emr/reports/report_utils.py:103, 105-122` creates a **new**
 `ReportUpload` row and a new object key on every invocation.
 
-**Impact (inferred):** each retry produces an additional row and stored object.
-The failure path deletes the row only when `put_object` itself raises
-(`report_utils.py:129-131`); a crash between the row save (`:121`) and the
-`put_object` (`:124`) leaves an orphan.
+**Impact (inferred):** each *successful* invocation produces an additional row
+and stored object. A retry is narrower: the failure path deletes the row when
+`put_object` raises (`report_utils.py:132-134`), so a retry does not accumulate
+rows. It can accumulate objects — a write ambiguous enough to raise after the
+bytes landed is not cleaned up, and the retry writes another under a fresh key.
+A crash between the row save (`:122`) and the `put_object` (`:127`) leaves an
+orphan row.
 
 ### B6. `expires` and `max_retries` interact badly
 
