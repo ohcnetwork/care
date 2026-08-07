@@ -91,13 +91,15 @@ class S3ProfileConstructionTests(SimpleTestCase):
         config = build_object_storage("s3", "b")
         self.assertTrue(config["OPTIONS"]["file_overwrite"])
 
-    def test_private_by_default(self):
+    def test_always_private(self):
+        # CARE serves every object, so no alias is ever public (ADR-0001).
         config = build_object_storage("s3", "b")
         self.assertIsNone(config["OPTIONS"]["default_acl"])
 
-    def test_explicit_acl_is_preserved(self):
-        config = build_object_storage("s3", "b", default_acl="public-read")
-        self.assertEqual(config["OPTIONS"]["default_acl"], "public-read")
+    def test_no_alias_can_be_made_public(self):
+        for alias in OBJECT_STORAGE_ALIASES:
+            with self.subTest(alias=alias):
+                self.assertIsNone(settings.STORAGES[alias]["OPTIONS"]["default_acl"])
 
     def test_endpoint_omitted_for_aws(self):
         # Generic AWS S3 has no custom endpoint.
@@ -135,14 +137,13 @@ class GCSProfileConstructionTests(SimpleTestCase):
             access_key="key",
             secret_key="secret",
             endpoint_url="http://minio:9000",
-            default_acl="public-read",
         )
         for option in ("region_name", "access_key", "secret_key", "endpoint_url"):
             self.assertNotIn(option, config["OPTIONS"])
 
     def test_gcs_never_uses_object_acls(self):
         # Uniform bucket-level access rejects per-object ACLs.
-        config = build_object_storage("gcs", "b", default_acl="public-read")
+        config = build_object_storage("gcs", "b")
         self.assertIsNone(config["OPTIONS"]["default_acl"])
 
     def test_project_id_optional(self):
