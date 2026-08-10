@@ -1,6 +1,5 @@
 from django_filters import rest_framework as filters
 
-from care.emr.models import TagConfig
 from care.emr.models.service_request import ServiceRequest
 from care.emr.reports.context_builder.data_points.base import (
     Field,
@@ -9,7 +8,7 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.user import (
     SingleUserRelatedContextBuilder,
 )
-from care.emr.reports.context_builder.filters import TagFilter
+from care.emr.reports.context_builder.tag import QuerysetTagContextBuilder
 from care.utils.filters.multiselect import MultiSelectFilter
 
 STATUS_CHOICE = {
@@ -42,21 +41,6 @@ PRIORITY_CHOICE = {
     "asap": "ASAP",
     "stat": "Stat",
 }
-
-
-class ServiceRequestTagContextBuilder(QuerysetContextBuilder):
-    filterset_class = TagFilter
-    __filterset_backends__ = [filters.DjangoFilterBackend]
-
-    display = Field(
-        display="Tag Display",
-        preview_value="Preparing",
-        mapping=lambda t: t.display if t else None,
-        description="Display of the service request tag",
-    )
-
-    def get_context(self):
-        return TagConfig.objects.filter(id__in=self.parent_context.tags)
 
 
 class ServiceRequestReportFilterSet(filters.FilterSet):
@@ -127,7 +111,7 @@ class ServiceRequestBaseContextBuilder(QuerysetContextBuilder):
     )
     tags = Field(
         display="Service Request Tags",
-        target_context=ServiceRequestTagContextBuilder,
+        target_context=QuerysetTagContextBuilder,
         preview_value="",
         description="Tags associated with the service request",
     )

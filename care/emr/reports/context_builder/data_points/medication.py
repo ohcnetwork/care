@@ -184,21 +184,6 @@ class MedicationRequestContextBuilder(QuerysetContextBuilder):
         return MedicationRequest.objects.filter(prescription=self.parent_context)
 
 
-class MedicationPrescriptionTagContextBuilder(QuerysetContextBuilder):
-    filterset_class = TagFilter
-    __filterset_backends__ = [filters.DjangoFilterBackend]
-
-    display = Field(
-        display="Tag Display",
-        preview_value="Preparing",
-        mapping=lambda t: t.display if t else None,
-        description="Display of the medication prescription tag",
-    )
-
-    def get_context(self):
-        return TagConfig.objects.filter(id__in=self.parent_context.tags)
-
-
 MEDICATION_PRESCRIPTION_STATUS_DISPLAY = {
     "active": "Active",
     "on_hold": "On Hold",
@@ -244,7 +229,7 @@ class MedicationPrescriptionContextBuilder(QuerysetContextBuilder):
     )
     tags = Field(
         display="Prescription Tags",
-        target_context=MedicationPrescriptionTagContextBuilder,
+        target_context=QuerysetContextBuilder,
         preview_value="",
         description="Tags associated with the prescription",
     )

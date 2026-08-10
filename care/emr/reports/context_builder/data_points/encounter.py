@@ -37,6 +37,7 @@ from care.emr.reports.context_builder.data_points.service_request import (
 from care.emr.reports.context_builder.data_points.symptom import SymptomsContextBuilder
 from care.emr.reports.context_builder.data_points.user import SingleUserIdContextBuilder
 from care.emr.reports.context_builder.filters import TagFilter
+from care.emr.reports.context_builder.tag import QuerysetTagContextBuilder
 
 STATUS_DISPLAY = {
     "planned": "Planned",
@@ -110,14 +111,6 @@ class EncounterPatientFacilityTagContextBuilder(PatientTagContextBuilder):
                 str(self.parent_context.facility.id), []
             )
         )
-
-
-class EncounterTagContextBuilder(PatientTagContextBuilder):
-    filterset_class = TagFilter
-    __filterset_backends__ = [filters.DjangoFilterBackend]
-
-    def get_context(self):
-        return TagConfig.objects.filter(id__in=self.parent_context.tags or [])
 
 
 class EncounterFacilityLocationContextBuilder(SingleObjectContextBuilder):
@@ -302,7 +295,7 @@ class EncounterReportContext(SingleObjectContextBuilder):
         description="Discharge summary advice for the encounter",
     )
     encounter_tags = Field(
-        target_context=EncounterTagContextBuilder,
+        target_context=QuerysetTagContextBuilder,
         display="Encounter Tags",
         preview_value="",
         description="Tags associated with the encounter",
