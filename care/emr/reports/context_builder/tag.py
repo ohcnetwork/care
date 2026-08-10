@@ -1,7 +1,10 @@
 from django_filters import rest_framework as filters
 
 from care.emr.models import TagConfig
-from care.emr.reports.context_builder import Field, QuerysetContextBuilder
+from care.emr.reports.context_builder.data_points.base import (
+    Field,
+    QuerysetContextBuilder,
+)
 
 
 class TagFilter(filters.FilterSet):
