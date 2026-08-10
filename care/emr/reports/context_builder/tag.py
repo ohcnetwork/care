@@ -11,7 +11,7 @@ class TagFilter(filters.FilterSet):
 
 class QuerysetTagContextBuilder(QuerysetContextBuilder):
     filterset_class = TagFilter
-    __filterset_backends__ = [filters.DjangoFilterBackend]
+    __filterset_backends__ = (filters.DjangoFilterBackend,)
 
     display = Field(
         display="Tag Display",
