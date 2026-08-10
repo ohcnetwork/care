@@ -43,7 +43,6 @@ class TestPatientViewSet(CareAPITestBase):
 
     def setUp(self):
         """Set up test data that's needed for all tests"""
-        super().setUp()  # Call parent's setUp to ensure proper initialization
         self.base_url = reverse("patient-list")
 
     def generate_patient_data(self, geo_organization, **kwargs):
@@ -327,12 +326,12 @@ class TestPatientViewSet(CareAPITestBase):
                 "use": "official",
                 "system": "test-identifier",
                 "required": False,
-                "unique": False,
+                "unique": True,
                 "regex": "",
                 "display": "Test Identifier",
             },
         )
-        identifier_value = "NON-UNIQUE-ID-12345"
+        identifier_value = ""
         patient_data["identifiers"] = [
             {"config": str(identifier_config.external_id), "value": identifier_value}
         ]
