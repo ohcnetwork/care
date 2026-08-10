@@ -45,7 +45,7 @@ class EMRResource(BaseModel):
         pass
 
     def is_update(self):
-        return getattr("_is_update", False)
+        return getattr(self, "_is_update", False)
 
     @classmethod
     def serialize(cls, obj: __model__, user=None, *args, **kwargs):
