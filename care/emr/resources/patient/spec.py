@@ -80,23 +80,20 @@ class PatientBaseSpec(EMRResource):
 
 
 def validate_identifier_config(config, value, obj=None):
-    queryset = PatientIdentifier.objects.filter(value=value)
-    if "config_obj" in config:
-        queryset = queryset.filter(config=config["config_obj"])
-    else:
-        queryset = queryset.filter(config__external_id=config["id"])
-    if obj:
-        queryset = queryset.exclude(patient=obj)
-    if value and config["config"]["unique"] and queryset.exists():
-        err = f"Identifier config {config['config']['system']} is not unique"
-        raise ValueError(err)
-    if (
-        value
-        and config["config"]["regex"]
-        and not re.match(config["config"]["regex"], value)
-    ):
-        err = f"Identifier config {config['config']['system']} is not valid"
-        raise ValueError(err)
+    if value:
+        queryset = PatientIdentifier.objects.filter(value=value)
+        if "config_obj" in config:
+            queryset = queryset.filter(config=config["config_obj"])
+        else:
+            queryset = queryset.filter(config__external_id=config["id"])
+        if obj:
+            queryset = queryset.exclude(patient=obj)
+        if config["config"]["unique"] and queryset.exists():
+            err = f"Identifier config {config['config']['system']} is not unique"
+            raise ValueError(err)
+        if config["config"]["regex"] and not re.match(config["config"]["regex"], value):
+            err = f"Identifier config {config['config']['system']} is not valid"
+            raise ValueError(err)
 
 
 class PatientIdentifierConfigRequest(BaseModel):
