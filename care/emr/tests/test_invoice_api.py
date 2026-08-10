@@ -32,6 +32,7 @@ from care.utils.tests.base import CareAPITestBase
 
 class InvoiceAPITestBase(CareAPITestBase):
     def setUp(self):
+        super().setUp()
         NameIdentifierConfig.CACHED_CONFIG = {}
         PhoneNumberIdentifierConfig.CACHED_CONFIG = {}
         FacilityPatientNameIdentifierConfig.CACHED_CONFIG = {}
@@ -352,7 +353,9 @@ class InvoiceAPITestBase(CareAPITestBase):
         )
         self.client.force_authenticate(user=self.user)
         invoice = self.create_invoice(charge_items=[])
-        data = self.generate_invoice_data(status=InvoiceStatusOptions.issued.value)
+        data = self.generate_invoice_data(
+            status=InvoiceStatusOptions.issued.value, charge_items=[]
+        )
         response = self.client.put(
             self.get_detail_url(invoice.external_id), data, format="json"
         )
@@ -517,7 +520,7 @@ class InvoiceAPITestBase(CareAPITestBase):
         PaymentReconciliation.objects.create(
             facility=self.facility,
             account=self.account,
-            status="completed",
+            status="active",
             amount=invoice.total_gross,
             tendered_amount=invoice.total_gross,
             returned_amount=Decimal("0.00"),
@@ -545,7 +548,7 @@ class InvoiceAPITestBase(CareAPITestBase):
         PaymentReconciliation.objects.create(
             facility=self.facility,
             account=self.account,
-            status="completed",
+            status="active",
             amount=invoice.total_gross,
             tendered_amount=invoice.total_gross,
             returned_amount=Decimal("0.00"),
@@ -643,7 +646,7 @@ class InvoiceAPITestBase(CareAPITestBase):
         PaymentReconciliation.objects.create(
             facility=self.facility,
             account=self.account,
-            status="completed",
+            status="active",
             amount=invoice.total_gross,
             tendered_amount=invoice.total_gross,
             returned_amount=Decimal("0.00"),
@@ -670,7 +673,7 @@ class InvoiceAPITestBase(CareAPITestBase):
         PaymentReconciliation.objects.create(
             facility=self.facility,
             account=self.account,
-            status="completed",
+            status="active",
             amount=invoice.total_gross,
             tendered_amount=invoice.total_gross,
             returned_amount=Decimal("0.00"),
@@ -703,7 +706,7 @@ class InvoiceAPITestBase(CareAPITestBase):
         response_data = response.data
         self.assertEqual(response_data["id"], str(invoice.external_id))
 
-    def test_retrive_locked_invoice_with_superuser(self):
+    def test_retrieve_locked_invoice_with_superuser(self):
         """
         Test retrieving a locked invoice with a superuser.
         """
@@ -716,7 +719,7 @@ class InvoiceAPITestBase(CareAPITestBase):
         response_data = response.data
         self.assertEqual(response_data["id"], str(invoice.external_id))
 
-    def test_retrive_locked_invoice_with_user_without_permission(self):
+    def test_retrieve_locked_invoice_with_user_without_permission(self):
         """
         Test retrieving a locked invoice with a user without read permission.
         """
@@ -735,7 +738,7 @@ class InvoiceAPITestBase(CareAPITestBase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(response.data["detail"], "Locked invoice permission denied.")
 
-    def test_retrive_locked_invoice_with_user_with_permission(self):
+    def test_retrieve_locked_invoice_with_user_with_permission(self):
         """
         Test retrieving a locked invoice with a user with locked invoice management permission.
         """
@@ -891,6 +894,7 @@ class InvoiceAPITestBase(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["status"], InvoiceStatusOptions.cancelled.value)
 
+    @override_settings(INVOICE_FREE_CANCEL_PERIOD_MINUTES=5)
     def test_cancel_invoice_with_user_without_permission_outside_period(self):
         """
         Test cancelling an invoice with a user without write permission outside the free cancel period.
@@ -1257,7 +1261,7 @@ class InvoiceAPITestBase(CareAPITestBase):
         Test attaching account to an invoice as superuser
         """
         self.client.force_authenticate(user=self.superuser)
-        invoice = self.create_invoice()
+        invoice = self.create_invoice(charge_items=[])
         url = self.get_attach_account_url(invoice.external_id)
         response = self.client.post(url, format="json")
         self.assertEqual(response.status_code, 200)
@@ -1283,7 +1287,7 @@ class InvoiceAPITestBase(CareAPITestBase):
 
     def test_attach_account_to_invoice_as_user_without_permissions(self):
         """
-        Test attaching account to an invoice as user with permissions
+        Test attaching account to an invoice as user without permissions
         """
         self.client.force_authenticate(user=self.user)
         permissions = [
