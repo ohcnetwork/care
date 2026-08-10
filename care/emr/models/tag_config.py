@@ -80,12 +80,18 @@ class TagConfig(EMRBaseModel):
                     "parent": self.parent.cached_parent_json,
                     "level_cache": self.parent.level_cache,
                 }
-                super().save(update_fields=["cached_parent_json"])
+                TagConfig.objects.filter(pk=self.pk).update(
+                    cached_parent_json=self.cached_parent_json
+                )
 
-    def update_child_cached_parent_json(self):
-        for child in TagConfig.objects.filter(parent=self).select_related("parent"):
-            child.update_parent_json()
-            child.update_child_cached_parent_json()
+    def update_descendants_cached_parent_json(self):
+        descendants = (
+            TagConfig.objects.filter(parent_cache__overlap=[self.id])
+            .select_related("parent")
+            .order_by("level_cache")
+        )
+        for descendant in descendants:
+            descendant.update_parent_json()
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -95,4 +101,4 @@ class TagConfig(EMRBaseModel):
         else:
             super().save(*args, **kwargs)
             self.update_parent_json()
-            self.update_child_cached_parent_json()
+            self.update_descendants_cached_parent_json()
