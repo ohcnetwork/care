@@ -14,7 +14,6 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.user import (
     SingleUserRelatedContextBuilder,
 )
-from care.emr.reports.context_builder.filters import TagFilter
 from care.utils.filters.multiselect import MultiSelectFilter
 
 STATUS_DISPLAY = {

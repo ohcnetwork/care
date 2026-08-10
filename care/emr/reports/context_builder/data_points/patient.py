@@ -2,13 +2,13 @@ from django_filters import rest_framework as filters
 
 from care.emr.models.patient import Patient, PatientIdentifierConfig
 from care.emr.models.tag_config import TagConfig
+from care.emr.reports.context_builder import TagFilter
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
     SingleObjectContextBuilder,
 )
-from care.emr.reports.context_builder.filters import TagFilter
 
 GENDER_CHOICES = {
     "male": "Male",
