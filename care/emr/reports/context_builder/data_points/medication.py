@@ -2,7 +2,6 @@ from decimal import Decimal
 
 from django_filters import rest_framework as filters
 
-from care.emr.models import TagConfig
 from care.emr.models.medication_request import (
     MedicationRequest,
     MedicationRequestPrescription,
