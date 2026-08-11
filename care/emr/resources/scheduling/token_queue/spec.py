@@ -33,7 +33,6 @@ class TokenQueueReadSpec(TokenQueueBaseSpec):
     date: datetime.date
     is_primary: bool
     system_generated: bool
-    date: datetime.date
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

@@ -1,3 +1,4 @@
+from django.db import transaction
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -7,11 +8,15 @@ from rest_framework.response import Response
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
     EMRCreateMixin,
+    EMRDestroyMixin,
     EMRListMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.models.activity_definition import ActivityDefinition
+from care.emr.models.charge_item_definition import ChargeItemDefinition
+from care.emr.models.product_knowledge import ProductKnowledge
 from care.emr.models.resource_category import (
     ResourceCategory,
     summarise_monetary_components,
@@ -48,6 +53,7 @@ class ResourceCategoryViewSet(
     EMRListMixin,
     EMRUpsertMixin,
     EMRBaseViewSet,
+    EMRDestroyMixin,
 ):
     lookup_field = "slug"
     database_model = ResourceCategory
@@ -107,6 +113,46 @@ class ResourceCategoryViewSet(
         )
         super().perform_update(instance)
 
+    def validate_destroy(self, instance):
+        if instance.children.exists():
+            raise ValidationError("Cannot delete a resource category with children")
+        resource_type = instance.resource_type
+        if (
+            (
+                resource_type
+                == ResourceCategoryResourceTypeOptions.activity_definition.value
+                and ActivityDefinition.objects.filter(category=instance).exists()
+            )
+            or (
+                resource_type
+                == ResourceCategoryResourceTypeOptions.charge_item_definition.value
+                and ChargeItemDefinition.objects.filter(category=instance).exists()
+            )
+            or (
+                resource_type
+                == ResourceCategoryResourceTypeOptions.product_knowledge.value
+                and ProductKnowledge.objects.filter(category=instance).exists()
+            )
+        ):
+            raise ValidationError(
+                "Cannot delete a resource category associated with a resource"
+            )
+
+    def perform_destroy(self, instance):
+        parent = instance.parent
+        with transaction.atomic():
+            instance.deleted = True
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["deleted", "updated_by", "modified_date"])
+            if (
+                parent
+                and not ResourceCategory.objects.filter(
+                    parent=parent, deleted=False
+                ).exists()
+            ):
+                parent.has_children = False
+                parent.save(update_fields=["has_children", "modified_date"])
+
     def authorize_create(self, instance):
         if not AuthorizationController.call(
             "can_write_facility_resource_category",
@@ -122,6 +168,9 @@ class ResourceCategoryViewSet(
             model_instance.facility,
         ):
             raise PermissionDenied("Access denied to resource category")
+
+    def authorize_destroy(self, instance):
+        self.authorize_update({}, instance)
 
     def get_queryset(self):
         queryset = super().get_queryset()

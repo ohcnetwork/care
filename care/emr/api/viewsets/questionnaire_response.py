@@ -24,6 +24,7 @@ class QuestionnaireResponseFilters(filters.FilterSet):
     questionnaire_slug = filters.CharFilter(field_name="questionnaire__slug")
     form_submission = filters.UUIDFilter(field_name="form_submission__external_id")
     status = filters.CharFilter(field_name="status")
+    created_by = filters.UUIDFilter(field_name="created_by__external_id")
 
 
 class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet, EMRUpdateMixin):
