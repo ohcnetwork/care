@@ -200,7 +200,6 @@ class ConsultationFlow(FlowAdapter):
         patient = None
         if params.get("patient"):
             patient = Patient.objects.filter(external_id=params["patient"]).first()
-
         user = self._system_user()
         resource_request = ResourceRequest.objects.create(
             origin_facility=facility,

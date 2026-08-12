@@ -38,6 +38,21 @@ def _match_existing_patient(health_ids: list[dict], phone_number: str | None):
     return None
 
 
+def _match_by_demographics(name: str, gender, date_of_birth):
+    """Reuse an existing patient by exact name, narrowed by DOB and gender.
+
+    Used only when no health id / phone is available, to avoid duplicating the
+    same person on re-referral. DOB and gender filters are applied only when the
+    referral carries them.
+    """
+    queryset = Patient.objects.filter(name__iexact=name)
+    if date_of_birth is not None:
+        queryset = queryset.filter(date_of_birth=date_of_birth)
+    if gender:
+        queryset = queryset.filter(gender=gender)
+    return queryset.first()
+
+
 def _phone_from_contacts(contacts) -> str | None:
     """Return a phone value from a list of Beckn ``contacts``/``telecom`` items."""
     for contact in contacts or []:
@@ -107,16 +122,21 @@ def find_or_create_patient(message: dict, participant: dict | None, facility, us
     phone_number = resolve_subject_phone(message, participant)
 
     existing = _match_existing_patient(health_ids, phone_number)
+
+    date_of_birth, _age = extract_dob_and_age(participant)
+    gender = map_gender(attributes.get("gender"))
+    # Demographics-only referrals (no health id / phone) still dedupe on the
+    # patient's name (+ DOB / gender when present) so the same person is reused.
+    if existing is None and name and name != "Unidentified Patient":
+        existing = _match_by_demographics(name, gender, date_of_birth)
     if existing:
         # Keep identifiers in sync on reuse (e.g. a new health id arrived).
         upsert_health_id_identifiers(existing, health_ids)
         return existing
 
-    date_of_birth, _age = extract_dob_and_age(participant)
-
     patient = Patient(
         name=name,
-        gender=map_gender(attributes.get("gender")),
+        gender=gender,
         phone_number=phone_number,
         date_of_birth=date_of_birth,
         geo_organization=get_default_geo_organization(facility),

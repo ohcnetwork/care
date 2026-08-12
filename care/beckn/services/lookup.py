@@ -41,12 +41,30 @@ def find_resource_request_by_coordination_id(
 
 
 def find_resource_request(context: dict, message: dict) -> ResourceRequest | None:
-    """Find the referral strictly by contract id (== Care ``external_id``).
+    """Find the referral by contract id, then by coordination / transaction id.
 
-    The ``on_init`` callback publishes the created referral's ``external_id`` as
-    the contract ``id``; the BAP must echo it back on ``confirm``/``status``.
-    No coordination/transaction id fallback is applied — if the contract id does
-    not resolve to a referral, ``None`` is returned and the caller must error.
+    ``on_init`` publishes the created referral's ``external_id`` as the contract
+    ``id``. When the BAP does not echo it back on ``confirm``/``status`` (it
+    keeps its own contract id), fall back to the stable ``coordinationId`` (T1)
+    / ``coordinationRef`` (T2) and finally the Beckn ``transactionId``, both
+    persisted on ``extensions['beckn']`` at init — so the same referral is
+    approved in place instead of a duplicate being created.
     """
-    contract_id = get_contract(message).get("id")
-    return find_resource_request_by_external_id(contract_id)
+    from care.beckn.mappers import get_coordination_id
+
+    request = find_resource_request_by_external_id(get_contract(message).get("id"))
+    if request is not None:
+        return request
+
+    request = find_resource_request_by_coordination_id(
+        get_coordination_id(context, message)
+    )
+    if request is not None:
+        return request
+
+    transaction_id = (context or {}).get("transactionId")
+    if transaction_id:
+        return ResourceRequest.objects.filter(
+            extensions__beckn__transactionId=transaction_id
+        ).first()
+    return None

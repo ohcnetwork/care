@@ -153,10 +153,11 @@ def send_appointment_on_status(booking_id: int) -> None:
 def complete_referral_for_booking(booking) -> None:
     """Mark the originating referral completed when its appointment is fulfilled.
 
-    The booking -> referral link is held in Redis (keyed by booking id, set when
-    the appointment is booked over Beckn); see
-    :func:`care.beckn.services.txn_store.link_booking_referral`. When the booking
-    is fulfilled, the linked ``ResourceRequest`` is transitioned to
+    The booking -> referral link is resolved from the booking's stored Beckn
+    metadata (``booking.meta['beckn']['coordinationRef']``) and, failing that,
+    from Redis (keyed by booking id; see
+    :func:`care.beckn.services.txn_store.link_booking_referral`). When the
+    booking is fulfilled, the linked ``ResourceRequest`` is transitioned to
     ``completed``. No-op when the booking carries no link or the referral cannot
     be found / is already completed.
     """
@@ -164,7 +165,10 @@ def complete_referral_for_booking(booking) -> None:
     from care.beckn.services.lookup import find_resource_request_by_coordination_id
     from care.emr.resources.resource_request.spec import StatusChoices
 
-    coordination_id = txn_store.get_booking_referral(booking.id)
+    beckn = (getattr(booking, "meta", None) or {}).get("beckn") or {}
+    coordination_id = beckn.get("coordinationRef") or txn_store.get_booking_referral(
+        booking.id
+    )
     resource_request = find_resource_request_by_coordination_id(coordination_id)
     if resource_request is None:
         return
@@ -177,3 +181,38 @@ def complete_referral_for_booking(booking) -> None:
         resource_request.external_id,
         booking.id,
     )
+
+    # Care-to-care: notify the origin BAP so it completes its own request.
+    from care.beckn.builders.referral_request import build_referral_update_callback
+
+    payload = build_referral_update_callback(resource_request)
+    if payload is not None:
+        deliver_callback("on_update", payload)
+
+
+def submit_resource_request_referral(resource_request) -> str:
+    """Synchronously send a Beckn ``confirm`` to the CC/BPP for a resource request.
+
+    Care acts as the BAP: the resource request's ``external_id`` is used as the
+    Beckn ``transactionId`` so the eventual ``on_confirm`` callback can be
+    correlated back to the request (see :class:`care.beckn.api.bap_webhook`).
+
+    Runs inline (not as a Celery task) so it executes inside the create
+    transaction: the caller can roll the resource request back when the referral
+    is rejected. Returns the delivery result: ``"ack"``, ``"nack"``, ``"error"``
+    or ``"skipped"`` (see :func:`deliver_bap_action`).
+    """
+    from care.beckn.builders.referral_request import build_referral_confirm
+    from care.beckn.services.bap_caller import deliver_bap_action
+
+    payload = build_referral_confirm(
+        resource_request, str(resource_request.external_id)
+    )
+    result, detail = deliver_bap_action("confirm", payload)
+    logger.info(
+        "Beckn resource-request confirm for %s result=%s detail=%s",
+        resource_request.external_id,
+        result,
+        detail,
+    )
+    return result

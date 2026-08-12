@@ -16,6 +16,7 @@ deployments should additionally restrict access by network/IP.
 """
 
 import logging
+import uuid
 
 from rest_framework import status as http_status
 from rest_framework.permissions import AllowAny
@@ -23,6 +24,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from care.beckn.builders.outbound import extract_routing
+from care.beckn.constants import (
+    CONTRACT_STATUS_ACTIVE,
+    CONTRACT_STATUS_COMPLETE,
+    CONTRACT_STATUS_COMPLETED,
+)
 from care.beckn.services import txn_store
 from care.beckn.services.flows import FlowError, get_adapter
 
@@ -50,11 +56,14 @@ class BAPReceiverView(APIView):
 
         record = txn_store.get_transaction(transaction_id)
         if record is None:
-            logger.warning(
-                "Beckn BAP receiver: no in-flight transaction for %s (action=%s)",
-                transaction_id,
-                action,
-            )
+            try:
+                self._handle_referral_callback(transaction_id, action, message)
+            except Exception:
+                logger.exception(
+                    "Beckn BAP receiver failed handling referral '%s' for %s",
+                    action,
+                    transaction_id,
+                )
             return Response(_ack(), status=http_status.HTTP_200_OK)
 
         try:
@@ -67,6 +76,80 @@ class BAPReceiverView(APIView):
             )
 
         return Response(_ack(), status=http_status.HTTP_200_OK)
+
+    @staticmethod
+    def _handle_referral_callback(
+        transaction_id: str, action: str, message: dict
+    ) -> None:
+        """Handle a direct ``ResourceRequest`` referral callback (no Redis txn).
+
+        The outbound referral confirm
+        (:func:`care.beckn.tasks.submit_resource_request_referral`) uses the
+        request's ``external_id`` as the Beckn ``transactionId``. The CC posts
+        ``on_confirm`` (accepted -> ``approved``) and, once the referral is
+        fulfilled downstream, ``on_update``/``on_status`` (completed ->
+        ``completed``). Correlation is strictly by ``external_id``; an unknown
+        or foreign id is a no-op.
+        """
+        from care.emr.models.resource_request import ResourceRequest
+        from care.emr.resources.resource_request.spec import (
+            CategoryChoices,
+            StatusChoices,
+        )
+
+        # external_id is a UUID column; a foreign/expired Redis id (or any
+        # non-uuid) can never match, so skip the query to avoid a lookup error.
+        try:
+            uuid.UUID(str(transaction_id))
+        except (ValueError, TypeError):
+            logger.warning(
+                "Beckn BAP receiver: non-uuid transaction %s (action=%s)",
+                transaction_id,
+                action,
+            )
+            return
+
+        resource_request = ResourceRequest.objects.filter(
+            external_id=transaction_id,
+            category__in=(
+                CategoryChoices.other.value,
+                CategoryChoices.patient_care.value,
+            ),
+        ).first()
+        if resource_request is None:
+            logger.warning(
+                "Beckn BAP receiver: no referral for transaction %s (action=%s)",
+                transaction_id,
+                action,
+            )
+            return
+
+        contract = (message or {}).get("contract", {}) or {}
+        code = ((contract.get("status", {}) or {}).get("code") or "").upper()
+
+        if action == "on_confirm" and code == CONTRACT_STATUS_ACTIVE:
+            if resource_request.status == StatusChoices.pending.value:
+                resource_request.status = StatusChoices.approved.value
+                resource_request.save(update_fields=["status", "modified_date"])
+                logger.info(
+                    "Beckn on_confirm approved referral %s (status -> approved)",
+                    resource_request.external_id,
+                )
+            return
+
+        if action in ("on_update", "on_status") and code in (
+            CONTRACT_STATUS_COMPLETE,
+            CONTRACT_STATUS_COMPLETED,
+        ):
+            if resource_request.status != StatusChoices.completed.value:
+                resource_request.status = StatusChoices.completed.value
+                resource_request.save(update_fields=["status", "modified_date"])
+                logger.info(
+                    "Beckn %s completed referral %s (status -> completed)",
+                    action,
+                    resource_request.external_id,
+                )
+            return
 
     @staticmethod
     def _handle_callback(

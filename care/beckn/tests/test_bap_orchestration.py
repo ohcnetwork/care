@@ -7,6 +7,10 @@ from django.core.cache import cache
 from django.test import override_settings
 from django.urls import reverse
 
+from care.beckn.builders.referral_request import (
+    build_referral_confirm,
+    build_referral_update_callback,
+)
 from care.beckn.services import txn_store
 from care.beckn.services.flows import FlowError, get_adapter
 from care.beckn.tasks import complete_referral_for_booking
@@ -198,3 +202,73 @@ class CompleteReferralTests(CareAPITestBase):
         complete_referral_for_booking(booking)
         rr.refresh_from_db()
         self.assertEqual(rr.status, StatusChoices.approved.value)
+
+
+class ReferralConfirmBuilderTests(CareAPITestBase):
+    """Outbound referral confirm carries the facility so the receiving Care can
+    attach its own request (care-to-care Option A)."""
+
+    def _rr(self, **overrides):
+        defaults = {
+            "external_id": "RR-1",
+            "title": "Lab referral",
+            "reason": "cbc",
+            "emergency": False,
+            "priority": None,
+            "category": CategoryChoices.other.value,
+            "assigned_facility_id": None,
+            "assigned_facility": None,
+            "origin_facility_id": 1,
+            "origin_facility": SimpleNamespace(external_id="FAC-ORIGIN"),
+            "related_patient_id": None,
+        }
+        defaults.update(overrides)
+        return SimpleNamespace(**defaults)
+
+    def test_confirm_carries_assigned_facility(self):
+        rr = self._rr(
+            assigned_facility_id=2,
+            assigned_facility=SimpleNamespace(external_id="FAC-TARGET"),
+        )
+        attrs = build_referral_confirm(rr, "RR-1")["message"]["contract"][
+            "contractAttributes"
+        ]
+        self.assertEqual(attrs["facilityId"], "FAC-TARGET")
+        self.assertEqual(attrs["originFacilityId"], "FAC-ORIGIN")
+        self.assertEqual(attrs["coordinationId"], "RR-1")
+
+    def test_confirm_falls_back_to_origin_facility(self):
+        attrs = build_referral_confirm(self._rr(), "RR-1")["message"]["contract"][
+            "contractAttributes"
+        ]
+        self.assertEqual(attrs["facilityId"], "FAC-ORIGIN")
+
+    def test_patient_care_uses_consultation_service_category(self):
+        rr = self._rr(category=CategoryChoices.patient_care.value)
+        criteria = build_referral_confirm(rr, "RR-1")["message"]["contract"][
+            "contractAttributes"
+        ]["targetCriteria"]
+        self.assertEqual(criteria["serviceCategory"]["code"], "CONSULTATION")
+
+
+class ReferralUpdateCallbackTests(CareAPITestBase):
+    """Completion update is only sent when origin BAP return routing is present."""
+
+    def test_none_without_return_routing(self):
+        rr = SimpleNamespace(extensions={"beckn": {"coordinationId": "RR-1"}})
+        self.assertIsNone(build_referral_update_callback(rr))
+
+    def test_payload_with_return_routing(self):
+        rr = SimpleNamespace(
+            extensions={
+                "beckn": {
+                    "originResourceRequestId": "RR-ORIGIN",
+                    "returnRouting": {"bapId": "bap1", "bapUri": "http://bap1"},
+                }
+            }
+        )
+        payload = build_referral_update_callback(rr)
+        self.assertEqual(payload["context"]["action"], "on_update")
+        self.assertEqual(payload["context"]["transactionId"], "RR-ORIGIN")
+        self.assertEqual(payload["context"]["bapUri"], "http://bap1")
+        self.assertEqual(payload["message"]["contract"]["status"]["code"], "COMPLETED")

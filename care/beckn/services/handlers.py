@@ -177,6 +177,7 @@ def _referral_init(context: dict, message: dict) -> dict:
         )
         resource_request.extensions = {
             "beckn": {
+                "role": "origin",
                 "coordinationId": coordination_id,
                 "transactionId": transaction_id,
                 "contract": contract,
@@ -190,20 +191,91 @@ def _referral_init(context: dict, message: dict) -> dict:
 
 
 def _referral_confirm(context: dict, message: dict) -> dict:
-    """Approve the referral and return on_confirm."""
-    resource_request = find_resource_request(context, message)
-    if resource_request is None:
-        raise BecknActionError("Referral not found for confirm")
+    """Approve/create the referral ``ResourceRequest``(s) and return on_confirm.
 
+    A referral carries an origin facility (``contractAttributes.facilityId``)
+    and an assigned/target facility (``assignedFacilityId``). One request is
+    maintained per facility that resolves to this instance, each owned by that
+    facility (its ``origin_facility``):
+
+    * the **origin-facility** request — the referrer's record (approved in place
+      when ``init`` already created it);
+    * the **assigned-facility** request — so the referral also appears in the
+      receiving facility's queue.
+
+    In a single/loopback instance both facilities resolve, yielding **two**
+    requests; across instances each side keeps only the one it owns. Both are
+    keyed idempotently by ``coordinationId`` + role, so re-confirming never
+    duplicates them.
+    """
+    origin_facility = resolve_origin_facility(context, message)
+    assigned_facility = resolve_assigned_facility(context, message)
+
+    primary = None
+    if origin_facility is not None:
+        primary = _confirm_referral_for_facility(
+            context, message, origin_facility, role="origin", approve_existing=True
+        )
+    if assigned_facility is not None:
+        assigned_request = _confirm_referral_for_facility(
+            context, message, assigned_facility, role="assigned", approve_existing=False
+        )
+        primary = primary or assigned_request
+
+    if primary is None:
+        raise BecknActionError(
+            "No facility id in payload (contractAttributes.facilityId / "
+            "assignedFacilityId) matched a Care facility"
+        )
+    return build_on_confirm(context, message, primary)
+
+
+def _confirm_referral_for_facility(
+    context: dict, message: dict, facility, *, role: str, approve_existing: bool
+) -> ResourceRequest:
+    """Create or approve the referral ``ResourceRequest`` owned by ``facility``.
+
+    Idempotent by ``coordinationId`` + ``role``. ``approve_existing`` also
+    matches a request created earlier by ``init`` (before a role was stamped),
+    so the origin request is approved in place rather than duplicated.
+    """
     contract = get_contract(message)
     attributes = get_contract_attributes(message)
+    coordination_id = attributes.get("coordinationId") or contract.get("id")
+    transaction_id = (context or {}).get("transactionId")
     assigned_facility = resolve_assigned_facility(context, message)
+    user = _resolve_system_user()
+
+    existing = ResourceRequest.objects.filter(
+        extensions__beckn__coordinationId=coordination_id,
+        extensions__beckn__role=role,
+    ).first()
+    if existing is None and approve_existing:
+        existing = find_resource_request(context, message)
+
     with transaction.atomic():
-        resource_request.status = StatusChoices.approved.value
+        if existing is not None:
+            resource_request = existing
+            resource_request.status = StatusChoices.approved.value
+        else:
+            participant = find_patient_participant(message)
+            patient = find_or_create_patient(message, participant, facility, user)
+            resource_request = ResourceRequest(
+                origin_facility=facility,
+                related_patient=patient,
+                status=StatusChoices.approved.value,
+                created_by=user,
+                updated_by=user,
+                **_referral_fields(message),
+            )
         if assigned_facility is not None:
             resource_request.assigned_facility = assigned_facility
         extensions = resource_request.extensions or {}
         beckn = extensions.setdefault("beckn", {})
+        beckn["role"] = role
+        beckn["coordinationId"] = coordination_id
+        beckn["transactionId"] = transaction_id
+        beckn["originResourceRequestId"] = coordination_id
         # Persist the confirmed contract snapshot for status callbacks.
         beckn["contract"] = contract or beckn.get("contract")
         beckn["contractAttributes"] = attributes or beckn.get("contractAttributes")
@@ -211,10 +283,14 @@ def _referral_confirm(context: dict, message: dict) -> dict:
             beckn["consent"] = attributes["consent"]
         if contract.get("participants"):
             beckn["participants"] = contract["participants"]
+        beckn["returnRouting"] = {
+            "bapId": (context or {}).get("bapId"),
+            "bapUri": (context or {}).get("bapUri"),
+        }
         resource_request.extensions = extensions
         resource_request.save()
 
-    return build_on_confirm(context, message, resource_request)
+    return resource_request
 
 
 def _referral_status(context: dict, message: dict) -> dict:

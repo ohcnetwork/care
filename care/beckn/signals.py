@@ -21,6 +21,7 @@ import threading
 from django.db.models.signals import post_save, pre_save
 from django.dispatch import receiver
 
+from care.emr.models.resource_request import ResourceRequest
 from care.emr.models.scheduling.booking import TokenBooking
 from care.emr.resources.scheduling.slot.spec import BookingStatusChoices
 
@@ -169,3 +170,50 @@ def complete_referral_on_booking_fulfilled(sender, instance, created, **kwargs):
     from care.beckn.tasks import complete_referral_for_booking
 
     complete_referral_for_booking(instance)
+
+
+# ---------------------------------------------------------------------------
+# Resource request -> outbound BAP confirm (Care as BAP)
+# ---------------------------------------------------------------------------
+
+# Categories that route a resource request through the external coordination
+# center (CC) via a Beckn confirm when the request is created directly in Care:
+#   - ``patient_care`` -> downward field-worker / consultation referral
+#   - ``other``        -> upward lab / investigation referral
+BECKN_REFERRAL_CATEGORIES = frozenset({"other", "patient_care"})
+# Only newly created requests in this status are referred to the CC.
+BECKN_REFERRAL_STATUS = "pending"
+
+
+@receiver(post_save, sender=ResourceRequest, weak=False)
+def initiate_beckn_referral_on_create(sender, instance, created, **kwargs):
+    """Send a Beckn ``confirm`` to the CC when a pending resource request in a
+    referral category is created directly in Care.
+
+    Only newly created ``pending`` requests whose category is one of
+    ``BECKN_REFERRAL_CATEGORIES`` are routed to the external coordination
+    center. Requests that themselves originated from an inbound Beckn referral
+    (the BPP ``init``/``confirm`` handlers, which stamp ``extensions['beckn']``)
+    are skipped so the BPP side never re-refers them back to the network.
+
+    The confirm is delivered **after the create transaction commits** (best
+    effort): the resource request is always persisted, and a slow or failing
+    coordination center is logged, not fatal — so a CC ``nack``/network error
+    never blocks or rolls back the resource request creation.
+    """
+    if not created:
+        return
+    if instance.status != BECKN_REFERRAL_STATUS:
+        return
+    if instance.category not in BECKN_REFERRAL_CATEGORIES:
+        return
+    # Inbound Beckn referrals carry an ``extensions['beckn']`` block; never
+    # bounce them back out to the coordination center.
+    if (instance.extensions or {}).get("beckn"):
+        return
+
+    from django.db import transaction
+
+    from care.beckn.tasks import submit_resource_request_referral
+
+    transaction.on_commit(lambda: submit_resource_request_referral(instance))
