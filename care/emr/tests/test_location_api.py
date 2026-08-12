@@ -10,6 +10,7 @@ from care.emr.models import (
     FacilityLocation,
     FacilityLocationEncounter,
     FacilityLocationOrganization,
+    TagConfig,
 )
 from care.emr.resources.encounter.constants import (
     COMPLETED_CHOICES,
@@ -1228,3 +1229,77 @@ class TestFacilityLocationEncounterViewSet(FacilityLocationMixin, CareAPITestBas
                 external_id=self.location["id"]
             ).current_encounter
         )
+
+    def test_set_tags(self):
+        self.client.force_authenticate(user=self.super_user)
+
+        tag = TagConfig.objects.create(
+            status="active",
+            display="Test Tag",
+            category="clinical",
+            resource="location",
+        )
+        url = reverse(
+            "location-set-tags",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": self.location["id"],
+            },
+        )
+        response = self.client.post(
+            url, {"tags": [str(tag.external_id)]}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        tag_displays = [t["display"] for t in response.data["tags"]]
+        self.assertIn("Test Tag", tag_displays)
+
+    def test_remove_tags(self):
+        self.client.force_authenticate(user=self.super_user)
+
+        tag = TagConfig.objects.create(
+            status="active",
+            display="Test Tag",
+            category="clinical",
+            resource="location",
+        )
+        set_url = reverse(
+            "location-set-tags",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": self.location["id"],
+            },
+        )
+        self.client.post(set_url, {"tags": [str(tag.external_id)]}, format="json")
+        remove_url = reverse(
+            "location-remove-tags",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": self.location["id"],
+            },
+        )
+        response = self.client.post(
+            remove_url, {"tags": [str(tag.external_id)]}, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["tags"], [])
+
+    def test_create_location_with_tags(self):
+        self.client.force_authenticate(user=self.super_user)
+
+        tag = TagConfig.objects.create(
+            status="active",
+            display="Test Tag",
+            category="clinical",
+            resource="location",
+        )
+        url = reverse(
+            "location-list",
+            kwargs={"facility_external_id": self.facility.external_id},
+        )
+        data = self.generate_data_for_facility_location(
+            tags=[str(tag.external_id)],
+        )
+        response = self.client.post(url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        tag_displays = [t["display"] for t in response.data["tags"]]
+        self.assertIn("Test Tag", tag_displays)
