@@ -41,14 +41,20 @@ class Action(BaseModel):
 
 class ActionEvaluator:
     def __init__(
-        self, request, user, context_type, context_obj, actions: list[Action]
+        self,
+        request,
+        user,
+        context_type,
+        context_obj,
+        actions: list[Action],
+        field_cache=None,
     ) -> None:
         self.request = request
         self.user = user
         self.context_obj = context_obj
         self.context_type = context_type
         self.actions = [Action.model_validate(x) for x in actions]
-        self.field_cache = {}
+        self.field_cache = field_cache or {}
         self.context_cache = {"self": context_obj}
         self.cache = {}
 
@@ -59,6 +65,8 @@ class ActionEvaluator:
             self.evaluate_context(variable, context_mode)
 
     def evaluate_context(self, field, context_mode: bool = False):
+        if field.startswith(("i_", "q_")):
+            return
         ActionContextEvaluator(
             self.request, self.user, self.field_cache, self.context_cache, self.cache
         ).evaluate(
@@ -72,8 +80,6 @@ class ActionEvaluator:
         variables = get_all_variables(condition)
         for variable in variables:
             if variable not in self.field_cache:
-                if variable[:2] == "i_":
-                    continue
                 self.evaluate_context(variable)
         try:
             return bool(

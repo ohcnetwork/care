@@ -1,8 +1,17 @@
+from enum import Enum
+
 from pydantic import BaseModel
 
 from care.action_evaluator.context_engine.base import (
     ActionContextBase,
 )
+
+
+class InstructionType(str, Enum):
+    REDIRECT = "REDIRECT"
+    PERFORMED = "PERFORMED"
+    NOTIFY = "NOTIFY"
+    TEXT = "TEXT"
 
 
 class BaseInstruction:
@@ -30,9 +39,12 @@ class BaseInstruction:
         raise NotImplementedError("Subclasses must implement this method")
 
     def do_evaluate(self):
-        return self.evaluate()
-        # outputs = self.evaluate()
-        # return self.output_schema.model_validate(outputs, context=self.context)
+        results = self.evaluate()
+        return {
+            "slug": self.slug,
+            "instruction_type": self.instruction_type,
+            "results": results,
+        }
 
     def authorize(self) -> bool:
         raise NotImplementedError("Subclasses must implement this method")

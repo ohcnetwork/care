@@ -10,5 +10,15 @@ class PatientContext(ActionContextBase):
     context_type = "Patient"
 
 
+class EncounterQuestionnaireContext(ActionContextBase):
+    context_type = "EncounterQuestionnaire"
+
+
+class PatientQuestionnaireContext(ActionContextBase):
+    context_type = "PatientQuestionnaire"
+
+
 ActionContextRegistry.register(AppointmentContext)
 ActionContextRegistry.register(PatientContext)
+ActionContextRegistry.register(EncounterQuestionnaireContext)
+ActionContextRegistry.register(PatientQuestionnaireContext)

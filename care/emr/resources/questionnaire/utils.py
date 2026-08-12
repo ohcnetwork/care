@@ -528,7 +528,7 @@ def _clean_question_response(question, response):
     return cleaned_values[0]
 
 
-def build_cleaned_response(questions, responses):
+def build_cleaned_response(questions, responses, prefix=""):
     """
     Build a query-friendly response projection keyed by questionnaire link_id.
     """
@@ -546,14 +546,17 @@ def build_cleaned_response(questions, responses):
                     group_value = build_cleaned_response(
                         question.get("questions", []),
                         create_responses_mapping(sub_results),
+                        prefix,
                     )
                     if group_value:
                         group_values.append(group_value)
                 if group_values:
-                    cleaned_response[link_id] = group_values
+                    cleaned_response[prefix + link_id] = group_values
             else:
                 cleaned_response.update(
-                    build_cleaned_response(question.get("questions", []), responses)
+                    build_cleaned_response(
+                        question.get("questions", []), responses, prefix
+                    )
                 )
             continue
 
@@ -562,7 +565,7 @@ def build_cleaned_response(questions, responses):
 
         cleaned_value = _clean_question_response(question, response)
         if cleaned_value is not None:
-            cleaned_response[link_id] = cleaned_value
+            cleaned_response[prefix + link_id] = cleaned_value
 
     return cleaned_response
 
@@ -732,6 +735,7 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):
         created_by=user,
         updated_by=user,
     )
+    questionnaire_response._responses = responses  # noqa SLF001
     # Serialize and return questionnaire response
     if encounter:
         bulk = []

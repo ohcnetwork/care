@@ -13,6 +13,7 @@ from pydantic import (
     field_validator,
     model_validator,
 )
+from pydantic.experimental.missing_sentinel import MISSING
 
 from care.emr.models import Questionnaire, ValueSet
 from care.emr.models.organization import FacilityOrganization
@@ -237,6 +238,7 @@ class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
         {}, description="Styling requirements without validation"
     )
     questions: list[Question]
+    actions: list[dict] | MISSING = MISSING
 
     @field_validator("slug")
     @classmethod
@@ -438,6 +440,7 @@ class QuestionnaireReadSpec(QuestionnaireBaseSpec):
     created_by: dict | None = None
     updated_by: dict | None = None
     internal_revision: int
+    actions: list[dict] | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

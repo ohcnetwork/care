@@ -7,6 +7,11 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
+from care.action_evaluator.base import ActionEvaluator
+from care.action_evaluator.context_engine.contexts.core import (
+    EncounterQuestionnaireContext,
+    PatientQuestionnaireContext,
+)
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.api.viewsets.favorites import EMRFavoritesMixin
 from care.emr.api.viewsets.questionnaire.resource_authz import (
@@ -42,6 +47,7 @@ from care.emr.resources.questionnaire.spec import (
     SubjectType,
 )
 from care.emr.resources.questionnaire.utils import (
+    build_cleaned_response,
     handle_resource_response,
     handle_response,
 )
@@ -315,6 +321,7 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
                     "Permission Denied to submit patient questionnaire"
                 )
             form_submission_params["encounter__isnull"] = True
+        action_response = {}
         with transaction.atomic():
             response = handle_response(questionnaire, request_params, request.user)
             response.revision = questionnaire.internal_revision
@@ -337,7 +344,28 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
                 response.save(
                     update_fields=["form_submission", "updated_by", "modified_date"]
                 )
-        return Response(QuestionnaireResponseReadSpec.serialize(response).to_json())
+            actions = questionnaire.actions
+            if actions:
+                context_type = (
+                    PatientQuestionnaireContext
+                    if questionnaire.subject_type == SubjectType.patient.value
+                    else EncounterQuestionnaireContext
+                )
+                action_response = ActionEvaluator(
+                    request,
+                    request.user,
+                    context_type.context_type,
+                    response,
+                    actions,
+                    field_cache=build_cleaned_response(
+                        questionnaire.questions,
+                        response._responses,  # noqa SLF001
+                        "q_",
+                    ),
+                ).evaluate()
+        response_data = QuestionnaireResponseReadSpec.serialize(response).to_json()
+        response_data["_actions"] = action_response
+        return Response(response_data)
 
     @action(detail=True, methods=["GET"])
     def get_facility_organizations(self, request, *args, **kwargs):
