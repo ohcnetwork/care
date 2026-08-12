@@ -8,7 +8,7 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import EMRModelViewSet
+from care.emr.api.viewsets.base import EMRModelViewSet, EMRTagMixin
 from care.emr.models import (
     Encounter,
     FacilityLocation,
@@ -31,6 +31,8 @@ from care.emr.resources.location.spec import (
     LocationAvailabilityStatusChoices,
     LocationEncounterAvailabilityStatusChoices,
 )
+from care.emr.resources.tag.config_spec import TagResource
+from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.utils.lock import Lock
@@ -59,7 +61,7 @@ class FacilityLocationFilter(filters.FilterSet):
     available = AvailabilityFilter(field_name="available")
 
 
-class FacilityLocationViewSet(EMRModelViewSet):
+class FacilityLocationViewSet(EMRTagMixin, EMRModelViewSet):
     database_model = FacilityLocation
     pydantic_model = FacilityLocationWriteSpec
     pydantic_read_model = FacilityLocationListSpec
@@ -69,8 +71,10 @@ class FacilityLocationViewSet(EMRModelViewSet):
     filter_backends = [
         filters.DjangoFilterBackend,
         rest_framework_filters.OrderingFilter,
+        SingleFacilityTagFilter,
     ]
     ordering_fields = ["sort_index"]
+    resource_type = TagResource.location
 
     def get_facility_obj(self):
         return get_object_or_404(

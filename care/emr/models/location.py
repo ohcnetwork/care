@@ -35,6 +35,7 @@ class FacilityLocation(EMRBaseModel):
         Encounter, on_delete=models.SET_NULL, null=True, blank=True, default=None
     )  # Populated from FacilityLocationEncounter
     sort_index = models.IntegerField(default=0)
+    tags = ArrayField(models.IntegerField(), default=list)
 
     cache_expiry_days = 15
 
