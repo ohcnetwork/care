@@ -41,7 +41,8 @@ def validate_questionnaire_valueset(valueset_config, code):
             slug=valueset_config.get("slug"),
             auth_context="instance",
         ).first()
-
+    if code is None:
+        raise ValueError("Code is required")
     if not valueset or not valueset.lookup(code):
         raise ValueError("Code does not exist in the value set")
     return code

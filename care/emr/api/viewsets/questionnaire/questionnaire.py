@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -66,13 +67,23 @@ class ParentRevisionFilter(filters.UUIDFilter):
         return qs.filter(latest_revision__external_id=value)
 
 
+class FacilityOrInstance(filters.UUIDFilter):
+    def filter(self, qs, value):
+        if value is None:
+            return qs
+        return qs.filter(Q(facility__external_id=value) | Q(facility__isnull=True))
+
+
 class QuestionnaireFilter(filters.FilterSet):
     title = filters.CharFilter(field_name="title", lookup_expr="icontains")
     subject_type = MultiSelectFilter(field_name="subject_type")
     auth_context = filters.CharFilter(field_name="auth_context", lookup_expr="iexact")
     facility = filters.UUIDFilter(field_name="facility__external_id")
+    facility_isnull = filters.BooleanFilter(field_name="facility__isnull")
     status = filters.CharFilter(field_name="status", lookup_expr="iexact")
     parent_revision = ParentRevisionFilter()
+    facility_or_instance = FacilityOrInstance()
+    slug = filters.CharFilter(field_name="slug", lookup_expr="iexact")
 
 
 class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
