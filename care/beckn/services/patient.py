@@ -1,9 +1,9 @@
 """Patient resolution for inbound NFH referrals.
 
 On ``init`` the BPP extracts the PATIENT participant from the contract and
-reuses an existing Care ``Patient`` when one can be matched (by ABHA health id
-or phone number), otherwise creates a new one. Required Care fields that the
-NFH participant does not carry (phone number, geo organization) are backfilled
+reuses an existing Care ``Patient`` when one can be matched by health id
+(ABHA), otherwise creates a new one. Required Care fields that the NFH
+participant does not carry (phone number, geo organization) are backfilled
 from the originating facility.
 """
 
@@ -14,9 +14,8 @@ from care.beckn.mappers import (
     map_gender,
 )
 from care.beckn.services.identifiers import (
-    build_instance_identifiers,
-    find_patient_by_health_ids,
-    upsert_health_id_identifiers,
+    attach_abha_identifier,
+    find_patient_by_abha,
 )
 from care.emr.models import Patient
 
@@ -25,17 +24,13 @@ from care.emr.models import Patient
 PLACEHOLDER_PHONE_NUMBER = "0000000000"
 
 
-def _match_existing_patient(health_ids: list[dict], phone_number: str | None):
-    """Reuse an existing patient by health-id identifier, then by phone."""
-    patient = find_patient_by_health_ids(health_ids)
-    if patient:
-        return patient
+def _match_existing_patient(health_ids: list[dict]):
+    """Reuse an existing patient by ABHA identifier.
 
-    if phone_number and phone_number != PLACEHOLDER_PHONE_NUMBER:
-        patient = Patient.objects.filter(phone_number=phone_number).first()
-        if patient:
-            return patient
-    return None
+    Phone-number matching is intentionally omitted: the Beckn network spec does
+    not currently carry a patient phone number, so it is never a real value.
+    """
+    return find_patient_by_abha(health_ids)
 
 
 def _phone_from_contacts(contacts) -> str | None:
@@ -106,10 +101,10 @@ def find_or_create_patient(message: dict, participant: dict | None, facility, us
     health_ids = extract_health_ids(participant)
     phone_number = resolve_subject_phone(message, participant)
 
-    existing = _match_existing_patient(health_ids, phone_number)
+    existing = _match_existing_patient(health_ids)
     if existing:
-        # Keep identifiers in sync on reuse (e.g. a new health id arrived).
-        upsert_health_id_identifiers(existing, health_ids)
+        # Keep the ABHA identifier in sync on reuse.
+        attach_abha_identifier(existing, health_ids)
         return existing
 
     date_of_birth, _age = extract_dob_and_age(participant)
@@ -120,7 +115,6 @@ def find_or_create_patient(message: dict, participant: dict | None, facility, us
         phone_number=phone_number,
         date_of_birth=date_of_birth,
         geo_organization=get_default_geo_organization(facility),
-        instance_identifiers=build_instance_identifiers(health_ids),
         created_by=user,
         updated_by=user,
     )
@@ -131,5 +125,5 @@ def find_or_create_patient(message: dict, participant: dict | None, facility, us
         }
     }
     patient.save()
-    upsert_health_id_identifiers(patient, health_ids)
+    attach_abha_identifier(patient, health_ids)
     return patient
