@@ -99,6 +99,7 @@ class TokenBookingViewSet(
 ):
     ACTION_CONTEXT = ActionContextOptions.APPOINTMENT.value
     ACTION_CONTEXT_CLASS = AppointmentContext
+    PERFORM_INDEPENDENT_ACTIONS = True
 
     database_model = TokenBooking
     pydantic_model = TokenBookingWriteSpec

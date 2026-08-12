@@ -28,7 +28,7 @@ class BaseActionConfigurationSpec(EMRResource):
 class ActionConfigurationWriteSpec(BaseActionConfigurationSpec):
     performable: bool
     action_context: ActionContextOptions
-    # facility: UUID4 | None = None
+    facility: UUID4 | None = None
 
 
 class ActionConfigurationUpdateSpec(BaseActionConfigurationSpec):
