@@ -13,7 +13,10 @@ routed by :func:`care.beckn.mappers.resolve_flow`:
 """
 
 import datetime
+import logging
+import re
 
+from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.utils import timezone
 from django.utils.dateparse import parse_date, parse_datetime
@@ -35,14 +38,14 @@ from care.beckn.builders.referral import (
     build_on_status,
 )
 from care.beckn.config import resolve_assigned_facility, resolve_origin_facility
-from care.beckn.constants import FLOW_APPOINTMENT
+from care.beckn.constants import CONTRACT_STATUS_ACTIVE, FLOW_APPOINTMENT
 from care.beckn.mappers import (
     extract_health_ids,
     find_patient_participant,
     get_confirmed_appointment_time,
     get_contract,
     get_contract_attributes,
-    get_coordination_id,
+    get_coordination_ref,
     get_requested_date,
     get_selected_resource_id,
     get_selected_slot_id,
@@ -55,6 +58,9 @@ from care.beckn.services.patient import find_or_create_patient
 from care.emr.models.resource_request import ResourceRequest
 from care.emr.models.scheduling import SchedulableResource
 from care.emr.resources.resource_request.spec import CategoryChoices, StatusChoices
+from care.utils.models.validators import mobile_or_landline_number_validator
+
+logger = logging.getLogger(__name__)
 
 # NFH clinicalUrgencyTier -> ResourceRequest priority (higher = more urgent).
 URGENCY_PRIORITY = {
@@ -97,6 +103,34 @@ def _resolve_system_user():
 # ---------------------------------------------------------------------------
 
 
+def _clean_contact_number(value) -> str:
+    """Return the contact number in Care's stored form, or ``""`` if unusable.
+
+    Field validators do not run on ``save()``, so an arbitrary ``telecom`` string
+    would otherwise be truncated into a column the rest of Care reads as a phone
+    number. Beckn carries free text here, so a ``tel:`` prefix and separators are
+    stripped and a bare Indian mobile is given its country code before the number
+    is put through Care's own validator; anything that still fails is dropped.
+    """
+    raw = str(value or "").strip()
+    if not raw:
+        return ""
+    if raw.lower().startswith("tel:"):
+        raw = raw[4:]
+    digits = re.sub(r"[^\d+]", "", raw).lstrip("+")
+    if not digits:
+        return ""
+    number = f"+{digits}" if raw.startswith("+") else f"+91{digits}"
+    try:
+        mobile_or_landline_number_validator(number)
+    except DjangoValidationError:
+        logger.warning(
+            "Beckn referral carried an unusable contact number; storing none"
+        )
+        return ""
+    return number
+
+
 def _referral_contact(message: dict) -> dict:
     """Extract referring-facility contact from a non-patient participant."""
     contract = get_contract(message)
@@ -108,7 +142,7 @@ def _referral_contact(message: dict) -> dict:
             telecom = attributes.get("telecom") or attributes.get("phone") or ""
             return {
                 "referring_facility_contact_name": (descriptor.get("name") or "")[:255],
-                "referring_facility_contact_number": str(telecom)[:14],
+                "referring_facility_contact_number": _clean_contact_number(telecom),
             }
     return {
         "referring_facility_contact_name": "",
@@ -147,8 +181,48 @@ def _referral_select(context: dict, message: dict) -> dict:
     return build_on_select(context, message)
 
 
-def _referral_init(context: dict, message: dict) -> dict:
-    """Create the patient and a pending ResourceRequest, return on_init."""
+def _store_beckn_snapshot(resource_request, context: dict, message: dict) -> None:
+    """Refresh the persisted Beckn snapshot on a referral from an inbound payload.
+
+    The snapshot is what later ``on_status`` callbacks are rebuilt from, and it
+    records the BAP that owns the exchange (see :func:`_assert_same_bap`). Values
+    already stored are kept when the inbound payload does not carry them.
+    """
+    contract = get_contract(message)
+    attributes = get_contract_attributes(message)
+    extensions = resource_request.extensions or {}
+    beckn = extensions.setdefault("beckn", {})
+    beckn["contract"] = contract or beckn.get("contract")
+    beckn["contractAttributes"] = attributes or beckn.get("contractAttributes")
+    if attributes.get("consent"):
+        beckn["consent"] = attributes["consent"]
+    if contract.get("participants"):
+        beckn["participants"] = contract["participants"]
+    bap_id = (context or {}).get("bapId")
+    if bap_id and not beckn.get("bapId"):
+        beckn["bapId"] = bap_id
+    resource_request.extensions = extensions
+
+
+def _assert_same_bap(resource_request, context: dict) -> None:
+    """Reject an action from a BAP other than the one that opened the exchange.
+
+    The webhook is unauthenticated by design (ONIX has already verified the
+    signature), so matching the ``bapId`` recorded when the referral was created
+    is the only application-layer check available against another network
+    participant advancing someone else's referral. A payload with no ``bapId``,
+    or a referral created before the id was recorded, cannot be checked.
+    """
+    stored = ((resource_request.extensions or {}).get("beckn") or {}).get("bapId")
+    inbound = (context or {}).get("bapId")
+    if stored and inbound and stored != inbound:
+        raise BecknActionError(
+            "This referral belongs to another BAP and cannot be modified"
+        )
+
+
+def _create_referral(context: dict, message: dict, status: str) -> ResourceRequest:
+    """Create the patient and the ResourceRequest for an inbound referral."""
     facility = resolve_origin_facility(context, message)
     if facility is None:
         raise BecknActionError(
@@ -166,13 +240,18 @@ def _referral_init(context: dict, message: dict) -> dict:
     with transaction.atomic():
         participant = find_patient_participant(message)
         patient = find_or_create_patient(message, participant, facility, user)
+        if patient is None:
+            raise BecknActionError(
+                "No PATIENT participant in the contract; a referral must "
+                "identify the patient it is for"
+            )
 
         fields = _referral_fields(message)
         resource_request = ResourceRequest(
             origin_facility=facility,
             assigned_facility=assigned_facility,
             related_patient=patient,
-            status=StatusChoices.pending.value,
+            status=status,
             created_by=user,
             updated_by=user,
             **fields,
@@ -181,39 +260,91 @@ def _referral_init(context: dict, message: dict) -> dict:
             "beckn": {
                 "coordinationId": coordination_id,
                 "transactionId": transaction_id,
-                "contract": contract,
-                "contractAttributes": attributes,
-                "participants": contract.get("participants", []),
             }
         }
+        _store_beckn_snapshot(resource_request, context, message)
         resource_request.save()
 
+    return resource_request
+
+
+def _referral_init(context: dict, message: dict) -> dict:
+    """Create (or refresh) a pending ResourceRequest, return on_init.
+
+    A network retry resends the same ``init``, so an existing referral is
+    updated in place rather than duplicated. The status is left alone: a retry
+    arriving after the referral was approved must not pull it back to pending.
+    """
+    resource_request = find_resource_request(context, message)
+    if resource_request is None:
+        resource_request = _create_referral(
+            context, message, StatusChoices.pending.value
+        )
+        return build_on_init(context, message, resource_request)
+
+    _assert_same_bap(resource_request, context)
+    with transaction.atomic():
+        for field, value in _referral_fields(message).items():
+            setattr(resource_request, field, value)
+        assigned_facility = resolve_assigned_facility(context, message)
+        if assigned_facility is not None:
+            resource_request.assigned_facility = assigned_facility
+        _store_beckn_snapshot(resource_request, context, message)
+        resource_request.save()
+    logger.info(
+        "Beckn init replayed: refreshed ResourceRequest %s",
+        resource_request.external_id,
+    )
     return build_on_init(context, message, resource_request)
 
 
 def _referral_confirm(context: dict, message: dict) -> dict:
-    """Approve the referral and return on_confirm."""
+    """Approve the referral and return on_confirm.
+
+    ``init`` is optional on the network (and Care's own BAP never sends one), so
+    a confirm that does not resolve to an existing referral creates it outright
+    as ``approved`` rather than rejecting the exchange.
+
+    Only a ``pending`` referral is transitioned. A confirm replayed against an
+    already-approved referral refreshes the stored contract and reports the
+    current state; one that has moved past approval (cancelled, rejected, in
+    transfer, completed) is refused rather than dragged backwards.
+    """
+    contract_status = (
+        (get_contract(message).get("status") or {}).get("code") or ""
+    ).upper()
+    if contract_status and contract_status != CONTRACT_STATUS_ACTIVE:
+        msg = (
+            f"Confirm must carry an {CONTRACT_STATUS_ACTIVE} contract status, "
+            f"got {contract_status}"
+        )
+        raise BecknActionError(msg)
+
     resource_request = find_resource_request(context, message)
     if resource_request is None:
-        raise BecknActionError("Referral not found for confirm")
+        resource_request = _create_referral(
+            context, message, StatusChoices.approved.value
+        )
+        logger.info(
+            "Beckn confirm without a prior init: created ResourceRequest %s",
+            resource_request.external_id,
+        )
+        return build_on_confirm(context, message, resource_request)
 
-    contract = get_contract(message)
-    attributes = get_contract_attributes(message)
+    _assert_same_bap(resource_request, context)
+    if resource_request.status not in (
+        StatusChoices.pending.value,
+        StatusChoices.approved.value,
+    ):
+        msg = f"Referral is {resource_request.status} and can no longer be confirmed"
+        raise BecknActionError(msg)
+
     assigned_facility = resolve_assigned_facility(context, message)
     with transaction.atomic():
         resource_request.status = StatusChoices.approved.value
         if assigned_facility is not None:
             resource_request.assigned_facility = assigned_facility
-        extensions = resource_request.extensions or {}
-        beckn = extensions.setdefault("beckn", {})
-        # Persist the confirmed contract snapshot for status callbacks.
-        beckn["contract"] = contract or beckn.get("contract")
-        beckn["contractAttributes"] = attributes or beckn.get("contractAttributes")
-        if attributes.get("consent"):
-            beckn["consent"] = attributes["consent"]
-        if contract.get("participants"):
-            beckn["participants"] = contract["participants"]
-        resource_request.extensions = extensions
+        _store_beckn_snapshot(resource_request, context, message)
         resource_request.save()
 
         # ABHA may be carried on the confirm; record it idempotently.
@@ -319,6 +450,8 @@ def _appointment_confirm(context: dict, message: dict) -> dict:
     if patient is None:
         raise BecknActionError("No patient participant found to book the appointment")
 
+    coordination_ref = get_coordination_ref(message)
+
     try:
         with transaction.atomic():
             booking = scheduling.book_appointment(slot, patient, user)
@@ -342,15 +475,18 @@ def _appointment_confirm(context: dict, message: dict) -> dict:
             # the BAP when the booking changes, without the BAP calling status.
             beckn["context"] = context or {}
             beckn["message"] = message or {}
+            # The originating referral (T1) this booking fulfils. Held on the
+            # booking itself so the link survives a Redis eviction/outage.
+            if coordination_ref:
+                beckn["coordinationRef"] = coordination_ref
             booking.save(update_fields=["meta", "status", "modified_date"])
     except DRFValidationError as exc:
         # Surface the booking rule (slot past/full/duplicate) as a clean NACK.
         raise BecknActionError(_first_validation_message(exc)) from exc
 
     booking.refresh_from_db()
-    # Link the booking to its originating referral in Redis (no core scheduling
-    # change): when this appointment is fulfilled, the referral is completed.
-    txn_store.link_booking_referral(booking.id, get_coordination_id(context, message))
+    # Mirror the referral link into Redis as a fast path for the fulfilment hook.
+    txn_store.link_booking_referral(booking.id, coordination_ref)
     return build_appt_on_confirm(context, message, booking)
 
 

@@ -50,14 +50,37 @@ def _persist_selected_routing(transaction_id: str, context_overrides: dict) -> N
         txn_store.set_routing(transaction_id, routing)
 
 
-def _build_payload(action, transaction_id, record, body, fallback):
+def _resolve_routing(action, record, overrides):
+    """Pick the BPP this action is addressed to.
+
+    ``discover`` is a broadcast and carries no BPP. Every later action goes to
+    one specific provider: the one the frontend named (``context.bppId``, sent
+    once and remembered), or the only one that answered the discover. When
+    several answered and none was named, the action is refused — silently using
+    whichever replied last would send the referral to the wrong provider.
+    """
+    if action == "discover":
+        return record.get("routing") or {}
+
+    chosen = overrides.get("bppId")
+    answered = txn_store.answered_bpp_ids(record)
+    if not chosen and len(answered) > 1:
+        msg = (
+            f"{len(answered)} providers answered this discover "
+            f"({', '.join(answered)}); '{action}' must name the chosen one in "
+            "context.bppId"
+        )
+        raise FlowError(msg)
+    return txn_store.resolve_routing(record, chosen)
+
+
+def _build_payload(action, transaction_id, record, body, adapter):
     """Build the outbound ``{context, message}`` payload for an action.
 
     Prefers a passthrough Beckn ``message`` supplied by the frontend (so the FE
     can send the exact intent/contract — including a ``discover`` JSONPath search
     — and any ``context`` overrides such as the ``bppId``/``bppUri`` chosen from
-    the catalog). Falls back to the flow adapter (``fallback``) when no
-    ``message`` is provided.
+    the catalog). Falls back to the flow adapter when no ``message`` is provided.
 
     The ``context`` the frontend supplies is remembered on the transaction and
     auto-applied to every later action, so it only needs to be sent once (e.g.
@@ -74,17 +97,18 @@ def _build_payload(action, transaction_id, record, body, fallback):
         **(record.get("context") or {}),
         **{k: v for k, v in request_overrides.items() if v is not None},
     }
+    routing = _resolve_routing(action, record, effective_overrides)
 
     message = body.get("message")
     if message is not None:
         return {
             "context": build_context(
-                action, transaction_id, record.get("routing", {}), effective_overrides
+                action, transaction_id, routing, effective_overrides
             ),
             "message": message,
         }
 
-    payload = fallback()
+    payload = _adapter_fallback(adapter, action, transaction_id, routing, record, body)
     for key, value in effective_overrides.items():
         if key in PROTECTED_CONTEXT_KEYS or value is None:
             continue
@@ -98,7 +122,7 @@ BAP_ACTIONS = ("discover", "select", "init", "confirm", "status", "cancel", "upd
 _NEW_TRANSACTION_ACTIONS = {"discover"}
 
 
-def _adapter_fallback(adapter, action, transaction_id, record, body):
+def _adapter_fallback(adapter, action, transaction_id, routing, record, body):
     """Build a payload via the flow adapter when no passthrough message is sent.
 
     Only ``discover``/``select``/``confirm`` have adapter builders; the other
@@ -106,17 +130,11 @@ def _adapter_fallback(adapter, action, transaction_id, record, body):
     supply the Beckn ``message`` directly.
     """
     if action == "discover":
-        return adapter.build_discover(
-            transaction_id, record.get("routing", {}), body.get("query") or {}
-        )
+        return adapter.build_discover(transaction_id, routing, body.get("query") or {})
     if action == "select":
-        return adapter.build_select(
-            transaction_id, record.get("routing", {}), record, body
-        )
+        return adapter.build_select(transaction_id, routing, record, body)
     if action == "confirm":
-        return adapter.build_confirm(
-            transaction_id, record.get("routing", {}), record, body
-        )
+        return adapter.build_confirm(transaction_id, routing, record, body)
     msg = f"'message' is required for action '{action}'"
     raise FlowError(msg)
 
@@ -169,15 +187,7 @@ class BecknActionView(APIView):
                 )
 
         try:
-            payload = _build_payload(
-                action,
-                transaction_id,
-                record,
-                body,
-                lambda: _adapter_fallback(
-                    adapter, action, transaction_id, record, body
-                ),
-            )
+            payload = _build_payload(action, transaction_id, record, body, adapter)
         except FlowError as exc:
             return Response(
                 {"detail": str(exc)}, status=http_status.HTTP_400_BAD_REQUEST

@@ -150,23 +150,53 @@ def send_appointment_on_status(booking_id: int) -> None:
         )
 
 
+def get_booking_coordination_ref(booking) -> str | None:
+    """Return the referral coordination id a booking was created for.
+
+    Read from ``booking.meta['beckn']['coordinationRef']`` (durable, written at
+    confirm time) and only then from Redis, which is a fast path that may have
+    been evicted — and which, with ``IGNORE_EXCEPTIONS`` on the cache, returns
+    ``None`` on a Redis outage rather than raising.
+    """
+    stored = get_booking_beckn_context(booking).get("coordinationRef")
+    if stored:
+        return stored
+
+    from care.beckn.services import txn_store
+
+    return txn_store.get_booking_referral(booking.id)
+
+
 def complete_referral_for_booking(booking) -> None:
     """Mark the originating referral completed when its appointment is fulfilled.
 
-    The booking -> referral link is held in Redis (keyed by booking id, set when
-    the appointment is booked over Beckn); see
-    :func:`care.beckn.services.txn_store.link_booking_referral`. When the booking
-    is fulfilled, the linked ``ResourceRequest`` is transitioned to
-    ``completed``. No-op when the booking carries no link or the referral cannot
-    be found / is already completed.
+    The booking -> referral link is read from the booking's own Beckn metadata,
+    falling back to Redis (see
+    :func:`care.beckn.services.txn_store.link_booking_referral`). When the
+    booking is fulfilled, the linked ``ResourceRequest`` is transitioned to
+    ``completed``. No-op when the booking carries no link or the referral is
+    already completed.
     """
-    from care.beckn.services import txn_store
     from care.beckn.services.lookup import find_resource_request_by_coordination_id
     from care.emr.resources.resource_request.spec import StatusChoices
 
-    coordination_id = txn_store.get_booking_referral(booking.id)
+    coordination_id = get_booking_coordination_ref(booking)
+    if not coordination_id:
+        if is_beckn_booking(booking):
+            logger.warning(
+                "Beckn booking %s fulfilled but carries no referral link; "
+                "no referral completed",
+                booking.id,
+            )
+        return
+
     resource_request = find_resource_request_by_coordination_id(coordination_id)
     if resource_request is None:
+        logger.warning(
+            "Beckn booking %s fulfilled but no referral matched coordination id %s",
+            booking.id,
+            coordination_id,
+        )
         return
     if resource_request.status == StatusChoices.completed.value:
         return

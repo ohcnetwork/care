@@ -10,91 +10,22 @@ select -> init -> confirm round trip without protocol changes.
 import copy
 
 from care.beckn.builders.context import build_callback_context
+from care.beckn.builders.participants import inject_patient_health_ids
 from care.beckn.constants import (
     CONTRACT_STATUS_ACTIVE,
     CONTRACT_STATUS_CANCELLED,
     CONTRACT_STATUS_COMPLETE,
     CONTRACT_STATUS_DRAFT,
     DEFAULT_HEALTH_SERVICE_TYPE,
-    HEALTH_PARTICIPANT_CONTEXT,
     HEALTH_PERFORMANCE_CONTEXT,
-    PARTICIPANT_ROLE_PATIENT,
 )
 from care.beckn.services.catalog import build_catalogs
-from care.beckn.services.identifiers import get_patient_abha_value
-from care.emr.resources.patient.spec import GenderChoices
 
 COMPLETED_BOOKING_STATUSES = {"fulfilled", "checked_in", "in_consultation"}
 CANCELLED_BOOKING_STATUSES = {"cancelled", "entered_in_error", "rescheduled"}
 # Held awaiting a human care-coordinator review (acceptanceMode=MANUAL_REVIEW);
 # reported as a DRAFT contract until the review approves it.
 PENDING_BOOKING_STATUSES = {"pending", "proposed", "waitlist"}
-
-PATIENT_GENDER_TO_NFH = {
-    GenderChoices.male.value: "MALE",
-    GenderChoices.female.value: "FEMALE",
-    GenderChoices.transgender.value: "OTHER",
-    GenderChoices.non_binary.value: "OTHER",
-}
-
-
-def _patient_participant_attributes(patient) -> dict:
-    """Build the NFH ``HealthParticipant`` attributes for a Care patient.
-
-    Always carries the required JSON-LD envelope (``@context``/``@type``) so the
-    participant validates against the network schema; gender, date of birth and
-    ABHA ``healthIds`` are added only when the patient record provides them.
-    """
-    attributes = {
-        "@context": HEALTH_PARTICIPANT_CONTEXT,
-        "@type": "hpa:HealthParticipant",
-        "participantRole": PARTICIPANT_ROLE_PATIENT,
-    }
-    nfh_gender = PATIENT_GENDER_TO_NFH.get(patient.gender)
-    if nfh_gender:
-        attributes["gender"] = nfh_gender
-    if patient.date_of_birth:
-        attributes["dateOfBirth"] = patient.date_of_birth.isoformat()
-    abha_value = get_patient_abha_value(patient)
-    if abha_value:
-        attributes["healthIds"] = [{"system": "ABHA", "value": abha_value}]
-    return attributes
-
-
-def _inject_patient_health_ids(contract: dict, patient) -> None:
-    """Ensure the contract carries a schema-valid PATIENT participant.
-
-    Callbacks may echo an inbound contract whose PATIENT participant is missing
-    (or lacks the JSON-LD envelope / ABHA), so the stored patient details are
-    merged into the existing participant or, when absent, appended as a fully
-    populated one. No-op when the patient is unknown.
-    """
-    if patient is None:
-        return
-
-    attributes = _patient_participant_attributes(patient)
-    participants = contract.setdefault("participants", [])
-    for participant in participants:
-        existing = participant.setdefault("participantAttributes", {})
-        if existing.get("participantRole") != PARTICIPANT_ROLE_PATIENT:
-            continue
-        for key, value in attributes.items():
-            if key != "healthIds":
-                existing.setdefault(key, value)
-        new_health_ids = attributes.get("healthIds", [])
-        if new_health_ids:
-            health_ids = existing.setdefault("healthIds", [])
-            if not any((h.get("system") or "").upper() == "ABHA" for h in health_ids):
-                health_ids.extend(new_health_ids)
-        return
-
-    participants.append(
-        {
-            "id": f"participant-patient-{patient.external_id}",
-            "descriptor": {"name": patient.name, "shortDesc": "Patient (Subject)"},
-            "participantAttributes": attributes,
-        }
-    )
 
 
 def _health_service_type(inbound_message: dict) -> str:
@@ -182,7 +113,7 @@ def _inject_booking(contract: dict, booking, health_service_type: str) -> None:
     """
     contract["id"] = str(booking.external_id)
     contract["performance"] = [_booking_performance(booking, health_service_type)]
-    _inject_patient_health_ids(contract, getattr(booking, "patient", None))
+    inject_patient_health_ids(contract, getattr(booking, "patient", None))
 
 
 def _contract_status_for_booking(booking) -> str:

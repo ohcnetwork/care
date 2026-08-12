@@ -77,6 +77,17 @@ def get_coordination_id(context: dict, message: dict) -> str | None:
     )
 
 
+def get_coordination_ref(message: dict) -> str | None:
+    """Return the referral this payload explicitly belongs to, or ``None``.
+
+    Unlike :func:`get_coordination_id` there is no fallback to the contract or
+    transaction id: an appointment booked outside a referral must not be linked
+    to one, so only an explicit ``coordinationRef``/``coordinationId`` counts.
+    """
+    attributes = get_contract_attributes(message)
+    return attributes.get("coordinationRef") or attributes.get("coordinationId")
+
+
 def classify_transaction(context: dict, message: dict) -> str:
     """Classify an inbound payload as a referral (T1) or a booking (T2).
 
@@ -121,16 +132,15 @@ def resolve_flow(action: str, context: dict, message: dict) -> str:
         return FLOW_REFERRAL
 
     # Thin payload (only contract.id): resolve against persisted records.
-    return _resolve_flow_by_lookup(context, message)
+    return _resolve_flow_by_lookup(message)
 
 
-def _resolve_flow_by_lookup(context: dict, message: dict) -> str:
+def _resolve_flow_by_lookup(message: dict) -> str:
     """Resolve the flow for a thin payload by matching a persisted record.
 
     A Care ``TokenBooking`` whose ``external_id`` matches the inbound contract
-    id implies the appointment flow; otherwise an existing ``ResourceRequest``
-    implies the referral flow. Defaults to the referral flow when neither
-    matches, preserving the historical behaviour.
+    id implies the appointment flow; everything else is treated as the referral
+    flow, whose handlers report a missing referral themselves.
     """
     contract_id = get_contract(message).get("id")
     if contract_id:
@@ -138,11 +148,6 @@ def _resolve_flow_by_lookup(context: dict, message: dict) -> str:
 
         if TokenBooking.objects.filter(external_id=contract_id).exists():
             return FLOW_APPOINTMENT
-
-    from care.beckn.services.lookup import find_resource_request
-
-    if find_resource_request(context, message) is not None:
-        return FLOW_REFERRAL
     return FLOW_REFERRAL
 
 

@@ -33,6 +33,44 @@ def _match_existing_patient(health_ids: list[dict]):
     return find_patient_by_abha(health_ids)
 
 
+def _patient_from_linked_referral(message: dict):
+    """Return the patient already recorded on the referral this payload names.
+
+    A downstream booking (T2) carries ``coordinationRef`` pointing at the
+    referral (T1) it fulfils, and a referral that is being amended carries its
+    own ``coordinationId``. Either way the patient is already on record, so
+    reusing it keeps an ABHA-less patient from being created twice.
+    """
+    from care.beckn.mappers import get_coordination_ref
+    from care.beckn.services.lookup import find_resource_request_by_coordination_id
+
+    referral = find_resource_request_by_coordination_id(get_coordination_ref(message))
+    if referral is None or not referral.related_patient_id:
+        return None
+    return referral.related_patient
+
+
+def _match_patient_by_name_and_dob(participant: dict, facility):
+    """Match a patient on name and date of birth within the facility's area.
+
+    The last resort for a referral with no ABHA and no referral to inherit from.
+    Both a name and a date of birth are required, and the search is confined to
+    the originating facility's geo organization, so this cannot merge two people
+    who merely share a name.
+    """
+    descriptor = participant.get("descriptor", {}) or {}
+    name = (descriptor.get("name") or "").strip()
+    date_of_birth, _age = extract_dob_and_age(participant)
+    geo_organization = get_default_geo_organization(facility)
+    if not (name and date_of_birth and geo_organization):
+        return None
+    return Patient.objects.filter(
+        name__iexact=name,
+        date_of_birth=date_of_birth,
+        geo_organization=geo_organization,
+    ).first()
+
+
 def _phone_from_contacts(contacts) -> str | None:
     """Return a phone value from a list of Beckn ``contacts``/``telecom`` items."""
     for contact in contacts or []:
@@ -91,7 +129,12 @@ def resolve_subject_phone(message: dict, participant: dict | None) -> str:
 
 
 def find_or_create_patient(message: dict, participant: dict | None, facility, user):
-    """Return an existing or newly created Care patient for the referral."""
+    """Return an existing or newly created Care patient for the referral.
+
+    Matched by ABHA where one is carried; failing that by the referral the
+    payload belongs to, then by name and date of birth within the originating
+    facility's area. Only when none of those resolve is a patient created.
+    """
     if not participant:
         return None
 
@@ -101,7 +144,11 @@ def find_or_create_patient(message: dict, participant: dict | None, facility, us
     health_ids = extract_health_ids(participant)
     phone_number = resolve_subject_phone(message, participant)
 
-    existing = _match_existing_patient(health_ids)
+    existing = (
+        _match_existing_patient(health_ids)
+        or _patient_from_linked_referral(message)
+        or _match_patient_by_name_and_dob(participant, facility)
+    )
     if existing:
         # Keep the ABHA identifier in sync on reuse.
         attach_abha_identifier(existing, health_ids)

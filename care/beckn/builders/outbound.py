@@ -11,6 +11,8 @@ import uuid
 from django.conf import settings
 from django.utils import timezone
 
+from care.beckn.constants import HEALTH_PARTICIPANT_CONTEXT, PARTICIPANT_ROLE_PATIENT
+
 # Context fields the frontend must NOT override. transactionId/action are fixed
 # per call; bapId/bapUri are Care's OWN receiver identity (always from settings)
 # so a stale/incorrect value from the client can never mis-route callbacks.
@@ -79,6 +81,59 @@ def extract_routing(context: dict) -> dict:
         "bppId": context.get("bppId"),
         "bppUri": context.get("bppUri"),
     }
+
+
+def build_patient_participant(transaction_id: str, params: dict) -> dict | None:
+    """Build the PATIENT participant for an outbound ``confirm``.
+
+    ``params`` is the frontend's confirm body: ``patient`` (the Care patient's
+    external id) and/or a plain ``patientName``. When the Care patient resolves,
+    its stored ABHA rides along so the BPP matches the person it may already
+    know instead of creating a duplicate, with gender and date of birth giving a
+    BPP that has no ABHA on file something to match on. The Care patient id
+    itself is not sent — it means nothing off this instance.
+
+    Returns ``None`` when the frontend named no patient at all.
+    """
+    from care.beckn.builders.participants import patient_participant_attributes
+
+    patient = resolve_patient(params.get("patient"))
+    name = (
+        params.get("patientName")
+        or params.get("patient_name")
+        or getattr(patient, "name", None)
+    )
+    if patient is None and not name:
+        return None
+
+    if patient is not None:
+        attributes = patient_participant_attributes(patient)
+    else:
+        attributes = {
+            "@context": HEALTH_PARTICIPANT_CONTEXT,
+            "@type": "hpa:HealthParticipant",
+            "participantRole": PARTICIPANT_ROLE_PATIENT,
+        }
+    return {
+        "id": f"participant-patient-{transaction_id}",
+        "descriptor": {"name": name},
+        "participantAttributes": attributes,
+    }
+
+
+def resolve_patient(external_id):
+    """Return the Care patient the frontend named, if it resolves."""
+    if not external_id:
+        return None
+
+    from django.core.exceptions import ValidationError
+
+    from care.emr.models.patient import Patient
+
+    try:
+        return Patient.objects.filter(external_id=external_id).first()
+    except (ValueError, ValidationError):
+        return None
 
 
 def health_service_jsonpath(value: str) -> dict:

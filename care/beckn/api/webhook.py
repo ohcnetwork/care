@@ -21,6 +21,7 @@ from rest_framework.views import APIView
 from care.beckn.constants import ACTION_CALLBACK_MAP
 from care.beckn.services.caller import deliver_callback
 from care.beckn.services.handlers import ACTION_HANDLERS, BecknActionError
+from care.beckn.services.receiver import receive_bap_callback
 
 logger = logging.getLogger(__name__)
 
@@ -48,13 +49,14 @@ class BPPWebhookView(APIView):
         # fall back to the context action when called without the suffix.
         action = kwargs.get("action") or context.get("action")
 
-        # Inbound ``on_*`` callbacks are received when this instance is also the
-        # BAP target (e.g. single-instance/loopback testing where the same Care
-        # deployment is registered as both BAP and BPP). They are terminal
-        # acknowledgements, not BPP actions, so ACK them without generating a
-        # further callback instead of NACKing a perfectly valid message.
+        # Inbound ``on_*`` callbacks are received here when this instance is also
+        # the BAP target (e.g. a single-instance/loopback deployment registered
+        # as both roles, or a counterparty using the BPP url for both). They
+        # belong to a Care-as-BAP exchange, so they are applied to it rather than
+        # ACKed into the void, and never generate a further callback.
         if action and action.startswith("on_"):
-            logger.info("Received Beckn callback '%s'; acknowledging", action)
+            logger.info("Received Beckn callback '%s' on the BPP webhook", action)
+            receive_bap_callback(action, context, message)
             return Response(_ack(), status=http_status.HTTP_200_OK)
 
         if action not in ACTION_CALLBACK_MAP:

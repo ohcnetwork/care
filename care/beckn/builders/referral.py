@@ -40,6 +40,7 @@ def _inject_referral(contract: dict, resource_request) -> None:
     """
     if resource_request is None:
         return
+    contract["id"] = str(resource_request.external_id)
     referral = {
         "id": str(resource_request.external_id),
         "status": resource_request.status,

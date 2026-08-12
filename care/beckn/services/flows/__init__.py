@@ -9,7 +9,7 @@ Register new flows in :data:`REGISTRY`.
 """
 
 from care.beckn.services.flows.appointment import AppointmentFlow
-from care.beckn.services.flows.base import FlowAdapter, FlowError
+from care.beckn.services.flows.base import LIFECYCLE_CALLBACKS, FlowAdapter, FlowError
 from care.beckn.services.flows.consultation import ConsultationFlow
 
 # service_type -> adapter instance
@@ -32,4 +32,10 @@ def get_adapter(service_type: str) -> FlowAdapter:
     return adapter
 
 
-__all__ = ["REGISTRY", "FlowAdapter", "FlowError", "get_adapter"]
+__all__ = [
+    "LIFECYCLE_CALLBACKS",
+    "REGISTRY",
+    "FlowAdapter",
+    "FlowError",
+    "get_adapter",
+]

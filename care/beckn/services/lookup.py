@@ -8,7 +8,7 @@ callbacks. The downstream booking (T2) references the same referral via
 
 from django.core.exceptions import ValidationError
 
-from care.beckn.mappers import get_contract
+from care.beckn.mappers import get_contract, get_coordination_id
 from care.emr.models.resource_request import ResourceRequest
 
 
@@ -41,12 +41,18 @@ def find_resource_request_by_coordination_id(
 
 
 def find_resource_request(context: dict, message: dict) -> ResourceRequest | None:
-    """Find the referral strictly by contract id (== Care ``external_id``).
+    """Find the referral for an inbound callback.
 
-    The ``on_init`` callback publishes the created referral's ``external_id`` as
-    the contract ``id``; the BAP must echo it back on ``confirm``/``status``.
-    No coordination/transaction id fallback is applied — if the contract id does
-    not resolve to a referral, ``None`` is returned and the caller must error.
+    Tries the contract ``id`` first (the ``on_init``/``on_confirm`` callbacks
+    publish the referral's ``external_id`` there), then the coordination id the
+    referral was created with. The fallback matters because a BAP that never
+    received an ``on_init`` — or that keys the exchange on its own
+    ``coordinationId`` — has no Care ``external_id`` to echo back.
     """
     contract_id = get_contract(message).get("id")
-    return find_resource_request_by_external_id(contract_id)
+    resource_request = find_resource_request_by_external_id(contract_id)
+    if resource_request is not None:
+        return resource_request
+    return find_resource_request_by_coordination_id(
+        get_coordination_id(context, message)
+    )

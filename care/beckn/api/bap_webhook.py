@@ -2,14 +2,9 @@
 
 Care drives a Beckn ``discover -> select -> confirm`` exchange as a BAP (for the
 Care frontend). The counterparty routes ``on_discover``/``on_select``/
-``on_confirm`` callbacks back to this endpoint. Each callback is correlated to
-the in-flight transaction by the Beckn ``transactionId`` (the Redis key set when
-``discover`` was initiated) and recorded so the frontend poller can advance.
-
-* ``on_discover`` — the BPP routing identifiers are learned here and reused for
-  the subsequent ``select``/``confirm``.
-* ``on_confirm`` — the flow adapter persists the durable domain object (e.g. a
-  ``ResourceRequest`` for the consultation flow).
+``on_confirm`` callbacks back to this endpoint, where they are correlated to the
+in-flight transaction and applied (see
+:mod:`care.beckn.services.receiver`). The synchronous response is always an ACK.
 
 Authentication is intentionally open (the network layer verifies signatures);
 deployments should additionally restrict access by network/IP.
@@ -22,9 +17,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from care.beckn.builders.outbound import extract_routing
-from care.beckn.services import txn_store
-from care.beckn.services.flows import FlowError, get_adapter
+from care.beckn.services.receiver import receive_bap_callback
 
 logger = logging.getLogger(__name__)
 
@@ -42,54 +35,11 @@ class BAPReceiverView(APIView):
         context = body.get("context", {}) or {}
         message = body.get("message", {}) or {}
         action = kwargs.get("action") or context.get("action")
-        transaction_id = context.get("transactionId")
 
         logger.info(
-            "Beckn BAP receiver <- '%s' (transactionId=%s)", action, transaction_id
+            "Beckn BAP receiver <- '%s' (transactionId=%s)",
+            action,
+            context.get("transactionId"),
         )
-
-        record = txn_store.get_transaction(transaction_id)
-        if record is None:
-            logger.warning(
-                "Beckn BAP receiver: no in-flight transaction for %s (action=%s)",
-                transaction_id,
-                action,
-            )
-            return Response(_ack(), status=http_status.HTTP_200_OK)
-
-        try:
-            self._handle_callback(record, action, context, message)
-        except Exception:
-            logger.exception(
-                "Beckn BAP receiver failed handling '%s' for %s",
-                action,
-                transaction_id,
-            )
-
+        receive_bap_callback(action, context, message)
         return Response(_ack(), status=http_status.HTTP_200_OK)
-
-    @staticmethod
-    def _handle_callback(
-        record: dict, action: str, context: dict, message: dict
-    ) -> None:
-        transaction_id = record["transactionId"]
-        body = {"context": context, "message": message}
-
-        # Learn the counterparty routing from the discovery reply so the
-        # subsequent select/confirm can be addressed to the right BPP.
-        if action == "on_discover":
-            txn_store.set_routing(transaction_id, extract_routing(context))
-
-        txn_store.record_response(transaction_id, action, body)
-
-        if action == "on_confirm":
-            adapter = get_adapter(record["serviceType"])
-            try:
-                resource_request_id = adapter.on_confirmed(record, message)
-            except FlowError:
-                logger.exception(
-                    "Beckn on_confirm side effect failed for %s", transaction_id
-                )
-                return
-            if resource_request_id:
-                txn_store.set_resource_request(transaction_id, resource_request_id)

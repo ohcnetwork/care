@@ -10,20 +10,28 @@ Keeping the state in Redis (rather than on a ``ResourceRequest``) avoids
 creating a persisted referral for every ``discover``; the durable
 ``ResourceRequest`` is created only once the exchange is confirmed.
 
+Only lightweight status lives on the transaction record; each action's
+``{context, message}`` payload is stored under its own key
+(``beckn:txn:<id>:<ACTION>``) so the frontend can poll the small record and fetch
+one slice on demand.
+
 Record shape::
 
     {
         "transactionId": "<uuid>",
         "serviceType": "consultation",       # drives flow dispatch
         "status": "ON_DISCOVER",             # current lifecycle state
-        "routing": {                         # learned from the on_discover reply
+        "routing": {                         # the most recent on_discover reply
             "bapId": ..., "bapUri": ...,
             "bppId": ..., "bppUri": ...,
         },
-        "requests":  {"DISCOVER": {...}, "SELECT": {...}, "CONFIRM": {...}},
-        "responses": {"ON_DISCOVER": {...}, "ON_SELECT": {...}, "ON_CONFIRM": {...}},
-        "patient": {...},                    # captured at confirm
+        "routingByBpp": {"<bppId>": {...}},  # every BPP that answered
+
+        "context": {...},                    # context template the FE chose once
+        "actions": ["DISCOVER", "ON_DISCOVER"],   # payload keys recorded so far
+        "patient": {...},                    # confirm body, captured at confirm
         "resourceRequestId": "<uuid>",       # set once the referral is created
+        "error": {...},                      # set on a terminal NACK/ERROR
     }
 """
 
@@ -82,6 +90,9 @@ def create_transaction(service_type: str) -> dict:
         "serviceType": service_type,
         "status": STATUS_DISCOVER,
         "routing": {},
+        # Routing per answering BPP; ``discover`` is a broadcast, so more than
+        # one provider may reply to the same transaction.
+        "routingByBpp": {},
         "context": {},
         # Keys of the per-action payloads recorded so far (e.g. DISCOVER,
         # ON_DISCOVER). The payloads themselves live under _action_key().
@@ -198,15 +209,45 @@ def set_routing(transaction_id: str, routing: dict) -> dict | None:
 
     The counterparty URLs are not known up front; they are read from the
     ``on_discover`` reply context and reused to route ``select``/``confirm``.
+
+    ``discover`` is a broadcast, so several BPPs may answer one transaction. Each
+    is kept under its own ``bppId`` in ``routingByBpp`` — merging them all into
+    one dict would address the rest of the exchange to whichever replied last.
+    The flat ``routing`` still holds the most recent reply, which is the routing
+    used when only one BPP ever answers.
     """
     record = get_transaction(transaction_id)
     if record is None:
         return None
-    record.setdefault("routing", {}).update(
-        {k: v for k, v in routing.items() if v is not None}
-    )
+    learned = {k: v for k, v in routing.items() if v is not None}
+    record.setdefault("routing", {}).update(learned)
+    bpp_id = learned.get("bppId")
+    if bpp_id:
+        record.setdefault("routingByBpp", {}).setdefault(bpp_id, {}).update(learned)
     save_transaction(record)
     return record
+
+
+def resolve_routing(record: dict, bpp_id: str | None = None) -> dict:
+    """Return the routing an outbound action should be addressed with.
+
+    ``bpp_id`` is the BPP the frontend chose. When it is not one of those that
+    answered the discover, it is still honoured (the frontend may know a provider
+    the catalog did not carry). With no choice given, the single BPP that
+    answered is used; when several did, the caller must decide — see
+    :func:`answered_bpp_ids`.
+    """
+    by_bpp = record.get("routingByBpp") or {}
+    if bpp_id:
+        return {**(by_bpp.get(bpp_id) or {}), "bppId": bpp_id}
+    if len(by_bpp) == 1:
+        return next(iter(by_bpp.values()))
+    return record.get("routing") or {}
+
+
+def answered_bpp_ids(record: dict) -> list[str]:
+    """Return the ids of the BPPs that have replied to this transaction."""
+    return sorted(record.get("routingByBpp") or {})
 
 
 def set_patient(transaction_id: str, patient: dict) -> dict | None:

@@ -8,14 +8,16 @@ created and linked back to the transaction.
 
 import logging
 
-from care.beckn.builders.outbound import build_context, build_discover_intent
+from care.beckn.builders.outbound import (
+    build_context,
+    build_discover_intent,
+    build_patient_participant,
+)
 from care.beckn.constants import (
     CONTRACT_STATUS_ACTIVE,
     CONTRACT_STATUS_DRAFT,
-    HEALTH_PARTICIPANT_CONTEXT,
     HEALTH_REFERRAL_CONTEXT,
     LIFECYCLE_ACTIVE,
-    PARTICIPANT_ROLE_PATIENT,
 )
 from care.beckn.services.flows.base import FlowAdapter, FlowError
 
@@ -113,19 +115,9 @@ class ConsultationFlow(FlowAdapter):
         }
         if params.get("reason"):
             contract["descriptor"]["shortDesc"] = params["reason"]
-        patient_name = params.get("patientName") or params.get("patient_name")
-        if patient_name:
-            contract["participants"] = [
-                {
-                    "id": f"participant-patient-{transaction_id}",
-                    "descriptor": {"name": patient_name},
-                    "participantAttributes": {
-                        "@context": HEALTH_PARTICIPANT_CONTEXT,
-                        "@type": "hpa:HealthParticipant",
-                        "participantRole": PARTICIPANT_ROLE_PATIENT,
-                    },
-                }
-            ]
+        participant = build_patient_participant(transaction_id, params)
+        if participant:
+            contract["participants"] = [participant]
         return {
             "context": build_context("confirm", transaction_id, routing),
             "message": {"contract": contract},
@@ -135,8 +127,9 @@ class ConsultationFlow(FlowAdapter):
         """Apply the ``on_confirm`` side effect for the consultation flow.
 
         When Care is also the BPP (loopback / single-instance deployment), the
-        BPP ``init`` handler has already created a ``ResourceRequest`` with
-        ``status=pending``.  Here we just find that record and mark it approved.
+        BPP has already created the ``ResourceRequest`` while handling the
+        inbound ``init`` or ``confirm``. Here we just find that record — by
+        contract id, else by coordination id — and mark it approved.
 
         When Care is a pure BAP (no local BPP), no record exists yet, so we
         fall through and create it directly with ``status=approved``.
@@ -148,15 +141,15 @@ class ConsultationFlow(FlowAdapter):
             CategoryChoices,
             StatusChoices,
         )
-        from care.facility.models import Facility
 
-        # Loopback path: BPP init already created the record — find it strictly
-        # by the contract id (== ResourceRequest.external_id) and mark approved.
+        # Loopback path: the local BPP already created the record — find it and
+        # mark it approved instead of creating a duplicate.
         existing = find_resource_request(record, message)
         if existing:
+            self._apply_selected_patient(existing, record)
             if existing.status != StatusChoices.approved.value:
                 existing.status = StatusChoices.approved.value
-                existing.save(update_fields=["status"])
+                existing.save(update_fields=["status", "modified_date"])
                 logger.info(
                     "Consultation on_confirm: approved existing ResourceRequest %s",
                     existing.external_id,
@@ -178,20 +171,7 @@ class ConsultationFlow(FlowAdapter):
             return None
 
         params = record.get("patient") or {}
-        # Resolve the origin facility either from an explicit confirm field or,
-        # in passthrough mode, from the sent contract's contractAttributes.
-        facility_external_id = params.get("facility")
-        if not facility_external_id:
-            from care.beckn.services import txn_store
-
-            sent_confirm = (
-                txn_store.get_action(record.get("transactionId"), "CONFIRM") or {}
-            )
-            sent_attributes = (sent_confirm.get("message") or {}).get(
-                "contract", {}
-            ).get("contractAttributes", {}) or {}
-            facility_external_id = sent_attributes.get("facilityId")
-        facility = Facility.objects.filter(external_id=facility_external_id).first()
+        facility = self.resolve_confirm_facility(record)
         if facility is None:
             raise FlowError(
                 "confirm did not carry a facility id (top-level 'facility' or "
@@ -225,13 +205,43 @@ class ConsultationFlow(FlowAdapter):
         )
         return str(resource_request.external_id)
 
+    def on_lifecycle(self, record: dict, action: str, message: dict) -> str | None:
+        """Apply a counterparty lifecycle callback to the local referral.
+
+        A referral cancelled, progressed or completed by the BPP is reported back
+        as ``on_status``/``on_update``/``on_cancel``; without this the Care record
+        would sit at ``approved`` forever.
+        """
+        from care.beckn.services.lookup import find_resource_request
+
+        referral = find_resource_request(record, message)
+        if referral is None:
+            logger.warning(
+                "Beckn %s for transaction %s matched no referral; not applied",
+                action,
+                record.get("transactionId"),
+            )
+            return None
+        return self.apply_referral_lifecycle(referral, action, message)
+
     @staticmethod
-    def _system_user():
-        from django.conf import settings
+    def _apply_selected_patient(resource_request, record: dict) -> None:
+        """Point the referral at the patient the frontend chose, if it differs.
 
-        from care.users.models import User
+        When Care is also the BPP, the referral was built from the confirm
+        payload alone, so its patient may be one the BPP resolved (or created)
+        from the contract rather than the record the frontend selected. Both
+        sides are this instance, so the frontend's choice is authoritative.
+        """
+        from care.beckn.builders.outbound import resolve_patient
 
-        username = getattr(settings, "BECKN_SYSTEM_USERNAME", None)
-        if username:
-            return User.objects.filter(username=username).first()
-        return None
+        patient = resolve_patient((record.get("patient") or {}).get("patient"))
+        if patient is None or resource_request.related_patient_id == patient.id:
+            return
+        resource_request.related_patient = patient
+        resource_request.save(update_fields=["related_patient", "modified_date"])
+        logger.info(
+            "Consultation on_confirm: referral %s moved to the selected patient %s",
+            resource_request.external_id,
+            patient.external_id,
+        )

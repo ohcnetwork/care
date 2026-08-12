@@ -61,11 +61,19 @@ record. Poll the small record, then fetch a single slice when you need it.
   "serviceType": "consultation | appointment",
   "status": "DISCOVER|ON_DISCOVER|SELECT|ON_SELECT|CONFIRM|ON_CONFIRM|INIT|ON_INIT|STATUS|ON_STATUS|CANCEL|ON_CANCEL|UPDATE|ON_UPDATE|NACK|ERROR",
   "routing":  { "bppId": "…", "bppUri": "…", "bapId": "…", "bapUri": "…" },
+  "routingByBpp": { "<bppId>": { "bppId": "…", "bppUri": "…" } },
   "context":  { "networkId": "…", "bppId": "…", "bppUri": "…" },
   "actions":  ["DISCOVER", "ON_DISCOVER", "SELECT", "ON_SELECT", "CONFIRM", "ON_CONFIRM"],
   "resourceRequestId": "…"
 }
 ```
+
+`routingByBpp` holds one entry per provider that answered the discover.
+**When it has more than one entry, `select`/`confirm` must name the provider the
+user picked** in `context.bppId`, or the call fails with `400` ("N providers
+answered this discover … must name the chosen one in context.bppId"). Sent once,
+the choice is remembered for the rest of the exchange. With a single provider you
+can leave it out.
 
 **Action slice — `GET /bap/transaction/<id>?action=on_discover`:**
 ```json
@@ -91,8 +99,10 @@ Fetch each with `GET /bap/transaction/<id>?action=<action>` → read `data.messa
 - **Slots** (`?action=on_select` → `data.message.contract.performance[]`): each has `id`
   (slotId) + `performanceAttributes.appointmentWindowStart/End`,
   `healthServiceType`. → render selectable time slots.
-- **Confirmation** (`?action=on_confirm`): show success; for consultation, read
-  `resourceRequestId` from the status record.
+- **Confirmation** (`?action=on_confirm`): show success and read
+  `resourceRequestId` from the status record. Both flows set it: consultation
+  creates the referral, and appointment records the remote booking on the referral
+  it fulfils (`coordinationRef`) or on a resource request created for it.
 
 ## 6. Curls — Consultation (referral) flow
 
@@ -185,10 +195,13 @@ reflects this by `GET /api/v1/resource/<resourceRequestId>/` →
 5. **Select → slots**: call `POST /bap/select` with chosen offer + routing; poll →
    render `ON_SELECT` slots (appointment) or coordinator confirmation
    (consultation).
-6. **Confirm**: call `POST /bap/confirm` with patient
-   (`participants`/`healthIds`) + slot (appointment) or `facilityId`
-   (consultation) + `coordinationRef` when appointment references a referral;
-   poll → `ON_CONFIRM`; show success + `resourceRequestId`.
+6. **Confirm**: call `POST /bap/confirm` with the patient + slot (appointment) or
+   `facilityId` (consultation) + `coordinationRef` when the appointment references
+   a referral; poll → `ON_CONFIRM`; show success + `resourceRequestId`. Passing
+   `"patient": "<care patient uuid>"` is enough for the patient: the BE fills in
+   the name, gender, date of birth and ABHA from the record (the Care id itself is
+   never sent to the network). A passthrough `message` is still sent verbatim, so
+   build the `participants` yourself only if you need to.
 7. **Status views**: optionally call `POST /bap/status` (passthrough
    `message.contract.id`) and read `ON_STATUS`.
 8. **Referral tracking**: show the `ResourceRequest` status
@@ -201,9 +214,13 @@ reflects this by `GET /api/v1/resource/<resourceRequestId>/` →
 - Always poll after every action; the action response only returns
   `{transactionId, result}`.
 - Send provider routing (`context.bppId/bppUri`) once (at `select`); it's
-  remembered for later actions.
+  remembered for later actions, and it is **required** once more than one provider
+  has answered the discover (see `routingByBpp`).
 - `init/status/cancel/update` are **passthrough-only** — you must send `message`.
-- Redis TTLs: transaction 24h; appointment→referral link 90d.
+- `cancel`/`update` only reach a booking; against a referral the provider NACKs.
+- Redis TTLs: transaction 24h. A transaction that has expired can no longer
+  receive callbacks, so don't resume an exchange from a stale `transactionId` —
+  start a new `discover`.
 - Use the same `transactionId` for the whole discover→…→confirm exchange.
 
 ## 11. Build-ready: state machine & suggested structure
