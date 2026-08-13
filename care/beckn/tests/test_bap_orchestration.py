@@ -233,8 +233,9 @@ class ReferralConfirmBuilderTests(CareAPITestBase):
         attrs = build_referral_confirm(rr, "RR-1")["message"]["contract"][
             "contractAttributes"
         ]
-        self.assertEqual(attrs["facilityId"], "FAC-TARGET")
+        self.assertEqual(attrs["facilityId"], "FAC-ORIGIN")
         self.assertEqual(attrs["originFacilityId"], "FAC-ORIGIN")
+        self.assertEqual(attrs["assignedFacilityId"], "FAC-TARGET")
         self.assertEqual(attrs["coordinationId"], "RR-1")
 
     def test_confirm_falls_back_to_origin_facility(self):

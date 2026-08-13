@@ -7,6 +7,8 @@ NFH participant does not carry (phone number, geo organization) are backfilled
 from the originating facility.
 """
 
+from django.utils import timezone
+
 from care.beckn.config import get_default_geo_organization
 from care.beckn.mappers import (
     extract_dob_and_age,
@@ -23,6 +25,8 @@ from care.emr.models import Patient
 # A non-empty placeholder phone is required because Care's Patient model
 # carries a phone number; emergency/unidentified referrals may omit it.
 PLACEHOLDER_PHONE_NUMBER = "0000000000"
+# Referrals without a date of birth are recorded as this age.
+DEFAULT_REFERRAL_AGE_YEARS = 35
 
 
 def _match_existing_patient(health_ids: list[dict], phone_number: str | None):
@@ -125,6 +129,9 @@ def find_or_create_patient(message: dict, participant: dict | None, facility, us
 
     date_of_birth, _age = extract_dob_and_age(participant)
     gender = map_gender(attributes.get("gender"))
+    year_of_birth = None
+    if date_of_birth is None:
+        year_of_birth = timezone.now().year - DEFAULT_REFERRAL_AGE_YEARS
     # Demographics-only referrals (no health id / phone) still dedupe on the
     # patient's name (+ DOB / gender when present) so the same person is reused.
     if existing is None and name and name != "Unidentified Patient":
@@ -139,6 +146,7 @@ def find_or_create_patient(message: dict, participant: dict | None, facility, us
         gender=gender,
         phone_number=phone_number,
         date_of_birth=date_of_birth,
+        year_of_birth=year_of_birth,
         geo_organization=get_default_geo_organization(facility),
         instance_identifiers=build_instance_identifiers(health_ids),
         created_by=user,

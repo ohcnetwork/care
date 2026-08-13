@@ -121,6 +121,30 @@ def _adapter_fallback(adapter, action, transaction_id, record, body):
     raise FlowError(msg)
 
 
+def _create_local_referral(transaction_id: str, payload: dict) -> None:
+    """Create the local (origin) ResourceRequest for an outbound referral init.
+
+    The receiving instance creates its own request for the assigned facility;
+    here we create the request owned by the local facility carried in the same
+    payload, so the referral is also tracked on this side. Best-effort: a payload
+    whose facilities all live in other instances simply creates nothing here and
+    never blocks the outbound send.
+    """
+    from care.beckn.services.handlers import BecknActionError, _referral_init
+
+    try:
+        _referral_init(payload.get("context") or {}, payload.get("message") or {})
+    except BecknActionError:
+        logger.info(
+            "Beckn init %s: no local facility in payload; local RR not created",
+            transaction_id,
+        )
+    except Exception:
+        logger.exception(
+            "Beckn init %s: failed creating local ResourceRequest", transaction_id
+        )
+
+
 class BecknActionView(APIView):
     """POST /bap/<action>: initiate any Beckn action as a BAP.
 
@@ -187,6 +211,11 @@ class BecknActionView(APIView):
         # referral (ResourceRequest) when on_confirm arrives.
         if action == "confirm":
             txn_store.set_patient(transaction_id, body)
+        # On init, also create the origin ResourceRequest on this instance using
+        # the local facility in the payload (the receiving instance creates the
+        # assigned-facility request from the same init).
+        if action == "init":
+            _create_local_referral(transaction_id, payload)
         txn_store.record_request(transaction_id, action, payload)
         result, detail = deliver_bap_action(action, payload)
         _apply_delivery_result(transaction_id, result, detail)

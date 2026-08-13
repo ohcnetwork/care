@@ -23,6 +23,18 @@ GENDER_MAP = {
     "FEMALE": GenderChoices.female.value,
     "OTHER": GenderChoices.non_binary.value,
     "PREFER_NOT_TO_SAY": GenderChoices.non_binary.value,
+    # Transgender referrals are recorded as Care's "other" gender.
+    "TRANSGENDER": GenderChoices.non_binary.value,
+}
+
+# Care Patient.gender -> NFH HealthParticipant.gender. The NFH/ONIX schema only
+# accepts MALE/FEMALE/OTHER/PREFER_NOT_TO_SAY, so Care's non_binary and
+# transgender both map to OTHER on the way out.
+GENDER_TO_NFH = {
+    GenderChoices.male.value: "MALE",
+    GenderChoices.female.value: "FEMALE",
+    GenderChoices.non_binary.value: "OTHER",
+    GenderChoices.transgender.value: "OTHER",
 }
 
 # Care ResourceRequest.status -> NFH HealthReferral.lifecycleState
@@ -40,8 +52,15 @@ STATUS_TO_LIFECYCLE = {
 def map_gender(nfh_gender: str | None) -> str:
     """Map an NFH gender code to a Care gender, defaulting to non_binary."""
     if not nfh_gender:
-        return GenderChoices.non_binary.value
-    return GENDER_MAP.get(nfh_gender.upper(), GenderChoices.non_binary.value)
+        return GenderChoices.male.value
+    return GENDER_MAP.get(nfh_gender.upper(), GenderChoices.male.value)
+
+
+def map_gender_to_nfh(care_gender: str | None) -> str:
+    """Map a Care gender to an NFH/ONIX gender code, defaulting to OTHER."""
+    if not care_gender:
+        return "MALE"
+    return GENDER_TO_NFH.get(care_gender, "MALE")
 
 
 def map_status_to_lifecycle(status: str | None) -> str:

@@ -72,23 +72,27 @@ def _target_criteria(resource_request) -> dict:
     }
 
 
-def _confirm_facility_external_id(resource_request) -> str | None:
-    """The facility id the receiving Care should attach its referral to.
+def _referral_target(resource_request) -> dict:
+    """Per-referral BPP routing supplied when the RR was created.
 
-    Prefer the request's ``assigned_facility`` (the target chosen by the
-    referrer, which exists in the counterparty Care instance); fall back to the
-    origin facility for single-instance/loopback deployments.
+    ``extensions['beckn']['target']`` may carry ``bppId``/``bppUri`` (the other
+    Care instance to send to) and ``assignedFacilityId`` (a facility that exists
+    only in that instance, so it is never a local ``assigned_facility`` FK).
     """
-    rr = resource_request
-    if rr.assigned_facility_id:
-        return str(rr.assigned_facility.external_id)
-    if rr.origin_facility_id:
-        return str(rr.origin_facility.external_id)
-    return None
+    beckn = (getattr(resource_request, "extensions", None) or {}).get("beckn", {}) or {}
+    return beckn.get("target", {}) or {}
 
 
-def build_confirm_context(transaction_id: str) -> dict:
-    """Build the outbound ``confirm`` context from configured BAP/CC identity."""
+def build_confirm_context(transaction_id: str, target: dict | None = None) -> dict:
+    """Build the outbound ``confirm`` context from BAP identity.
+
+    ``target`` (from the RR payload) overrides the BPP the confirm is sent to,
+    so a referral can be routed to the specific instance that owns the assigned
+    facility; it falls back to the configured coordination center.
+    """
+    target = target or {}
+    bpp_id = target.get("bppId") or getattr(settings, "BECKN_CC_BPP_ID", "") or None
+    bpp_uri = target.get("bppUri") or getattr(settings, "BECKN_CC_BPP_URI", "") or None
     return {
         "networkId": getattr(settings, "BECKN_NETWORK_ID", "") or None,
         "action": "confirm",
@@ -98,8 +102,8 @@ def build_confirm_context(transaction_id: str) -> dict:
         "transactionId": transaction_id,
         "messageId": str(uuid.uuid4()),
         "timestamp": timezone.now().isoformat(),
-        "bppId": getattr(settings, "BECKN_CC_BPP_ID", "") or None,
-        "bppUri": getattr(settings, "BECKN_CC_BPP_URI", "") or None,
+        "bppId": bpp_id,
+        "bppUri": bpp_uri,
     }
 
 
@@ -126,11 +130,28 @@ def build_referral_confirm(resource_request, transaction_id: str) -> dict:
         "clinicalUrgencyTier": _clinical_urgency_tier(rr),
         "targetCriteria": _target_criteria(rr),
     }
-    facility_id = _confirm_facility_external_id(rr)
-    if facility_id:
-        attributes["facilityId"] = facility_id
-    if rr.origin_facility_id:
-        attributes["originFacilityId"] = str(rr.origin_facility.external_id)
+    # ``facilityId`` = the origin (referrer) facility so the receiver resolves it
+    # as the origin request; ``assignedFacilityId`` = the target facility so the
+    # receiver creates the assigned-facility request. The target facility may
+    # live only in the other instance (not a local FK), so fall back to the id
+    # carried in the RR payload routing.
+    target = _referral_target(rr)
+    origin_external = (
+        str(rr.origin_facility.external_id) if rr.origin_facility_id else None
+    )
+    assigned_external = (
+        str(rr.assigned_facility.external_id)
+        if rr.assigned_facility_id
+        else target.get("assignedFacilityId")
+    )
+    if origin_external:
+        attributes["facilityId"] = origin_external
+        attributes["originFacilityId"] = origin_external
+    elif assigned_external:
+        # No origin on record — still give the receiver a facility to attach to.
+        attributes["facilityId"] = assigned_external
+    if assigned_external:
+        attributes["assignedFacilityId"] = assigned_external
 
     contract = {
         "status": {"code": CONTRACT_STATUS_ACTIVE},
@@ -154,7 +175,7 @@ def build_referral_confirm(resource_request, transaction_id: str) -> dict:
         contract["participants"] = [_patient_participant(rr.related_patient)]
 
     return {
-        "context": build_confirm_context(transaction_id),
+        "context": build_confirm_context(transaction_id, target),
         "message": {"contract": contract},
     }
 

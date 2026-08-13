@@ -146,8 +146,17 @@ def _referral_select(context: dict, message: dict) -> dict:
 
 
 def _referral_init(context: dict, message: dict) -> dict:
-    """Create the patient and a pending ResourceRequest, return on_init."""
-    facility = resolve_origin_facility(context, message)
+    """Create the patient and a pending ResourceRequest, return on_init.
+
+    The request is owned by whichever facility in the payload resolves to *this*
+    instance: the origin (referrer) facility on the referrer's Care, or the
+    assigned (target) facility on the receiving Care. This lets a referral whose
+    ``facilityId`` belongs to another instance still land here against the
+    locally-known target facility instead of being rejected.
+    """
+    origin_facility = resolve_origin_facility(context, message)
+    assigned_facility = resolve_assigned_facility(context, message)
+    facility = origin_facility or assigned_facility
     if facility is None:
         raise BecknActionError(
             "No facility id in payload (contractAttributes.facilityId) "
@@ -159,7 +168,6 @@ def _referral_init(context: dict, message: dict) -> dict:
     attributes = get_contract_attributes(message)
     coordination_id = attributes.get("coordinationId") or contract.get("id")
     transaction_id = (context or {}).get("transactionId")
-    assigned_facility = resolve_assigned_facility(context, message)
 
     with transaction.atomic():
         participant = find_patient_participant(message)

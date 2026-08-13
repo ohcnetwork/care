@@ -207,9 +207,11 @@ def initiate_beckn_referral_on_create(sender, instance, created, **kwargs):
         return
     if instance.category not in BECKN_REFERRAL_CATEGORIES:
         return
-    # Inbound Beckn referrals carry an ``extensions['beckn']`` block; never
-    # bounce them back out to the coordination center.
-    if (instance.extensions or {}).get("beckn"):
+    # Inbound Beckn referrals are stamped with a ``role`` under
+    # ``extensions['beckn']`` by the BPP init/confirm handlers; never bounce
+    # those back out. Outbound RRs may still carry ``extensions['beckn']['target']``
+    # routing (which instance to send to), so only the role marker is a skip.
+    if (instance.extensions or {}).get("beckn", {}).get("role"):
         return
 
     from django.db import transaction

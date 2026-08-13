@@ -57,7 +57,12 @@ def deliver_bap_action(action: str, payload: dict) -> tuple[str, dict]:
         logger.exception("Beckn BAP action '%s' delivery to %s failed", action, url)
         return "error", {"reason": f"delivery failed: {exc}"}
 
-    logger.info(
+    # A non-200 from the caller is a delivery failure — log at WARNING so it is
+    # visible, otherwise INFO for a normal accepted response.
+    response_log = (
+        logger.info if response.status_code == HTTPStatus.OK else logger.warning
+    )
+    response_log(
         "Beckn BAP <- '%s' response from %s: status=%s body=%s",
         action,
         url,
