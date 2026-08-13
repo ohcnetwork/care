@@ -144,11 +144,18 @@ class TokenBookingBaseReadSpec(TokenBookingBaseSpec):
 
 class TokenBookingOTPReadSpec(TokenBookingBaseReadSpec):
     patient: PatientOTPReadSpec
+    associated_encounter: dict = {}
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.encounter.spec import EncounterSpecBase
+
         super().perform_extra_serialization(mapping, obj)
         mapping["patient"] = PatientOTPReadSpec.serialize(obj.patient).to_json()
+        if obj.associated_encounter_id:
+            mapping["associated_encounter"] = EncounterSpecBase.serialize(
+                obj.associated_encounter
+            ).to_json()
 
 
 class TokenBookingReadSpec(TokenBookingBaseReadSpec):

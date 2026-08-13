@@ -731,6 +731,8 @@ DJANGO_REST_MULTITOKENAUTH_REQUIRE_USABLE_PASSWORD = False
 
 SMS_BACKEND = "care.utils.sms.backend.sns.SnsBackend"
 
+OTP_QUERYSET_ENABLED = env.bool("OTP_QUERYSET_ENABLED", default=False)
+
 OTP_SMS_LOGIN_CONTENT = env(
     "OTP_SMS_LOGIN_CONTENT",
     default="Care OTP for login is {otp}. Please do not share this with anyone.",
