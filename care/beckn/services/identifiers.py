@@ -20,6 +20,11 @@ HEALTH_ID_SYSTEMS = {
     "MRN": ("system.care.ohc.network/mrn", "Medical Record Number"),
 }
 
+# Reverse map: Care identifier system slug -> NFH healthId system code.
+SLUG_TO_HEALTH_ID_SYSTEM = {
+    slug: nfh_system for nfh_system, (slug, _display) in HEALTH_ID_SYSTEMS.items()
+}
+
 _CONFIG_CACHE: dict[str, PatientIdentifierConfig] = {}
 
 
@@ -105,6 +110,21 @@ def build_instance_identifiers(health_ids: list[dict]) -> list[dict]:
         config = _get_or_create_config(system_slug, display)
         entries.append({"config": str(config.external_id), "value": value})
     return entries
+
+
+def health_ids_from_patient(patient) -> list[dict]:
+    """Return NFH ``healthIds`` ({system, value}) stored on a Care patient."""
+    if patient is None or not getattr(patient, "pk", None):
+        return []
+    results = []
+    for identifier in PatientIdentifier.objects.filter(patient=patient).select_related(
+        "config"
+    ):
+        slug = (identifier.config.config or {}).get("system")
+        nfh_system = SLUG_TO_HEALTH_ID_SYSTEM.get(slug)
+        if nfh_system and identifier.value:
+            results.append({"system": nfh_system, "value": identifier.value})
+    return results
 
 
 def find_patient_by_health_ids(health_ids: list[dict]):

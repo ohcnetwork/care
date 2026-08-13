@@ -27,6 +27,7 @@ from care.beckn.constants import (
     LIFECYCLE_FULFILLED,
     PARTICIPANT_ROLE_PATIENT,
 )
+from care.beckn.services.identifiers import health_ids_from_patient
 from care.emr.resources.resource_request.spec import CategoryChoices
 
 # ResourceRequest.priority at or above this level maps to an URGENT tier.
@@ -108,14 +109,18 @@ def build_confirm_context(transaction_id: str, target: dict | None = None) -> di
 
 
 def _patient_participant(patient) -> dict:
+    attributes = {
+        "@context": HEALTH_PARTICIPANT_CONTEXT,
+        "@type": "hpa:HealthParticipant",
+        "participantRole": PARTICIPANT_ROLE_PATIENT,
+    }
+    health_ids = health_ids_from_patient(patient)
+    if health_ids:
+        attributes["healthIds"] = health_ids
     return {
         "id": f"participant-patient-{patient.external_id}",
         "descriptor": {"name": patient.name},
-        "participantAttributes": {
-            "@context": HEALTH_PARTICIPANT_CONTEXT,
-            "@type": "hpa:HealthParticipant",
-            "participantRole": PARTICIPANT_ROLE_PATIENT,
-        },
+        "participantAttributes": attributes,
     }
 
 

@@ -16,6 +16,7 @@ from care.beckn.constants import (
     LIFECYCLE_DRAFT,
 )
 from care.beckn.mappers import map_gender_to_nfh, map_status_to_lifecycle
+from care.beckn.services.identifiers import health_ids_from_patient
 
 
 def _set_contract_status(contract: dict, code: str) -> None:
@@ -57,6 +58,9 @@ def _inject_referral(contract: dict, resource_request) -> None:
             "name": patient.name,
             "gender": map_gender_to_nfh(patient.gender),
         }
+        health_ids = health_ids_from_patient(patient)
+        if health_ids:
+            referral["patient"]["healthIds"] = health_ids
     attributes = contract.setdefault("contractAttributes", {})
     attributes["referral"] = referral
 
