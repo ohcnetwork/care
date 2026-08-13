@@ -57,11 +57,20 @@ def _get_or_create_config(system_slug: str, display: str) -> PatientIdentifierCo
 
 
 def upsert_health_id_identifiers(patient, health_ids: list[dict]) -> None:
-    """Create/update ``PatientIdentifier`` rows for the patient's health ids."""
+    """Create/update ``PatientIdentifier`` rows for the patient's health ids.
+
+    Also rebuilds ``Patient.instance_identifiers`` so the Care API/UI (which
+    reads that JSON, not the identifier table) shows the health ids. This
+    matters on confirm, when the patient was already created at init without
+    them — and on a later confirm if the rows exist but the JSON is still
+    empty.
+    """
+    touched = False
     for item in health_ids or []:
         value = item.get("value")
         if not value:
             continue
+        touched = True
         system_slug, display = _system_slug(item.get("system"))
         config = _get_or_create_config(system_slug, display)
         existing = PatientIdentifier.objects.filter(
@@ -75,6 +84,9 @@ def upsert_health_id_identifiers(patient, health_ids: list[dict]) -> None:
             PatientIdentifier.objects.create(
                 patient=patient, config=config, value=value
             )
+    if touched:
+        patient.build_instance_identifiers()
+        patient.save()
 
 
 def build_instance_identifiers(health_ids: list[dict]) -> list[dict]:
