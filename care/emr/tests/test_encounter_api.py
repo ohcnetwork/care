@@ -552,7 +552,7 @@ class EncounterAPITests(CareAPITestBase):
         )
         identifier_config = self._create_identifier_config(self.facility)
         url = reverse(
-            "encounter-set-facility-idenitifier",
+            "encounter-set-facility-identifier",
             kwargs={"external_id": self.encounter.external_id},
         )
         data = {
@@ -572,7 +572,7 @@ class EncounterAPITests(CareAPITestBase):
     def test_set_facility_identifier_without_permissions(self):
         identifier_config = self._create_identifier_config(self.facility)
         url = reverse(
-            "encounter-set-facility-idenitifier",
+            "encounter-set-facility-identifier",
             kwargs={"external_id": self.encounter.external_id},
         )
         data = {
@@ -588,7 +588,7 @@ class EncounterAPITests(CareAPITestBase):
             self.facility, auto_maintained=True
         )
         url = reverse(
-            "encounter-set-facility-idenitifier",
+            "encounter-set-facility-identifier",
             kwargs={"external_id": self.encounter.external_id},
         )
         data = {
@@ -603,7 +603,7 @@ class EncounterAPITests(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         identifier_config = self._create_identifier_config(self.facility)
         url = reverse(
-            "encounter-set-facility-idenitifier",
+            "encounter-set-facility-identifier",
             kwargs={"external_id": self.encounter.external_id},
         )
         data = {
@@ -627,7 +627,7 @@ class EncounterAPITests(CareAPITestBase):
             default_value="f'ID-{patient_count}'",
         )
         url = reverse(
-            "encounter-set-facility-idenitifier",
+            "encounter-set-facility-identifier",
             kwargs={"external_id": self.encounter.external_id},
         )
         data = {

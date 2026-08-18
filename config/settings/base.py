@@ -502,9 +502,31 @@ AUDIT_LOG = {
 
 # OTP
 # ------------------------------------------------------------------------------
-OTP_REPEAT_WINDOW = 6  # OTPs will only be valid for 6 hours to login
-OTP_MAX_REPEATS_WINDOW = 10  # times OTPs can be sent within OTP_REPEAT_WINDOW
 OTP_LENGTH = 5
+
+# The time window (in minutes) for tracking OTP request limits
+OTP_SEND_WINDOW_MINUTES = env.int("OTP_SEND_WINDOW_MINUTES", default=60)
+
+# Maximum number of OTPs that can be generated within the window defined above
+OTP_MAX_SENDS_PER_WINDOW = env.int("OTP_MAX_SENDS_PER_WINDOW", default=10)
+
+# Number of failed verification attempts allowed before an OTP is invalidated
+OTP_MAX_VERIFY_ATTEMPTS = env.int("OTP_MAX_VERIFY_ATTEMPTS", default=3)
+
+# Maximum total failures allowed before the phone number is restricted
+OTP_MAX_FAILURES = env.int("OTP_MAX_FAILURES", default=5)
+
+# Duration (in minutes) the account remains locked after reaching maximum failures
+OTP_LOCKOUT_MINUTES = env.int("OTP_LOCKOUT_MINUTES", default=60)
+
+# Duration (in minutes) an OTP remains valid for verification after it is generated
+OTP_VALIDITY_MINUTES = env.int("OTP_VALIDITY_MINUTES", default=10)
+
+# Duration (in hours) an OTP stays valid for the password reset flow
+OTP_REPEAT_WINDOW = env.int("OTP_REPEAT_WINDOW", default=6)
+
+# Maximum number of OTPs that can be sent within OTP_REPEAT_WINDOW (password reset flow)
+OTP_MAX_REPEATS_WINDOW = env.int("OTP_MAX_REPEATS_WINDOW", default=10)
 
 # Rate Limiting
 # ------------------------------------------------------------------------------

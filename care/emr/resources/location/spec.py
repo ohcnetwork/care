@@ -7,6 +7,7 @@ from care.emr.models import Encounter, FacilityLocationEncounter
 from care.emr.models.location import FacilityLocation
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common import Coding
+from care.emr.tagging.base import SingleFacilityTagManager
 
 
 class LocationEncounterAvailabilityStatusChoices(str, Enum):
@@ -135,13 +136,15 @@ class FacilityLocationListSpec(FacilityLocationMinimalListSpec):
     has_children: bool
     system_availability_status: str
     current_encounter: dict | None = None
+    tags: list[dict] = []
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         from care.emr.resources.encounter.spec import EncounterListSpec
 
         super().perform_extra_serialization(mapping, obj)
-
+        if obj.tags:
+            mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
         if obj.current_encounter:
             mapping["current_encounter"] = EncounterListSpec.serialize(
                 obj.current_encounter
