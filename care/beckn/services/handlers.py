@@ -168,6 +168,22 @@ def _referral_init(context: dict, message: dict) -> dict:
     attributes = get_contract_attributes(message)
     coordination_id = attributes.get("coordinationId") or contract.get("id")
     transaction_id = (context or {}).get("transactionId")
+    # Role reflects which facility resolved locally so the matching ``confirm``
+    # approves this request in place instead of creating a duplicate: the origin
+    # (referrer) instance owns the "origin" request, the target instance owns the
+    # "assigned" request.
+    role = "origin" if origin_facility is not None else "assigned"
+
+    # Idempotent by coordinationId + role: a second init for the same referral
+    # (e.g. a loopback where the BAP creates the local request AND the sent init
+    # reaches this same instance's BPP) reuses the existing request instead of
+    # creating a pending duplicate.
+    existing = ResourceRequest.objects.filter(
+        extensions__beckn__coordinationId=coordination_id,
+        extensions__beckn__role=role,
+    ).first()
+    if existing is not None:
+        return build_on_init(context, message, existing)
 
     with transaction.atomic():
         participant = find_patient_participant(message)
@@ -176,7 +192,9 @@ def _referral_init(context: dict, message: dict) -> dict:
         fields = _referral_fields(message)
         resource_request = ResourceRequest(
             origin_facility=facility,
-            assigned_facility=assigned_facility,
+            # Only the target ("assigned") request records the assigned facility;
+            # the origin (referrer) request carries just its own facility.
+            assigned_facility=assigned_facility if role == "assigned" else None,
             related_patient=patient,
             status=StatusChoices.pending.value,
             created_by=user,
@@ -185,7 +203,7 @@ def _referral_init(context: dict, message: dict) -> dict:
         )
         resource_request.extensions = {
             "beckn": {
-                "role": "origin",
+                "role": role,
                 "coordinationId": coordination_id,
                 "transactionId": transaction_id,
                 "contract": contract,
@@ -276,7 +294,9 @@ def _confirm_referral_for_facility(
                 updated_by=user,
                 **_referral_fields(message),
             )
-        if assigned_facility is not None:
+        # Only the target ("assigned") request records the assigned facility; the
+        # origin (referrer) request carries just its own facility.
+        if role == "assigned" and assigned_facility is not None:
             resource_request.assigned_facility = assigned_facility
         extensions = resource_request.extensions or {}
         beckn = extensions.setdefault("beckn", {})

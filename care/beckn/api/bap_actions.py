@@ -12,6 +12,7 @@ The counterparty (BPP) URLs are not known up front — they are learned from the
 
 import logging
 
+from django.conf import settings
 from rest_framework import status as http_status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -130,10 +131,24 @@ def _create_local_referral(transaction_id: str, payload: dict) -> None:
     whose facilities all live in other instances simply creates nothing here and
     never blocks the outbound send.
     """
+    context = payload.get("context") or {}
+    own_bpp_uri = getattr(settings, "BECKN_BPP_URI", "") or None
+    # Loopback: when the init targets this instance's own BPP URI, the inbound
+    # BPP init handler creates the request. Creating it here too would duplicate
+    # it (the request transaction hasn't committed yet, so the BPP side can't see
+    # this row and makes its own), so skip and let the BPP handler own it. Match
+    # on bppUri, not bppId — the bppId is shared network-wide across instances.
+    if own_bpp_uri and context.get("bppUri") == own_bpp_uri:
+        logger.info(
+            "Beckn init %s: loopback target; local RR left to the BPP handler",
+            transaction_id,
+        )
+        return
+
     from care.beckn.services.handlers import BecknActionError, _referral_init
 
     try:
-        _referral_init(payload.get("context") or {}, payload.get("message") or {})
+        _referral_init(context, payload.get("message") or {})
     except BecknActionError:
         logger.info(
             "Beckn init %s: no local facility in payload; local RR not created",
