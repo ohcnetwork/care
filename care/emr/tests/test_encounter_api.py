@@ -43,7 +43,6 @@ class EncounterAPITests(CareAPITestBase):
             facility=self.facility,
             organization=self.facility_organization,
             status_history={"history": []},
-            encounter_class_history={"history": []},
         )
         self.client.force_authenticate(user=self.user)
         self.url = reverse("encounter-list")
@@ -930,7 +929,6 @@ class EncounterAppointmentAPITests(CareAPITestBase):
             facility=self.facility,
             organization=self.facility_organization,
             status_history={"history": []},
-            encounter_class_history={"history": []},
         )
         self.client.force_authenticate(user=self.user)
         self.url = reverse("encounter-list")

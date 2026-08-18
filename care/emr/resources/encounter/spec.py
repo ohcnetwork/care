@@ -95,11 +95,6 @@ class EncounterCreateSpec(ExtensionValidator, EncounterSpecBase):
             obj.status_history = {
                 "history": [{"status": obj.status, "moved_at": str(timezone.now())}]
             }
-            obj.encounter_class_history = {
-                "history": [
-                    {"status": obj.encounter_class, "moved_at": str(timezone.now())}
-                ]
-            }
 
 
 class EncounterUpdateSpec(ExtensionValidator, EncounterSpecBase):
@@ -107,10 +102,6 @@ class EncounterUpdateSpec(ExtensionValidator, EncounterSpecBase):
         old_instance = Encounter.objects.get(id=obj.id)
         if old_instance.status != self.status:
             obj.status_history["history"].append(
-                {"status": self.status, "moved_at": str(timezone.now())}
-            )
-        if old_instance.encounter_class != self.encounter_class:
-            obj.encounter_class_history["history"].append(
                 {"status": self.status, "moved_at": str(timezone.now())}
             )
         if self.discharge_summary_advice is None and is_update:
@@ -121,7 +112,6 @@ class EncounterListSpec(EncounterSpecBase):
     patient: dict
     facility: dict
     status_history: dict
-    encounter_class_history: dict
     created_date: datetime.datetime
     modified_date: datetime.datetime
     tags: list[dict] = []

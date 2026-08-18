@@ -12,7 +12,6 @@ class Encounter(EMRBaseModel):
     status = models.CharField(max_length=100, null=True, blank=True)
     status_history = models.JSONField(default=dict)
     encounter_class = models.CharField(max_length=100, null=True, blank=True)
-    encounter_class_history = models.JSONField(default=dict)
     patient = models.ForeignKey("emr.Patient", on_delete=models.CASCADE)
     period = models.JSONField(default=dict)
     facility = models.ForeignKey("facility.Facility", on_delete=models.PROTECT)
