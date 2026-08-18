@@ -65,7 +65,7 @@ ROUNDING_CLASS = {}
 
 def get_rounding_class(method):
     global ROUNDING_CLASS  # noqa: PLW0602
-    if ROUNDING_CLASS.get(method) is not None and method is None:
+    if ROUNDING_CLASS.get(method) is not None:
         return ROUNDING_CLASS.get(method)
     module_name, _, class_name = method.rpartition(".")
     module = importlib.import_module(module_name)
