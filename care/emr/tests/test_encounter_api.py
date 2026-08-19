@@ -42,6 +42,7 @@ class EncounterAPITests(CareAPITestBase):
             patient=self.patient,
             facility=self.facility,
             organization=self.facility_organization,
+            encounter_class=ClassChoices.imp.value,
             status_history={"history": []},
         )
         self.client.force_authenticate(user=self.user)
@@ -457,6 +458,27 @@ class EncounterAPITests(CareAPITestBase):
         )
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["status"], StatusChoices.completed.value)
+
+    def test_update_encounter_class_not_allowed(self):
+        role = self.create_role_with_permissions(
+            permissions=[
+                EncounterPermissions.can_write_encounter.name,
+                EncounterPermissions.can_read_encounter.name,
+                PatientPermissions.can_list_patients.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        update_data = self.encounter_data.copy()
+        update_data["encounter_class"] = ClassChoices.amb.value
+        response = self.client.put(
+            self._get_detail_url(self.facility.external_id, self.patient.external_id),
+            update_data,
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertIn("Encounter class cannot be changed", str(response.data))
 
     def test_update_encounter_without_permissions(self):
         update_data = self.encounter_data.copy()
@@ -928,6 +950,7 @@ class EncounterAppointmentAPITests(CareAPITestBase):
             patient=self.patient,
             facility=self.facility,
             organization=self.facility_organization,
+            encounter_class=ClassChoices.imp.value,
             status_history={"history": []},
         )
         self.client.force_authenticate(user=self.user)
