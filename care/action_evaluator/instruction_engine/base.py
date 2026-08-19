@@ -12,6 +12,7 @@ class InstructionType(str, Enum):
     PERFORMED = "PERFORMED"
     NOTIFY = "NOTIFY"
     TEXT = "TEXT"
+    VALIDATE = "VALIDATE"
 
 
 class BaseInstruction:
@@ -46,5 +47,6 @@ class BaseInstruction:
             "results": results,
         }
 
-    def authorize(self) -> bool:
+    @classmethod
+    def authorize(cls, request, user, params: dict) -> bool:
         raise NotImplementedError("Subclasses must implement this method")

@@ -17,5 +17,9 @@ class LoggingActionInstruction(BaseInstruction):
         logging.info(f"Logging Action Instruction: {self.inputs}")  # noqa : LOG015 G004
         return self.inputs
 
+    @classmethod
+    def authorize(cls, request, user, params: dict) -> bool:
+        return True
+
 
 ActionInstructionRegistry.register(LoggingActionInstruction)

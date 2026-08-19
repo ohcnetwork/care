@@ -10,6 +10,7 @@ The context engine will get a cache which it can use to avoid re-calculating any
 
 from evalidate import EvalException, Expr, base_eval_model
 from pydantic import BaseModel, field_validator
+from rest_framework.exceptions import ValidationError
 
 from care.action_evaluator.context_engine.evaluator import ActionContextEvaluator
 from care.action_evaluator.utils import get_all_variables
@@ -57,6 +58,22 @@ class ActionEvaluator:
         self.field_cache = field_cache or {}
         self.context_cache = {"self": context_obj}
         self.cache = {}
+
+    @classmethod
+    def authorize(cls, request, user, action: list[Action]) -> bool:
+        action_obj = Action.model_validate(action)
+        for instruction in action_obj.instructions:
+            instruction_class = ActionInstructionRegistry.get_instruction(
+                instruction.slug
+            )
+            if not instruction_class:
+                err = f"Instruction {instruction.slug} not found"
+                raise ValidationError(err)
+            allowed = instruction_class.authorize(request, user, instruction.params)
+            if not allowed:
+                err = f"Instruction {instruction.slug} not authorized"
+                raise ValidationError(err)
+        return True
 
     def evaluate_field(self, field, context_mode: bool = False):
         for variable in get_all_variables(field):
