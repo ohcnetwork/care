@@ -1,4 +1,6 @@
+from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -10,12 +12,17 @@ from care.emr.api.viewsets.base import (
     EMRUpsertMixin,
 )
 from care.emr.models.action import Action
+from care.emr.registries.actions.context import ActionContextRegistry
+from care.emr.registries.actions.field import ActionFieldRegistry
+from care.emr.registries.actions.instruction import ActionInstructionRegistry
 from care.emr.resources.action.spec import (
     ActionConfigurationReadSpec,
     ActionConfigurationRetrieveSpec,
     ActionConfigurationUpdateSpec,
     ActionConfigurationWriteSpec,
 )
+
+local_cache = {"contexts": {}, "instructions": {}, "fields": {}}
 
 
 class ActionConfigurationViewSet(
@@ -62,3 +69,23 @@ class ActionConfigurationViewSet(
 
     def get_queryset(self):
         return super().get_queryset()
+
+    @action(detail=False, methods=["GET"])
+    def contexts(self, request, *args, **kwargs):
+        if not local_cache["contexts"]:
+            local_cache["contexts"] = ActionContextRegistry.render_all_contexts()
+        return Response({"contexts": local_cache["contexts"]})
+
+    @action(detail=False, methods=["GET"])
+    def instructions(self, request, *args, **kwargs):
+        if not local_cache["instructions"]:
+            local_cache["instructions"] = (
+                ActionInstructionRegistry.render_all_instructions()
+            )
+        return Response({"instructions": local_cache["instructions"]})
+
+    @action(detail=False, methods=["GET"])
+    def fields(self, request, *args, **kwargs):
+        if not local_cache["fields"]:
+            local_cache["fields"] = ActionFieldRegistry.render_all_fields()
+        return Response({"fields": local_cache["fields"]})

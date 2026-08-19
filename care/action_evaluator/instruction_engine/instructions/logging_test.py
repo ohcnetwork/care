@@ -1,3 +1,5 @@
+from pydantic import BaseModel
+
 from care.action_evaluator.context_engine.contexts.core import AppointmentContext
 from care.action_evaluator.instruction_engine.base import (
     BaseInstruction,
@@ -6,10 +8,16 @@ from care.action_evaluator.instruction_engine.base import (
 from care.emr.registries.actions.instruction import ActionInstructionRegistry
 
 
+class Schema(BaseModel):
+    message: str
+
+
 class LoggingActionInstruction(BaseInstruction):
     slug = "logging"
     context = AppointmentContext
     instruction_type = InstructionType.NOTIFY
+    input_schema = Schema
+    output_schema = Schema
 
     def evaluate(self):
         import logging

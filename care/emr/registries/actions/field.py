@@ -35,3 +35,13 @@ class ActionFieldRegistry:
         if context_type in cls._dynamic_contexts:
             return cls._dynamic_contexts[context_type]
         return []
+
+    @classmethod
+    def render_all_fields(cls) -> list[dict]:
+        fields = []
+        for _, context_fields in cls._contexts.items():
+            for _, value in context_fields.items():
+                fields.append(value.render_dict())
+        for _, value in cls._global_fields.items():
+            fields.append(value.render_dict())
+        return fields

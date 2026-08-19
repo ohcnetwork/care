@@ -20,6 +20,7 @@ class BaseInstruction:
     input_schema: BaseModel
     output_schema: BaseModel
     context: ActionContextBase
+    instruction_type: InstructionType
 
     def clean_inputs(self, inputs: dict) -> dict:
         return inputs
@@ -50,3 +51,13 @@ class BaseInstruction:
     @classmethod
     def authorize(cls, request, user, params: dict) -> bool:
         raise NotImplementedError("Subclasses must implement this method")
+
+    @classmethod
+    def render_dict(cls) -> dict:
+        return {
+            "slug": cls.slug,
+            "input_schema": cls.input_schema.model_json_schema(),
+            "output_schema": cls.output_schema.model_json_schema(),
+            "context": cls.context.context_type,
+            "instruction_type": cls.instruction_type,
+        }

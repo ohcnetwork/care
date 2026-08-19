@@ -11,3 +11,7 @@ class ActionInstructionRegistry:
     @classmethod
     def get_instruction(cls, slug: str):
         return cls._instructions.get(slug)
+
+    @classmethod
+    def render_all_instructions(cls) -> list[dict]:
+        return [cls._instructions[x].render_dict() for x in cls._instructions]

@@ -10,3 +10,7 @@ class ActionContextRegistry:
         if context_type in cls._contexts:
             return cls._contexts[context_type]
         return None
+
+    @classmethod
+    def render_all_contexts(cls) -> list[any]:
+        return list(cls._contexts.keys())
