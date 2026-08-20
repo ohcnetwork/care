@@ -120,6 +120,7 @@ if SENTRY_DSN := env("SENTRY_DSN", default=""):
     ignore_logger("django.security.DisallowedHost")
 
 # SMS API KEYS
+SMS_BACKEND = env("SMS_BACKEND", default="care.utils.sms.backend.sns.SnsBackend")
 SNS_ACCESS_KEY = env("SNS_ACCESS_KEY", default="")
 SNS_SECRET_KEY = env("SNS_SECRET_KEY", default="")
 SNS_REGION = env("SNS_REGION", default="ap-south-1")

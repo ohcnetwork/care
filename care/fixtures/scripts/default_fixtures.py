@@ -8,6 +8,7 @@ from care.emr.resources.location.spec import (
     FacilityLocationModeChoices,
 )
 from care.emr.resources.organization.spec import OrganizationTypeChoices
+from care.fixtures.billing import load_billing
 from care.fixtures.constants import (
     DEFAULT_AVAILABILITY,
     FACILITY_DEPARTMENTS,
@@ -131,8 +132,9 @@ def load_fixtures(base):  # noqa: PLR0915, PLR0912
         patients.append(base.create_patient(geo_organization.id))
     log("Loading patients completed")
 
+    encounters = {}
     for patient in patients:
-        base.create_encounter(
+        encounters[patient.id] = base.create_encounter(
             patient.id,
             facility_id,
             organizations=[general_medicine.id],
@@ -170,6 +172,9 @@ def load_fixtures(base):  # noqa: PLR0915, PLR0912
 
     load_inventory(base, facility_id, departments, suppliers, ward)
     log("Loading inventory completed")
+
+    load_billing(base, facility_id, patients, encounters)
+    log("Loading billing (accounts, charge items, invoices) completed")
 
     load_scheduling(base, facility_id, created_users, patients, departments, roles)
     log("Loading scheduling completed")

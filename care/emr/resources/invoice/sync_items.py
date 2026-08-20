@@ -58,7 +58,7 @@ def sync_invoice_items(invoice: Invoice):
         care_method=settings.INVOICE_FINAL_AMOUNT_ROUNDING_METHOD,
     )
     if not invoice.is_refund and (invoice.total_net < 0 or invoice.total_gross < 0):
-        raise ValidationError("A Refund Ivoice is required for negative values")
+        raise ValidationError("A Refund Invoice is required for negative values")
     invoice.total_price_components = json.loads(
         json.dumps(
             summary["total_price_components"],
