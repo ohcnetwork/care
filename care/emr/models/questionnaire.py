@@ -30,6 +30,7 @@ class Questionnaire(EMRBaseModel):
     questions = models.JSONField(default=dict)
     organization_cache = ArrayField(models.IntegerField(), default=list)
     internal_organization_cache = ArrayField(models.IntegerField(), default=list)
+    actions = models.JSONField(default=list)
 
     class Meta:
         constraints = [

@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
@@ -6,6 +7,11 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
+from care.action_evaluator.base import ActionEvaluator
+from care.action_evaluator.context_engine.contexts.core import (
+    EncounterQuestionnaireContext,
+    PatientQuestionnaireContext,
+)
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.api.viewsets.favorites import EMRFavoritesMixin
 from care.emr.api.viewsets.questionnaire.resource_authz import (
@@ -41,6 +47,7 @@ from care.emr.resources.questionnaire.spec import (
     SubjectType,
 )
 from care.emr.resources.questionnaire.utils import (
+    build_cleaned_response,
     handle_resource_response,
     handle_response,
 )
@@ -66,13 +73,23 @@ class ParentRevisionFilter(filters.UUIDFilter):
         return qs.filter(latest_revision__external_id=value)
 
 
+class FacilityOrInstance(filters.UUIDFilter):
+    def filter(self, qs, value):
+        if value is None:
+            return qs
+        return qs.filter(Q(facility__external_id=value) | Q(facility__isnull=True))
+
+
 class QuestionnaireFilter(filters.FilterSet):
     title = filters.CharFilter(field_name="title", lookup_expr="icontains")
     subject_type = MultiSelectFilter(field_name="subject_type")
     auth_context = filters.CharFilter(field_name="auth_context", lookup_expr="iexact")
     facility = filters.UUIDFilter(field_name="facility__external_id")
+    facility_isnull = filters.BooleanFilter(field_name="facility__isnull")
     status = filters.CharFilter(field_name="status", lookup_expr="iexact")
     parent_revision = ParentRevisionFilter()
+    facility_or_instance = FacilityOrInstance()
+    slug = filters.CharFilter(field_name="slug", lookup_expr="iexact")
 
 
 class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
@@ -162,6 +179,13 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
         ):
             raise PermissionDenied("Permission Denied to create user questionnaire")
 
+        if getattr(request_obj, "actions", None):
+            for action in request_obj.actions:
+                ActionEvaluator.authorize(self.request, self.request.user, action)
+        elif getattr(model_instance, "actions", None):
+            for action in model_instance.actions:
+                ActionEvaluator.authorize(self.request, self.request.user, action)
+
     def authorize_create(self, instance):
         if (
             instance.auth_context == QuestionnaireAuthContext.instance
@@ -204,6 +228,9 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
                 read_only=False,
             ):
                 raise PermissionDenied("Permission Denied to create user questionnaire")
+        if getattr(instance, "actions", None):
+            for action in instance.actions:
+                ActionEvaluator.authorize(self.request, self.request.user, action)
 
     def authorize_destroy(self, instance):
         self.authorize_update(self.request, instance)
@@ -304,6 +331,7 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
                     "Permission Denied to submit patient questionnaire"
                 )
             form_submission_params["encounter__isnull"] = True
+        action_response = {}
         with transaction.atomic():
             response = handle_response(questionnaire, request_params, request.user)
             response.revision = questionnaire.internal_revision
@@ -326,7 +354,28 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
                 response.save(
                     update_fields=["form_submission", "updated_by", "modified_date"]
                 )
-        return Response(QuestionnaireResponseReadSpec.serialize(response).to_json())
+            actions = questionnaire.actions
+            if actions:
+                context_type = (
+                    PatientQuestionnaireContext
+                    if questionnaire.subject_type == SubjectType.patient.value
+                    else EncounterQuestionnaireContext
+                )
+                action_response = ActionEvaluator(
+                    request,
+                    request.user,
+                    context_type.context_type,
+                    response,
+                    actions,
+                    field_cache=build_cleaned_response(
+                        questionnaire.questions,
+                        response._responses,  # noqa SLF001
+                        "q_",
+                    ),
+                ).evaluate()
+        response_data = QuestionnaireResponseReadSpec.serialize(response).to_json()
+        response_data["_actions"] = action_response
+        return Response(response_data)
 
     @action(detail=True, methods=["GET"])
     def get_facility_organizations(self, request, *args, **kwargs):
