@@ -16,7 +16,8 @@ care/fixtures/
 ├── context.py           # care_fixture_context() — setup/teardown
 ├── scripts/
 │   ├── __init__.py
-│   └── default_fixtures.py   # Default seed file (loaded by manage.py)
+│   ├── default_fixtures.py   # Default seed file (loaded by manage.py)
+│   └── questionnaire_e2e_fixtures.py   # Questionnaire E2E seed file (see below)
 └── fixtures.md          # This file
 ```
 
@@ -80,6 +81,36 @@ python manage.py load_fixtures --path care/fixtures/scripts/minimal.py
 > The `if __name__ == "__main__":` guard works because `runpy.run_path`
 > executes the file with `__name__ == "__main__"`. You can omit the
 > guard and put the `with` block at the top level — both are fine.
+
+### Questionnaire E2E fixtures
+
+`care/fixtures/scripts/questionnaire_e2e_fixtures.py` seeds a deterministic
+set of questionnaires for frontend E2E tests, all slugged with an `e2e-`
+prefix:
+
+- `e2e-kitchen-sink-instance` / `e2e-kitchen-sink-facility` — every simple
+  question type, groups with layout presets, enable_when coverage,
+  repeating questions and an observation-bound question.
+- `e2e-subject-location` / `e2e-subject-device` / `e2e-subject-facility` —
+  one questionnaire per non-encounter subject type.
+- `e2e-org-scope` (facility-organization scoped), `e2e-user-scope`
+  (user scoped, created as `care-fac-admin`).
+- `e2e-versioned` — carries two archived revisions (`internal_revision` 3).
+- `e2e-pagination-001` … `e2e-pagination-018` — enough active
+  questionnaires to page past the default page size.
+- An E2E patient with one `planned` and one `in_progress` encounter in
+  "FACILITY WITH PATIENTS".
+
+Run it **after** the default fixtures:
+
+```bash
+python manage.py load_fixtures --path care/fixtures/scripts/questionnaire_e2e_fixtures.py
+```
+
+Unlike `default_fixtures.py`, this script is **idempotent and additive**:
+every create is preceded by an API lookup (slug / phone number / status)
+and skipped when the record already exists, so it is safe to run
+repeatedly against a populated development database.
 
 ### CI-injected fixtures
 
@@ -182,7 +213,7 @@ The `load_billing(base, facility_id, patients, encounters=None)` orchestrator in
 - `load_questionnaires_from_file(...)` — bulk-load from JSON
 - `get_roles()`
 - `get_facility_organizations(facility_id)`
-- `get(...)/post(...)` - if utility unavailable make one can use these to load data
+- `get(...)/post(...)/put(...)/patch(...)` - if utility unavailable make one can use these to load data
 
 Every `create_*` method accepts `**kwargs` for any additional fields
 the API supports.
