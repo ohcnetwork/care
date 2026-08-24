@@ -1,17 +1,13 @@
 from io import BytesIO
 from unittest.mock import patch
 
-from django.conf import settings
 from django.core import mail
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.test import override_settings
 from django.urls import reverse
 from django.utils import timezone
 from PIL import Image
 
-from care.emr.resources.common.mail_type import MailTypeChoices
 from care.emr.resources.patient.spec import GenderChoices
-from care.security.permissions.service_account import ServiceAccountPermissions
 from care.security.permissions.user import UserPermissions
 from care.users.models import User
 from care.utils.tests.base import CareAPITestBase
