@@ -34,5 +34,15 @@ class SupplyDeliveryAccess(AuthorizationHandler):
             orgs=location.facility_organization_cache,
         )
 
+    def can_write_facility_medication_return(self, user, location):
+        """
+        Check if the user has permission to write medication return in the location
+        """
+        return self.check_permission_in_facility_organization(
+            [SupplyDeliveryPermissions.can_write_medication_return.name],
+            user,
+            orgs=location.facility_organization_cache,
+        )
+
 
 AuthorizationController.register_internal_controller(SupplyDeliveryAccess)
