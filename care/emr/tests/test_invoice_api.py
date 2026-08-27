@@ -88,18 +88,19 @@ class InvoiceAPITestBase(CareAPITestBase):
         return data
 
     def create_invoice(self, **kwargs):
-        invoice = baker.make(
-            "emr.Invoice",
-            facility=self.facility,
-            account=self.account,
-            patient=self.patient,
-            status=kwargs.get("status", InvoiceStatusOptions.draft.value),
-            charge_items=kwargs.get("charge_items", [self.charge_item.id]),
-            title=kwargs.get("title", "Test Invoice"),
-            number=kwargs.get("number", f"INV-{random.randint(1000, 9999)}"),  # noqa: S311
-            issue_date=kwargs.get("issue_date", datetime.now(UTC).isoformat()),
-            locked=kwargs.get("locked", False),
-        )
+        data = {
+            "facility": self.facility,
+            "account": self.account,
+            "patient": self.patient,
+            "status": InvoiceStatusOptions.draft.value,
+            "charge_items": [self.charge_item.id],
+            "title": "Test Invoice",
+            "number": f"INV-{random.randint(1000, 9999)}",  # noqa: S311
+            "issue_date": datetime.now(UTC).isoformat(),
+            "locked": False,
+        }
+        data.update(**kwargs)
+        invoice = baker.make("emr.Invoice", **data)
         sync_invoice_items(invoice)
         invoice.save()
         return invoice
@@ -122,22 +123,28 @@ class InvoiceAPITestBase(CareAPITestBase):
             "charge_item_definition": self.charge_item_definition,
             "facility": self.facility,
             "status": kwargs.get("status", ChargeItemStatusOptions.billable.value),
-            "quantity": Decimal("1.00"),
-            "unit_price_components": [
-                {
-                    "monetary_component_type": "base",
-                    "currency": "INR",
-                    "amount": "100.00",
-                }
-            ],
-            "total_price_components": [
-                {
-                    "monetary_component_type": "base",
-                    "currency": "INR",
-                    "amount": "100.00",
-                }
-            ],
-            "total_price": Decimal("100.00"),
+            "quantity": kwargs.get("quantity", Decimal("1.00")),
+            "unit_price_components": kwargs.get(
+                "unit_price_components",
+                [
+                    {
+                        "monetary_component_type": "base",
+                        "currency": "INR",
+                        "amount": "100.00",
+                    }
+                ],
+            ),
+            "total_price_components": kwargs.get(
+                "total_price_components",
+                [
+                    {
+                        "monetary_component_type": "base",
+                        "currency": "INR",
+                        "amount": "100.00",
+                    }
+                ],
+            ),
+            "total_price": kwargs.get("total_price", Decimal("100.00")),
         }
         data.update(**kwargs)
         return ChargeItem.objects.create(**data)
@@ -180,7 +187,8 @@ class InvoiceAPITestBase(CareAPITestBase):
         data.pop("number")
         response = self.client.post(self.url, data, format="json")
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.data["number"])
+        expected_year = datetime.now(UTC).strftime("%y")
+        self.assertEqual(response.data["number"], f"INV-1-{expected_year}")
 
     def test_create_invoice_fails_when_create_lock_is_held(self):
         """
@@ -365,66 +373,6 @@ class InvoiceAPITestBase(CareAPITestBase):
             response_data["errors"][0]["msg"],
             "Invoice must have at least one charge item",
         )
-
-    def test_attach_account_to_invoice_rejects_negative_total_without_refund(self):
-        role = self.create_role_with_permissions(
-            [
-                InvoicePermissions.can_read_invoice.name,
-                InvoicePermissions.can_write_invoice.name,
-            ]
-        )
-        self.attach_role_facility_organization_user(self.organization, self.user, role)
-        self.client.force_authenticate(user=self.user)
-
-        baker.make(
-            "emr.ChargeItem",
-            facility=self.facility,
-            patient=self.patient,
-            encounter=self.encounter,
-            account=self.account,
-            status=ChargeItemStatusOptions.billable.value,
-            quantity=Decimal("1.00"),
-            unit_price_components=[{"amount": -500, "monetary_component_type": "base"}],
-            total_price_components=[
-                {"amount": -500, "monetary_component_type": "base"}
-            ],
-            total_price=Decimal("-500.00"),
-        )
-
-        invoice = baker.make(
-            "emr.Invoice",
-            facility=self.facility,
-            account=self.account,
-            patient=self.patient,
-            status=InvoiceStatusOptions.draft.value,
-            is_refund=False,
-            total_net=Decimal("0.00"),
-            total_gross=Decimal("0.00"),
-        )
-
-        response = self.client.post(self._get_url(invoice.external_id))
-        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(
-            response.json()["errors"][0]["msg"],
-            "A Refund Invoice is required for negative values",
-        )
-
-    def test_attach_account_to_invoice_requires_draft_status(self):
-        role = self.create_role_with_permissions(
-            [
-                InvoicePermissions.can_read_invoice.name,
-                InvoicePermissions.can_write_invoice.name,
-            ]
-        )
-        self.client.force_authenticate(user=self.user)
-        invoice = self.create_invoice(status=InvoiceStatusOptions.issued.value)
-        data = self.generate_invoice_data(status=InvoiceStatusOptions.draft.value)
-        response = self.client.put(
-            self.get_detail_url(invoice.external_id), data, format="json"
-        )
-        self.assertEqual(response.status_code, 400)
-        response_data = response.data
-        self.assertEqual(response_data["errors"][0]["msg"], "Invoice is already issued")
 
     def test_update_balanced_invoice(self):
         """
@@ -623,6 +571,9 @@ class InvoiceAPITestBase(CareAPITestBase):
         response_data = response.data["results"]
         self.assertEqual(len(response_data), 1)
         self.assertEqual(response_data[0]["id"], str(invoice.external_id))
+        self.assertEqual(
+            response_data[0]["account"]["id"], str(self.account.external_id)
+        )
 
     # Testcases for retrieve api
 
@@ -1034,6 +985,65 @@ class InvoiceAPITestBase(CareAPITestBase):
             str(new_charge_item.external_id),
             [str(item["id"]) for item in response_data["charge_items"]],
         )
+
+    def test_attach_account_to_invoice_rejects_negative_total_without_refund(self):
+        role = self.create_role_with_permissions(
+            [
+                InvoicePermissions.can_read_invoice.name,
+                InvoicePermissions.can_write_invoice.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        self.create_charge_item(
+            facility=self.facility,
+            patient=self.patient,
+            encounter=self.encounter,
+            account=self.account,
+            status=ChargeItemStatusOptions.billable.value,
+            quantity=Decimal("1.00"),
+            unit_price_components=[{"amount": -500, "monetary_component_type": "base"}],
+            total_price_components=[
+                {"amount": -500, "monetary_component_type": "base"}
+            ],
+            total_price=Decimal("-500.00"),
+        )
+        invoice = self.create_invoice(
+            facility=self.facility,
+            account=self.account,
+            patient=self.patient,
+            status=InvoiceStatusOptions.draft.value,
+            charge_items=[],
+            is_refund=False,
+            total_net=Decimal("0.00"),
+            total_gross=Decimal("0.00"),
+        )
+
+        response = self.client.post(self.get_attach_account_url(invoice.external_id))
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json()["errors"][0]["msg"],
+            "A Refund Invoice is required for negative values",
+        )
+
+    def test_attach_account_to_invoice_requires_draft_status(self):
+        role = self.create_role_with_permissions(
+            [
+                InvoicePermissions.can_read_invoice.name,
+                InvoicePermissions.can_write_invoice.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+        invoice = self.create_invoice(status=InvoiceStatusOptions.issued.value)
+        data = self.generate_invoice_data(status=InvoiceStatusOptions.draft.value)
+        response = self.client.put(
+            self.get_detail_url(invoice.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        response_data = response.data
+        self.assertEqual(response_data["errors"][0]["msg"], "Invoice is already issued")
 
     def test_remove_charge_items_from_invoice_with_superuser(self):
         """
