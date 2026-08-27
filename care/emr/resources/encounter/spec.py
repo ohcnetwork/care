@@ -62,7 +62,6 @@ class EncounterSpecBase(EMRResource):
 
     id: UUID4 = None
     status: StatusChoices
-    encounter_class: ClassChoices
     period: PeriodSpec = {}
     hospitalization: HospitalizationSpec | None = {}
     priority: EncounterPriorityChoices
@@ -75,6 +74,7 @@ class EncounterCreateSpec(ExtensionValidator, EncounterSpecBase):
     facility: UUID4
     organizations: list[UUID4] = []
     appointment: UUID4 | None = None
+    encounter_class: ClassChoices
 
     def perform_extra_deserialization(self, is_update, obj):
         if not is_update:
@@ -117,6 +117,7 @@ class EncounterListSpec(EncounterSpecBase):
     tags: list[dict] = []
     current_location: dict | None = None
     care_team: list[dict] = []
+    encounter_class: ClassChoices
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

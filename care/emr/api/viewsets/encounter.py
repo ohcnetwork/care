@@ -148,9 +148,6 @@ class EncounterViewSet(
             if not Facility.objects.filter(external_id=instance.facility).exists():
                 raise ValidationError("Facility does not exist")
 
-        elif model_obj.encounter_class != instance.encounter_class:
-            raise ValidationError("Encounter class cannot be changed")
-
     def authorize_retrieve(self, model_instance):
         patient = model_instance.patient
         if AuthorizationController.call(
