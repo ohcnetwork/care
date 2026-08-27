@@ -241,8 +241,8 @@ class PatientFacilityIdentifiersContextBuilder(IdentifiersContextBuilder):
 class PatientFacilityAppointmentContextBuilder(TokenBookingContextBuilder):
     def get_context(self):
         return TokenBooking.objects.filter(
-            patient_id=self.parent_context.patient.id,
-            token_slot__resource__facility_id=self.parent_context.facility.id,
+            patient_id=self.parent_context.patient_id,
+            token_slot__resource__facility_id=self.parent_context.facility_id,
         )
 
 
