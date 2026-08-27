@@ -366,12 +366,55 @@ class InvoiceAPITestBase(CareAPITestBase):
             "Invoice must have at least one charge item",
         )
 
-    def test_update_issued_invoice_to_draft_status(self):
-        """
-        Test updating an issued invoice to draft status.
-        """
-        self.attach_role_facility_organization_user(
-            self.organization, self.user, self.role
+    def test_attach_account_to_invoice_rejects_negative_total_without_refund(self):
+        role = self.create_role_with_permissions(
+            [
+                InvoicePermissions.can_read_invoice.name,
+                InvoicePermissions.can_write_invoice.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        baker.make(
+            "emr.ChargeItem",
+            facility=self.facility,
+            patient=self.patient,
+            encounter=self.encounter,
+            account=self.account,
+            status=ChargeItemStatusOptions.billable.value,
+            quantity=Decimal("1.00"),
+            unit_price_components=[{"amount": -500, "monetary_component_type": "base"}],
+            total_price_components=[
+                {"amount": -500, "monetary_component_type": "base"}
+            ],
+            total_price=Decimal("-500.00"),
+        )
+
+        invoice = baker.make(
+            "emr.Invoice",
+            facility=self.facility,
+            account=self.account,
+            patient=self.patient,
+            status=InvoiceStatusOptions.draft.value,
+            is_refund=False,
+            total_net=Decimal("0.00"),
+            total_gross=Decimal("0.00"),
+        )
+
+        response = self.client.post(self._get_url(invoice.external_id))
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.json()["errors"][0]["msg"],
+            "A Refund Invoice is required for negative values",
+        )
+
+    def test_attach_account_to_invoice_requires_draft_status(self):
+        role = self.create_role_with_permissions(
+            [
+                InvoicePermissions.can_read_invoice.name,
+                InvoicePermissions.can_write_invoice.name,
+            ]
         )
         self.client.force_authenticate(user=self.user)
         invoice = self.create_invoice(status=InvoiceStatusOptions.issued.value)
