@@ -112,7 +112,6 @@ class ConditionReadSpec(BaseConditionSpec):
     clinical_status: str
     verification_status: str
     category: str
-    criticality: str
     severity: str
     code: Coding
     encounter: UUID4

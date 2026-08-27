@@ -43,7 +43,6 @@ class TestPatientViewSet(CareAPITestBase):
 
     def setUp(self):
         """Set up test data that's needed for all tests"""
-        super().setUp()  # Call parent's setUp to ensure proper initialization
         self.base_url = reverse("patient-list")
 
     def generate_patient_data(self, geo_organization, **kwargs):
@@ -232,6 +231,115 @@ class TestPatientViewSet(CareAPITestBase):
         PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, 400)
+
+    def test_create_patient_with_unique_patient_identifier(self):
+        """
+        Test creating a patient with a unique identifier config and validating"""
+        user = self.create_user()
+        geo_organization = self.create_organization(org_type="govt")
+        role = self.create_role_with_permissions(
+            permissions=[PatientPermissions.can_create_patient.name]
+        )
+        self.attach_role_organization_user(geo_organization, user, role)
+        self.client.force_authenticate(user=user)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id
+        )
+        PatientCreateLock().release()
+        identifier_config = PatientIdentifierConfig.objects.create(
+            status="active",
+            config={
+                "use": "official",
+                "system": "test-identifier",
+                "required": False,
+                "unique": True,
+                "regex": "",
+                "display": "Test Identifier",
+            },
+        )
+        identifier_value = "UNIQUE-ID-12345"
+        patient_data["identifiers"] = [
+            {"config": str(identifier_config.external_id), "value": identifier_value}
+        ]
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Value error, Identifier config test-identifier is not unique",
+        )
+
+    def test_create_patient_with_non_unique_patient_identifier(self):
+        """
+        Test creating a patient with a non-unique identifier config and validating"""
+        user = self.create_user()
+        geo_organization = self.create_organization(org_type="govt")
+        role = self.create_role_with_permissions(
+            permissions=[PatientPermissions.can_create_patient.name]
+        )
+        self.attach_role_organization_user(geo_organization, user, role)
+        self.client.force_authenticate(user=user)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id
+        )
+        PatientCreateLock().release()
+        identifier_config = PatientIdentifierConfig.objects.create(
+            status="active",
+            config={
+                "use": "official",
+                "system": "test-identifier",
+                "required": False,
+                "unique": False,
+                "regex": "",
+                "display": "Test Identifier",
+            },
+        )
+        identifier_value = "NON-UNIQUE-ID-12345"
+        patient_data["identifiers"] = [
+            {"config": str(identifier_config.external_id), "value": identifier_value}
+        ]
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_patient_with_empty_string_identifier(self):
+        """
+        Test creating a patient with an identifier config and an empty string value and skipping validation for uniqueness"""
+        user = self.create_user()
+        geo_organization = self.create_organization(org_type="govt")
+        role = self.create_role_with_permissions(
+            permissions=[PatientPermissions.can_create_patient.name]
+        )
+        self.attach_role_organization_user(geo_organization, user, role)
+        self.client.force_authenticate(user=user)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id
+        )
+        PatientCreateLock().release()
+        identifier_config = PatientIdentifierConfig.objects.create(
+            status="active",
+            config={
+                "use": "official",
+                "system": "test-identifier",
+                "required": False,
+                "unique": True,
+                "regex": "",
+                "display": "Test Identifier",
+            },
+        )
+        identifier_value = ""
+        patient_data["identifiers"] = [
+            {"config": str(identifier_config.external_id), "value": identifier_value}
+        ]
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_delete_patient_as_superuser(self):
         superuser = self.create_super_user()

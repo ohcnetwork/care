@@ -43,6 +43,7 @@ class TagResource(str, Enum):
     supply_request_order = "supply_request_order"
     supply_delivery_order = "supply_delivery_order"
     account = "account"
+    location = "location"
 
 
 class TagStatus(str, Enum):
