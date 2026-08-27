@@ -4,9 +4,8 @@ from uuid import uuid4
 from django.db import models
 
 from care.emr.models import EMRBaseModel
-from care.emr.utils.file_manager import S3FilesManager
+from care.emr.utils.file_manager import FilesManager
 from care.users.models import User
-from care.utils.csp.config import BucketType
 from care.utils.models.validators import parse_file_extension
 
 
@@ -31,11 +30,11 @@ class ReportUpload(EMRBaseModel):
         related_name="archived_reports",
     )
 
-    files_manager = S3FilesManager(BucketType.REPORT)
+    files_manager = FilesManager("report")
 
     @property
     def file_type(self):
-        """Alias for report_type to maintain compatibility with S3FilesManager"""
+        """Alias for report_type, so reports share the storage-name convention"""
         return self.report_type
 
     def get_extension(self):

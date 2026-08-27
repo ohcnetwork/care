@@ -1,16 +1,16 @@
-import base64
-
 import magic
 from django.conf import settings
-from django.core.files.base import ContentFile
 from django.db import transaction
 from django.utils import timezone
 from django_filters import rest_framework as filters
-from drf_spectacular.utils import extend_schema
+from drf_spectacular.types import OpenApiTypes
+from drf_spectacular.utils import extend_schema, extend_schema_field
 from pydantic import BaseModel
 from rest_framework import filters as rest_framework_filters
+from rest_framework import serializers
 from rest_framework.decorators import action
-from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.exceptions import NotFound, PermissionDenied, ValidationError
+from rest_framework.parsers import MultiPartParser
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
@@ -25,12 +25,14 @@ from care.emr.models.consent import Consent
 from care.emr.models.diagnostic_report import DiagnosticReport
 from care.emr.models.service_request import ServiceRequest
 from care.emr.resources.file_upload.spec import (
+    FileCategoryChoices,
     FileTypeChoices,
     FileUploadCreateSpec,
     FileUploadListSpec,
     FileUploadRetrieveSpec,
     FileUploadUpdateSpec,
 )
+from care.emr.utils.file_download import file_object_response
 from care.security.authorization import AuthorizationController
 from care.utils.shortcuts import get_object_or_404
 
@@ -116,6 +118,55 @@ class FileUploadFilter(filters.FilterSet):
     name = filters.CharFilter(field_name="name", lookup_expr="icontains")
 
 
+@extend_schema_field(OpenApiTypes.BINARY)
+class BinaryFileField(serializers.FileField):
+    """
+    A `FileField` that documents itself as binary.
+
+    drf-spectacular renders `FileField` as `format: uri` by default, because
+    DRF serialises it to a URL on *output*. In a multipart request body it is
+    raw bytes, so the annotation is applied here rather than by flipping
+    COMPONENT_SPLIT_REQUEST, which would reshape every schema in the project.
+    """
+
+
+class FileUploadMultipartSerializer(serializers.Serializer):
+    """
+    `multipart/form-data` upload request (ADR-0002).
+
+    Declares the transport contract and the binary field. The metadata fields
+    are carried through to `FileUploadCreateSpec`, which remains the
+    authoritative validator for the logical file type, category and filename.
+
+    `file_type` and `file_category` are `ChoiceField`s here as well, so the
+    choices appear in the generated schema and a bad value is rejected before
+    the file is read. That duplicates the spec's enums deliberately: both are
+    generated from the same `FileTypeChoices` / `FileCategoryChoices`, so adding
+    a member updates both. No rule is restated by hand.
+    """
+
+    file = BinaryFileField(
+        help_text="The file itself, sent as a normal multipart file part."
+    )
+    name = serializers.CharField(help_text="Display name for the file.")
+    associating_id = serializers.CharField(
+        help_text="External id of the object the file belongs to."
+    )
+    file_type = serializers.ChoiceField(
+        choices=[choice.value for choice in FileTypeChoices]
+    )
+    file_category = serializers.ChoiceField(
+        choices=[choice.value for choice in FileCategoryChoices]
+    )
+    original_name = serializers.CharField(
+        required=False,
+        help_text=(
+            "Original filename. Defaults to the uploaded part's filename; "
+            "supply it only to override."
+        ),
+    )
+
+
 class FileUploadViewSet(
     EMRCreateMixin, EMRRetrieveMixin, EMRUpdateMixin, EMRListMixin, EMRBaseViewSet
 ):
@@ -173,6 +224,21 @@ class FileUploadViewSet(
         file_authorizer(self.request.user, obj.file_type, obj.associating_id, "read")
         return super().get_queryset()
 
+    @extend_schema(
+        description="Download the file through CARE. Reads through Django Storage; "
+        "no storage-provider URL is exposed.",
+        responses={(200, "application/octet-stream"): OpenApiTypes.BINARY},
+    )
+    @action(detail=True, methods=["GET"])
+    def download(self, request, *args, **kwargs):
+        # get_object() -> get_queryset(), which runs file_authorizer(..., "read")
+        # for every detail action.
+        obj = self.get_object()
+        if not obj.upload_completed:
+            msg = "File upload is not complete"
+            raise NotFound(msg)
+        return file_object_response(obj)
+
     @extend_schema(responses={200: FileUploadListSpec})
     @action(detail=True, methods=["POST"])
     def mark_upload_completed(self, request, *args, **kwargs):
@@ -210,31 +276,44 @@ class FileUploadViewSet(
         )
         return Response(FileUploadListSpec.serialize(obj).to_json())
 
-    @action(detail=False, methods=["POST"], url_path="upload-file")
+    @extend_schema(
+        description=(
+            "Upload a file through CARE using multipart/form-data. The bytes "
+            "are streamed to the configured storage backend through Django "
+            "Storage; no storage-provider URL is involved."
+        ),
+        request={"multipart/form-data": FileUploadMultipartSerializer},
+        responses={200: FileUploadRetrieveSpec},
+    )
+    @action(
+        detail=False,
+        methods=["POST"],
+        url_path="upload-file",
+        parser_classes=[MultiPartParser],
+    )
     def upload_file(self, request, *args, **kwargs):
-        file_name = request.data.get("original_name")
-        file_data = request.data.get("file_data")
+        serializer = FileUploadMultipartSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        payload = serializer.validated_data
 
-        if not file_name or not file_data:
-            raise ValidationError(
-                "Missing required fields: 'original_name' or 'file_data'"
-            )
-
-        try:
-            file_content = base64.b64decode(file_data)
-        except Exception as e:
-            error = "Invalid base64-encoded file data"
-            raise ValidationError(error) from e
-
-        uploaded_file = ContentFile(file_content, name=file_name)
+        # Django's upload handlers have already decided whether this is an
+        # InMemoryUploadedFile or a TemporaryUploadedFile, based on
+        # FILE_UPLOAD_MAX_MEMORY_SIZE. Either way it is a file-like object and
+        # is never fully materialised here.
+        uploaded_file = payload["file"]
+        file_name = payload.get("original_name") or uploaded_file.name
 
         max_file_size = settings.MAX_FILE_UPLOAD_SIZE * 1024 * 1024
         if uploaded_file.size > max_file_size:
             error = f"File size exceeds the limit of {max_file_size / (1024 * 1024)}MB"
             raise ValidationError(error)
 
+        # Sniff the declared type from the leading bytes rather than trusting
+        # the part's Content-Type header, matching the previous behaviour.
         try:
-            mime_type = magic.from_buffer(file_content[:2048], mime=True)
+            header = uploaded_file.read(2048)
+            uploaded_file.seek(0)
+            mime_type = magic.from_buffer(header, mime=True)
         except Exception as e:
             error = "Error detecting file type."
             raise ValidationError(error) from e
@@ -245,26 +324,38 @@ class FileUploadViewSet(
 
         request_data = {
             "original_name": file_name,
-            "name": request.data.get("name"),
-            "associating_id": request.data.get("associating_id"),
-            "file_type": request.data.get("file_type"),
-            "file_category": request.data.get("file_category"),
+            "name": payload["name"],
+            "associating_id": payload["associating_id"],
+            "file_type": payload["file_type"],
+            "file_category": payload["file_category"],
             "mime_type": mime_type,
         }
 
+        # The row is written first and the object second, both inside one
+        # transaction: a storage failure rolls the row back, so no completed
+        # record can exist without its object. The reverse gap — object written,
+        # commit fails — leaves an orphan object, which is pre-existing
+        # behaviour recorded as B8 in unresolved-items.md.
         with transaction.atomic():
             file_upload = FileUploadCreateSpec(**request_data).de_serialize()
             file_upload._just_created = False  # noqa SLF001
             self.authorize_create(file_upload)
             file_upload.save()
 
+            # Only the storage write is translated into "failed to upload to
+            # storage". The save below is deliberately outside the block: a
+            # database failure there is not a storage failure, and reporting it
+            # as one sends whoever reads the log to the wrong system.
             try:
+                # The UploadedFile is handed straight to Django Storage; it is
+                # not read into memory first.
                 file_upload.files_manager.put_object(file_upload, uploaded_file)
-                file_upload.upload_completed = True
-                file_upload.updated_by = request.user
-                file_upload.save(skip_internal_name=True)
             except Exception as e:
                 error_msg = "Failed to upload file to storage"
                 raise ValidationError(error_msg) from e
+
+            file_upload.upload_completed = True
+            file_upload.updated_by = request.user
+            file_upload.save(skip_internal_name=True)
 
         return Response(FileUploadRetrieveSpec.serialize(file_upload).to_json())

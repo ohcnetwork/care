@@ -1,0 +1,458 @@
+# Claude Code Prompt — Phase 0: Complete CARE Runtime Inventory
+
+You are working inside a fork of:
+
+```text
+https://github.com/ohcnetwork/care
+```
+
+The official upstream development branch is:
+
+```text
+upstream/develop
+```
+
+The maintained integration branch is:
+
+```text
+gcp
+```
+
+The current working branch should be:
+
+```text
+feature/gcp-phase-0-inventory
+```
+
+## Objective
+
+Complete Phase 0 of the greenfield GCP implementation plan.
+
+Do not implement GCP support yet.
+
+Do not modify application behavior.
+
+Do not refactor CARE.
+
+Do not add abstractions.
+
+Your task is only to inspect the current repository, verify the existing GCP documentation against the real code and create a complete call-site inventory.
+
+Read these documents first:
+
+```text
+docs/xii/architecture/00-scope-and-goals.md
+docs/xii/architecture/01-current-runtime.md
+docs/xii/architecture/02-target-runtime.md
+docs/xii/architecture/03-migration-plan.md
+docs/xii/architecture/04-testing.md
+docs/xii/architecture/05-upstream-sync.md
+docs/xii/architecture/06-operations.md
+docs/xii/architecture/07-configuration-reference.md
+```
+
+The architectural goal is narrowly defined:
+
+* Deploy CARE greenfield on GCP.
+* Use Cloud Run.
+* Use Cloud SQL.
+* Use Django Storage API and `django-storages`.
+* All uploads and downloads pass through Django.
+* Do not use direct browser-to-bucket uploads.
+* Use Cloud Tasks by default.
+* Support PostgreSQL for cache and appropriate shared state.
+* Keep Redis optional.
+* Preserve local Redis, Celery and MinIO compatibility.
+* Do not redesign CARE or abstract Django ORM.
+
+## Preliminary verification
+
+Before inspecting code, report:
+
+```bash
+git status
+git branch --show-current
+git remote -v
+git log -1 --oneline
+```
+
+Verify that:
+
+* the working tree is clean;
+* the branch is derived from `gcp`;
+* `origin` exists;
+* `upstream` points to the official CARE repository.
+
+Do not reset, merge, rebase, push or modify branches automatically.
+
+## Required inventory
+
+Create:
+
+```text
+docs/xii/architecture/inventory/
+├── storage-call-sites.md
+├── task-call-sites.md
+├── cache-and-redis.md
+├── frontend-file-flow.md
+├── runtime-and-deployment.md
+├── plugin-impact.md
+└── unresolved-items.md
+```
+
+### Storage inventory
+
+Locate every use of:
+
+```text
+files_manager
+S3FilesManager
+boto3
+botocore
+signed_url
+read_signed_url
+put_object
+get_object
+delete_object
+delete_objects
+BUCKET_PROVIDER
+BUCKET_ENDPOINT
+BUCKET_EXTERNAL_ENDPOINT
+FILE_UPLOAD_BUCKET
+FACILITY_S3_BUCKET
+```
+
+For each call site, document:
+
+* file path;
+* symbol or function;
+* line number;
+* caller;
+* operation;
+* logical bucket;
+* whether the call is used by API, task, command or plugin;
+* whether it exposes a direct object-storage URL;
+* whether it reads the complete file into memory;
+* whether it can be replaced by Django Storage API;
+* uncertainty requiring further analysis.
+
+Do not modify storage code.
+
+### Task inventory
+
+Locate every use of:
+
+```text
+@shared_task
+@app.task
+.delay(
+.apply_async(
+send_task(
+AsyncResult
+CELERY_RESULT_BACKEND
+add_periodic_task
+crontab
+```
+
+For every task, document:
+
+* task name;
+* source file;
+* call sites;
+* payload;
+* return value;
+* whether callers use the task ID;
+* whether callers read the result;
+* retry policy;
+* expiry;
+* expected duration when inferable;
+* database effects;
+* storage effects;
+* email or external-service effects;
+* idempotency risks;
+* periodic schedule;
+* plugin ownership;
+* likely target classification.
+
+Classifications are limited to:
+
+```text
+cloud_tasks_candidate
+cloud_run_job_candidate
+synchronous_candidate
+celery_compatibility
+requires_analysis
+```
+
+Do not migrate tasks.
+
+### Cache and Redis inventory
+
+Locate every use of:
+
+```text
+REDIS_URL
+django_redis
+django.core.cache
+from django.core.cache import cache
+cache.
+redis
+Redis
+django_ratelimit
+CELERY_BROKER_URL
+CELERY_RESULT_BACKEND
+```
+
+Classify every use as:
+
+```text
+celery_broker
+celery_result_backend
+performance_cache
+shared_cache
+report_progress
+rate_limit
+distributed_lock
+transient_state
+session
+health_check
+direct_redis
+unknown
+```
+
+For each use, document whether it could use:
+
+```text
+PostgreSQL database cache
+explicit PostgreSQL model
+LocMem
+Redis-compatible backend
+not applicable
+```
+
+Do not claim PostgreSQL is suitable without examining the required semantics.
+
+Do not modify cache or Redis code.
+
+### Frontend file-flow inventory
+
+Inspect the repository for frontend-facing contracts related to files.
+
+Document:
+
+* upload initiation endpoint;
+* upload completion endpoint;
+* signed URL response;
+* download endpoint;
+* direct bucket URL response;
+* serializers;
+* OpenAPI schema;
+* tests;
+* frontend repository references, if present;
+* exact API changes required to make all traffic pass through Django.
+
+Do not implement the new file API.
+
+### Runtime and deployment inventory
+
+Inspect:
+
+```text
+Dockerfiles
+docker-compose files
+Makefile
+startup scripts
+health checks
+GitHub Actions
+deployment manifests
+dependency files
+lockfiles
+settings modules
+```
+
+Document:
+
+* current API command;
+* current worker command;
+* migration behavior;
+* static collection;
+* Redis waits;
+* database waits;
+* Celery Beat startup;
+* production image availability;
+* CI commands;
+* dependency manager;
+* relevant Python and Django versions;
+* existing GCP-related code, if any.
+
+### Plugin impact
+
+Determine how CARE loads plugins.
+
+Identify any installed or bundled plugins that may introduce:
+
+* Celery tasks;
+* Redis dependencies;
+* direct S3 or boto3 use;
+* signed URLs;
+* custom health checks;
+* custom startup behavior;
+* additional migrations.
+
+Do not assume external plugins are compatible.
+
+Document what can and cannot be determined from the repository.
+
+## Documentation verification
+
+Compare the real repository against:
+
+```text
+docs/xii/architecture/01-current-runtime.md
+```
+
+Correct factual inaccuracies only.
+
+`01-current-runtime.md` must remain purely descriptive.
+
+Do not insert target architecture, recommendations or migration instructions
+into that document.
+
+If the repository has changed since the document was written, update:
+
+```text
+reviewed
+source commit
+affected sections
+```
+
+Do not rewrite the other GCP documents unless a verified code fact directly
+contradicts them.
+
+List any such contradictions in:
+
+```text
+docs/xii/architecture/inventory/unresolved-items.md
+```
+
+## Baseline commands
+
+Discover the official commands from the repository before running them.
+
+Run the safest available equivalents of:
+
+```bash
+make build
+make up
+make load-fixtures
+make test
+```
+
+Do not invent commands.
+
+Do not delete volumes.
+
+Do not use destructive database reset commands.
+
+Record:
+
+* exact command;
+* success or failure;
+* duration if readily available;
+* test count;
+* failures;
+* skipped tests;
+* unhealthy services;
+* relevant logs.
+
+Store the baseline in:
+
+```text
+docs/xii/architecture/inventory/runtime-and-deployment.md
+```
+
+If an external dependency prevents execution, document the exact blocker.
+
+## Prohibited work
+
+Do not:
+
+* add `django-storages`;
+* add GCP dependencies;
+* add Terraform;
+* modify settings behavior;
+* migrate storage;
+* create upload endpoints;
+* create Cloud Tasks handlers;
+* make Redis optional;
+* introduce PostgreSQL cache;
+* change models;
+* add migrations;
+* modify the frontend;
+* commit generated secrets;
+* redesign the project;
+* add repository patterns;
+* create generic ports or adapters;
+* push changes.
+
+## Quality requirements
+
+Every inventory statement must reference:
+
+* an exact file;
+* an exact symbol;
+* and, where practical, a line number.
+
+Clearly distinguish:
+
+```text
+verified
+inferred
+unknown
+```
+
+Do not present inference as fact.
+
+Avoid generic architecture advice.
+
+Focus on the repository as it exists.
+
+## Tests
+
+Because this phase changes documentation only:
+
+* run Markdown formatting or linting if the repository provides it;
+* rerun no application tests solely because documentation changed, except for
+  the initial baseline;
+* verify all documented file paths exist;
+* verify all documented symbols exist.
+
+## Commit
+
+After completing the inventory, create one commit:
+
+```text
+docs(gcp): complete runtime call-site inventory
+```
+
+Do not push.
+
+## Final report
+
+Provide:
+
+1. current branch and commit;
+2. files created;
+3. files modified;
+4. factual corrections made to `01-current-runtime.md`;
+5. task count;
+6. storage call-site count;
+7. cache and Redis call-site count;
+8. plugin uncertainties;
+9. baseline command results;
+10. blockers;
+11. recommended next implementation phase.
+
+Stop after Phase 0.
+
+Do not begin implementation.

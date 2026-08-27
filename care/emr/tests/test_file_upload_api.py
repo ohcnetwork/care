@@ -1,11 +1,9 @@
-import base64
 import io
 from datetime import timedelta
 
-import requests
-from botocore.exceptions import ClientError
 from django.conf import settings
-from django.test import override_settings
+from django.core.files.base import ContentFile
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from PIL import Image
 
@@ -13,10 +11,9 @@ from care.emr.models.file_upload import FileUpload
 from care.emr.tasks.cleanup_incomplete_file_uploads import (
     cleanup_incomplete_file_uploads,
 )
-from care.utils.tests.base import CareAPITestBase
+from care.utils.tests.base import CareAPITestBase, response_content
 
 
-@override_settings(FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT=settings.BUCKET_ENDPOINT)
 class FileUploadTestCase(CareAPITestBase):
     def setUp(self):
         super().setUp()
@@ -33,6 +30,20 @@ class FileUploadTestCase(CareAPITestBase):
         self.file.seek(0)
 
         self.client.force_authenticate(user=self.user)
+
+    def upload_payload(self, **overrides):
+        """A valid multipart upload body (ADR-0002)."""
+        payload = {
+            "file": SimpleUploadedFile(
+                self.file.name, self.file.getvalue(), content_type=self.file_mime_type
+            ),
+            "name": "file",
+            "file_type": "patient",
+            "file_category": "unspecified",
+            "associating_id": str(self.patient.external_id),
+        }
+        payload.update(overrides)
+        return payload
 
     def test_upload_user_avatar(self):
         url = reverse("users-profile-picture", args=[self.user.username])
@@ -57,88 +68,45 @@ class FileUploadTestCase(CareAPITestBase):
         self.assertTrue(self.facility.cover_image_url)
 
     def test_upload_patient_file(self):
-        url = reverse("files-list")
+        upload = self.client.post(
+            reverse("files-upload-file"),
+            self.upload_payload(),
+            format="multipart",
+        )
+        self.assertEqual(upload.status_code, 200, upload.data)
 
-        response = self.client.post(
-            url,
-            {
-                "name": "file",
-                "original_name": "file.jpg",
-                "file_type": "patient",
-                "file_category": "unspecified",
-                "associating_id": str(self.patient.external_id),
-                "mime_type": self.file_mime_type,
-            },
-            format="json",
-        )
-        self.assertEqual(response.status_code, 200, response.data)
+        detail = self.client.get(reverse("files-detail", args=[upload.data["id"]]))
+        self.assertEqual(detail.status_code, 200, detail.data)
 
-        file_upload_response = requests.put(
-            response.data["signed_url"],
-            data=self.file,
-            headers={
-                "Content-Type": self.file_mime_type,
-                "x-ms-blob-type": "BlockBlob",
-            },
-            timeout=5,
-        )
-        self.assertIn(
-            file_upload_response.status_code, [200, 201], file_upload_response.text
-        )
-
-        response = self.client.post(
-            reverse("files-mark-upload-completed", args=[response.data["id"]]),
-            format="json",
-        )
-        self.assertEqual(response.status_code, 200, response.data)
-
-        response = self.client.get(
-            reverse("files-detail", args=[response.data["id"]]),
-            format="json",
-        )
-        self.assertEqual(response.status_code, 200, response.data)
-
-        file_response = requests.get(
-            response.data["read_signed_url"],
-            timeout=5,
-        )
-        self.assertEqual(file_response.status_code, 200, file_response.text)
-        self.assertEqual(file_response.content, self.file.getvalue())
+        # The download URL is a CARE route, not a storage-provider URL.
+        download_url = detail.data["download_url"]
         self.assertEqual(
-            file_response.headers["Content-Type"],
-            self.file_mime_type,
-            file_response.headers,
+            download_url, reverse("files-download", args=[upload.data["id"]])
         )
-        # NOTE: azure does not support content-disposition
+
+        file_response = self.client.get(download_url)
+        self.assertEqual(file_response.status_code, 200)
+        self.assertEqual(response_content(file_response), self.file.getvalue())
+        self.assertEqual(file_response.headers["Content-Type"], self.file_mime_type)
+        # An inline-safe type still renders inline, as the presigned
+        # ResponseContentDisposition used to arrange.
         self.assertEqual(
             file_response.headers["Content-Disposition"],
-            f"inline; filename={self.file.name}",
+            f'inline; filename="{self.file.name}"',
             file_response.headers,
         )
 
     def test_direct_file_upload(self):
-        url = reverse("files-upload-file")
         response = self.client.post(
-            url,
-            {
-                "name": "file",
-                "original_name": "file.jpg",
-                "file_type": "patient",
-                "file_category": "unspecified",
-                "associating_id": str(self.patient.external_id),
-                "mime_type": self.file_mime_type,
-                "file_data": base64.b64encode(self.file.read()).decode("utf-8"),
-            },
+            reverse("files-upload-file"),
+            self.upload_payload(),
             format="multipart",
         )
         self.assertEqual(response.status_code, 200, response.data)
 
-        file_response = requests.get(
-            response.data["read_signed_url"],
-            timeout=5,
-        )
-        self.assertEqual(file_response.status_code, 200, file_response.text)
-        self.assertEqual(file_response.content, self.file.getvalue())
+        file_response = self.client.get(response.data["download_url"])
+        self.assertEqual(file_response.status_code, 200)
+        self.assertEqual(response_content(file_response), self.file.getvalue())
 
     def test_cleanup_incomplete_file_uploads(self):
         url = reverse("files-list")
@@ -161,24 +129,17 @@ class FileUploadTestCase(CareAPITestBase):
         )
         file_obj.save()
 
-        file_upload_response = requests.put(
-            response.data["signed_url"],
-            data=self.file,
-            headers={
-                "Content-Type": self.file_mime_type,
-                "x-ms-blob-type": "BlockBlob",
-            },
-            timeout=5,
-        )
-        self.assertIn(
-            file_upload_response.status_code, [200, 201], file_upload_response.text
-        )
+        # Put a real object behind the incomplete row, through Django Storage.
+        file_obj.files_manager.put_object(file_obj, ContentFile(self.file.getvalue()))
+        self.assertTrue(file_obj.files_manager.exists(file_obj))
 
         cleanup_incomplete_file_uploads.delay()
 
-        with self.assertRaises(ClientError) as ce:
+        # Provider-neutral assertions: the object is gone, and opening it
+        # raises the standard Django Storage error rather than a boto3 one.
+        self.assertFalse(file_obj.files_manager.exists(file_obj))
+        with self.assertRaises(FileNotFoundError):
             file_obj.files_manager.get_object(file_obj)
-        self.assertEqual(ce.exception.response["Error"]["Code"], "NoSuchKey")
 
         with self.assertRaises(FileUpload.DoesNotExist):
             file_obj.refresh_from_db()
