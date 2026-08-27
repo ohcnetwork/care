@@ -1,3 +1,5 @@
+import datetime
+
 from django.urls import reverse
 from model_bakery import baker
 
@@ -199,6 +201,29 @@ class InventoryItemAPITest(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 1)
         self.assertEqual(response.data["results"][0]["id"], str(inventory.external_id))
+
+    def test_listing_inventory_items_product_expiration_date_filter(self):
+        self.client.force_authenticate(user=self.super_user)
+        now = datetime.datetime.now(datetime.UTC)
+        unexpired_inventory = self.create_inventory_item(
+            facility=self.facility,
+            location=self.facility_location,
+            expiration_date=now + datetime.timedelta(days=30),
+        )
+        self.create_inventory_item(
+            facility=self.facility,
+            location=self.facility_location,
+            expiration_date=now - datetime.timedelta(days=30),
+        )
+        response = self.client.get(
+            self.base_url,
+            {"product_expiration_date_after": now.date().isoformat()},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(unexpired_inventory.external_id)
+        )
 
     def test_listing_inventory_items_include_children_filter(self):
         self.client.force_authenticate(user=self.super_user)
