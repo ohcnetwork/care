@@ -98,9 +98,11 @@ class OTPMedicationRequestPrescriptionAPITestCase(CareAPITestBase):
 
     def _create_prescription_obj(self, **kwargs):
         data = {
-            "encounter": self.encounter,
-            "patient": self.patient,
-            "status": MedicationRequestPrescriptionStatus.active.value,
+            "encounter": kwargs.get("encounter", self.encounter),
+            "patient": kwargs.get("patient", self.patient),
+            "status": kwargs.get(
+                "status", MedicationRequestPrescriptionStatus.active.value
+            ),
             "name": "Test Prescription",
             "prescribed_by": self.superuser,
         }
@@ -205,6 +207,66 @@ class OTPMedicationRequestPrescriptionAPITestCase(CareAPITestBase):
             response.data["errors"][0]["msg"]["invalid_filter"], "Invalid filter"
         )
 
+    def test_list_medicaition_request_prescriptions_of_a_family_member(self):
+        """
+        Test that the list endpoint returns only the prescriptions of the authenticated OTP patient and not those of other family members."""
+        self._create_prescription_obj(
+            status=MedicationRequestPrescriptionStatus.active.value
+        )
+        # Create a prescription for another patient (family member)
+        family_member = self.create_patient(
+            name="Family Member",
+            date_of_birth=date(1992, 2, 2),
+            gender="female",
+            phone_number=self.patient.phone_number,  # Same phone number to simulate family member
+        )
+        family_member_encounter = self.create_encounter(
+            patient=family_member,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        self._create_prescription_obj()
+        family_prescription = self._create_prescription_obj(
+            encounter=family_member_encounter,
+            patient=family_member,
+            status=MedicationRequestPrescriptionStatus.active.value,
+        )
+        with self.set_default_filters(self.config):
+            response = self.client.get(
+                self.url, {"patient": str(family_member.external_id)}, format="json"
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(family_prescription.external_id)
+        )
+
+    def test_list_medication_request_prescriptions_of_another_patient(self):
+        """
+        Test that the list endpoint does not return prescriptions of other OTP patients."""
+        other_patient = self.create_patient(
+            name="Other Patient",
+            date_of_birth=date(1993, 3, 3),
+            gender="male",
+            phone_number="9999999999",
+        )
+        other_encounter = self.create_encounter(
+            patient=other_patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        self._create_prescription_obj(
+            encounter=other_encounter,
+            patient=other_patient,
+            status=MedicationRequestPrescriptionStatus.active.value,
+        )
+        with self.set_default_filters(self.config):
+            response = self.client.get(
+                self.url, {"patient": str(other_patient.external_id)}, format="json"
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 0)
+
     # Retrieve a specific Medication Request Prescription related to the OTP Patient
     def test_retrieve_medication_request_prescription(self):
         """
@@ -217,6 +279,59 @@ class OTPMedicationRequestPrescriptionAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(prescription.external_id))
+
+    def test_retrive_medication_request_prescription_of_family_member(self):
+        """
+        Test that the retrieve endpoint does not return prescriptions of other family members."""
+        family_member = self.create_patient(
+            name="Family Member",
+            date_of_birth=date(1992, 2, 2),
+            gender="female",
+            phone_number=self.patient.phone_number,  # Same phone number to simulate family member
+        )
+        family_member_encounter = self.create_encounter(
+            patient=family_member,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        family_prescription = self._create_prescription_obj(
+            encounter=family_member_encounter,
+            patient=family_member,
+            status=MedicationRequestPrescriptionStatus.active.value,
+        )
+        response = self.client.get(
+            self.get_detail_url(family_prescription.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(family_prescription.external_id))
+
+    def test_retrieve_medication_request_prescription_of_another_patient(self):
+        """
+        Test that the retrieve endpoint does not return prescriptions of other OTP patients."""
+        other_patient = self.create_patient(
+            name="Other Patient",
+            date_of_birth=date(1993, 3, 3),
+            gender="male",
+            phone_number="9999999999",
+        )
+        other_encounter = self.create_encounter(
+            patient=other_patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        other_prescription = self._create_prescription_obj(
+            encounter=other_encounter,
+            patient=other_patient,
+            status=MedicationRequestPrescriptionStatus.active.value,
+        )
+        response = self.client.get(
+            self.get_detail_url(other_prescription.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "No MedicationRequestPrescription matches the given query.",
+        )
 
     @override_settings(OTP_QUERYSET_ENABLED=False)
     def test_retrieve_medication_request_prescription_otp_query_disabled(self):

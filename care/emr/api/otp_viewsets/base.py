@@ -7,10 +7,25 @@ from django.core.exceptions import FieldError
 from django_filters.constants import EMPTY_VALUES
 from rest_framework.exceptions import ValidationError
 
+from care.emr.api.viewsets.base import EMRBaseViewSet
+from config.patient_otp_authentication import (
+    JWTTokenPatientAuthentication,
+    OTPAuthenticatedPermission,
+)
+
 
 class OTPResourceType(str, Enum):
     diagnostic_report = "diagnostic_report"
     medication_request_prescription = "medication_request_prescription"
+
+
+class OTPBaseViewset(EMRBaseViewSet):
+    """
+    Base viewset for OTP authenticated endpoints.
+    """
+
+    authentication_classes = [JWTTokenPatientAuthentication]
+    permission_classes = [OTPAuthenticatedPermission]
 
 
 class QuerysetEnablerMixin:
@@ -24,10 +39,11 @@ class QuerysetEnablerMixin:
         return f"OTP_{self.resource_type.value.upper()}_FILTERS"
 
     def get_env_value(self, key):
-        if not getenv(key):
+        config = getenv(key)
+        if not config:
             return {}
         try:
-            return json.loads(getenv(key))
+            return json.loads(config)
         except json.JSONDecodeError as e:
             raise ValidationError(
                 {key: "Invalid JSON in default filter configuration."}

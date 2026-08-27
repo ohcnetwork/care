@@ -148,12 +148,12 @@ class TokenBookingOTPReadSpec(TokenBookingBaseReadSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
-        from care.emr.resources.encounter.spec import EncounterSpecBase
+        from care.emr.resources.encounter.spec import OTPEncounterBaseSpec
 
         super().perform_extra_serialization(mapping, obj)
         mapping["patient"] = PatientOTPReadSpec.serialize(obj.patient).to_json()
         if obj.associated_encounter_id:
-            mapping["associated_encounter"] = EncounterSpecBase.serialize(
+            mapping["associated_encounter"] = OTPEncounterBaseSpec.serialize(
                 obj.associated_encounter
             ).to_json()
 

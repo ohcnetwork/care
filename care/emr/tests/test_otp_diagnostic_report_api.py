@@ -44,7 +44,7 @@ class OTPDiagnosticReportAPITestCase(CareAPITestBase):
         self.patient = self.create_patient(
             name="Test Patient",
             date_of_birth=date(1990, 1, 1),
-            gender="M",
+            gender="male",
             phone_number="1234567890",
         )
         self.superuser = self.create_super_user()
@@ -181,6 +181,66 @@ class OTPDiagnosticReportAPITestCase(CareAPITestBase):
             response.data["results"][0]["id"], str(diagnostic_report2.external_id)
         )
 
+    def test_list_diagnostic_reports_of_a_family_member(self):
+        """
+        Test that a patient can list diagnostic reports of a family member if they have the same phone number.
+        """
+        family_member = self.create_patient(
+            name="Family Member",
+            date_of_birth=date(1995, 1, 1),
+            gender="female",
+            phone_number=self.patient.phone_number,
+        )
+        family_member_encounter = self.create_encounter(
+            patient=family_member,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        self.create_diagnostic_report(
+            patient=self.patient, status=DiagnosticReportStatusChoices.final.value
+        )
+        family_member_report = self.create_diagnostic_report(
+            patient=family_member,
+            status=DiagnosticReportStatusChoices.final.value,
+            encounter=family_member_encounter,
+        )
+        with self.set_default_filters(self.config):
+            response = self.client.get(
+                self.url, {"patient": str(family_member.external_id)}, format="json"
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["id"], str(family_member_report.external_id)
+        )
+
+    def test_list_diagnostic_reports_of_another_patient(self):
+        """
+        Test that a patient cannot list diagnostic reports of another patient with a different phone number.
+        """
+        another_patient = self.create_patient(
+            name="Another Patient",
+            date_of_birth=date(1992, 1, 1),
+            gender="male",
+            phone_number="0987654321",
+        )
+        another_encounter = self.create_encounter(
+            patient=another_patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        self.create_diagnostic_report(
+            patient=another_patient,
+            status=DiagnosticReportStatusChoices.final.value,
+            encounter=another_encounter,
+        )
+        with self.set_default_filters(self.config):
+            response = self.client.get(
+                self.url, {"patient": str(another_patient.external_id)}, format="json"
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 0)
+
     # Retrieve a specific Diagnostic Report related to the OTP Patient
     def test_retrieve_diagnostic_report(self):
         diagnostic_report = self.create_diagnostic_report(
@@ -191,6 +251,62 @@ class OTPDiagnosticReportAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["id"], str(diagnostic_report.external_id))
+
+    def test_retrieve_diagnostic_report_of_a_family_member(self):
+        """
+        Test that a patient can retrieve a diagnostic report of a family member if they have the same phone number.
+        """
+        family_member = self.create_patient(
+            name="Family Member",
+            date_of_birth=date(1995, 1, 1),
+            gender="female",
+            phone_number=self.patient.phone_number,
+        )
+
+        family_member_encounter = self.create_encounter(
+            patient=family_member,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        diagnostic_report = self.create_diagnostic_report(
+            patient=family_member,
+            status=DiagnosticReportStatusChoices.preliminary.value,
+            encounter=family_member_encounter,
+        )
+        response = self.client.get(
+            self.get_detail_url(diagnostic_report.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["id"], str(diagnostic_report.external_id))
+
+    def test_retrieve_diagnostic_report_of_another_patient(self):
+        """
+        Test that a patient cannot retrieve a diagnostic report of another patient with a different phone number.
+        """
+        another_patient = self.create_patient(
+            name="Another Patient",
+            date_of_birth=date(1992, 1, 1),
+            gender="male",
+            phone_number="0987654321",
+        )
+        another_encounter = self.create_encounter(
+            patient=another_patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        diagnostic_report = self.create_diagnostic_report(
+            patient=another_patient,
+            status=DiagnosticReportStatusChoices.preliminary.value,
+            encounter=another_encounter,
+        )
+        response = self.client.get(
+            self.get_detail_url(diagnostic_report.external_id), format="json"
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "No DiagnosticReport matches the given query.",
+        )
 
     @override_settings(OTP_QUERYSET_ENABLED=False)
     def test_retrieve_diagnostic_report_without_queryset_disabled(self):
