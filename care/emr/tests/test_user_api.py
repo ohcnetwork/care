@@ -15,7 +15,6 @@ from care.utils.tests.base import CareAPITestBase
 
 class UserviewTestCase(CareAPITestBase):
     def setUp(self):
-        super().setUp()
         self.super_user = self.create_super_user(
             username="superuser", first_name="Super", last_name="User"
         )
