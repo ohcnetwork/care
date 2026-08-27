@@ -82,7 +82,8 @@ class OTPResetPasswordAPITestCase(CareAPITestBase):
         response = self._send()
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(
-            "Unable to send OTP", response.data["errors"][0]["msg"]["phone_number"]
+            "Max Retries has exceeded",
+            response.data["errors"][0]["msg"]["phone_number"],
         )
 
     def test_confirm_otp_with_valid_otp(self):
@@ -169,6 +170,49 @@ class OTPResetPasswordAPITestCase(CareAPITestBase):
             "No User with this username linked to this phone number",
             response.data["errors"][0]["msg"]["error"],
         )
+
+    @override_settings(OTP_MAX_VERIFY_ATTEMPTS=2)
+    def test_confirm_otp_attempts_are_capped(self):
+        """
+        Reset confirm shares login's brute-force protection: after
+        OTP_MAX_VERIFY_ATTEMPTS wrong guesses the OTP is burned and even the
+        correct OTP is rejected afterwards.
+        """
+        self._send()
+        first = self._confirm(otp="00000")
+        self.assertEqual(first.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(str(first.data["errors"][0]["msg"]["otp"]), "Invalid OTP")
+
+        capped = self._confirm(otp="00001")
+        self.assertEqual(capped.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn(
+            "Too many wrong attempts", str(capped.data["errors"][0]["msg"]["otp"])
+        )
+
+        # OTP is now burned, so the correct value no longer works.
+        correct = self._confirm(otp=self.otp)
+        self.assertEqual(correct.status_code, status.HTTP_400_BAD_REQUEST)
+        self.user.refresh_from_db()
+        self.assertFalse(self.user.check_password(self.new_password))
+
+    def test_confirm_otp_survives_multiple_user_conflict_for_retry(self):
+        """
+        A 409 for multiple users must not consume the OTP: the same OTP can be
+        retried with a username.
+        """
+        self.create_user(
+            username="testuser2",
+            phone_number=self.phone_number,
+            password="AnotherPass123!",
+        )
+        self._send()
+        conflict = self._confirm(otp=self.otp)
+        self.assertEqual(conflict.status_code, status.HTTP_409_CONFLICT)
+
+        retry = self._confirm(otp=self.otp, username="testuser")
+        self.assertEqual(retry.status_code, status.HTTP_200_OK)
+        self.user.refresh_from_db()
+        self.assertTrue(self.user.check_password(self.new_password))
 
     def test_confirm_otp_with_no_user_linked_to_phone_number(self):
         """
