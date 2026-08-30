@@ -2417,11 +2417,12 @@
         },
         "tablib": {
             "hashes": [
-                "sha256:1b6abd8edb0f35601e04c6161d79660fdcde4abb4a54f66cc9f9054bd55d5fe2",
-                "sha256:eda17cd0d4dda614efc0e710227654c60ddbeb1ca92cdcfc5c3bd1fc5f5a6e4a"
+                "sha256:5721bf3a52d491f8f843628a3a3200db164f6ad9e92fb6eaa64dc3f945f30ad9",
+                "sha256:781cfa9a42de8f33c52aff857fd0a04e483de4fd1c53eaaa9a6aeac62bad11de"
             ],
-            "markers": "python_version >= '3.9'",
-            "version": "==3.9.0"
+            "index": "pypi",
+            "markers": "python_version >= '3.10'",
+            "version": "==3.10.0"
         },
         "text-unidecode": {
             "hashes": [
