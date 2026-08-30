@@ -21,12 +21,13 @@ RUN --mount=type=cache,target=/root/.cache/pip pip install pipenv==2025.1.1
 COPY Pipfile Pipfile.lock $APP_HOME/
 RUN --mount=type=cache,target=/root/.cache/pip pipenv  install --system --categories "packages dev-packages docs"
 
+ARG PLUGIN_RESOLVED_HASH=""
 ARG ADDITIONAL_PLUGS=""
 ENV ADDITIONAL_PLUGS=$ADDITIONAL_PLUGS
 
 COPY . $APP_HOME/
 
-RUN --mount=type=cache,target=/root/.cache/pip python3 $APP_HOME/install_plugins.py
+RUN --mount=type=cache,target=/root/.cache/pip PLUGIN_RESOLVED_HASH=$PLUGIN_RESOLVED_HASH python3 $APP_HOME/install_plugins.py
 
 HEALTHCHECK \
   --interval=10s \
