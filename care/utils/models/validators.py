@@ -250,13 +250,20 @@ class ImageSizeValidator:
             ]
         )
 
-    def _humanize_bytes(self, size: int) -> str:
+    @staticmethod
+    def _format_size(size: float) -> str:
+        # Trim the trailing zeros of the fixed-point form first, then the bare
+        # decimal point. Stripping "." and "0" in one pass also eats the
+        # significant zeros of a round number, turning 10.00 into "1".
+        return f"{size:.2f}".rstrip("0").rstrip(".")
+
+    def _humanize_bytes(self, size: float) -> str:
         byte_size = 1024.0
         for unit in ["B", "KB"]:
             if size < byte_size:
-                return f"{f'{size:.2f}'.rstrip('.0')} {unit}"
+                return f"{self._format_size(size)} {unit}"
             size /= byte_size
-        return f"{f'{size:.2f}'.rstrip('.0')} MB"
+        return f"{self._format_size(size)} MB"
 
 
 cover_image_validator = ImageSizeValidator(
