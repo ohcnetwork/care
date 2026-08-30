@@ -1,10 +1,8 @@
-from datetime import datetime, timedelta
-
 from django.contrib.postgres.fields import ArrayField
 from django.db import models
-from django.utils import timezone
 
 from care.emr.models import EMRBaseModel
+from care.utils.lock import Lock
 
 
 class TagConfig(EMRBaseModel):
@@ -53,8 +51,6 @@ class TagConfig(EMRBaseModel):
     resource = models.CharField(max_length=255)
     metadata = models.JSONField(default=None, null=True, blank=True)
 
-    cache_expiry_days = 15
-
     def set_tag_config_cache(self):
         if self.parent:
             self.parent_cache = [*self.parent.parent_cache, self.parent.id]
@@ -69,30 +65,40 @@ class TagConfig(EMRBaseModel):
         super().save()
 
     def get_parent_json(self):
-        if self.parent_id:
-            if self.cached_parent_json and timezone.now() < datetime.fromisoformat(
-                self.cached_parent_json["cache_expiry"]
-            ):
-                return self.cached_parent_json
-            self.parent.get_parent_json()
-            self.cached_parent_json = {
-                "id": str(self.parent.external_id),
-                "display": self.parent.display,
-                "description": self.parent.description,
-                "category": self.parent.category,
-                "parent": self.parent.cached_parent_json,
-                "level_cache": self.parent.level_cache,
-                "cache_expiry": str(
-                    timezone.now() + timedelta(days=self.cache_expiry_days)
-                ),
-            }
-            self.save(update_fields=["cached_parent_json"])
+        if self.parent_id and self.cached_parent_json:
             return self.cached_parent_json
         return {}
+
+    def update_parent_json(self):
+        with Lock(f"tag_config_parent_cache:{self.id}"):
+            if self.parent_id:
+                self.cached_parent_json = {
+                    "id": str(self.parent.external_id),
+                    "display": self.parent.display,
+                    "description": self.parent.description,
+                    "category": self.parent.category,
+                    "parent": self.parent.cached_parent_json,
+                    "level_cache": self.parent.level_cache,
+                }
+                TagConfig.objects.filter(pk=self.pk).update(
+                    cached_parent_json=self.cached_parent_json
+                )
+
+    def update_descendants_cached_parent_json(self):
+        descendants = (
+            TagConfig.objects.filter(parent_cache__overlap=[self.id])
+            .select_related("parent")
+            .order_by("level_cache")
+        )
+        for descendant in descendants:
+            descendant.update_parent_json()
 
     def save(self, *args, **kwargs):
         if not self.id:
             super().save(*args, **kwargs)
             self.set_tag_config_cache()
+            self.update_parent_json()
         else:
             super().save(*args, **kwargs)
+            self.update_parent_json()
+            self.update_descendants_cached_parent_json()
