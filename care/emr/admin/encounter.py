@@ -41,7 +41,6 @@ class EncounterResource(resources.ModelResource):
             "status",
             "status_history",
             "encounter_class",
-            "encounter_class_history",
             "patient",
             "period",
             "facility",
