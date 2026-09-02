@@ -207,8 +207,6 @@ class EncounterViewSet(
             except Exception:
                 lock.release()
                 raise
-            finally:
-                lock.release()
 
     def perform_update(self, instance):
         with transaction.atomic():
