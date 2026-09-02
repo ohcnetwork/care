@@ -28,7 +28,9 @@ def evaluate_patient_instance_default_values(patient):
 
     for config in PatientIdentifierConfig.objects.filter(
         facility__isnull=True, status=PatientIdentifierStatus.active.value
-    ).exclude(id__in=PatientIdentifier.objects.filter(patient=patient).values("id")):
+    ).exclude(
+        id__in=PatientIdentifier.objects.filter(patient=patient).values("config_id")
+    ):
         if config.config.get("default_value"):
             PatientIdentifier.objects.create(
                 patient=patient,
@@ -44,7 +46,9 @@ def evaluate_patient_facility_default_values(patient, facility):
 
     for config in PatientIdentifierConfig.objects.filter(
         facility=facility, status=PatientIdentifierStatus.active.value
-    ).exclude(id__in=PatientIdentifier.objects.filter(patient=patient).values("id")):
+    ).exclude(
+        id__in=PatientIdentifier.objects.filter(patient=patient).values("config_id")
+    ):
         if config.config.get("default_value"):
             PatientIdentifier.objects.create(
                 facility=facility,
