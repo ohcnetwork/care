@@ -46,7 +46,7 @@ class ChargeItemReportFilter(filters.FilterSet):
     service_resource = filters.CharFilter(lookup_expr="icontains")
 
 
-class ChargeItemContextBuilder(QuerysetContextBuilder):
+class ChargeItemContextBuilder:
     filterset_class = ChargeItemReportFilter
     __filterset_backends__ = [filters.DjangoFilterBackend]
 
@@ -116,18 +116,24 @@ class ChargeItemContextBuilder(QuerysetContextBuilder):
         description="Date and time when the charge item was created",
     )
 
-    def get_context(self):
-        return ChargeItem.objects.filter(patient=self.parent_context)
 
-
-class AccountChargeItemContextBuilder(ChargeItemContextBuilder):
+class AccountChargeItemContextBuilder(ChargeItemContextBuilder, QuerysetContextBuilder):
     def get_context(self):
         return ChargeItem.objects.filter(account=self.parent_context)
 
 
-class CategoryChargeItemContextBuilder(ChargeItemContextBuilder):
+class CategoryChargeItemContextBuilder(
+    ChargeItemContextBuilder, QuerysetContextBuilder
+):
     def get_context(self):
         return self.parent_context.get("charge_items")
+
+
+class SingleChargeItemContextBuilder(
+    ChargeItemContextBuilder, SingleObjectContextBuilder
+):
+    def get_context(self):
+        return getattr(self.parent_context, self.parent_attribute)
 
 
 class AccountChargeItemCategoryContextBuilder(QuerysetContextBuilder):
