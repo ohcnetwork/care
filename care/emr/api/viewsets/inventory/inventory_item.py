@@ -20,6 +20,9 @@ class InventoryItemFilters(filters.FilterSet):
     product_knowledge = filters.UUIDFilter(
         field_name="product__product_knowledge__external_id"
     )
+    product_expiration_date = filters.DateTimeFromToRangeFilter(
+        field_name="product__expiration_date"
+    )
     status = filters.CharFilter(lookup_expr="iexact")
     net_content_gt = filters.NumberFilter(field_name="net_content", lookup_expr="gt")
     include_children = DummyBooleanFilter()
@@ -32,7 +35,12 @@ class InventoryItemViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
     pydantic_retrieve_model = InventoryItemRetrieveSpec
     filterset_class = InventoryItemFilters
     filter_backends = [filters.DjangoFilterBackend, OrderingFilter]
-    ordering_fields = ["created_date", "modified_date", "net_content"]
+    ordering_fields = [
+        "created_date",
+        "modified_date",
+        "net_content",
+        "product__expiration_date",
+    ]
 
     def get_location_obj(self):
         return get_object_or_404(
