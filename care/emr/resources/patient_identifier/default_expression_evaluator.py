@@ -27,7 +27,7 @@ def evaluate_patient_instance_default_values(patient):
     from care.emr.resources.patient_identifier.spec import PatientIdentifierStatus
 
     for config in PatientIdentifierConfig.objects.filter(
-        facility=None, status=PatientIdentifierStatus.active.value
+        facility__isnull=True, status=PatientIdentifierStatus.active.value
     ).exclude(id__in=PatientIdentifier.objects.filter(patient=patient).values("id")):
         if config.config.get("default_value"):
             PatientIdentifier.objects.create(
