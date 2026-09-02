@@ -75,4 +75,6 @@ class MedicationDispenseOrderRetrieveSpec(MedicationDispenseOrderReadSpec):
         cls.serialize_audit_users(mapping, obj)
         mapping["id"] = obj.external_id
         mapping["location"] = FacilityLocationListSpec.serialize(obj.location).to_json()
-        mapping["patient"] = PatientRetrieveSpec.serialize(obj.patient).to_json()
+        mapping["patient"] = PatientRetrieveSpec.serialize(
+            obj.patient, facility=obj.facility
+        ).to_json()
