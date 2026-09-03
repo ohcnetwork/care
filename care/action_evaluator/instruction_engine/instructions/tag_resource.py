@@ -13,15 +13,9 @@ from care.action_evaluator.instruction_engine.resolvers import (
     resolve_encounter,
     resolve_patient,
 )
-from care.emr.models.tag_config import TagConfig
 from care.emr.registries.actions.instruction import ActionInstructionRegistry
 from care.emr.resources.tag.config_spec import TagResource
-from care.emr.tagging.base import (
-    PatientFacilityTagManager,
-    PatientInstanceTagManager,
-    SingleFacilityTagManager,
-)
-from care.security.authorization import AuthorizationController
+from care.security.authorization.base import AuthorizationController
 
 
 def _tag_input(resource: str):
@@ -59,6 +53,8 @@ class BaseTagInstruction(BaseInstruction):
         return tag_config.facility
 
     def evaluate(self):
+        from care.emr.models.tag_config import TagConfig
+
         tag_config = TagConfig.objects.filter(external_id=self.inputs["tag"]).first()
         if not tag_config:
             return {"performed": False, "tag": None, "message": "Tag no longer exists"}
@@ -89,6 +85,8 @@ class BaseTagInstruction(BaseInstruction):
 
     @classmethod
     def authorize(cls, request, user, params: dict) -> bool:
+        from care.emr.models.tag_config import TagConfig
+
         tag_id = params.get("tag")
         if not tag_id:
             raise ValidationError("A tag is required")
@@ -116,6 +114,10 @@ class TagEncounterInstruction(BaseTagInstruction):
         return resolve_encounter(self.context)
 
     def tag_manager_for(self, tag_config, target):
+        from care.emr.tagging.base import (
+            SingleFacilityTagManager,
+        )
+
         return SingleFacilityTagManager()
 
     def facility_for(self, tag_config, target):
@@ -135,6 +137,11 @@ class TagPatientInstruction(BaseTagInstruction):
         return resolve_patient(self.context)
 
     def tag_manager_for(self, tag_config, target):
+        from care.emr.tagging.base import (
+            PatientFacilityTagManager,
+            PatientInstanceTagManager,
+        )
+
         if tag_config.facility_id:
             return PatientFacilityTagManager(tag_config.facility)
         return PatientInstanceTagManager()
