@@ -1,8 +1,21 @@
+import json
+from unittest import mock
+
 from django.urls import reverse
 from rest_framework import status
 
 from care.facility.models.facility import REVERSE_FACILITY_TYPES
 from care.utils.tests.base import CareAPITestBase
+
+test_facility_extensions = json.dumps(
+    {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "title": "Facility Alternate ID",
+        "type": "object",
+        "properties": {"alternate_id": {"type": "string"}},
+        "additionalProperties": False,
+    }
+)
 
 
 class TestFacilityViewSet(CareAPITestBase):
@@ -111,6 +124,17 @@ class TestFacilityViewSet(CareAPITestBase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 404)
         self.assertIn("No cover image to delete", str(response.data))
+
+    @mock.patch.dict(
+        "os.environ", {"CORE_EXTENSIONS_FACILITY_WRITE": test_facility_extensions}
+    )
+    def test_facility_extensions(self):
+        data = self._get_facility_data()
+        data["extensions"] = {"core": {"alternate_id": "ALT123"}}
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], "New Facility")
+        self.assertEqual(response.data["extensions"]["core"]["alternate_id"], "ALT123")
 
 
 class TestAllFacilityViewSet(CareAPITestBase):

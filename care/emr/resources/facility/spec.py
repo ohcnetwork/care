@@ -6,6 +6,12 @@ from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 from pydantic_core.core_schema import ValidationInfo
 from pydantic_extra_types.coordinate import Latitude, Longitude
 
+from care.emr.extensions.base import ExtensionResource
+from care.emr.extensions.validator import (
+    ExtensionListRenderer,
+    ExtensionRetrieveRenderer,
+    ExtensionValidator,
+)
 from care.emr.models import Organization
 from care.emr.models.facility_config import FacilityMonetoryConfig
 from care.emr.models.patient import PatientIdentifierConfigCache
@@ -31,6 +37,7 @@ from care.facility.models import (
 class FacilityBareMinimumSpec(EMRResource):
     __model__ = Facility
     __exclude__ = ["geo_organization"]
+    ___extension_resource_type__ = ExtensionResource.facility
     id: UUID4 | None = None
     name: str
 
@@ -121,7 +128,7 @@ class FacilityInvoiceExpressionSpec(BaseModel):
         return v
 
 
-class FacilityCreateSpec(FacilityBaseSpec):
+class FacilityCreateSpec(ExtensionValidator, FacilityBaseSpec):
     geo_organization: UUID4
     features: list[int]
     print_templates: list[PrintTemplate] = []
@@ -166,7 +173,7 @@ class FacilityCreateSpec(FacilityBaseSpec):
         obj.facility_type = REVERSE_REVERSE_FACILITY_TYPES[self.facility_type]
 
 
-class FacilityReadSpec(FacilityBaseSpec):
+class FacilityReadSpec(ExtensionListRenderer, FacilityBaseSpec):
     features: list[int]
     cover_image_url: str
     read_cover_image_url: str
@@ -188,7 +195,9 @@ class FacilityReadSpec(FacilityBaseSpec):
             mapping["created_by"] = model_from_cache(UserSpec, id=obj.created_by_id)
 
 
-class FacilityRetrieveSpec(FacilityReadSpec, FacilityPermissionsMixin):
+class FacilityRetrieveSpec(
+    ExtensionRetrieveRenderer, FacilityReadSpec, FacilityPermissionsMixin
+):
     flags: list[str] = []
     discount_codes: list[dict] = []
     discount_monetary_components: list[dict] = []
