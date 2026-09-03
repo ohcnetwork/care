@@ -7,6 +7,7 @@ from care.emr.api.otp_viewsets.login import OTPLoginView
 from care.emr.api.otp_viewsets.patient import PatientOTPView
 from care.emr.api.otp_viewsets.slot import OTPSlotViewSet
 from care.emr.api.viewsets.account import AccountViewSet
+from care.emr.api.viewsets.action import ActionConfigurationViewSet
 from care.emr.api.viewsets.activity_definition import ActivityDefinitionViewSet
 from care.emr.api.viewsets.allergy_intolerance import AllergyIntoleranceViewSet
 from care.emr.api.viewsets.batch_request import BatchRequestView
@@ -72,8 +73,14 @@ from care.emr.api.viewsets.organization import (
 from care.emr.api.viewsets.patient import PatientViewSet
 from care.emr.api.viewsets.patient_identifier import PatientIdentifierConfigViewSet
 from care.emr.api.viewsets.payment_reconciliation import PaymentReconciliationViewSet
-from care.emr.api.viewsets.questionnaire import (
+from care.emr.api.viewsets.questionnaire.questionnaire import (
     QuestionnaireViewSet,
+)
+from care.emr.api.viewsets.questionnaire.resource_observation import (
+    ResourceObservationViewSet,
+)
+from care.emr.api.viewsets.questionnaire.resource_questionnaire_response import (
+    ResourceQuestionnaireResponseViewSet,
 )
 from care.emr.api.viewsets.questionnaire_response import QuestionnaireResponseViewSet
 from care.emr.api.viewsets.questionnaire_response_template import (
@@ -495,6 +502,20 @@ thread_nested_router.register(
     NoteMessageViewSet,
     basename="note",
 )
+
+router.register(
+    "resource_responses",
+    ResourceQuestionnaireResponseViewSet,
+    basename="resource-responses",
+)
+router.register(
+    "resource_observation", ResourceObservationViewSet, basename="resource-observation"
+)
+
+router.register(
+    "action_configuration", ActionConfigurationViewSet, basename="action-configuration"
+)
+
 
 router.register("template", TemplateViewSet, basename="template")
 router.register("template_reports", ReportUploadViewSet, basename="template-reports")

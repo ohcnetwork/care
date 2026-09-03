@@ -8,6 +8,7 @@ from care.security.permissions.facility_organization import (
     FacilityOrganizationPermissions,
 )
 from care.security.permissions.location import FacilityLocationPermissions
+from care.security.permissions.questionnaire import QuestionnairePermissions
 
 
 class FacilityLocationAccess(AuthorizationHandler):
@@ -48,6 +49,28 @@ class FacilityLocationAccess(AuthorizationHandler):
 
         return self.check_permission_in_facility_organization(
             [FacilityLocationPermissions.can_write_facility_locations.name],
+            user,
+            location.facility_organization_cache,
+        )
+
+    def can_submit_facility_location_questionnaire(self, user, location):
+        """
+        Check if the user has permission to submit questionnaire for the given location
+        """
+
+        return self.check_permission_in_facility_organization(
+            [QuestionnairePermissions.can_submit_questionnaire.name],
+            user,
+            location.facility_organization_cache,
+        )
+
+    def can_read_facility_location_questionnaire(self, user, location):
+        """
+        Check if the user has permission to read questionnaire for the given location
+        """
+
+        return self.check_permission_in_facility_organization(
+            [QuestionnairePermissions.can_view_resource_responses.name],
             user,
             location.facility_organization_cache,
         )
