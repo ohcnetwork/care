@@ -8,6 +8,7 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.user import (
     SingleUserRelatedContextBuilder,
 )
+from care.emr.reports.context_builder.tag import QuerysetTagContextBuilder
 from care.utils.filters.multiselect import MultiSelectFilter
 
 STATUS_CHOICE = {
@@ -61,34 +62,34 @@ class ServiceRequestBaseContextBuilder(QuerysetContextBuilder):
     status = Field(
         display="Status",
         preview_value="Active",
-        mapping=lambda sr: STATUS_CHOICE.get(sr.status, sr.status.title())
-        if sr.status
-        else "",
+        mapping=lambda sr: (
+            STATUS_CHOICE.get(sr.status, sr.status.title()) if sr.status else ""
+        ),
         description="Current status of the service request",
     )
     intent = Field(
         display="Intent",
         preview_value="Order",
-        mapping=lambda sr: INTENT_CHOICE.get(sr.intent, sr.intent.title())
-        if sr.intent
-        else "",
+        mapping=lambda sr: (
+            INTENT_CHOICE.get(sr.intent, sr.intent.title()) if sr.intent else ""
+        ),
         description="Intent of the service request",
     )
     category = Field(
         display="Category",
         preview_value="Laboratory",
-        mapping=lambda sr: CATEGORY_CHOICE.get(sr.category, sr.category.title())
-        if sr.category
-        else "",
+        mapping=lambda sr: (
+            CATEGORY_CHOICE.get(sr.category, sr.category.title()) if sr.category else ""
+        ),
         description="Category of the service request",
     )
 
     priority = Field(
         display="Priority",
         preview_value="Routine",
-        mapping=lambda sr: PRIORITY_CHOICE.get(sr.priority, sr.priority.title())
-        if sr.priority
-        else "",
+        mapping=lambda sr: (
+            PRIORITY_CHOICE.get(sr.priority, sr.priority.title()) if sr.priority else ""
+        ),
         description="Priority level of the service request",
     )
 
@@ -97,6 +98,27 @@ class ServiceRequestBaseContextBuilder(QuerysetContextBuilder):
         target_context=SingleUserRelatedContextBuilder,
         preview_value="",
         description="User who requested the service",
+    )
+    occurance = Field(
+        display="Occurence",
+        preview_value="2023-01-01",
+        description="Date and time when service should occur",
+    )
+    patient_instruction = Field(
+        display="Patient Instruction",
+        preview_value="Follow up on blood count",
+        description="Patient or consumer-oriented instructions",
+    )
+    tags = Field(
+        display="Service Request Tags",
+        target_context=QuerysetTagContextBuilder,
+        preview_value="",
+        description="Tags associated with the service request",
+    )
+    note = Field(
+        display="Note",
+        preview_value="Sample note",
+        description="Additional notes about the service request",
     )
 
     def get_context(self):
