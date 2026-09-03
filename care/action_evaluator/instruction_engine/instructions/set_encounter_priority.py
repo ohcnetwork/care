@@ -9,7 +9,10 @@ from care.action_evaluator.instruction_engine.base import (
 from care.action_evaluator.instruction_engine.resolvers import resolve_encounter
 from care.emr.registries.actions.instruction import ActionInstructionRegistry
 from care.emr.resources.encounter.constants import EncounterPriorityChoices
-from care.security.authorization import AuthorizationController
+
+# Imported from `EMRConfig.ready()`: the authorization controller drags the
+# resource-spec graph in and would circle back into a half-imported spec
+# module (see tag_resource.py), so it is imported where it is used.
 
 
 class SetEncounterPriorityInput(BaseModel):
@@ -44,6 +47,8 @@ class SetEncounterPriorityInstruction(BaseInstruction):
                 "priority": None,
                 "message": "This form is not attached to an encounter",
             }
+        from care.security.authorization import AuthorizationController
+
         if not AuthorizationController.call(
             "can_update_encounter_obj", self.user, encounter
         ):
