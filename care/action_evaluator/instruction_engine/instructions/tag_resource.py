@@ -15,13 +15,20 @@ from care.action_evaluator.instruction_engine.resolvers import (
 )
 from care.emr.models.tag_config import TagConfig
 from care.emr.registries.actions.instruction import ActionInstructionRegistry
-from care.emr.resources.tag.config_spec import TagResource
-from care.emr.tagging.base import (
-    PatientFacilityTagManager,
-    PatientInstanceTagManager,
-    SingleFacilityTagManager,
-)
-from care.security.authorization import AuthorizationController
+
+# This module is imported from `EMRConfig.ready()` (care.emr.apps), i.e. while
+# the app registry is still populating. The tag managers, the tag spec and
+# the authorization controller each pull the resource-spec graph in, which
+# circles back into `care.emr.resources.tag.config_spec` before it has
+# finished importing (deploy build: "cannot import name 'TagConfigReadSpec'
+# from partially initialized module"). They are therefore imported inside
+# the methods that use them, once everything is loaded. Only models and the
+# registry are safe at module level here.
+
+# The tag spec's resource enum values, spelled out so that module is not
+# imported at ready() time.
+ENCOUNTER_TAG_RESOURCE = "encounter"
+PATIENT_TAG_RESOURCE = "patient"
 
 
 def _tag_input(resource: str):
@@ -47,7 +54,7 @@ class TagOutput(BaseModel):
 class BaseTagInstruction(BaseInstruction):
     instruction_type = InstructionType.PERFORMED
     output_schema = TagOutput
-    resource: TagResource
+    resource: str
 
     def resolve_target(self):
         raise NotImplementedError
@@ -72,7 +79,7 @@ class BaseTagInstruction(BaseInstruction):
         manager = self.tag_manager_for(tag_config, target)
         try:
             manager.set_tag(
-                self.resource.value,
+                self.resource,
                 target,
                 tag_config.external_id,
                 self.user,
@@ -95,9 +102,11 @@ class BaseTagInstruction(BaseInstruction):
         tag_config = TagConfig.objects.filter(external_id=tag_id).first()
         if not tag_config:
             raise ValidationError("The chosen tag does not exist")
-        if tag_config.resource != cls.resource.value:
-            err = f"Tag \u201c{tag_config.display}\u201d is not a {cls.resource.value} tag"
+        if tag_config.resource != cls.resource:
+            err = f"Tag \u201c{tag_config.display}\u201d is not a {cls.resource} tag"
             raise ValidationError(err)
+        from care.security.authorization import AuthorizationController
+
         if not AuthorizationController.call("can_apply_tag_config", user, tag_config):
             err = f"You are not allowed to apply tag \u201c{tag_config.display}\u201d"
             raise ValidationError(err)
@@ -109,13 +118,15 @@ class TagEncounterInstruction(BaseTagInstruction):
 
     slug = "tag_encounter"
     context = EncounterContext
-    input_schema = _tag_input(TagResource.encounter.value)
-    resource = TagResource.encounter
+    input_schema = _tag_input(ENCOUNTER_TAG_RESOURCE)
+    resource = ENCOUNTER_TAG_RESOURCE
 
     def resolve_target(self):
         return resolve_encounter(self.context)
 
     def tag_manager_for(self, tag_config, target):
+        from care.emr.tagging.base import SingleFacilityTagManager
+
         return SingleFacilityTagManager()
 
     def facility_for(self, tag_config, target):
@@ -128,13 +139,18 @@ class TagPatientInstruction(BaseTagInstruction):
 
     slug = "tag_patient"
     context = PatientContext
-    input_schema = _tag_input(TagResource.patient.value)
-    resource = TagResource.patient
+    input_schema = _tag_input(PATIENT_TAG_RESOURCE)
+    resource = PATIENT_TAG_RESOURCE
 
     def resolve_target(self):
         return resolve_patient(self.context)
 
     def tag_manager_for(self, tag_config, target):
+        from care.emr.tagging.base import (
+            PatientFacilityTagManager,
+            PatientInstanceTagManager,
+        )
+
         if tag_config.facility_id:
             return PatientFacilityTagManager(tag_config.facility)
         return PatientInstanceTagManager()
