@@ -321,7 +321,11 @@ tags
 
 ### VirtualEnv template
 # Virtualenv
-[Bb]in
+[Bb]in/
+!bin/
+bin/*
+!bin/pre_compile
+!bin/post_compile
 [Ii]nclude
 [Ll]ib
 [Ll]ib64
