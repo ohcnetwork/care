@@ -188,6 +188,8 @@ class PatientUpdateSpec(ExtensionValidator, PatientBaseSpec):
                 obj.year_of_birth = timezone.now().year - self.age
             elif self.date_of_birth:
                 obj.year_of_birth = self.date_of_birth.year
+            if self.deceased_datetime is None:
+                obj.deceased_datetime = None
         if not self.pincode:
             obj.pincode = None
 

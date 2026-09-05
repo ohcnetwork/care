@@ -161,6 +161,15 @@ class PatientViewSet(EMRModelViewSet):
     def perform_update(self, instance):
         identifiers = instance._identifiers  # noqa: SLF001
         with transaction.atomic():
+            if (
+                instance.deceased_datetime is None
+                and self.get_object().deceased_datetime
+                and not AuthorizationController.call(
+                    "can_unmark_deceased_patient", self.request.user
+                )
+            ):
+                raise PermissionDenied(detail="Cannot mark deceased patient alive")
+
             super().perform_update(instance)
             for identifier in identifiers:
                 config = get_object_or_404(
