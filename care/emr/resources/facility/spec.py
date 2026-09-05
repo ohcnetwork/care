@@ -184,6 +184,7 @@ class FacilityReadSpec(ExtensionListRenderer, FacilityBaseSpec):
     def perform_extra_serialization(cls, mapping, obj):
         from care.emr.resources.user.spec import UserSpec
 
+        super().perform_extra_serialization(mapping, obj)
         mapping["id"] = obj.external_id
         mapping["read_cover_image_url"] = obj.read_cover_image_url()
         mapping["facility_type"] = REVERSE_FACILITY_TYPES[obj.facility_type]
