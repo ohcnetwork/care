@@ -9,8 +9,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from care.utils.models.base import BaseFlag, BaseModel
-from care.utils.models.choices import reverse_choices
+from care.utils.models.base import BaseFlag
 from care.utils.models.validators import (
     UsernameValidator,
     mobile_or_landline_number_validator,
@@ -21,10 +20,6 @@ from care.utils.registries.feature_flag import FlagName, FlagType
 USER_FLAG_CACHE_KEY = "user_flag_cache:{user_id}:{flag_name}"
 USER_ALL_FLAGS_CACHE_KEY = "user_all_flags_cache:{user_id}"
 USER_FLAG_CACHE_TTL = 60 * 60 * 24  # 1 Day
-
-
-GENDER_CHOICES = [(1, "Male"), (2, "Female"), (3, "Non-binary")]
-REVERSE_GENDER_CHOICES = reverse_choices(GENDER_CHOICES)
 
 
 class CustomUserManager(UserManager):
@@ -71,28 +66,6 @@ class CustomUserManager(UserManager):
         return password
 
 
-class Skill(BaseModel):
-    name = models.CharField(max_length=255, unique=True)
-    description = models.TextField(null=True, blank=True, default="")
-
-    def __str__(self):
-        return self.name
-
-
-class UserSkill(BaseModel):
-    user = models.ForeignKey("User", on_delete=models.CASCADE, null=True, blank=True)
-    skill = models.ForeignKey("Skill", on_delete=models.CASCADE, null=True, blank=True)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["skill", "user"],
-                condition=models.Q(deleted=False),
-                name="unique_user_skill",
-            )
-        ]
-
-
 class User(AbstractUser):
     external_id = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True)
     username_validator = UsernameValidator()
@@ -130,18 +103,12 @@ class User(AbstractUser):
     )
     video_connect_link = models.URLField(blank=True, null=True)
 
-    old_gender = models.IntegerField(
-        choices=GENDER_CHOICES, blank=True, null=True, default=None
-    )
     gender = models.CharField(max_length=100, blank=True, null=True)
     date_of_birth = models.DateField(null=True, blank=True)
     profile_picture_url = models.CharField(
         blank=True, null=True, default=None, max_length=500
     )
-    skills = models.ManyToManyField("Skill", through=UserSkill)
-    home_facility = models.ForeignKey(
-        "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
-    )
+
     weekly_working_hours = models.IntegerField(
         validators=[MinValueValidator(0), MaxValueValidator(168)], null=True, blank=True
     )
