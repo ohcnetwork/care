@@ -2,6 +2,8 @@ class EvaluationMetricBase:
     context = None
     name = None
     allowed_operations = None
+    # Map of operation to validator function - can be overridden by subclasses
+    validators = {}
 
     def __init__(self, context_object, context=None):
         self._value = None
@@ -15,7 +17,10 @@ class EvaluationMetricBase:
     def validate_rule(cls, operation, value):
         if operation not in cls.allowed_operations:
             raise ValueError("Invalid operation")
-        # TODO Check if value is the correct type for the operation
+
+        validator_func = cls.validators.get(operation)
+        if validator_func:
+            validator_func(value)
 
     def apply_rule(self, operation, rule):
         if not self.context_object:
