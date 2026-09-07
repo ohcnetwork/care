@@ -36,6 +36,7 @@ class ValueSetBaseSpec(EMRResource):
     description: str
     compose: ValueSetCompose
     status: ValueSetStatusOptions
+    disable_composition: bool
 
 
 class ValueSetSpec(ValueSetBaseSpec):

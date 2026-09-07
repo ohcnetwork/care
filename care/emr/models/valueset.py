@@ -22,6 +22,7 @@ class ValueSet(EMRBaseModel):
     auth_context = models.CharField(max_length=255, default="instance")
     slug = models.SlugField(max_length=255)
     inherited = models.BooleanField(default=False)
+    disable_composition = models.BooleanField(default=False)
     name = models.CharField(max_length=255)
     description = models.TextField(default="")
     compose = models.JSONField(default=dict)
@@ -63,14 +64,23 @@ class ValueSet(EMRBaseModel):
             system = include.system
             if system not in systems:
                 systems[system] = {"include": []}
-            systems[system]["include"].append(include.model_dump(exclude_defaults=True))
+            if "include" not in systems[system]:
+                systems[system]["include"].append(
+                    include.model_dump(exclude_defaults=True)
+                )
         for exclude in compose.exclude:
             system = exclude.system
             if system not in systems:
                 systems[system] = {"exclude": []}
             elif "exclude" not in systems[system]:
                 systems[system]["exclude"] = []
+            if "exclude" not in systems[system]:
+                systems[system]["exclude"].append(
+                    exclude.model_dump(exclude_defaults=True)
+                )
             systems[system]["exclude"].append(exclude.model_dump(exclude_defaults=True))
+        if self.disable_composition:
+            return systems
         if self.parent:
             systems = self.parent.create_composition(systems)
         return systems
