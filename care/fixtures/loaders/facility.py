@@ -17,8 +17,7 @@ def find_organization_by_name(base, name, *, parent=None):
         params["parent"] = parent
     data = base.get(reverse("organization-list"), params=params)
     for org in data.get("results", data):
-        org_name = org["name"] if isinstance(org, dict) else org.name
-        if org_name == name:
+        if org.name == name:
             return org
     return None
 
@@ -67,8 +66,8 @@ def resolve_or_create_facility(base, *, facility_id=None, name=None) -> str:
     """Return a facility external id: reuse ``facility_id`` or create from pack.
 
     When ``facility_id`` is set, it is returned as-is (caller may log attach).
-    Otherwise get-or-create Kerala + Ernakulam, create a facility from pack
-    ``facility.json``, and return the new facility id.
+    Otherwise get-or-create Kerala + Ernakulam, create a facility under
+    Ernakulam from pack ``facility.json``, and return the new facility id.
     """
     if facility_id:
         return facility_id
@@ -77,16 +76,24 @@ def resolve_or_create_facility(base, *, facility_id=None, name=None) -> str:
         base,
         "Kerala",
         org_type=OrganizationTypeChoices.govt.value,
+        metadata={
+            "govt_org_type": "state",
+            "govt_org_children_type": "district",
+        },
     )
-    get_or_create_organization(
+    district_organization = get_or_create_organization(
         base,
         "Ernakulam",
         org_type=OrganizationTypeChoices.govt.value,
         parent=geo_organization.id,
+        metadata={
+            "govt_org_type": "district",
+            "govt_org_children_type": "local_body",
+        },
     )
     facility = create_facility_from_pack(
         base,
-        geo_organization.id,
+        district_organization.id,
         name=name,
     )
     _log(

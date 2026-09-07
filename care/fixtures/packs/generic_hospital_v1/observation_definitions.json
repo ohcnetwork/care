@@ -1,0 +1,1483 @@
+[
+  {
+    "title": "Leucocyte count (WBC)",
+    "slug_value": "w-b-c",
+    "description": "Measures the number of white blood cells in the blood to assess immune activity.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "6690-2",
+      "display": "Leukocytes [#/volume] in Blood by Automated count"
+    },
+    "permitted_data_type": "integer",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "42396003",
+      "display": "WBC Estimation"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{cells}/uL",
+      "display": "cells per microliter"
+    }
+  },
+  {
+    "title": "Neutrophils Percentage",
+    "slug_value": "neutrophil-percentage",
+    "description": "This test is used to determine the proportion of neutrophils to evaluate acute infection or inflammation.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "770-8",
+      "display": "Neutrophils/Leukocytes in Blood by Automated count"
+    },
+    "permitted_data_type": "integer",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "165511009",
+      "display": "Differential white cell count estimation procedure"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "%",
+      "display": "percent"
+    }
+  },
+  {
+    "title": "Lymphocytes Percentage",
+    "slug_value": "lymphocyte-percentage",
+    "description": "This test is used to determine the proportion of lymphocytes to assess immune response and viral infections.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "736-9",
+      "display": "Lymphocytes/Leukocytes in Blood by Automated count"
+    },
+    "permitted_data_type": "integer",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "165511009",
+      "display": "Differential white cell count estimation procedure"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "%",
+      "display": "percent"
+    }
+  },
+  {
+    "title": "Monocytes Percentage",
+    "slug_value": "monocyte-percentage",
+    "description": "This test is used to determine the proportion of monocytes to evaluate chronic inflammation or infection.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "5905-5",
+      "display": "Monocytes/Leukocytes in Blood by Automated count"
+    },
+    "permitted_data_type": "integer",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "165511009",
+      "display": "Differential white cell count estimation procedure"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "%",
+      "display": "percent"
+    }
+  },
+  {
+    "title": "Eosinophils Percentage",
+    "slug_value": "eosinophil-percentage",
+    "description": "This test is used to determine the proportion of eosinophils to assess allergic or parasitic conditions.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "713-8",
+      "display": "Eosinophils/Leukocytes in Blood by Automated count"
+    },
+    "permitted_data_type": "integer",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "165511009",
+      "display": "Differential white cell count estimation procedure"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "%",
+      "display": "percent"
+    }
+  },
+  {
+    "title": "Basophils Percentage",
+    "slug_value": "basophil-percentage",
+    "description": "This test is used to determine the proportion of basophils to evaluate hypersensitivity reactions.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "706-2",
+      "display": "Basophils/Leukocytes in Blood by Automated count"
+    },
+    "permitted_data_type": "integer",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "165511009",
+      "display": "Differential white cell count estimation procedure"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "%",
+      "display": "percent"
+    }
+  },
+  {
+    "title": "Neutrophils Absolute Count",
+    "slug_value": "neutrophil-absolute-count",
+    "description": "This test is used to measure the absolute neutrophil count to assess infection risk.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "751-8",
+      "display": "Neutrophils [#/volume] in Blood by Automated count"
+    },
+    "permitted_data_type": "integer",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "42396003",
+      "display": "WBC Estimation"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{cells}/uL",
+      "display": "cells per microliter"
+    }
+  },
+  {
+    "title": "Lymphocytes Absolute Count",
+    "slug_value": "lymphocyte-absolute-count",
+    "description": "This test is used to measure the absolute lymphocyte count to evaluate immune competence.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "731-0",
+      "display": "Lymphocytes [#/volume] in Blood by Automated count"
+    },
+    "permitted_data_type": "integer",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "74765001",
+      "display": "Enumeration of lymphocytes in peripheral blood"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{cells}/uL",
+      "display": "cells per microliter"
+    }
+  },
+  {
+    "title": "Monocytes Absolute Count",
+    "slug_value": "monocyte-absolute-count",
+    "description": "This test is used to measure the absolute monocyte count to assess chronic inflammatory conditions.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "742-7",
+      "display": "Monocytes [#/volume] in Blood by Automated count"
+    },
+    "permitted_data_type": "integer",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "67776007",
+      "display": "Enumeration of monocytes in peripheral blood"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{cells}/uL",
+      "display": "cells per microliter"
+    }
+  },
+  {
+    "title": "Eosinophils Absolute Count",
+    "slug_value": "eosinophil-absolute-count",
+    "description": "This test is used to measure the absolute eosinophil count to assess allergic and parasitic disorders.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "711-2",
+      "display": "Eosinophils [#/volume] in Blood by Automated count"
+    },
+    "permitted_data_type": "integer",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "71960002",
+      "display": "eosinophil count estimation procedure"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{cells}/uL",
+      "display": "cells per microliter"
+    }
+  },
+  {
+    "title": "Basophils Absolute Count",
+    "slug_value": "basophil-absolute-count",
+    "description": "This test is used to measure the absolute basophil count to evaluate inflammatory responses.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "704-7",
+      "display": "Basophils [#/volume] in Blood by Automated count"
+    },
+    "permitted_data_type": "integer",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "42351005",
+      "display": "Enumeration of basophils in peripheral blood"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{cells}/uL",
+      "display": "cells per microliter"
+    }
+  },
+  {
+    "title": "Erythrocyte Count (RBC)",
+    "slug_value": "red-blood-cell-count",
+    "description": "This test is used to measure the red blood cell count to assess oxygen-carrying capacity.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "789-8",
+      "display": "Erythrocytes [#/volume] in Blood by Automated count"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "14089001",
+      "display": "Red blood cell count"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{cells}/uL",
+      "display": "cells per microliter"
+    }
+  },
+  {
+    "title": "Hemoglobin (Hb)",
+    "slug_value": "hemoglobin-hb",
+    "description": "This test is used to measure hemoglobin concentration to evaluate anemia and oxygen transport.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "718-7",
+      "display": "Hemoglobin [Mass/volume] in Blood"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "271026005",
+      "display": "Hb estimation procedure"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL",
+      "display": "gram per deciliter"
+    }
+  },
+  {
+    "title": "Mean Corpuscular Volume (MCV)",
+    "slug_value": "mean-corpuscular-volume",
+    "description": "This test is used to determine the average size of red blood cells to classify anemia.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "787-2",
+      "display": "MCV [Entitic mean volume] in Red Blood Cells by Automated count"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "104133003",
+      "display": "Erythrocyte mean corpuscular volume determination"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "fL",
+      "display": "Femtoliter"
+    }
+  },
+  {
+    "title": "Hematocrit (HCT)",
+    "slug_value": "hematocrit",
+    "description": "This test is used to measure the proportion of blood volume occupied by red blood cells.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "4544-3",
+      "display": "Hematocrit [Volume Fraction] of Blood by Automated count"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "28317006",
+      "display": "Hematocrit determination"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "%",
+      "display": "percent"
+    }
+  },
+  {
+    "title": "Mean Corpuscular Hemoglobin (MCH)",
+    "slug_value": "m-c-h",
+    "description": "This test is used to determine the average hemoglobin content per red blood cell",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "785-6",
+      "display": "MCH [Entitic mass] by Automated count"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "54706004",
+      "display": "Measurement of mean corpuscular hemoglobin"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "pg",
+      "display": "picogram"
+    }
+  },
+  {
+    "title": "Mean Corpuscular Hemoglobin Concentration (MCHC)",
+    "slug_value": "m-c-h-c",
+    "description": "This test is used to determine the average hemoglobin concentration in red blood cells.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "786-4",
+      "display": "MCHC [Mass/volume] in Red Blood Cells by Automated count"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "37254006",
+      "display": "Mean corpuscular hemoglobin concentration determination"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL",
+      "display": "gram per deciliter"
+    }
+  },
+  {
+    "title": "Red Cell Distribution Width - SD",
+    "slug_value": "rdw-sd",
+    "description": "This test is used to measure variation in red blood cell size to detect anisocytosis.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "21000-5",
+      "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "66842004",
+      "display": "Red cell distribution width determination"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "%",
+      "display": "percent"
+    }
+  },
+  {
+    "title": "Red Cell Distribution Width - CV",
+    "slug_value": "rdw-cv",
+    "description": "This test is used to quantify variability in red blood cell size distribution.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "788-0",
+      "display": "Erythrocyte distribution width [Entitic volume] by Automated count"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "66842004",
+      "display": "Red cell distribution width determination"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "%",
+      "display": "percent"
+    }
+  },
+  {
+    "title": "Platelet Count (PLT)",
+    "slug_value": "platelet-count",
+    "description": "This test is used to measure platelet count to assess clotting function.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "777-3",
+      "display": "Platelets [#/volume] in Blood by Automated count"
+    },
+    "permitted_data_type": "integer",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "61928009",
+      "display": "Platelet count estimation procedure"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{cells}/uL",
+      "display": "cells per microliter"
+    }
+  },
+  {
+    "title": "Mean Platelet Volume  (MPV)",
+    "slug_value": "mean-platelet-volume",
+    "description": "This test is used to determine average platelet size to assess platelet production.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "32623-1",
+      "display": "Platelet mean volume [Entitic volume] in Blood by Automated count"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "75672003",
+      "display": "Measurement of mean platelet volume"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "fL",
+      "display": "Femtoliter"
+    }
+  },
+  {
+    "title": "Plateletcrit (PCT)",
+    "slug_value": "plateletcrit-pct",
+    "description": "This test is used to measure platelet volume percentage in blood.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "51637-7",
+      "display": "Plateletcrit [Volume Fraction] in Blood"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "250314004",
+      "display": "Platelet hematocrit measurement"
+    }
+  },
+  {
+    "title": "Platelet Distribution Width (PDW)",
+    "slug_value": "platelet-distribution-width",
+    "description": "This test is used to assess variation in platelet size.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "32207-3",
+      "display": "Platelet distribution width [Entitic volume] in Blood by Automated count"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "250313005",
+      "display": "Measurement of variation in platelet size"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "%",
+      "display": "percent"
+    }
+  },
+  {
+    "title": "Platelet Large Cell Ratio (P-LCR)",
+    "slug_value": "platelet-large-cell-ratio",
+    "description": "This test is used to determine the proportion of large platelets indicating platelet activation.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "48386-7",
+      "display": "Platelets Large/Platelets in Blood by Automated count"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "104092009",
+      "display": "Hemogram, automated, with red blood cell, white blood cell, hemoglobin, hematocrit, Indices, Platelet count, and automated partial white blood cell differential"
+    }
+  },
+  {
+    "title": "Platelet Large Cell Count (P-LCC)",
+    "slug_value": "platelet-large-cell-count",
+    "description": "This test is used to measure the absolute count of large platelets.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "96354-6",
+      "display": "Platelets Large [#/volume] in Blood by Automated count"
+    },
+    "permitted_data_type": "integer",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "104092009",
+      "display": "Hemogram, automated, with red blood cell, white blood cell, hemoglobin, hematocrit, Indices, Platelet count, and automated partial white blood cell differential"
+    }
+  },
+  {
+    "title": "Aspartate Aminotransferase (SGOT)",
+    "slug_value": "sgot-ast",
+    "description": "This test is used to measure AST enzyme levels to assess liver and muscle injury.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "1920-8",
+      "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "45896001",
+      "display": "Aspartate aminotransferase measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "U/L",
+      "display": "enzyme unit per liter"
+    }
+  },
+  {
+    "title": "Alanine Aminotransferase (SGPT)",
+    "slug_value": "sgpt-alt",
+    "description": "This test is used to measure ALT enzyme levels to assess liver cell injury.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "1742-6",
+      "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "34608000",
+      "display": "Alanine aminotransferase measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "U/L",
+      "display": "enzyme unit per liter"
+    }
+  },
+  {
+    "title": "Total Bilirubin",
+    "slug_value": "bilirubin-total",
+    "description": "This test is used to measure total bilirubin to assess liver function and hemolysis.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "1975-2",
+      "display": "Bilirubin.total [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "313840000",
+      "display": "Serum Total Bilirubin"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "Direct Bilirubin",
+    "slug_value": "bilirubin-direct",
+    "description": "This test is used to measure conjugated bilirubin to evaluate hepatic excretory function.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "1968-7",
+      "display": "Bilirubin.direct [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "39748002",
+      "display": "Serum Direct bilirubin"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "Indirect Bilirubin",
+    "slug_value": "bilirubin-indirect",
+    "description": "This test is used to measure unconjugated bilirubin to assess hemolysis or impaired metabolism.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "1971-1",
+      "display": "Bilirubin.indirect [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "313842008",
+      "display": "Serum Indirect bilirubin"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "Alkaline Phosphatase (ALP)",
+    "slug_value": "alkaline-phosphatase",
+    "description": "This test is used to measure ALP levels to assess biliary obstruction or bone disorders.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "1783-0",
+      "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "88810008",
+      "display": "Alkaline phosphatase measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "U/L",
+      "display": "enzyme unit per liter"
+    }
+  },
+  {
+    "title": "Total Protein",
+    "slug_value": "total-protein",
+    "description": "This test is used to measure total protein levels to assess nutritional and liver status.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "2885-2",
+      "display": "Protein [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "304383000",
+      "display": "Total protein measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL",
+      "display": "gram per deciliter"
+    }
+  },
+  {
+    "title": "Serum Albumin",
+    "slug_value": "serum-albumin",
+    "description": "This test is used to measure albumin levels to evaluate liver function and nutritional status.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "1751-7",
+      "display": "Albumin [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "104485008",
+      "display": "Albumin measurement, serum"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL",
+      "display": "gram per deciliter"
+    }
+  },
+  {
+    "title": "Serum Globulin",
+    "slug_value": "serum-globulin",
+    "description": "This test is used to measure globulin levels to assess immune function.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "10834-0",
+      "display": "Globulin [Mass/volume] in Serum by calculation"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "270994009",
+      "display": "Serum globulin measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL",
+      "display": "gram per deciliter"
+    }
+  },
+  {
+    "title": "Albumin/Globulin Ratio",
+    "slug_value": "ag-ratio",
+    "description": "This test is used to evaluate the albumin-to-globulin ratio to assess liver and immune disorders.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "1759-0",
+      "display": "Albumin/Globulin [Mass Ratio] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "687005",
+      "display": "Albumin/Globulin ratio"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "g/dL",
+      "display": "gram per deciliter"
+    }
+  },
+  {
+    "title": "Serum Triglycerides",
+    "slug_value": "triglycerides",
+    "description": "This test is used to measure triglyceride levels to assess metabolic and cardiovascular risk.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "2571-8",
+      "display": "Triglyceride [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "271245006",
+      "display": "Measurement of serum triglyceride level"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "Total Cholesterol",
+    "slug_value": "total-cholesterol",
+    "description": "This test is used to measure total cholesterol to assess cardiovascular risk.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "2093-3",
+      "display": "Cholesterol [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "412808005",
+      "display": "Serum total cholesterol measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "HDL Cholesterol",
+    "slug_value": "hdl-cholesterol",
+    "description": "This test is used to measure HDL levels to evaluate protective cholesterol.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "2085-9",
+      "display": "Cholesterol in HDL [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "166832000",
+      "display": "Serum High density lipoprotein Cholesterol measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "LDL Cholesterol",
+    "slug_value": "ldl-cholesterol",
+    "description": "This test is used to measure LDL levels to assess atherosclerotic risk.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "2089-1",
+      "display": "Cholesterol in LDL [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "166833005",
+      "display": "Serum Low density lipoprotein cholesterol measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "VLDL Cholesterol",
+    "slug_value": "vldl-cholesterol",
+    "description": "This test is used to measure VLDL levels to assess triglyceride transport.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "13458-5",
+      "display": "Cholesterol in VLDL [Mass/volume] in Serum or Plasma by calculation"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "166834004",
+      "display": "Serum Very low density lipoprotein cholesterol measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "Total Cholesterol/HDL Ratio",
+    "slug_value": "tc-hdl-ratio",
+    "description": "This test is used to measure urea levels to assess renal function and protein metabolism.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "9830-1",
+      "display": "Cholesterol.total/Cholesterol in HDL [Mass Ratio] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "166842003",
+      "display": "Total cholesterol:high density lipoprotein ratio measurement"
+    }
+  },
+  {
+    "title": "Blood Urea",
+    "slug_value": "urea-test",
+    "description": "This test is used to measure creatinine levels to evaluate kidney function.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "20977-5",
+      "display": "Urea [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "269858003",
+      "display": "Biochemical evaluation of blood urea/renal function"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "Serum Creatinine",
+    "slug_value": "creatinine",
+    "description": "This test is used to measure uric acid levels to assess gout and metabolic disorders.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "2160-0",
+      "display": "Creatinine [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "113075003",
+      "display": "Serum Creatinine measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "Serum Uric Acid",
+    "slug_value": "uric-acid",
+    "description": "This test is used to measure sodium levels to assess fluid and electrolyte balance.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "3084-1",
+      "display": "Urate [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "275740009",
+      "display": "Serum Uric acid measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "Serum Sodium",
+    "slug_value": "sodium",
+    "description": "This test is used to measure potassium levels to assess cardiac and neuromuscular function.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "2951-2",
+      "display": "Sodium [Moles/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "104934005",
+      "display": "Sodium measurement, serum"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mmol/L",
+      "display": "millimole per liter"
+    }
+  },
+  {
+    "title": "Serum Potassium",
+    "slug_value": "potassium",
+    "description": "This test is used to measure calcium levels to assess bone and metabolic function.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "2823-3",
+      "display": "Potassium [Moles/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "271236005",
+      "display": "Serum potassium measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mmol/L",
+      "display": "millimole per liter"
+    }
+  },
+  {
+    "title": "Serum Calcium",
+    "slug_value": "calcium",
+    "description": "This test is used to measure fasting blood glucose to screen for diabetes.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "17861-6",
+      "display": "Calcium [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "271240001",
+      "display": "Serum Calcium measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "Fasting Blood Glucose (FBG)",
+    "slug_value": "blood-sugar-fasting",
+    "description": "This test is used to measure postprandial glucose to assess glucose tolerance.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "1557-8",
+      "display": "Glucose [Mass/volume] in Venous blood"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "36048009",
+      "display": "Glucose measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "Postprandial Blood Glucose (PPBG)",
+    "slug_value": "blood-sugar-pp",
+    "description": "This test is used to measure random blood glucose to assess glycemic status.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "87422-2",
+      "display": "Glucose [Mass/volume] in Blood -- post meal"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "302788006",
+      "display": "Post-prandial blood glucose measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "Random Blood Glucose (RBS)",
+    "slug_value": "randam-blood-sugar",
+    "description": "This test is used to measure bleeding time to assess platelet function.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "2345-7",
+      "display": "Glucose [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "time",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "36048009",
+      "display": "Glucose measurement"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mg/dL",
+      "display": "milligram per deciliter"
+    }
+  },
+  {
+    "title": "Bleeding Time (BT)",
+    "slug_value": "bleeding-time",
+    "description": "This test is used to measure clotting time to assess coagulation pathways.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "11067-6",
+      "display": "Bleeding time of Capillary blood by Sukharev method"
+    },
+    "permitted_data_type": "time",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "26769008",
+      "display": "BT: Duke method"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "min",
+      "display": "minute"
+    }
+  },
+  {
+    "title": "Clotting Time (CT)",
+    "slug_value": "clotting-time",
+    "description": "This test is used to determine blood group based on A and B antigens.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "81638-9",
+      "display": "Clotting time of Capillary blood by Sukharev method"
+    },
+    "permitted_data_type": "string",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "165566005",
+      "display": "Whole blood clotting time methods"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "min",
+      "display": "minute"
+    }
+  },
+  {
+    "title": "ABO Blood Group",
+    "slug_value": "abo-blood-group",
+    "description": "This test is used to determine Rh factor status.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "883-9",
+      "display": "ABO group [Type] in Blood"
+    },
+    "permitted_data_type": "string",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "359818001",
+      "display": "Agglutination procedure"
+    }
+  },
+  {
+    "title": "Rh Blood Group",
+    "slug_value": "rh-typing",
+    "description": "This test is used to detect HIV infection.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "10331-7",
+      "display": "Rh [Type] in Blood"
+    },
+    "permitted_data_type": "boolean",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "363783003",
+      "display": "Rh Blood grouping"
+    }
+  },
+  {
+    "title": "HIV test (Antibodies 1 and 2)",
+    "slug_value": "hiv-test",
+    "description": "This test is used to detect hepatitis B surface antigen indicating active infection.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "85037-0",
+      "display": "HIV 1 and 2 Ab and HIV 1 p24 Ag panel - Serum or Plasma by Immunoassay"
+    },
+    "permitted_data_type": "boolean",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "50806003",
+      "display": "Human immunodeficiency virus type 1 antibody confirmatory test"
+    }
+  },
+  {
+    "title": "Hepatitis B Surface Antigen (HBsAg)",
+    "slug_value": "hbsag",
+    "description": "This test is used to detect hepatitis C infection.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "5195-3",
+      "display": "Hepatitis B virus surface Ag [Presence] in Serum"
+    },
+    "permitted_data_type": "boolean",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "47758006",
+      "display": "Hepatitis B surface antigen measurement"
+    }
+  },
+  {
+    "title": "Hepatitis C Virus Antibody (HCV)",
+    "slug_value": "hcv-test",
+    "description": "This test is used to screen for syphilis infection.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "16128-1",
+      "display": "Hepatitis C virus Ab [Presence] in Serum"
+    },
+    "permitted_data_type": "boolean",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "64411004",
+      "display": "Hepatitis C antibody measurement"
+    }
+  },
+  {
+    "title": "RPR/VDRL test for Syphilis",
+    "slug_value": "vdrl-test",
+    "description": "This test is used to calculate the cholesterol ratio to assess cardiovascular risk.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "20507-0",
+      "display": "Reagin Ab [Presence] in Serum by RPR"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "19869000",
+      "display": "Rapid Plasma Reagin (RPR) test"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{titer}",
+      "display": "titer"
+    }
+  },
+  {
+    "title": "Blood Urea Nitrogen (BUN)",
+    "slug_value": "blood-urea-nitrogen",
+    "description": "This test is used to measure blood urea nitrogen to assess renal function.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "3094-0",
+      "display": "Urea nitrogen [Mass/volume] in Serum or Plasma"
+    },
+    "permitted_data_type": "decimal",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "105011006",
+      "display": "Blood urea nitrogen measurement"
+    }
+  },
+  {
+    "title": "Malaria Parasite Test (MP)",
+    "slug_value": "malaria-parasite-rapid",
+    "description": "This test is used to detect malaria parasites in blood.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "32700-7",
+      "display": "Microscopic observation [Identifier] in Blood by Malaria smear"
+    },
+    "permitted_data_type": "boolean",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "12845003",
+      "display": "Malaria smear (Thick and Thin Smear)"
+    }
+  },
+  {
+    "title": "S. Typhi O",
+    "slug_value": "salmonella-typhi-o",
+    "description": "This test is used to detect O antibodies against Salmonella typhi.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "42959-7",
+      "display": "Salmonella typhi O Ab [Titer] in Serum"
+    },
+    "permitted_data_type": "string",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "165828002",
+      "display": "Widal test"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{titer}",
+      "display": "titer"
+    }
+  },
+  {
+    "title": "S. Typhi H",
+    "slug_value": "salmonella-typhi-h",
+    "description": "This test is used to detect H antibodies against Salmonella typhi.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "42960-5",
+      "display": "Salmonella typhi H Ab [Titer] in Serum"
+    },
+    "permitted_data_type": "string",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "165828002",
+      "display": "Widal test"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{titer}",
+      "display": "titer"
+    }
+  },
+  {
+    "title": "S. Para Typhi AH",
+    "slug_value": "salmonella-paratyphi-ah",
+    "description": "This test is used to detect antibodies against Salmonella paratyphi A.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "22518-5",
+      "display": "Salmonella paratyphi A H Ab [Titer] in Serum"
+    },
+    "permitted_data_type": "string",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "165828002",
+      "display": "Widal test"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{titer}",
+      "display": "titer"
+    }
+  },
+  {
+    "title": "S. Para Typhi BH",
+    "slug_value": "salmonella-paratyphi-bh",
+    "description": "This test is used to detect antibodies against Salmonella paratyphi B.",
+    "category": "laboratory",
+    "status": "active",
+    "code": {
+      "system": "http://loinc.org",
+      "code": "22522-7",
+      "display": "Salmonella paratyphi B H Ab [Titer] in Serum"
+    },
+    "permitted_data_type": "string",
+    "qualified_ranges": [],
+    "method": {
+      "system": "http://snomed.info/sct",
+      "code": "165828002",
+      "display": "Widal test"
+    },
+    "permitted_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "{titer}",
+      "display": "titer"
+    }
+  }
+]
