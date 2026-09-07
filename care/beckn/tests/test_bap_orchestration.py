@@ -36,7 +36,7 @@ class TxnStoreTests(CareAPITestBase):
         txn_store.record_response(tid, "on_discover", {"y": 2})
         rec = txn_store.get_transaction(tid)
         self.assertEqual(rec["status"], "ON_DISCOVER")
-        self.assertEqual(rec["responses"]["ON_DISCOVER"], {"y": 2})
+        self.assertEqual(txn_store.get_action(tid, "on_discover"), {"y": 2})
 
     def test_set_routing_merges_and_drops_none(self):
         tid = txn_store.create_transaction("consultation")["transactionId"]
@@ -166,6 +166,33 @@ class BAPReceiverTests(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["message"]["ack"]["status"], "ACK")
 
+    def test_on_init_records_and_advances_poll(self):
+        """An on_init callback for a known transaction advances the poller to
+        ON_INIT and is fetchable via the transaction action slice."""
+        tid = txn_store.create_transaction("consultation")["transactionId"]
+        body = {
+            "context": {"action": "on_init", "transactionId": tid},
+            "message": {
+                "contract": {
+                    "id": "3f49b0d6-0d21-43c5-8685-24a1c40910c5",
+                    "status": {"code": "DRAFT"},
+                    "contractAttributes": {
+                        "@type": "hrf:HealthReferral",
+                        "coordinationId": "3f49b0d6-0d21-43c5-8685-24a1c40910c5",
+                        "lifecycleState": "DRAFT",
+                    },
+                }
+            },
+        }
+        response = self._post("on_init", body)
+        self.assertEqual(response.status_code, 200)
+
+        rec = txn_store.get_transaction(tid)
+        self.assertEqual(rec["status"], "ON_INIT")
+        self.assertIn("ON_INIT", rec["actions"])
+        stored = txn_store.get_action(tid, "on_init")
+        self.assertEqual(stored["message"], body["message"])
+
 
 class CompleteReferralTests(CareAPITestBase):
     def setUp(self):
@@ -250,6 +277,17 @@ class ReferralConfirmBuilderTests(CareAPITestBase):
             "contractAttributes"
         ]["targetCriteria"]
         self.assertEqual(criteria["serviceCategory"]["code"], "CONSULTATION")
+        self.assertEqual(criteria["procedureNeeds"], ["HOME_VISIT"])
+        self.assertEqual(criteria["consultationModality"], "IN_PERSON")
+
+    def test_other_uses_investigation_service_category(self):
+        rr = self._rr(category=CategoryChoices.other.value)
+        criteria = build_referral_confirm(rr, "RR-1")["message"]["contract"][
+            "contractAttributes"
+        ]["targetCriteria"]
+        self.assertEqual(criteria["serviceCategory"]["code"], "INVESTIGATION")
+        self.assertEqual(criteria["consultationModality"], "IN_PERSON")
+        self.assertNotIn("procedureNeeds", criteria)
 
 
 class ReferralUpdateCallbackTests(CareAPITestBase):

@@ -261,9 +261,21 @@ def _coded_value(type_: str, code: str, display: str | None = None) -> dict:
 # Coordination SLA windows (hours) advertised on the coordinator offer, per
 # urgency tier: how long before the referral lapses / breaches SLA.
 _COORDINATION_SLA_WINDOWS = [
-    {"urgencyTier": "ROUTINE", "lapseWindowHours": 168, "slaBreachWindowHours": 168},
-    {"urgencyTier": "URGENT", "lapseWindowHours": 48, "slaBreachWindowHours": 48},
-    {"urgencyTier": "EMERGENCY", "lapseWindowHours": 1, "slaBreachWindowHours": 1},
+    {
+        "clinicalUrgencyTier": "ROUTINE",
+        "lapseWindowHours": 168,
+        "slaBreachWindowHours": 168,
+    },
+    {
+        "clinicalUrgencyTier": "URGENT",
+        "lapseWindowHours": 48,
+        "slaBreachWindowHours": 48,
+    },
+    {
+        "clinicalUrgencyTier": "EMERGENCY",
+        "lapseWindowHours": 1,
+        "slaBreachWindowHours": 1,
+    },
 ]
 
 

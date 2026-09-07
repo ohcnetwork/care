@@ -43,7 +43,7 @@ def _clinical_urgency_tier(resource_request) -> str:
         and resource_request.priority >= URGENT_PRIORITY_THRESHOLD
     ):
         return "URGENT"
-    return "ROUTINE"
+    return "URGENT"
 
 
 def _target_criteria(resource_request) -> dict:
@@ -52,7 +52,16 @@ def _target_criteria(resource_request) -> dict:
     ``patient_care`` is a downward field/consultation referral; every other
     category is treated as an upward investigation (lab) referral.
     """
-    if resource_request.category == CategoryChoices.patient_care.value:
+    return service_category_criteria(resource_request.category)
+
+
+def service_category_criteria(category: str | None) -> dict:
+    """NFH ``targetCriteria`` service-category fields for a Care category.
+
+    ``patient_care`` is a downward consultation referral; ``other`` (and any
+    other value) is an upward investigation (lab) referral.
+    """
+    if category == CategoryChoices.patient_care.value:
         return {
             "serviceCategory": {
                 "@context": CODED_VALUE_CONTEXT,
@@ -70,6 +79,7 @@ def _target_criteria(resource_request) -> dict:
             "code": "INVESTIGATION",
             "display": "Investigation",
         },
+        "consultationModality": "IN_PERSON",
     }
 
 

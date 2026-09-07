@@ -7,11 +7,19 @@ BAP), falling back to a configurable default. The patient's geo organization is
 derived from the resolved facility.
 """
 
+import uuid
+
 from care.facility.models import Facility
 
 
 def _facility_by_external_id(external_id) -> Facility | None:
     if not external_id:
+        return None
+    # A non-uuid id belongs to a facility outside the Care network (e.g. a CC
+    # coordinator resource id); it can never match, so skip the query.
+    try:
+        uuid.UUID(str(external_id))
+    except (ValueError, TypeError):
         return None
     return Facility.objects.filter(external_id=external_id).first()
 
