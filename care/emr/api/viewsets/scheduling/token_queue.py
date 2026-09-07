@@ -228,19 +228,20 @@ class TokenQueueViewSet(EMRModelViewSet):
             )
         with Lock(f"queue:next_token:{obj.id}"), transaction.atomic():
             tokens_qs = Token.objects.filter(
-                queue=obj, status__in=[TokenStatusOptions.CREATED.value]
+                queue=obj,
+                status__in=[TokenStatusOptions.CREATED.value],
+                sub_queue__isnull=True,
             ).order_by("created_date")
             if category:
                 tokens_qs = tokens_qs.filter(category=category)
-            if tokens_qs.exists():
-                next_token = tokens_qs.first()
-            else:
+            next_token = tokens_qs.first()
+            if not next_token:
                 raise ValidationError("No tokens found")
             sub_queue.current_token = next_token
-            sub_queue.save()
+            sub_queue.save(update_fields=["current_token", "modified_date"])
             next_token.status = TokenStatusOptions.IN_PROGRESS.value
             next_token.sub_queue = sub_queue
-            next_token.save()
+            next_token.save(update_fields=["status", "sub_queue", "modified_date"])
         return Response(TokenReadSpec.serialize(next_token).to_json())
 
     @action(detail=True, methods=["GET"])
