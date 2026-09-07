@@ -64,7 +64,7 @@ class ValueSet(EMRBaseModel):
             system = include.system
             if system not in systems:
                 systems[system] = {"include": []}
-            if "include" not in systems[system]:
+            if "include" in systems[system]:
                 systems[system]["include"].append(
                     include.model_dump(exclude_defaults=True)
                 )
@@ -72,17 +72,14 @@ class ValueSet(EMRBaseModel):
             system = exclude.system
             if system not in systems:
                 systems[system] = {"exclude": []}
-            elif "exclude" not in systems[system]:
-                systems[system]["exclude"] = []
-            if "exclude" not in systems[system]:
+            if "exclude" in systems[system]:
                 systems[system]["exclude"].append(
                     exclude.model_dump(exclude_defaults=True)
                 )
-            systems[system]["exclude"].append(exclude.model_dump(exclude_defaults=True))
         if self.disable_composition:
             return systems
         if self.parent:
-            systems = self.parent.create_composition(systems)
+            self.parent.create_composition(systems)
         return systems
 
     def search(self, search="", count=10, display_language=None):
