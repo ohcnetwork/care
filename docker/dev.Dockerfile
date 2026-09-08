@@ -28,6 +28,10 @@ COPY . $APP_HOME/
 
 RUN --mount=type=cache,target=/root/.cache/pip python3 $APP_HOME/install_plugins.py
 
+RUN DJANGO_SETTINGS_MODULE=config.settings.local \
+  ADDITIONAL_PLUGS="$ADDITIONAL_PLUGS" \
+  bash $APP_HOME/scripts/build_assets.sh -v 0
+
 HEALTHCHECK \
   --interval=10s \
   --timeout=5s \
