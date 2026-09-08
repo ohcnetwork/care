@@ -437,6 +437,16 @@ class CareFixtureBase:
         }
         return self.post(url, data)
 
+    def update_request_order(self, facility_id, order_id, **kwargs):
+        url = reverse(
+            "request-order-detail",
+            kwargs={
+                "facility_external_id": facility_id,
+                "external_id": order_id,
+            },
+        )
+        return self.patch(url, kwargs)
+
     def create_supply_request(self, order, item, quantity, **kwargs):
         data = {
             "status": "active",
@@ -459,6 +469,16 @@ class CareFixtureBase:
             **kwargs,
         }
         return self.post(url, data)
+
+    def update_delivery_order(self, facility_id, order_id, **kwargs):
+        url = reverse(
+            "delivery-order-detail",
+            kwargs={
+                "facility_external_id": facility_id,
+                "external_id": order_id,
+            },
+        )
+        return self.patch(url, kwargs)
 
     def create_supply_delivery(self, order, supplied_item_quantity, **kwargs):
         data = {

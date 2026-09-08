@@ -53,6 +53,8 @@ def load_facility_foundation(base, facility_id):
 
         created = base.create_location(facility_id, **payload)
         foundation_resource_id_by_ref[ref] = str(created.id)
+        for organization_id in payload["organizations"]:
+            base.add_organization_to_location(facility_id, created.id, organization_id)
 
     for service in pack.get("healthcare_services", []):
         ref = service["ref"]
