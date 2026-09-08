@@ -11,7 +11,7 @@ name = "python-magic-bin"
 [packages]
 argon2-cffi = "==25.1.0"
 authlib = "==1.6.12"
-boto3 = "==1.43.6"
+boto3 = "==1.43.83"
 celery = "==5.6.0"
 django = "==6.0"
 django-anymail = {extras = ["amazon-ses"], version = "*"}
@@ -54,7 +54,7 @@ pip = "==26.0"
 urllib3 = "==2.7.0"
 
 [dev-packages]
-boto3-stubs = { extras = ["s3", "boto3"], version = "==1.43.6" }
+boto3-stubs = { extras = ["s3", "boto3"], version = "==1.43.83" }
 coverage = "==7.13.0"
 debugpy = "==1.8.17"
 django-coverage-plugin = "==3.2.0"
