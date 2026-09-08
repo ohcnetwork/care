@@ -26,6 +26,16 @@ from care.utils.filters.null_filter import NullFilter
 from care.utils.shortcuts import get_object_or_404
 
 
+def authorize_notes_view(user, patient, encounter=None):
+    if AuthorizationController.call("can_view_clinical_data", user, patient):
+        return
+    if encounter and AuthorizationController.call(
+        "can_view_encounter_clinical_data", user, encounter
+    ):
+        return
+    raise PermissionDenied("Permission denied to user")
+
+
 class NoteThreadFilters(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     encounter_isnull = NullFilter(field_name="encounter")
@@ -86,25 +96,22 @@ class NoteThreadViewSet(
         super().perform_create(instance)
 
     def get_object(self):
-        # TODO Authorise Based on encounter and permission
-        return super().get_object()
+        patient = self.get_patient()
+        obj = get_object_or_404(
+            self.database_model,
+            patient=patient,
+            **{self.lookup_field: self.kwargs[self.lookup_field]},
+        )
+        authorize_notes_view(self.request.user, patient, obj.encounter)
+        return obj
 
     def get_queryset(self):
         patient = self.get_patient()
-        if not AuthorizationController.call(
-            "can_view_clinical_data", self.request.user, patient
-        ):
-            if encounter := self.request.GET.get("encounter"):
-                encounter_obj = get_object_or_404(Encounter, external_id=encounter)
-                if not AuthorizationController.call(
-                    "can_view_encounter_clinical_data", self.request.user, encounter_obj
-                ):
-                    raise PermissionDenied("Permission denied to user")
-            else:
-                raise PermissionDenied("Permission denied to user")
-
-        queryset = super().get_queryset().filter(patient=patient)
-        return queryset.order_by("-created_date")
+        encounter_obj = None
+        if encounter := self.request.GET.get("encounter"):
+            encounter_obj = get_object_or_404(Encounter, external_id=encounter)
+        authorize_notes_view(self.request.user, patient, encounter_obj)
+        return super().get_queryset().filter(patient=patient).order_by("-created_date")
 
 
 class NoteMessageViewSet(
@@ -170,18 +177,21 @@ class NoteMessageViewSet(
         if model_instance.thread != thread:
             raise ValidationError("Message does not belong to the thread")
 
+    def get_object(self):
+        thread = self.get_thread_obj()
+        obj = get_object_or_404(
+            self.database_model,
+            **{self.lookup_field: self.kwargs[self.lookup_field]},
+        )
+        authorize_notes_view(self.request.user, thread.patient, thread.encounter)
+        return obj
+
     def get_queryset(self):
-        if not AuthorizationController.call(
-            "can_view_clinical_data", self.request.user, self.get_patient_obj()
-        ):
-            if encounter := self.request.GET.get("encounter"):
-                encounter_obj = get_object_or_404(Encounter, external_id=encounter)
-                if not AuthorizationController.call(
-                    "can_view_encounter_clinical_data", self.request.user, encounter_obj
-                ):
-                    raise PermissionDenied("Permission denied to user")
-            else:
-                raise PermissionDenied("Permission denied to user")
+        patient = self.get_patient_obj()
+        encounter_obj = None
+        if encounter := self.request.GET.get("encounter"):
+            encounter_obj = get_object_or_404(Encounter, external_id=encounter)
+        authorize_notes_view(self.request.user, patient, encounter_obj)
         queryset = super().get_queryset().select_related("thread")
         if self.action == "list":
             thread = self.get_thread_obj()

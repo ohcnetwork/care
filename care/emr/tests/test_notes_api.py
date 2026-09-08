@@ -192,6 +192,52 @@ class NoteThreadApiTestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 403, response.data)
         self.assertContains(response, "Permission denied to user", status_code=403)
 
+    def test_retrieve_thread(self):
+        role = self.create_role_with_permissions(
+            permissions=[PatientPermissions.can_view_clinical_data.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        thread = self._create_thread()
+        url = self._get_thread_detail_url(thread.external_id)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertContains(response, thread.title, status_code=200)
+
+    def test_retrieve_thread_without_permission(self):
+        thread = self._create_thread()
+        url = self._get_thread_detail_url(thread.external_id)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertContains(response, "Permission denied to user", status_code=403)
+
+    def test_retrieve_thread_on_encounter(self):
+        role = self.create_role_with_permissions(
+            permissions=[EncounterPermissions.can_read_encounter_clinical_data.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        thread = self._create_thread(encounter=self.encounter)
+        url = self._get_thread_detail_url(thread.external_id)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertContains(response, thread.title, status_code=200)
+
+    def test_retrieve_patient_thread_with_only_encounter_permission(self):
+        role = self.create_role_with_permissions(
+            permissions=[EncounterPermissions.can_read_encounter_clinical_data.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        thread = self._create_thread()
+        url = self._get_thread_detail_url(thread.external_id)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertContains(response, "Permission denied to user", status_code=403)
+
 
 class NoteMessageApiTestCase(CareAPITestBase):
     def setUp(self):
@@ -320,6 +366,56 @@ class NoteMessageApiTestCase(CareAPITestBase):
         response = self.client.get(url, format="json")
         self.assertEqual(response.status_code, 200, response.data)
         self.assertContains(response, note.message, status_code=200)
+
+    def test_retrieve_note(self):
+        role = self.create_role_with_permissions(
+            permissions=[PatientPermissions.can_view_clinical_data.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        thread = self._create_thread()
+        note = self._create_note(thread)
+        url = self._get_note_detail_url(thread.external_id, note.external_id)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertContains(response, note.message, status_code=200)
+
+    def test_retrieve_note_without_permission(self):
+        thread = self._create_thread()
+        note = self._create_note(thread)
+        url = self._get_note_detail_url(thread.external_id, note.external_id)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertContains(response, "Permission denied to user", status_code=403)
+
+    def test_retrieve_note_on_encounter(self):
+        role = self.create_role_with_permissions(
+            permissions=[EncounterPermissions.can_read_encounter_clinical_data.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        thread = self._create_thread(encounter=self.encounter)
+        note = self._create_note(thread)
+        url = self._get_note_detail_url(thread.external_id, note.external_id)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertContains(response, note.message, status_code=200)
+
+    def test_retrieve_note_on_patient_thread_with_only_encounter_permission(self):
+        role = self.create_role_with_permissions(
+            permissions=[EncounterPermissions.can_read_encounter_clinical_data.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, role
+        )
+        thread = self._create_thread()
+        note = self._create_note(thread)
+        url = self._get_note_detail_url(thread.external_id, note.external_id)
+        response = self.client.get(url, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertContains(response, "Permission denied to user", status_code=403)
 
     def test_get_note_details_with_invalid_thread(self):
         self.client.force_authenticate(user=self.superuser)
