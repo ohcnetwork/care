@@ -7,6 +7,7 @@ from .condition import *  # noqa F403
 from .device import *  # noqa F403
 from .diagnostic_report import *  # noqa F403
 from .encounter import *  # noqa F403
+from .facility_resource import *  # noqa F403
 from .facility_config import *  # noqa F003
 from .file_upload import *  # noqa F403
 from .healthcare_service import *  # noqa F403
@@ -31,3 +32,4 @@ from .supply_delivery import *  # noqa F403
 from .supply_request import *  # noqa F403
 from .tag_config import *  # noqa F403
 from .valueset import *  # noqa F403
+from .action import *  # noqa F403

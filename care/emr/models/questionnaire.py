@@ -8,8 +8,20 @@ from care.emr.models.organization import FacilityOrganization, Organization
 
 
 class Questionnaire(EMRBaseModel):
+    internal_revision = models.IntegerField(default=1)
+    latest_revision = models.ForeignKey(
+        "self", on_delete=models.CASCADE, null=True, blank=True
+    )
+    questions_hash = models.CharField(max_length=255)
+    facility = models.ForeignKey(
+        "facility.Facility", on_delete=models.CASCADE, null=True, blank=True
+    )
+    facility_organization = models.ForeignKey(
+        "emr.FacilityOrganization", on_delete=models.CASCADE, null=True, blank=True
+    )
     version = models.CharField(max_length=255)
-    slug = models.CharField(max_length=255, default=uuid.uuid4, unique=True)
+    slug = models.CharField(max_length=255, default=uuid.uuid4)
+    auth_context = models.CharField(max_length=255, default="instance")
     title = models.CharField(max_length=255)
     description = models.TextField(default="")
     subject_type = models.CharField(max_length=255)
@@ -18,6 +30,47 @@ class Questionnaire(EMRBaseModel):
     questions = models.JSONField(default=dict)
     organization_cache = ArrayField(models.IntegerField(), default=list)
     internal_organization_cache = ArrayField(models.IntegerField(), default=list)
+    actions = models.JSONField(default=list)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["slug"],
+                condition=models.Q(
+                    deleted=False,
+                    auth_context="instance",
+                    latest_revision__isnull=True,
+                ),
+                name="unique_questionnaire_slug_instance",
+            ),
+            models.UniqueConstraint(
+                fields=["slug", "facility", "created_by"],
+                condition=models.Q(
+                    deleted=False,
+                    auth_context="user",
+                    latest_revision__isnull=True,
+                ),
+                name="unique_questionnaire_slug_user",
+            ),
+            models.UniqueConstraint(
+                fields=["slug", "facility"],
+                condition=models.Q(
+                    deleted=False,
+                    auth_context="facility",
+                    latest_revision__isnull=True,
+                ),
+                name="unique_questionnaire_slug_facility",
+            ),
+            models.UniqueConstraint(
+                fields=["slug", "facility_organization"],
+                condition=models.Q(
+                    deleted=False,
+                    auth_context="facility_organization",
+                    latest_revision__isnull=True,
+                ),
+                name="unique_questionnaire_slug_facility_organization",
+            ),
+        ]
 
     def get_questions_by_id(self) -> dict:
         cached_result = getattr(self, "_questions_by_id_cache", None)
@@ -43,6 +96,30 @@ class Questionnaire(EMRBaseModel):
         self._questions_by_id_cache = questions_dict
         return questions_dict
 
+    def sync_facility_org_cache(self):
+        questionnaire_organization_objects = (
+            QuestionnaireFacilityOrganization.objects.filter(questionnaire=self)
+        )
+        cache = []
+        for questionnaire_organization in questionnaire_organization_objects:
+            cache.extend(questionnaire_organization.organization.parent_cache)
+            cache.append(questionnaire_organization.organization.id)
+        cache = list(set(cache))
+        self.internal_organization_cache = cache
+        self.save(update_fields=["internal_organization_cache"])
+
+    def sync_org_cache(self):
+        questionnaire_organization_objects = QuestionnaireOrganization.objects.filter(
+            questionnaire=self
+        )
+        cache = []
+        for questionnaire_organization in questionnaire_organization_objects:
+            cache.extend(questionnaire_organization.organization.parent_cache)
+            cache.append(questionnaire_organization.organization.id)
+        cache = list(set(cache))
+        self.organization_cache = cache
+        self.save(update_fields=["organization_cache"])
+
 
 class FormSubmission(EMRBaseModel):
     questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
@@ -58,8 +135,10 @@ class QuestionnaireResponse(EMRBaseModel):
     questionnaire = models.ForeignKey(
         Questionnaire, on_delete=models.CASCADE, null=True, blank=True
     )
+    revision = models.IntegerField(default=1)
     subject_id = models.UUIDField()
     responses = models.JSONField(default=list)
+    cleaned_response = models.JSONField(default=dict)
     structured_responses = models.JSONField(default=dict)
     structured_response_type = models.CharField(default=None, blank=True, null=True)
     patient = models.ForeignKey("emr.Patient", on_delete=models.CASCADE)
@@ -72,18 +151,30 @@ class QuestionnaireResponse(EMRBaseModel):
     status = models.CharField(max_length=255, default="completed")
     # TODO : Add index for subject_id and subject_type in descending order
 
+    @property
+    def resolved_questionnaire(self):
+        if not self.questionnaire:
+            return None
+        if self.revision == self.questionnaire.internal_revision:
+            return self.questionnaire
+        return Questionnaire.objects.get(
+            latest_revision_id=self.questionnaire_id,
+            internal_revision=self.revision,
+        )
+
     def render_responses(self):
         """
         Convert the responses into a human understandable JSON
-        with current questionnaire data
+        with the questionnaire revision used for the response.
         """
         responses = self.responses
         structured_responses = []
         if not responses:
             return structured_responses
-        if not self.questionnaire:
+        questionnaire = self.resolved_questionnaire
+        if not questionnaire:
             return structured_responses
-        questions_by_id = self.questionnaire.get_questions_by_id()
+        questions_by_id = questionnaire.get_questions_by_id()
         for response in responses:
             if response["question_id"] not in questions_by_id:
                 continue
@@ -99,47 +190,11 @@ class QuestionnaireResponse(EMRBaseModel):
 class QuestionnaireOrganization(EMRBaseModel):
     questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
     organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
-    # TODO Add instance level roles, ie roles would be added here
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.sync_questionnaire_cache()
-
-    def sync_questionnaire_cache(self):
-        questionnaire_organization_objects = QuestionnaireOrganization.objects.filter(
-            questionnaire=self.questionnaire
-        )
-        cache = []
-        for questionnaire_organization in questionnaire_organization_objects:
-            cache.extend(questionnaire_organization.organization.parent_cache)
-            cache.append(questionnaire_organization.organization.id)
-        cache = list(set(cache))
-        self.questionnaire.organization_cache = cache
-        self.questionnaire.save(update_fields=["organization_cache"])
 
 
 class QuestionnaireFacilityOrganization(EMRBaseModel):
     questionnaire = models.ForeignKey(Questionnaire, on_delete=models.CASCADE)
     organization = models.ForeignKey(FacilityOrganization, on_delete=models.CASCADE)
-    # TODO Add instance level roles, ie roles would be added here
-
-    def save(self, *args, **kwargs):
-        super().save(*args, **kwargs)
-        self.sync_questionnaire_cache()
-
-    def sync_questionnaire_cache(self):
-        questionnaire_organization_objects = (
-            QuestionnaireFacilityOrganization.objects.filter(
-                questionnaire=self.questionnaire
-            )
-        )
-        cache = []
-        for questionnaire_organization in questionnaire_organization_objects:
-            cache.extend(questionnaire_organization.organization.parent_cache)
-            cache.append(questionnaire_organization.organization.id)
-        cache = list(set(cache))
-        self.questionnaire.internal_organization_cache = cache
-        self.questionnaire.save(update_fields=["internal_organization_cache"])
 
 
 class QuestionnaireResponseTemplate(EMRBaseModel):
@@ -155,3 +210,9 @@ class QuestionnaireResponseTemplate(EMRBaseModel):
     facility_organizations = ArrayField(models.IntegerField(), default=list)
     users = ArrayField(models.IntegerField(), default=list)
     available_keys = ArrayField(models.CharField(max_length=255), default=list)
+
+
+"""
+- Guard questionnaire submit so that other facilities cannot submit their forms
+- Ensure Questionnaire valuesets are from the same facility or instance
+"""

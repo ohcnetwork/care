@@ -234,6 +234,13 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
 
         status_code, response_data = self._submit_questionnaire(payload)
         self.assertEqual(status_code, 200, f"Valid submission failed: {response_data}")
+        cleaned_response = response_data["cleaned_response"]
+        expected_boolean = True
+        self.assertIs(cleaned_response["1"], expected_boolean)
+        self.assertEqual(cleaned_response["2"], 37.5)
+        self.assertEqual(cleaned_response["3"], 7)
+        self.assertEqual(cleaned_response["4"], "Jane Smith")
+        self.assertEqual(cleaned_response["12"], "EXCELLENT")
 
     def test_individual_invalid_submissions(self):
         """
@@ -1896,6 +1903,10 @@ class RepeatableGroupsValidationTests(QuestionnaireTestBase):
         status_code, response = self._submit_questionnaire(payload)
         self.assertEqual(
             status_code, 200, f"Questionnaire submission failed: {response}"
+        )
+        self.assertEqual(
+            response["cleaned_response"],
+            {"1": [{"1.1": True}, {"1.1": False, "1.2": 34.5}]},
         )
         observations = Observation.objects.filter(
             questionnaire_response__external_id=response["id"],
