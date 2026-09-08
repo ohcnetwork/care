@@ -18,7 +18,15 @@ sys.modules["care.emr.utils.valueset_coding_type"].validate_valueset = lambda f,
 
 
 class _NoOpLock:
-    """Bypass PatientCreateLock inside an outer transaction."""
+    """Bypass redis locks inside an outer transaction.
+
+    Lock release is deferred with transaction.on_commit, which never fires
+    inside the fixture context's wrapping transaction — a second operation
+    on the same object would deadlock on the still-held lock.
+    """
+
+    def __init__(self, *args, **kwargs):
+        pass
 
     def acquire(self):
         pass
@@ -44,6 +52,10 @@ def care_fixture_context(base_cls: type[CareFixtureBase] = CareFixtureBase):
         with (
             transaction.atomic(),
             patch("care.emr.api.viewsets.patient.PatientCreateLock", _NoOpLock),
+            patch(
+                "care.emr.api.viewsets.questionnaire.questionnaire.QuestionnaireLock",
+                _NoOpLock,
+            ),
             warnings.catch_warnings(),
         ):
             warnings.filterwarnings(
