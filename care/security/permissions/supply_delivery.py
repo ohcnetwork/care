@@ -41,3 +41,10 @@ class SupplyDeliveryPermissions(enum.Enum):
         PermissionContext.FACILITY,
         [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
     )
+
+    can_write_medication_return = Permission(
+        "Can Create Medication Return on Facility",
+        "",
+        PermissionContext.FACILITY,
+        [FACILITY_ADMIN_ROLE, ADMIN_ROLE, PHARMACIST_ROLE],
+    )

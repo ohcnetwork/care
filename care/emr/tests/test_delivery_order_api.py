@@ -1000,6 +1000,7 @@ class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
                 SupplyDeliveryPermissions.can_write_external_supply_delivery.name,
                 InvoicePermissions.can_read_invoice.name,
                 InvoicePermissions.can_write_invoice.name,
+                SupplyDeliveryPermissions.can_write_medication_return.name,
                 ChargeItemPermissions.can_read_charge_item.name,
             ]
         )
