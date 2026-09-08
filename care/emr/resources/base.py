@@ -70,7 +70,7 @@ class EMRResource(BaseModel):
                 **kwargs,
                 user=user,
             )
-        constructed["version"] = getattr(cls, "__version__", 0.1)
+        constructed["_version"] = getattr(cls, "__version__", 0.1)
         return cls.model_construct(**constructed)
 
     def get_context(self):

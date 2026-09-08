@@ -183,7 +183,6 @@ class Question(QuestionnaireBaseSpec):
 
 
 class QuestionnaireWriteSpec(QuestionnaireBaseSpec):
-    version: str = Field("1.0", frozen=True, description="Version of the questionnaire")
     slug: SlugType | None = None
     title: str
     description: str | None = None
@@ -249,6 +248,7 @@ class QuestionnaireSpec(QuestionnaireWriteSpec):
 
     def perform_extra_deserialization(self, is_update, obj):
         obj._organizations = self.organizations  # noqa SLF001
+        obj.version = "1.0"  # Initial version
 
 
 class QuestionnaireUpdateSpec(QuestionnaireWriteSpec):
