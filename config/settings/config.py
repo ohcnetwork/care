@@ -18,8 +18,26 @@ PASSWORD_RESET_TOKEN_TTL_HOURS = env.int("PASSWORD_RESET_TOKEN_TTL_HOURS", defau
 
 MAX_FAVORITES_PER_LIST = env.int("MAX_FAVORITES_PER_LIST", default=50)
 
-# Maximum file upload size in MB
+# Maximum file upload size in MB. Enforced by CARE against UploadedFile.size
+# before anything is written to storage.
 MAX_FILE_UPLOAD_SIZE = env.int("MAX_FILE_UPLOAD_SIZE", default=5)
+
+# Upload transport limits (ADR-0002). Stated explicitly rather than left to
+# Django's implicit defaults, which is what these values are.
+#
+# An upload larger than FILE_UPLOAD_MAX_MEMORY_SIZE is spooled to a
+# TemporaryUploadedFile by Django's upload handlers instead of being held in
+# memory. At the defaults below, anything over 2.5 MB is temp-file backed while
+# MAX_FILE_UPLOAD_SIZE still caps the total at 5 MB.
+#
+# DATA_UPLOAD_MAX_MEMORY_SIZE bounds the non-file part of a request body. File
+# parts of a multipart request are exempt, so it does not cap upload size.
+FILE_UPLOAD_MAX_MEMORY_SIZE = env.int(
+    "FILE_UPLOAD_MAX_MEMORY_SIZE", default=2621440
+)  # 2.5 MB
+DATA_UPLOAD_MAX_MEMORY_SIZE = env.int(
+    "DATA_UPLOAD_MAX_MEMORY_SIZE", default=2621440
+)  # 2.5 MB
 
 LOCATION_MAX_DEPTH = env.int("LOCATION_MAX_DEPTH", default=10)
 

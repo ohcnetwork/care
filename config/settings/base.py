@@ -15,7 +15,11 @@ from healthy_django.healthcheck.celery_queue_length import (
 from healthy_django.healthcheck.django_cache import DjangoCacheHealthCheck
 from healthy_django.healthcheck.django_database import DjangoDatabaseHealthCheck
 
-from care.utils.csp import config as csp_config
+from config.storage import (
+    AWS_ROLE_BASED_BUCKET_PROVIDER,
+    build_object_storage,
+    validate_storage_backend,
+)
 from plug_config import manager
 
 from .config import *  # noqa F403
@@ -544,16 +548,13 @@ USE_SMS = False
 # ------------------------------------------------------------------------------
 
 
+# Credential source. AWS_ROLE_BASED omits the key/secret so that boto3 resolves
+# instance-role credentials itself. Every other value supplies them explicitly.
 BUCKET_PROVIDER = env("BUCKET_PROVIDER", default="aws").upper()
 BUCKET_REGION = env("BUCKET_REGION", default="ap-south-1")
 BUCKET_KEY = env("BUCKET_KEY", default="")
 BUCKET_SECRET = env("BUCKET_SECRET", default="")
 BUCKET_ENDPOINT = env("BUCKET_ENDPOINT", default="")
-BUCKET_EXTERNAL_ENDPOINT = env("BUCKET_EXTERNAL_ENDPOINT", default=BUCKET_ENDPOINT)
-BUCKET_HAS_FINE_ACL = env.bool("BUCKET_HAS_FINE_ACL", default=False)
-
-if BUCKET_PROVIDER not in csp_config.CSProvider.__members__:
-    logger.error("invalid CSP found: %s", BUCKET_PROVIDER)
 
 FILE_UPLOAD_BUCKET = env("FILE_UPLOAD_BUCKET", default="")
 FILE_UPLOAD_REGION = env("FILE_UPLOAD_REGION", default=BUCKET_REGION)
@@ -561,12 +562,6 @@ FILE_UPLOAD_KEY = env("FILE_UPLOAD_KEY", default=BUCKET_KEY)
 FILE_UPLOAD_SECRET = env("FILE_UPLOAD_SECRET", default=BUCKET_SECRET)
 FILE_UPLOAD_BUCKET_ENDPOINT = env(
     "FILE_UPLOAD_BUCKET_ENDPOINT", default=BUCKET_ENDPOINT
-)
-FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT = env(
-    "FILE_UPLOAD_BUCKET_EXTERNAL_ENDPOINT",
-    default=(
-        BUCKET_EXTERNAL_ENDPOINT if BUCKET_ENDPOINT else FILE_UPLOAD_BUCKET_ENDPOINT
-    ),
 )
 
 ALLOWED_MIME_TYPES = set(
@@ -686,13 +681,76 @@ FACILITY_S3_SECRET = env("FACILITY_S3_SECRET", default=BUCKET_SECRET)
 FACILITY_S3_BUCKET_ENDPOINT = env(
     "FACILITY_S3_BUCKET_ENDPOINT", default=BUCKET_ENDPOINT
 )
-FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
-    "FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT",
-    default=(
-        BUCKET_EXTERNAL_ENDPOINT if BUCKET_ENDPOINT else FACILITY_S3_BUCKET_ENDPOINT
-    ),
+
+
+# Portable object storage (ADR-0001)
+# ------------------------------------------------------------------------------
+# Provider selection is configuration-only. Application code addresses the
+# logical aliases below and never learns which provider implements them.
+CARE_STORAGE_BACKEND = validate_storage_backend(
+    env("CARE_STORAGE_BACKEND", default="s3").strip().lower()
 )
-FACILITY_CDN = env("FACILITY_CDN", default=None)
+
+# Provider-neutral bucket names. Each falls back to the pre-existing setting so
+# that no local or deployed configuration has to be rewritten. `report` shares
+# the patient bucket, matching the behaviour it replaces, but stays a separate
+# alias so it can be pointed elsewhere without touching application code.
+CARE_PATIENT_STORAGE_BUCKET = env(
+    "CARE_PATIENT_STORAGE_BUCKET", default=FILE_UPLOAD_BUCKET
+)
+CARE_FACILITY_STORAGE_BUCKET = env(
+    "CARE_FACILITY_STORAGE_BUCKET", default=FACILITY_S3_BUCKET
+)
+CARE_REPORT_STORAGE_BUCKET = env(
+    "CARE_REPORT_STORAGE_BUCKET", default=FILE_UPLOAD_BUCKET
+)
+
+# Optional; Application Default Credentials are used when unset. Named per
+# 07-configuration-reference.md section 12.4.
+GCS_PROJECT_ID = env("GCS_PROJECT_ID", default="")
+
+# Role-based AWS credentials: omit key/secret so the SDK resolves the instance
+# role itself. The endpoint is suppressed along with them, preserving the
+# behaviour of the boto3 client this replaces -- a role-based deployment always
+# talked to the default AWS endpoint. A deployment that needs an instance role
+# *and* a custom endpoint (a VPC endpoint, or an S3-compatible gateway) is
+# therefore not expressible today; splitting the two would be a config change,
+# not a refactor, so it is left for whoever first needs it.
+_ROLE_BASED_BUCKET = AWS_ROLE_BASED_BUCKET_PROVIDER == BUCKET_PROVIDER
+
+STORAGES = {
+    # staticfiles is configured near the top of this file and stays on
+    # WhiteNoise; only the object-storage aliases are added here because they
+    # depend on the bucket settings defined above.
+    **STORAGES,
+    "patient": build_object_storage(
+        CARE_STORAGE_BACKEND,
+        CARE_PATIENT_STORAGE_BUCKET,
+        region_name=FILE_UPLOAD_REGION,
+        access_key=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_KEY,
+        secret_key=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_SECRET,
+        endpoint_url=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_BUCKET_ENDPOINT,
+        project_id=GCS_PROJECT_ID,
+    ),
+    "facility": build_object_storage(
+        CARE_STORAGE_BACKEND,
+        CARE_FACILITY_STORAGE_BUCKET,
+        region_name=FACILITY_S3_REGION,
+        access_key=None if _ROLE_BASED_BUCKET else FACILITY_S3_KEY,
+        secret_key=None if _ROLE_BASED_BUCKET else FACILITY_S3_SECRET,
+        endpoint_url=None if _ROLE_BASED_BUCKET else FACILITY_S3_BUCKET_ENDPOINT,
+        project_id=GCS_PROJECT_ID,
+    ),
+    "report": build_object_storage(
+        CARE_STORAGE_BACKEND,
+        CARE_REPORT_STORAGE_BUCKET,
+        region_name=FILE_UPLOAD_REGION,
+        access_key=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_KEY,
+        secret_key=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_SECRET,
+        endpoint_url=None if _ROLE_BASED_BUCKET else FILE_UPLOAD_BUCKET_ENDPOINT,
+        project_id=GCS_PROJECT_ID,
+    ),
+}
 
 # current hosted domain
 CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:4000")
