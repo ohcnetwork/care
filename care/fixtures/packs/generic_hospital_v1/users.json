@@ -1,0 +1,94 @@
+{
+  "password": "Ohcn@123",
+  "users": [
+    {
+      "ref": "user:fac_admin",
+      "username": "care-fac-admin",
+      "first_name": "Care",
+      "last_name": "FacAdmin",
+      "gender": "female",
+      "role_name": "Facility Admin",
+      "facility_org_ref": "department:administration"
+    },
+    {
+      "ref": "user:admin",
+      "username": "care-admin",
+      "first_name": "Care",
+      "last_name": "Admin",
+      "gender": "male",
+      "role_name": "Administrator",
+      "facility_org_ref": "department:administration"
+    },
+    {
+      "ref": "user:doctor",
+      "username": "care-doctor",
+      "first_name": "Care",
+      "last_name": "Doctor",
+      "gender": "male",
+      "role_name": "Doctor",
+      "facility_org_ref": "department:administration"
+    },
+    {
+      "ref": "user:nurse",
+      "username": "care-nurse",
+      "first_name": "Care",
+      "last_name": "Nurse",
+      "gender": "female",
+      "role_name": "Nurse",
+      "facility_org_ref": "department:administration"
+    },
+    {
+      "ref": "user:staff",
+      "username": "care-staff",
+      "first_name": "Care",
+      "last_name": "Staff",
+      "gender": "male",
+      "role_name": "Staff",
+      "facility_org_ref": "department:administration"
+    },
+    {
+      "ref": "user:volunteer",
+      "username": "care-volunteer",
+      "first_name": "Care",
+      "last_name": "Volunteer",
+      "gender": "female",
+      "role_name": "Volunteer"
+    },
+    {
+      "ref": "user:pharmacist",
+      "username": "care-pharmacist",
+      "first_name": "Care",
+      "last_name": "Pharmacist",
+      "gender": "female",
+      "role_name": "Pharmacist",
+      "facility_org_ref": "department:pharmacy"
+    },
+    {
+      "ref": "user:doctor_pediatrics",
+      "username": "care-doctor-peds",
+      "first_name": "Care",
+      "last_name": "Pediatrician",
+      "gender": "female",
+      "role_name": "Doctor",
+      "facility_org_ref": "department:pediatrics"
+    },
+    {
+      "ref": "user:nurse_pediatrics_1",
+      "username": "care-nurse-peds-1",
+      "first_name": "Care",
+      "last_name": "NurseOne",
+      "gender": "female",
+      "role_name": "Nurse",
+      "facility_org_ref": "department:pediatrics"
+    },
+    {
+      "ref": "user:nurse_pediatrics_2",
+      "username": "care-nurse-peds-2",
+      "first_name": "Care",
+      "last_name": "NurseTwo",
+      "gender": "female",
+      "role_name": "Nurse",
+      "facility_org_ref": "department:pediatrics"
+    }
+  ]
+}

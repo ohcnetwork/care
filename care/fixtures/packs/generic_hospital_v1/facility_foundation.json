@@ -66,21 +66,48 @@
       "ref": "location:a_block",
       "name": "A Block",
       "form": "bu",
-      "mode": "kind"
+      "mode": "kind",
+      "description": "Main clinical block housing wards, pharmacies, lab, and imaging."
     },
     {
       "ref": "location:ground_floor",
       "name": "Ground Floor",
       "parent_ref": "location:a_block",
       "form": "lvl",
-      "mode": "kind"
+      "mode": "kind",
+      "description": "Ground floor with reception, casualty, and imaging rooms."
     },
     {
-      "ref": "location:reception_billing",
-      "name": "Reception and Billing counters",
+      "ref": "location:reception",
+      "name": "Reception",
       "parent_ref": "location:ground_floor",
       "form": "ro",
-      "mode": "kind"
+      "mode": "kind",
+      "description": "Front desk for patient registration and enquiry."
+    },
+    {
+      "ref": "location:billing_counter_1",
+      "name": "Billing Counter 1",
+      "parent_ref": "location:ground_floor",
+      "form": "ro",
+      "mode": "kind",
+      "description": "Billing counter 1 for patient payments and invoices."
+    },
+    {
+      "ref": "location:billing_counter_2",
+      "name": "Billing Counter 2",
+      "parent_ref": "location:ground_floor",
+      "form": "ro",
+      "mode": "kind",
+      "description": "Billing counter 2 for patient payments and invoices."
+    },
+    {
+      "ref": "location:billing_counter_3",
+      "name": "Billing Counter 3",
+      "parent_ref": "location:ground_floor",
+      "form": "ro",
+      "mode": "kind",
+      "description": "Billing counter 3 for patient payments and invoices."
     },
     {
       "ref": "location:casualty",
@@ -88,7 +115,8 @@
       "parent_ref": "location:ground_floor",
       "form": "ro",
       "mode": "kind",
-      "organization_refs": ["department:emergency"]
+      "organization_refs": ["department:emergency"],
+      "description": "Emergency triage and acute care room for walk-in and ambulance arrivals."
     },
     {
       "ref": "location:x_ray",
@@ -96,7 +124,8 @@
       "parent_ref": "location:ground_floor",
       "form": "ro",
       "mode": "kind",
-      "organization_refs": ["department:radiology_imaging"]
+      "organization_refs": ["department:radiology_imaging"],
+      "description": "General radiography room for plain X-ray imaging."
     },
     {
       "ref": "location:usg",
@@ -104,7 +133,8 @@
       "parent_ref": "location:ground_floor",
       "form": "ro",
       "mode": "kind",
-      "organization_refs": ["department:radiology_imaging"]
+      "organization_refs": ["department:radiology_imaging"],
+      "description": "Ultrasound room for abdominal, obstetric, and soft-tissue scans."
     },
     {
       "ref": "location:ct",
@@ -112,7 +142,8 @@
       "parent_ref": "location:ground_floor",
       "form": "ro",
       "mode": "kind",
-      "organization_refs": ["department:radiology_imaging"]
+      "organization_refs": ["department:radiology_imaging"],
+      "description": "Computed tomography suite for cross-sectional imaging."
     },
     {
       "ref": "location:mri",
@@ -120,28 +151,32 @@
       "parent_ref": "location:ground_floor",
       "form": "ro",
       "mode": "kind",
-      "organization_refs": ["department:radiology_imaging"]
+      "organization_refs": ["department:radiology_imaging"],
+      "description": "Magnetic resonance imaging suite for soft-tissue and neurological studies."
     },
     {
       "ref": "location:first_floor",
       "name": "1st Floor",
       "parent_ref": "location:a_block",
       "form": "lvl",
-      "mode": "kind"
+      "mode": "kind",
+      "description": "First floor with male ward, IP rooms, OP rooms, and laboratory."
     },
     {
       "ref": "location:male_ward",
       "name": "Male Ward",
       "parent_ref": "location:first_floor",
       "form": "wa",
-      "mode": "kind"
+      "mode": "kind",
+      "description": "General male inpatient ward on the first floor."
     },
     {
       "ref": "location:ip_rooms",
       "name": "IP Rooms",
       "parent_ref": "location:first_floor",
       "form": "area",
-      "mode": "kind"
+      "mode": "kind",
+      "description": "Standard inpatient rooms (101–105) on the first floor."
     },
     {
       "ref": "location:ip_room_101",
@@ -204,7 +239,8 @@
       "name": "OP Rooms",
       "parent_ref": "location:first_floor",
       "form": "area",
-      "mode": "kind"
+      "mode": "kind",
+      "description": "Outpatient consultation rooms used by the OPD scheduling service."
     },
     {
       "ref": "location:first_floor_lab",
@@ -212,14 +248,16 @@
       "parent_ref": "location:first_floor",
       "form": "area",
       "mode": "kind",
-      "organization_refs": ["department:laboratory_services"]
+      "organization_refs": ["department:laboratory_services"],
+      "description": "Clinical laboratory for sample collection and routine diagnostics."
     },
     {
       "ref": "location:second_floor",
       "name": "2nd Floor",
       "parent_ref": "location:a_block",
       "form": "lvl",
-      "mode": "kind"
+      "mode": "kind",
+      "description": "Second floor with IP pharmacy, AC rooms, and female ward."
     },
     {
       "ref": "location:ip_pharmacy",
@@ -227,14 +265,16 @@
       "parent_ref": "location:second_floor",
       "form": "area",
       "mode": "kind",
-      "organization_refs": ["department:pharmacy"]
+      "organization_refs": ["department:pharmacy"],
+      "description": "Inpatient pharmacy on the second floor for ward medication dispensing."
     },
     {
       "ref": "location:ac_ip_rooms",
       "name": "AC IP Rooms",
       "parent_ref": "location:second_floor",
       "form": "area",
-      "mode": "kind"
+      "mode": "kind",
+      "description": "Air-conditioned inpatient rooms (A201–A206) on the second floor."
     },
     {
       "ref": "location:ac_ip_room_a201",
@@ -283,7 +323,8 @@
       "name": "Female Ward",
       "parent_ref": "location:second_floor",
       "form": "wa",
-      "mode": "kind"
+      "mode": "kind",
+      "description": "General female inpatient ward on the second floor."
     },
     {
       "ref": "location:female_ward_f207",
@@ -325,13 +366,15 @@
       "name": "Main Pharmacy",
       "form": "area",
       "mode": "kind",
-      "organization_refs": ["department:pharmacy"]
+      "organization_refs": ["department:pharmacy"],
+      "description": "Primary outpatient pharmacy for medication dispense and stock transfers from Main Store."
     },
     {
       "ref": "location:main_store",
       "name": "Main Store",
       "form": "area",
-      "mode": "kind"
+      "mode": "kind",
+      "description": "Central inventory store receiving external supply deliveries and issuing stock to pharmacy."
     }
   ],
   "healthcare_services": [

@@ -2,7 +2,6 @@ from datetime import timedelta
 
 from django.utils import timezone
 
-from care.fixtures.loaders.facility import get_or_create_organization
 from care.fixtures.loaders.inventory_helpers import (
     finalize_order_headers,
     index_rows_by_ref,
@@ -14,23 +13,12 @@ from care.fixtures.loaders.inventory_helpers import (
 from care.fixtures.loaders.load import load_json
 
 _COLLECTIONS = (
-    "suppliers",
     "request_orders",
     "supply_requests",
     "products",
     "delivery_orders",
     "supply_deliveries",
 )
-
-
-def _load_suppliers(base, rows):
-    supplier_ids_by_ref = {}
-    for ref, row in rows.items():
-        payload = {key: value for key, value in row.items() if key != "ref"}
-        name = payload.pop("name")
-        created = get_or_create_organization(base, name, **payload)
-        supplier_ids_by_ref[ref] = str(created.id)
-    return supplier_ids_by_ref
 
 
 def _load_products(
@@ -76,6 +64,7 @@ def load_external_receipts(
     foundation_resource_id_by_ref,
     product_knowledge_by_ref,
     charge_item_definitions_by_ref,
+    organization_ids_by_ref,
     *,
     loaded_at=None,
 ):
@@ -83,13 +72,12 @@ def load_external_receipts(
     rows = index_rows_by_ref(pack, _COLLECTIONS)
     loaded_at = loaded_at or timezone.now()
 
-    supplier_ids_by_ref = _load_suppliers(base, rows["suppliers"])
     request_order_ids_by_ref = load_request_orders(
         base,
         facility_id,
         rows["request_orders"],
         foundation_resource_id_by_ref,
-        supplier_ids_by_ref,
+        organization_ids_by_ref,
     )
     supply_request_ids_by_ref = load_supply_requests(
         base,
@@ -110,7 +98,7 @@ def load_external_receipts(
         facility_id,
         rows["delivery_orders"],
         foundation_resource_id_by_ref,
-        supplier_ids_by_ref,
+        organization_ids_by_ref,
     )
     load_supply_deliveries(
         base,

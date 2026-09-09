@@ -1,12 +1,4 @@
 {
-  "suppliers": [
-    {
-      "ref": "supplier:demo-inventory",
-      "name": "Demo Inventory Supplier",
-      "org_type": "product_supplier",
-      "active": true
-    }
-  ],
   "request_orders": [
     {
       "ref": "request_order:initial-main-store-stock",
