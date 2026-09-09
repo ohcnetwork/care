@@ -1,0 +1,31 @@
+{
+  "organizations": [
+    {
+      "ref": "geo:kerala",
+      "name": "Kerala",
+      "org_type": "govt",
+      "active": true,
+      "metadata": {
+        "govt_org_type": "state",
+        "govt_org_children_type": "district"
+      }
+    },
+    {
+      "ref": "geo:ernakulam",
+      "parent_ref": "geo:kerala",
+      "name": "Ernakulam",
+      "org_type": "govt",
+      "active": true,
+      "metadata": {
+        "govt_org_type": "district",
+        "govt_org_children_type": "local_body"
+      }
+    },
+    {
+      "ref": "supplier:demo-inventory",
+      "name": "Demo Inventory Supplier",
+      "org_type": "product_supplier",
+      "active": true
+    }
+  ]
+}
