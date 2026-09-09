@@ -3,6 +3,7 @@ from types import SimpleNamespace
 from django_filters import rest_framework as filters
 
 from care.emr.models.encounter import Encounter, EncounterOrganization
+from care.emr.models.scheduling.booking import TokenBooking
 from care.emr.models.tag_config import TagConfig
 from care.emr.reports.context_builder.data_point_registry import DataPointRegistry
 from care.emr.reports.context_builder.data_points.allergy_intolerance import (
@@ -12,6 +13,10 @@ from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
     SingleObjectContextBuilder,
+)
+from care.emr.reports.context_builder.data_points.booking import (
+    SingleTokenBookingContextBuilder,
+    TokenBookingContextBuilder,
 )
 from care.emr.reports.context_builder.data_points.diagnosis import (
     DiagnosisContextBuilder,
@@ -233,6 +238,21 @@ class PatientFacilityIdentifiersContextBuilder(IdentifiersContextBuilder):
         )
 
 
+class PatientFacilityAppointmentContextBuilder(TokenBookingContextBuilder):
+    def get_context(self):
+        return TokenBooking.objects.filter(
+            patient_id=self.parent_context.patient_id,
+            token_slot__resource__facility_id=self.parent_context.facility_id,
+        )
+
+
+class EncounterAssociatedAppointmentContextBuilder(SingleTokenBookingContextBuilder):
+    def get_context(self):
+        return TokenBooking.objects.filter(
+            associated_encounter_id=self.parent_context.id
+        )
+
+
 class EncounterReportContext(SingleObjectContextBuilder):
     standalone_context = True
     __slug__ = "encounter_base"
@@ -409,6 +429,18 @@ class EncounterReportContext(SingleObjectContextBuilder):
         display="Patient Facility Tags",
         preview_value="",
         description="Facility-specific tags associated with the patient for the encounter",
+    )
+    patient_facility_appointments = Field(
+        target_context=PatientFacilityAppointmentContextBuilder,
+        display="Patient Facility Appointments",
+        preview_value="",
+        description="Appointments associated with the patient at the facility for the encounter",
+    )
+    associated_appointment = Field(
+        target_context=EncounterAssociatedAppointmentContextBuilder,
+        display="Encounter Associated Appointment",
+        preview_value="",
+        description="Appointments associated with the patient for the specific encounter",
     )
 
 
