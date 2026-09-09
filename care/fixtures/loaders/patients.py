@@ -1,4 +1,4 @@
-from care.fixtures.base import generate_phone_number, log
+from care.fixtures.base import generate_phone_number
 from care.fixtures.loaders.facility import geo_organization_id_for_facility
 from care.fixtures.loaders.load import load_json
 
@@ -25,7 +25,5 @@ def load_patients(base, facility_id, organization_ids_by_ref=None) -> dict[str, 
 
         patient = base.create_patient(geo_organization_id, **payload)
         patient_ids_by_ref[ref] = str(patient.id)
-        log(f"Created patient {payload['name']!r} ({ref})")
 
-    log(f"Loaded {len(patient_ids_by_ref)} patients")
     return patient_ids_by_ref
