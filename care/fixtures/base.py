@@ -70,6 +70,10 @@ def generate_phone_number():
     return f"+91{prefix}{suffix}"
 
 
+def log(message):
+    print(message)  # noqa: T201
+
+
 def slugify(text, max_length=36):
     slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:max_length]
     return slug if len(slug) >= 5 else slug.ljust(5, "-")  # noqa: PLR2004
@@ -208,8 +212,8 @@ class CareFixtureBase:
         }
         return self.post(url, data)
 
-    def get_roles(self):
-        data = self.get(reverse("role-list"))
+    def get_roles(self, limit=200):
+        data = self.get(reverse("role-list"), params={"limit": limit})
         results = data.get("results", data)
         return {role.name: role for role in results}
 
@@ -259,6 +263,53 @@ class CareFixtureBase:
             **kwargs,
         }
         return self.post(reverse("encounter-list"), data)
+
+    def associate_encounter_location(
+        self, facility_id, location_id, encounter_id, **kwargs
+    ):
+        url = reverse(
+            "association-list",
+            kwargs={
+                "facility_external_id": facility_id,
+                "location_external_id": location_id,
+            },
+        )
+        data = {
+            "status": "active",
+            "encounter": encounter_id,
+            "start_datetime": timezone.now().isoformat(),
+            **kwargs,
+        }
+        return self.post(url, data)
+
+    def update_encounter(self, encounter_id, data):
+        url = reverse("encounter-detail", kwargs={"external_id": encounter_id})
+        return self.patch(url, data)
+
+    def upsert_symptoms(self, patient_id, datapoints):
+        url = reverse(
+            "symptom-upsert",
+            kwargs={"patient_external_id": patient_id},
+        )
+        return self.post(url, {"datapoints": datapoints})
+
+    def upsert_diagnoses(self, patient_id, datapoints):
+        url = reverse(
+            "diagnosis-upsert",
+            kwargs={"patient_external_id": patient_id},
+        )
+        return self.post(url, {"datapoints": datapoints})
+
+    def upsert_medication_requests(self, patient_id, datapoints):
+        url = reverse(
+            "medication-request-upsert",
+            kwargs={"patient_external_id": patient_id},
+        )
+        return self.post(url, {"datapoints": datapoints})
+
+    def submit_questionnaire(self, slug, data):
+        url = reverse("questionnaire-submit", kwargs={"slug": slug})
+        return self.post(url, data)
 
     def create_questionnaire(self, organizations, data):
         questionnaire_data = {**data, "organizations": organizations}
@@ -437,6 +488,16 @@ class CareFixtureBase:
         }
         return self.post(url, data)
 
+    def update_request_order(self, facility_id, order_id, **kwargs):
+        url = reverse(
+            "request-order-detail",
+            kwargs={
+                "facility_external_id": facility_id,
+                "external_id": order_id,
+            },
+        )
+        return self.patch(url, kwargs)
+
     def create_supply_request(self, order, item, quantity, **kwargs):
         data = {
             "status": "active",
@@ -459,6 +520,16 @@ class CareFixtureBase:
             **kwargs,
         }
         return self.post(url, data)
+
+    def update_delivery_order(self, facility_id, order_id, **kwargs):
+        url = reverse(
+            "delivery-order-detail",
+            kwargs={
+                "facility_external_id": facility_id,
+                "external_id": order_id,
+            },
+        )
+        return self.patch(url, kwargs)
 
     def create_supply_delivery(self, order, supplied_item_quantity, **kwargs):
         data = {
@@ -483,6 +554,13 @@ class CareFixtureBase:
             },
         )
         return self.get(url, params=params).get("results", [])
+
+    def apply_activity_definition(self, facility_id, data):
+        url = reverse(
+            "service_request-apply-activity-definition",
+            kwargs={"facility_external_id": facility_id},
+        )
+        return self.post(url, data)
 
     def create_lab_test(
         self,

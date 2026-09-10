@@ -1,0 +1,257 @@
+{
+  "encounters": [
+    {
+      "ref": "encounter:op-001-0",
+      "patient_ref": "patient:001",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:medical_surgical"
+      ]
+    },
+    {
+      "ref": "encounter:op-001-1",
+      "patient_ref": "patient:001",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:pediatrics"
+      ]
+    },
+    {
+      "ref": "encounter:op-002-0",
+      "patient_ref": "patient:002",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:pediatrics"
+      ]
+    },
+    {
+      "ref": "encounter:op-002-1",
+      "patient_ref": "patient:002",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:cardiology"
+      ]
+    },
+    {
+      "ref": "encounter:op-003-0",
+      "patient_ref": "patient:003",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:cardiology"
+      ]
+    },
+    {
+      "ref": "encounter:op-003-1",
+      "patient_ref": "patient:003",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:oncology"
+      ]
+    },
+    {
+      "ref": "encounter:op-004-0",
+      "patient_ref": "patient:004",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:oncology"
+      ]
+    },
+    {
+      "ref": "encounter:op-004-1",
+      "patient_ref": "patient:004",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:icu"
+      ]
+    },
+    {
+      "ref": "encounter:op-005-0",
+      "patient_ref": "patient:005",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:icu"
+      ]
+    },
+    {
+      "ref": "encounter:op-005-1",
+      "patient_ref": "patient:005",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:emergency"
+      ]
+    },
+    {
+      "ref": "encounter:op-006-0",
+      "patient_ref": "patient:006",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:emergency"
+      ]
+    },
+    {
+      "ref": "encounter:op-006-1",
+      "patient_ref": "patient:006",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:medical_surgical"
+      ]
+    },
+    {
+      "ref": "encounter:op-007-0",
+      "patient_ref": "patient:007",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:medical_surgical"
+      ]
+    },
+    {
+      "ref": "encounter:op-007-1",
+      "patient_ref": "patient:007",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:pediatrics"
+      ]
+    },
+    {
+      "ref": "encounter:op-008-0",
+      "patient_ref": "patient:008",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:pediatrics"
+      ]
+    },
+    {
+      "ref": "encounter:op-008-1",
+      "patient_ref": "patient:008",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:cardiology"
+      ]
+    },
+    {
+      "ref": "encounter:op-009-0",
+      "patient_ref": "patient:009",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:cardiology"
+      ]
+    },
+    {
+      "ref": "encounter:op-009-1",
+      "patient_ref": "patient:009",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:oncology"
+      ]
+    },
+    {
+      "ref": "encounter:op-010-0",
+      "patient_ref": "patient:010",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:oncology"
+      ]
+    },
+    {
+      "ref": "encounter:op-010-1",
+      "patient_ref": "patient:010",
+      "encounter_class": "amb",
+      "status": "completed",
+      "priority": "routine",
+      "organization_refs": [
+        "department:icu"
+      ]
+    },
+    {
+      "ref": "encounter:ip-001",
+      "patient_ref": "patient:001",
+      "bed_ref": "location:bed_101_a",
+      "encounter_class": "imp",
+      "status": "in_progress",
+      "priority": "routine",
+      "organization_refs": [
+        "department:medical_surgical"
+      ]
+    },
+    {
+      "ref": "encounter:ip-002",
+      "patient_ref": "patient:002",
+      "bed_ref": "location:bed_102_a",
+      "encounter_class": "imp",
+      "status": "in_progress",
+      "priority": "routine",
+      "organization_refs": [
+        "department:medical_surgical"
+      ]
+    },
+    {
+      "ref": "encounter:ip-003",
+      "patient_ref": "patient:003",
+      "bed_ref": "location:bed_103_a",
+      "encounter_class": "imp",
+      "status": "in_progress",
+      "priority": "routine",
+      "organization_refs": [
+        "department:cardiology"
+      ]
+    },
+    {
+      "ref": "encounter:emer-001",
+      "patient_ref": "patient:001",
+      "encounter_class": "emer",
+      "status": "in_progress",
+      "priority": "emergency",
+      "organization_refs": [
+        "department:emergency"
+      ]
+    },
+    {
+      "ref": "encounter:emer-002",
+      "patient_ref": "patient:001",
+      "encounter_class": "emer",
+      "status": "in_progress",
+      "priority": "emergency",
+      "organization_refs": [
+        "department:emergency"
+      ]
+    }
+  ]
+}
