@@ -26,6 +26,47 @@
       "name": "Demo Inventory Supplier",
       "org_type": "product_supplier",
       "active": true
+    },
+    {
+      "ref": "role:administrator",
+      "name": "Administrator",
+      "org_type": "role",
+      "active": true
+    },
+    {
+      "ref": "role:volunteer",
+      "name": "Volunteer",
+      "org_type": "role",
+      "active": true,
+      "managing_organization_refs": ["role:administrator"]
+    },
+    {
+      "ref": "role:doctor",
+      "name": "Doctor",
+      "org_type": "role",
+      "active": true,
+      "managing_organization_refs": ["role:administrator"]
+    },
+    {
+      "ref": "role:staff",
+      "name": "Staff",
+      "org_type": "role",
+      "active": true,
+      "managing_organization_refs": ["role:administrator"]
+    },
+    {
+      "ref": "role:nurse",
+      "name": "Nurse",
+      "org_type": "role",
+      "active": true,
+      "managing_organization_refs": ["role:administrator"]
+    },
+    {
+      "ref": "role:facility-admin",
+      "name": "Facility Admin",
+      "org_type": "role",
+      "active": true,
+      "managing_organization_refs": ["role:administrator"]
     }
   ]
 }

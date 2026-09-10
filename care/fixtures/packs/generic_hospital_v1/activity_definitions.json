@@ -20,10 +20,14 @@
         "display": "CBC panel"
       }
     ],
-    "specimen_refs": [
+    "location_refs": [
+      "location:first_floor_lab"
+    ],
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
       "whole-blood"
     ],
-    "observation_refs": [
+    "observation_slugs": [
       "w-b-c",
       "neutrophil-percentage",
       "lymphocyte-percentage",
@@ -47,13 +51,9 @@
       "mean-platelet-volume",
       "platelet-distribution-width"
     ],
-    "charge_item_definition_refs": [
+    "charge_item_definition_slugs": [
       "charge-cbc"
-    ],
-    "location_refs": [
-      "location:first_floor_lab"
-    ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    ]
   },
   {
     "title": "Hemoglobin (Hb)",
@@ -76,19 +76,19 @@
         "display": "Hemoglobin [Mass/volume] in Blood"
       }
     ],
-    "specimen_refs": [
-      "whole-blood"
-    ],
-    "observation_refs": [
-      "hemoglobin-hb"
-    ],
-    "charge_item_definition_refs": [
-      "charge-hb"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "whole-blood"
+    ],
+    "observation_slugs": [
+      "hemoglobin-hb"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-hb"
+    ]
   },
   {
     "title": "Aspartate Aminotransferase (SGOT)",
@@ -111,19 +111,19 @@
         "display": "Aspartate aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "sgot-ast"
-    ],
-    "charge_item_definition_refs": [
-      "charge-sgot"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "sgot-ast"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-sgot"
+    ]
   },
   {
     "title": "Alanine Aminotransferase (SGPT)",
@@ -146,19 +146,19 @@
         "display": "Alanine aminotransferase [Enzymatic activity/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "sgpt-alt"
-    ],
-    "charge_item_definition_refs": [
-      "charge-sgpt"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "sgpt-alt"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-sgpt"
+    ]
   },
   {
     "title": "Total Bilirubin",
@@ -181,19 +181,19 @@
         "display": "Bilirubin.total [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "bilirubin-total"
-    ],
-    "charge_item_definition_refs": [
-      "charge-tbil"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "bilirubin-total"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-tbil"
+    ]
   },
   {
     "title": "Direct Bilirubin",
@@ -216,19 +216,19 @@
         "display": "Bilirubin.direct [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "bilirubin-direct"
-    ],
-    "charge_item_definition_refs": [
-      "charge-dbil"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "bilirubin-direct"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-dbil"
+    ]
   },
   {
     "title": "Alkaline Phosphatase (ALP)",
@@ -251,19 +251,19 @@
         "display": "Alkaline phosphatase [Enzymatic activity/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "alkaline-phosphatase"
-    ],
-    "charge_item_definition_refs": [
-      "charge-alp"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "alkaline-phosphatase"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-alp"
+    ]
   },
   {
     "title": "Total Protein",
@@ -286,19 +286,19 @@
         "display": "Protein [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "total-protein"
-    ],
-    "charge_item_definition_refs": [
-      "charge-tprot"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "total-protein"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-tprot"
+    ]
   },
   {
     "title": "Serum Triglycerides",
@@ -321,17 +321,17 @@
         "display": "Triglyceride [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "triglycerides"
-    ],
-    "charge_item_definition_refs": [],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "triglycerides"
+    ],
+    "charge_item_definition_slugs": []
   },
   {
     "title": "Total Cholesterol",
@@ -354,19 +354,19 @@
         "display": "Cholesterol [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "total-cholesterol"
-    ],
-    "charge_item_definition_refs": [
-      "charge-tchol"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "total-cholesterol"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-tchol"
+    ]
   },
   {
     "title": "HDL Cholesterol",
@@ -389,19 +389,19 @@
         "display": "Cholesterol in HDL [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "hdl-cholesterol"
-    ],
-    "charge_item_definition_refs": [
-      "charge-hdl"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "hdl-cholesterol"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-hdl"
+    ]
   },
   {
     "title": "LDL Cholesterol",
@@ -424,19 +424,19 @@
         "display": "Cholesterol in LDL [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "ldl-cholesterol"
-    ],
-    "charge_item_definition_refs": [
-      "charge-ldl"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "ldl-cholesterol"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-ldl"
+    ]
   },
   {
     "title": "Blood Urea",
@@ -459,19 +459,19 @@
         "display": "Urea [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "urea-test"
-    ],
-    "charge_item_definition_refs": [
-      "charge-urea"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "urea-test"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-urea"
+    ]
   },
   {
     "title": "Serum Creatinine",
@@ -494,19 +494,19 @@
         "display": "Creatinine [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "creatinine"
-    ],
-    "charge_item_definition_refs": [
-      "charge-creat"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "creatinine"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-creat"
+    ]
   },
   {
     "title": "Serum Uric Acid",
@@ -529,19 +529,19 @@
         "display": "Urate [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "uric-acid"
-    ],
-    "charge_item_definition_refs": [
-      "charge-uric"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "uric-acid"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-uric"
+    ]
   },
   {
     "title": "Serum Sodium",
@@ -564,19 +564,19 @@
         "display": "Sodium [Moles/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "sodium"
-    ],
-    "charge_item_definition_refs": [
-      "charge-sod"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "sodium"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-sod"
+    ]
   },
   {
     "title": "Serum Potassium",
@@ -599,19 +599,19 @@
         "display": "Potassium [Moles/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "potassium"
-    ],
-    "charge_item_definition_refs": [
-      "charge-pot"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "potassium"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-pot"
+    ]
   },
   {
     "title": "Serum Calcium",
@@ -634,19 +634,19 @@
         "display": "Calcium [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "calcium"
-    ],
-    "charge_item_definition_refs": [
-      "charge-cal"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "calcium"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-cal"
+    ]
   },
   {
     "title": "Fasting Blood Glucose (FBG)",
@@ -669,19 +669,19 @@
         "display": "Urea [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "whole-blood"
-    ],
-    "observation_refs": [
-      "blood-sugar-fasting"
-    ],
-    "charge_item_definition_refs": [
-      "charge-fbg"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "whole-blood"
+    ],
+    "observation_slugs": [
+      "blood-sugar-fasting"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-fbg"
+    ]
   },
   {
     "title": "Postprandial Blood Glucose (PPBG)",
@@ -704,19 +704,19 @@
         "display": "Glucose [Mass/volume] in Blood -- post meal"
       }
     ],
-    "specimen_refs": [
-      "whole-blood"
-    ],
-    "observation_refs": [
-      "blood-sugar-pp"
-    ],
-    "charge_item_definition_refs": [
-      "charge-ppbg"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "whole-blood"
+    ],
+    "observation_slugs": [
+      "blood-sugar-pp"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-ppbg"
+    ]
   },
   {
     "title": "Random Blood Glucose (RBS)",
@@ -739,19 +739,19 @@
         "display": "Glucose [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
-      "whole-blood"
-    ],
-    "observation_refs": [
-      "randam-blood-sugar"
-    ],
-    "charge_item_definition_refs": [
-      "charge-rbs"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "whole-blood"
+    ],
+    "observation_slugs": [
+      "randam-blood-sugar"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-rbs"
+    ]
   },
   {
     "title": "Bleeding Time (BT)",
@@ -774,17 +774,17 @@
         "display": "Bleeding time of Capillary blood by Sukharev method"
       }
     ],
-    "specimen_refs": [
-      "whole-blood"
-    ],
-    "observation_refs": [
-      "bleeding-time"
-    ],
-    "charge_item_definition_refs": [],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "whole-blood"
+    ],
+    "observation_slugs": [
+      "bleeding-time"
+    ],
+    "charge_item_definition_slugs": []
   },
   {
     "title": "Clotting Time (CT)",
@@ -807,17 +807,17 @@
         "display": "Clotting time of Capillary blood by Sukharev method"
       }
     ],
-    "specimen_refs": [
-      "whole-blood"
-    ],
-    "observation_refs": [
-      "clotting-time"
-    ],
-    "charge_item_definition_refs": [],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "whole-blood"
+    ],
+    "observation_slugs": [
+      "clotting-time"
+    ],
+    "charge_item_definition_slugs": []
   },
   {
     "title": "Blood Group (ABO & Rh typing)",
@@ -845,20 +845,20 @@
         "display": "Rh type in blood"
       }
     ],
-    "specimen_refs": [
-      "whole-blood"
-    ],
-    "observation_refs": [
-      "abo-blood-group",
-      "rh-typing"
-    ],
-    "charge_item_definition_refs": [
-      "charge-bgrp"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "whole-blood"
+    ],
+    "observation_slugs": [
+      "abo-blood-group",
+      "rh-typing"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-bgrp"
+    ]
   },
   {
     "title": "HIV test (Antibodies 1 and 2)",
@@ -881,19 +881,19 @@
         "display": "HIV 1 and 2 Ab and HIV 1 p24 Ag panel - Serum or Plasma by Immunoassay"
       }
     ],
-    "specimen_refs": [
-      "whole-blood"
-    ],
-    "observation_refs": [
-      "hiv-test"
-    ],
-    "charge_item_definition_refs": [
-      "charge-hiv"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "whole-blood"
+    ],
+    "observation_slugs": [
+      "hiv-test"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-hiv"
+    ]
   },
   {
     "title": "Hepatitis B Surface Antigen (HBsAg)",
@@ -916,19 +916,19 @@
         "display": "Hepatitis B virus surface Ag [Presence] in Serum"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "hbsag"
-    ],
-    "charge_item_definition_refs": [
-      "charge-hbsag"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "hbsag"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-hbsag"
+    ]
   },
   {
     "title": "Hepatitis C Virus Antibody (HCV)",
@@ -951,19 +951,19 @@
         "display": "Hepatitis C virus Ab [Presence] in Serum"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "hcv-test"
-    ],
-    "charge_item_definition_refs": [
-      "charge-hcv"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "hcv-test"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-hcv"
+    ]
   },
   {
     "title": "RPR/VDRL test for Syphilis",
@@ -986,19 +986,19 @@
         "display": "Reagin Ab [Presence] in Serum by RPR"
       }
     ],
-    "specimen_refs": [
-      "serum"
-    ],
-    "observation_refs": [
-      "vdrl-test"
-    ],
-    "charge_item_definition_refs": [
-      "charge-vdrl"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "serum"
+    ],
+    "observation_slugs": [
+      "vdrl-test"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-vdrl"
+    ]
   },
   {
     "title": "Malaria Parasite Test (MP)",
@@ -1021,19 +1021,19 @@
         "display": "Microscopic observation [Identifier] in Blood by Malaria smear"
       }
     ],
-    "specimen_refs": [
-      "whole-blood"
-    ],
-    "observation_refs": [
-      "malaria-parasite-rapid"
-    ],
-    "charge_item_definition_refs": [
-      "charge-mp"
-    ],
     "location_refs": [
       "location:first_floor_lab"
     ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
+      "whole-blood"
+    ],
+    "observation_slugs": [
+      "malaria-parasite-rapid"
+    ],
+    "charge_item_definition_slugs": [
+      "charge-mp"
+    ]
   },
   {
     "title": "Widal test",
@@ -1071,22 +1071,22 @@
         "display": "Salmonella paratyphi A H Ab [Titer] in Serum by Immunofluorescence"
       }
     ],
-    "specimen_refs": [
+    "location_refs": [
+      "location:first_floor_lab"
+    ],
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
       "serum"
     ],
-    "observation_refs": [
+    "observation_slugs": [
       "salmonella-typhi-o",
       "salmonella-typhi-h",
       "salmonella-paratyphi-ah",
       "salmonella-paratyphi-bh"
     ],
-    "charge_item_definition_refs": [
+    "charge_item_definition_slugs": [
       "charge-widal"
-    ],
-    "location_refs": [
-      "location:first_floor_lab"
-    ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    ]
   },
   {
     "title": "Liver function test (LFT)",
@@ -1159,10 +1159,14 @@
         "display": "Gamma glutamyl transferase.macromolecular [Presence] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
+    "location_refs": [
+      "location:first_floor_lab"
+    ],
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
       "serum"
     ],
-    "observation_refs": [
+    "observation_slugs": [
       "sgot-ast",
       "sgpt-alt",
       "bilirubin-total",
@@ -1174,13 +1178,9 @@
       "serum-globulin",
       "ag-ratio"
     ],
-    "charge_item_definition_refs": [
+    "charge_item_definition_slugs": [
       "charge-lft"
-    ],
-    "location_refs": [
-      "location:first_floor_lab"
-    ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    ]
   },
   {
     "title": "Lipid profile test",
@@ -1223,23 +1223,23 @@
         "display": "Cholesterol in LDL [Mass/volume] in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
+    "location_refs": [
+      "location:first_floor_lab"
+    ],
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
       "serum"
     ],
-    "observation_refs": [
+    "observation_slugs": [
       "triglycerides",
       "total-cholesterol",
       "hdl-cholesterol",
       "ldl-cholesterol",
       "vldl-cholesterol"
     ],
-    "charge_item_definition_refs": [
+    "charge_item_definition_slugs": [
       "charge-lpt"
-    ],
-    "location_refs": [
-      "location:first_floor_lab"
-    ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    ]
   },
   {
     "title": "Kidney Function Test (KFT)",
@@ -1277,10 +1277,14 @@
         "display": "Glucose in Serum or Plasma"
       }
     ],
-    "specimen_refs": [
+    "location_refs": [
+      "location:first_floor_lab"
+    ],
+    "healthcare_service_ref": "healthcare_service:laboratory",
+    "specimen_slugs": [
       "serum"
     ],
-    "observation_refs": [
+    "observation_slugs": [
       "urea-test",
       "creatinine",
       "uric-acid",
@@ -1288,12 +1292,8 @@
       "potassium",
       "calcium"
     ],
-    "charge_item_definition_refs": [
+    "charge_item_definition_slugs": [
       "charge-kft"
-    ],
-    "location_refs": [
-      "location:first_floor_lab"
-    ],
-    "healthcare_service_ref": "healthcare_service:laboratory"
+    ]
   }
 ]

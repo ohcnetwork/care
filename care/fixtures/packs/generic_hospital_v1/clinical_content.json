@@ -1,0 +1,2751 @@
+{
+  "symptoms": [
+    {
+      "ref": "symptom:op-001-0-0",
+      "encounter_ref": "encounter:op-001-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "386661006",
+        "display": "Fever"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "symptom:op-001-0-1",
+      "encounter_ref": "encounter:op-001-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "49727002",
+        "display": "Cough"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "symptom:op-001-0-2",
+      "encounter_ref": "encounter:op-001-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "267102003",
+        "display": "Sore throat"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "symptom:op-001-1-0",
+      "encounter_ref": "encounter:op-001-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "25064002",
+        "display": "Headache"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "symptom:op-001-1-1",
+      "encounter_ref": "encounter:op-001-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "404640003",
+        "display": "Dizziness"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "symptom:op-002-0-0",
+      "encounter_ref": "encounter:op-002-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "84229001",
+        "display": "Fatigue"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:op-002-0-1",
+      "encounter_ref": "encounter:op-002-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "17173007",
+        "display": "Excessive thirst"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:op-002-0-2",
+      "encounter_ref": "encounter:op-002-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "28442001",
+        "display": "Polyuria"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:op-002-1-0",
+      "encounter_ref": "encounter:op-002-1",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "267036007",
+        "display": "Dyspnoea"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "symptom:op-002-1-1",
+      "encounter_ref": "encounter:op-002-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "56018004",
+        "display": "Wheezing"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "symptom:op-002-1-2",
+      "encounter_ref": "encounter:op-002-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "28743005",
+        "display": "Productive cough"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "symptom:op-003-0-0",
+      "encounter_ref": "encounter:op-003-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "84229001",
+        "display": "Fatigue"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "symptom:op-003-0-1",
+      "encounter_ref": "encounter:op-003-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "398979000",
+        "display": "Pale complexion"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "symptom:op-003-0-2",
+      "encounter_ref": "encounter:op-003-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "60845006",
+        "display": "Dyspnoea on exertion"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "symptom:op-003-1-0",
+      "encounter_ref": "encounter:op-003-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "386661006",
+        "display": "Fever"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "symptom:op-003-1-1",
+      "encounter_ref": "encounter:op-003-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "49727002",
+        "display": "Cough"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "symptom:op-003-1-2",
+      "encounter_ref": "encounter:op-003-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "267102003",
+        "display": "Sore throat"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "symptom:op-004-0-0",
+      "encounter_ref": "encounter:op-004-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "25064002",
+        "display": "Headache"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "symptom:op-004-0-1",
+      "encounter_ref": "encounter:op-004-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "404640003",
+        "display": "Dizziness"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "symptom:op-004-1-0",
+      "encounter_ref": "encounter:op-004-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "84229001",
+        "display": "Fatigue"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:op-004-1-1",
+      "encounter_ref": "encounter:op-004-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "17173007",
+        "display": "Excessive thirst"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:op-004-1-2",
+      "encounter_ref": "encounter:op-004-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "28442001",
+        "display": "Polyuria"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:op-005-0-0",
+      "encounter_ref": "encounter:op-005-0",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "267036007",
+        "display": "Dyspnoea"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "symptom:op-005-0-1",
+      "encounter_ref": "encounter:op-005-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "56018004",
+        "display": "Wheezing"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "symptom:op-005-0-2",
+      "encounter_ref": "encounter:op-005-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "28743005",
+        "display": "Productive cough"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "symptom:op-005-1-0",
+      "encounter_ref": "encounter:op-005-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "84229001",
+        "display": "Fatigue"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "symptom:op-005-1-1",
+      "encounter_ref": "encounter:op-005-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "398979000",
+        "display": "Pale complexion"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "symptom:op-005-1-2",
+      "encounter_ref": "encounter:op-005-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "60845006",
+        "display": "Dyspnoea on exertion"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "symptom:op-006-0-0",
+      "encounter_ref": "encounter:op-006-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "386661006",
+        "display": "Fever"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "symptom:op-006-0-1",
+      "encounter_ref": "encounter:op-006-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "49727002",
+        "display": "Cough"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "symptom:op-006-0-2",
+      "encounter_ref": "encounter:op-006-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "267102003",
+        "display": "Sore throat"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "symptom:op-006-1-0",
+      "encounter_ref": "encounter:op-006-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "25064002",
+        "display": "Headache"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "symptom:op-006-1-1",
+      "encounter_ref": "encounter:op-006-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "404640003",
+        "display": "Dizziness"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "symptom:op-007-0-0",
+      "encounter_ref": "encounter:op-007-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "84229001",
+        "display": "Fatigue"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:op-007-0-1",
+      "encounter_ref": "encounter:op-007-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "17173007",
+        "display": "Excessive thirst"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:op-007-0-2",
+      "encounter_ref": "encounter:op-007-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "28442001",
+        "display": "Polyuria"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:op-007-1-0",
+      "encounter_ref": "encounter:op-007-1",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "267036007",
+        "display": "Dyspnoea"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "symptom:op-007-1-1",
+      "encounter_ref": "encounter:op-007-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "56018004",
+        "display": "Wheezing"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "symptom:op-007-1-2",
+      "encounter_ref": "encounter:op-007-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "28743005",
+        "display": "Productive cough"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "symptom:op-008-0-0",
+      "encounter_ref": "encounter:op-008-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "84229001",
+        "display": "Fatigue"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "symptom:op-008-0-1",
+      "encounter_ref": "encounter:op-008-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "398979000",
+        "display": "Pale complexion"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "symptom:op-008-0-2",
+      "encounter_ref": "encounter:op-008-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "60845006",
+        "display": "Dyspnoea on exertion"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "symptom:op-008-1-0",
+      "encounter_ref": "encounter:op-008-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "386661006",
+        "display": "Fever"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "symptom:op-008-1-1",
+      "encounter_ref": "encounter:op-008-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "49727002",
+        "display": "Cough"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "symptom:op-008-1-2",
+      "encounter_ref": "encounter:op-008-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "267102003",
+        "display": "Sore throat"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "symptom:op-009-0-0",
+      "encounter_ref": "encounter:op-009-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "25064002",
+        "display": "Headache"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "symptom:op-009-0-1",
+      "encounter_ref": "encounter:op-009-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "404640003",
+        "display": "Dizziness"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "symptom:op-009-1-0",
+      "encounter_ref": "encounter:op-009-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "84229001",
+        "display": "Fatigue"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:op-009-1-1",
+      "encounter_ref": "encounter:op-009-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "17173007",
+        "display": "Excessive thirst"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:op-009-1-2",
+      "encounter_ref": "encounter:op-009-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "28442001",
+        "display": "Polyuria"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:op-010-0-0",
+      "encounter_ref": "encounter:op-010-0",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "267036007",
+        "display": "Dyspnoea"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "symptom:op-010-0-1",
+      "encounter_ref": "encounter:op-010-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "56018004",
+        "display": "Wheezing"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "symptom:op-010-0-2",
+      "encounter_ref": "encounter:op-010-0",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "28743005",
+        "display": "Productive cough"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "symptom:op-010-1-0",
+      "encounter_ref": "encounter:op-010-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "84229001",
+        "display": "Fatigue"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "symptom:op-010-1-1",
+      "encounter_ref": "encounter:op-010-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "398979000",
+        "display": "Pale complexion"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "symptom:op-010-1-2",
+      "encounter_ref": "encounter:op-010-1",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "60845006",
+        "display": "Dyspnoea on exertion"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "symptom:ip-001-0",
+      "encounter_ref": "encounter:ip-001",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "386661006",
+        "display": "Fever"
+      },
+      "onset_days_before": 4
+    },
+    {
+      "ref": "symptom:ip-001-1",
+      "encounter_ref": "encounter:ip-001",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "28743005",
+        "display": "Productive cough"
+      },
+      "onset_days_before": 4
+    },
+    {
+      "ref": "symptom:ip-001-2",
+      "encounter_ref": "encounter:ip-001",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "267036007",
+        "display": "Dyspnoea"
+      },
+      "onset_days_before": 4
+    },
+    {
+      "ref": "symptom:ip-001-3",
+      "encounter_ref": "encounter:ip-001",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "29857009",
+        "display": "Chest pain"
+      },
+      "onset_days_before": 4
+    },
+    {
+      "ref": "symptom:ip-002-0",
+      "encounter_ref": "encounter:ip-002",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "25064002",
+        "display": "Headache"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "symptom:ip-002-1",
+      "encounter_ref": "encounter:ip-002",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "404640003",
+        "display": "Dizziness"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "symptom:ip-002-2",
+      "encounter_ref": "encounter:ip-002",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "246636008",
+        "display": "Blurred vision"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "symptom:ip-003-0",
+      "encounter_ref": "encounter:ip-003",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "84229001",
+        "display": "Fatigue"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:ip-003-1",
+      "encounter_ref": "encounter:ip-003",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "17173007",
+        "display": "Excessive thirst"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:ip-003-2",
+      "encounter_ref": "encounter:ip-003",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "28442001",
+        "display": "Polyuria"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:ip-003-3",
+      "encounter_ref": "encounter:ip-003",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "422587007",
+        "display": "Nausea"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "symptom:emer-001-0",
+      "encounter_ref": "encounter:emer-001",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "267036007",
+        "display": "Dyspnoea"
+      },
+      "onset_days_before": 0,
+      "onset_hours_before": 2
+    },
+    {
+      "ref": "symptom:emer-001-1",
+      "encounter_ref": "encounter:emer-001",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "56018004",
+        "display": "Wheezing"
+      },
+      "onset_days_before": 0,
+      "onset_hours_before": 2
+    },
+    {
+      "ref": "symptom:emer-001-2",
+      "encounter_ref": "encounter:emer-001",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "28743005",
+        "display": "Productive cough"
+      },
+      "onset_days_before": 0,
+      "onset_hours_before": 2
+    },
+    {
+      "ref": "symptom:emer-001-3",
+      "encounter_ref": "encounter:emer-001",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "288252007",
+        "display": "Unable to speak"
+      },
+      "onset_days_before": 0,
+      "onset_hours_before": 2
+    },
+    {
+      "ref": "symptom:emer-002-0",
+      "encounter_ref": "encounter:emer-002",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "29857009",
+        "display": "Chest pain"
+      },
+      "onset_days_before": 0,
+      "onset_hours_before": 1
+    },
+    {
+      "ref": "symptom:emer-002-1",
+      "encounter_ref": "encounter:emer-002",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "415690000",
+        "display": "Sweating"
+      },
+      "onset_days_before": 0,
+      "onset_hours_before": 1
+    },
+    {
+      "ref": "symptom:emer-002-2",
+      "encounter_ref": "encounter:emer-002",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "267036007",
+        "display": "Dyspnoea"
+      },
+      "onset_days_before": 0,
+      "onset_hours_before": 1
+    },
+    {
+      "ref": "symptom:emer-002-3",
+      "encounter_ref": "encounter:emer-002",
+      "severity": "mild",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "404640003",
+        "display": "Dizziness"
+      },
+      "onset_days_before": 0,
+      "onset_hours_before": 1
+    }
+  ],
+  "diagnoses": [
+    {
+      "ref": "diagnosis:op-001-0-0",
+      "encounter_ref": "encounter:op-001-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "54398005",
+        "display": "Acute upper respiratory infection"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "diagnosis:op-001-1-0",
+      "encounter_ref": "encounter:op-001-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "59621000",
+        "display": "Essential hypertension"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "diagnosis:op-002-0-0",
+      "encounter_ref": "encounter:op-002-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "44054006",
+        "display": "Type 2 diabetes mellitus"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "diagnosis:op-002-1-0",
+      "encounter_ref": "encounter:op-002-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "195967001",
+        "display": "Asthma"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "diagnosis:op-003-0-0",
+      "encounter_ref": "encounter:op-003-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "271737000",
+        "display": "Anaemia"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "diagnosis:op-003-1-0",
+      "encounter_ref": "encounter:op-003-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "54398005",
+        "display": "Acute upper respiratory infection"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "diagnosis:op-004-0-0",
+      "encounter_ref": "encounter:op-004-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "59621000",
+        "display": "Essential hypertension"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "diagnosis:op-004-1-0",
+      "encounter_ref": "encounter:op-004-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "44054006",
+        "display": "Type 2 diabetes mellitus"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "diagnosis:op-005-0-0",
+      "encounter_ref": "encounter:op-005-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "195967001",
+        "display": "Asthma"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "diagnosis:op-005-1-0",
+      "encounter_ref": "encounter:op-005-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "271737000",
+        "display": "Anaemia"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "diagnosis:op-006-0-0",
+      "encounter_ref": "encounter:op-006-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "54398005",
+        "display": "Acute upper respiratory infection"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "diagnosis:op-006-1-0",
+      "encounter_ref": "encounter:op-006-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "59621000",
+        "display": "Essential hypertension"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "diagnosis:op-007-0-0",
+      "encounter_ref": "encounter:op-007-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "44054006",
+        "display": "Type 2 diabetes mellitus"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "diagnosis:op-007-1-0",
+      "encounter_ref": "encounter:op-007-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "195967001",
+        "display": "Asthma"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "diagnosis:op-008-0-0",
+      "encounter_ref": "encounter:op-008-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "271737000",
+        "display": "Anaemia"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "diagnosis:op-008-1-0",
+      "encounter_ref": "encounter:op-008-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "54398005",
+        "display": "Acute upper respiratory infection"
+      },
+      "onset_days_before": 3
+    },
+    {
+      "ref": "diagnosis:op-009-0-0",
+      "encounter_ref": "encounter:op-009-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "59621000",
+        "display": "Essential hypertension"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "diagnosis:op-009-1-0",
+      "encounter_ref": "encounter:op-009-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "44054006",
+        "display": "Type 2 diabetes mellitus"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "diagnosis:op-010-0-0",
+      "encounter_ref": "encounter:op-010-0",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "195967001",
+        "display": "Asthma"
+      },
+      "onset_days_before": 1
+    },
+    {
+      "ref": "diagnosis:op-010-1-0",
+      "encounter_ref": "encounter:op-010-1",
+      "severity": "moderate",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "271737000",
+        "display": "Anaemia"
+      },
+      "onset_days_before": 14
+    },
+    {
+      "ref": "diagnosis:ip-001-0",
+      "encounter_ref": "encounter:ip-001",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "233604007",
+        "display": "Pneumonia"
+      },
+      "onset_days_before": 4
+    },
+    {
+      "ref": "diagnosis:ip-002-0",
+      "encounter_ref": "encounter:ip-002",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "702717009",
+        "display": "Acute hypertensive urgency"
+      },
+      "onset_days_before": 2
+    },
+    {
+      "ref": "diagnosis:ip-003-0",
+      "encounter_ref": "encounter:ip-003",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "443694000",
+        "display": "Type II diabetes mellitus uncontrolled"
+      },
+      "onset_days_before": 7
+    },
+    {
+      "ref": "diagnosis:emer-001-0",
+      "encounter_ref": "encounter:emer-001",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "281239006",
+        "display": "Exacerbation of asthma"
+      },
+      "onset_days_before": 0,
+      "onset_hours_before": 2
+    },
+    {
+      "ref": "diagnosis:emer-002-0",
+      "encounter_ref": "encounter:emer-002",
+      "severity": "severe",
+      "clinical_status": "active",
+      "verification_status": "confirmed",
+      "category": "encounter_diagnosis",
+      "code": {
+        "system": "http://snomed.info/sct",
+        "code": "426856002",
+        "display": "Acute coronary syndrome"
+      },
+      "onset_days_before": 0,
+      "onset_hours_before": 1
+    }
+  ],
+  "medication_requests": [
+    {
+      "ref": "medreq:op-001-0",
+      "encounter_ref": "encounter:op-001-0",
+      "product_knowledge_ref": "product_knowledge:pk-azith-250",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 3,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "5",
+      "duration_unit": "d",
+      "timing_code": "TID",
+      "timing_display": "Three times a day",
+      "text": "1-1-1",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-001-1",
+      "encounter_ref": "encounter:op-001-1",
+      "product_knowledge_ref": "product_knowledge:pk-amlo-5-3",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 1,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "30",
+      "duration_unit": "d",
+      "timing_code": "QD",
+      "timing_display": "Every day",
+      "text": "1-0-0",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-002-0",
+      "encounter_ref": "encounter:op-002-0",
+      "product_knowledge_ref": "product_knowledge:pk-glime-2",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 2,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "30",
+      "duration_unit": "d",
+      "timing_code": "BID",
+      "timing_display": "Two times a day",
+      "text": "1-0-1",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-002-1",
+      "encounter_ref": "encounter:op-002-1",
+      "product_knowledge_ref": "product_knowledge:pk-levo-inh",
+      "dose_value": "2",
+      "dose_unit_code": "{actuation}",
+      "dose_unit_display": "puffs",
+      "frequency": 3,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "5",
+      "duration_unit": "d",
+      "timing_code": "TID",
+      "timing_display": "Three times a day",
+      "text": "2 puffs TID",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-003-0",
+      "encounter_ref": "encounter:op-003-0",
+      "product_knowledge_ref": "product_knowledge:pk-iron-folic",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 2,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "30",
+      "duration_unit": "d",
+      "timing_code": "BID",
+      "timing_display": "Two times a day",
+      "text": "1-0-1",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-003-1",
+      "encounter_ref": "encounter:op-003-1",
+      "product_knowledge_ref": "product_knowledge:pk-azith-250",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 3,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "5",
+      "duration_unit": "d",
+      "timing_code": "TID",
+      "timing_display": "Three times a day",
+      "text": "1-1-1",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-004-0",
+      "encounter_ref": "encounter:op-004-0",
+      "product_knowledge_ref": "product_knowledge:pk-amlo-5-3",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 1,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "30",
+      "duration_unit": "d",
+      "timing_code": "QD",
+      "timing_display": "Every day",
+      "text": "1-0-0",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-004-1",
+      "encounter_ref": "encounter:op-004-1",
+      "product_knowledge_ref": "product_knowledge:pk-glime-2",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 2,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "30",
+      "duration_unit": "d",
+      "timing_code": "BID",
+      "timing_display": "Two times a day",
+      "text": "1-0-1",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-005-0",
+      "encounter_ref": "encounter:op-005-0",
+      "product_knowledge_ref": "product_knowledge:pk-levo-inh",
+      "dose_value": "2",
+      "dose_unit_code": "{actuation}",
+      "dose_unit_display": "puffs",
+      "frequency": 3,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "5",
+      "duration_unit": "d",
+      "timing_code": "TID",
+      "timing_display": "Three times a day",
+      "text": "2 puffs TID",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-005-1",
+      "encounter_ref": "encounter:op-005-1",
+      "product_knowledge_ref": "product_knowledge:pk-iron-folic",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 2,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "30",
+      "duration_unit": "d",
+      "timing_code": "BID",
+      "timing_display": "Two times a day",
+      "text": "1-0-1",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-006-0",
+      "encounter_ref": "encounter:op-006-0",
+      "product_knowledge_ref": "product_knowledge:pk-azith-250",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 3,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "5",
+      "duration_unit": "d",
+      "timing_code": "TID",
+      "timing_display": "Three times a day",
+      "text": "1-1-1",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-006-1",
+      "encounter_ref": "encounter:op-006-1",
+      "product_knowledge_ref": "product_knowledge:pk-amlo-5-3",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 1,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "30",
+      "duration_unit": "d",
+      "timing_code": "QD",
+      "timing_display": "Every day",
+      "text": "1-0-0",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-007-0",
+      "encounter_ref": "encounter:op-007-0",
+      "product_knowledge_ref": "product_knowledge:pk-glime-2",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 2,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "30",
+      "duration_unit": "d",
+      "timing_code": "BID",
+      "timing_display": "Two times a day",
+      "text": "1-0-1",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-007-1",
+      "encounter_ref": "encounter:op-007-1",
+      "product_knowledge_ref": "product_knowledge:pk-levo-inh",
+      "dose_value": "2",
+      "dose_unit_code": "{actuation}",
+      "dose_unit_display": "puffs",
+      "frequency": 3,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "5",
+      "duration_unit": "d",
+      "timing_code": "TID",
+      "timing_display": "Three times a day",
+      "text": "2 puffs TID",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-008-0",
+      "encounter_ref": "encounter:op-008-0",
+      "product_knowledge_ref": "product_knowledge:pk-iron-folic",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 2,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "30",
+      "duration_unit": "d",
+      "timing_code": "BID",
+      "timing_display": "Two times a day",
+      "text": "1-0-1",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-008-1",
+      "encounter_ref": "encounter:op-008-1",
+      "product_knowledge_ref": "product_knowledge:pk-azith-250",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 3,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "5",
+      "duration_unit": "d",
+      "timing_code": "TID",
+      "timing_display": "Three times a day",
+      "text": "1-1-1",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-009-0",
+      "encounter_ref": "encounter:op-009-0",
+      "product_knowledge_ref": "product_knowledge:pk-amlo-5-3",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 1,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "30",
+      "duration_unit": "d",
+      "timing_code": "QD",
+      "timing_display": "Every day",
+      "text": "1-0-0",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-009-1",
+      "encounter_ref": "encounter:op-009-1",
+      "product_knowledge_ref": "product_knowledge:pk-glime-2",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 2,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "30",
+      "duration_unit": "d",
+      "timing_code": "BID",
+      "timing_display": "Two times a day",
+      "text": "1-0-1",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-010-0",
+      "encounter_ref": "encounter:op-010-0",
+      "product_knowledge_ref": "product_knowledge:pk-levo-inh",
+      "dose_value": "2",
+      "dose_unit_code": "{actuation}",
+      "dose_unit_display": "puffs",
+      "frequency": 3,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "5",
+      "duration_unit": "d",
+      "timing_code": "TID",
+      "timing_display": "Three times a day",
+      "text": "2 puffs TID",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:op-010-1",
+      "encounter_ref": "encounter:op-010-1",
+      "product_knowledge_ref": "product_knowledge:pk-iron-folic",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 2,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "30",
+      "duration_unit": "d",
+      "timing_code": "BID",
+      "timing_display": "Two times a day",
+      "text": "1-0-1",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:ip-001",
+      "encounter_ref": "encounter:ip-001",
+      "product_knowledge_ref": "product_knowledge:pk-amino-inj",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 2,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "7",
+      "duration_unit": "d",
+      "timing_code": "BID",
+      "timing_display": "Two times a day",
+      "text": "1-0-1",
+      "category": "inpatient"
+    },
+    {
+      "ref": "medreq:ip-002",
+      "encounter_ref": "encounter:ip-002",
+      "product_knowledge_ref": "product_knowledge:pk-amlo-5-3",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 1,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "7",
+      "duration_unit": "d",
+      "timing_code": "QD",
+      "timing_display": "Every day",
+      "text": "1-0-0",
+      "category": "inpatient"
+    },
+    {
+      "ref": "medreq:ip-003",
+      "encounter_ref": "encounter:ip-003",
+      "product_knowledge_ref": "product_knowledge:pk-ampho-b",
+      "dose_value": "8",
+      "dose_unit_code": "U",
+      "dose_unit_display": "units",
+      "frequency": 3,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "3",
+      "duration_unit": "d",
+      "timing_code": "TID",
+      "timing_display": "Three times a day",
+      "text": "8 IU SC TID (sliding scale to follow)",
+      "category": "inpatient"
+    },
+    {
+      "ref": "medreq:emer-001",
+      "encounter_ref": "encounter:emer-001",
+      "product_knowledge_ref": "product_knowledge:pk-amlo-tab",
+      "dose_value": "1",
+      "dose_unit_code": "{nebule}",
+      "dose_unit_display": "nebule",
+      "frequency": 4,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "1",
+      "duration_unit": "d",
+      "timing_code": "QID",
+      "timing_display": "Four times a day",
+      "text": "Nebulise q4-6h PRN in ER",
+      "category": "outpatient"
+    },
+    {
+      "ref": "medreq:emer-002",
+      "encounter_ref": "encounter:emer-002",
+      "product_knowledge_ref": "product_knowledge:pk-clopidog",
+      "dose_value": "1",
+      "dose_unit_code": "{tbl}",
+      "dose_unit_display": "tablets",
+      "frequency": 1,
+      "period": "1",
+      "period_unit": "d",
+      "duration_value": "1",
+      "duration_unit": "d",
+      "timing_code": "QD",
+      "timing_display": "Every day",
+      "text": "Loading dose in ER; cardiology review",
+      "category": "outpatient"
+    }
+  ],
+  "questionnaire_responses": [
+    {
+      "ref": "qresponse:op-001-0-op",
+      "encounter_ref": "encounter:op-001-0",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Fever for 3 days with cough and sore throat"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Adequate rest, oral hydration, warm fluids, avoid cold foods"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-001-1-op",
+      "encounter_ref": "encounter:op-001-1",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Headache and dizziness for 2 days, known case of hypertension"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Low sodium diet, regular exercise, avoid stress, monitor BP daily"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-002-0-op",
+      "encounter_ref": "encounter:op-002-0",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Fatigue, excessive thirst and increased urination for 1 week"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Low sugar diet, regular exercise, monitor blood glucose levels daily"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-002-1-op",
+      "encounter_ref": "encounter:op-002-1",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Breathlessness and wheezing for 1 day with productive cough"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Avoid triggers, use inhaler as directed, follow up if symptoms worsen"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-003-0-op",
+      "encounter_ref": "encounter:op-003-0",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Fatigue and breathlessness on exertion for 2 weeks, pale appearance"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Iron-rich diet including leafy vegetables, red meat, avoid tea with meals"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-003-1-op",
+      "encounter_ref": "encounter:op-003-1",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Fever for 3 days with cough and sore throat"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Adequate rest, oral hydration, warm fluids, avoid cold foods"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-004-0-op",
+      "encounter_ref": "encounter:op-004-0",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Headache and dizziness for 2 days, known case of hypertension"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Low sodium diet, regular exercise, avoid stress, monitor BP daily"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-004-1-op",
+      "encounter_ref": "encounter:op-004-1",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Fatigue, excessive thirst and increased urination for 1 week"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Low sugar diet, regular exercise, monitor blood glucose levels daily"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-005-0-op",
+      "encounter_ref": "encounter:op-005-0",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Breathlessness and wheezing for 1 day with productive cough"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Avoid triggers, use inhaler as directed, follow up if symptoms worsen"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-005-1-op",
+      "encounter_ref": "encounter:op-005-1",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Fatigue and breathlessness on exertion for 2 weeks, pale appearance"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Iron-rich diet including leafy vegetables, red meat, avoid tea with meals"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-006-0-op",
+      "encounter_ref": "encounter:op-006-0",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Fever for 3 days with cough and sore throat"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Adequate rest, oral hydration, warm fluids, avoid cold foods"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-006-1-op",
+      "encounter_ref": "encounter:op-006-1",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Headache and dizziness for 2 days, known case of hypertension"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Low sodium diet, regular exercise, avoid stress, monitor BP daily"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-007-0-op",
+      "encounter_ref": "encounter:op-007-0",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Fatigue, excessive thirst and increased urination for 1 week"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Low sugar diet, regular exercise, monitor blood glucose levels daily"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-007-1-op",
+      "encounter_ref": "encounter:op-007-1",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Breathlessness and wheezing for 1 day with productive cough"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Avoid triggers, use inhaler as directed, follow up if symptoms worsen"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-008-0-op",
+      "encounter_ref": "encounter:op-008-0",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Fatigue and breathlessness on exertion for 2 weeks, pale appearance"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Iron-rich diet including leafy vegetables, red meat, avoid tea with meals"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-008-1-op",
+      "encounter_ref": "encounter:op-008-1",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Fever for 3 days with cough and sore throat"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Adequate rest, oral hydration, warm fluids, avoid cold foods"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-009-0-op",
+      "encounter_ref": "encounter:op-009-0",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Headache and dizziness for 2 days, known case of hypertension"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Low sodium diet, regular exercise, avoid stress, monitor BP daily"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-009-1-op",
+      "encounter_ref": "encounter:op-009-1",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Fatigue, excessive thirst and increased urination for 1 week"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Low sugar diet, regular exercise, monitor blood glucose levels daily"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-010-0-op",
+      "encounter_ref": "encounter:op-010-0",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Breathlessness and wheezing for 1 day with productive cough"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Avoid triggers, use inhaler as directed, follow up if symptoms worsen"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:op-010-1-op",
+      "encounter_ref": "encounter:op-010-1",
+      "questionnaire_slug": "demo-op-consultation-form",
+      "results": [
+        {
+          "question_id": "b4ad87a2-bb6d-4378-9771-2dea10d0c2f9",
+          "values": [
+            {
+              "value": "Fatigue and breathlessness on exertion for 2 weeks, pale appearance"
+            }
+          ]
+        },
+        {
+          "question_id": "dea79c2f-0e5d-4b06-8ba8-6361e9690bb4",
+          "values": [
+            {
+              "value": "false"
+            }
+          ]
+        },
+        {
+          "question_id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",
+          "values": [
+            {
+              "value": "Iron-rich diet including leafy vegetables, red meat, avoid tea with meals"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:ip-001-vitals",
+      "encounter_ref": "encounter:ip-001",
+      "questionnaire_slug": "demo-ip-vitals-form",
+      "results": [
+        {
+          "question_id": "d38064b9-7fba-48b8-8ae1-90a38fcf8cdf",
+          "values": [
+            {
+              "value": "101"
+            }
+          ]
+        },
+        {
+          "question_id": "1257b47e-99c1-43b7-95a0-953b951242fc",
+          "values": [
+            {
+              "value": "110"
+            }
+          ]
+        },
+        {
+          "question_id": "2fc8ecc1-c4dc-447b-ac01-e6ec8dda0246",
+          "values": [
+            {
+              "value": "26"
+            }
+          ]
+        },
+        {
+          "question_id": "e67bfb1b-f534-4db5-b712-a75978b043bb",
+          "values": [
+            {
+              "value": "91"
+            }
+          ]
+        },
+        {
+          "question_id": "79d2c552-023c-4f76-97ad-32deafacbb3b",
+          "values": [
+            {
+              "value": "118"
+            }
+          ]
+        },
+        {
+          "question_id": "23c31dde-c075-4e56-aa03-086e9cecd202",
+          "values": [
+            {
+              "value": "76"
+            }
+          ]
+        },
+        {
+          "question_id": "689e2bc1-3f7f-42d7-88e1-b3a70cf88372",
+          "values": [
+            {
+              "value": "Admitted with 4 days fever, productive cough and breathlessness. RR 26, SpO2 91% on room air, crepitations right lower zone. Started on amoxicillin-clavulanate; oxygen and supportive care. Chest X-ray pending."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:ip-002-vitals",
+      "encounter_ref": "encounter:ip-002",
+      "questionnaire_slug": "demo-ip-vitals-form",
+      "results": [
+        {
+          "question_id": "d38064b9-7fba-48b8-8ae1-90a38fcf8cdf",
+          "values": [
+            {
+              "value": "98"
+            }
+          ]
+        },
+        {
+          "question_id": "1257b47e-99c1-43b7-95a0-953b951242fc",
+          "values": [
+            {
+              "value": "102"
+            }
+          ]
+        },
+        {
+          "question_id": "2fc8ecc1-c4dc-447b-ac01-e6ec8dda0246",
+          "values": [
+            {
+              "value": "18"
+            }
+          ]
+        },
+        {
+          "question_id": "e67bfb1b-f534-4db5-b712-a75978b043bb",
+          "values": [
+            {
+              "value": "97"
+            }
+          ]
+        },
+        {
+          "question_id": "79d2c552-023c-4f76-97ad-32deafacbb3b",
+          "values": [
+            {
+              "value": "188"
+            }
+          ]
+        },
+        {
+          "question_id": "23c31dde-c075-4e56-aa03-086e9cecd202",
+          "values": [
+            {
+              "value": "112"
+            }
+          ]
+        },
+        {
+          "question_id": "689e2bc1-3f7f-42d7-88e1-b3a70cf88372",
+          "values": [
+            {
+              "value": "Known hypertensive, non-compliant with medicines. Presented with severe headache and blurred vision. BP 188/112, no focal neuro deficit. Admitted for BP control and observation; amlodipine restarted, strict I/O."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:ip-003-vitals",
+      "encounter_ref": "encounter:ip-003",
+      "questionnaire_slug": "demo-ip-vitals-form",
+      "results": [
+        {
+          "question_id": "d38064b9-7fba-48b8-8ae1-90a38fcf8cdf",
+          "values": [
+            {
+              "value": "98"
+            }
+          ]
+        },
+        {
+          "question_id": "1257b47e-99c1-43b7-95a0-953b951242fc",
+          "values": [
+            {
+              "value": "96"
+            }
+          ]
+        },
+        {
+          "question_id": "2fc8ecc1-c4dc-447b-ac01-e6ec8dda0246",
+          "values": [
+            {
+              "value": "20"
+            }
+          ]
+        },
+        {
+          "question_id": "e67bfb1b-f534-4db5-b712-a75978b043bb",
+          "values": [
+            {
+              "value": "97"
+            }
+          ]
+        },
+        {
+          "question_id": "79d2c552-023c-4f76-97ad-32deafacbb3b",
+          "values": [
+            {
+              "value": "132"
+            }
+          ]
+        },
+        {
+          "question_id": "23c31dde-c075-4e56-aa03-086e9cecd202",
+          "values": [
+            {
+              "value": "84"
+            }
+          ]
+        },
+        {
+          "question_id": "689e2bc1-3f7f-42d7-88e1-b3a70cf88372",
+          "values": [
+            {
+              "value": "Known T2DM, stopped oral meds for 1 week. Admitted with polyuria, polydipsia and fatigue. Capillary glucose high; started on regular insulin with monitoring. Rehydrate, diabetic diet, education before discharge."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:emer-001-vitals",
+      "encounter_ref": "encounter:emer-001",
+      "questionnaire_slug": "demo-ip-vitals-form",
+      "results": [
+        {
+          "question_id": "d38064b9-7fba-48b8-8ae1-90a38fcf8cdf",
+          "values": [
+            {
+              "value": "99"
+            }
+          ]
+        },
+        {
+          "question_id": "1257b47e-99c1-43b7-95a0-953b951242fc",
+          "values": [
+            {
+              "value": "124"
+            }
+          ]
+        },
+        {
+          "question_id": "2fc8ecc1-c4dc-447b-ac01-e6ec8dda0246",
+          "values": [
+            {
+              "value": "32"
+            }
+          ]
+        },
+        {
+          "question_id": "e67bfb1b-f534-4db5-b712-a75978b043bb",
+          "values": [
+            {
+              "value": "88"
+            }
+          ]
+        },
+        {
+          "question_id": "79d2c552-023c-4f76-97ad-32deafacbb3b",
+          "values": [
+            {
+              "value": "128"
+            }
+          ]
+        },
+        {
+          "question_id": "23c31dde-c075-4e56-aa03-086e9cecd202",
+          "values": [
+            {
+              "value": "80"
+            }
+          ]
+        },
+        {
+          "question_id": "689e2bc1-3f7f-42d7-88e1-b3a70cf88372",
+          "values": [
+            {
+              "value": "Brought to ER with acute breathlessness and audible wheeze for 2 hours. Unable to complete sentences; SpO2 88% on air. Nebulised levosalbutamol started, oxygen via mask, continuous monitoring."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "qresponse:emer-002-vitals",
+      "encounter_ref": "encounter:emer-002",
+      "questionnaire_slug": "demo-ip-vitals-form",
+      "results": [
+        {
+          "question_id": "d38064b9-7fba-48b8-8ae1-90a38fcf8cdf",
+          "values": [
+            {
+              "value": "98"
+            }
+          ]
+        },
+        {
+          "question_id": "1257b47e-99c1-43b7-95a0-953b951242fc",
+          "values": [
+            {
+              "value": "108"
+            }
+          ]
+        },
+        {
+          "question_id": "2fc8ecc1-c4dc-447b-ac01-e6ec8dda0246",
+          "values": [
+            {
+              "value": "22"
+            }
+          ]
+        },
+        {
+          "question_id": "e67bfb1b-f534-4db5-b712-a75978b043bb",
+          "values": [
+            {
+              "value": "94"
+            }
+          ]
+        },
+        {
+          "question_id": "79d2c552-023c-4f76-97ad-32deafacbb3b",
+          "values": [
+            {
+              "value": "150"
+            }
+          ]
+        },
+        {
+          "question_id": "23c31dde-c075-4e56-aa03-086e9cecd202",
+          "values": [
+            {
+              "value": "92"
+            }
+          ]
+        },
+        {
+          "question_id": "689e2bc1-3f7f-42d7-88e1-b3a70cf88372",
+          "values": [
+            {
+              "value": "ER: crushing left-sided chest pain radiating to left arm for 45 minutes, diaphoresis. ECG pending. Loading clopidogrel given, oxygen, continuous cardiac monitoring; urgent cardiology consult."
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "service_requests": [
+    {
+      "ref": "sr:ip-001-cbc",
+      "encounter_ref": "encounter:ip-001",
+      "activity_definition_slug": "cbc-activity",
+      "status": "active",
+      "intent": "order",
+      "priority": "routine",
+      "requester_user_ref": "user:doctor",
+      "note": "Admission workup for pneumonia",
+      "category": "laboratory"
+    },
+    {
+      "ref": "sr:ip-003-rbs",
+      "encounter_ref": "encounter:ip-003",
+      "activity_definition_slug": "activity-rbs",
+      "status": "active",
+      "intent": "order",
+      "priority": "urgent",
+      "requester_user_ref": "user:doctor",
+      "note": "Uncontrolled diabetes \u2014 random blood glucose",
+      "category": "laboratory"
+    },
+    {
+      "ref": "sr:emer-002-cbc",
+      "encounter_ref": "encounter:emer-002",
+      "activity_definition_slug": "cbc-activity",
+      "status": "active",
+      "intent": "order",
+      "priority": "stat",
+      "requester_user_ref": "user:doctor",
+      "note": "ER chest pain \u2014 baseline labs",
+      "category": "laboratory"
+    },
+    {
+      "ref": "sr:op-003-0-cbc",
+      "encounter_ref": "encounter:op-003-0",
+      "activity_definition_slug": "cbc-activity",
+      "status": "active",
+      "intent": "order",
+      "priority": "routine",
+      "requester_user_ref": "user:doctor",
+      "note": "Anaemia evaluation",
+      "category": "laboratory"
+    }
+  ]
+}
