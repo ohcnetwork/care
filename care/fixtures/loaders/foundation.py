@@ -5,13 +5,6 @@ _LOCATION_META = frozenset({"ref", "parent_ref", "organization_refs"})
 _SERVICE_META = frozenset({"ref", "managing_organization_ref", "location_refs"})
 
 
-def _find_org_by_name(organizations, name: str):
-    for org in organizations:
-        if org.name == name:
-            return org
-    return None
-
-
 def load_facility_foundation(base, facility_id):
     """Load departments, locations, and healthcare services from pack JSON.
 
@@ -75,3 +68,10 @@ def load_facility_foundation(base, facility_id):
         foundation_resource_id_by_ref[ref] = str(created.id)
 
     return foundation_resource_id_by_ref
+
+
+def _find_org_by_name(organizations, name: str):
+    for org in organizations:
+        if org.name == name:
+            return org
+    return None

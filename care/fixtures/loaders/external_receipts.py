@@ -21,43 +21,6 @@ _COLLECTIONS = (
 )
 
 
-def _load_products(
-    base,
-    facility_id,
-    *,
-    rows,
-    product_knowledge_by_ref,
-    charge_item_definitions_by_ref,
-    loaded_at,
-):
-    product_ids_by_ref = {}
-    for ref, row in rows.items():
-        payload = {
-            key: value
-            for key, value in row.items()
-            if key
-            not in {
-                "ref",
-                "product_knowledge_ref",
-                "charge_item_definition_ref",
-                "expiration_days_from_load",
-            }
-        }
-        payload["charge_item_definition"] = charge_item_definitions_by_ref[
-            row["charge_item_definition_ref"]
-        ]["slug"]
-        payload["expiration_date"] = (
-            loaded_at + timedelta(days=row["expiration_days_from_load"])
-        ).isoformat()
-        created = base.create_product(
-            facility_id,
-            product_knowledge_by_ref[row["product_knowledge_ref"]]["slug"],
-            **payload,
-        )
-        product_ids_by_ref[ref] = str(created.id)
-    return product_ids_by_ref
-
-
 def load_external_receipts(
     base,
     facility_id,
@@ -116,4 +79,41 @@ def load_external_receipts(
         delivery_order_rows=rows["delivery_orders"],
         delivery_order_ids_by_ref=delivery_order_ids_by_ref,
     )
+    return product_ids_by_ref
+
+
+def _load_products(
+    base,
+    facility_id,
+    *,
+    rows,
+    product_knowledge_by_ref,
+    charge_item_definitions_by_ref,
+    loaded_at,
+):
+    product_ids_by_ref = {}
+    for ref, row in rows.items():
+        payload = {
+            key: value
+            for key, value in row.items()
+            if key
+            not in {
+                "ref",
+                "product_knowledge_ref",
+                "charge_item_definition_ref",
+                "expiration_days_from_load",
+            }
+        }
+        payload["charge_item_definition"] = charge_item_definitions_by_ref[
+            row["charge_item_definition_ref"]
+        ]["slug"]
+        payload["expiration_date"] = (
+            loaded_at + timedelta(days=row["expiration_days_from_load"])
+        ).isoformat()
+        created = base.create_product(
+            facility_id,
+            product_knowledge_by_ref[row["product_knowledge_ref"]]["slug"],
+            **payload,
+        )
+        product_ids_by_ref[ref] = str(created.id)
     return product_ids_by_ref

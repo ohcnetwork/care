@@ -10,6 +10,54 @@ _FACILITY_ROW_META = frozenset(
 )
 
 
+def resolve_or_create_facility(
+    base, *, facility_id=None, name=None, organization_ids_by_ref=None
+) -> str:
+    if facility_id:
+        log(f"Using existing facility id={facility_id} (no new facilities created)")
+        return facility_id
+
+    return create_facilities_from_pack(
+        base,
+        organization_ids_by_ref,
+        name=name,
+    )
+
+
+def create_facilities_from_pack(base, organization_ids_by_ref, *, name=None) -> str:
+    rows = load_json("facilities")
+    if not isinstance(rows, list) or not rows:
+        msg = "facilities.json must be a non-empty list"
+        raise ValueError(msg)
+
+    seed_id = None
+    seed_name = None
+    for index, row in enumerate(rows):
+        override_name = name if index == 0 else None
+        created = _create_facility_from_row(
+            base,
+            organization_ids_by_ref,
+            row,
+            name=override_name,
+        )
+        ref = row.get("ref", f"row-{index}")
+        if index == 0:
+            seed_id = created.id
+            seed_name = created.name
+            log(f"Facility to seed: {created.name!r} (ref={ref}, id={created.id})")
+        else:
+            log(
+                f"Extra facility (empty, for switcher only): {created.name!r} "
+                f"(ref={ref}, id={created.id})"
+            )
+
+    log(
+        f"Seeding pack data into {seed_name!r} only "
+        f"({len(rows)} facilities created; extras stay empty)"
+    )
+    return seed_id
+
+
 def geo_organization_id_for_facility(base, facility_id) -> str:
     """Return the facility's geo organization external id."""
     facility = base.get(reverse("facility-detail", kwargs={"external_id": facility_id}))
@@ -21,7 +69,6 @@ def geo_organization_id_for_facility(base, facility_id) -> str:
 
 
 def _create_facility_from_row(base, organization_ids_by_ref, row, *, name=None):
-    """Create one facility from a ``facilities.json`` row."""
     tokens = {"run_number": uuid4().hex[:8]}
 
     def render(template: str) -> str:
@@ -44,64 +91,4 @@ def _create_facility_from_row(base, organization_ids_by_ref, row, *, name=None):
         longitude=payload["longitude"],
         is_public=payload["is_public"],
         features=payload["features"],
-    )
-
-
-def create_facilities_from_pack(base, organization_ids_by_ref, *, name=None) -> str:
-    """Create every facility in pack ``facilities.json``; return the first id.
-
-    The first row is the facility that later pack steps seed. Extra rows exist
-    for the facility switcher (empty siblings) and are not seeded. ``name``
-    overrides only the first row's ``name_template``. Each row requires
-    ``geo_org_ref`` resolved from ``organization_ids_by_ref``.
-    """
-    rows = load_json("facilities")
-    if not isinstance(rows, list) or not rows:
-        msg = "facilities.json must be a non-empty list"
-        raise ValueError(msg)
-
-    first_id = None
-    for index, row in enumerate(rows):
-        override_name = name if index == 0 else None
-        created = _create_facility_from_row(
-            base,
-            organization_ids_by_ref,
-            row,
-            name=override_name,
-        )
-        if first_id is None:
-            first_id = created.id
-            log(
-                f"Created seed facility {created.id} name={created.name!r} "
-                f"(ref={row.get('ref')!r})"
-            )
-        else:
-            log(
-                f"Created empty facility {created.id} name={created.name!r} "
-                f"(ref={row.get('ref')!r}; not seeded)"
-            )
-
-    log(
-        f"Pack will seed only the first facility {first_id} "
-        f"({len(rows)} facilities created from facilities.json)"
-    )
-    return first_id
-
-
-def resolve_or_create_facility(
-    base, *, facility_id=None, name=None, organization_ids_by_ref=None
-) -> str:
-    """Return a facility external id: reuse ``facility_id`` or create from pack.
-
-    When ``facility_id`` is set, it is returned as-is and no extra facilities
-    are created (attach path). Otherwise create every row in
-    ``facilities.json`` using ``organization_ids_by_ref`` for ``geo_org_ref``.
-    """
-    if facility_id:
-        return facility_id
-
-    return create_facilities_from_pack(
-        base,
-        organization_ids_by_ref,
-        name=name,
     )

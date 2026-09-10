@@ -2,9 +2,9 @@ from care.fixtures.loaders.load import facility_slug, load_json
 
 _ACTIVITY_DEFINITION_META = frozenset(
     {
-        "specimen_refs",
-        "observation_refs",
-        "charge_item_definition_refs",
+        "specimen_slugs",
+        "observation_slugs",
+        "charge_item_definition_slugs",
         "location_refs",
         "healthcare_service_ref",
     }
@@ -91,15 +91,15 @@ def load_activity_definitions(base, facility_id, foundation_resource_id_by_ref):
 
         payload["specimen_requirements"] = [
             facility_slug(facility_id, slug)
-            for slug in (row.get("specimen_refs") or [])
+            for slug in (row.get("specimen_slugs") or [])
         ]
         payload["observation_result_requirements"] = [
             facility_slug(facility_id, slug)
-            for slug in (row.get("observation_refs") or [])
+            for slug in (row.get("observation_slugs") or [])
         ]
         payload["charge_item_definitions"] = [
             facility_slug(facility_id, slug)
-            for slug in (row.get("charge_item_definition_refs") or [])
+            for slug in (row.get("charge_item_definition_slugs") or [])
         ]
         payload["locations"] = [
             foundation_resource_id_by_ref[loc_ref]

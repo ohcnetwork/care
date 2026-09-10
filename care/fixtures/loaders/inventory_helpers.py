@@ -16,21 +16,6 @@ def index_rows_by_ref(pack, collections):
     }
 
 
-def _resolve_order_relationships(
-    row,
-    foundation_resource_id_by_ref,
-    supplier_ids_by_ref,
-):
-    relationships = {}
-    supplier_ref = row.get("supplier_ref")
-    if supplier_ref:
-        relationships["supplier"] = supplier_ids_by_ref[supplier_ref]
-    origin_ref = row.get("origin_ref")
-    if origin_ref:
-        relationships["origin"] = foundation_resource_id_by_ref[origin_ref]
-    return relationships
-
-
 def load_request_orders(
     base,
     facility_id,
@@ -59,20 +44,6 @@ def load_request_orders(
     return request_order_ids_by_ref
 
 
-def _create_request_order_from_row(
-    base, facility_id, row, destination_id, **relationships
-):
-    payload = {key: value for key, value in row.items() if key not in _ORDER_META}
-    name = payload.pop("name")
-    return base.create_request_order(
-        facility_id,
-        name,
-        destination_id,
-        **relationships,
-        **payload,
-    )
-
-
 def load_delivery_orders(
     base,
     facility_id,
@@ -99,20 +70,6 @@ def load_delivery_orders(
             ).id
         )
     return delivery_order_ids_by_ref
-
-
-def _create_delivery_order_from_row(
-    base, facility_id, row, destination_id, **relationships
-):
-    payload = {key: value for key, value in row.items() if key not in _ORDER_META}
-    name = payload.pop("name")
-    return base.create_delivery_order(
-        facility_id,
-        name,
-        destination_id,
-        **relationships,
-        **payload,
-    )
 
 
 def load_supply_requests(
@@ -215,3 +172,46 @@ def finalize_order_headers(
         finalize_request_order(base, facility_id, row, request_order_ids_by_ref[ref])
     for ref, row in delivery_order_rows.items():
         finalize_delivery_order(base, facility_id, row, delivery_order_ids_by_ref[ref])
+
+
+def _resolve_order_relationships(
+    row,
+    foundation_resource_id_by_ref,
+    supplier_ids_by_ref,
+):
+    relationships = {}
+    supplier_ref = row.get("supplier_ref")
+    if supplier_ref:
+        relationships["supplier"] = supplier_ids_by_ref[supplier_ref]
+    origin_ref = row.get("origin_ref")
+    if origin_ref:
+        relationships["origin"] = foundation_resource_id_by_ref[origin_ref]
+    return relationships
+
+
+def _create_request_order_from_row(
+    base, facility_id, row, destination_id, **relationships
+):
+    payload = {key: value for key, value in row.items() if key not in _ORDER_META}
+    name = payload.pop("name")
+    return base.create_request_order(
+        facility_id,
+        name,
+        destination_id,
+        **relationships,
+        **payload,
+    )
+
+
+def _create_delivery_order_from_row(
+    base, facility_id, row, destination_id, **relationships
+):
+    payload = {key: value for key, value in row.items() if key not in _ORDER_META}
+    name = payload.pop("name")
+    return base.create_delivery_order(
+        facility_id,
+        name,
+        destination_id,
+        **relationships,
+        **payload,
+    )

@@ -107,7 +107,6 @@ def load_pack(
     (
         encounter_ids_by_ref,
         patient_id_by_encounter_ref,
-        encounter_class_by_ref,
         close_after,
         period_start_by_encounter_ref,
     ) = load_clinical_encounters(
@@ -142,7 +141,6 @@ def load_pack(
         encounter_ids_by_ref,
         patient_id_by_encounter_ref,
         product_knowledge_by_ref,
-        encounter_class_by_ref,
         period_start_by_encounter_ref,
         user_ids_by_ref,
         close_after=close_after,
