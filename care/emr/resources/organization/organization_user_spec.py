@@ -54,7 +54,7 @@ class OrganizationUserReadSpec(OrganizationUserBaseSpec):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["user"] = model_from_cache(UserSpec, id=obj.user_id)
-        mapping["role"] = RoleReadSpec.serialize(obj.role).to_json()
+        mapping["role"] = model_from_cache(RoleReadSpec, id=obj.role_id)
         return mapping
 
 
