@@ -1,11 +1,11 @@
-"""Load a pack into a facility: orgs, questionnaires, foundation, users, patients,
-encounters, clinical content, definitions, stock.
+"""Load a pack into a facility: orgs, questionnaires, foundation, users,
+schedules, patients, encounters, clinical content, definitions, stock.
 
 Order: organizations → facility (create or attach) → questionnaires →
-foundation → users → patients → encounters → specimen → observation →
-resource categories → product knowledge → charge item definitions →
-activity definitions → clinical content → external receipts → internal
-transfers.
+foundation → users → token categories → schedules → patients → encounters →
+specimen → observation → resource categories → product knowledge → charge
+item definitions → activity definitions → clinical content → external
+receipts → internal transfers.
 
 As a script -- ``PACK_FACILITY_ID`` and ``PACK_FACILITY_NAME`` are read only by
 the ``__main__`` block below::
@@ -54,6 +54,7 @@ from care.fixtures.loaders.internal_transfers import load_internal_transfers
 from care.fixtures.loaders.organizations import load_organizations
 from care.fixtures.loaders.patients import load_patients
 from care.fixtures.loaders.questionnaires import load_questionnaires
+from care.fixtures.loaders.scheduling import load_schedules, load_token_categories
 from care.fixtures.loaders.users import load_users
 
 
@@ -100,6 +101,12 @@ def load_pack(
         # For experience sandbox, we don't want to load users from the pack.
         user_ids_by_ref = user_ids_by_ref or {}
         log("Skipped pack users (include_users=False)")
+
+    load_token_categories(base, facility_id)
+    log("Loaded token categories")
+
+    load_schedules(base, facility_id, user_ids_by_ref)
+    log("Loaded schedules")
 
     patient_ids_by_ref = load_patients(base, facility_id, organization_ids_by_ref)
     log("Loaded patients")

@@ -1,0 +1,18 @@
+{
+  "categories": [
+    {
+      "ref": "token_category:op",
+      "name": "OP",
+      "shorthand": "OP",
+      "resource_type": "practitioner",
+      "default": true
+    },
+    {
+      "ref": "token_category:sp",
+      "name": "SP",
+      "shorthand": "SP",
+      "resource_type": "practitioner",
+      "default": false
+    }
+  ]
+}

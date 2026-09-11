@@ -843,6 +843,16 @@ class CareFixtureBase:
         }
         return self.post(url, data)
 
+    def set_token_category_default(self, facility_id, category_id):
+        url = reverse(
+            "token-category-set-default",
+            kwargs={
+                "facility_external_id": facility_id,
+                "external_id": category_id,
+            },
+        )
+        return self.post(url, {})
+
     def create_template(
         self,
         name,
