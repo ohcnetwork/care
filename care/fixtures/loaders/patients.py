@@ -24,6 +24,6 @@ def load_patients(base, facility_id, organization_ids_by_ref=None) -> dict[str, 
         payload["phone_number"] = generate_phone_number()
 
         patient = base.create_patient(geo_organization_id, **payload)
-        patient_ids_by_ref[ref] = str(patient.id)
+        patient_ids_by_ref[ref] = patient.id
 
     return patient_ids_by_ref

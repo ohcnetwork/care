@@ -65,7 +65,7 @@ def geo_organization_id_for_facility(base, facility_id) -> str:
     if not geo:
         msg = f"Facility {facility_id} has no geo_organization"
         raise ValueError(msg)
-    return str(geo.id)
+    return geo.id
 
 
 def _create_facility_from_row(base, organization_ids_by_ref, row, *, name=None):

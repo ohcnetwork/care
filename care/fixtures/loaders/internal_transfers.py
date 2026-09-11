@@ -103,11 +103,11 @@ def _load_inventory_item_ids_by_product_ref(
                 offset=offset,
             )
             for inventory_item in inventory_items:
-                product_ref = product_ref_by_id.get(str(inventory_item.product.id))
+                product_ref = product_ref_by_id.get(inventory_item.product.id)
                 if product_ref is not None:
                     inventory_item_ids_by_origin_and_product[
                         (origin_ref, product_ref)
-                    ] = str(inventory_item.id)
+                    ] = inventory_item.id
             if len(inventory_items) < _PAGE_LIMIT:
                 break
             offset += _PAGE_LIMIT

@@ -32,15 +32,13 @@ def load_request_orders(
             supplier_ids_by_ref,
         )
         destination_id = foundation_resource_id_by_ref[row["destination_ref"]]
-        request_order_ids_by_ref[ref] = str(
-            _create_request_order_from_row(
-                base,
-                facility_id,
-                row,
-                destination_id,
-                **relationships,
-            ).id
-        )
+        request_order_ids_by_ref[ref] = _create_request_order_from_row(
+            base,
+            facility_id,
+            row,
+            destination_id,
+            **relationships,
+        ).id
     return request_order_ids_by_ref
 
 
@@ -60,15 +58,13 @@ def load_delivery_orders(
             supplier_ids_by_ref,
         )
         destination_id = foundation_resource_id_by_ref[row["destination_ref"]]
-        delivery_order_ids_by_ref[ref] = str(
-            _create_delivery_order_from_row(
-                base,
-                facility_id,
-                row,
-                destination_id,
-                **relationships,
-            ).id
-        )
+        delivery_order_ids_by_ref[ref] = _create_delivery_order_from_row(
+            base,
+            facility_id,
+            row,
+            destination_id,
+            **relationships,
+        ).id
     return delivery_order_ids_by_ref
 
 
@@ -86,7 +82,7 @@ def load_supply_requests(
             row["quantity"],
             status=row["status"],
         )
-        supply_request_ids_by_ref[ref] = str(created.id)
+        supply_request_ids_by_ref[ref] = created.id
     return supply_request_ids_by_ref
 
 
@@ -128,7 +124,7 @@ def load_supply_deliveries(
             **item,
         )
         if row["status"] != "in_progress":
-            base.update_supply_delivery(str(created.id), status=row["status"])
+            base.update_supply_delivery(created.id, status=row["status"])
 
 
 def finalize_request_order(base, facility_id, row, order_id):

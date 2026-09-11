@@ -115,5 +115,5 @@ def _load_products(
             product_knowledge_by_ref[row["product_knowledge_ref"]]["slug"],
             **payload,
         )
-        product_ids_by_ref[ref] = str(created.id)
+        product_ids_by_ref[ref] = created.id
     return product_ids_by_ref

@@ -22,7 +22,7 @@ def load_organizations(base) -> dict[str, str]:
 
         name = payload.pop("name")
         created = get_or_create_organization(base, name, **payload)
-        organization_ids_by_ref[ref] = str(created.id)
+        organization_ids_by_ref[ref] = created.id
         if managing_refs:
             managing_links.append((ref, managing_refs))
 

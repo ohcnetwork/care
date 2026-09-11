@@ -5507,10 +5507,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ampho-b",
+    "ref": "product_knowledge:pk-regular-insulin",
     "category": "medicines-product-knowledge",
     "name": "Regular Insulin Injection",
-    "slug_value": "pk-ampho-b",
+    "slug_value": "pk-regular-insulin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5520,8 +5520,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "U",
+      "display": "units"
     },
     "definitional": {
       "dosage_form": {
@@ -5532,8 +5532,8 @@
       "intended_routes": [
         {
           "system": "http://snomed.info/sct",
-          "code": "47625008",
-          "display": "Intravenous route"
+          "code": "34206005",
+          "display": "Subcutaneous route"
         }
       ]
     }
@@ -5552,8 +5552,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "U",
+      "display": "units"
     },
     "definitional": {
       "dosage_form": {
@@ -6736,8 +6736,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "U",
+      "display": "units"
     },
     "definitional": {
       "dosage_form": {
@@ -7606,8 +7606,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "U",
+      "display": "units"
     },
     "definitional": {
       "dosage_form": {

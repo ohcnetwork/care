@@ -48,7 +48,7 @@ def load_clinical_encounters(
             organizations=org_ids,
             **payload,
         )
-        encounter_id = str(encounter.id)
+        encounter_id = encounter.id
         encounter_ids_by_ref[ref] = encounter_id
         patient_id_by_encounter_ref[ref] = patient_id
         period_start_by_encounter_ref[ref] = period["start"]
@@ -239,7 +239,7 @@ def _medication_datapoint(
     authored_on,
 ):
     prescription_id = f"{encounter_id}-{entry['ref']}"
-    return {
+    payload = {
         "do_not_perform": False,
         "dosage_instruction": [
             {
@@ -288,3 +288,6 @@ def _medication_datapoint(
         },
         "encounter": encounter_id,
     }
+    if entry.get("note"):
+        payload["note"] = entry["note"]
+    return payload

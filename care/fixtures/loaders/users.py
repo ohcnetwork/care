@@ -33,14 +33,14 @@ def load_users(
         role_org_id = organization_ids_by_ref[role_org_ref] if role_org_ref else None
         role_orgs_payload = []
         if role_org_id:
-            role_orgs_payload = [{"organization": role_org_id, "role": str(role.id)}]
+            role_orgs_payload = [{"organization": role_org_id, "role": role.id}]
 
         existing = existing_by_username.get(username)
         if existing is not None:
             user = existing
             if role_org_id:
                 _ensure_role_org_membership(
-                    base, role_org_id, str(user.id), str(role.id), role_org_members
+                    base, role_org_id, user.id, role.id, role_org_members
                 )
         else:
             payload = {k: v for k, v in entry.items() if k not in _USER_ROW_META}
@@ -53,18 +53,16 @@ def load_users(
             )
             existing_by_username[username] = user
             if role_org_id:
-                _role_org_member_ids(base, role_org_id, role_org_members).add(
-                    str(user.id)
-                )
+                _role_org_member_ids(base, role_org_id, role_org_members).add(user.id)
 
-        user_id = str(user.id)
+        user_id = user.id
         if facility_org_ref:
             _ensure_facility_membership(
                 base,
                 facility_id,
                 foundation_resource_id_by_ref[facility_org_ref],
                 user_id,
-                str(role.id),
+                role.id,
                 facility_org_members,
             )
 
@@ -86,7 +84,7 @@ def _existing_users_by_username(base) -> dict:
 
 
 def _user_ids_from_org_user_rows(results) -> set[str]:
-    return {str(row.user.id) for row in results if row.user is not None}
+    return {row.user.id for row in results if row.user is not None}
 
 
 def _role_org_member_ids(base, org_id, cache: dict[str, set[str]]) -> set[str]:

@@ -1200,7 +1200,7 @@
     {
       "ref": "supply_request:initial:regular-insulin",
       "request_order_ref": "request_order:initial-main-store-stock",
-      "product_knowledge_ref": "product_knowledge:pk-ampho-b",
+      "product_knowledge_ref": "product_knowledge:pk-regular-insulin",
       "status": "active",
       "quantity": 100
     },
@@ -4441,7 +4441,7 @@
     },
     {
       "ref": "product:regular-insulin:lot-001",
-      "product_knowledge_ref": "product_knowledge:pk-ampho-b",
+      "product_knowledge_ref": "product_knowledge:pk-regular-insulin",
       "status": "active",
       "extensions": {},
       "batch": {

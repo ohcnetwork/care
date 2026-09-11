@@ -1404,7 +1404,7 @@
       "duration_unit": "d",
       "timing_code": "TID",
       "timing_display": "Three times a day",
-      "text": "2 puffs TID",
+      "text": "1-1-1",
       "category": "outpatient"
     },
     {
@@ -1489,7 +1489,7 @@
       "duration_unit": "d",
       "timing_code": "TID",
       "timing_display": "Three times a day",
-      "text": "2 puffs TID",
+      "text": "1-1-1",
       "category": "outpatient"
     },
     {
@@ -1574,7 +1574,7 @@
       "duration_unit": "d",
       "timing_code": "TID",
       "timing_display": "Three times a day",
-      "text": "2 puffs TID",
+      "text": "1-1-1",
       "category": "outpatient"
     },
     {
@@ -1659,7 +1659,7 @@
       "duration_unit": "d",
       "timing_code": "TID",
       "timing_display": "Three times a day",
-      "text": "2 puffs TID",
+      "text": "1-1-1",
       "category": "outpatient"
     },
     {
@@ -1716,7 +1716,7 @@
     {
       "ref": "medreq:ip-003",
       "encounter_ref": "encounter:ip-003",
-      "product_knowledge_ref": "product_knowledge:pk-ampho-b",
+      "product_knowledge_ref": "product_knowledge:pk-regular-insulin",
       "dose_value": "8",
       "dose_unit_code": "U",
       "dose_unit_display": "units",
@@ -1727,8 +1727,9 @@
       "duration_unit": "d",
       "timing_code": "TID",
       "timing_display": "Three times a day",
-      "text": "8 IU SC TID (sliding scale to follow)",
-      "category": "inpatient"
+      "text": "1-1-1",
+      "category": "inpatient",
+      "note": "SC sliding scale to follow"
     },
     {
       "ref": "medreq:emer-001",
@@ -1744,8 +1745,9 @@
       "duration_unit": "d",
       "timing_code": "QID",
       "timing_display": "Four times a day",
-      "text": "Nebulise q4-6h PRN in ER",
-      "category": "outpatient"
+      "text": "1-1-1-1",
+      "category": "outpatient",
+      "note": "Nebulise q4-6h PRN in ER"
     },
     {
       "ref": "medreq:emer-002",
@@ -1761,8 +1763,9 @@
       "duration_unit": "d",
       "timing_code": "QD",
       "timing_display": "Every day",
-      "text": "Loading dose in ER; cardiology review",
-      "category": "outpatient"
+      "text": "1-0-0",
+      "category": "outpatient",
+      "note": "Loading dose in ER; cardiology review"
     }
   ],
   "questionnaire_responses": [
@@ -2562,6 +2565,14 @@
           "values": [
             {
               "value": "84"
+            }
+          ]
+        },
+        {
+          "question_id": "f8d91a84-30da-445d-a3ea-7937fa741007",
+          "values": [
+            {
+              "value": "312"
             }
           ]
         },

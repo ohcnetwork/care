@@ -52,8 +52,8 @@ def load_product_knowledge(base, facility_id):
             **payload,
         )
         product_knowledge_by_ref[ref] = {
-            "id": str(created.id),
-            "slug": str(created.slug),
+            "id": created.id,
+            "slug": created.slug,
         }
 
     return product_knowledge_by_ref
@@ -74,8 +74,8 @@ def load_charge_item_definitions(base, facility_id):
             payload["category"] = facility_slug(facility_id, category)
         created = base.create_charge_item_definition(facility_id, **payload)
         charge_item_definitions_by_ref[ref] = {
-            "id": str(created.id),
-            "slug": str(created.slug),
+            "id": created.id,
+            "slug": created.slug,
         }
     return charge_item_definitions_by_ref
 

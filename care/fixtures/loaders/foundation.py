@@ -25,12 +25,12 @@ def load_facility_foundation(base, facility_id):
                     f"{department['name']!r} for {ref}"
                 )
                 raise ValueError(msg)
-            foundation_resource_id_by_ref[ref] = str(org.id)
+            foundation_resource_id_by_ref[ref] = org.id
             continue
 
         payload = {k: v for k, v in department.items() if k not in _DEPT_META}
         created = base.create_facility_organization(facility_id, **payload)
-        foundation_resource_id_by_ref[ref] = str(created.id)
+        foundation_resource_id_by_ref[ref] = created.id
 
     for location in pack.get("locations", []):
         ref = location["ref"]
@@ -45,7 +45,7 @@ def load_facility_foundation(base, facility_id):
         ]
 
         created = base.create_location(facility_id, **payload)
-        foundation_resource_id_by_ref[ref] = str(created.id)
+        foundation_resource_id_by_ref[ref] = created.id
         for organization_id in payload["organizations"]:
             base.add_organization_to_location(facility_id, created.id, organization_id)
 
@@ -65,7 +65,7 @@ def load_facility_foundation(base, facility_id):
             ]
 
         created = base.create_healthcare_service(facility_id, name, **payload)
-        foundation_resource_id_by_ref[ref] = str(created.id)
+        foundation_resource_id_by_ref[ref] = created.id
 
     return foundation_resource_id_by_ref
 

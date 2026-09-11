@@ -773,7 +773,7 @@
     {
       "ref": "supply_request:main-store-to-main-pharmacy:regular-insulin:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-ampho-b",
+      "product_knowledge_ref": "product_knowledge:pk-regular-insulin",
       "status": "active",
       "quantity": 25
     },

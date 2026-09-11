@@ -28,12 +28,12 @@ def load_questionnaires(base, organization_ids_by_ref) -> dict[str, str]:
         slug = payload["slug"]
         existing = existing_by_slug.get(slug)
         if existing is not None:
-            questionnaire_ids_by_slug[slug] = str(existing.id)
+            questionnaire_ids_by_slug[slug] = existing.id
             log(f"Reused questionnaire {slug!r}")
             continue
 
         created = base.create_questionnaire(org_ids, payload)
-        questionnaire_ids_by_slug[slug] = str(created.id)
+        questionnaire_ids_by_slug[slug] = created.id
         existing_by_slug[slug] = created
         log(f"Created questionnaire {slug!r}")
 
