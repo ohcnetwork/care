@@ -1,4 +1,5 @@
 from django.contrib.postgres.search import TrigramSimilarity
+from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -42,7 +43,9 @@ class TrigramFilter(filters.CharFilter):
             queryset.annotate(
                 similarity=TrigramSimilarity(self.field_name, value),
             )
-            .filter(similarity__gt=0.1)
+            .filter(
+                Q(similarity__gt=0.1) | Q(**{f"{self.field_name}__icontains": value})
+            )
             .order_by("-similarity")
         )
 
