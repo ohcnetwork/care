@@ -20,12 +20,13 @@
           if pkgs.stdenv.isDarwin then
             "/usr/bin/pgrep"
           else
-            "${pgrep}";
+            "${pkgs.procps}/bin/pgrep";
+
         pkill =
           if pkgs.stdenv.isDarwin then
             "/usr/bin/pkill"
           else
-            "${pkill}";
+            "${pkgs.procps}/bin/pkill";
 
         # Create a Python environment with pip-installable packages
         pythonEnv = python.withPackages (
