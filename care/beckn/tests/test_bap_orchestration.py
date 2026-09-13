@@ -288,6 +288,17 @@ class ReferralConfirmBuilderTests(CareAPITestBase):
         self.assertEqual(criteria["serviceCategory"]["code"], "INVESTIGATION")
         self.assertEqual(criteria["consultationModality"], "IN_PERSON")
         self.assertNotIn("procedureNeeds", criteria)
+        self.assertNotIn("healthServiceType", criteria)
+
+    def test_medicines_pins_pharmacy_dispensing(self):
+        rr = self._rr(category=CategoryChoices.medicines.value)
+        criteria = build_referral_confirm(rr, "RR-1")["message"]["contract"][
+            "contractAttributes"
+        ]["targetCriteria"]
+        self.assertEqual(criteria["serviceCategory"]["code"], "INVESTIGATION")
+        self.assertEqual(criteria["consultationModality"], "IN_PERSON")
+        self.assertEqual(criteria["healthServiceType"], "PHARMACY_DISPENSING")
+        self.assertNotIn("procedureNeeds", criteria)
 
 
 class ReferralUpdateCallbackTests(CareAPITestBase):

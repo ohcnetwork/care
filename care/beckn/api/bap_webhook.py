@@ -114,6 +114,7 @@ class BAPReceiverView(APIView):
             category__in=(
                 CategoryChoices.other.value,
                 CategoryChoices.patient_care.value,
+                CategoryChoices.medicines.value,
             ),
         ).first()
         if resource_request is None:

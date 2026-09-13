@@ -23,6 +23,7 @@ from care.beckn.constants import (
     CONTRACT_STATUS_COMPLETED,
     HEALTH_PARTICIPANT_CONTEXT,
     HEALTH_REFERRAL_CONTEXT,
+    HEALTH_SERVICE_PHARMACY_DISPENSING,
     LIFECYCLE_ACTIVE,
     LIFECYCLE_FULFILLED,
     PARTICIPANT_ROLE_PATIENT,
@@ -58,8 +59,10 @@ def _target_criteria(resource_request) -> dict:
 def service_category_criteria(category: str | None) -> dict:
     """NFH ``targetCriteria`` service-category fields for a Care category.
 
-    ``patient_care`` is a downward consultation referral; ``other`` (and any
-    other value) is an upward investigation (lab) referral.
+    ``patient_care`` is a downward consultation referral; ``medicines`` is an
+    investigation referral pinned to pharmacy dispensing so only pharmacy
+    providers pick it up; ``other`` (and any other value) is an upward
+    investigation (lab) referral.
     """
     if category == CategoryChoices.patient_care.value:
         return {
@@ -72,7 +75,7 @@ def service_category_criteria(category: str | None) -> dict:
             "procedureNeeds": ["HOME_VISIT"],
             "consultationModality": "IN_PERSON",
         }
-    return {
+    criteria = {
         "serviceCategory": {
             "@context": CODED_VALUE_CONTEXT,
             "@type": "ServiceCategory",
@@ -81,6 +84,9 @@ def service_category_criteria(category: str | None) -> dict:
         },
         "consultationModality": "IN_PERSON",
     }
+    if category == CategoryChoices.medicines.value:
+        criteria["healthServiceType"] = HEALTH_SERVICE_PHARMACY_DISPENSING
+    return criteria
 
 
 def _referral_target(resource_request) -> dict:

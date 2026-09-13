@@ -179,8 +179,9 @@ def complete_referral_on_booking_fulfilled(sender, instance, created, **kwargs):
 # Categories that route a resource request through the external coordination
 # center (CC) via a Beckn confirm when the request is created directly in Care:
 #   - ``patient_care`` -> downward field-worker / consultation referral
+#   - ``medicines``    -> pharmacy dispensing referral
 #   - ``other``        -> upward lab / investigation referral
-BECKN_REFERRAL_CATEGORIES = frozenset({"other", "patient_care"})
+BECKN_REFERRAL_CATEGORIES = frozenset({"other", "patient_care", "medicines"})
 # Only newly created requests in this status are referred to the CC.
 BECKN_REFERRAL_STATUS = "pending"
 
