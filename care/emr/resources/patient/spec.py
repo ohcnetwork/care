@@ -6,6 +6,7 @@ from enum import Enum
 from django.conf import settings
 from django.utils import timezone
 from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
+from pydantic.experimental.missing_sentinel import MISSING
 
 from care.emr.extensions.base import ExtensionResource
 from care.emr.extensions.validator import (
@@ -63,17 +64,17 @@ class PatientBaseSpec(EMRResource):
     gender: GenderChoices
     phone_number: PhoneNumber = Field(max_length=14)
     emergency_phone_number: PhoneNumber | None = Field(None, max_length=14)
-    address: str | None = None
-    permanent_address: str | None = None
-    pincode: int | None = None
-    deceased_datetime: StrictTZAwareDateTime | None = None
-    blood_group: BloodGroupChoices | None = None
+    address: str | MISSING = MISSING
+    permanent_address: str | MISSING = MISSING
+    pincode: int | None | MISSING = MISSING
+    deceased_datetime: StrictTZAwareDateTime | None | MISSING = MISSING
+    blood_group: BloodGroupChoices | MISSING = MISSING
 
     @field_validator("deceased_datetime")
     @classmethod
     def validate_deceased_datetime(cls, deceased_datetime):
-        if deceased_datetime is None:
-            return None
+        if deceased_datetime is None or deceased_datetime is MISSING:
+            return deceased_datetime
         if deceased_datetime > care_now():
             raise ValueError("Deceased datetime cannot be in the future")
         return deceased_datetime
@@ -151,17 +152,19 @@ class PatientCreateSpec(ExtensionValidator, PatientBaseSpec):
 
 
 class PatientUpdateSpec(ExtensionValidator, PatientBaseSpec):
-    name: str | None = Field(default=None, max_length=settings.PATIENT_NAME_MAX_LENGTH)
-    gender: GenderChoices | None = None
+    name: str | MISSING = Field(
+        default=MISSING, max_length=settings.PATIENT_NAME_MAX_LENGTH
+    )
+    gender: GenderChoices | MISSING = MISSING
     phone_number: PhoneNumber | None = Field(default=None, max_length=14)
     emergency_phone_number: PhoneNumber | None = Field(default=None, max_length=14)
-    address: str | None = None
-    permanent_address: str | None = None
-    pincode: int | None = None
-    blood_group: BloodGroupChoices | None = None
-    date_of_birth: datetime.date | None = None
-    age: int | None = None
-    geo_organization: UUID4 | None = None
+    address: str | MISSING = MISSING
+    permanent_address: str | MISSING = MISSING
+    pincode: int | None | MISSING = MISSING
+    blood_group: BloodGroupChoices | MISSING = MISSING
+    date_of_birth: datetime.date | None | MISSING = MISSING
+    age: int | MISSING = MISSING
+    geo_organization: UUID4 | MISSING = MISSING
 
     identifiers: list[PatientIdentifierConfigRequest] = []
 
@@ -179,16 +182,16 @@ class PatientUpdateSpec(ExtensionValidator, PatientBaseSpec):
     def perform_extra_deserialization(self, is_update, obj):
         if is_update:
             obj._identifiers = self.identifiers  # noqa: SLF001
-            if self.geo_organization:
+            if self.geo_organization is not MISSING and self.geo_organization:
                 obj.geo_organization = Organization.objects.get(
                     external_id=self.geo_organization
                 )
-            if self.age is not None:
+            if self.age is not MISSING:
                 obj.date_of_birth = None
                 obj.year_of_birth = timezone.now().year - self.age
-            elif self.date_of_birth:
+            elif self.date_of_birth is not MISSING and self.date_of_birth:
                 obj.year_of_birth = self.date_of_birth.year
-        if not self.pincode:
+        if self.pincode is not MISSING and not self.pincode:
             obj.pincode = None
 
     @field_validator("identifiers")

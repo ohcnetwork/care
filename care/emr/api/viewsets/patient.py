@@ -6,6 +6,7 @@ from django_filters import CharFilter, FilterSet
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
+from pydantic.experimental.missing_sentinel import MISSING
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
@@ -71,18 +72,28 @@ class PatientViewSet(EMRModelViewSet):
             raise PermissionDenied("Cannot delete patient")
 
     def validate_data(self, instance, model_obj=None):
-        dob = instance.date_of_birth or (model_obj and model_obj.date_of_birth)
-        deceased = instance.deceased_datetime or (
-            model_obj and model_obj.deceased_datetime
+        dob = (
+            instance.date_of_birth
+            if instance.date_of_birth is not MISSING
+            else (model_obj and model_obj.date_of_birth)
+        )
+        deceased = (
+            instance.deceased_datetime
+            if instance.deceased_datetime is not MISSING
+            else (model_obj and model_obj.deceased_datetime)
         )
 
         if dob and deceased and dob > deceased.date():
             raise ValidationError("Date of birth cannot be after the date of death")
 
-        age = instance.age or (
-            model_obj
-            and model_obj.year_of_birth
-            and timezone.now().year - model_obj.year_of_birth
+        age = (
+            instance.age
+            if instance.age is not MISSING
+            else (
+                model_obj
+                and model_obj.year_of_birth
+                and timezone.now().year - model_obj.year_of_birth
+            )
         )
 
         if age and deceased:
