@@ -11,7 +11,13 @@ from django.utils import timezone
 from faker import Faker
 from rest_framework import status as http_status
 
+from care.emr.models.condition import Condition
 from care.emr.models.invoice import Invoice
+from care.emr.models.medication_request import (
+    MedicationRequest,
+    MedicationRequestPrescription,
+)
+from care.emr.models.questionnaire import QuestionnaireResponse
 from care.emr.resources.device.spec import (
     DeviceAvailabilityStatusChoices,
     DeviceStatusChoices,
@@ -286,30 +292,66 @@ class CareFixtureBase:
         url = reverse("encounter-detail", kwargs={"external_id": encounter_id})
         return self.patch(url, data)
 
-    def upsert_symptoms(self, patient_id, datapoints):
+    def upsert_symptoms(self, patient_id, datapoints, created_date=None):
         url = reverse(
             "symptom-upsert",
             kwargs={"patient_external_id": patient_id},
         )
-        return self.post(url, {"datapoints": datapoints})
+        results = self.post(url, {"datapoints": datapoints})
+        if created_date is not None:
+            Condition.objects.filter(
+                external_id__in=[row.id for row in results]
+            ).update(created_date=created_date, modified_date=created_date)
+        return results
 
-    def upsert_diagnoses(self, patient_id, datapoints):
+    def upsert_diagnoses(self, patient_id, datapoints, created_date=None):
         url = reverse(
             "diagnosis-upsert",
             kwargs={"patient_external_id": patient_id},
         )
-        return self.post(url, {"datapoints": datapoints})
+        results = self.post(url, {"datapoints": datapoints})
+        if created_date is not None:
+            Condition.objects.filter(
+                external_id__in=[row.id for row in results]
+            ).update(created_date=created_date, modified_date=created_date)
+        return results
 
-    def upsert_medication_requests(self, patient_id, datapoints):
+    def upsert_medication_requests(self, patient_id, datapoints, created_date=None):
         url = reverse(
             "medication-request-upsert",
             kwargs={"patient_external_id": patient_id},
         )
-        return self.post(url, {"datapoints": datapoints})
+        results = self.post(url, {"datapoints": datapoints})
+        if created_date is not None:
+            MedicationRequest.objects.filter(
+                external_id__in=[row.id for row in results]
+            ).update(
+                created_date=created_date,
+                modified_date=created_date,
+                authored_on=created_date,
+            )
+            prescription_ids = [
+                row.prescription.id
+                for row in results
+                if getattr(row, "prescription", None)
+                and getattr(row.prescription, "id", None)
+            ]
+            if prescription_ids:
+                MedicationRequestPrescription.objects.filter(
+                    external_id__in=prescription_ids
+                ).update(created_date=created_date, modified_date=created_date)
+        return results
 
-    def submit_questionnaire(self, slug, data):
+    def submit_questionnaire(self, slug, data, created_date=None):
         url = reverse("questionnaire-submit", kwargs={"slug": slug})
-        return self.post(url, data)
+        response = self.post(url, data)
+        # Submit API stamps created_date to now; backdate via ORM for pack realism.
+        if created_date is not None:
+            QuestionnaireResponse.objects.filter(external_id=response.id).update(
+                created_date=created_date,
+                modified_date=created_date,
+            )
+        return response
 
     def create_questionnaire(self, organizations, data):
         questionnaire_data = {**data, "organizations": organizations}
@@ -625,6 +667,10 @@ class CareFixtureBase:
             **kwargs,
         }
         return self.post(url, data)
+
+    def list_accounts(self, facility_id, **params):
+        url = reverse("account-list", kwargs={"facility_external_id": facility_id})
+        return self.get(url, params=params).get("results", [])
 
     def create_charge_item(
         self,

@@ -5,10 +5,13 @@ from django.utils.dateparse import parse_datetime
 
 from care.fixtures.loaders.load import facility_slug, load_json
 
-_ENCOUNTER_ROW_META = frozenset({"ref", "patient_ref", "organization_refs", "bed_ref"})
+_ENCOUNTER_ROW_META = frozenset(
+    {"ref", "patient_ref", "organization_refs", "bed_ref", "days_ago"}
+)
 _CONDITION_ROW_META = frozenset(
     {"ref", "encounter_ref", "onset_days_before", "onset_hours_before"}
 )
+_COMPLETED_ENCOUNTER_DURATION = timedelta(minutes=45)
 
 
 def load_clinical_encounters(
@@ -23,7 +26,7 @@ def load_clinical_encounters(
     period_start_by_encounter_ref: dict[str, str] = {}
     close_after: list[dict] = []
 
-    for index, entry in enumerate(pack.get("encounters", [])):
+    for entry in pack.get("encounters", []):
         ref = entry["ref"]
         patient_id = patient_ids_by_ref[entry["patient_ref"]]
         org_ids = [
@@ -35,7 +38,7 @@ def load_clinical_encounters(
         }
         payload.setdefault("priority", "routine")
         desired_status = payload["status"]
-        period = payload.get("period") or _period_for_row(index, desired_status)
+        period = _period_from_days_ago(entry["days_ago"], desired_status)
         payload["period"] = {"start": period["start"]}
 
         # Clinical writes are blocked on completed encounters — open first.
@@ -94,7 +97,6 @@ def load_clinical_content(
 ):
     """Upsert symptoms/diagnoses/meds, submit forms, apply service requests."""
     pack = load_json("clinical_content")
-    authored_on = timezone.now().isoformat()
     requester_id = str(base.user.external_id)
 
     for entry in pack.get("symptoms", []):
@@ -102,6 +104,7 @@ def load_clinical_content(
             entry, encounter_ids_by_ref, patient_id_by_encounter_ref
         )
         period_start = period_start_by_encounter_ref[entry["encounter_ref"]]
+        created_date = _parse_period_start(period_start)
         datapoint = {
             key: value for key, value in entry.items() if key not in _CONDITION_ROW_META
         }
@@ -110,13 +113,14 @@ def load_clinical_content(
         datapoint.setdefault("category", "problem_list_item")
         datapoint["onset"] = _onset_for_entry(entry, period_start)
         datapoint["encounter"] = encounter_id
-        base.upsert_symptoms(patient_id, [datapoint])
+        base.upsert_symptoms(patient_id, [datapoint], created_date=created_date)
 
     for entry in pack.get("diagnoses", []):
         patient_id, encounter_id = _resolve_patient_and_encounter(
             entry, encounter_ids_by_ref, patient_id_by_encounter_ref
         )
         period_start = period_start_by_encounter_ref[entry["encounter_ref"]]
+        created_date = _parse_period_start(period_start)
         datapoint = {
             key: value for key, value in entry.items() if key not in _CONDITION_ROW_META
         }
@@ -125,12 +129,14 @@ def load_clinical_content(
         datapoint.setdefault("category", "encounter_diagnosis")
         datapoint["onset"] = _onset_for_entry(entry, period_start)
         datapoint["encounter"] = encounter_id
-        base.upsert_diagnoses(patient_id, [datapoint])
+        base.upsert_diagnoses(patient_id, [datapoint], created_date=created_date)
 
     for entry in pack.get("medication_requests", []):
         patient_id, encounter_id = _resolve_patient_and_encounter(
             entry, encounter_ids_by_ref, patient_id_by_encounter_ref
         )
+        period_start = period_start_by_encounter_ref[entry["encounter_ref"]]
+        created_date = _parse_period_start(period_start)
         product_knowledge_id = product_knowledge_by_ref[entry["product_knowledge_ref"]][
             "id"
         ]
@@ -139,14 +145,17 @@ def load_clinical_content(
             encounter_id,
             product_knowledge_id,
             requester_id,
-            authored_on,
+            created_date.isoformat(),
         )
-        base.upsert_medication_requests(patient_id, [datapoint])
+        base.upsert_medication_requests(
+            patient_id, [datapoint], created_date=created_date
+        )
 
     for entry in pack.get("questionnaire_responses", []):
         patient_id, encounter_id = _resolve_patient_and_encounter(
             entry, encounter_ids_by_ref, patient_id_by_encounter_ref
         )
+        period_start = period_start_by_encounter_ref[entry["encounter_ref"]]
         base.submit_questionnaire(
             entry["questionnaire_slug"],
             {
@@ -155,6 +164,7 @@ def load_clinical_content(
                 "encounter": encounter_id,
                 "results": entry["results"],
             },
+            created_date=_parse_period_start(period_start),
         )
 
     for entry in pack.get("service_requests", []):
@@ -192,11 +202,11 @@ def load_clinical_content(
         )
 
 
-def _period_for_row(index: int, status: str) -> dict:
-    start = timezone.now() - timedelta(hours=index + 1)
+def _period_from_days_ago(days_ago: int, status: str) -> dict:
+    start = timezone.now() - timedelta(days=days_ago)
     period = {"start": start.isoformat()}
     if status == "completed":
-        period["end"] = (start + timedelta(minutes=45)).isoformat()
+        period["end"] = (start + _COMPLETED_ENCOUNTER_DURATION).isoformat()
     return period
 
 

@@ -2,7 +2,7 @@ from uuid import uuid4
 
 from django.urls import reverse
 
-from care.fixtures.base import generate_phone_number, log
+from care.fixtures.base import generate_phone_number
 from care.fixtures.loaders.load import load_json
 
 _FACILITY_ROW_META = frozenset(
@@ -12,50 +12,40 @@ _FACILITY_ROW_META = frozenset(
 
 def resolve_or_create_facility(
     base, *, facility_id=None, name=None, organization_ids_by_ref=None
-) -> str:
+) -> tuple[str, list[str]]:
+    """Return (seed_facility_id, facility_names)."""
     if facility_id:
-        log(f"Using existing facility id={facility_id} (no new facilities created)")
-        return facility_id
+        facility = base.get(
+            reverse("facility-detail", kwargs={"external_id": facility_id})
+        )
+        return facility_id, [facility.name]
 
-    return create_facilities_from_pack(
+    created = create_facilities_from_pack(
         base,
         organization_ids_by_ref,
         name=name,
     )
+    return created[0].id, [facility.name for facility in created]
 
 
-def create_facilities_from_pack(base, organization_ids_by_ref, *, name=None) -> str:
+def create_facilities_from_pack(base, organization_ids_by_ref, *, name=None) -> list:
     rows = load_json("facilities")
     if not isinstance(rows, list) or not rows:
         msg = "facilities.json must be a non-empty list"
         raise ValueError(msg)
 
-    seed_id = None
-    seed_name = None
+    created_facilities = []
     for index, row in enumerate(rows):
         override_name = name if index == 0 else None
-        created = _create_facility_from_row(
-            base,
-            organization_ids_by_ref,
-            row,
-            name=override_name,
-        )
-        ref = row.get("ref", f"row-{index}")
-        if index == 0:
-            seed_id = created.id
-            seed_name = created.name
-            log(f"Facility to seed: {created.name!r} (ref={ref}, id={created.id})")
-        else:
-            log(
-                f"Extra facility (empty, for switcher only): {created.name!r} "
-                f"(ref={ref}, id={created.id})"
+        created_facilities.append(
+            _create_facility_from_row(
+                base,
+                organization_ids_by_ref,
+                row,
+                name=override_name,
             )
-
-    log(
-        f"Seeding pack data into {seed_name!r} only "
-        f"({len(rows)} facilities created; extras stay empty)"
-    )
-    return seed_id
+        )
+    return created_facilities
 
 
 def geo_organization_id_for_facility(base, facility_id) -> str:

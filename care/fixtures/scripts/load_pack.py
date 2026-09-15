@@ -1,11 +1,13 @@
 """Load a pack into a facility: orgs, questionnaires, foundation, users,
-schedules, patients, encounters, clinical content, definitions, stock.
+schedules, patients, queues, appointments, encounters, clinical content,
+definitions, billing, stock.
 
 Order: organizations → facility (create or attach) → questionnaires →
-foundation → users → token categories → schedules → patients → encounters →
-specimen → observation → resource categories → product knowledge → charge
-item definitions → activity definitions → clinical content → external
-receipts → internal transfers.
+templates → foundation → users → token categories → schedules → patients →
+token queues → appointments → encounters → specimen → observation →
+resource categories → product knowledge → charge item definitions →
+activity definitions → clinical content → billing → external receipts →
+internal transfers.
 
 As a script -- ``PACK_FACILITY_ID`` and ``PACK_FACILITY_NAME`` are read only by
 the ``__main__`` block below::
@@ -35,6 +37,7 @@ import os
 
 from care.fixtures.base import log
 from care.fixtures.context import care_fixture_context
+from care.fixtures.loaders.billing import load_billing
 from care.fixtures.loaders.clinical_visits import (
     load_clinical_content,
     load_clinical_encounters,
@@ -54,11 +57,17 @@ from care.fixtures.loaders.internal_transfers import load_internal_transfers
 from care.fixtures.loaders.organizations import load_organizations
 from care.fixtures.loaders.patients import load_patients
 from care.fixtures.loaders.questionnaires import load_questionnaires
-from care.fixtures.loaders.scheduling import load_schedules, load_token_categories
+from care.fixtures.loaders.scheduling import (
+    load_appointments,
+    load_schedules,
+    load_token_categories,
+    load_token_queues,
+)
+from care.fixtures.loaders.templates import load_templates
 from care.fixtures.loaders.users import load_users
 
 
-def load_pack(
+def load_pack(  # noqa: PLR0915
     base,
     facility_id=None,
     facility_name=None,
@@ -73,18 +82,19 @@ def load_pack(
     organization_ids_by_ref = load_organizations(base)
     log("Loaded organizations")
 
-    facility_id = resolve_or_create_facility(
+    facility_id, facility_names = resolve_or_create_facility(
         base,
         facility_id=facility_id,
         name=facility_name,
         organization_ids_by_ref=organization_ids_by_ref,
     )
-    if attaching:
-        log(f"Loading pack data into existing facility {facility_id}")
-    # When creating, facility loader already logged which facility is seeded.
+    log(f"Loaded facilities ({', '.join(facility_names)})")
 
     load_questionnaires(base, organization_ids_by_ref)
     log("Loaded questionnaires")
+
+    load_templates(base, facility_id)
+    log("Loaded templates")
 
     foundation_resource_id_by_ref = load_facility_foundation(base, facility_id)
     log("Loaded facility foundation")
@@ -110,6 +120,12 @@ def load_pack(
 
     patient_ids_by_ref = load_patients(base, facility_id, organization_ids_by_ref)
     log("Loaded patients")
+
+    load_token_queues(base, facility_id, user_ids_by_ref)
+    log("Loaded token queues")
+
+    load_appointments(base, facility_id, user_ids_by_ref, patient_ids_by_ref)
+    log("Loaded appointments")
 
     (
         encounter_ids_by_ref,
@@ -153,6 +169,15 @@ def load_pack(
         close_after=close_after,
     )
     log("Loaded clinical data for encounters")
+
+    load_billing(
+        base,
+        facility_id,
+        patient_ids_by_ref,
+        encounter_ids_by_ref,
+        charge_item_definitions_by_ref,
+    )
+    log("Loaded billing")
 
     product_ids_by_ref = load_external_receipts(
         base,

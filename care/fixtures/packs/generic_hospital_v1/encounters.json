@@ -3,6 +3,7 @@
     {
       "ref": "encounter:op-001-0",
       "patient_ref": "patient:001",
+      "days_ago": 40,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -13,6 +14,7 @@
     {
       "ref": "encounter:op-001-1",
       "patient_ref": "patient:001",
+      "days_ago": 18,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -23,6 +25,7 @@
     {
       "ref": "encounter:op-002-0",
       "patient_ref": "patient:002",
+      "days_ago": 38,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -33,6 +36,7 @@
     {
       "ref": "encounter:op-002-1",
       "patient_ref": "patient:002",
+      "days_ago": 17,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -43,6 +47,7 @@
     {
       "ref": "encounter:op-003-0",
       "patient_ref": "patient:003",
+      "days_ago": 36,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -53,6 +58,7 @@
     {
       "ref": "encounter:op-003-1",
       "patient_ref": "patient:003",
+      "days_ago": 16,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -63,6 +69,7 @@
     {
       "ref": "encounter:op-004-0",
       "patient_ref": "patient:004",
+      "days_ago": 34,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -73,6 +80,7 @@
     {
       "ref": "encounter:op-004-1",
       "patient_ref": "patient:004",
+      "days_ago": 15,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -83,6 +91,7 @@
     {
       "ref": "encounter:op-005-0",
       "patient_ref": "patient:005",
+      "days_ago": 32,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -93,6 +102,7 @@
     {
       "ref": "encounter:op-005-1",
       "patient_ref": "patient:005",
+      "days_ago": 14,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -103,6 +113,7 @@
     {
       "ref": "encounter:op-006-0",
       "patient_ref": "patient:006",
+      "days_ago": 30,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -113,6 +124,7 @@
     {
       "ref": "encounter:op-006-1",
       "patient_ref": "patient:006",
+      "days_ago": 13,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -123,6 +135,7 @@
     {
       "ref": "encounter:op-007-0",
       "patient_ref": "patient:007",
+      "days_ago": 28,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -133,6 +146,7 @@
     {
       "ref": "encounter:op-007-1",
       "patient_ref": "patient:007",
+      "days_ago": 12,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -143,6 +157,7 @@
     {
       "ref": "encounter:op-008-0",
       "patient_ref": "patient:008",
+      "days_ago": 26,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -153,6 +168,7 @@
     {
       "ref": "encounter:op-008-1",
       "patient_ref": "patient:008",
+      "days_ago": 11,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -163,6 +179,7 @@
     {
       "ref": "encounter:op-009-0",
       "patient_ref": "patient:009",
+      "days_ago": 24,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -173,6 +190,7 @@
     {
       "ref": "encounter:op-009-1",
       "patient_ref": "patient:009",
+      "days_ago": 10,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -183,6 +201,7 @@
     {
       "ref": "encounter:op-010-0",
       "patient_ref": "patient:010",
+      "days_ago": 22,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -193,6 +212,7 @@
     {
       "ref": "encounter:op-010-1",
       "patient_ref": "patient:010",
+      "days_ago": 9,
       "encounter_class": "amb",
       "status": "completed",
       "priority": "routine",
@@ -203,6 +223,7 @@
     {
       "ref": "encounter:ip-001",
       "patient_ref": "patient:001",
+      "days_ago": 3,
       "bed_ref": "location:bed_101_a",
       "encounter_class": "imp",
       "status": "in_progress",
@@ -214,6 +235,7 @@
     {
       "ref": "encounter:ip-002",
       "patient_ref": "patient:002",
+      "days_ago": 2,
       "bed_ref": "location:bed_102_a",
       "encounter_class": "imp",
       "status": "in_progress",
@@ -225,6 +247,7 @@
     {
       "ref": "encounter:ip-003",
       "patient_ref": "patient:003",
+      "days_ago": 1,
       "bed_ref": "location:bed_103_a",
       "encounter_class": "imp",
       "status": "in_progress",
@@ -236,6 +259,7 @@
     {
       "ref": "encounter:emer-001",
       "patient_ref": "patient:001",
+      "days_ago": 1,
       "encounter_class": "emer",
       "status": "in_progress",
       "priority": "emergency",
@@ -246,6 +270,7 @@
     {
       "ref": "encounter:emer-002",
       "patient_ref": "patient:001",
+      "days_ago": 0,
       "encounter_class": "emer",
       "status": "in_progress",
       "priority": "emergency",
