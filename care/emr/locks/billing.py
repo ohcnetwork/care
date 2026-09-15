@@ -27,6 +27,12 @@ class PatientCreateLock(Lock):
         self.timeout = timeout
 
 
+class FacilityEncounterCreateLock(Lock):
+    def __init__(self, facility_id, timeout=settings.LOCK_TIMEOUT):
+        self.key = f"lock:create_facility_encounter:{facility_id}"
+        self.timeout = timeout
+
+
 class ChargeItemLock(Lock):
     def __init__(self, charge_item, timeout=settings.LOCK_TIMEOUT):
         self.key = f"lock:charge_item:{charge_item.id}"

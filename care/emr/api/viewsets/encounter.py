@@ -21,6 +21,7 @@ from care.emr.api.viewsets.base import (
 )
 from care.emr.api.viewsets.device import disassociate_device_from_encounter
 from care.emr.api.viewsets.location import close_related_location_from_encounter
+from care.emr.locks.billing import FacilityEncounterCreateLock
 from care.emr.models import (
     Encounter,
     EncounterOrganization,
@@ -40,6 +41,7 @@ from care.emr.resources.facility_organization.spec import FacilityOrganizationRe
 from care.emr.resources.patient.spec import validate_identifier_config
 from care.emr.resources.patient_identifier.default_expression_evaluator import (
     evaluate_patient_default_expression,
+    evaluate_patient_facility_default_values,
 )
 from care.emr.resources.tag.config_spec import TagResource
 from care.emr.tagging.filters import SingleFacilityTagFilter
@@ -47,6 +49,7 @@ from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
 from care.users.models import User
 from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.lock import ObjectLocked
 from care.utils.shortcuts import get_object_or_404
 from care.utils.time_util import care_now
 
@@ -187,6 +190,23 @@ class EncounterViewSet(
                         "modified_date",
                     ]
                 )
+            lock = FacilityEncounterCreateLock(instance.facility.id)
+            try:
+                lock.acquire()
+            except ObjectLocked as e:
+                raise ValidationError(
+                    "Encounter creation failed, try again after a while"
+                ) from e
+            try:
+                evaluate_patient_facility_default_values(
+                    instance.patient, instance.facility
+                )
+                instance.patient.build_facility_identifiers(instance.facility.id)
+                instance.patient.save(update_fields=["facility_identifiers"])
+                transaction.on_commit(lock.release)
+            except Exception:
+                lock.release()
+                raise
 
     def perform_update(self, instance):
         with transaction.atomic():

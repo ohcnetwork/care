@@ -1,11 +1,15 @@
 from django.test import TestCase
+
 from care.emr.resources.base import EMRResource
+
 
 class DummyEMRResource(EMRResource):
     pass
 
+
 class DummyEMRResourceUpdate(EMRResource):
     _is_update = True
+
 
 class EMRResourceTestCase(TestCase):
     def test_is_update_returns_false_by_default(self):
