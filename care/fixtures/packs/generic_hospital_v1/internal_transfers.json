@@ -17,777 +17,777 @@
     {
       "ref": "supply_request:main-store-to-main-pharmacy:ibuprofen:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-ibu-susp",
+      "product_knowledge_ref": "product_knowledge:ibuprofen",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:diclofenac-sodium-50-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-diclo-50",
+      "product_knowledge_ref": "product_knowledge:diclofenac-sodium-50-mg",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:omeprazole:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-ome-20",
+      "product_knowledge_ref": "product_knowledge:omeprazole",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:pantoprazole-40-mg-tablet:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-panto-40",
+      "product_knowledge_ref": "product_knowledge:pantoprazole-40-mg-tablet",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:levosalbutamol:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-levo-inh",
+      "product_knowledge_ref": "product_knowledge:levosalbutamol",
       "status": "active",
       "quantity": 400
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:metformin-1000-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-met-500",
+      "product_knowledge_ref": "product_knowledge:metformin-1000-mg",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:metformin-500-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-glime-2",
+      "product_knowledge_ref": "product_knowledge:metformin-500-mg",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:amlodipine-as-amlodipine-5-mg-t-2:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-amlo-5-3",
+      "product_knowledge_ref": "product_knowledge:amlodipine-as-amlodipine-5-mg-t-2",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:amoxicillin-clavulanic-acid-500-m:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-amino-inj",
+      "product_knowledge_ref": "product_knowledge:amoxicillin-clavulanic-acid-500-m",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:amlodipine-5-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-piptazo",
+      "product_knowledge_ref": "product_knowledge:amlodipine-5-mg",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:paracetamol-500-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-azith-250",
+      "product_knowledge_ref": "product_knowledge:paracetamol-500-mg",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:paracetamol-650-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-azith-500",
+      "product_knowledge_ref": "product_knowledge:paracetamol-650-mg",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:azithromycin-500-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-fluphen",
+      "product_knowledge_ref": "product_knowledge:azithromycin-500-mg",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:ferrous-sulphate-folic:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-iron-folic",
+      "product_knowledge_ref": "product_knowledge:ferrous-sulphate-folic",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:cetirizine:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-dicy-10",
+      "product_knowledge_ref": "product_knowledge:cetirizine",
       "status": "active",
       "quantity": 500
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:diclofenac-sodium-100-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-diclo-sr",
+      "product_knowledge_ref": "product_knowledge:diclofenac-sodium-100-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:allopurinol-100-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-allop-100",
+      "product_knowledge_ref": "product_knowledge:allopurinol-100-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:tramadol-paracetamol:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-trama-100",
+      "product_knowledge_ref": "product_knowledge:tramadol-paracetamol",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:tramadol-100-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-zinc-tab",
+      "product_knowledge_ref": "product_knowledge:tramadol-100-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:mefenamic-acid:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-metformin",
+      "product_knowledge_ref": "product_knowledge:mefenamic-acid",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:dicyclomine-paracetamol:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-dicy-20",
+      "product_knowledge_ref": "product_knowledge:dicyclomine-paracetamol",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:diclofenac-paracetamol:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-nepafenac",
+      "product_knowledge_ref": "product_knowledge:diclofenac-paracetamol",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:aceclofenac-paracetamol-thiocolch:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-cmc-eye",
+      "product_knowledge_ref": "product_knowledge:aceclofenac-paracetamol-thiocolch",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:paracetamol-100-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-povi-sol",
+      "product_knowledge_ref": "product_knowledge:paracetamol-100-mg",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:paracetamol-150-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-mephent",
+      "product_knowledge_ref": "product_knowledge:paracetamol-150-mg",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:camylofin-dihydrochloride-paracet:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-camylofin",
+      "product_knowledge_ref": "product_knowledge:camylofin-dihydrochloride-paracet",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:paracetamol-phenylephrine:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-pcm-phenyl",
+      "product_knowledge_ref": "product_knowledge:paracetamol-phenylephrine",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:diclofenac-aqua:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-mannitol",
+      "product_knowledge_ref": "product_knowledge:diclofenac-aqua",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:diclofenac:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-panto-inj",
+      "product_knowledge_ref": "product_knowledge:diclofenac",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:ketamine:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-mag-sul",
+      "product_knowledge_ref": "product_knowledge:ketamine",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:pentazocine:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-norad",
+      "product_knowledge_ref": "product_knowledge:pentazocine",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:tranexamic-acid:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-mefenic",
+      "product_knowledge_ref": "product_knowledge:tranexamic-acid",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:drotaverine-mefenamic-acid:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-vizylac",
+      "product_knowledge_ref": "product_knowledge:drotaverine-mefenamic-acid",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:ciprofloxacin-250-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-cipro-250",
+      "product_knowledge_ref": "product_knowledge:ciprofloxacin-250-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:ciprofloxacin-500-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-cipro-500",
+      "product_knowledge_ref": "product_knowledge:ciprofloxacin-500-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:clarithromycin:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-clarith",
+      "product_knowledge_ref": "product_knowledge:clarithromycin",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:sulphamethoxazole-trimethoprim:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-cotrimox",
+      "product_knowledge_ref": "product_knowledge:sulphamethoxazole-trimethoprim",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:moxifloxacin-400-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-moxi-400",
+      "product_knowledge_ref": "product_knowledge:moxifloxacin-400-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:albendazole:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-albend",
+      "product_knowledge_ref": "product_knowledge:albendazole",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:ketoconazole-2-pct:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-keto-lotion",
+      "product_knowledge_ref": "product_knowledge:ketoconazole-2-pct",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:terbinafine:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-terbinaf",
+      "product_knowledge_ref": "product_knowledge:terbinafine",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:fluconazole:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-flucon",
+      "product_knowledge_ref": "product_knowledge:fluconazole",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:cefadroxil-500-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-cefadrox",
+      "product_knowledge_ref": "product_knowledge:cefadroxil-500-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:cefazolin-g:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-cefazolin",
+      "product_knowledge_ref": "product_knowledge:cefazolin-g",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:itraconazole-200-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-cipro-500-2",
+      "product_knowledge_ref": "product_knowledge:itraconazole-200-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:ceftriaxone-g:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-tranex",
+      "product_knowledge_ref": "product_knowledge:ceftriaxone-g",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:levofloxacin:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-levo-500",
+      "product_knowledge_ref": "product_knowledge:levofloxacin",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:ofloxacin-ornidazole:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-oflo-orn",
+      "product_knowledge_ref": "product_knowledge:ofloxacin-ornidazole",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:norfloxacin-tinidazole:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-norflox-tini",
+      "product_knowledge_ref": "product_knowledge:norfloxacin-tinidazole",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:norfloxacin:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-norflox",
+      "product_knowledge_ref": "product_knowledge:norfloxacin",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:metronidazole-benzoate:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-metro-syr",
+      "product_knowledge_ref": "product_knowledge:metronidazole-benzoate",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:favipiravir:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-favip",
+      "product_knowledge_ref": "product_knowledge:favipiravir",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:ampicillin-500-mg-injection:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-amp-1000",
+      "product_knowledge_ref": "product_knowledge:ampicillin-500-mg-injection",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:meropenem-1000-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-ceftri-500",
+      "product_knowledge_ref": "product_knowledge:meropenem-1000-mg",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:ceftriaxone-500-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-cefotax-250",
+      "product_knowledge_ref": "product_knowledge:ceftriaxone-500-mg",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:doxycycline-100-mg-tablet:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-trama-pcm",
+      "product_knowledge_ref": "product_knowledge:doxycycline-100-mg-tablet",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:rabies-vaccine:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-rabies-vac",
+      "product_knowledge_ref": "product_knowledge:rabies-vaccine",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:acetazolamide:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-acetazol",
+      "product_knowledge_ref": "product_knowledge:acetazolamide",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:clopidogrel:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-clopidog",
+      "product_knowledge_ref": "product_knowledge:clopidogrel",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:furosemide-40-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-furo-40",
+      "product_knowledge_ref": "product_knowledge:furosemide-40-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:isosorbide-mononitrate:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-iso-5",
+      "product_knowledge_ref": "product_knowledge:isosorbide-mononitrate",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:heparin-25000-iu:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-heparin",
+      "product_knowledge_ref": "product_knowledge:heparin-25000-iu",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:heparin-5000-iu:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-ligno-adr",
+      "product_knowledge_ref": "product_knowledge:heparin-5000-iu",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:nifedipine-5-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-folic-5",
+      "product_knowledge_ref": "product_knowledge:nifedipine-5-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:nifedipine-10-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-misoprost",
+      "product_knowledge_ref": "product_knowledge:nifedipine-10-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:digoxin:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-metop-25",
+      "product_knowledge_ref": "product_knowledge:digoxin",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:metoprolol:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-nac-600",
+      "product_knowledge_ref": "product_knowledge:metoprolol",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:glimepiride-2-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-glime-1",
+      "product_knowledge_ref": "product_knowledge:glimepiride-2-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:amlodipine-2-5-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-amlo-5",
+      "product_knowledge_ref": "product_knowledge:amlodipine-2-5-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:atenolol:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-pcm-500",
+      "product_knowledge_ref": "product_knowledge:atenolol",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:losartan:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-pcm-650",
+      "product_knowledge_ref": "product_knowledge:losartan",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:hydrochlorothiazide:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-ranit",
+      "product_knowledge_ref": "product_knowledge:hydrochlorothiazide",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:bisacodyl:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-bisacodyl",
+      "product_knowledge_ref": "product_knowledge:bisacodyl",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:domperidone-1-mg-suspension-1:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-amitrip-10-2",
+      "product_knowledge_ref": "product_knowledge:domperidone-1-mg-suspension-1",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:metoclopramide-10-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-metoclop",
+      "product_knowledge_ref": "product_knowledge:metoclopramide-10-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:pantoprazole-domperidone:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-panto-dom",
+      "product_knowledge_ref": "product_knowledge:pantoprazole-domperidone",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:omeprazole-domperidone:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-ome-dom",
+      "product_knowledge_ref": "product_knowledge:omeprazole-domperidone",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:pantoprazole-40-mg-injection:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-glycopy",
+      "product_knowledge_ref": "product_knowledge:pantoprazole-40-mg-injection",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:metoclopramide-5-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-adrenal",
+      "product_knowledge_ref": "product_knowledge:metoclopramide-5-mg",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:dicyclomine-10-mg-tablet:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-dicy-pcm",
+      "product_knowledge_ref": "product_knowledge:dicyclomine-10-mg-tablet",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:dicyclomine-20-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-diclo-serra",
+      "product_knowledge_ref": "product_knowledge:dicyclomine-20-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:rehydaryion-salt-electral:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-amp-cap",
+      "product_knowledge_ref": "product_knowledge:rehydaryion-salt-electral",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:rabeprazole:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-tobra-eye",
+      "product_knowledge_ref": "product_knowledge:rabeprazole",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:magaldrate-simethicone:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-magald",
+      "product_knowledge_ref": "product_knowledge:magaldrate-simethicone",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:oxymetazoline:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-oxy-nasal",
+      "product_knowledge_ref": "product_knowledge:oxymetazoline",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:saline-nasal-spray-1:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-lactu-syr",
+      "product_knowledge_ref": "product_knowledge:saline-nasal-spray-1",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:promethazine-5-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-prome-syr",
+      "product_knowledge_ref": "product_knowledge:promethazine-5-mg",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:beclomethasone-dipropionate-levos:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-beclo-inh",
+      "product_knowledge_ref": "product_knowledge:beclomethasone-dipropionate-levos",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:budesonide-formoterol:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-bude-form",
+      "product_knowledge_ref": "product_knowledge:budesonide-formoterol",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:montelukast:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-montel",
+      "product_knowledge_ref": "product_knowledge:montelukast",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:levocetirizine:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-mont-levo",
+      "product_knowledge_ref": "product_knowledge:levocetirizine",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:montelukast-levocetirizine-tablet:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-ors",
+      "product_knowledge_ref": "product_knowledge:montelukast-levocetirizine-tablet",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:n-acetyl-cysteine:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-tranex-tab",
+      "product_knowledge_ref": "product_knowledge:n-acetyl-cysteine",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:n-acetylcysteine:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-nac-200",
+      "product_knowledge_ref": "product_knowledge:n-acetylcysteine",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:amitriptyline-10-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-amitrip-10",
+      "product_knowledge_ref": "product_knowledge:amitriptyline-10-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:clobazam:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-clobazam",
+      "product_knowledge_ref": "product_knowledge:clobazam",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:escitalopram-10-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-escit-10",
+      "product_knowledge_ref": "product_knowledge:escitalopram-10-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:pregabalin:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-pregab",
+      "product_knowledge_ref": "product_knowledge:pregabalin",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:alprazolam:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-alpra",
+      "product_knowledge_ref": "product_knowledge:alprazolam",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:midazolam-5-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-midazo-ns",
+      "product_knowledge_ref": "product_knowledge:midazolam-5-mg",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:levetiracetam-100-mg-injection:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-amp-500",
+      "product_knowledge_ref": "product_knowledge:levetiracetam-100-mg-injection",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:haloperidol:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-halo-inj",
+      "product_knowledge_ref": "product_knowledge:haloperidol",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:diazepam:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-amik-500",
+      "product_knowledge_ref": "product_knowledge:diazepam",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:clotrimazole-100-mg:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-clotri-vag",
+      "product_knowledge_ref": "product_knowledge:clotrimazole-100-mg",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:medroxyprogesterone:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-medroxy",
+      "product_knowledge_ref": "product_knowledge:medroxyprogesterone",
       "status": "active",
       "quantity": 20
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:moxifloxacin-0-5-pct-ointment:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-moxi-oint",
+      "product_knowledge_ref": "product_knowledge:moxifloxacin-0-5-pct-ointment",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:fusidic-acid:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-fusidic",
+      "product_knowledge_ref": "product_knowledge:fusidic-acid",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:clotrimazole-1-pct-cream:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-clotri-cream",
+      "product_knowledge_ref": "product_knowledge:clotrimazole-1-pct-cream",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:regular-insulin:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-regular-insulin",
+      "product_knowledge_ref": "product_knowledge:regular-insulin",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:oxytocin:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-amik-250",
+      "product_knowledge_ref": "product_knowledge:oxytocin",
       "status": "active",
       "quantity": 25
     },
     {
       "ref": "supply_request:main-store-to-main-pharmacy:atropine-sulphate:lot-001",
       "request_order_ref": "request_order:main-store-to-main-pharmacy",
-      "product_knowledge_ref": "product_knowledge:pk-atrop-eye",
+      "product_knowledge_ref": "product_knowledge:atropine-sulphate",
       "status": "active",
       "quantity": 25
     }

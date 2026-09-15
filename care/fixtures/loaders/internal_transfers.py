@@ -1,3 +1,5 @@
+from django.urls import reverse
+
 from care.fixtures.loaders.inventory_helpers import (
     finalize_order_headers,
     index_rows_by_ref,
@@ -8,7 +10,6 @@ from care.fixtures.loaders.inventory_helpers import (
 )
 from care.fixtures.loaders.load import load_json
 
-_PAGE_LIMIT = 200
 _COLLECTIONS = (
     "request_orders",
     "supply_requests",
@@ -94,22 +95,18 @@ def _load_inventory_item_ids_by_product_ref(
     }
 
     for origin_ref in origin_refs:
-        offset = 0
-        while True:
-            inventory_items = base.list_inventory_items(
-                facility_id,
-                foundation_resource_id_by_ref[origin_ref],
-                limit=_PAGE_LIMIT,
-                offset=offset,
-            )
-            for inventory_item in inventory_items:
-                product_ref = product_ref_by_id.get(inventory_item.product.id)
-                if product_ref is not None:
-                    inventory_item_ids_by_origin_and_product[
-                        (origin_ref, product_ref)
-                    ] = inventory_item.id
-            if len(inventory_items) < _PAGE_LIMIT:
-                break
-            offset += _PAGE_LIMIT
+        url = reverse(
+            "inventory-item-list",
+            kwargs={
+                "facility_external_id": facility_id,
+                "location_external_id": foundation_resource_id_by_ref[origin_ref],
+            },
+        )
+        for inventory_item in base.list_all(url):
+            product_ref = product_ref_by_id.get(inventory_item.product.id)
+            if product_ref is not None:
+                inventory_item_ids_by_origin_and_product[(origin_ref, product_ref)] = (
+                    inventory_item.id
+                )
 
     return inventory_item_ids_by_origin_and_product

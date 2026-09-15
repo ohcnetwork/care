@@ -1342,7 +1342,7 @@
     {
       "ref": "medreq:op-001-0",
       "encounter_ref": "encounter:op-001-0",
-      "product_knowledge_ref": "product_knowledge:pk-azith-250",
+      "product_knowledge_ref": "product_knowledge:paracetamol-500-mg",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1359,7 +1359,7 @@
     {
       "ref": "medreq:op-001-1",
       "encounter_ref": "encounter:op-001-1",
-      "product_knowledge_ref": "product_knowledge:pk-amlo-5-3",
+      "product_knowledge_ref": "product_knowledge:amlodipine-as-amlodipine-5-mg-t-2",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1376,7 +1376,7 @@
     {
       "ref": "medreq:op-002-0",
       "encounter_ref": "encounter:op-002-0",
-      "product_knowledge_ref": "product_knowledge:pk-glime-2",
+      "product_knowledge_ref": "product_knowledge:metformin-500-mg",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1393,7 +1393,7 @@
     {
       "ref": "medreq:op-002-1",
       "encounter_ref": "encounter:op-002-1",
-      "product_knowledge_ref": "product_knowledge:pk-levo-inh",
+      "product_knowledge_ref": "product_knowledge:levosalbutamol",
       "dose_value": "2",
       "dose_unit_code": "{actuation}",
       "dose_unit_display": "puffs",
@@ -1410,7 +1410,7 @@
     {
       "ref": "medreq:op-003-0",
       "encounter_ref": "encounter:op-003-0",
-      "product_knowledge_ref": "product_knowledge:pk-iron-folic",
+      "product_knowledge_ref": "product_knowledge:ferrous-sulphate-folic",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1427,7 +1427,7 @@
     {
       "ref": "medreq:op-003-1",
       "encounter_ref": "encounter:op-003-1",
-      "product_knowledge_ref": "product_knowledge:pk-azith-250",
+      "product_knowledge_ref": "product_knowledge:paracetamol-500-mg",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1444,7 +1444,7 @@
     {
       "ref": "medreq:op-004-0",
       "encounter_ref": "encounter:op-004-0",
-      "product_knowledge_ref": "product_knowledge:pk-amlo-5-3",
+      "product_knowledge_ref": "product_knowledge:amlodipine-as-amlodipine-5-mg-t-2",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1461,7 +1461,7 @@
     {
       "ref": "medreq:op-004-1",
       "encounter_ref": "encounter:op-004-1",
-      "product_knowledge_ref": "product_knowledge:pk-glime-2",
+      "product_knowledge_ref": "product_knowledge:metformin-500-mg",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1478,7 +1478,7 @@
     {
       "ref": "medreq:op-005-0",
       "encounter_ref": "encounter:op-005-0",
-      "product_knowledge_ref": "product_knowledge:pk-levo-inh",
+      "product_knowledge_ref": "product_knowledge:levosalbutamol",
       "dose_value": "2",
       "dose_unit_code": "{actuation}",
       "dose_unit_display": "puffs",
@@ -1495,7 +1495,7 @@
     {
       "ref": "medreq:op-005-1",
       "encounter_ref": "encounter:op-005-1",
-      "product_knowledge_ref": "product_knowledge:pk-iron-folic",
+      "product_knowledge_ref": "product_knowledge:ferrous-sulphate-folic",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1512,7 +1512,7 @@
     {
       "ref": "medreq:op-006-0",
       "encounter_ref": "encounter:op-006-0",
-      "product_knowledge_ref": "product_knowledge:pk-azith-250",
+      "product_knowledge_ref": "product_knowledge:paracetamol-500-mg",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1529,7 +1529,7 @@
     {
       "ref": "medreq:op-006-1",
       "encounter_ref": "encounter:op-006-1",
-      "product_knowledge_ref": "product_knowledge:pk-amlo-5-3",
+      "product_knowledge_ref": "product_knowledge:amlodipine-as-amlodipine-5-mg-t-2",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1546,7 +1546,7 @@
     {
       "ref": "medreq:op-007-0",
       "encounter_ref": "encounter:op-007-0",
-      "product_knowledge_ref": "product_knowledge:pk-glime-2",
+      "product_knowledge_ref": "product_knowledge:metformin-500-mg",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1563,7 +1563,7 @@
     {
       "ref": "medreq:op-007-1",
       "encounter_ref": "encounter:op-007-1",
-      "product_knowledge_ref": "product_knowledge:pk-levo-inh",
+      "product_knowledge_ref": "product_knowledge:levosalbutamol",
       "dose_value": "2",
       "dose_unit_code": "{actuation}",
       "dose_unit_display": "puffs",
@@ -1580,7 +1580,7 @@
     {
       "ref": "medreq:op-008-0",
       "encounter_ref": "encounter:op-008-0",
-      "product_knowledge_ref": "product_knowledge:pk-iron-folic",
+      "product_knowledge_ref": "product_knowledge:ferrous-sulphate-folic",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1597,7 +1597,7 @@
     {
       "ref": "medreq:op-008-1",
       "encounter_ref": "encounter:op-008-1",
-      "product_knowledge_ref": "product_knowledge:pk-azith-250",
+      "product_knowledge_ref": "product_knowledge:paracetamol-500-mg",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1614,7 +1614,7 @@
     {
       "ref": "medreq:op-009-0",
       "encounter_ref": "encounter:op-009-0",
-      "product_knowledge_ref": "product_knowledge:pk-amlo-5-3",
+      "product_knowledge_ref": "product_knowledge:amlodipine-as-amlodipine-5-mg-t-2",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1631,7 +1631,7 @@
     {
       "ref": "medreq:op-009-1",
       "encounter_ref": "encounter:op-009-1",
-      "product_knowledge_ref": "product_knowledge:pk-glime-2",
+      "product_knowledge_ref": "product_knowledge:metformin-500-mg",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1648,7 +1648,7 @@
     {
       "ref": "medreq:op-010-0",
       "encounter_ref": "encounter:op-010-0",
-      "product_knowledge_ref": "product_knowledge:pk-levo-inh",
+      "product_knowledge_ref": "product_knowledge:levosalbutamol",
       "dose_value": "2",
       "dose_unit_code": "{actuation}",
       "dose_unit_display": "puffs",
@@ -1665,7 +1665,7 @@
     {
       "ref": "medreq:op-010-1",
       "encounter_ref": "encounter:op-010-1",
-      "product_knowledge_ref": "product_knowledge:pk-iron-folic",
+      "product_knowledge_ref": "product_knowledge:ferrous-sulphate-folic",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1682,7 +1682,7 @@
     {
       "ref": "medreq:ip-001",
       "encounter_ref": "encounter:ip-001",
-      "product_knowledge_ref": "product_knowledge:pk-amino-inj",
+      "product_knowledge_ref": "product_knowledge:amoxicillin-clavulanic-acid-500-m",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1699,7 +1699,7 @@
     {
       "ref": "medreq:ip-002",
       "encounter_ref": "encounter:ip-002",
-      "product_knowledge_ref": "product_knowledge:pk-amlo-5-3",
+      "product_knowledge_ref": "product_knowledge:amlodipine-as-amlodipine-5-mg-t-2",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",
@@ -1716,7 +1716,7 @@
     {
       "ref": "medreq:ip-003",
       "encounter_ref": "encounter:ip-003",
-      "product_knowledge_ref": "product_knowledge:pk-regular-insulin",
+      "product_knowledge_ref": "product_knowledge:regular-insulin",
       "dose_value": "8",
       "dose_unit_code": "U",
       "dose_unit_display": "units",
@@ -1734,7 +1734,7 @@
     {
       "ref": "medreq:emer-001",
       "encounter_ref": "encounter:emer-001",
-      "product_knowledge_ref": "product_knowledge:pk-amlo-tab",
+      "product_knowledge_ref": "product_knowledge:levosalbutamol-nebuliser",
       "dose_value": "1",
       "dose_unit_code": "{nebule}",
       "dose_unit_display": "nebule",
@@ -1752,7 +1752,7 @@
     {
       "ref": "medreq:emer-002",
       "encounter_ref": "encounter:emer-002",
-      "product_knowledge_ref": "product_knowledge:pk-clopidog",
+      "product_knowledge_ref": "product_knowledge:clopidogrel",
       "dose_value": "1",
       "dose_unit_code": "{tbl}",
       "dose_unit_display": "tablets",

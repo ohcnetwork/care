@@ -441,7 +441,7 @@
   {
     "title": "Blood Urea",
     "slug_value": "activity-urea",
-    "description": "This test is used to measure creatinine levels to evaluate kidney function.",
+    "description": "This test is used to measure urea levels to assess renal function and protein metabolism.",
     "usage": "Used to assess kidney function and hydration status.",
     "status": "active",
     "classification": "laboratory",
@@ -476,7 +476,7 @@
   {
     "title": "Serum Creatinine",
     "slug_value": "activity-creat",
-    "description": "This test is used to measure uric acid levels to assess gout and metabolic disorders.",
+    "description": "This test is used to measure creatinine levels to evaluate kidney function.",
     "usage": "Used to assess kidney filtration efficiency.",
     "status": "active",
     "classification": "laboratory",
@@ -511,7 +511,7 @@
   {
     "title": "Serum Uric Acid",
     "slug_value": "activity-uric",
-    "description": "This test is used to measure sodium levels to assess fluid and electrolyte balance.",
+    "description": "This test is used to measure uric acid levels to assess gout and metabolic disorders.",
     "usage": "Used to diagnose gout and monitor kidney function.",
     "status": "active",
     "classification": "laboratory",
@@ -546,7 +546,7 @@
   {
     "title": "Serum Sodium",
     "slug_value": "activity-sod",
-    "description": "This test is used to measure potassium levels to assess cardiac and neuromuscular function.",
+    "description": "This test is used to measure sodium levels to assess fluid and electrolyte balance.",
     "usage": "Used to evaluate fluid balance and electrolyte disorders.",
     "status": "active",
     "classification": "laboratory",
@@ -581,7 +581,7 @@
   {
     "title": "Serum Potassium",
     "slug_value": "activity-pot",
-    "description": "This test is used to measure calcium levels to assess bone and metabolic function.",
+    "description": "This test is used to measure potassium levels to assess cardiac and neuromuscular function.",
     "usage": "Used to assess electrolyte balance and heart function.",
     "status": "active",
     "classification": "laboratory",
@@ -616,7 +616,7 @@
   {
     "title": "Serum Calcium",
     "slug_value": "activity-cal",
-    "description": "This test is used to measure fasting blood glucose to screen for diabetes.",
+    "description": "This test is used to measure calcium levels to assess bone and metabolic function.",
     "usage": "Used to evaluate bone health and parathyroid function.",
     "status": "active",
     "classification": "laboratory",
@@ -651,7 +651,7 @@
   {
     "title": "Fasting Blood Glucose (FBG)",
     "slug_value": "activity-fbg",
-    "description": "This test is used to measure postprandial glucose to assess glucose tolerance.",
+    "description": "This test is used to measure fasting blood glucose to screen for diabetes.",
     "usage": "Used to diagnose and monitor diabetes.",
     "status": "active",
     "classification": "laboratory",
@@ -666,7 +666,7 @@
       {
         "system": "http://loinc.org",
         "code": "1557-8",
-        "display": "Urea [Mass/volume] in Serum or Plasma"
+        "display": "Fasting glucose [Mass/volume] in Venous blood"
       }
     ],
     "location_refs": [
@@ -686,7 +686,7 @@
   {
     "title": "Postprandial Blood Glucose (PPBG)",
     "slug_value": "activity-ppbg",
-    "description": "This test is used to measure random blood glucose to assess glycemic status.",
+    "description": "This test is used to measure postprandial glucose to assess glucose tolerance.",
     "usage": "Used to assess blood sugar control after meals.",
     "status": "active",
     "classification": "laboratory",
@@ -721,7 +721,7 @@
   {
     "title": "Random Blood Glucose (RBS)",
     "slug_value": "activity-rbs",
-    "description": "This test is used to measure bleeding time to assess platelet function.",
+    "description": "This test is used to measure random blood glucose to assess glycemic status.",
     "usage": "Used for quick screening of blood sugar levels.",
     "status": "active",
     "classification": "laboratory",
@@ -756,7 +756,7 @@
   {
     "title": "Bleeding Time (BT)",
     "slug_value": "activity-bt",
-    "description": "This test is used to measure clotting time to assess coagulation pathways.",
+    "description": "This test is used to measure bleeding time to assess platelet function.",
     "usage": "Used to assess platelet function and bleeding disorders.",
     "status": "active",
     "classification": "laboratory",
@@ -789,7 +789,7 @@
   {
     "title": "Clotting Time (CT)",
     "slug_value": "activity-ct",
-    "description": "This test is used to determine blood group based on A and B antigens.",
+    "description": "This test is used to measure clotting time to assess coagulation pathways.",
     "usage": "Used to evaluate blood coagulation pathways.",
     "status": "active",
     "classification": "laboratory",
@@ -822,7 +822,7 @@
   {
     "title": "Blood Group (ABO & Rh typing)",
     "slug_value": "activity-bgrp",
-    "description": "This test is used to determine Rh factor status.",
+    "description": "This test is used to determine blood group based on A and B antigens.",
     "usage": "Used to determine blood type for transfusion compatibility.",
     "status": "active",
     "classification": "laboratory",
@@ -863,7 +863,7 @@
   {
     "title": "HIV test (Antibodies 1 and 2)",
     "slug_value": "activity-hiv",
-    "description": "This test is used to detect hepatitis B surface antigen indicating active infection.",
+    "description": "This test is used to detect HIV infection.",
     "usage": "Used to diagnose HIV infection.",
     "status": "active",
     "classification": "laboratory",
@@ -898,7 +898,7 @@
   {
     "title": "Hepatitis B Surface Antigen (HBsAg)",
     "slug_value": "activity-hbsag",
-    "description": "This test is used to detect hepatitis C infection.",
+    "description": "This test is used to detect hepatitis B surface antigen indicating active infection.",
     "usage": "Used to detect Hepatitis B infection.",
     "status": "active",
     "classification": "laboratory",
@@ -933,7 +933,7 @@
   {
     "title": "Hepatitis C Virus Antibody (HCV)",
     "slug_value": "activity-hcv",
-    "description": "This test is used to screen for syphilis infection.",
+    "description": "This test is used to detect hepatitis C infection.",
     "usage": "Used to detect Hepatitis C infection.",
     "status": "active",
     "classification": "laboratory",
@@ -968,7 +968,7 @@
   {
     "title": "RPR/VDRL test for Syphilis",
     "slug_value": "activity-vdrl",
-    "description": "This test is used to calculate the cholesterol ratio to assess cardiovascular risk.",
+    "description": "This test is used to screen for syphilis infection.",
     "usage": "Used to screen and diagnose syphilis infection.",
     "status": "active",
     "classification": "laboratory",
@@ -1111,7 +1111,7 @@
       {
         "system": "http://loinc.org",
         "code": "1968-7",
-        "display": "Bilirubin direct and total panel [Mass/volume] -Serum or Plasma"
+        "display": "Bilirubin.direct [Mass/volume] in Serum or Plasma"
       },
       {
         "system": "http://loinc.org",

@@ -1,9 +1,9 @@
 [
   {
-    "ref": "product_knowledge:pk-phenobarb-syr",
+    "ref": "product_knowledge:phenobarbitone",
     "category": "medicines-product-knowledge",
     "name": "Phenobarbitone 20 mg/5 ml Syrup",
-    "slug_value": "pk-phenobarb-syr",
+    "slug_value": "phenobarbitone",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -32,10 +32,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-caff-citrate",
+    "ref": "product_knowledge:caffeine-citrate-20-mg-solution-1",
     "category": "medicines-product-knowledge",
     "name": "Caffeine Citrate 20 mg/ml Oral Solution",
-    "slug_value": "pk-caff-citrate",
+    "slug_value": "caffeine-citrate-20-mg-solution-1",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -64,10 +64,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ibu-susp",
+    "ref": "product_knowledge:ibuprofen",
     "category": "medicines-product-knowledge",
     "name": "Ibuprofen 100 mg/5 ml Oral Suspension",
-    "slug_value": "pk-ibu-susp",
+    "slug_value": "ibuprofen",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -96,10 +96,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ibu-par-syr",
+    "ref": "product_knowledge:ibuprofen-paracetamol",
     "category": "medicines-product-knowledge",
     "name": "Ibuprofen 100 mg + Paracetamol 125 mg/5 ml Syrup",
-    "slug_value": "pk-ibu-par-syr",
+    "slug_value": "ibuprofen-paracetamol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -128,10 +128,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-diclo-sr",
+    "ref": "product_knowledge:diclofenac-sodium-100-mg",
     "category": "medicines-product-knowledge",
     "name": "Diclofenac Sodium 100 mg Sustained Release Tablet",
-    "slug_value": "pk-diclo-sr",
+    "slug_value": "diclofenac-sodium-100-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -160,10 +160,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-diclo-50",
+    "ref": "product_knowledge:diclofenac-sodium-50-mg",
     "category": "medicines-product-knowledge",
     "name": "Diclofenac Sodium 50 mg Tablet",
-    "slug_value": "pk-diclo-50",
+    "slug_value": "diclofenac-sodium-50-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -192,10 +192,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-acetazol",
+    "ref": "product_knowledge:acetazolamide",
     "category": "medicines-product-knowledge",
     "name": "Acetazolamide 250 mg Tablet",
-    "slug_value": "pk-acetazol",
+    "slug_value": "acetazolamide",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -224,10 +224,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-bisacodyl",
+    "ref": "product_knowledge:bisacodyl",
     "category": "medicines-product-knowledge",
     "name": "Bisacodyl 5 mg Tablet",
-    "slug_value": "pk-bisacodyl",
+    "slug_value": "bisacodyl",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -256,10 +256,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amitrip-10",
+    "ref": "product_knowledge:amitriptyline-10-mg",
     "category": "medicines-product-knowledge",
     "name": "Amitriptyline 10 mg Tablet",
-    "slug_value": "pk-amitrip-10",
+    "slug_value": "amitriptyline-10-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -288,10 +288,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amitrip-25",
+    "ref": "product_knowledge:amitriptyline-25-mg",
     "category": "medicines-product-knowledge",
     "name": "Amitriptyline 25 mg Tablet",
-    "slug_value": "pk-amitrip-25",
+    "slug_value": "amitriptyline-25-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -320,10 +320,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-clobazam",
+    "ref": "product_knowledge:clobazam",
     "category": "medicines-product-knowledge",
     "name": "Clobazam 10 mg Tablet",
-    "slug_value": "pk-clobazam",
+    "slug_value": "clobazam",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -352,10 +352,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-clopidog",
+    "ref": "product_knowledge:clopidogrel",
     "category": "medicines-product-knowledge",
     "name": "Clopidogrel 75 mg Tablet",
-    "slug_value": "pk-clopidog",
+    "slug_value": "clopidogrel",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -384,10 +384,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-dec-50",
+    "ref": "product_knowledge:diethylcarbamazine-50-mg",
     "category": "medicines-product-knowledge",
     "name": "Diethylcarbamazine 50 mg Tablet",
-    "slug_value": "pk-dec-50",
+    "slug_value": "diethylcarbamazine-50-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -416,10 +416,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-dec-100",
+    "ref": "product_knowledge:diethylcarbamazine-100-mg",
     "category": "medicines-product-knowledge",
     "name": "Diethylcarbamazine 100 mg Tablet",
-    "slug_value": "pk-dec-100",
+    "slug_value": "diethylcarbamazine-100-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -448,10 +448,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-escit-10",
+    "ref": "product_knowledge:escitalopram-10-mg",
     "category": "medicines-product-knowledge",
     "name": "Escitalopram 10 mg Tablet",
-    "slug_value": "pk-escit-10",
+    "slug_value": "escitalopram-10-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -480,10 +480,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-escit-5",
+    "ref": "product_knowledge:escitalopram-5-mg",
     "category": "medicines-product-knowledge",
     "name": "Escitalopram 5 mg Tablet",
-    "slug_value": "pk-escit-5",
+    "slug_value": "escitalopram-5-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -512,10 +512,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-chloro-tab",
+    "ref": "product_knowledge:chloroquine-phosphate-to",
     "category": "medicines-product-knowledge",
     "name": "Chloroquine Phosphate 250 mg (equivalent to 150 mg base) Tablet",
-    "slug_value": "pk-chloro-tab",
+    "slug_value": "chloroquine-phosphate-to",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -544,10 +544,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-chloro-syr",
+    "ref": "product_knowledge:chloroquine",
     "category": "medicines-product-knowledge",
     "name": "Chloroquine 50 mg/5 ml Oral Suspension",
-    "slug_value": "pk-chloro-syr",
+    "slug_value": "chloroquine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -576,10 +576,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cipro-250",
+    "ref": "product_knowledge:ciprofloxacin-250-mg",
     "category": "medicines-product-knowledge",
     "name": "Ciprofloxacin 250 mg Tablet",
-    "slug_value": "pk-cipro-250",
+    "slug_value": "ciprofloxacin-250-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -608,10 +608,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cipro-500",
+    "ref": "product_knowledge:ciprofloxacin-500-mg",
     "category": "medicines-product-knowledge",
     "name": "Ciprofloxacin 500 mg Tablet",
-    "slug_value": "pk-cipro-500",
+    "slug_value": "ciprofloxacin-500-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -640,10 +640,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-clarith",
+    "ref": "product_knowledge:clarithromycin",
     "category": "medicines-product-knowledge",
     "name": "Clarithromycin 250 mg Tablet",
-    "slug_value": "pk-clarith",
+    "slug_value": "clarithromycin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -672,10 +672,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cotrimox",
+    "ref": "product_knowledge:sulphamethoxazole-trimethoprim",
     "category": "medicines-product-knowledge",
     "name": "Sulphamethoxazole 800 mg + Trimethoprim 160 mg Tablet",
-    "slug_value": "pk-cotrimox",
+    "slug_value": "sulphamethoxazole-trimethoprim",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -704,10 +704,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-moxi-400",
+    "ref": "product_knowledge:moxifloxacin-400-mg",
     "category": "medicines-product-knowledge",
     "name": "Moxifloxacin 400 mg Tablet",
-    "slug_value": "pk-moxi-400",
+    "slug_value": "moxifloxacin-400-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -736,10 +736,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-albend",
+    "ref": "product_knowledge:albendazole",
     "category": "medicines-product-knowledge",
     "name": "Albendazole 400 mg Tablet",
-    "slug_value": "pk-albend",
+    "slug_value": "albendazole",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -768,10 +768,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-allop-100",
+    "ref": "product_knowledge:allopurinol-100-mg",
     "category": "medicines-product-knowledge",
     "name": "Allopurinol 100 mg Tablet",
-    "slug_value": "pk-allop-100",
+    "slug_value": "allopurinol-100-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -800,10 +800,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-allop-300",
+    "ref": "product_knowledge:allopurinol-300-mg",
     "category": "medicines-product-knowledge",
     "name": "Allopurinol 300 mg Tablet",
-    "slug_value": "pk-allop-300",
+    "slug_value": "allopurinol-300-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -832,10 +832,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-keto-lotion",
+    "ref": "product_knowledge:ketoconazole-2-pct",
     "category": "medicines-product-knowledge",
     "name": "Ketoconazole 2% Lotion",
-    "slug_value": "pk-keto-lotion",
+    "slug_value": "ketoconazole-2-pct",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -864,10 +864,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-terbinaf",
+    "ref": "product_knowledge:terbinafine",
     "category": "medicines-product-knowledge",
     "name": "Terbinafine 250 mg Tablet",
-    "slug_value": "pk-terbinaf",
+    "slug_value": "terbinafine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -896,10 +896,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-flucon",
+    "ref": "product_knowledge:fluconazole",
     "category": "medicines-product-knowledge",
     "name": "Fluconazole 150 mg Tablet",
-    "slug_value": "pk-flucon",
+    "slug_value": "fluconazole",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -928,10 +928,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-oxy-nasal",
+    "ref": "product_knowledge:oxymetazoline",
     "category": "medicines-product-knowledge",
     "name": "Oxymetazoline 0.05% Nasal Drops",
-    "slug_value": "pk-oxy-nasal",
+    "slug_value": "oxymetazoline",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -960,10 +960,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cefadrox-syr",
+    "ref": "product_knowledge:cefadroxil-125-mg",
     "category": "medicines-product-knowledge",
     "name": "Cefadroxil 125 mg/5 ml Oral Suspension",
-    "slug_value": "pk-cefadrox-syr",
+    "slug_value": "cefadroxil-125-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -992,10 +992,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cefadrox",
+    "ref": "product_knowledge:cefadroxil-500-mg",
     "category": "medicines-product-knowledge",
     "name": "Cefadroxil 500 mg Tablet",
-    "slug_value": "pk-cefadrox",
+    "slug_value": "cefadroxil-500-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1024,10 +1024,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cefazolin",
+    "ref": "product_knowledge:cefazolin-g",
     "category": "medicines-product-knowledge",
     "name": "Cefazolin 1 g Injection",
-    "slug_value": "pk-cefazolin",
+    "slug_value": "cefazolin-g",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1061,10 +1061,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-pregab",
+    "ref": "product_knowledge:pregabalin",
     "category": "medicines-product-knowledge",
     "name": "Pregabalin 75 mg Capsule",
-    "slug_value": "pk-pregab",
+    "slug_value": "pregabalin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1093,10 +1093,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-chloro-syr-2",
+    "ref": "product_knowledge:itraconazole-100-mg",
     "category": "medicines-product-knowledge",
     "name": "Itraconazole 100 mg Capsule",
-    "slug_value": "pk-chloro-syr-2",
+    "slug_value": "itraconazole-100-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1125,10 +1125,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cipro-500-2",
+    "ref": "product_knowledge:itraconazole-200-mg",
     "category": "medicines-product-knowledge",
     "name": "Itraconazole 200 mg Tablet",
-    "slug_value": "pk-cipro-500-2",
+    "slug_value": "itraconazole-200-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1157,10 +1157,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cipro-250-2",
+    "ref": "product_knowledge:snake-antivenom-lyophilized",
     "category": "medicines-product-knowledge",
     "name": "Snake Antivenom Lyophilized Injection",
-    "slug_value": "pk-cipro-250-2",
+    "slug_value": "snake-antivenom-lyophilized",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1189,10 +1189,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-itra-100",
+    "ref": "product_knowledge:noradrenaline",
     "category": "medicines-product-knowledge",
     "name": "Noradrenaline 2 mg/ml Injection",
-    "slug_value": "pk-itra-100",
+    "slug_value": "noradrenaline",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1221,10 +1221,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-itra-200",
+    "ref": "product_knowledge:potassium-chloride-150-mg",
     "category": "medicines-product-knowledge",
     "name": "Potassium Chloride 150 mg/ml Injection",
-    "slug_value": "pk-itra-200",
+    "slug_value": "potassium-chloride-150-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1253,10 +1253,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-antiven",
+    "ref": "product_knowledge:ephedrine-hydrochloride",
     "category": "medicines-product-knowledge",
     "name": "Ephedrine Hydrochloride 30 mg Injection",
-    "slug_value": "pk-antiven",
+    "slug_value": "ephedrine-hydrochloride",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1285,10 +1285,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-norad",
+    "ref": "product_knowledge:pentazocine",
     "category": "medicines-product-knowledge",
     "name": "Pentazocine 30 mg/ml Injection",
-    "slug_value": "pk-norad",
+    "slug_value": "pentazocine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1317,10 +1317,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-kcl-inj",
+    "ref": "product_knowledge:promethazine-25-mg",
     "category": "medicines-product-knowledge",
     "name": "Promethazine 25 mg/ml Injection",
-    "slug_value": "pk-kcl-inj",
+    "slug_value": "promethazine-25-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1349,10 +1349,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ephed",
+    "ref": "product_knowledge:tranexamic-acid-100-mg",
     "category": "medicines-product-knowledge",
     "name": "Tranexamic Acid 100 mg/ml Injection",
-    "slug_value": "pk-ephed",
+    "slug_value": "tranexamic-acid-100-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1391,10 +1391,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-pentaz",
+    "ref": "product_knowledge:methylergometrine-0-2-mg",
     "category": "medicines-product-knowledge",
     "name": "Methylergometrine 0.2 mg/ml Injection",
-    "slug_value": "pk-pentaz",
+    "slug_value": "methylergometrine-0-2-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1428,10 +1428,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-prome-inj",
+    "ref": "product_knowledge:sodium-bicarbonate",
     "category": "medicines-product-knowledge",
     "name": "Sodium Bicarbonate 7.5% Injection",
-    "slug_value": "pk-prome-inj",
+    "slug_value": "sodium-bicarbonate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1460,10 +1460,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-tranex",
+    "ref": "product_knowledge:ceftriaxone-g",
     "category": "medicines-product-knowledge",
     "name": "Ceftriaxone 1 g Injection",
-    "slug_value": "pk-tranex",
+    "slug_value": "ceftriaxone-g",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1492,10 +1492,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-methyl-erg",
+    "ref": "product_knowledge:dicyclomine-10-mg-injection",
     "category": "medicines-product-knowledge",
     "name": "Dicyclomine 10 mg/ml Injection",
-    "slug_value": "pk-methyl-erg",
+    "slug_value": "dicyclomine-10-mg-injection",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1524,10 +1524,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-sod-bicarb",
+    "ref": "product_knowledge:camylofin-anafortan",
     "category": "medicines-product-knowledge",
     "name": "Camylofin (Anafortan) 25 mg/2 ml Injection",
-    "slug_value": "pk-sod-bicarb",
+    "slug_value": "camylofin-anafortan",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1556,10 +1556,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ceftriax",
+    "ref": "product_knowledge:etophylline-theophylline",
     "category": "medicines-product-knowledge",
     "name": "Etophylline 84.7 mg + Theophylline 25.3 mg Injection",
-    "slug_value": "pk-ceftriax",
+    "slug_value": "etophylline-theophylline",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1593,10 +1593,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-dicy-inj",
+    "ref": "product_knowledge:butorphanol-1-mg",
     "category": "medicines-product-knowledge",
     "name": "Butorphanol 1 mg Injection",
-    "slug_value": "pk-dicy-inj",
+    "slug_value": "butorphanol-1-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1625,10 +1625,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-anafort",
+    "ref": "product_knowledge:etamsylate",
     "category": "medicines-product-knowledge",
     "name": "Etamsylate 250 mg/2 ml Injection",
-    "slug_value": "pk-anafort",
+    "slug_value": "etamsylate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1657,10 +1657,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-deriphy",
+    "ref": "product_knowledge:flumazenil",
     "category": "medicines-product-knowledge",
     "name": "Flumazenil 0.1 mg/ml Injection",
-    "slug_value": "pk-deriphy",
+    "slug_value": "flumazenil",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1694,10 +1694,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-butor-1",
+    "ref": "product_knowledge:moxifloxacin-0-5-pct-eye-drop",
     "category": "medicines-product-knowledge",
     "name": "Moxifloxacin 0.5% Eye Drops",
-    "slug_value": "pk-butor-1",
+    "slug_value": "moxifloxacin-0-5-pct-eye-drop",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1736,10 +1736,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-etamsyl",
+    "ref": "product_knowledge:ciprofloxacin-0-3-pct",
     "category": "medicines-product-knowledge",
     "name": "Ciprofloxacin 0.3% Eye Drops",
-    "slug_value": "pk-etamsyl",
+    "slug_value": "ciprofloxacin-0-3-pct",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1773,10 +1773,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-flumaz",
+    "ref": "product_knowledge:probiotic-lactobacillus-billion",
     "category": "medicines-product-knowledge",
     "name": "Probiotic (Lactobacillus) 6 Billion CFU Sachet",
-    "slug_value": "pk-flumaz",
+    "slug_value": "probiotic-lactobacillus-billion",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1805,10 +1805,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-moxi-eye",
+    "ref": "product_knowledge:lactulose-g",
     "category": "medicines-product-knowledge",
     "name": "Lactulose 10 g/15 ml Syrup",
-    "slug_value": "pk-moxi-eye",
+    "slug_value": "lactulose-g",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1837,10 +1837,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amitrip-10-2",
+    "ref": "product_knowledge:domperidone-1-mg-suspension-1",
     "category": "medicines-product-knowledge",
     "name": "Domperidone 1 mg/ml Oral Suspension",
-    "slug_value": "pk-amitrip-10-2",
+    "slug_value": "domperidone-1-mg-suspension-1",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1869,10 +1869,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cipro-eye",
+    "ref": "product_knowledge:clotrimazole-1-pct-ear-drop-1",
     "category": "medicines-product-knowledge",
     "name": "Clotrimazole 1% Ear Drops",
-    "slug_value": "pk-cipro-eye",
+    "slug_value": "clotrimazole-1-pct-ear-drop-1",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1901,10 +1901,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-vizylac",
+    "ref": "product_knowledge:drotaverine-mefenamic-acid",
     "category": "medicines-product-knowledge",
     "name": "Drotaverine 80 mg and Mefenamic acid 250 mg Tablet",
-    "slug_value": "pk-vizylac",
+    "slug_value": "drotaverine-mefenamic-acid",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1933,10 +1933,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-lactu-syr",
+    "ref": "product_knowledge:saline-nasal-spray-1",
     "category": "medicines-product-knowledge",
     "name": "Saline Nasal Spray",
-    "slug_value": "pk-lactu-syr",
+    "slug_value": "saline-nasal-spray-1",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1965,10 +1965,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-domperi",
+    "ref": "product_knowledge:domperidone-1-mg-suspension-2",
     "category": "medicines-product-knowledge",
     "name": "Domperidone Oral Suspension 1 mg/ml",
-    "slug_value": "pk-domperi",
+    "slug_value": "domperidone-1-mg-suspension-2",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1997,10 +1997,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-clotri-ear",
+    "ref": "product_knowledge:clotrimazole-1-pct-ear-drop-2",
     "category": "medicines-product-knowledge",
     "name": "Clotrimazole Ear Drops 1%",
-    "slug_value": "pk-clotri-ear",
+    "slug_value": "clotrimazole-1-pct-ear-drop-2",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2029,10 +2029,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-saline-ns",
+    "ref": "product_knowledge:saline-nasal-spray-2",
     "category": "medicines-product-knowledge",
     "name": "Nasal Spray (Saline Spray)",
-    "slug_value": "pk-saline-ns",
+    "slug_value": "saline-nasal-spray-2",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2061,10 +2061,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-clotri-vag",
+    "ref": "product_knowledge:clotrimazole-100-mg",
     "category": "medicines-product-knowledge",
     "name": "Clotrimazole Pessary/Vaginal Tablet 100 mg",
-    "slug_value": "pk-clotri-vag",
+    "slug_value": "clotrimazole-100-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2093,10 +2093,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-etori-thio",
+    "ref": "product_knowledge:etoricoxib-thiocolchicoside",
     "category": "medicines-product-knowledge",
     "name": "Etoricoxib Tablet 60 mg + Thiocolchicoside Tablet 4 mg",
-    "slug_value": "pk-etori-thio",
+    "slug_value": "etoricoxib-thiocolchicoside",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2125,10 +2125,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-medroxy",
+    "ref": "product_knowledge:medroxyprogesterone",
     "category": "medicines-product-knowledge",
     "name": "Medroxyprogesterone Tablet 10 mg",
-    "slug_value": "pk-medroxy",
+    "slug_value": "medroxyprogesterone",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2157,10 +2157,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-alpra",
+    "ref": "product_knowledge:alprazolam",
     "category": "medicines-product-knowledge",
     "name": "Alprazolam Tablet 0.25 mg",
-    "slug_value": "pk-alpra",
+    "slug_value": "alprazolam",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2189,10 +2189,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-levo-500",
+    "ref": "product_knowledge:levofloxacin",
     "category": "medicines-product-knowledge",
     "name": "Levofloxacin Tablet 500 mg",
-    "slug_value": "pk-levo-500",
+    "slug_value": "levofloxacin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2221,10 +2221,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-halo-inj",
+    "ref": "product_knowledge:haloperidol",
     "category": "medicines-product-knowledge",
     "name": "Haloperidol Injection 5 mg",
-    "slug_value": "pk-halo-inj",
+    "slug_value": "haloperidol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2253,10 +2253,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-metoclop",
+    "ref": "product_knowledge:metoclopramide-10-mg",
     "category": "medicines-product-knowledge",
     "name": "Metoclopramide Tablet 10 mg",
-    "slug_value": "pk-metoclop",
+    "slug_value": "metoclopramide-10-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2285,10 +2285,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-panto-dom",
+    "ref": "product_knowledge:pantoprazole-domperidone",
     "category": "medicines-product-knowledge",
     "name": "Pantoprazole Capsule 40 mg + Domperidone Capsule 30 mg",
-    "slug_value": "pk-panto-dom",
+    "slug_value": "pantoprazole-domperidone",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2317,10 +2317,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ome-dom",
+    "ref": "product_knowledge:omeprazole-domperidone",
     "category": "medicines-product-knowledge",
     "name": "Omeprazole Capsule 20 mg + Domperidone Capsule 10 mg",
-    "slug_value": "pk-ome-dom",
+    "slug_value": "omeprazole-domperidone",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2349,10 +2349,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ome-20",
+    "ref": "product_knowledge:omeprazole",
     "category": "medicines-product-knowledge",
     "name": "Omeprazole Capsule 20 mg",
-    "slug_value": "pk-ome-20",
+    "slug_value": "omeprazole",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2381,10 +2381,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-methylpred",
+    "ref": "product_knowledge:methylprednisolone-8-mg",
     "category": "medicines-product-knowledge",
     "name": "Methylprednisolone Tablet 8 mg",
-    "slug_value": "pk-methylpred",
+    "slug_value": "methylprednisolone-8-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2413,10 +2413,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-methylpred-2",
+    "ref": "product_knowledge:methylprednisolone-4-mg",
     "category": "medicines-product-knowledge",
     "name": "Methylprednisolone Tablet 4 mg",
-    "slug_value": "pk-methylpred-2",
+    "slug_value": "methylprednisolone-4-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2445,10 +2445,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-pred-20",
+    "ref": "product_knowledge:prednisolone-20-mg",
     "category": "medicines-product-knowledge",
     "name": "Prednisolone Tablet 20 mg",
-    "slug_value": "pk-pred-20",
+    "slug_value": "prednisolone-20-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2477,10 +2477,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-panto-40",
+    "ref": "product_knowledge:pantoprazole-40-mg-tablet",
     "category": "medicines-product-knowledge",
     "name": "Pantoprazole Tablet 40 mg",
-    "slug_value": "pk-panto-40",
+    "slug_value": "pantoprazole-40-mg-tablet",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2509,10 +2509,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-levet-syr",
+    "ref": "product_knowledge:levetiracetam-100-mg-solution",
     "category": "medicines-product-knowledge",
     "name": "Levetiracetam Oral Solution 100 mg/ml",
-    "slug_value": "pk-levet-syr",
+    "slug_value": "levetiracetam-100-mg-solution",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2541,10 +2541,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-oflo-orn",
+    "ref": "product_knowledge:ofloxacin-ornidazole",
     "category": "medicines-product-knowledge",
     "name": "Ofloxacin Tablet 200 mg + Ornidazole Tablet 500 mg",
-    "slug_value": "pk-oflo-orn",
+    "slug_value": "ofloxacin-ornidazole",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2573,10 +2573,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-methyl-tab",
+    "ref": "product_knowledge:methylergometrine-0-125-mg",
     "category": "medicines-product-knowledge",
     "name": "Methylergometrine Tablet 0.125 mg",
-    "slug_value": "pk-methyl-tab",
+    "slug_value": "methylergometrine-0-125-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2605,10 +2605,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-norflox-tini",
+    "ref": "product_knowledge:norfloxacin-tinidazole",
     "category": "medicines-product-knowledge",
     "name": "Norfloxacin Tablet 400 mg + Tinidazole Tablet 600 mg",
-    "slug_value": "pk-norflox-tini",
+    "slug_value": "norfloxacin-tinidazole",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2637,10 +2637,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-furo-40",
+    "ref": "product_knowledge:furosemide-40-mg",
     "category": "medicines-product-knowledge",
     "name": "Furosemide Tablet 40 mg",
-    "slug_value": "pk-furo-40",
+    "slug_value": "furosemide-40-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2669,10 +2669,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-norflox",
+    "ref": "product_knowledge:norfloxacin",
     "category": "medicines-product-knowledge",
     "name": "Norfloxacin Tablet 400 mg",
-    "slug_value": "pk-norflox",
+    "slug_value": "norfloxacin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2701,10 +2701,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-pred-drop",
+    "ref": "product_knowledge:prednisolone-sodium-phosphate",
     "category": "medicines-product-knowledge",
     "name": "Prednisolone Sodium Phosphate Oral Drops 15 mg/5 ml",
-    "slug_value": "pk-pred-drop",
+    "slug_value": "prednisolone-sodium-phosphate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2733,10 +2733,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-metro-syr",
+    "ref": "product_knowledge:metronidazole-benzoate",
     "category": "medicines-product-knowledge",
     "name": "Metronidazole Benzoate Oral Suspension 200 mg/5 ml",
-    "slug_value": "pk-metro-syr",
+    "slug_value": "metronidazole-benzoate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2765,10 +2765,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-moxi-oint",
+    "ref": "product_knowledge:moxifloxacin-0-5-pct-ointment",
     "category": "medicines-product-knowledge",
     "name": "Moxifloxacin Eye Ointment 0.5 % w/w 5 gm",
-    "slug_value": "pk-moxi-oint",
+    "slug_value": "moxifloxacin-0-5-pct-ointment",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2797,10 +2797,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-prome-syr",
+    "ref": "product_knowledge:promethazine-5-mg",
     "category": "medicines-product-knowledge",
     "name": "Promethazine Syrup 5 mg/5 ml",
-    "slug_value": "pk-prome-syr",
+    "slug_value": "promethazine-5-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2829,10 +2829,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-fusidic",
+    "ref": "product_knowledge:fusidic-acid",
     "category": "medicines-product-knowledge",
     "name": "Fusidic Acid Cream 2 %",
-    "slug_value": "pk-fusidic",
+    "slug_value": "fusidic-acid",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2861,10 +2861,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-midazo-ns",
+    "ref": "product_knowledge:midazolam-5-mg",
     "category": "medicines-product-knowledge",
     "name": "Midazolam Nasal Spray 5 mg/ml",
-    "slug_value": "pk-midazo-ns",
+    "slug_value": "midazolam-5-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2893,10 +2893,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-beclo-inh",
+    "ref": "product_knowledge:beclomethasone-dipropionate-levos",
     "category": "medicines-product-knowledge",
     "name": "Beclomethasone Dipropionate & Levosalbutamol Inhaler 50 mcg + 67.4 % v/v",
-    "slug_value": "pk-beclo-inh",
+    "slug_value": "beclomethasone-dipropionate-levos",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2925,10 +2925,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-levo-inh",
+    "ref": "product_knowledge:levosalbutamol",
     "category": "medicines-product-knowledge",
     "name": "Levosalbutamol Inhaler 50 mcg",
-    "slug_value": "pk-levo-inh",
+    "slug_value": "levosalbutamol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2957,10 +2957,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-bude-form",
+    "ref": "product_knowledge:budesonide-formoterol",
     "category": "medicines-product-knowledge",
     "name": "Budesonide 200 mcg + Formoterol 6 mcg Inhalation (MDI)",
-    "slug_value": "pk-bude-form",
+    "slug_value": "budesonide-formoterol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -2989,10 +2989,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-favip",
+    "ref": "product_knowledge:favipiravir",
     "category": "medicines-product-knowledge",
     "name": "Favipiravir Tablet 200 mg",
-    "slug_value": "pk-favip",
+    "slug_value": "favipiravir",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3021,10 +3021,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-dexa-tab",
+    "ref": "product_knowledge:dexamethasone-0-5-mg",
     "category": "medicines-product-knowledge",
     "name": "Dexamethasone Tablet 0.5 mg",
-    "slug_value": "pk-dexa-tab",
+    "slug_value": "dexamethasone-0-5-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3053,10 +3053,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-montel",
+    "ref": "product_knowledge:montelukast",
     "category": "medicines-product-knowledge",
     "name": "Montelukast Tablet 10 mg",
-    "slug_value": "pk-montel",
+    "slug_value": "montelukast",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3085,10 +3085,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-clotri-cream",
+    "ref": "product_knowledge:clotrimazole-1-pct-cream",
     "category": "medicines-product-knowledge",
     "name": "Clotrimazole Cream 1 %",
-    "slug_value": "pk-clotri-cream",
+    "slug_value": "clotrimazole-1-pct-cream",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3117,10 +3117,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-micon",
+    "ref": "product_knowledge:miconazole",
     "category": "medicines-product-knowledge",
     "name": "Miconazole Ointment 2 % w/w",
-    "slug_value": "pk-micon",
+    "slug_value": "miconazole",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3149,10 +3149,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-iso-5",
+    "ref": "product_knowledge:isosorbide-mononitrate",
     "category": "medicines-product-knowledge",
     "name": "Isosorbide-5-Mononitrate Tablet 5 mg",
-    "slug_value": "pk-iso-5",
+    "slug_value": "isosorbide-mononitrate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3181,10 +3181,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-lactu-sol",
+    "ref": "product_knowledge:lactulose",
     "category": "medicines-product-knowledge",
     "name": "Lactulose Oral Solution 10 gm/15 ml",
-    "slug_value": "pk-lactu-sol",
+    "slug_value": "lactulose",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3213,10 +3213,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-olopat",
+    "ref": "product_knowledge:olopatadine",
     "category": "medicines-product-knowledge",
     "name": "Olopatadine Eye Drop 0.1 % w/v",
-    "slug_value": "pk-olopat",
+    "slug_value": "olopatadine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3245,10 +3245,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-heparin",
+    "ref": "product_knowledge:heparin-25000-iu",
     "category": "medicines-product-knowledge",
     "name": "Heparin Injection 25000 IU/ml",
-    "slug_value": "pk-heparin",
+    "slug_value": "heparin-25000-iu",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3282,10 +3282,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ligno-adr",
+    "ref": "product_knowledge:heparin-5000-iu",
     "category": "medicines-product-knowledge",
     "name": "Heparin Injection 5000 IU/ml",
-    "slug_value": "pk-ligno-adr",
+    "slug_value": "heparin-5000-iu",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3319,10 +3319,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-erythro",
+    "ref": "product_knowledge:darbepoetin-alfa-ug",
     "category": "medicines-product-knowledge",
-    "name": "Darbepoetin Alfa Injection 40 µg/0.4 ml",
-    "slug_value": "pk-erythro",
+    "name": "Darbepoetin Alfa Injection 40 \u00b5g/0.4 ml",
+    "slug_value": "darbepoetin-alfa-ug",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3356,10 +3356,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ery-4000",
+    "ref": "product_knowledge:erythropoietin-10000-iu",
     "category": "medicines-product-knowledge",
     "name": "Erythropoietin Injection 10000 IU/ml",
-    "slug_value": "pk-ery-4000",
+    "slug_value": "erythropoietin-10000-iu",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3388,10 +3388,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-caff-inj",
+    "ref": "product_knowledge:erythropoietin-4000-iu",
     "category": "medicines-product-knowledge",
     "name": "Erythropoietin Injection 4000 IU",
-    "slug_value": "pk-caff-inj",
+    "slug_value": "erythropoietin-4000-iu",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3425,10 +3425,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-caff-sol",
+    "ref": "product_knowledge:caffeine-citrate-20-mg-injection",
     "category": "medicines-product-knowledge",
     "name": "Caffeine Citrate Injection 20 mg/ml",
-    "slug_value": "pk-caff-sol",
+    "slug_value": "caffeine-citrate-20-mg-injection",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3457,10 +3457,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-levet-inj",
+    "ref": "product_knowledge:caffeine-citrate-20-mg-solution-2",
     "category": "medicines-product-knowledge",
     "name": "Caffeine Citrate Oral Solution 20 mg/ml",
-    "slug_value": "pk-levet-inj",
+    "slug_value": "caffeine-citrate-20-mg-solution-2",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3489,10 +3489,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amp-500",
+    "ref": "product_knowledge:levetiracetam-100-mg-injection",
     "category": "medicines-product-knowledge",
     "name": "Levetiracetam Injection 100 mg/ml",
-    "slug_value": "pk-amp-500",
+    "slug_value": "levetiracetam-100-mg-injection",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3521,10 +3521,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amp-1000",
+    "ref": "product_knowledge:ampicillin-500-mg-injection",
     "category": "medicines-product-knowledge",
     "name": "Ampicillin Powder for Injection 500 mg",
-    "slug_value": "pk-amp-1000",
+    "slug_value": "ampicillin-500-mg-injection",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3553,10 +3553,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amp-250",
+    "ref": "product_knowledge:ampicillin-1000-mg",
     "category": "medicines-product-knowledge",
     "name": "Ampicillin Injection 1000 mg",
-    "slug_value": "pk-amp-250",
+    "slug_value": "ampicillin-1000-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3590,10 +3590,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amp-125",
+    "ref": "product_knowledge:ampicillin-250-mg",
     "category": "medicines-product-knowledge",
     "name": "Ampicillin Injection 250 mg",
-    "slug_value": "pk-amp-125",
+    "slug_value": "ampicillin-250-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3627,10 +3627,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-klyte",
+    "ref": "product_knowledge:ampicillin-125-mg",
     "category": "medicines-product-knowledge",
     "name": "Ampicillin Injection 125 mg",
-    "slug_value": "pk-klyte",
+    "slug_value": "ampicillin-125-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3664,10 +3664,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-mero-1000",
+    "ref": "product_knowledge:botroclot",
     "category": "medicines-product-knowledge",
     "name": "Botroclot Injection",
-    "slug_value": "pk-mero-1000",
+    "slug_value": "botroclot",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3696,10 +3696,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ceftri-500",
+    "ref": "product_knowledge:meropenem-1000-mg",
     "category": "medicines-product-knowledge",
     "name": "Meropenem Injection 1000 mg",
-    "slug_value": "pk-ceftri-500",
+    "slug_value": "meropenem-1000-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3728,10 +3728,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cefotax-250",
+    "ref": "product_knowledge:ceftriaxone-500-mg",
     "category": "medicines-product-knowledge",
     "name": "Ceftriaxone Injection 500 mg",
-    "slug_value": "pk-cefotax-250",
+    "slug_value": "ceftriaxone-500-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3765,10 +3765,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cefotax-500",
+    "ref": "product_knowledge:cefotaxime-250-mg",
     "category": "medicines-product-knowledge",
     "name": "Cefotaxime Powder for Injection 250 mg",
-    "slug_value": "pk-cefotax-500",
+    "slug_value": "cefotaxime-250-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3797,10 +3797,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cipro-tini",
+    "ref": "product_knowledge:cefotaxime-500-mg",
     "category": "medicines-product-knowledge",
     "name": "Cefotaxime Injection 500 mg",
-    "slug_value": "pk-cipro-tini",
+    "slug_value": "cefotaxime-500-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3834,10 +3834,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ifa-tab",
+    "ref": "product_knowledge:ciprofloxacin-tinidazole",
     "category": "medicines-product-knowledge",
     "name": "Ciprofloxacin + Tinidazole",
-    "slug_value": "pk-ifa-tab",
+    "slug_value": "ciprofloxacin-tinidazole",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3866,10 +3866,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-doxyl-pyr",
+    "ref": "product_knowledge:iron-folic-acid",
     "category": "medicines-product-knowledge",
     "name": "Iron and Folic acid Tablet (Red)",
-    "slug_value": "pk-doxyl-pyr",
+    "slug_value": "iron-folic-acid",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3898,10 +3898,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-kcl-syr",
+    "ref": "product_knowledge:doxylamine-succinate-pyridoxine",
     "category": "medicines-product-knowledge",
     "name": "Doxylamine Succinate 10 mg + Pyridoxine 10 mg Tablet",
-    "slug_value": "pk-kcl-syr",
+    "slug_value": "doxylamine-succinate-pyridoxine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3930,10 +3930,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-nife-5",
+    "ref": "product_knowledge:vitamin-c",
     "category": "medicines-product-knowledge",
     "name": "Vitamin C 500 mg Tablet",
-    "slug_value": "pk-nife-5",
+    "slug_value": "vitamin-c",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3962,10 +3962,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-folic-5",
+    "ref": "product_knowledge:nifedipine-5-mg",
     "category": "medicines-product-knowledge",
     "name": "Nifedipine 5 mg Capsule",
-    "slug_value": "pk-folic-5",
+    "slug_value": "nifedipine-5-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -3994,10 +3994,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-nife-10",
+    "ref": "product_knowledge:folic-acid",
     "category": "medicines-product-knowledge",
     "name": "Folic Acid 5 mg Tablet",
-    "slug_value": "pk-nife-10",
+    "slug_value": "folic-acid",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4026,10 +4026,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-misoprost",
+    "ref": "product_knowledge:nifedipine-10-mg",
     "category": "medicines-product-knowledge",
     "name": "Nifedipine 10 mg Capsule",
-    "slug_value": "pk-misoprost",
+    "slug_value": "nifedipine-10-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4058,10 +4058,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-doxy",
+    "ref": "product_knowledge:mifepristone",
     "category": "medicines-product-knowledge",
     "name": "Mifepristone 200 mg Tablet",
-    "slug_value": "pk-doxy",
+    "slug_value": "mifepristone",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4090,10 +4090,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-trama-pcm",
+    "ref": "product_knowledge:doxycycline-100-mg-tablet",
     "category": "medicines-product-knowledge",
     "name": "Doxycycline 100 mg Tablet",
-    "slug_value": "pk-trama-pcm",
+    "slug_value": "doxycycline-100-mg-tablet",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4122,10 +4122,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-trama-100",
+    "ref": "product_knowledge:tramadol-paracetamol",
     "category": "medicines-product-knowledge",
     "name": "Tramadol + Paracetamol",
-    "slug_value": "pk-trama-100",
+    "slug_value": "tramadol-paracetamol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4154,10 +4154,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-zinc-tab",
+    "ref": "product_knowledge:tramadol-100-mg",
     "category": "medicines-product-knowledge",
     "name": "Tramadol 100 mg Tablet",
-    "slug_value": "pk-zinc-tab",
+    "slug_value": "tramadol-100-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4186,10 +4186,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-levocet",
+    "ref": "product_knowledge:zinc-sulphate-20-mg-tablet",
     "category": "medicines-product-knowledge",
     "name": "Zinc Sulphate 20 mg Tablet",
-    "slug_value": "pk-levocet",
+    "slug_value": "zinc-sulphate-20-mg-tablet",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4218,10 +4218,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-mont-levo",
+    "ref": "product_knowledge:levocetirizine",
     "category": "medicines-product-knowledge",
     "name": "Levocetirizine 5 mg Tablet",
-    "slug_value": "pk-mont-levo",
+    "slug_value": "levocetirizine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4250,10 +4250,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ors",
+    "ref": "product_knowledge:montelukast-levocetirizine-tablet",
     "category": "medicines-product-knowledge",
     "name": "Montelukast + Levocetirizine tablet",
-    "slug_value": "pk-ors",
+    "slug_value": "montelukast-levocetirizine-tablet",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4282,10 +4282,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amp-cap",
+    "ref": "product_knowledge:rehydaryion-salt-electral",
     "category": "medicines-product-knowledge",
     "name": "Oral Rehydaryion Salt (Electral)",
-    "slug_value": "pk-amp-cap",
+    "slug_value": "rehydaryion-salt-electral",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4314,10 +4314,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cal-d3",
+    "ref": "product_knowledge:ampicillin-500-mg-capsule",
     "category": "medicines-product-knowledge",
     "name": "Ampicillin 500 mg Capsule",
-    "slug_value": "pk-cal-d3",
+    "slug_value": "ampicillin-500-mg-capsule",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4346,10 +4346,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-lanoxin",
+    "ref": "product_knowledge:calcium-vitamin-d",
     "category": "medicines-product-knowledge",
     "name": "Calcium 500 mg + Vitamin D3 250 IU Tablet",
-    "slug_value": "pk-lanoxin",
+    "slug_value": "calcium-vitamin-d",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4378,10 +4378,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-metop-25",
+    "ref": "product_knowledge:digoxin",
     "category": "medicines-product-knowledge",
     "name": "Digoxin 0.25 mg Tablet",
-    "slug_value": "pk-metop-25",
+    "slug_value": "digoxin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4410,10 +4410,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-nac-600",
+    "ref": "product_knowledge:metoprolol",
     "category": "medicines-product-knowledge",
     "name": "Metoprolol 25 mg Tablet",
-    "slug_value": "pk-nac-600",
+    "slug_value": "metoprolol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4443,10 +4443,10 @@
     "alternate_identifier": "Oral Route"
   },
   {
-    "ref": "product_knowledge:pk-tranex-tab",
+    "ref": "product_knowledge:n-acetyl-cysteine",
     "category": "medicines-product-knowledge",
     "name": "N-Acetyl Cysteine 600 mg Tablet",
-    "slug_value": "pk-tranex-tab",
+    "slug_value": "n-acetyl-cysteine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4476,10 +4476,10 @@
     "alternate_identifier": "Oral Route"
   },
   {
-    "ref": "product_knowledge:pk-mefenic",
+    "ref": "product_knowledge:tranexamic-acid",
     "category": "medicines-product-knowledge",
     "name": "Tranexamic Acid Tablet",
-    "slug_value": "pk-mefenic",
+    "slug_value": "tranexamic-acid",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4509,10 +4509,10 @@
     "alternate_identifier": "Oral Route"
   },
   {
-    "ref": "product_knowledge:pk-metformin",
+    "ref": "product_knowledge:mefenamic-acid",
     "category": "medicines-product-knowledge",
     "name": "Mefenamic Acid 250 mg Tablet",
-    "slug_value": "pk-metformin",
+    "slug_value": "mefenamic-acid",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4542,10 +4542,10 @@
     "alternate_identifier": "Oral Route"
   },
   {
-    "ref": "product_knowledge:pk-met-500",
+    "ref": "product_knowledge:metformin-1000-mg",
     "category": "medicines-product-knowledge",
     "name": "Metformin 1000 mg Tablet",
-    "slug_value": "pk-met-500",
+    "slug_value": "metformin-1000-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4574,10 +4574,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-glime-2",
+    "ref": "product_knowledge:metformin-500-mg",
     "category": "medicines-product-knowledge",
     "name": "Metformin 500 mg Tablet",
-    "slug_value": "pk-glime-2",
+    "slug_value": "metformin-500-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4606,10 +4606,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-glime-1",
+    "ref": "product_knowledge:glimepiride-2-mg",
     "category": "medicines-product-knowledge",
     "name": "Glimepiride 2 mg Tablet",
-    "slug_value": "pk-glime-1",
+    "slug_value": "glimepiride-2-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4638,10 +4638,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cough-syr",
+    "ref": "product_knowledge:glimepiride-1-mg",
     "category": "medicines-product-knowledge",
     "name": "Glimepiride 1 mg Tablet",
-    "slug_value": "pk-cough-syr",
+    "slug_value": "glimepiride-1-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4670,10 +4670,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amlo-25",
+    "ref": "product_knowledge:cough-chlorpheniramine-maleate",
     "category": "medicines-product-knowledge",
     "name": "Cough Syrup (Chlorpheniramine Maleate) 100 ml",
-    "slug_value": "pk-amlo-25",
+    "slug_value": "cough-chlorpheniramine-maleate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4702,10 +4702,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amlo-5",
+    "ref": "product_knowledge:amlodipine-2-5-mg",
     "category": "medicines-product-knowledge",
     "name": "Amlodipine 2.5 mg Tablet",
-    "slug_value": "pk-amlo-5",
+    "slug_value": "amlodipine-2-5-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4734,10 +4734,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amlo-5-2",
+    "ref": "product_knowledge:amlodipine-as-amlodipine-5-mg-t-1",
     "category": "medicines-product-knowledge",
     "name": "Amlodipine 5 mg Tablet (as amlodipine maleate)",
-    "slug_value": "pk-amlo-5-2",
+    "slug_value": "amlodipine-as-amlodipine-5-mg-t-1",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4766,10 +4766,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amlo-5-3",
+    "ref": "product_knowledge:amlodipine-as-amlodipine-5-mg-t-2",
     "category": "medicines-product-knowledge",
     "name": "Amlodipine 5 mg Tablet (as amlodipine besilate)",
-    "slug_value": "pk-amlo-5-3",
+    "slug_value": "amlodipine-as-amlodipine-5-mg-t-2",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4798,10 +4798,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-silver-sulf",
+    "ref": "product_knowledge:amlodipine-as-amlodipine-5-mg-t-3",
     "category": "medicines-product-knowledge",
     "name": "Amlodipine 5 mg Tablet (as amlodipine mesilate)",
-    "slug_value": "pk-silver-sulf",
+    "slug_value": "amlodipine-as-amlodipine-5-mg-t-3",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4830,10 +4830,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-metro-400",
+    "ref": "product_knowledge:silver-sulfadiazine",
     "category": "medicines-product-knowledge",
     "name": "Silver Sulfadiazine 1% w/w Cream",
-    "slug_value": "pk-metro-400",
+    "slug_value": "silver-sulfadiazine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4862,10 +4862,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-oflo-200",
+    "ref": "product_knowledge:metronidazole",
     "category": "medicines-product-knowledge",
     "name": "Metronidazole 400 mg Tablet",
-    "slug_value": "pk-oflo-200",
+    "slug_value": "metronidazole",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4894,10 +4894,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cefix-200",
+    "ref": "product_knowledge:ofloxacin",
     "category": "medicines-product-knowledge",
     "name": "Ofloxacin 200 mg Tablet",
-    "slug_value": "pk-cefix-200",
+    "slug_value": "ofloxacin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4926,10 +4926,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cetri",
+    "ref": "product_knowledge:cefixime-200-mg",
     "category": "medicines-product-knowledge",
     "name": "Cefixime 200 mg Tablet",
-    "slug_value": "pk-cetri",
+    "slug_value": "cefixime-200-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4958,10 +4958,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-dicy-pcm",
+    "ref": "product_knowledge:dicyclomine-10-mg-tablet",
     "category": "medicines-product-knowledge",
     "name": "Dicyclomine 10 mg Tablet",
-    "slug_value": "pk-dicy-pcm",
+    "slug_value": "dicyclomine-10-mg-tablet",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -4990,10 +4990,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-dicy-20",
+    "ref": "product_knowledge:dicyclomine-paracetamol",
     "category": "medicines-product-knowledge",
     "name": "Dicyclomine + Paracetamol Tablet",
-    "slug_value": "pk-dicy-20",
+    "slug_value": "dicyclomine-paracetamol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5022,10 +5022,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-diclo-serra",
+    "ref": "product_knowledge:dicyclomine-20-mg",
     "category": "medicines-product-knowledge",
     "name": "Dicyclomine 20 mg Tablet",
-    "slug_value": "pk-diclo-serra",
+    "slug_value": "dicyclomine-20-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5054,10 +5054,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-azith-syr-2",
+    "ref": "product_knowledge:azithromycin-200-mg",
     "category": "medicines-product-knowledge",
     "name": "Azithromycin 200 mg Syrup",
-    "slug_value": "pk-azith-syr-2",
+    "slug_value": "azithromycin-200-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5086,10 +5086,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cefix-syr",
+    "ref": "product_knowledge:azithromycin-100-mg",
     "category": "medicines-product-knowledge",
     "name": "Azithromycin 100 mg Syrup",
-    "slug_value": "pk-cefix-syr",
+    "slug_value": "azithromycin-100-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5118,10 +5118,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-bude-neb",
+    "ref": "product_knowledge:montelukast-levocetirizine-syrup",
     "category": "medicines-product-knowledge",
     "name": "Montelukast + Levocetirizine Syrup",
-    "slug_value": "pk-bude-neb",
+    "slug_value": "montelukast-levocetirizine-syrup",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5150,10 +5150,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-levo-neb",
+    "ref": "product_knowledge:cefixime-100-mg",
     "category": "medicines-product-knowledge",
     "name": "Cefixime 100 mg Syrup",
-    "slug_value": "pk-levo-neb",
+    "slug_value": "cefixime-100-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5182,10 +5182,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amox-clav-625",
+    "ref": "product_knowledge:budesonide-nebuliser",
     "category": "medicines-product-knowledge",
     "name": "Budesonide Nebuliser Suspension",
-    "slug_value": "pk-amox-clav-625",
+    "slug_value": "budesonide-nebuliser",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5214,10 +5214,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amlo-tab",
+    "ref": "product_knowledge:levosalbutamol-nebuliser",
     "category": "medicines-product-knowledge",
     "name": "Levosalbutamol Nebuliser Solution",
-    "slug_value": "pk-amlo-tab",
+    "slug_value": "levosalbutamol-nebuliser",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5246,10 +5246,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amino-inj",
+    "ref": "product_knowledge:amoxicillin-clavulanic-acid-500-m",
     "category": "medicines-product-knowledge",
     "name": "Amoxicillin 500 mg + Clavulanic Acid 125 mgTablet",
-    "slug_value": "pk-amino-inj",
+    "slug_value": "amoxicillin-clavulanic-acid-500-m",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5278,10 +5278,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-piptazo",
+    "ref": "product_knowledge:amlodipine-5-mg",
     "category": "medicines-product-knowledge",
     "name": "Amlodipine 5 mg Tablet",
-    "slug_value": "pk-piptazo",
+    "slug_value": "amlodipine-5-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5310,10 +5310,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-piptazo-45",
+    "ref": "product_knowledge:aminophylline",
     "category": "medicines-product-knowledge",
     "name": "Aminophylline Injection",
-    "slug_value": "pk-piptazo-45",
+    "slug_value": "aminophylline",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5347,10 +5347,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-mero-125",
+    "ref": "product_knowledge:piperacillin-g-tazobactam-1-125-g",
     "category": "medicines-product-knowledge",
     "name": "Piperacillin 1.125 g + Tazobactam Injection",
-    "slug_value": "pk-mero-125",
+    "slug_value": "piperacillin-g-tazobactam-1-125-g",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5379,10 +5379,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cal-gluc",
+    "ref": "product_knowledge:piperacillin-g-tazobactam-4-5-g",
     "category": "medicines-product-knowledge",
     "name": "Piperacillin 4.5 g + Tazobactam Injection",
-    "slug_value": "pk-cal-gluc",
+    "slug_value": "piperacillin-g-tazobactam-4-5-g",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5411,10 +5411,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cefoper",
+    "ref": "product_knowledge:meropenem-125-mg",
     "category": "medicines-product-knowledge",
     "name": "Meropenem 125 mg Injection",
-    "slug_value": "pk-cefoper",
+    "slug_value": "meropenem-125-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5443,10 +5443,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-insulin",
+    "ref": "product_knowledge:calcium-gluconate",
     "category": "medicines-product-knowledge",
     "name": "Calcium Gluconate Injection",
-    "slug_value": "pk-insulin",
+    "slug_value": "calcium-gluconate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5475,10 +5475,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-mixtard",
+    "ref": "product_knowledge:cefoperazone",
     "category": "medicines-product-knowledge",
     "name": "Cefoperazone 1000 mg Injection",
-    "slug_value": "pk-mixtard",
+    "slug_value": "cefoperazone",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5507,10 +5507,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-regular-insulin",
+    "ref": "product_knowledge:regular-insulin",
     "category": "medicines-product-knowledge",
     "name": "Regular Insulin Injection",
-    "slug_value": "pk-regular-insulin",
+    "slug_value": "regular-insulin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5539,10 +5539,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-methyl-60",
+    "ref": "product_knowledge:human-mixtard",
     "category": "medicines-product-knowledge",
     "name": "Human Mixtard Injection",
-    "slug_value": "pk-methyl-60",
+    "slug_value": "human-mixtard",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5571,10 +5571,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-posa",
+    "ref": "product_knowledge:amphotericin-b-deoxycholate",
     "category": "medicines-product-knowledge",
     "name": "Amphotericin B Deoxycholate 50 mg Injection",
-    "slug_value": "pk-posa",
+    "slug_value": "amphotericin-b-deoxycholate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5603,10 +5603,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-multivit",
+    "ref": "product_knowledge:methylprednisolone-60-mg",
     "category": "medicines-product-knowledge",
     "name": "Methylprednisolone 60 mg Injection",
-    "slug_value": "pk-multivit",
+    "slug_value": "methylprednisolone-60-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5635,10 +5635,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-dexa-inj",
+    "ref": "product_knowledge:posaconazole",
     "category": "medicines-product-knowledge",
     "name": "Posaconazole 40 mg/ml Injection",
-    "slug_value": "pk-dexa-inj",
+    "slug_value": "posaconazole",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5667,10 +5667,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-artesun",
+    "ref": "product_knowledge:multivitamin",
     "category": "medicines-product-knowledge",
     "name": "Multivitamin Injection",
-    "slug_value": "pk-artesun",
+    "slug_value": "multivitamin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5699,10 +5699,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-epidosin",
+    "ref": "product_knowledge:dexamethasone-8-mg",
     "category": "medicines-product-knowledge",
     "name": "Dexamethasone 8 mg Injection",
-    "slug_value": "pk-epidosin",
+    "slug_value": "dexamethasone-8-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5731,10 +5731,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-doxy-inj",
+    "ref": "product_knowledge:artesunate",
     "category": "medicines-product-knowledge",
     "name": "Artesunate 60 mg Injection",
-    "slug_value": "pk-doxy-inj",
+    "slug_value": "artesunate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5763,10 +5763,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-neostig",
+    "ref": "product_knowledge:valethamate-bromide-epidosin",
     "category": "medicines-product-knowledge",
     "name": "Valethamate Bromide 8 mg Injection (Epidosin)",
-    "slug_value": "pk-neostig",
+    "slug_value": "valethamate-bromide-epidosin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5795,10 +5795,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-vitd-drop",
+    "ref": "product_knowledge:doxycycline-100-mg-injection",
     "category": "medicines-product-knowledge",
     "name": "Doxycycline 100 mg Injection",
-    "slug_value": "pk-vitd-drop",
+    "slug_value": "doxycycline-100-mg-injection",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5827,10 +5827,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-vitd-drop-2",
+    "ref": "product_knowledge:neostigmine-methylsulphate-parent",
     "category": "medicines-product-knowledge",
     "name": "Neostigmine Methylsulphate 2.5 mg/5 ml Oral/Parenteral Solution",
-    "slug_value": "pk-vitd-drop-2",
+    "slug_value": "neostigmine-methylsulphate-parent",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5859,10 +5859,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-enzyme-drop",
+    "ref": "product_knowledge:cholecalciferol-400-iu",
     "category": "medicines-product-knowledge",
     "name": "Cholecalciferol 400 IU Drop",
-    "slug_value": "pk-enzyme-drop",
+    "slug_value": "cholecalciferol-400-iu",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5891,10 +5891,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-povi-sol",
+    "ref": "product_knowledge:paracetamol-100-mg",
     "category": "medicines-product-knowledge",
     "name": "Paracetamol 100 mg/ml Oral Drop",
-    "slug_value": "pk-povi-sol",
+    "slug_value": "paracetamol-100-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5923,10 +5923,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-povi-garg",
+    "ref": "product_knowledge:enzyme",
     "category": "medicines-product-knowledge",
     "name": "Enzyme Drop (20 mg + 5 mg)",
-    "slug_value": "pk-povi-garg",
+    "slug_value": "enzyme",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5955,10 +5955,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-deflaz",
+    "ref": "product_knowledge:povidone-iodine",
     "category": "medicines-product-knowledge",
     "name": "Povidone Iodine 5% w/v Solution",
-    "slug_value": "pk-deflaz",
+    "slug_value": "povidone-iodine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -5987,10 +5987,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-pred-10",
+    "ref": "product_knowledge:povidone-iodine-gargle",
     "category": "medicines-product-knowledge",
     "name": "Povidone Iodine Gargle 50 milligram/1 milliliter",
-    "slug_value": "pk-pred-10",
+    "slug_value": "povidone-iodine-gargle",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6019,10 +6019,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-aceclo",
+    "ref": "product_knowledge:deflazacort",
     "category": "medicines-product-knowledge",
     "name": "Deflazacort 6 mg Tablet",
-    "slug_value": "pk-aceclo",
+    "slug_value": "deflazacort",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6051,10 +6051,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-vit-e",
+    "ref": "product_knowledge:prednisolone-10-mg",
     "category": "medicines-product-knowledge",
     "name": "Prednisolone 10 mg Tablet",
-    "slug_value": "pk-vit-e",
+    "slug_value": "prednisolone-10-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6083,10 +6083,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-moxi-dexa",
+    "ref": "product_knowledge:vitamin-e",
     "category": "medicines-product-knowledge",
     "name": "Vitamin E Capsule",
-    "slug_value": "pk-moxi-dexa",
+    "slug_value": "vitamin-e",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6115,10 +6115,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-chymoral",
+    "ref": "product_knowledge:carboxymethylcellulose",
     "category": "medicines-product-knowledge",
     "name": "Carboxymethylcellulose Eye Drop",
-    "slug_value": "pk-chymoral",
+    "slug_value": "carboxymethylcellulose",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6147,10 +6147,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-diclo-pcm",
+    "ref": "product_knowledge:moxifloxacin",
     "category": "medicines-product-knowledge",
     "name": "Moxifloxacin Eye Drop",
-    "slug_value": "pk-diclo-pcm",
+    "slug_value": "moxifloxacin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6179,10 +6179,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-rabe-20",
+    "ref": "product_knowledge:chymoral-forte-trypsin",
     "category": "medicines-product-knowledge",
     "name": "Chymoral Forte (Trypsin + Chymotrypsin) Tablet",
-    "slug_value": "pk-rabe-20",
+    "slug_value": "chymoral-forte-trypsin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6211,10 +6211,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-mupiro",
+    "ref": "product_knowledge:povidone-iodine-g",
     "category": "medicines-product-knowledge",
     "name": "Povidone Iodine 15 g Ointment Tube",
-    "slug_value": "pk-mupiro",
+    "slug_value": "povidone-iodine-g",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6243,10 +6243,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-nepafenac",
+    "ref": "product_knowledge:diclofenac-paracetamol",
     "category": "medicines-product-knowledge",
     "name": "Diclofenac 50 mg + Paracetamol 325 mg Tablet",
-    "slug_value": "pk-nepafenac",
+    "slug_value": "diclofenac-paracetamol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6275,10 +6275,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-tobra-eye",
+    "ref": "product_knowledge:rabeprazole",
     "category": "medicines-product-knowledge",
     "name": "Rabeprazole 20 mg Tablet",
-    "slug_value": "pk-tobra-eye",
+    "slug_value": "rabeprazole",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6307,10 +6307,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-vitd-60k",
+    "ref": "product_knowledge:mupirocin",
     "category": "medicines-product-knowledge",
     "name": "Mupirocin 2% w/w Ointment",
-    "slug_value": "pk-vitd-60k",
+    "slug_value": "mupirocin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6339,10 +6339,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-vitd-60k-2",
+    "ref": "product_knowledge:nepafenac",
     "category": "medicines-product-knowledge",
     "name": "Nepafenac 0.% w/v Eye Drop",
-    "slug_value": "pk-vitd-60k-2",
+    "slug_value": "nepafenac",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6371,10 +6371,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-aten-25",
+    "ref": "product_knowledge:tobramycin",
     "category": "medicines-product-knowledge",
     "name": "Tobramycin 5 ml Eye Drop",
-    "slug_value": "pk-aten-25",
+    "slug_value": "tobramycin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6403,10 +6403,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-hctz",
+    "ref": "product_knowledge:cholecalciferol-60000-iu-capsule",
     "category": "medicines-product-knowledge",
     "name": "Cholecalciferol 60000 IU Capsule",
-    "slug_value": "pk-hctz",
+    "slug_value": "cholecalciferol-60000-iu-capsule",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6435,10 +6435,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-pcm-500",
+    "ref": "product_knowledge:atenolol",
     "category": "medicines-product-knowledge",
     "name": "Atenolol 25 mg Tablet",
-    "slug_value": "pk-pcm-500",
+    "slug_value": "atenolol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6467,10 +6467,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-pcm-650",
+    "ref": "product_knowledge:losartan",
     "category": "medicines-product-knowledge",
     "name": "Losartan 25 mg Tablet",
-    "slug_value": "pk-pcm-650",
+    "slug_value": "losartan",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6499,10 +6499,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ranit",
+    "ref": "product_knowledge:hydrochlorothiazide",
     "category": "medicines-product-knowledge",
     "name": "Hydrochlorothiazide 12.5 mg Tablet",
-    "slug_value": "pk-ranit",
+    "slug_value": "hydrochlorothiazide",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6531,10 +6531,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-azith-250",
+    "ref": "product_knowledge:paracetamol-500-mg",
     "category": "medicines-product-knowledge",
     "name": "Paracetamol 500 mg Tablet",
-    "slug_value": "pk-azith-250",
+    "slug_value": "paracetamol-500-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6563,10 +6563,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-azith-500",
+    "ref": "product_knowledge:paracetamol-650-mg",
     "category": "medicines-product-knowledge",
     "name": "Paracetamol 650 mg Tablet",
-    "slug_value": "pk-azith-500",
+    "slug_value": "paracetamol-650-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6595,10 +6595,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-iverm",
+    "ref": "product_knowledge:ranitidine",
     "category": "medicines-product-knowledge",
     "name": "Ranitidine 150 mg Tablet",
-    "slug_value": "pk-iverm",
+    "slug_value": "ranitidine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6627,10 +6627,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-insulin-40",
+    "ref": "product_knowledge:azithromycin-250-mg",
     "category": "medicines-product-knowledge",
     "name": "Azithromycin 250 mg Tablet",
-    "slug_value": "pk-insulin-40",
+    "slug_value": "azithromycin-250-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6659,10 +6659,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-fluphen",
+    "ref": "product_knowledge:azithromycin-500-mg",
     "category": "medicines-product-knowledge",
     "name": "Azithromycin 500 mg Tablet",
-    "slug_value": "pk-fluphen",
+    "slug_value": "azithromycin-500-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6691,10 +6691,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-diclo-inj",
+    "ref": "product_knowledge:ivermectin",
     "category": "medicines-product-knowledge",
     "name": "Ivermectin 12 mg Tablet",
-    "slug_value": "pk-diclo-inj",
+    "slug_value": "ivermectin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6723,10 +6723,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-carboprost",
+    "ref": "product_knowledge:insulin-soluble-neutral",
     "category": "medicines-product-knowledge",
     "name": "Insulin (Soluble, Neutral) 40 IU/ml Injection",
-    "slug_value": "pk-carboprost",
+    "slug_value": "insulin-soluble-neutral",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6755,10 +6755,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-pcm-inj",
+    "ref": "product_knowledge:fluphenazine-decanoate",
     "category": "medicines-product-knowledge",
     "name": "Fluphenazine Decanoate Injection",
-    "slug_value": "pk-pcm-inj",
+    "slug_value": "fluphenazine-decanoate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6787,10 +6787,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-metoclop-inj",
+    "ref": "product_knowledge:carboprost",
     "category": "medicines-product-knowledge",
     "name": "Carboprost 250 mg Injection",
-    "slug_value": "pk-metoclop-inj",
+    "slug_value": "carboprost",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6824,10 +6824,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-mephent",
+    "ref": "product_knowledge:paracetamol-150-mg",
     "category": "medicines-product-knowledge",
     "name": "Paracetamol 150 mg/ml Injection",
-    "slug_value": "pk-mephent",
+    "slug_value": "paracetamol-150-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6856,10 +6856,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ketamine",
+    "ref": "product_knowledge:mannitol",
     "category": "medicines-product-knowledge",
     "name": "Mannitol 20% 100 ml Injection",
-    "slug_value": "pk-ketamine",
+    "slug_value": "mannitol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6888,10 +6888,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-glycopy",
+    "ref": "product_knowledge:pantoprazole-40-mg-injection",
     "category": "medicines-product-knowledge",
     "name": "Pantoprazole 40 mg Injection",
-    "slug_value": "pk-glycopy",
+    "slug_value": "pantoprazole-40-mg-injection",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6920,10 +6920,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-adrenal",
+    "ref": "product_knowledge:metoclopramide-5-mg",
     "category": "medicines-product-knowledge",
     "name": "Metoclopramide 5 mg/ml Injection",
-    "slug_value": "pk-adrenal",
+    "slug_value": "metoclopramide-5-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6957,10 +6957,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-vitk",
+    "ref": "product_knowledge:mephentermine",
     "category": "medicines-product-knowledge",
     "name": "Mephentermine 30 mg/ml Injection",
-    "slug_value": "pk-vitk",
+    "slug_value": "mephentermine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -6994,10 +6994,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-mag-sul",
+    "ref": "product_knowledge:ketamine",
     "category": "medicines-product-knowledge",
     "name": "Ketamine 50 mg/ml Injection",
-    "slug_value": "pk-mag-sul",
+    "slug_value": "ketamine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7031,10 +7031,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-furo-inj",
+    "ref": "product_knowledge:glycopyrrolate",
     "category": "medicines-product-knowledge",
     "name": "Glycopyrrolate 0.2 mg/ml Injection",
-    "slug_value": "pk-furo-inj",
+    "slug_value": "glycopyrrolate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7068,10 +7068,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-hydrocor",
+    "ref": "product_knowledge:adrenaline",
     "category": "medicines-product-knowledge",
     "name": "Adrenaline 1 mg/ml Injection",
-    "slug_value": "pk-hydrocor",
+    "slug_value": "adrenaline",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7110,10 +7110,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ligno",
+    "ref": "product_knowledge:magnesium-sulphate",
     "category": "medicines-product-knowledge",
     "name": "Magnesium Sulphate 50% Injection",
-    "slug_value": "pk-ligno",
+    "slug_value": "magnesium-sulphate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7147,10 +7147,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-suxameth",
+    "ref": "product_knowledge:furosemide-10-mg",
     "category": "medicines-product-knowledge",
     "name": "Furosemide 10 mg/ml Injection",
-    "slug_value": "pk-suxameth",
+    "slug_value": "furosemide-10-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7184,10 +7184,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-vecuro",
+    "ref": "product_knowledge:hydrocortisone",
     "category": "medicines-product-knowledge",
     "name": "Hydrocortisone 100 mg Injection",
-    "slug_value": "pk-vecuro",
+    "slug_value": "hydrocortisone",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7221,10 +7221,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-neostig-inj",
+    "ref": "product_knowledge:dexamethasone-4-mg",
     "category": "medicines-product-knowledge",
     "name": "Dexamethasone 4 mg/ml Injection",
-    "slug_value": "pk-neostig-inj",
+    "slug_value": "dexamethasone-4-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7258,10 +7258,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-midazo",
+    "ref": "product_knowledge:lignocaine",
     "category": "medicines-product-knowledge",
     "name": "Lignocaine 2% Injection",
-    "slug_value": "pk-midazo",
+    "slug_value": "lignocaine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7290,10 +7290,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-vanco",
+    "ref": "product_knowledge:succinylcholine",
     "category": "medicines-product-knowledge",
     "name": "Succinylcholine 50 mg/ml Injection",
-    "slug_value": "pk-vanco",
+    "slug_value": "succinylcholine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7327,10 +7327,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-propofol",
+    "ref": "product_knowledge:vecuronium-bromide",
     "category": "medicines-product-knowledge",
     "name": "Vecuronium Bromide 4 mg Injection",
-    "slug_value": "pk-propofol",
+    "slug_value": "vecuronium-bromide",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7359,10 +7359,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ceftri-125",
+    "ref": "product_knowledge:neostigmine",
     "category": "medicines-product-knowledge",
     "name": "Neostigmine 0.5 mg/ml Injection",
-    "slug_value": "pk-ceftri-125",
+    "slug_value": "neostigmine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7391,10 +7391,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ceftri-250",
+    "ref": "product_knowledge:midazolam-1-mg",
     "category": "medicines-product-knowledge",
     "name": "Midazolam 1 mg/ml Injection",
-    "slug_value": "pk-ceftri-250",
+    "slug_value": "midazolam-1-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7428,10 +7428,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-iron-suc",
+    "ref": "product_knowledge:vancomycin",
     "category": "medicines-product-knowledge",
     "name": "Vancomycin 500 mg Injection",
-    "slug_value": "pk-iron-suc",
+    "slug_value": "vancomycin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7460,10 +7460,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-atropine",
+    "ref": "product_knowledge:propofol",
     "category": "medicines-product-knowledge",
     "name": "Propofol 1% Injection",
-    "slug_value": "pk-atropine",
+    "slug_value": "propofol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7492,10 +7492,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-diazepam",
+    "ref": "product_knowledge:ceftriaxone-250-mg",
     "category": "medicines-product-knowledge",
     "name": "Ceftriaxone 250 mg Injection",
-    "slug_value": "pk-diazepam",
+    "slug_value": "ceftriaxone-250-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7529,10 +7529,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-genta",
+    "ref": "product_knowledge:iron-sucrose",
     "category": "medicines-product-knowledge",
     "name": "Iron Sucrose 20 mg/ml Injection",
-    "slug_value": "pk-genta",
+    "slug_value": "iron-sucrose",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7561,10 +7561,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amikacin",
+    "ref": "product_knowledge:atropine",
     "category": "medicines-product-knowledge",
     "name": "Atropine 0.6 mg/ml Injection",
-    "slug_value": "pk-amikacin",
+    "slug_value": "atropine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7593,10 +7593,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amik-250",
+    "ref": "product_knowledge:oxytocin",
     "category": "medicines-product-knowledge",
     "name": "Oxytocin 5 IU Injection",
-    "slug_value": "pk-amik-250",
+    "slug_value": "oxytocin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7630,10 +7630,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amik-500",
+    "ref": "product_knowledge:diazepam",
     "category": "medicines-product-knowledge",
     "name": "Diazepam 5 mg/ml Injection",
-    "slug_value": "pk-amik-500",
+    "slug_value": "diazepam",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7667,10 +7667,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-trama-inj",
+    "ref": "product_knowledge:gentamicin",
     "category": "medicines-product-knowledge",
     "name": "Gentamicin 80 mg/2 ml Injection",
-    "slug_value": "pk-trama-inj",
+    "slug_value": "gentamicin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7704,10 +7704,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-loraz-2",
+    "ref": "product_knowledge:amikacin-250-mg",
     "category": "medicines-product-knowledge",
     "name": "Amikacin 250 mg Injection",
-    "slug_value": "pk-loraz-2",
+    "slug_value": "amikacin-250-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7741,10 +7741,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-anti-d",
+    "ref": "product_knowledge:tramadol-50-mg",
     "category": "medicines-product-knowledge",
     "name": "Tramadol 50 mg/ml Injection",
-    "slug_value": "pk-anti-d",
+    "slug_value": "tramadol-50-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7778,10 +7778,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-phenir",
+    "ref": "product_knowledge:labetalol",
     "category": "medicines-product-knowledge",
     "name": "Labetalol 5 mg/ml Injection",
-    "slug_value": "pk-phenir",
+    "slug_value": "labetalol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7810,10 +7810,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-dopamine",
+    "ref": "product_knowledge:lorazepam-2-mg",
     "category": "medicines-product-knowledge",
     "name": "Lorazepam 2 mg/ml Injection",
-    "slug_value": "pk-dopamine",
+    "slug_value": "lorazepam-2-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7847,10 +7847,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-phenytoin",
+    "ref": "product_knowledge:pheneramine-maleate",
     "category": "medicines-product-knowledge",
     "name": "Pheneramine Maleate Injection",
-    "slug_value": "pk-phenytoin",
+    "slug_value": "pheneramine-maleate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7879,10 +7879,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-extra-1",
+    "ref": "product_knowledge:dopamine",
     "category": "medicines-product-knowledge",
     "name": "Dopamine 40 mg/ml Injection",
-    "slug_value": "pk-extra-1",
+    "slug_value": "dopamine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7911,10 +7911,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-extra-2",
+    "ref": "product_knowledge:dobutamine",
     "category": "medicines-product-knowledge",
     "name": "Dobutamine 50 mg/ml Injection",
-    "slug_value": "pk-extra-2",
+    "slug_value": "dobutamine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7943,10 +7943,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-extra-3",
+    "ref": "product_knowledge:thiopentone-sodium-g",
     "category": "medicines-product-knowledge",
     "name": "Thiopentone Sodium 0.5 g Injection",
-    "slug_value": "pk-extra-3",
+    "slug_value": "thiopentone-sodium-g",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -7975,10 +7975,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-extra-4",
+    "ref": "product_knowledge:phenytoin-sodium",
     "category": "medicines-product-knowledge",
     "name": "Phenytoin Sodium 4 mg/ml Injection",
-    "slug_value": "pk-extra-4",
+    "slug_value": "phenytoin-sodium",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8012,10 +8012,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-gastica",
+    "ref": "product_knowledge:gastica",
     "category": "medicines-product-knowledge",
     "name": "Gastica Syrup Drop 40 mg + 0.005 ml + 0.0007 ml",
-    "slug_value": "pk-gastica",
+    "slug_value": "gastica",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8044,10 +8044,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-drotin",
+    "ref": "product_knowledge:drotin",
     "category": "medicines-product-knowledge",
     "name": "Drotin DS Tablet 80 mg",
-    "slug_value": "pk-drotin",
+    "slug_value": "drotin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8076,10 +8076,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-thyrox-25",
+    "ref": "product_knowledge:thyrox-25-mcg",
     "category": "medicines-product-knowledge",
     "name": "Thyrox Tablet 25 mcg",
-    "slug_value": "pk-thyrox-25",
+    "slug_value": "thyrox-25-mcg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8108,10 +8108,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-thyrox-50",
+    "ref": "product_knowledge:thyrox-50-mcg",
     "category": "medicines-product-knowledge",
     "name": "Thyrox Tablet 50 mcg",
-    "slug_value": "pk-thyrox-50",
+    "slug_value": "thyrox-50-mcg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8140,10 +8140,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-thyrox-100",
+    "ref": "product_knowledge:thyrox-100-mcg",
     "category": "medicines-product-knowledge",
     "name": "Thyrox Tablet 100 mcg",
-    "slug_value": "pk-thyrox-100",
+    "slug_value": "thyrox-100-mcg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8172,10 +8172,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-medrol",
+    "ref": "product_knowledge:medrol",
     "category": "medicines-product-knowledge",
     "name": "Medrol Tablet 4 mg",
-    "slug_value": "pk-medrol",
+    "slug_value": "medrol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8204,10 +8204,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-mucinac",
+    "ref": "product_knowledge:mucinac-ab",
     "category": "medicines-product-knowledge",
     "name": "Mucinac AB Tablet 600 mg + 100 mg",
-    "slug_value": "pk-mucinac",
+    "slug_value": "mucinac-ab",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8236,10 +8236,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cerviprime",
+    "ref": "product_knowledge:cerviprime-dinoprostone",
     "category": "medicines-product-knowledge",
     "name": "Cerviprime (Dinoprostone) Gel 0.5 mg",
-    "slug_value": "pk-cerviprime",
+    "slug_value": "cerviprime-dinoprostone",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8268,10 +8268,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-mife",
+    "ref": "product_knowledge:misoprostol",
     "category": "medicines-product-knowledge",
     "name": "Misoprostol Tablet 200 mcg",
-    "slug_value": "pk-mife",
+    "slug_value": "misoprostol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8300,10 +8300,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-mef-par-syr",
+    "ref": "product_knowledge:mefenamic-acid-paracetamol",
     "category": "medicines-product-knowledge",
     "name": "Mefenamic Acid + Paracetamol SYR 100 mg + 125 mg / 5 ml",
-    "slug_value": "pk-mef-par-syr",
+    "slug_value": "mefenamic-acid-paracetamol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8332,10 +8332,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-diclo-gel",
+    "ref": "product_knowledge:diclofenac-leensid-oil",
     "category": "medicines-product-knowledge",
     "name": "Diclofenac + Leensid Oil Gel 2.32 % w/v + 3 % w/v",
-    "slug_value": "pk-diclo-gel",
+    "slug_value": "diclofenac-leensid-oil",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8364,10 +8364,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-iron-folic",
+    "ref": "product_knowledge:ferrous-sulphate-folic",
     "category": "medicines-product-knowledge",
     "name": "Ferrous Sulphate + Folic Acid Tablet (Sugar Coated) 60 mg + 0.5 mg",
-    "slug_value": "pk-iron-folic",
+    "slug_value": "ferrous-sulphate-folic",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8396,10 +8396,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cpm-syr",
+    "ref": "product_knowledge:chlorpheniramine-maleate",
     "category": "medicines-product-knowledge",
     "name": "Chlorpheniramine Maleate SYR 2 mg / 5 ml",
-    "slug_value": "pk-cpm-syr",
+    "slug_value": "chlorpheniramine-maleate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8428,10 +8428,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-nac-200",
+    "ref": "product_knowledge:n-acetylcysteine",
     "category": "medicines-product-knowledge",
     "name": "N-Acetylcysteine Oral Solution 200 mg / ml",
-    "slug_value": "pk-nac-200",
+    "slug_value": "n-acetylcysteine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8460,10 +8460,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amox-clav",
+    "ref": "product_knowledge:amoxicillin-clavulanic-acid-200-m",
     "category": "medicines-product-knowledge",
     "name": "Amoxicillin + Clavulanic Acid Oral Liquid 200 mg + 28.5 mg / 5 ml",
-    "slug_value": "pk-amox-clav",
+    "slug_value": "amoxicillin-clavulanic-acid-200-m",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8492,10 +8492,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-amox-clav-s1",
+    "ref": "product_knowledge:amoxicillin-potassium-clavulanate",
     "category": "medicines-product-knowledge",
     "name": "Amoxicillin + Potassium Clavulanate Dry Syrup 457 mg / 5 ml",
-    "slug_value": "pk-amox-clav-s1",
+    "slug_value": "amoxicillin-potassium-clavulanate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8524,10 +8524,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-drota-syr",
+    "ref": "product_knowledge:drotaverine",
     "category": "medicines-product-knowledge",
     "name": "Drotaverine SYR 10 mg / 5 ml",
-    "slug_value": "pk-drota-syr",
+    "slug_value": "drotaverine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8556,10 +8556,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-peg-syr",
+    "ref": "product_knowledge:peg-g",
     "category": "medicines-product-knowledge",
     "name": "PEG Syrup 13.125 g / 25 ml",
-    "slug_value": "pk-peg-syr",
+    "slug_value": "peg-g",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8588,10 +8588,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-eye-mix",
+    "ref": "product_knowledge:naphazoline-hydrochloride-zinc",
     "category": "medicines-product-knowledge",
     "name": "Naphazoline Hydrochloride + Zinc Sulphate + Chlorpheniramine Maleate + HPMC Eye Drop 90.25 mg / 1 ml + 3 mg / 1 ml",
-    "slug_value": "pk-eye-mix",
+    "slug_value": "naphazoline-hydrochloride-zinc",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8620,10 +8620,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-rabies-vac",
+    "ref": "product_knowledge:rabies-vaccine",
     "category": "medicines-product-knowledge",
     "name": "Rabies Vaccine Injection 2.5 IU",
-    "slug_value": "pk-rabies-vac",
+    "slug_value": "rabies-vaccine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8652,10 +8652,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-tt-05",
+    "ref": "product_knowledge:tetanus-toxoid-0-5-ml",
     "category": "medicines-product-knowledge",
     "name": "Tetanus Toxoid Injection 0.5 ml",
-    "slug_value": "pk-tt-05",
+    "slug_value": "tetanus-toxoid-0-5-ml",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8684,10 +8684,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-tt-5",
+    "ref": "product_knowledge:tetanus-toxoid-5-ml",
     "category": "medicines-product-knowledge",
     "name": "Tetanus Toxoid Injection 5 ml",
-    "slug_value": "pk-tt-5",
+    "slug_value": "tetanus-toxoid-5-ml",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8716,10 +8716,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-palono",
+    "ref": "product_knowledge:palonosetron",
     "category": "medicines-product-knowledge",
     "name": "Palonosetron Injection 0.25 mg",
-    "slug_value": "pk-palono",
+    "slug_value": "palonosetron",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8748,10 +8748,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-linez",
+    "ref": "product_knowledge:linezolid",
     "category": "medicines-product-knowledge",
     "name": "Linezolid Injection 300 mg",
-    "slug_value": "pk-linez",
+    "slug_value": "linezolid",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8780,10 +8780,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-pancuro",
+    "ref": "product_knowledge:pancuronium",
     "category": "medicines-product-knowledge",
     "name": "Pancuronium Injection 4 mg",
-    "slug_value": "pk-pancuro",
+    "slug_value": "pancuronium",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8812,10 +8812,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-dexmed",
+    "ref": "product_knowledge:dexmedetomidine",
     "category": "medicines-product-knowledge",
     "name": "Dexmedetomidine Injection 200 mg",
-    "slug_value": "pk-dexmed",
+    "slug_value": "dexmedetomidine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8844,10 +8844,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cefta-tazo",
+    "ref": "product_knowledge:ceftazidime-tazobactam-g",
     "category": "medicines-product-knowledge",
     "name": "Ceftazidime + Tazobactam Injection 1.125 g",
-    "slug_value": "pk-cefta-tazo",
+    "slug_value": "ceftazidime-tazobactam-g",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8876,10 +8876,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-hemo-coag",
+    "ref": "product_knowledge:haemocoagulase-icu",
     "category": "medicines-product-knowledge",
     "name": "Haemocoagulase ICU Injection 0.9 % w/v + 0.3 % w/v",
-    "slug_value": "pk-hemo-coag",
+    "slug_value": "haemocoagulase-icu",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8908,10 +8908,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-butor-2",
+    "ref": "product_knowledge:butorphanol-2-mg",
     "category": "medicines-product-knowledge",
     "name": "Butorphanol Injection 2 mg",
-    "slug_value": "pk-butor-2",
+    "slug_value": "butorphanol-2-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8950,10 +8950,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-pralidox",
+    "ref": "product_knowledge:pralidoxime-iodide",
     "category": "medicines-product-knowledge",
     "name": "Pralidoxime Iodide Injection 500 mg",
-    "slug_value": "pk-pralidox",
+    "slug_value": "pralidoxime-iodide",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -8987,10 +8987,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-etomid",
+    "ref": "product_knowledge:etomidate-emulsion",
     "category": "medicines-product-knowledge",
     "name": "Etomidate Emulsion Injection 2 mg / ml",
-    "slug_value": "pk-etomid",
+    "slug_value": "etomidate-emulsion",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9019,10 +9019,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cefotax",
+    "ref": "product_knowledge:cefotaxime-125-mg",
     "category": "medicines-product-knowledge",
     "name": "Cefotaxime Injection 125 mg",
-    "slug_value": "pk-cefotax",
+    "slug_value": "cefotaxime-125-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9051,10 +9051,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-methylcob",
+    "ref": "product_knowledge:methylcobalamin",
     "category": "medicines-product-knowledge",
     "name": "Methylcobalamin Injection 1500 mcg",
-    "slug_value": "pk-methylcob",
+    "slug_value": "methylcobalamin",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9083,10 +9083,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-iron-syr",
+    "ref": "product_knowledge:iron-syrup-100-ml",
     "category": "medicines-product-knowledge",
     "name": "Iron Syrup 100 ml",
-    "slug_value": "pk-iron-syr",
+    "slug_value": "iron-syrup-100-ml",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9115,10 +9115,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-oflo-metro",
+    "ref": "product_knowledge:ofloxacin-metronidazole",
     "category": "medicines-product-knowledge",
     "name": "Ofloxacin + Metronidazole SYR 100 mg + 200 mg",
-    "slug_value": "pk-oflo-metro",
+    "slug_value": "ofloxacin-metronidazole",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9147,10 +9147,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-zinc-gluc",
+    "ref": "product_knowledge:zinc-gluconate-20-mg",
     "category": "medicines-product-knowledge",
     "name": "Zinc Gluconate SYR 20 mg / 5 ml",
-    "slug_value": "pk-zinc-gluc",
+    "slug_value": "zinc-gluconate-20-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9179,10 +9179,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-zinc-syr",
+    "ref": "product_knowledge:zinc-sulphate-20-mg",
     "category": "medicines-product-knowledge",
     "name": "Zinc Sulphate SYR 20 mg / 5 ml",
-    "slug_value": "pk-zinc-syr",
+    "slug_value": "zinc-sulphate-20-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9211,10 +9211,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-terbu-syr",
+    "ref": "product_knowledge:terbutaline-sulphate-bromhexine",
     "category": "medicines-product-knowledge",
     "name": "Terbutaline Sulphate + Bromhexine + Guaifenesin SYR 1.25 mg + 60 ml",
-    "slug_value": "pk-terbu-syr",
+    "slug_value": "terbutaline-sulphate-bromhexine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9243,10 +9243,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-camylofin",
+    "ref": "product_knowledge:camylofin-dihydrochloride-paracet",
     "category": "medicines-product-knowledge",
     "name": "Camylofin Dihydrochloride + Paracetamol Tablet 25 mg + 300 mg",
-    "slug_value": "pk-camylofin",
+    "slug_value": "camylofin-dihydrochloride-paracet",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9275,10 +9275,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-vitb-comp",
+    "ref": "product_knowledge:vitamin-b-complex",
     "category": "medicines-product-knowledge",
     "name": "Vitamin B Complex Tablet (B1 2 mg, B2 2 mg, B6 0.5 mg, Niacinamide, Calcium Pantothenate 1 mg + Vit C)",
-    "slug_value": "pk-vitb-comp",
+    "slug_value": "vitamin-b-complex",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9307,10 +9307,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-silver-gel",
+    "ref": "product_knowledge:silver-nitrate",
     "category": "medicines-product-knowledge",
     "name": "Silver Nitrate Gel 0.2 %",
-    "slug_value": "pk-silver-gel",
+    "slug_value": "silver-nitrate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9339,10 +9339,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-water-inj",
+    "ref": "product_knowledge:sterile-water",
     "category": "medicines-product-knowledge",
     "name": "Sterile Water for Injection 10 ml",
-    "slug_value": "pk-water-inj",
+    "slug_value": "sterile-water",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9371,10 +9371,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-pcm-phenyl",
+    "ref": "product_knowledge:paracetamol-phenylephrine",
     "category": "medicines-product-knowledge",
     "name": "Paracetamol + Phenylephrine Tablet 325 mg + 5 mg",
-    "slug_value": "pk-pcm-phenyl",
+    "slug_value": "paracetamol-phenylephrine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9403,10 +9403,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-mometa",
+    "ref": "product_knowledge:mometasone-furoate-chlorocresol",
     "category": "medicines-product-knowledge",
     "name": "Mometasone Furoate + Chlorocresol Ointment 0.1 %",
-    "slug_value": "pk-mometa",
+    "slug_value": "mometasone-furoate-chlorocresol",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9435,10 +9435,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-magald",
+    "ref": "product_knowledge:magaldrate-simethicone",
     "category": "medicines-product-knowledge",
     "name": "Magaldrate + Simethicone Tablet 400 mg + ?",
-    "slug_value": "pk-magald",
+    "slug_value": "magaldrate-simethicone",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9467,10 +9467,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-atrop-eye",
+    "ref": "product_knowledge:atropine-sulphate",
     "category": "medicines-product-knowledge",
     "name": "Atropine Sulphate Eye Ointment 1 %",
-    "slug_value": "pk-atrop-eye",
+    "slug_value": "atropine-sulphate",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9499,10 +9499,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-keto-cream",
+    "ref": "product_knowledge:ketoconazole-1-pct",
     "category": "medicines-product-knowledge",
     "name": "Ketoconazole Cream 1 % w/w 15 gm",
-    "slug_value": "pk-keto-cream",
+    "slug_value": "ketoconazole-1-pct",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9531,10 +9531,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-diaper",
+    "ref": "product_knowledge:diaper-rash",
     "category": "medicines-product-knowledge",
     "name": "Diaper Rash Cream 50 gm",
-    "slug_value": "pk-diaper",
+    "slug_value": "diaper-rash",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9563,10 +9563,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-prepro-cap",
+    "ref": "product_knowledge:pre-probiotics-million",
     "category": "medicines-product-knowledge",
     "name": "Pre + Probiotics Capsule (30 million + 2 million + 1 million + 50 million CFU)",
-    "slug_value": "pk-prepro-cap",
+    "slug_value": "pre-probiotics-million",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9595,10 +9595,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-enoxa",
+    "ref": "product_knowledge:enoxaparin-prefilled-syringe",
     "category": "medicines-product-knowledge",
     "name": "Enoxaparin Prefilled Syringe 60 mg",
-    "slug_value": "pk-enoxa",
+    "slug_value": "enoxaparin-prefilled-syringe",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9627,10 +9627,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-moxi-pred",
+    "ref": "product_knowledge:moxifloxacin-prednisolone-ophthal",
     "category": "medicines-product-knowledge",
     "name": "Moxifloxacin + Prednisolone Ophthalmic Suspension Eye Drop 5 mg + 10 mg + 0.01 % w/v",
-    "slug_value": "pk-moxi-pred",
+    "slug_value": "moxifloxacin-prednisolone-ophthal",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9659,10 +9659,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-moxi-lote",
+    "ref": "product_knowledge:moxifloxacin-loteprednol-etabonat",
     "category": "medicines-product-knowledge",
     "name": "Moxifloxacin + Loteprednol Etabonate Ophthalmic Solution Eye Drop 5 mg + 5 mg + 0.02 % w/v",
-    "slug_value": "pk-moxi-lote",
+    "slug_value": "moxifloxacin-loteprednol-etabonat",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9691,10 +9691,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-neo-dexa",
+    "ref": "product_knowledge:neomycin-dexamethasone-ophthalmic",
     "category": "medicines-product-knowledge",
     "name": "Neomycin + Dexamethasone Ophthalmic Solution Eye Drop 0.5 % + 0.1 %",
-    "slug_value": "pk-neo-dexa",
+    "slug_value": "neomycin-dexamethasone-ophthalmic",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9723,10 +9723,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-moxi-keto",
+    "ref": "product_knowledge:moxifloxacin-ketorolac-tromethami",
     "category": "medicines-product-knowledge",
     "name": "Moxifloxacin + Ketorolac Tromethamine Ophthalmic Solution Eye Drop 0.5 % + 0.5 %",
-    "slug_value": "pk-moxi-keto",
+    "slug_value": "moxifloxacin-ketorolac-tromethami",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9755,10 +9755,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-phenyl-eye",
+    "ref": "product_knowledge:phenylephrine-hydrochloride-menth",
     "category": "medicines-product-knowledge",
     "name": "Phenylephrine Hydrochloride + Menthol + Camphor Ophthalmic Solution Eye Drop 0.12 % + 0.05 % + 0.005 % + 0.01 %",
-    "slug_value": "pk-phenyl-eye",
+    "slug_value": "phenylephrine-hydrochloride-menth",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9787,10 +9787,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-darbe",
+    "ref": "product_knowledge:lignocaine-adrenaline-dental",
     "category": "medicines-product-knowledge",
     "name": "Lignocaine + Adrenaline Dental Cartridge 2 % + 1:80,000",
-    "slug_value": "pk-darbe",
+    "slug_value": "lignocaine-adrenaline-dental",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9824,10 +9824,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-botroc",
+    "ref": "product_knowledge:k-lyte-p",
     "category": "medicines-product-knowledge",
     "name": "K-Lyte P IV Fluid 500 ml",
-    "slug_value": "pk-botroc",
+    "slug_value": "k-lyte-p",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9856,10 +9856,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-zinc-100",
+    "ref": "product_knowledge:potassium-chloride-200-ml",
     "category": "medicines-product-knowledge",
     "name": "Potassium Chloride SYR 200 ml",
-    "slug_value": "pk-zinc-100",
+    "slug_value": "potassium-chloride-200-ml",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9888,10 +9888,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-vitc",
+    "ref": "product_knowledge:zinc-gluconate-100-ml",
     "category": "medicines-product-knowledge",
     "name": "Zinc Gluconate SYR 100 ml",
-    "slug_value": "pk-vitc",
+    "slug_value": "zinc-gluconate-100-ml",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9920,10 +9920,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-dicy-10",
+    "ref": "product_knowledge:cetirizine",
     "category": "medicines-product-knowledge",
     "name": "Cetirizine Tablet 10 mg",
-    "slug_value": "pk-dicy-10",
+    "slug_value": "cetirizine",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9952,10 +9952,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-ambro-levo",
+    "ref": "product_knowledge:diclofenac-paracetamol-serratiope",
     "category": "medicines-product-knowledge",
     "name": "Diclofenac + Paracetamol + Serratiopeptidase Tablet ?",
-    "slug_value": "pk-ambro-levo",
+    "slug_value": "diclofenac-paracetamol-serratiope",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -9984,10 +9984,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-azith-syr",
+    "ref": "product_knowledge:ambroxol-levosalbutamol-junior",
     "category": "medicines-product-knowledge",
     "name": "Ambroxol + Levosalbutamol Junior SYR 60 ml",
-    "slug_value": "pk-azith-syr",
+    "slug_value": "ambroxol-levosalbutamol-junior",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -10016,10 +10016,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-pcm-drop",
+    "ref": "product_knowledge:cholecalciferol-800-iu",
     "category": "medicines-product-knowledge",
     "name": "Cholecalciferol Drop 800 IU",
-    "slug_value": "pk-pcm-drop",
+    "slug_value": "cholecalciferol-800-iu",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -10048,10 +10048,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-cmc-eye",
+    "ref": "product_knowledge:aceclofenac-paracetamol-thiocolch",
     "category": "medicines-product-knowledge",
     "name": "Aceclofenac + Paracetamol + Thiocolchicoside Tablet 100 mg + 325 mg + 4 mg",
-    "slug_value": "pk-cmc-eye",
+    "slug_value": "aceclofenac-paracetamol-thiocolch",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -10080,10 +10080,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-povi-oint",
+    "ref": "product_knowledge:moxifloxacin-dexamethasone",
     "category": "medicines-product-knowledge",
     "name": "Moxifloxacin + Dexamethasone Eye Drop 0.5 % + 0.05 %",
-    "slug_value": "pk-povi-oint",
+    "slug_value": "moxifloxacin-dexamethasone",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -10112,10 +10112,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-losar-25",
+    "ref": "product_knowledge:cholecalciferol-60000-iu-tablet",
     "category": "medicines-product-knowledge",
     "name": "Cholecalciferol 60000 IU Tablet / Drop",
-    "slug_value": "pk-losar-25",
+    "slug_value": "cholecalciferol-60000-iu-tablet",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -10144,10 +10144,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-mannitol",
+    "ref": "product_knowledge:diclofenac-aqua",
     "category": "medicines-product-knowledge",
     "name": "Diclofenac Injection 1 ml (Aqua)",
-    "slug_value": "pk-mannitol",
+    "slug_value": "diclofenac-aqua",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -10176,10 +10176,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-panto-inj",
+    "ref": "product_knowledge:diclofenac",
     "category": "medicines-product-knowledge",
     "name": "Diclofenac Injection 3 ml",
-    "slug_value": "pk-panto-inj",
+    "slug_value": "diclofenac",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -10208,10 +10208,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-dexa-4",
+    "ref": "product_knowledge:phytomenadione-vitamin-k",
     "category": "medicines-product-knowledge",
     "name": "Phytomenadione (Vitamin K1) Injection 1 mg / ml",
-    "slug_value": "pk-dexa-4",
+    "slug_value": "phytomenadione-vitamin-k",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -10245,10 +10245,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-oxytocin",
+    "ref": "product_knowledge:ceftriaxone-125-mg",
     "category": "medicines-product-knowledge",
     "name": "Ceftriaxone Injection 125 mg",
-    "slug_value": "pk-oxytocin",
+    "slug_value": "ceftriaxone-125-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -10277,10 +10277,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-labetalol",
+    "ref": "product_knowledge:amikacin-100-mg",
     "category": "medicines-product-knowledge",
     "name": "Amikacin Injection 100 mg",
-    "slug_value": "pk-labetalol",
+    "slug_value": "amikacin-100-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -10314,10 +10314,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-loraz-1",
+    "ref": "product_knowledge:amikacin-500-mg",
     "category": "medicines-product-knowledge",
     "name": "Amikacin Injection 500 mg",
-    "slug_value": "pk-loraz-1",
+    "slug_value": "amikacin-500-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -10351,10 +10351,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-dobuta",
+    "ref": "product_knowledge:lorazepam-1-mg",
     "category": "medicines-product-knowledge",
     "name": "Lorazepam Injection 1 mg / ml",
-    "slug_value": "pk-dobuta",
+    "slug_value": "lorazepam-1-mg",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -10388,10 +10388,10 @@
     }
   },
   {
-    "ref": "product_knowledge:pk-thiopent",
+    "ref": "product_knowledge:anti-d-immunoglobulin",
     "category": "medicines-product-knowledge",
     "name": "Anti-D (Immunoglobulin) Rho Injection 300 mg",
-    "slug_value": "pk-thiopent",
+    "slug_value": "anti-d-immunoglobulin",
     "status": "active",
     "product_type": "medication",
     "code": {

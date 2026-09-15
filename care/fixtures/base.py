@@ -124,6 +124,28 @@ class CareFixtureBase:
             raise FixtureError(msg)
         return to_attr_dict(response.data)
 
+    def list_all(self, url, params=None, page_size=200):
+        """Fetch every page from a CareLimitOffsetPagination endpoint."""
+        params = dict(params or {})
+        offset = 0
+        results = []
+        while True:
+            data = self.get(
+                url, params={**params, "limit": page_size, "offset": offset}
+            )
+            if isinstance(data, list):
+                return data
+            page = data.get("results", [])
+            results.extend(page)
+            count = data.get("count")
+            if count is not None:
+                if len(results) >= count or not page:
+                    break
+            elif len(page) < page_size:
+                break
+            offset += page_size
+        return results
+
     def create_organization(self, org_type="govt", **kwargs):
         data = {
             "name": self.fake.state() if org_type == "govt" else self.fake.company(),
@@ -217,6 +239,16 @@ class CareFixtureBase:
             **kwargs,
         }
         return self.post(url, data)
+
+    def associate_device_location(self, facility_id, device_id, location_id):
+        url = reverse(
+            "device-associate-location",
+            kwargs={
+                "facility_external_id": facility_id,
+                "external_id": device_id,
+            },
+        )
+        return self.post(url, {"location": location_id})
 
     def get_roles(self, limit=200):
         data = self.get(reverse("role-list"), params={"limit": limit})

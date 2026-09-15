@@ -1,42 +1,18 @@
-"""Load pack questionnaire definitions from questionnaires.json.
-
-Get-or-create by slug (globally unique). Attach role orgs via
-``organization_refs`` resolved from the pack organization map.
-"""
-
-from django.urls import reverse
-
+from care.fixtures.base import FixtureError
 from care.fixtures.loaders.load import load_json
 
 _QUESTIONNAIRE_ROW_META = frozenset({"organization_refs"})
 
 
-def load_questionnaires(base, organization_ids_by_ref) -> dict[str, str]:
-    rows = load_json("questionnaires")
-    existing_by_slug = _existing_questionnaires_by_slug(base)
-    questionnaire_ids_by_slug: dict[str, str] = {}
-
-    for entry in rows:
+def load_questionnaires(base, organization_ids_by_ref) -> None:
+    for entry in load_json("questionnaires"):
         org_ids = [organization_ids_by_ref[ref] for ref in entry["organization_refs"]]
         payload = {
             key: value
             for key, value in entry.items()
             if key not in _QUESTIONNAIRE_ROW_META
         }
-        slug = payload["slug"]
-        existing = existing_by_slug.get(slug)
-        if existing is not None:
-            questionnaire_ids_by_slug[slug] = existing.id
-            continue
-
-        created = base.create_questionnaire(org_ids, payload)
-        questionnaire_ids_by_slug[slug] = created.id
-        existing_by_slug[slug] = created
-
-    return questionnaire_ids_by_slug
-
-
-def _existing_questionnaires_by_slug(base) -> dict:
-    data = base.get(reverse("questionnaire-list"), params={"limit": 100})
-    results = data.get("results", data)
-    return {q.slug: q for q in results}
+        try:
+            base.create_questionnaire(org_ids, payload)
+        except FixtureError:
+            pass

@@ -1,7 +1,7 @@
 [
   {
     "name": "Treatment Summary",
-    "slug_value": "treatment-summary",
+    "slug_value": "demo-treatment-summary",
     "template_type": "discharge_summary",
     "context": "encounter_base",
     "default_format": "pdf",

@@ -3,11 +3,11 @@ schedules, patients, queues, appointments, encounters, clinical content,
 definitions, billing, stock.
 
 Order: organizations → facility (create or attach) → questionnaires →
-templates → foundation → users → token categories → schedules → patients →
-token queues → appointments → encounters → specimen → observation →
-resource categories → product knowledge → charge item definitions →
-activity definitions → clinical content → billing → external receipts →
-internal transfers.
+templates → foundation (incl. devices) → users → token categories →
+schedules → patients → token queues → appointments → encounters →
+specimen → observation → resource categories → product knowledge →
+charge item definitions → activity definitions → clinical content →
+billing → external receipts → internal transfers.
 
 As a script -- ``PACK_FACILITY_ID`` and ``PACK_FACILITY_NAME`` are read only by
 the ``__main__`` block below::
@@ -28,14 +28,14 @@ extra facilities are created — only that facility is seeded. Organizations
 still load (suppliers for receipts; geo get-or-create is idempotent).
 
 ``include_users=False`` skips pack ``users.json`` (e.g. Experience seeds its
-own accounts). Clinical rows that need ``user_ids_by_ref`` (service-request
-requesters) will KeyError unless those refs are not used or you pass
-``user_ids_by_ref`` yourself.
+own accounts). Pass ``user_ids_by_ref`` mapping every pack user ref used by
+schedules, queues, appointments, and clinical service requests — otherwise
+``load_pack`` fails before those stages instead of KeyError mid-run.
 """
 
 import os
 
-from care.fixtures.base import log
+from care.fixtures.base import FixtureError, log
 from care.fixtures.context import care_fixture_context
 from care.fixtures.loaders.billing import load_billing
 from care.fixtures.loaders.clinical_visits import (
@@ -54,6 +54,7 @@ from care.fixtures.loaders.external_receipts import load_external_receipts
 from care.fixtures.loaders.facility import resolve_or_create_facility
 from care.fixtures.loaders.foundation import load_facility_foundation
 from care.fixtures.loaders.internal_transfers import load_internal_transfers
+from care.fixtures.loaders.load import load_json
 from care.fixtures.loaders.organizations import load_organizations
 from care.fixtures.loaders.patients import load_patients
 from care.fixtures.loaders.questionnaires import load_questionnaires
@@ -108,9 +109,8 @@ def load_pack(  # noqa: PLR0915
         )
         log("Loaded users")
     else:
-        # For experience sandbox, we don't want to load users from the pack.
-        user_ids_by_ref = user_ids_by_ref or {}
-        log("Skipped pack users (include_users=False)")
+        user_ids_by_ref = _require_user_ids_by_ref(user_ids_by_ref or {})
+        log("Skipped pack users (include_users=False); using caller user_ids_by_ref")
 
     load_token_categories(base, facility_id)
     log("Loaded token categories")
@@ -207,3 +207,31 @@ if __name__ == "__main__":
             facility_id=os.environ.get("PACK_FACILITY_ID"),
             facility_name=os.environ.get("PACK_FACILITY_NAME"),
         )
+
+
+def pack_required_user_refs() -> set[str]:
+    """User refs required by schedules, queues, appointments, and clinical SRs."""
+    refs: set[str] = set()
+    for entry in load_json("schedules").get("schedules", []):
+        refs.add(entry["user_ref"])
+    for entry in load_json("token_queues").get("queues", []):
+        refs.add(entry["user_ref"])
+    for entry in load_json("appointments").get("appointments", []):
+        refs.add(entry["user_ref"])
+    for entry in load_json("clinical_content").get("service_requests", []):
+        requester = entry.get("requester_user_ref")
+        if requester:
+            refs.add(requester)
+    return refs
+
+
+def _require_user_ids_by_ref(user_ids_by_ref: dict) -> dict:
+    required = pack_required_user_refs()
+    missing = sorted(required - set(user_ids_by_ref))
+    if missing:
+        msg = (
+            "include_users=False requires user_ids_by_ref for pack stages that "
+            f"reference users; missing: {missing}"
+        )
+        raise FixtureError(msg)
+    return user_ids_by_ref

@@ -3,10 +3,11 @@ from care.fixtures.loaders.load import load_json
 _DEPT_META = frozenset({"ref", "reuse_existing"})
 _LOCATION_META = frozenset({"ref", "parent_ref", "organization_refs"})
 _SERVICE_META = frozenset({"ref", "managing_organization_ref", "location_refs"})
+_DEVICE_META = frozenset({"ref", "location_ref"})
 
 
 def load_facility_foundation(base, facility_id):
-    """Load departments, locations, and healthcare services from pack JSON.
+    """Load departments, locations, healthcare services, and devices from pack JSON.
 
     Returns a mapping from pack ``ref`` strings to resource external ids for
     later pack steps.
@@ -66,6 +67,19 @@ def load_facility_foundation(base, facility_id):
 
         created = base.create_healthcare_service(facility_id, name, **payload)
         foundation_resource_id_by_ref[ref] = created.id
+
+    for device in pack.get("devices", []):
+        ref = device["ref"]
+        payload = {k: v for k, v in device.items() if k not in _DEVICE_META}
+        created = base.create_device(facility_id, **payload)
+        foundation_resource_id_by_ref[ref] = created.id
+        location_ref = device.get("location_ref")
+        if location_ref:
+            base.associate_device_location(
+                facility_id,
+                created.id,
+                foundation_resource_id_by_ref[location_ref],
+            )
 
     return foundation_resource_id_by_ref
 

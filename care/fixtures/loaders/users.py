@@ -19,7 +19,7 @@ def load_users(
     role_org_members: dict[str, set[str]] = {}
     facility_org_members: dict[str, set[str]] = {}
     user_ids_by_ref: dict[str, str] = {}
-    credentials: list[tuple[str, str]] = []
+    credentials: list[tuple[str, str, bool]] = []
 
     for entry in pack.get("users", []):
         ref = entry["ref"]
@@ -38,6 +38,7 @@ def load_users(
         existing = existing_by_username.get(username)
         if existing is not None:
             user = existing
+            created = False
             if role_org_id:
                 _ensure_role_org_membership(
                     base, role_org_id, user.id, role.id, role_org_members
@@ -51,6 +52,7 @@ def load_users(
                 phone_number=generate_phone_number(),
                 **payload,
             )
+            created = True
             existing_by_username[username] = user
             if role_org_id:
                 _role_org_member_ids(base, role_org_id, role_org_members).add(user.id)
@@ -67,19 +69,19 @@ def load_users(
             )
 
         user_ids_by_ref[ref] = user_id
-        credentials.append((username, role_name))
+        credentials.append((username, role_name, created))
 
-    log("Pack user credentials (password from users.json):")
-    for username, role_name in credentials:
-        log(f"  {username:<22} {password:<12} {role_name}")
+    log("Pack user credentials:")
+    for username, role_name, created in credentials:
+        pwd = password if created else "(existing)"
+        log(f"  {username:<22} {pwd:<12} {role_name}")
 
     return user_ids_by_ref
 
 
 def _existing_users_by_username(base) -> dict:
     """List users once; avoid detail GETs that 404 on first create."""
-    data = base.get(reverse("users-list"), params={"limit": 100})
-    results = data.get("results", data)
+    results = base.list_all(reverse("users-list"))
     return {u.username: u for u in results}
 
 
@@ -89,14 +91,13 @@ def _user_ids_from_org_user_rows(results) -> set[str]:
 
 def _role_org_member_ids(base, org_id, cache: dict[str, set[str]]) -> set[str]:
     if org_id not in cache:
-        data = base.get(
+        results = base.list_all(
             reverse(
                 "organization-users-list",
                 kwargs={"organization_external_id": org_id},
             ),
-            params={"limit": 100},
         )
-        cache[org_id] = _user_ids_from_org_user_rows(data.get("results", data))
+        cache[org_id] = _user_ids_from_org_user_rows(results)
     return cache[org_id]
 
 
@@ -104,7 +105,7 @@ def _facility_org_member_ids(
     base, facility_id, org_id, cache: dict[str, set[str]]
 ) -> set[str]:
     if org_id not in cache:
-        data = base.get(
+        results = base.list_all(
             reverse(
                 "facility-organization-users-list",
                 kwargs={
@@ -112,9 +113,8 @@ def _facility_org_member_ids(
                     "facility_organizations_external_id": org_id,
                 },
             ),
-            params={"limit": 100},
         )
-        cache[org_id] = _user_ids_from_org_user_rows(data.get("results", data))
+        cache[org_id] = _user_ids_from_org_user_rows(results)
     return cache[org_id]
 
 

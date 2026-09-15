@@ -414,5 +414,33 @@
         "location:op_rooms"
       ]
     }
+  ],
+  "devices": [
+    {
+      "ref": "device:monitor-icu-1",
+      "registered_name": "ICU Patient Monitor 1",
+      "user_friendly_name": "ICU Monitor A",
+      "identifier": "DEV-ICU-001",
+      "status": "active",
+      "availability_status": "available",
+      "manufacturer": "Philips",
+      "model_number": "MX450",
+      "location_ref": "location:casualty"
+    },
+    {
+      "ref": "device:xray-1",
+      "registered_name": "Digital X-Ray Unit",
+      "identifier": "DEV-XR-001",
+      "status": "active",
+      "availability_status": "available",
+      "location_ref": "location:x_ray"
+    },
+    {
+      "ref": "device:spare-1",
+      "registered_name": "Spare Infusion Pump",
+      "identifier": "DEV-SPARE-001",
+      "status": "active",
+      "availability_status": "available"
+    }
   ]
 }
