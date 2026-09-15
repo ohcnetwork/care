@@ -250,9 +250,8 @@ class CareFixtureBase:
         )
         return self.post(url, {"location": location_id})
 
-    def get_roles(self, limit=200):
-        data = self.get(reverse("role-list"), params={"limit": limit})
-        results = data.get("results", data)
+    def get_roles(self):
+        results = self.list_all(reverse("role-list"))
         return {role.name: role for role in results}
 
     def create_user(self, geo_organization, role_orgs=None, **kwargs):
