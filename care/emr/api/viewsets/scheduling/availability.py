@@ -125,8 +125,6 @@ def convert_availability_and_exceptions_to_slots(availabilities, exceptions, day
 
 def lock_create_appointment(token_slot, patient, created_by, note):
     with Lock(f"booking:resource:{token_slot.resource.id}"), transaction.atomic():
-        if token_slot.end_datetime < timezone.now():
-            raise ValidationError("Slot is already past")
         if token_slot.allocated >= token_slot.availability.tokens_per_slot:
             raise ValidationError("Slot is already full")
         if (
@@ -272,9 +270,6 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
             end_datetime = datetime.datetime.combine(
                 request_data.day, slot["end_time"], tzinfo=None
             )
-            # Skip creating slots in the past
-            if end_datetime < timezone.make_naive(timezone.now()):
-                continue
             TokenSlot.objects.create(
                 resource=resource,
                 start_datetime=datetime.datetime.combine(

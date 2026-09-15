@@ -26,7 +26,7 @@ def list_slots_for_day(resource, day: datetime.date, *, public_only: bool = True
 
     Mirrors ``SlotViewSet.get_slots_for_day_handler`` but operates on a
     ``SchedulableResource`` directly and returns model instances (creating any
-    missing future slots) instead of an HTTP response.
+    missing slots) instead of an HTTP response.
     """
     availabilities = Availability.objects.filter(
         slot_type=SlotTypeOptions.appointment.value,
@@ -79,8 +79,6 @@ def list_slots_for_day(resource, day: datetime.date, *, public_only: bool = True
 
     for slot in candidate_slots.values():
         end_datetime = datetime.datetime.combine(day, slot["end_time"], tzinfo=None)
-        if end_datetime < timezone.make_naive(timezone.now()):
-            continue
         TokenSlot.objects.create(
             resource=resource,
             start_datetime=datetime.datetime.combine(
@@ -97,11 +95,6 @@ def list_slots_for_day(resource, day: datetime.date, *, public_only: bool = True
     ).select_related("availability", "availability__schedule")
     if public_only:
         slots = slots.filter(availability__schedule__is_public=True)
-    # Only offer slots that are still bookable; a slot whose end has passed can
-    # never be booked, so exclude it from on_select so the BAP only sees
-    # actionable options. Past dates and finished time windows are excluded by
-    # the end_datetime filter.
-    slots = slots.filter(end_datetime__gt=timezone.now())
     # Exclude fully-booked slots: a slot is full once its allocations reach the
     # availability capacity (tokens_per_slot), matching lock_create_appointment.
     slots = slots.filter(allocated__lt=F("availability__tokens_per_slot"))
