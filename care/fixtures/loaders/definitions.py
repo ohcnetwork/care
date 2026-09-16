@@ -1,3 +1,4 @@
+from care.fixtures.base import FixtureError
 from care.fixtures.loaders.load import facility_slug, load_json
 
 _ACTIVITY_DEFINITION_META = frozenset(
@@ -11,6 +12,7 @@ _ACTIVITY_DEFINITION_META = frozenset(
 )
 _CHARGE_ITEM_DEFINITION_META = frozenset({"ref"})
 _PRODUCT_KNOWLEDGE_META = frozenset({"ref"})
+_QUESTIONNAIRE_ROW_META = frozenset({"organization_refs"})
 
 
 def load_specimen_definitions(base, facility_id):
@@ -117,3 +119,17 @@ def load_activity_definitions(base, facility_id, foundation_resource_id_by_ref):
             payload["category"] = facility_slug(facility_id, category)
 
         base.create_activity_definition(facility_id, **payload)
+
+
+def load_questionnaires(base, organization_ids_by_ref) -> None:
+    for entry in load_json("questionnaires"):
+        org_ids = [organization_ids_by_ref[ref] for ref in entry["organization_refs"]]
+        payload = {
+            key: value
+            for key, value in entry.items()
+            if key not in _QUESTIONNAIRE_ROW_META
+        }
+        try:
+            base.create_questionnaire(org_ids, payload)
+        except FixtureError:
+            pass

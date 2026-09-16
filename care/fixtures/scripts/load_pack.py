@@ -47,6 +47,7 @@ from care.fixtures.loaders.definitions import (
     load_charge_item_definitions,
     load_observation_definitions,
     load_product_knowledge,
+    load_questionnaires,
     load_resource_categories,
     load_specimen_definitions,
 )
@@ -57,7 +58,6 @@ from care.fixtures.loaders.internal_transfers import load_internal_transfers
 from care.fixtures.loaders.load import load_json
 from care.fixtures.loaders.organizations import load_organizations
 from care.fixtures.loaders.patients import load_patients
-from care.fixtures.loaders.questionnaires import load_questionnaires
 from care.fixtures.loaders.scheduling import (
     load_appointments,
     load_schedules,
