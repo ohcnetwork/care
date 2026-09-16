@@ -27,10 +27,12 @@ When ``facility_id`` is given (attach / plugin / ``PACK_FACILITY_ID``), no
 extra facilities are created — only that facility is seeded. Organizations
 still load (suppliers for receipts; geo get-or-create is idempotent).
 
-``include_users=False`` skips pack ``users.json`` (e.g. Experience seeds its
-own accounts). Pass ``user_ids_by_ref`` mapping every pack user ref used by
-schedules, queues, appointments, and clinical service requests — otherwise
-``load_pack`` fails before those stages instead of KeyError mid-run.
+``include_users=False`` skips creating pack ``users.json`` accounts (e.g.
+Experience seeds its own unique usernames). Pass ``user_ids_by_ref`` mapping
+every pack user ref used by schedules, queues, appointments, and clinical
+service requests — otherwise ``load_pack`` fails before those stages instead of
+KeyError mid-run. Pack ``facility_org_ref`` memberships (Pharmacy, Pediatrics,
+…) are still applied onto those caller-supplied users after foundation loads.
 """
 
 import os
@@ -65,7 +67,7 @@ from care.fixtures.loaders.scheduling import (
     load_token_queues,
 )
 from care.fixtures.loaders.templates import load_templates
-from care.fixtures.loaders.users import load_users
+from care.fixtures.loaders.users import apply_pack_facility_memberships, load_users
 
 
 def load_pack(  # noqa: PLR0915
@@ -110,7 +112,13 @@ def load_pack(  # noqa: PLR0915
         log("Loaded users")
     else:
         user_ids_by_ref = _require_user_ids_by_ref(user_ids_by_ref or {})
-        log("Skipped pack users (include_users=False); using caller user_ids_by_ref")
+        apply_pack_facility_memberships(
+            base, facility_id, foundation_resource_id_by_ref, user_ids_by_ref
+        )
+        log(
+            "Skipped pack users (include_users=False); "
+            "applied facility org memberships from pack"
+        )
 
     load_token_categories(base, facility_id)
     log("Loaded token categories")

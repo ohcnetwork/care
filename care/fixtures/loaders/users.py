@@ -17,7 +17,6 @@ def load_users(
     geo_organization_id = geo_organization_id_for_facility(base, facility_id)
     existing_by_username = _existing_users_by_username(base)
     role_org_members: dict[str, set[str]] = {}
-    facility_org_members: dict[str, set[str]] = {}
     user_ids_by_ref: dict[str, str] = {}
     credentials: list[tuple[str, str, bool]] = []
 
@@ -26,7 +25,6 @@ def load_users(
         username = entry["username"]
         role_name = entry["role_name"]
         role_org_ref = entry.get("role_org_ref")
-        facility_org_ref = entry.get("facility_org_ref")
 
         role = roles[role_name]
 
@@ -57,19 +55,12 @@ def load_users(
             if role_org_id:
                 _role_org_member_ids(base, role_org_id, role_org_members).add(user.id)
 
-        user_id = user.id
-        if facility_org_ref:
-            _ensure_facility_membership(
-                base,
-                facility_id,
-                foundation_resource_id_by_ref[facility_org_ref],
-                user_id,
-                role.id,
-                facility_org_members,
-            )
-
-        user_ids_by_ref[ref] = user_id
+        user_ids_by_ref[ref] = user.id
         credentials.append((username, role_name, created))
+
+    apply_pack_facility_memberships(
+        base, facility_id, foundation_resource_id_by_ref, user_ids_by_ref
+    )
 
     log("Pack user credentials:")
     for username, role_name, created in credentials:
@@ -77,6 +68,31 @@ def load_users(
         log(f"  {username:<22} {pwd:<12} {role_name}")
 
     return user_ids_by_ref
+
+
+def apply_pack_facility_memberships(
+    base, facility_id, foundation_resource_id_by_ref, user_ids_by_ref
+) -> None:
+    """Attach existing users to facility orgs from pack ``facility_org_ref``.
+
+    Used after pack user create, and when a caller supplies ``user_ids_by_ref``
+    with ``include_users=False`` (e.g. Experience sandbox).
+    """
+    roles = base.get_roles()
+    facility_org_members: dict[str, set[str]] = {}
+    for entry in load_json("users").get("users", []):
+        ref = entry["ref"]
+        facility_org_ref = entry.get("facility_org_ref")
+        if not facility_org_ref or ref not in user_ids_by_ref:
+            continue
+        _ensure_facility_membership(
+            base,
+            facility_id,
+            foundation_resource_id_by_ref[facility_org_ref],
+            user_ids_by_ref[ref],
+            roles[entry["role_name"]].id,
+            facility_org_members,
+        )
 
 
 def _existing_users_by_username(base) -> dict:
