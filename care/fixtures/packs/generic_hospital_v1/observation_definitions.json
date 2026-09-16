@@ -1166,7 +1166,7 @@
       "code": "2345-7",
       "display": "Glucose [Mass/volume] in Serum or Plasma"
     },
-    "permitted_data_type": "time",
+    "permitted_data_type": "decimal",
     "qualified_ranges": [],
     "method": {
       "system": "http://snomed.info/sct",
@@ -1214,7 +1214,7 @@
       "code": "81638-9",
       "display": "Clotting time of Capillary blood by Sukharev method"
     },
-    "permitted_data_type": "string",
+    "permitted_data_type": "decimal",
     "qualified_ranges": [],
     "method": {
       "system": "http://snomed.info/sct",

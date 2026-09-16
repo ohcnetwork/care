@@ -909,8 +909,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -1011,8 +1011,8 @@
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "420692007",
-        "display": "Oral Capsule"
+        "code": "421026006",
+        "display": "Oral Tablet"
       },
       "intended_routes": [
         {
@@ -1101,19 +1101,19 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "5701000189106",
-      "display": "Product containing precisely chloroquine 50 milligram/5 milliliter conventional release oral suspension (clinical drug)"
+      "code": "324712008",
+      "display": "itraconazole 100 milligram"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "385024007",
-        "display": "oral suspension"
+        "code": "420692007",
+        "display": "Oral Capsule"
       },
       "intended_routes": [
         {
@@ -1133,8 +1133,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "783330006",
-      "display": "ciprofloxacin (as ciprofloxacin hydrochloride) 500 milligram"
+      "code": "446532004",
+      "display": "Product containing precisely itraconazole 200 milligram/1 each conventional release oral tablet (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -1165,25 +1165,30 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "783329001",
-      "display": "ciprofloxacin (as ciprofloxacin hydrochloride) 250 milligram"
+      "code": "786088006",
+      "display": "Product containing snake venom antiserum (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "{tbl}",
-      "display": "tablets"
+      "code": "mg",
+      "display": "milligram"
     },
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "421026006",
-        "display": "Oral Tablet"
+        "code": "385223009",
+        "display": "Powder for Injection"
       },
       "intended_routes": [
         {
           "system": "http://snomed.info/sct",
-          "code": "26643006",
-          "display": "Oral Route"
+          "code": "47625008",
+          "display": "Intravenous route"
+        },
+        {
+          "system": "http://snomed.info/sct",
+          "code": "78421000",
+          "display": "Intramuscular route"
         }
       ]
     }
@@ -1197,25 +1202,25 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "324712008",
-      "display": "itraconazole 100 milligram"
+      "code": "1145295003",
+      "display": "norepinephrine (as norepinephrine bitartrate) 1 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "{tbl}",
-      "display": "tablets"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "421026006",
-        "display": "Oral Tablet"
+        "code": "385219001",
+        "display": "Solution for injection"
       },
       "intended_routes": [
         {
           "system": "http://snomed.info/sct",
-          "code": "26643006",
-          "display": "Oral Route"
+          "code": "47625008",
+          "display": "Intravenous route"
         }
       ]
     }
@@ -1234,20 +1239,20 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "{tbl}",
-      "display": "tablets"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "421026006",
-        "display": "Oral Tablet"
+        "code": "385219001",
+        "display": "Solution for injection"
       },
       "intended_routes": [
         {
           "system": "http://snomed.info/sct",
-          "code": "26643006",
-          "display": "Oral Route"
+          "code": "47625008",
+          "display": "Intravenous route"
         }
       ]
     }
@@ -1293,13 +1298,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "1145295003",
-      "display": "norepinephrine (as norepinephrine bitartrate) 1 milligram/1 milliliter conventional release solution for injection"
+      "code": "782048002",
+      "display": "pentazocine (as pentazocine lactate) 30 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -1325,13 +1330,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "1197461001",
-      "display": "Product containing precisely potassium chloride 150 milligram/1 milliliter conventional release solution for injection (clinical drug)"
+      "code": "782080000",
+      "display": "promethazine hydrochloride 25 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -1357,13 +1362,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "781858002",
-      "display": "Product containing precisely ephedrine hydrochloride 30 milligram/1 milliliter conventional release solution for injection (clinical drug)"
+      "code": "782124009",
+      "display": "tranexamic acid 100 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -1399,13 +1404,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "782048002",
-      "display": "pentazocine (as pentazocine lactate) 30 milligram/1 milliliter conventional release solution for injection"
+      "code": "4731000189104",
+      "display": "Product containing precisely methylergometrine 0.2 milligram/1 milliliter conventional release solution for injection (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -1436,13 +1441,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "782080000",
-      "display": "promethazine hydrochloride 25 milligram/1 milliliter conventional release solution for injection"
+      "code": "784946004",
+      "display": "Product containing precisely sodium bicarbonate 75 milligram/1 milliliter conventional release solution for injection (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -1453,8 +1458,8 @@
       "intended_routes": [
         {
           "system": "http://snomed.info/sct",
-          "code": "78421000",
-          "display": "Intramuscular route"
+          "code": "47625008",
+          "display": "Intravenous route"
         }
       ]
     }
@@ -1468,13 +1473,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "782124009",
-      "display": "tranexamic acid 100 milligram/1 milliliter conventional release solution for injection"
+      "code": "323990001",
+      "display": "Product containing precisely ceftriaxone (as ceftriaxone sodium) 1 gram/1 vial powder for conventional release solution for injection (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -1500,8 +1505,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "4731000189104",
-      "display": "Product containing precisely methylergometrine 0.2 milligram/1 milliliter conventional release solution for injection (clinical drug)"
+      "code": "4231000189108",
+      "display": "Product containing precisely dicyclomine hydrochloride 10 milligram/1 milliliter conventional release solution for injection (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -1532,8 +1537,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "784946004",
-      "display": "Product containing precisely sodium bicarbonate 75 milligram/1 milliliter conventional release solution for injection (clinical drug)"
+      "code": "770383009",
+      "display": "Product containing camylofin (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -1564,13 +1569,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "323990001",
-      "display": "Product containing precisely ceftriaxone (as ceftriaxone sodium) 1 gram/1 vial powder for conventional release solution for injection (clinical drug)"
+      "code": "346444008",
+      "display": "Product containing etamiphylline and theophylline (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "mg",
+      "display": "milligram"
     },
     "definitional": {
       "dosage_form": {
@@ -1601,13 +1606,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "4231000189108",
-      "display": "Product containing precisely dicyclomine hydrochloride 10 milligram/1 milliliter conventional release solution for injection (clinical drug)"
+      "code": "785210007",
+      "display": "Product containing precisely butorphanol tartrate 1 milligram/1 milliliter conventional release solution for injection (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "mg",
+      "display": "milligram"
     },
     "definitional": {
       "dosage_form": {
@@ -1638,8 +1643,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -1670,8 +1675,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -1702,119 +1707,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "785210007",
-      "display": "Product containing precisely butorphanol tartrate 1 milligram/1 milliliter conventional release solution for injection (clinical drug)"
-    },
-    "base_unit": {
-      "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
-    },
-    "definitional": {
-      "dosage_form": {
-        "system": "http://snomed.info/sct",
-        "code": "385219001",
-        "display": "Solution for injection"
-      },
-      "intended_routes": [
-        {
-          "system": "http://snomed.info/sct",
-          "code": "34206005",
-          "display": "Subcutaneous route"
-        },
-        {
-          "system": "http://snomed.info/sct",
-          "code": "47625008",
-          "display": "Intravenous route"
-        },
-        {
-          "system": "http://snomed.info/sct",
-          "code": "78421000",
-          "display": "Intramuscular route"
-        }
-      ]
-    }
-  },
-  {
-    "ref": "product_knowledge:ciprofloxacin-0-3-pct",
-    "category": "medicines-product-knowledge",
-    "name": "Ciprofloxacin 0.3% Eye Drops",
-    "slug_value": "ciprofloxacin-0-3-pct",
-    "status": "active",
-    "product_type": "medication",
-    "code": {
-      "system": "http://snomed.info/sct",
-      "code": "330418005",
-      "display": "Product containing precisely ciprofloxacin (as ciprofloxacin hydrochloride) 3 milligram/1 milliliter conventional release eye drops"
-    },
-    "base_unit": {
-      "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
-    },
-    "definitional": {
-      "dosage_form": {
-        "system": "http://snomed.info/sct",
-        "code": "385219001",
-        "display": "Solution for injection"
-      },
-      "intended_routes": [
-        {
-          "system": "http://snomed.info/sct",
-          "code": "47625008",
-          "display": "Intravenous route"
-        },
-        {
-          "system": "http://snomed.info/sct",
-          "code": "78421000",
-          "display": "intramuscular route"
-        }
-      ]
-    }
-  },
-  {
-    "ref": "product_knowledge:probiotic-lactobacillus-billion",
-    "category": "medicines-product-knowledge",
-    "name": "Probiotic (Lactobacillus) 6 Billion CFU Sachet",
-    "slug_value": "probiotic-lactobacillus-billion",
-    "status": "active",
-    "product_type": "medication",
-    "code": {
-      "system": "http://snomed.info/sct",
-      "code": "781889003",
-      "display": "Product containing precisely flumazenil 100 microgram/1 milliliter conventional release solution for injection (clinical drug)"
-    },
-    "base_unit": {
-      "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
-    },
-    "definitional": {
-      "dosage_form": {
-        "system": "http://snomed.info/sct",
-        "code": "385219001",
-        "display": "Solution for injection"
-      },
-      "intended_routes": [
-        {
-          "system": "http://snomed.info/sct",
-          "code": "47625008",
-          "display": "Intravenous route"
-        }
-      ]
-    }
-  },
-  {
-    "ref": "product_knowledge:lactulose-g",
-    "category": "medicines-product-knowledge",
-    "name": "Lactulose 10 g/15 ml Syrup",
-    "slug_value": "lactulose-g",
-    "status": "active",
-    "product_type": "medication",
-    "code": {
-      "system": "http://snomed.info/sct",
       "code": "785109008",
-      "display": "Product containing precisely moxifloxacin (as moxifloxacin hydrochloride) 5 milligram/1 milliliter conventional release eye solution"
+      "display": "Product containing precisely moxifloxacin (as moxifloxacin hydrochloride) 5 milligram/1 milliliter conventional release eye drops solution"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -1824,8 +1718,8 @@
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "422060001",
-        "display": "eye solution"
+        "code": "385124005",
+        "display": "eye drops"
       },
       "intended_routes": [
         {
@@ -1837,42 +1731,10 @@
     }
   },
   {
-    "ref": "product_knowledge:domperidone-1-mg-suspension-1",
+    "ref": "product_knowledge:ciprofloxacin-0-3-pct",
     "category": "medicines-product-knowledge",
-    "name": "Domperidone 1 mg/ml Oral Suspension",
-    "slug_value": "domperidone-1-mg-suspension-1",
-    "status": "active",
-    "product_type": "medication",
-    "code": {
-      "system": "http://snomed.info/sct",
-      "code": "321745007",
-      "display": "Product containing precisely amitriptyline hydrochloride 10 milligram/1 each conventional release oral tablet"
-    },
-    "base_unit": {
-      "system": "http://unitsofmeasure.org",
-      "code": "{tbl}",
-      "display": "tablets"
-    },
-    "definitional": {
-      "dosage_form": {
-        "system": "http://snomed.info/sct",
-        "code": "421026006",
-        "display": "oral tablets"
-      },
-      "intended_routes": [
-        {
-          "system": "http://snomed.info/sct",
-          "code": "26643006",
-          "display": "Oral Route"
-        }
-      ]
-    }
-  },
-  {
-    "ref": "product_knowledge:clotrimazole-1-pct-ear-drop-1",
-    "category": "medicines-product-knowledge",
-    "name": "Clotrimazole 1% Ear Drops",
-    "slug_value": "clotrimazole-1-pct-ear-drop-1",
+    "name": "Ciprofloxacin 0.3% Eye Drops",
+    "slug_value": "ciprofloxacin-0-3-pct",
     "status": "active",
     "product_type": "medication",
     "code": {
@@ -1901,6 +1763,134 @@
     }
   },
   {
+    "ref": "product_knowledge:probiotic-lactobacillus-billion",
+    "category": "medicines-product-knowledge",
+    "name": "Probiotic (Lactobacillus) 6 Billion CFU Sachet",
+    "slug_value": "probiotic-lactobacillus-billion",
+    "status": "active",
+    "product_type": "medication",
+    "code": {
+      "system": "http://snomed.info/sct",
+      "code": "413469005",
+      "display": "Product containing Lactobacillus (medicinal product)"
+    },
+    "base_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "g",
+      "display": "gram"
+    },
+    "definitional": {
+      "dosage_form": {
+        "system": "http://snomed.info/sct",
+        "code": "385023001",
+        "display": "oral solution"
+      },
+      "intended_routes": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "26643006",
+          "display": "Oral Route"
+        }
+      ]
+    }
+  },
+  {
+    "ref": "product_knowledge:lactulose-g",
+    "category": "medicines-product-knowledge",
+    "name": "Lactulose 10 g/15 ml Syrup",
+    "slug_value": "lactulose-g",
+    "status": "active",
+    "product_type": "medication",
+    "code": {
+      "system": "http://snomed.info/sct",
+      "code": "2184281000189101",
+      "display": "Product containing precisely lactulose 10 gram/15 milliliter oral solution"
+    },
+    "base_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mL",
+      "display": "milliliter"
+    },
+    "definitional": {
+      "dosage_form": {
+        "system": "http://snomed.info/sct",
+        "code": "385024007",
+        "display": "oral suspension"
+      },
+      "intended_routes": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "26643006",
+          "display": "Oral Route"
+        }
+      ]
+    }
+  },
+  {
+    "ref": "product_knowledge:domperidone-1-mg-suspension-1",
+    "category": "medicines-product-knowledge",
+    "name": "Domperidone 1 mg/ml Oral Suspension",
+    "slug_value": "domperidone-1-mg-suspension-1",
+    "status": "active",
+    "product_type": "medication",
+    "code": {
+      "system": "http://snomed.info/sct",
+      "code": "322078007",
+      "display": "domperidone 1 milligram/1 milliliter conventional release oral suspension"
+    },
+    "base_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "mL",
+      "display": "milliliter"
+    },
+    "definitional": {
+      "dosage_form": {
+        "system": "http://snomed.info/sct",
+        "code": "385024007",
+        "display": "oral suspension"
+      },
+      "intended_routes": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "26643006",
+          "display": "Oral Route"
+        }
+      ]
+    }
+  },
+  {
+    "ref": "product_knowledge:clotrimazole-1-pct-ear-drop-1",
+    "category": "medicines-product-knowledge",
+    "name": "Clotrimazole 1% Ear Drops",
+    "slug_value": "clotrimazole-1-pct-ear-drop-1",
+    "status": "active",
+    "product_type": "medication",
+    "code": {
+      "system": "http://snomed.info/sct",
+      "code": "7431000189103",
+      "display": "Product containing precisely clotrimazole 10 milligram/1 milliliter conventional release ear drops"
+    },
+    "base_unit": {
+      "system": "http://unitsofmeasure.org",
+      "code": "[drp]",
+      "display": "drop"
+    },
+    "definitional": {
+      "dosage_form": {
+        "system": "http://snomed.info/sct",
+        "code": "385136004",
+        "display": "ear drops"
+      },
+      "intended_routes": [
+        {
+          "system": "http://snomed.info/sct",
+          "code": "10547007",
+          "display": "Otic route"
+        }
+      ]
+    }
+  },
+  {
     "ref": "product_knowledge:drotaverine-mefenamic-acid",
     "category": "medicines-product-knowledge",
     "name": "Drotaverine 80 mg and Mefenamic acid 250 mg Tablet",
@@ -1914,14 +1904,14 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "385023001",
-        "display": "oral solution"
+        "code": "421026006",
+        "display": "Oral Tablet"
       },
       "intended_routes": [
         {
@@ -1941,25 +1931,25 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "374408003",
-      "display": "Product containing precisely lactulose 667 milligram/1 milliliter conventional release oral solution (clinical drug)"
+      "code": "331126001",
+      "display": "Product containing precisely sodium chloride 9 milligram/1 milliliter conventional release nasal drops"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "[drp]",
+      "display": "drop"
     },
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "385023001",
-        "display": "oral solution"
+        "code": "385157007",
+        "display": "nasal spray"
       },
       "intended_routes": [
         {
           "system": "http://snomed.info/sct",
-          "code": "26643006",
-          "display": "Oral Route"
+          "code": "46713006",
+          "display": "Intranasal"
         }
       ]
     }
@@ -2037,13 +2027,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "331126001",
+      "display": "Product containing precisely sodium chloride 9 milligram/1 milliliter conventional release nasal drops"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "[drp]",
+      "display": "drop"
     },
     "definitional": {
       "dosage_form": {
@@ -2234,8 +2224,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "mg",
+      "display": "milligram"
     },
     "definitional": {
       "dosage_form": {
@@ -2714,8 +2704,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "[drp]",
-      "display": "drop"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -2746,8 +2736,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -2778,8 +2768,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -2810,8 +2800,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -2842,8 +2832,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -2874,8 +2864,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "[drp]",
+      "display": "drop"
     },
     "definitional": {
       "dosage_form": {
@@ -2901,13 +2891,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "426409006",
+      "display": "Product containing beclometasone and salbutamol (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "ug",
-      "display": "microgram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -2918,8 +2908,8 @@
       "intended_routes": [
         {
           "system": "http://snomed.info/sct",
-          "code": "260617000",
-          "display": "Intranasal"
+          "code": "447694001",
+          "display": "Respiratory tract route"
         }
       ]
     }
@@ -2938,8 +2928,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "{count}",
-      "display": "puffs"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -2950,8 +2940,8 @@
       "intended_routes": [
         {
           "system": "http://snomed.info/sct",
-          "code": "260617000",
-          "display": "Intranasal"
+          "code": "447694001",
+          "display": "Respiratory tract route"
         }
       ]
     }
@@ -2970,8 +2960,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "ug",
-      "display": "microgram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -3098,8 +3088,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -3130,8 +3120,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -3258,8 +3248,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "ug",
-      "display": "microgram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -3295,8 +3285,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "ug",
-      "display": "microgram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -3332,8 +3322,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "ug",
-      "display": "microgram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -3369,8 +3359,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "[iU]",
-      "display": "international unit"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -3401,8 +3391,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "[iU]",
-      "display": "international unit"
+      "code": "mg",
+      "display": "milligram"
     },
     "definitional": {
       "dosage_form": {
@@ -3438,8 +3428,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -3470,8 +3460,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -3672,8 +3662,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "409516001",
+      "display": "Product containing hemocoagulase (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -3842,8 +3832,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "783329001",
+      "display": "ciprofloxacin (as ciprofloxacin hydrochloride)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -3874,8 +3864,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "376213007",
+      "display": "Product containing ferrous sulfate and folic acid (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -3938,8 +3928,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "329318007",
-      "display": "Product containing precisely ascorbic acid 500 milligram/1 each conventional release oral tablet (clinical drug)"
+      "code": "5311000189109",
+      "display": "Product containing precisely vitamin A 100000 international unit/1 milliliter conventional release oral solution"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -4045,8 +4035,8 @@
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "385060002",
-        "display": "Oral tablet"
+        "code": "420692007",
+        "display": "Oral Capsule"
       },
       "intended_routes": [
         {
@@ -4109,8 +4099,8 @@
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "420692007",
-        "display": "oral capsule"
+        "code": "421026006",
+        "display": "Oral Tablet"
       },
       "intended_routes": [
         {
@@ -4130,8 +4120,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1155903004",
+      "display": "Product containing precisely tramadol hydrochloride 100 milligram/1 each conventional release oral tablet (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -4258,8 +4248,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "320884002",
+      "display": "Product containing precisely montelukast (as montelukast sodium) 10 milligram/1 each conventional release oral tablet (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -4333,8 +4323,8 @@
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "421026006",
-        "display": "Oral Tablet"
+        "code": "420692007",
+        "display": "Oral Capsule"
       },
       "intended_routes": [
         {
@@ -4354,8 +4344,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1303920005",
+      "display": "Product containing precisely calcium carbonate 500 milligram and colecalciferol 20 microgram/1 each conventional release oral tablet"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -4386,8 +4376,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "317897002",
+      "display": "digoxin 250 microgram/1 each conventional release oral tablet"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -4439,8 +4429,7 @@
           "display": "Oral Route"
         }
       ]
-    },
-    "alternate_identifier": "Oral Route"
+    }
   },
   {
     "ref": "product_knowledge:n-acetyl-cysteine",
@@ -4472,8 +4461,7 @@
           "display": "Oral Route"
         }
       ]
-    },
-    "alternate_identifier": "Oral Route"
+    }
   },
   {
     "ref": "product_knowledge:tranexamic-acid",
@@ -4484,7 +4472,7 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
+      "code": "322771004",
       "display": "Product containing precisely tranexamic acid 500 milligram/1 each conventional release oral tablet (clinical drug)"
     },
     "base_unit": {
@@ -4505,8 +4493,7 @@
           "display": "Oral Route"
         }
       ]
-    },
-    "alternate_identifier": "Oral Route"
+    }
   },
   {
     "ref": "product_knowledge:mefenamic-acid",
@@ -4538,8 +4525,7 @@
           "display": "Oral Route"
         }
       ]
-    },
-    "alternate_identifier": "Oral Route"
+    }
   },
   {
     "ref": "product_knowledge:metformin-1000-mg",
@@ -4651,14 +4637,14 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "385024007",
-        "display": "oral suspension"
+        "code": "421026006",
+        "display": "Oral Tablet"
       },
       "intended_routes": [
         {
@@ -4678,8 +4664,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "421108007",
+      "display": "Product containing chlorphenamine (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -4843,8 +4829,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -4966,8 +4952,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "317109009",
-      "display": "Product containing precisely dicycloverine hydrochloride 10 milligram/1 each conventional release oral tablet (clinical drug)"
+      "code": "4231000189108",
+      "display": "Product containing precisely dicyclomine hydrochloride 10 milligram/1 milliliter conventional release solution for injection (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -4998,8 +4984,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "347050005",
+      "display": "Product containing dicycloverine and paracetamol (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -5030,7 +5016,7 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "317108001",
+      "code": "319779005",
       "display": "Product containing precisely dicycloverine hydrochloride 20 milligram/1 each conventional release oral tablet"
     },
     "base_unit": {
@@ -5126,8 +5112,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "320884002",
+      "display": "Product containing precisely montelukast (as montelukast sodium) 10 milligram/1 each conventional release oral tablet (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -5190,8 +5176,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1255203009",
+      "display": "Product containing precisely budesonide 500 microgram/1 milliliter conventional release suspension for nebulizer"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -5207,8 +5193,8 @@
       "intended_routes": [
         {
           "system": "http://snomed.info/sct",
-          "code": "260617000",
-          "display": "Intranasal"
+          "code": "447694001",
+          "display": "Respiratory tract route"
         }
       ]
     }
@@ -5222,8 +5208,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1231792009",
+      "display": "Product containing precisely levosalbutamol (as levosalbutamol sulfate) 50 microgram/1 actuation conventional release pressurized solution for inhalation (clinical drug"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -5239,8 +5225,8 @@
       "intended_routes": [
         {
           "system": "http://snomed.info/sct",
-          "code": "260617000",
-          "display": "Intranasal"
+          "code": "447694001",
+          "display": "Respiratory tract route"
         }
       ]
     }
@@ -5254,8 +5240,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "323539009",
+      "display": "amoxicillin 500 milligram and clavulanic acid (as clavulanate potassium) 125 milligram/1 each conventional release oral tablet"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -5318,8 +5304,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "108402001",
+      "display": "Product containing aminophylline (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -5360,8 +5346,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -5392,8 +5378,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -5520,8 +5506,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "U",
-      "display": "units"
+      "code": "mg",
+      "display": "milligram"
     },
     "definitional": {
       "dosage_form": {
@@ -5552,8 +5538,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "U",
-      "display": "units"
+      "code": "mg",
+      "display": "milligram"
     },
     "definitional": {
       "dosage_form": {
@@ -5611,8 +5597,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1157039007",
+      "display": "Product containing precisely methylprednisolone (as methylprednisolone sodium succinate) 500 milligram/1 vial powder for conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -5643,13 +5629,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "426276000",
+      "display": "Product containing posaconazole (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -5840,8 +5826,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -5852,8 +5838,8 @@
       "intended_routes": [
         {
           "system": "http://snomed.info/sct",
-          "code": "47625008",
-          "display": "Intravenous route"
+          "code": "26643006",
+          "display": "Oral Route"
         }
       ]
     }
@@ -5872,8 +5858,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -5904,8 +5890,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -5931,8 +5917,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "373225004",
+      "display": "Product containing enzyme preparation (product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -6000,8 +5986,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -6091,8 +6077,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "329392007",
-      "display": "Product containing precisely alpha tocopherol acetate 400 unit/1 each conventional release oral capsule"
+      "code": "319775004",
+      "display": "Product containing precisely alpha tocopherol 100 unit/1 each conventional release oral capsule"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -6187,8 +6173,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "346467007",
+      "display": "Product containing chymotrypsin and trypsin (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -6224,8 +6210,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -6320,8 +6306,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -6411,8 +6397,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "5461000189101",
-      "display": "Product containing precisely nepafenac 1 milligram/1 milliliter conventional release eye drops (clinical drug)"
+      "code": "1197553008",
+      "display": "Product containing precisely colecalciferol 10 microgram/1 milliliter conventional release oral solution"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -6422,8 +6408,8 @@
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "421026006",
-        "display": "Oral Tablet"
+        "code": "420692007",
+        "display": "Oral Capsule"
       },
       "intended_routes": [
         {
@@ -6668,7 +6654,7 @@
     "code": {
       "system": "http://snomed.info/sct",
       "code": "1145424008",
-      "display": "paracetamol 500 milligram/1 each conventional release oral tablet"
+      "display": "azithromycin 500 milligram/1 each conventional release oral tablet"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -6736,8 +6722,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "U",
-      "display": "units"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -6837,8 +6823,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -6896,8 +6882,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "1173056004",
-      "display": "Product containing precisely vecuronium bromide 4 milligram/1 vial powder for conventional release solution for injection"
+      "code": "1145539006",
+      "display": "Product containing precisely pantoprazole (as pantoprazole sodium) 40 milligram/1 vial powder for conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -6933,8 +6919,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -6970,8 +6956,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7007,8 +6993,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7044,8 +7030,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7123,8 +7109,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "mg",
+      "display": "milligram"
     },
     "definitional": {
       "dosage_form": {
@@ -7271,8 +7257,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "mg",
+      "display": "milligram"
     },
     "definitional": {
       "dosage_form": {
@@ -7303,8 +7289,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7372,8 +7358,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7404,8 +7390,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7505,8 +7491,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "g",
-      "display": "gram"
+      "code": "mg",
+      "display": "milligram"
     },
     "definitional": {
       "dosage_form": {
@@ -7542,8 +7528,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7574,8 +7560,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7606,8 +7592,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "U",
-      "display": "units"
+      "code": "mg",
+      "display": "milligram"
     },
     "definitional": {
       "dosage_form": {
@@ -7643,8 +7629,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7680,8 +7666,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7754,8 +7740,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7791,8 +7777,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7823,8 +7809,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7856,7 +7842,7 @@
     "code": {
       "system": "http://snomed.info/sct",
       "code": "1163209007",
-      "display": "Pheniramine Injection 22.75 mg/ml"
+      "display": "pheniramine 22.75 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -7892,8 +7878,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7924,8 +7910,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -7956,8 +7942,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -7983,13 +7969,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "781787008",
-      "display": "betamethasone (as betamethasone sodium phosphate) 4 milligram/1 milliliter conventional release solution for injection"
+      "code": "4691000189107",
+      "display": "Product containing precisely phenytoin 25 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -8020,13 +8006,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "439260003",
+      "display": "Product containing dimeticone (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "[drp]",
+      "display": "drop"
     },
     "definitional": {
       "dosage_form": {
@@ -8052,8 +8038,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "703932002",
+      "display": "Product containing precisely drotaverine hydrochloride 80 milligram/1 each conventional release oral tablet"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -8212,8 +8198,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "409159007",
+      "display": "Product containing acetylcysteine (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -8249,8 +8235,8 @@
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -8308,13 +8294,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1197759009",
+      "display": "Product containing precisely drotaverine hydrochloride 80 milligram and mefenamic acid 250 milligram/1 each conventional release oral tablet"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -8340,13 +8326,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "765653005",
+      "display": "Product containing precisely diclofenac sodium 100 milligram/1 each prolonged-release oral tablet (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -8372,8 +8358,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "376213007",
+      "display": "Product containing ferrous sulfate and folic acid (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -8404,13 +8390,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "377092000",
+      "display": "Product containing precisely chlorphenamine maleate 2 milligram/5 milliliter conventional release oral solution"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -8436,25 +8422,25 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "418569002",
+      "display": "Product containing precisely acetylcysteine 600 milligram/1 each conventional release oral tablet (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "385219001",
-        "display": "Solution for injection"
+        "code": "385023001",
+        "display": "oral solution"
       },
       "intended_routes": [
         {
           "system": "http://snomed.info/sct",
-          "code": "47625008",
-          "display": "Intravenous route"
+          "code": "26643006",
+          "display": "Oral Route"
         }
       ]
     }
@@ -8468,13 +8454,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "323568005",
+      "display": "amoxicillin (as amoxicillin sodium) 1 gram and clavulanic acid (as clavulanate potassium) 200 milligram/1 vial powder for conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -8500,8 +8486,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1197142006",
+      "display": "Product containing precisely amoxicillin 40 milligram/1 milliliter and clavulanic acid (as clavulanate potassium) 5.7 milligram/1 milliliter conventional release oral suspension"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -8532,13 +8518,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1197759009",
+      "display": "Product containing precisely drotaverine hydrochloride 80 milligram and mefenamic acid 250 milligram/1 each conventional release oral tablet"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -8564,8 +8550,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "421079001",
+      "display": "Product containing macrogol (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -8596,8 +8582,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "330860000",
+      "display": "Product containing naphazoline (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -8628,8 +8614,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "789650005",
+      "display": "Product containing precisely rabies human immune globulin 150 unit/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -8660,13 +8646,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "879842009",
+      "display": "Product containing precisely human tetanus immunoglobulin 250 unit/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -8692,13 +8678,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "61602008",
+      "display": "Product containing only tetanus toxoid in parenteral dose form (medicinal product form)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -8724,8 +8710,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "409159000",
+      "display": "Product containing palonosetron (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -8756,8 +8742,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1.68024E+15",
+      "display": "Product containing precisely linezolid 600 milligram/300 milliliter solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -8788,8 +8774,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "108471001",
+      "display": "Product containing pancuronium (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -8820,8 +8806,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "426591003",
+      "display": "Product containing dexmedetomidine (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -8852,13 +8838,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "770389008",
+      "display": "Product containing ceftazidime and tazobactam (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -8884,8 +8870,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "409516001",
+      "display": "Product containing hemocoagulase (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -8916,13 +8902,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "785210007",
+      "display": "Product containing precisely butorphanol tartrate 1 milligram/1 milliliter conventional release solution for injection (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "mg",
+      "display": "milligram"
     },
     "definitional": {
       "dosage_form": {
@@ -8958,13 +8944,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "17356001",
+      "display": "Pralidoxime chloride"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "mg",
+      "display": "milligram"
     },
     "definitional": {
       "dosage_form": {
@@ -8995,8 +8981,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "108406003",
+      "display": "Product containing etomidate (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9027,8 +9013,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1197439006",
+      "display": "cefotaxime (as cefotaxime sodium) 250 milligram/1 vial powder for conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9059,8 +9045,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "409258004",
+      "display": "Product containing mecobalamin (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9091,8 +9077,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "781947007",
+      "display": "iron (as iron sucrose) 20 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9123,13 +9109,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "783330006",
+      "display": "ciprofloxacin (as ciprofloxacin hydrochloride) 500 milligram"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -9155,13 +9141,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1201984007",
+      "display": "Product containing precisely zinc sulfate 20 milligram/1 each conventional release oral tablet"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -9187,13 +9173,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1201984007",
+      "display": "Product containing precisely zinc sulfate 20 milligram/1 each conventional release oral tablet"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -9219,13 +9205,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "346580000",
+      "display": "Product containing bromhexine and guaifenesin and terbutaline (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -9251,8 +9237,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "770383009",
+      "display": "Product containing camylofin (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9283,8 +9269,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "5311000189109",
+      "display": "Product containing precisely vitamin A 100000 international unit/1 milliliter conventional release oral solution"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9315,13 +9301,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "864000006",
+      "display": "Product containing precisely silver sulfadiazine 10 milligram/1 gram conventional release cutaneous cream (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -9347,13 +9333,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "784645002",
+      "display": "Product containing precisely water 1 gram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -9379,8 +9365,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "6541000189106",
+      "display": "Product containing precisely diclofenac (as diclofenac sodium) 50 milligram and paracetamol 325 milligram/1 each conventional release oral tablet (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9411,13 +9397,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "426276009",
+      "display": "Product containing mometasone (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -9443,8 +9429,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "347070003",
+      "display": "Product containing magaldrate and simeticone (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9475,13 +9461,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "330567005",
+      "display": "Product containing precisely homatropine hydrobromide 20 milligram/1 milliliter conventional release eye drops"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
@@ -9492,8 +9478,8 @@
       "intended_routes": [
         {
           "system": "http://snomed.info/sct",
-          "code": "6064005",
-          "display": "Topical route"
+          "code": "54485002",
+          "display": "Ophthalmic route"
         }
       ]
     }
@@ -9507,19 +9493,19 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "6501000189108",
+      "display": "Product containing precisely ketoconazole 20 milligram/1 gram conventional release cutaneous lotion (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "425753008",
-        "display": "Conventional release cutaneous ointment"
+        "code": "421628006",
+        "display": "cutaneous cream"
       },
       "intended_routes": [
         {
@@ -9539,19 +9525,19 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "255637006",
+      "display": "Product containing zinc oxide (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "g",
+      "display": "gram"
     },
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "425753008",
-        "display": "Conventional release cutaneous ointment"
+        "code": "421628006",
+        "display": "cutaneous cream"
       },
       "intended_routes": [
         {
@@ -9571,8 +9557,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "413469005",
+      "display": "Product containing Lactobacillus (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9582,8 +9568,8 @@
     "definitional": {
       "dosage_form": {
         "system": "http://snomed.info/sct",
-        "code": "421026006",
-        "display": "Oral Tablet"
+        "code": "420692007",
+        "display": "Oral Capsule"
       },
       "intended_routes": [
         {
@@ -9603,8 +9589,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "781857007",
+      "display": "enoxaparin sodium 100 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9635,8 +9621,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "785109008",
+      "display": "Product containing precisely moxifloxacin (as moxifloxacin hydrochloride) 5 milligram/1 milliliter conventional release eye solution"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9667,8 +9653,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "785109008",
+      "display": "Product containing precisely moxifloxacin (as moxifloxacin hydrochloride) 5 milligram/1 milliliter conventional release eye solution"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9699,8 +9685,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "331055003",
+      "display": "Product containing dexamethasone and neomycin (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9731,8 +9717,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "785109008",
+      "display": "Product containing precisely moxifloxacin (as moxifloxacin hydrochloride) 5 milligram/1 milliliter conventional release eye solution"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9763,8 +9749,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "330534002",
+      "display": "Product containing precisely phenylephrine hydrochloride 2.5 milligram/1 milliliter conventional release eye drops"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9795,13 +9781,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "784971001",
+      "display": "epinephrine (as epinephrine bitartrate) 5 microgram/1 milliliter and lidocaine hydrochloride 20 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "ug",
-      "display": "microgram"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -9832,8 +9818,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "347080007",
+      "display": "Product containing potassium (medicinal product)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9864,13 +9850,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1197461001",
+      "display": "Product containing precisely potassium chloride 150 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -9896,13 +9882,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1201984007",
+      "display": "Product containing precisely zinc sulfate 20 milligram/1 each conventional release oral tablet"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -9928,8 +9914,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "371374003",
+      "display": "Product containing precisely cetirizine hydrochloride 10 milligram/1 each conventional release oral tablet"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9960,8 +9946,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "6541000189106",
+      "display": "Product containing precisely diclofenac (as diclofenac sodium) 50 milligram and paracetamol 325 milligram/1 each conventional release oral tablet (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -9992,13 +9978,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1201823002",
+      "display": "Product containing precisely ambroxol hydrochloride 3 milligram/1 milliliter and guaifenesin 10 milligram/1 milliliter and terbutaline sulfate 250 microgram/1 milliliter conventional"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mL",
-      "display": "milliliter"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -10024,13 +10010,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1197553008",
+      "display": "Product containing precisely colecalciferol 10 microgram/1 milliliter conventional release oral solution"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "[drp]",
-      "display": "drop"
+      "code": "{tbl}",
+      "display": "tablets"
     },
     "definitional": {
       "dosage_form": {
@@ -10056,8 +10042,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "329925006",
+      "display": "aceclofenac 100 milligram/1 each conventional release oral tablet"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -10088,8 +10074,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "785109008",
+      "display": "Product containing precisely moxifloxacin (as moxifloxacin hydrochloride) 5 milligram/1 milliliter conventional release eye solution"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -10120,8 +10106,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1303920005",
+      "display": "Product containing precisely calcium carbonate 500 milligram and colecalciferol 20 microgram/1 each conventional release oral tablet"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -10132,7 +10118,7 @@
       "dosage_form": {
         "system": "http://snomed.info/sct",
         "code": "421026006",
-        "display": "Oral Capsule"
+        "display": "Oral Tablet"
       },
       "intended_routes": [
         {
@@ -10152,13 +10138,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "781831009",
+      "display": "diclofenac sodium 25 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -10184,13 +10170,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "781831009",
+      "display": "diclofenac sodium 25 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -10216,8 +10202,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "782060001",
+      "display": "phytomenadione 10 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -10253,8 +10239,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "323990001",
+      "display": "Product containing precisely ceftriaxone (as ceftriaxone sodium) 1 gram/1 vial powder for conventional release solution for injection (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -10285,8 +10271,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "781762001",
+      "display": "Product containing precisely amikacin (as amikacin sulfate) 250 milligram/1 milliliter conventional release solution for injection (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -10322,8 +10308,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "781762001",
+      "display": "Product containing precisely amikacin (as amikacin sulfate) 250 milligram/1 milliliter conventional release solution for injection (clinical drug)"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
@@ -10359,13 +10345,13 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1193826002",
+      "display": "lorazepam 2 milligram/1 milliliter conventional release solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",
-      "code": "mg",
-      "display": "milligram"
+      "code": "mL",
+      "display": "milliliter"
     },
     "definitional": {
       "dosage_form": {
@@ -10396,8 +10382,8 @@
     "product_type": "medication",
     "code": {
       "system": "http://snomed.info/sct",
-      "code": "",
-      "display": ""
+      "code": "1666211000189102",
+      "display": "Product containing precisely human anti-d immunoglobulin 150 microgram/1 milliliter solution for injection"
     },
     "base_unit": {
       "system": "http://unitsofmeasure.org",

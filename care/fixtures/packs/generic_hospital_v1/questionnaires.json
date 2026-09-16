@@ -181,7 +181,7 @@
           "system": "http://loinc.org",
           "display": "History of Present illness Narrative"
         },
-        "text": "Clincal History",
+        "text": "Clinical History",
         "type": "text",
         "link_id": "Q-1779852135293",
         "required": false,
