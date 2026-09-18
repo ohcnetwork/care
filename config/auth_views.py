@@ -1,13 +1,19 @@
 from datetime import timedelta
 
+from altcha import create_challenge
+from django.conf import settings
 from django.contrib.auth import authenticate, get_user_model
 from django.core.cache import cache
 from django.core.exceptions import PermissionDenied
+from django.utils.decorators import method_decorator
 from django.utils.timezone import localtime, now
 from django.utils.translation import gettext_lazy as _
+from django.views.decorators.cache import never_cache
 from drf_spectacular.utils import extend_schema
 from rest_framework import serializers, status
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework.views import APIView
 from rest_framework_simplejwt.exceptions import AuthenticationFailed
 from rest_framework_simplejwt.serializers import PasswordField
@@ -27,6 +33,34 @@ class CaptchaRequiredException(AuthenticationFailed):
     status_code = status.HTTP_429_TOO_MANY_REQUESTS
     default_detail = _("Too Many Requests Provide Captcha")
     default_code = "captchaRequired"
+
+
+class CaptchaChallengeThrottle(AnonRateThrottle):
+    rate = "30/min"
+
+
+@method_decorator(never_cache, name="dispatch")
+class CaptchaChallengeView(APIView):
+    """
+    Issue an ALTCHA proof-of-work challenge.
+
+    Used by clients after receiving a 429 "captchaRequired" response from the
+    login endpoint, to obtain a challenge that can be solved locally and
+    submitted back with the retried request.
+    """
+
+    permission_classes = [AllowAny]
+    throttle_classes = [CaptchaChallengeThrottle]
+
+    @extend_schema(tags=["auth"])
+    def get(self, request, *args, **kwargs):
+        challenge = create_challenge(
+            algorithm="PBKDF2/SHA-256",
+            cost=5_000,
+            hmac_secret=settings.ALTCHA_HMAC_SECRET,
+            expires_at=now() + timedelta(minutes=5),
+        )
+        return Response(challenge.to_dict())
 
 
 class TokenObtainSerializer(serializers.Serializer):
@@ -61,7 +95,7 @@ class TokenObtainSerializer(serializers.Serializer):
                     "status": 429,
                     "detail": "Too Many Requests Provide Captcha",
                 },
-                code=status.HTTP_429_TOO_MANY_REQUESTS,
+                code="captchaRequired",
             )
         self.user = authenticate(**authenticate_kwargs)
 

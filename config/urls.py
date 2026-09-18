@@ -20,6 +20,7 @@ from config import api_router
 
 from .auth_views import (
     AnnotatedTokenVerifyView,
+    CaptchaChallengeView,
     LogoutView,
     TokenObtainPairView,
     TokenRefreshView,
@@ -34,6 +35,11 @@ urlpatterns = [
     path(f"{settings.ADMIN_URL.rstrip('/')}/", admin.site.urls),
     path("api/v1/auth/login/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/v1/auth/logout/", LogoutView.as_view(), name="token_obtain_pair"),
+    path(
+        "api/v1/auth/captcha/challenge/",
+        CaptchaChallengeView.as_view(),
+        name="captcha_challenge",
+    ),
     path(
         "api/v1/auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"
     ),
