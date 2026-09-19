@@ -11,7 +11,9 @@ from care.emr.resources.observation.valueset import (
     CARE_BODY_SITE_VALUESET,
     CARE_OBSERVATION_COLLECTION_METHOD,
 )
-from care.emr.resources.observation_definition.spec import BaseObservationDefinitionSpec
+from care.emr.resources.observation_definition.spec import (
+    ObservationDefinitionEmbeddedSpec,
+)
 from care.emr.resources.questionnaire.spec import QuestionType, SubjectType
 from care.emr.resources.questionnaire_response.spec import (
     QuestionnaireSubmitResultValue,
@@ -144,6 +146,6 @@ class ObservationRetrieveSpec(ObservationReadSpec):
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
         if obj.observation_definition:
-            mapping["observation_definition"] = BaseObservationDefinitionSpec.serialize(
-                obj.observation_definition
+            mapping["observation_definition"] = (
+                ObservationDefinitionEmbeddedSpec.serialize(obj.observation_definition)
             )

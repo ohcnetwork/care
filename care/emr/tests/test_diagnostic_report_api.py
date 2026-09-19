@@ -631,6 +631,62 @@ class DiagnosticReportUpsertObservationAPITestCases(CareAPITestBase):
         self.assertEqual(response.status_code, 200, response.data)
         self.assertEqual(response.data["message"], "Observations updated successfully")
 
+    def test_retrieved_definition_slug_can_create_another_observation(self):
+        self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(permissions=self.permission)
+        self.attach_role_facility_organization_user(
+            role=role, user=self.user, facility_organization=self.facility_organization
+        )
+        original = self.create_observation(
+            observation_definition=self.observation_definition
+        )
+        detail_url = reverse(
+            "diagnostic_report-detail",
+            kwargs={
+                "patient_external_id": self.patient.external_id,
+                "external_id": self.diagnostic_report.external_id,
+            },
+        )
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 200, response.data)
+        definition = response.data["observations"][0]["observation_definition"]
+        self.assertEqual(definition["slug"], self.observation_definition.slug)
+        self.assertEqual(definition["id"], str(self.observation_definition.external_id))
+        self.assertEqual(definition["code"], self.observation_definition.code)
+        self.assertEqual(definition["permitted_data_type"], "integer")
+
+        response = self.client.post(
+            self.url,
+            data={
+                "observations": [
+                    {
+                        "observation_definition": definition["slug"],
+                        "observation": self.generate_observation_data(
+                            value={"value": "99"}
+                        ),
+                    }
+                ]
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 200, response.data)
+        observations = response.data["observations"]
+        self.assertEqual(len(observations), 2)
+        self.assertEqual(
+            {observation["value"]["value"] for observation in observations},
+            {"55", "99"},
+        )
+        self.assertTrue(
+            all(
+                observation["observation_definition"]["slug"] == definition["slug"]
+                for observation in observations
+            )
+        )
+        original.refresh_from_db()
+        self.assertEqual(original.value, {"value": "55"})
+
     def test_upsert_observation_with_definition_as_user_without_permissions(self):
         """
         Test that a user without permissions cannot upsert observations.
@@ -667,6 +723,17 @@ class DiagnosticReportUpsertObservationAPITestCases(CareAPITestBase):
         response = self.client.post(self.url, data=data, format="json")
         self.assertEqual(response.status_code, 200, response.data)
         self.assertEqual(response.data["message"], "Observations updated successfully")
+        response = self.client.get(
+            reverse(
+                "diagnostic_report-detail",
+                kwargs={
+                    "patient_external_id": self.patient.external_id,
+                    "external_id": self.diagnostic_report.external_id,
+                },
+            )
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertIsNone(response.data["observations"][0]["observation_definition"])
 
     def test_upsert_update_existing_observation_as_superuser(self):
         """

@@ -219,12 +219,15 @@ class ObservationDefinitionUpdateSpec(BaseObservationDefinitionSpec):
         obj.slug = self.slug_value
 
 
-class ObservationDefinitionReadSpec(BaseObservationDefinitionSpec):
+class ObservationDefinitionEmbeddedSpec(BaseObservationDefinitionSpec):
+    slug: str
+
+
+class ObservationDefinitionReadSpec(ObservationDefinitionEmbeddedSpec):
     version: int | None = None
     facility: dict | None = None
 
     slug_config: dict
-    slug: str
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
