@@ -21,39 +21,39 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Restore Docker layers cache
-        id: cache-restore
-        uses: actions/cache/restore@v4
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
         with:
-          path: |
-            ${{ runner.temp }}/.buildx-cache
-            ${{ runner.temp }}/.buildx-mounted-cache
-          key: ${{ runner.os }}-${{ runner.arch }}-buildx-dev-${{ hashFiles('Pipfile.lock', 'docker/dev.Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ runner.arch }}-buildx-dev-
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: inject cache into docker
-        uses: reproducible-containers/buildkit-cache-dance@v3.3.0
-        with:
-          cache-map: |
-            {
-              "${{ runner.temp }}/.buildx-mounted-cache": "/root/.cache/pip"
-            }
-          skip-extraction: ${{ steps.cache-restore.outputs.cache-hit }}
-
-      - name: Create new cache
+      - name: Compute cache tag
         run: |
-          mkdir -p ${{ runner.temp }}/.buildx-cache
-          mkdir -p ${{ runner.temp }}/.buildx-cache-new
-          mkdir -p ${{ runner.temp }}/.buildx-mounted-cache
+          echo "CACHE_TAG=buildcache-dev-$(date +%G-W%V)" >> "$GITHUB_ENV"
+
+      - name: Resolve plugin cache buster
+        id: plugin-hash
+        run: |
+          echo "resolved_hash=$(python3 .github/scripts/resolve_plugins.py)" >> "$GITHUB_OUTPUT"
+        env:
+          ADDITIONAL_PLUGS: ${{ env.ADDITIONAL_PLUGS }}
 
       - name: Build images
+        env:
+          ADDITIONAL_PLUGS: ${{ env.ADDITIONAL_PLUGS }}
         run: |
+          CACHE_TO=""
+          if [[ '${{ github.event_name }}' == 'push' ]]; then
+            CACHE_TO="--cache-to=type=registry,ref=ghcr.io/${{ github.repository }}:$CACHE_TAG,mode=max"
+          fi
           docker buildx build \
             --file docker/dev.Dockerfile \
             --tag care_local \
-            --cache-from=type=local,src=${{ runner.temp }}/.buildx-cache \
-            --cache-to=type=local,dest=${{ runner.temp }}/.buildx-cache-new,mode=max \
+            --build-arg PLUGIN_RESOLVED_HASH=${{ steps.plugin-hash.outputs.resolved_hash }} \
+            --build-arg "ADDITIONAL_PLUGS=$ADDITIONAL_PLUGS" \
+            --cache-from=type=registry,ref=ghcr.io/${{ github.repository }}:$CACHE_TAG \
+            $CACHE_TO \
             --platform linux/arm64 \
             --load \
             .
@@ -80,20 +80,6 @@ jobs:
         uses: codecov/codecov-action@v5
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-
-      - name: Move cache
-        run: |
-          rm -rf ${{ runner.temp }}/.buildx-cache
-          mv ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
-
-      - name: Save Docker layers cache
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/develop' && steps.cache-restore.outputs.cache-hit != 'true' }}
-        uses: actions/cache/save@v4
-        with:
-          path: |
-            ${{ runner.temp }}/.buildx-cache
-            ${{ runner.temp }}/.buildx-mounted-cache
-          key: ${{ runner.os }}-${{ runner.arch }}-buildx-dev-${{ hashFiles('Pipfile.lock', 'docker/dev.Dockerfile') }}
 
       # Upload dummy db as artifact so it can be used to speed up frontend tests
       - name: Dump db

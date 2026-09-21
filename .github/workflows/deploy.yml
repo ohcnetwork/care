@@ -73,18 +73,17 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: ${{ runner.temp }}/.buildx-cache
-          key: ${{ runner.os }}-${{ runner.arch }}-buildx-prod-${{ hashFiles('Pipfile.lock', 'docker/prod.Dockerfile') }}
-          restore-keys: |
-            ${{ runner.os }}-${{ runner.arch }}-buildx-prod-
-
-      - name: Create new cache
+      - name: Compute cache tag
+        id: cache-tag
         run: |
-          mkdir -p ${{ runner.temp }}/.buildx-cache
-          mkdir -p ${{ runner.temp }}/.buildx-cache-new
+          echo "tag=buildcache-${{ env.PLATFORM_PAIR }}-$(date +%G-W%V)" >> "$GITHUB_OUTPUT"
+
+      - name: Resolve plugin cache buster
+        id: plugin-hash
+        run: |
+          echo "resolved_hash=$(python3 .github/scripts/resolve_plugins.py)" >> "$GITHUB_OUTPUT"
+        env:
+          ADDITIONAL_PLUGS: ${{ env.ADDITIONAL_PLUGS }}
 
       - name: Build and push by digest
         id: build
@@ -98,8 +97,9 @@ jobs:
           build-args: |
             APP_VERSION=${{ github.sha }}
             ADDITIONAL_PLUGS=${{ env.ADDITIONAL_PLUGS }}
-          cache-from: type=local,src=${{ runner.temp }}/.buildx-cache
-          cache-to: type=local,dest=${{ runner.temp }}/.buildx-cache-new,mode=max
+            PLUGIN_RESOLVED_HASH=${{ steps.plugin-hash.outputs.resolved_hash }}
+          cache-from: type=registry,ref=ghcr.io/${{ github.repository }}:${{ steps.cache-tag.outputs.tag }}
+          cache-to: type=registry,ref=ghcr.io/${{ github.repository }}:${{ steps.cache-tag.outputs.tag }},mode=max
 
       - name: Export digest
         run: |
@@ -114,11 +114,6 @@ jobs:
           path: ${{ runner.temp }}/digests/*
           if-no-files-found: error
           retention-days: 1
-
-      - name: Move cache
-        run: |
-          rm -rf ${{ runner.temp }}/.buildx-cache
-          mv ${{ runner.temp }}/.buildx-cache-new ${{ runner.temp }}/.buildx-cache
 
   merge-manifests:
     needs: build
@@ -185,6 +180,43 @@ jobs:
       - name: Notify release
         run: |
           echo "Release ${{ github.sha }} is ready to be deployed to production"
+
+  prune-cache:
+    if: github.ref == 'refs/heads/develop' && github.repository == 'ohcnetwork/care'
+    needs: merge-manifests
+    runs-on: ubuntu-24.04
+    permissions:
+      packages: write
+    steps:
+      - name: Prune stale buildcache versions
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          OWNER="${{ github.repository_owner }}"
+          PACKAGE_NAME="${GITHUB_REPOSITORY#*/}"
+          CUTOFF=$(date -d "4 weeks ago" +%G-W%V)
+
+          gh api "/orgs/$OWNER/packages/container/$PACKAGE_NAME/versions?per_page=100" \
+            --paginate \
+            --jq '.[] | select(any(.metadata.container.tags[]; startswith("buildcache-")))' \
+            | python3 -c "
+          import json, re, sys
+          cutoff = '$CUTOFF'
+          for line in sys.stdin:
+              line = line.strip()
+              if not line:
+                  continue
+              v = json.loads(line)
+              for tag in v['metadata']['container']['tags']:
+                  m = re.match(r'^buildcache-.+-(\d{4}-W\d{2})$', tag)
+                  if m and m.group(1) < cutoff:
+                      print(v['id'], tag)
+                      break
+          " | while read -r id tag; do
+            echo "Pruning $tag (version $id)"
+            gh api --method DELETE "/orgs/$OWNER/packages/container/$PACKAGE_NAME/versions/$id" \
+              --silent || echo "  (skipped)"
+          done
 
 #   deploy-staging-egov:
 #     needs: merge-manifests
