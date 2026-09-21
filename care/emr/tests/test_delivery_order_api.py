@@ -211,6 +211,26 @@ class DeliveryOrderAPITest(CareAPITestBase):
             response.data["detail"],
         )
 
+    def test_create_delivery_order_with_same_origin_and_destination(self):
+        """Test creating a delivery order with same origin and destination location"""
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=self.role,
+            facility_organization=self.facility_organization,
+            user=self.user,
+        )
+        url = self.generate_base_url(self.facility.external_id)
+        data = self.generate_delivery_order_data(
+            origin=self.destination.external_id,
+            destination=self.destination.external_id,
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertContains(
+            response,
+            "Origin and destination locations must be different.",
+            status_code=400,
+        )
+
     # Testcases for update delivery order
 
     def test_update_internal_delivery_order_as_superuser(self):
