@@ -18,7 +18,10 @@ sys.modules["care.emr.utils.valueset_coding_type"].validate_valueset = lambda f,
 
 
 class _NoOpLock:
-    """Bypass PatientCreateLock inside an outer transaction."""
+    """Bypass create locks inside an outer transaction."""
+
+    def __init__(self, *args, **kwargs):
+        pass
 
     def acquire(self):
         pass
@@ -44,6 +47,10 @@ def care_fixture_context(base_cls: type[CareFixtureBase] = CareFixtureBase):
         with (
             transaction.atomic(),
             patch("care.emr.api.viewsets.patient.PatientCreateLock", _NoOpLock),
+            patch(
+                "care.emr.api.viewsets.encounter.FacilityEncounterCreateLock",
+                _NoOpLock,
+            ),
             warnings.catch_warnings(),
         ):
             warnings.filterwarnings(

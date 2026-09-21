@@ -1,18 +1,14 @@
 from django.contrib.postgres.fields import ArrayField
-from django.db import models, transaction
+from django.db import models
 
 from care.emr.models.base import EMRBaseModel
 from care.emr.models.scheduling.booking import TokenBooking
-from care.emr.resources.patient_identifier.default_expression_evaluator import (
-    evaluate_patient_facility_default_values,
-)
 
 
 class Encounter(EMRBaseModel):
     status = models.CharField(max_length=100, null=True, blank=True)
     status_history = models.JSONField(default=dict)
     encounter_class = models.CharField(max_length=100, null=True, blank=True)
-    encounter_class_history = models.JSONField(default=dict)
     patient = models.ForeignKey("emr.Patient", on_delete=models.CASCADE)
     period = models.JSONField(default=dict)
     facility = models.ForeignKey("facility.Facility", on_delete=models.PROTECT)
@@ -62,15 +58,8 @@ class Encounter(EMRBaseModel):
             self.care_team_users = [int(x.get("user_id", -1)) for x in self.care_team]
 
     def save(self, *args, **kwargs):
-        created = False
         self.sync_care_team_users_cache()
-        if not self.pk:
-            # Generate Facility identifiers for this encounter
-            created = True
-        with transaction.atomic():
-            super().save(*args, **kwargs)
-            if created:
-                evaluate_patient_facility_default_values(self.patient, self.facility)
+        super().save(*args, **kwargs)
         self.sync_organization_cache()
 
 

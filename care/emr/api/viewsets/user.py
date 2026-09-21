@@ -134,7 +134,7 @@ class UserViewSet(EMRModelViewSet):
                     user=instance,
                     role=requested_role,
                 )
-            if not instance.has_usable_password():
+            if not instance.is_service_account and not instance.has_usable_password():
                 try:
                     mail_type = MailTypeChoices.create.value
                     send_password_reset_email(instance, mail_type)

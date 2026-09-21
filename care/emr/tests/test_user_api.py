@@ -1,6 +1,7 @@
 from io import BytesIO
 from unittest.mock import patch
 
+from django.core import mail
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.urls import reverse
 from django.utils import timezone
@@ -616,3 +617,76 @@ class UserProfilePictureTestCase(CareAPITestBase):
 
             self.user.refresh_from_db()
             self.assertIsNone(self.user.profile_picture_url)
+
+
+class UserCreatePasswordEmailTestCase(CareAPITestBase):
+    """Test the password reset email that the API sends when it creates a user."""
+
+    def setUp(self):
+        super().setUp()
+        self.super_user = self.create_super_user(
+            username="superuser", first_name="Super", last_name="User"
+        )
+        self.organization = self.create_organization(
+            user=self.super_user, name="Parent Organization", org_type="govt"
+        )
+        self.url = reverse("users-list")
+
+    def build_user_data(self, **kwargs):
+        data = {
+            "username": "newuser",
+            "first_name": "New",
+            "last_name": "User",
+            "email": "newuser@example.com",
+            "gender": GenderChoices.non_binary,
+            "geo_organization": self.organization.external_id,
+            "phone_number": "1234567890",
+            "role_orgs": [],
+        }
+        data.update(kwargs)
+        return data
+
+    def test_create_user_without_password_delivers_email(self):
+        """The email goes to the address of the new user."""
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.post(self.url, self.build_user_data(), format="json")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(mail.outbox), 1)
+        self.assertEqual(mail.outbox[0].to, ["newuser@example.com"])
+
+    def test_create_user_with_password_does_not_send_email(self):
+        """The API does not send the email if the usual user has a password."""
+        self.client.force_authenticate(user=self.super_user)
+        with patch(
+            "care.emr.api.viewsets.user.send_password_reset_email"
+        ) as mock_send_email:
+            response = self.client.post(
+                self.url,
+                self.build_user_data(password="ComplexP@ssw0rd"),
+                format="json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        mock_send_email.assert_not_called()
+        self.assertEqual(len(mail.outbox), 0)
+        self.assertTrue(User.objects.get(username="newuser").has_usable_password())
+
+    def test_create_service_account_without_password_does_not_send_email(self):
+        """The API does not send the email to a service account that has no password."""
+        self.client.force_authenticate(user=self.super_user)
+        with patch(
+            "care.emr.api.viewsets.user.send_password_reset_email"
+        ) as mock_send_email:
+            response = self.client.post(
+                self.url,
+                self.build_user_data(is_service_account=True),
+                format="json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        mock_send_email.assert_not_called()
+        self.assertEqual(len(mail.outbox), 0)
+        created_user = User.objects.get(username="newuser")
+        self.assertTrue(created_user.is_service_account)
+        self.assertFalse(created_user.has_usable_password())

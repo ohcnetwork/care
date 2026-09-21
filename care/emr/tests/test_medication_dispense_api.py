@@ -36,7 +36,6 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             facility=self.facility,
             organization=self.facility_organization,
             status_history={"history": []},
-            encounter_class_history={"history": []},
         )
         self.supplier = self.create_organization(name="Test Supplier")
         self.location = self.create_facility_location(
