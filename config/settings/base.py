@@ -532,9 +532,8 @@ OTP_MAX_REPEATS_WINDOW = env.int("OTP_MAX_REPEATS_WINDOW", default=10)
 # ------------------------------------------------------------------------------
 DISABLE_RATELIMIT = env.bool("DISABLE_RATELIMIT", default=False)
 DJANGO_RATE_LIMIT = env("RATE_LIMIT", default="5/10m")
-GOOGLE_RECAPTCHA_SECRET_KEY = env("GOOGLE_RECAPTCHA_SECRET_KEY", default="")
-GOOGLE_RECAPTCHA_SITE_KEY = env("GOOGLE_RECAPTCHA_SITE_KEY", default="")
-GOOGLE_CAPTCHA_POST_KEY = "g-recaptcha-response"
+ALTCHA_HMAC_SECRET = env("ALTCHA_HMAC_SECRET", default=f"altcha:{SECRET_KEY}")
+ALTCHA_POST_KEY = "altcha"
 
 # SMS
 # ------------------------------------------------------------------------------

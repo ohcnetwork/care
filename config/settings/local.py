@@ -45,7 +45,7 @@ RUNSERVER_PLUS_PRINT_SQL_TRUNCATE = None
 RUNSERVERPLUS_POLLER_RELOADER_TYPE = "watchdog"
 
 
-DISABLE_RATELIMIT = True
+DISABLE_RATELIMIT = env.bool("DISABLE_RATELIMIT", default=True)
 
 # open id connect
 JWKS = JsonWebKey.import_key_set(

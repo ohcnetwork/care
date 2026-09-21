@@ -1,8 +1,13 @@
-import requests
+import struct
+
+from altcha import Payload, verify_solution
 from django.conf import settings
+from django.core.cache import cache
 from django_ratelimit.core import is_ratelimited
 
-VALIDATE_CAPTCHA_REQUEST_TIMEOUT = 5
+ALTCHA_PAYLOAD_MAX_LENGTH = 4096
+ALTCHA_REPLAY_CACHE_TIMEOUT = 5 * 60
+ALTCHA_VERIFIED_ATTRIBUTE = "altcha_verified"
 
 
 def get_ratelimit_key(group, request):
@@ -10,21 +15,34 @@ def get_ratelimit_key(group, request):
 
 
 def validatecaptcha(request):
-    recaptcha_response = request.data.get(settings.GOOGLE_CAPTCHA_POST_KEY)
-    if not recaptcha_response:
-        return False
-    values = {
-        "secret": settings.GOOGLE_RECAPTCHA_SECRET_KEY,
-        "response": recaptcha_response,
-    }
-    captcha_response = requests.post(
-        "https://www.google.com/recaptcha/api/siteverify",
-        data=values,
-        timeout=VALIDATE_CAPTCHA_REQUEST_TIMEOUT,
-    )
-    result = captcha_response.json()
+    if getattr(request, ALTCHA_VERIFIED_ATTRIBUTE, False):
+        return True
 
-    return bool(result["success"])
+    altcha_payload = request.data.get(settings.ALTCHA_POST_KEY)
+    if (
+        not isinstance(altcha_payload, str)
+        or len(altcha_payload) > ALTCHA_PAYLOAD_MAX_LENGTH
+    ):
+        return False
+
+    try:
+        payload = Payload.from_base64(altcha_payload)
+        result = verify_solution(payload, settings.ALTCHA_HMAC_SECRET)
+    except (KeyError, OverflowError, struct.error, TypeError, ValueError):
+        return False
+
+    if not result.verified or not payload.challenge.signature:
+        return False
+
+    if not cache.add(
+        f"altcha-used:{payload.challenge.signature}",
+        value=True,
+        timeout=ALTCHA_REPLAY_CACHE_TIMEOUT,
+    ):
+        return False
+
+    setattr(request, ALTCHA_VERIFIED_ATTRIBUTE, True)
+    return True
 
 
 # refer https://django-ratelimit.readthedocs.io/en/stable/rates.html for rate
