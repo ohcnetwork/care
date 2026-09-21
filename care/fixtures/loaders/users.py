@@ -1,6 +1,6 @@
 from django.urls import reverse
 
-from care.fixtures.base import generate_phone_number, log
+from care.fixtures.base import generate_phone_number, print_log
 from care.fixtures.loaders.facility import geo_organization_id_for_facility
 from care.fixtures.loaders.load import load_json
 
@@ -62,10 +62,10 @@ def load_users(
         base, facility_id, foundation_resource_id_by_ref, user_ids_by_ref
     )
 
-    log("Pack user credentials:")
+    print_log("Pack user credentials:")
     for username, role_name, created in credentials:
         pwd = password if created else "(existing)"
-        log(f"  {username:<22} {pwd:<12} {role_name}")
+        print_log(f"  {username:<22} {pwd:<12} {role_name}")
 
     return user_ids_by_ref
 

@@ -76,7 +76,7 @@ def generate_phone_number():
     return f"+91{prefix}{suffix}"
 
 
-def log(message):
+def print_log(message):
     print(message)  # noqa: T201
 
 

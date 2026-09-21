@@ -37,7 +37,7 @@ KeyError mid-run. Pack ``facility_org_ref`` memberships (Pharmacy, Pediatrics,
 
 import os
 
-from care.fixtures.base import FixtureError, log
+from care.fixtures.base import FixtureError, print_log
 from care.fixtures.context import care_fixture_context
 from care.fixtures.loaders.billing import load_billing
 from care.fixtures.loaders.clinical_visits import (
@@ -80,10 +80,10 @@ def load_pack(  # noqa: PLR0915
 ):
     attaching = bool(facility_id)
     if attaching and facility_name:
-        log("Ignoring facility_name: it applies only when creating a facility")
+        print_log("Ignoring facility_name: it applies only when creating a facility")
 
     organization_ids_by_ref = load_organizations(base)
-    log("Loaded organizations")
+    print_log("Loaded organizations")
 
     facility_id, facility_names = resolve_or_create_facility(
         base,
@@ -91,16 +91,16 @@ def load_pack(  # noqa: PLR0915
         name=facility_name,
         organization_ids_by_ref=organization_ids_by_ref,
     )
-    log(f"Loaded facilities ({', '.join(facility_names)})")
+    print_log(f"Loaded facilities ({', '.join(facility_names)})")
 
     load_questionnaires(base, organization_ids_by_ref)
-    log("Loaded questionnaires")
+    print_log("Loaded questionnaires")
 
     load_templates(base, facility_id)
-    log("Loaded templates")
+    print_log("Loaded templates")
 
     foundation_resource_id_by_ref = load_facility_foundation(base, facility_id)
-    log("Loaded facility foundation")
+    print_log("Loaded facility foundation")
 
     if include_users:
         user_ids_by_ref = load_users(
@@ -109,31 +109,31 @@ def load_pack(  # noqa: PLR0915
             foundation_resource_id_by_ref,
             organization_ids_by_ref,
         )
-        log("Loaded users")
+        print_log("Loaded users")
     else:
         user_ids_by_ref = _require_user_ids_by_ref(user_ids_by_ref or {})
         apply_pack_facility_memberships(
             base, facility_id, foundation_resource_id_by_ref, user_ids_by_ref
         )
-        log(
+        print_log(
             "Skipped pack users (include_users=False); "
             "applied facility org memberships from pack"
         )
 
     load_token_categories(base, facility_id)
-    log("Loaded token categories")
+    print_log("Loaded token categories")
 
     load_schedules(base, facility_id, user_ids_by_ref)
-    log("Loaded schedules")
+    print_log("Loaded schedules")
 
     patient_ids_by_ref = load_patients(base, facility_id, organization_ids_by_ref)
-    log("Loaded patients")
+    print_log("Loaded patients")
 
     load_token_queues(base, facility_id, user_ids_by_ref)
-    log("Loaded token queues")
+    print_log("Loaded token queues")
 
     load_appointments(base, facility_id, user_ids_by_ref, patient_ids_by_ref)
-    log("Loaded appointments")
+    print_log("Loaded appointments")
 
     (
         encounter_ids_by_ref,
@@ -146,25 +146,25 @@ def load_pack(  # noqa: PLR0915
         patient_ids_by_ref,
         foundation_resource_id_by_ref,
     )
-    log("Loaded clinical encounters")
+    print_log("Loaded clinical encounters")
 
     load_specimen_definitions(base, facility_id)
-    log("Loaded specimen definitions")
+    print_log("Loaded specimen definitions")
 
     load_observation_definitions(base, facility_id)
-    log("Loaded observation definitions")
+    print_log("Loaded observation definitions")
 
     load_resource_categories(base, facility_id)
-    log("Loaded resource categories")
+    print_log("Loaded resource categories")
 
     product_knowledge_by_ref = load_product_knowledge(base, facility_id)
-    log("Loaded product knowledge")
+    print_log("Loaded product knowledge")
 
     charge_item_definitions_by_ref = load_charge_item_definitions(base, facility_id)
-    log("Loaded charge item definitions")
+    print_log("Loaded charge item definitions")
 
     load_activity_definitions(base, facility_id, foundation_resource_id_by_ref)
-    log("Loaded activity definitions")
+    print_log("Loaded activity definitions")
 
     load_clinical_content(
         base,
@@ -176,7 +176,7 @@ def load_pack(  # noqa: PLR0915
         user_ids_by_ref,
         close_after=close_after,
     )
-    log("Loaded clinical data for encounters")
+    print_log("Loaded clinical data for encounters")
 
     load_billing(
         base,
@@ -185,7 +185,7 @@ def load_pack(  # noqa: PLR0915
         encounter_ids_by_ref,
         charge_item_definitions_by_ref,
     )
-    log("Loaded billing")
+    print_log("Loaded billing")
 
     product_ids_by_ref = load_external_receipts(
         base,
@@ -195,7 +195,7 @@ def load_pack(  # noqa: PLR0915
         charge_item_definitions_by_ref,
         organization_ids_by_ref,
     )
-    log("Loaded external receipts")
+    print_log("Loaded external receipts")
 
     load_internal_transfers(
         base,
@@ -204,8 +204,8 @@ def load_pack(  # noqa: PLR0915
         product_knowledge_by_ref,
         product_ids_by_ref,
     )
-    log("Loaded internal transfers")
-    log("Pack load complete")
+    print_log("Loaded internal transfers")
+    print_log("Pack load complete")
 
 
 if __name__ == "__main__":
