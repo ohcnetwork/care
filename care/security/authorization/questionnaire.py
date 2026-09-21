@@ -25,7 +25,7 @@ class QuestionnaireAccess(AuthorizationHandler):
             )
         permission = [QuestionnairePermissions.can_write_questionnaire.name]
         return self.check_permission_in_facility_organization(
-            permission, user, facility, root=True
+            permission, user, facility=facility, root=True
         )
 
     def can_access_facility_organization_questionnaire(

@@ -110,6 +110,10 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
     def get_serializer_update_context(self):
         return {"user": self.request.user}
 
+    def perform_create(self, instance):
+        super().perform_create(instance)
+        instance.sync_facility_org_cache()
+
     def handle_update(self, instance, request_data):
         lock = QuestionnaireLock(instance)
         try:
@@ -235,11 +239,52 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
     def authorize_destroy(self, instance):
         self.authorize_update(self.request, instance)
 
+    def authorize_retrieve(self, model_instance):
+        if model_instance.auth_context == QuestionnaireAuthContext.facility:
+            facility = model_instance.facility
+            if not AuthorizationController.call(
+                "can_access_facility_questionnaire",
+                self.request.user,
+                facility,
+                model_instance,
+                read_only=True,
+            ):
+                raise PermissionDenied(
+                    "Permission Denied to create facility questionnaire"
+                )
+        elif (
+            model_instance.auth_context
+            == QuestionnaireAuthContext.facility_organization
+        ):
+            facility_organization = model_instance.facility_organization
+            if not AuthorizationController.call(
+                "can_access_facility_organization_questionnaire",
+                self.request.user,
+                facility_organization,
+                read_only=True,
+            ):
+                raise PermissionDenied(
+                    "Permission Denied to create facility organization questionnaire"
+                )
+        elif model_instance.auth_context == QuestionnaireAuthContext.user:
+            facility = model_instance.facility
+            if not AuthorizationController.call(
+                "can_access_user_questionnaire_in_faciltiy",
+                self.request.user,
+                facility,
+                read_only=True,
+            ):
+                raise PermissionDenied("Permission Denied to create user questionnaire")
+
+        return super().authorize_retrieve(model_instance)
+
     def get_queryset(self):
         queryset = super().get_queryset()
-        return AuthorizationController.call(
-            "get_filtered_questionnaires", queryset, self.request.user
-        )
+        if self.action == "list":
+            return AuthorizationController.call(
+                "get_filtered_questionnaires", queryset, self.request.user
+            )
+        return queryset
 
     @extend_schema(
         request=ResourceQuestionnaireSubmitRequest,

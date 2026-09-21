@@ -100,11 +100,16 @@ class Questionnaire(EMRBaseModel):
         questionnaire_organization_objects = (
             QuestionnaireFacilityOrganization.objects.filter(questionnaire=self)
         )
-        cache = []
+        cache = list(
+            FacilityOrganization.objects.filter(
+                facility=self.facility, org_type="root"
+            ).values_list("id", flat=True)
+        )
         for questionnaire_organization in questionnaire_organization_objects:
             cache.extend(questionnaire_organization.organization.parent_cache)
             cache.append(questionnaire_organization.organization.id)
         cache = list(set(cache))
+
         self.internal_organization_cache = cache
         self.save(update_fields=["internal_organization_cache"])
 
