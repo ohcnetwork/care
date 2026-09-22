@@ -30,7 +30,7 @@ def cleanup_incomplete_file_uploads():
         for file in queryset:
             if file.internal_name:
                 try:
-                    file_manager.delete_object(file, quiet=True)
+                    file_manager.delete_object(file)
                 except Exception as e:
                     logger.error(
                         "Failed to delete file upload object %s: %s",

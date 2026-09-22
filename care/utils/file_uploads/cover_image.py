@@ -2,21 +2,22 @@ import logging
 import secrets
 from typing import Literal
 
-import boto3
-from django.conf import settings
+from django.core.files.storage import storages
 from django.core.files.uploadedfile import UploadedFile
-
-from care.utils.csp.config import BucketType, get_client_config
 
 logger = logging.getLogger(__name__)
 
+#: Cover images and avatars keep their own key convention,
+#: ``<folder>/<external_id>_<token>.<ext>``, which is unrelated to the
+#: ``<file_type>/<internal_name>`` convention used by FileUpload/ReportUpload.
+#: They are therefore addressed through the alias directly rather than through
+#: FilesManager.
+STORAGE_ALIAS = "facility"
+
 
 def delete_cover_image(image_key: str, folder: Literal["cover_images", "avatars"]):
-    config, bucket_name = get_client_config(BucketType.FACILITY)
-    s3 = boto3.client("s3", **config)
-
     try:
-        s3.delete_object(Bucket=bucket_name, Key=image_key)
+        storages[STORAGE_ALIAS].delete(image_key)
     except Exception:
         logger.warning("Failed to delete cover image %s", image_key)
 
@@ -27,12 +28,11 @@ def upload_cover_image(
     folder: Literal["cover_images", "avatars"],
     old_key: str | None = None,
 ) -> str:
-    config, bucket_name = get_client_config(BucketType.FACILITY)
-    s3 = boto3.client("s3", **config)
+    storage = storages[STORAGE_ALIAS]
 
     if old_key:
         try:
-            s3.delete_object(Bucket=bucket_name, Key=old_key)
+            storage.delete(old_key)
         except Exception:
             logger.warning("Failed to delete old cover image %s", old_key)
 
@@ -41,13 +41,7 @@ def upload_cover_image(
         f"{folder}/{object_external_id}_{secrets.token_hex(8)}.{image_extension}"
     )
 
-    boto_params = {
-        "Bucket": bucket_name,
-        "Key": image_key,
-        "Body": image.file,
-    }
-    if settings.BUCKET_HAS_FINE_ACL:
-        boto_params["ACL"] = "public-read"
-    s3.put_object(**boto_params)
-
-    return image_key
+    # No ACL is set: the object is private and served by CARE through the
+    # public asset routes (ADR-0001). The uploaded file is passed through
+    # rather than read into memory.
+    return storage.save(image_key, image)

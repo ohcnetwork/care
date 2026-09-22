@@ -3,6 +3,7 @@ import time
 from uuid import uuid4
 
 from django.core.cache import cache
+from django.core.files.base import ContentFile
 from django.utils import timezone
 
 from care.emr.models.report.report_upload import ReportUpload
@@ -121,8 +122,10 @@ def generate_and_upload_report(  # noqa:PLR0915
     report_upload.save(skip_internal_name=True)
 
     try:
+        # output_bytes is already fully materialised by the renderer above; see
+        # docs/xii/architecture/inventory/storage-call-sites.md section 5.
         report_upload.files_manager.put_object(
-            report_upload, output_bytes, ContentType=mime_type
+            report_upload, ContentFile(output_bytes), content_type=mime_type
         )
         report_upload.upload_completed = True
         report_upload.save()

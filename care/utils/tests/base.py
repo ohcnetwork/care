@@ -19,6 +19,16 @@ import care.emr.utils.valueset_coding_type  # noqa  # isort:skip
 sys.modules["care.emr.utils.valueset_coding_type"].validate_valueset = lambda f, s, c: c
 
 
+def response_content(response) -> bytes:
+    """
+    Collect the body of a streaming response.
+
+    Object downloads are served with ``FileResponse``, which streams in chunks
+    and exposes no ``.content``.
+    """
+    return b"".join(response.streaming_content)
+
+
 class CareAPITestBase(APITestCase):
     fake = Faker()
 
