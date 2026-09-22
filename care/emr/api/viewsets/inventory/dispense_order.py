@@ -13,12 +13,16 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.location import FacilityLocation
 from care.emr.models.medication_dispense import DispenseOrder, MedicationDispense
 from care.emr.resources.charge_item.handle_charge_item_cancel import (
     handle_charge_item_cancel,
 )
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
+from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
+    sync_inventory_item,
+)
 from care.emr.resources.medication.dispense.dispense_order import (
     BaseMedicationDispenseOrderSpec,
     MedicationDispenseOrderReadSpec,
@@ -42,6 +46,7 @@ def cancel_dispense_order(instance, user):
         dispense_status = MedicationDispenseStatus.entered_in_error.value
     else:
         raise ValidationError("Dispense order can only be cancelled")
+    synced_inventory_items = set()
     for dispense in related_dispenses:
         if dispense.charge_item:
             handle_charge_item_cancel(dispense.charge_item)
@@ -59,6 +64,12 @@ def cancel_dispense_order(instance, user):
             dispense.authorizing_request = None
         dispense.status = dispense_status
         dispense.save()
+        synced_inventory_items.add(dispense.item_id)
+
+    for inventory_item in InventoryItem.objects.filter(
+        id__in=synced_inventory_items
+    ).select_related("location", "product"):
+        sync_inventory_item(inventory_item=inventory_item)
 
 
 class DispenseOrderFilters(filters.FilterSet):
