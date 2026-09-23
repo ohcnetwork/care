@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+if [ -n "${ENV_DIR:-}" ] && [ -d "$ENV_DIR" ]; then
+  printf "1" > "$ENV_DIR/DISABLE_COLLECTSTATIC"
+else
+  mkdir -p .heroku
+  touch .heroku/collectstatic_disabled
+fi
