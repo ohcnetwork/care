@@ -74,7 +74,7 @@ class EMRResource(BaseModel):
         return cls.model_construct(**constructed)
 
     def get_context(self):
-        return self._context
+        return getattr(self, "_context", {})
 
     def perform_extra_deserialization(self, is_update, obj):
         pass
