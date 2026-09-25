@@ -331,7 +331,9 @@
     "observation_slugs": [
       "triglycerides"
     ],
-    "charge_item_definition_slugs": []
+    "charge_item_definition_slugs": [
+      "charge-trig"
+    ]
   },
   {
     "title": "Total Cholesterol",
@@ -784,7 +786,9 @@
     "observation_slugs": [
       "bleeding-time"
     ],
-    "charge_item_definition_slugs": []
+    "charge_item_definition_slugs": [
+      "charge-btime"
+    ]
   },
   {
     "title": "Clotting Time (CT)",
@@ -817,7 +821,9 @@
     "observation_slugs": [
       "clotting-time"
     ],
-    "charge_item_definition_slugs": []
+    "charge_item_definition_slugs": [
+      "charge-ctime"
+    ]
   },
   {
     "title": "Blood Group (ABO & Rh typing)",

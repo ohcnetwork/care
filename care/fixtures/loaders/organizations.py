@@ -48,13 +48,12 @@ def get_or_create_organization(base, name, **kwargs):
 
 
 def find_organization_by_name(base, name, *, org_type=None, parent=None):
-    params = {"name": name, "limit": 100}
+    params = {"name": name}
     if org_type is not None:
         params["org_type"] = org_type
     if parent is not None:
         params["parent"] = parent
-    data = base.get(reverse("organization-list"), params=params)
-    for org in data.get("results", data):
+    for org in base.list_all(reverse("organization-list"), params=params):
         if org.name != name:
             continue
         if parent is None and org.parent:

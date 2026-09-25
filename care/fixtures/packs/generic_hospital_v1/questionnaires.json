@@ -230,15 +230,7 @@
         "link_id": "Q-1772121553415",
         "repeats": false,
         "required": true,
-        "enable_when": [],
-        "answer_option": [
-          {
-            "value": "Yes"
-          },
-          {
-            "value": "No"
-          }
-        ]
+        "enable_when": []
       },
       {
         "id": "4a28c5fa-7fcd-45ea-b5e5-e1a749c4429c",

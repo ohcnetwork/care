@@ -1190,7 +1190,7 @@
       "code": "11067-6",
       "display": "Bleeding time of Capillary blood by Sukharev method"
     },
-    "permitted_data_type": "time",
+    "permitted_data_type": "decimal",
     "qualified_ranges": [],
     "method": {
       "system": "http://snomed.info/sct",
