@@ -65,12 +65,17 @@ class AvailabilityExceptionsViewSet(
             )
             instance.resource = resource
 
+            # A slot conflicts with the exception when the two time ranges
+            # overlap on a day in the exception's range, the same rule
+            # convert_availability_and_exceptions_to_slots uses. Checking only
+            # the slot start misses slots that begin before the exception and
+            # run into it, and flags slots that start exactly at its end.
             slots = TokenSlot.objects.filter(
                 resource=resource,
                 start_datetime__date__gte=instance.valid_from,
                 start_datetime__date__lte=instance.valid_to,
-                start_datetime__time__gte=instance.start_time,
-                start_datetime__time__lte=instance.end_time,
+                start_datetime__time__lt=instance.end_time,
+                end_datetime__time__gt=instance.start_time,
             )
             if slots.filter(allocated__gt=0).exists():
                 raise ValidationError("There are bookings during this exception")

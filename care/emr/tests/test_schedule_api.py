@@ -1,8 +1,9 @@
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime, time, timedelta
 
 from django.conf import settings
 from django.test.utils import ignore_warnings
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 
 from care.emr.models import (
@@ -825,6 +826,88 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
             "There are bookings during this exception",
             status_code=400,
         )
+
+    def _create_slot_for_exception_overlap(self, start, end, allocated):
+        """Create a one-hour-schedule slot two days ahead in local time."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        schedule = Schedule.objects.create(
+            resource=self.resource,
+            name="Test Schedule",
+            valid_from=timezone.now() - timedelta(days=1),
+            valid_to=timezone.now() + timedelta(days=10),
+        )
+        availability = Availability.objects.create(
+            schedule=schedule,
+            name="Test Availability",
+            slot_type=SlotTypeOptions.appointment.value,
+            slot_size_in_minutes=60,
+            tokens_per_slot=5,
+            reason="Regular schedule",
+            availability=[],
+        )
+        day = timezone.localdate() + timedelta(days=2)
+        tz = timezone.get_current_timezone()
+        slot = TokenSlot.objects.create(
+            resource=self.resource,
+            availability=availability,
+            start_datetime=datetime.combine(day, start, tzinfo=tz),
+            end_datetime=datetime.combine(day, end, tzinfo=tz),
+            allocated=allocated,
+        )
+        return day, slot
+
+    def test_create_exception_rejects_booked_slot_that_starts_before_it(self):
+        """A booked slot running into the exception window blocks it."""
+        day, _ = self._create_slot_for_exception_overlap(
+            time(9, 0), time(10, 0), allocated=1
+        )
+        exception_data = self.generate_exception_data(
+            valid_from=day.isoformat(),
+            valid_to=day.isoformat(),
+            start_time="09:30:00",
+            end_time="10:30:00",
+        )
+
+        response = self.client.post(self.base_url, exception_data, format="json")
+        self.assertContains(
+            response,
+            "There are bookings during this exception",
+            status_code=400,
+        )
+
+    def test_create_exception_allows_booked_slot_starting_at_its_end(self):
+        """A booked slot that only touches the exception end does not block it."""
+        day, slot = self._create_slot_for_exception_overlap(
+            time(10, 30), time(11, 30), allocated=1
+        )
+        exception_data = self.generate_exception_data(
+            valid_from=day.isoformat(),
+            valid_to=day.isoformat(),
+            start_time="09:30:00",
+            end_time="10:30:00",
+        )
+
+        response = self.client.post(self.base_url, exception_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertTrue(TokenSlot.objects.filter(id=slot.id).exists())
+
+    def test_create_exception_removes_unbooked_slot_that_starts_before_it(self):
+        """An empty slot running into the exception window is removed."""
+        day, slot = self._create_slot_for_exception_overlap(
+            time(9, 0), time(10, 0), allocated=0
+        )
+        exception_data = self.generate_exception_data(
+            valid_from=day.isoformat(),
+            valid_to=day.isoformat(),
+            start_time="09:30:00",
+            end_time="10:30:00",
+        )
+
+        response = self.client.post(self.base_url, exception_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(TokenSlot.objects.filter(id=slot.id).exists())
 
 
 @ignore_warnings(category=RuntimeWarning, message=r".*received a naive datetime.*")
