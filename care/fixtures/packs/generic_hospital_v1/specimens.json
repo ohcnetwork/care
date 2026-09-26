@@ -1,0 +1,462 @@
+[
+  {
+    "title": "Whole Blood",
+    "slug_value": "whole-blood",
+    "description": "Blood specimen containing all cellular and plasma components collected directly from the patient.",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "BLD",
+      "display": "Blood"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "22778000",
+      "display": "Venipuncture"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true,
+      "container": {
+        "capacity": {
+          "value": 5.0,
+          "unit": {
+            "system": "http://unitsofmeasure.org",
+            "code": "mL",
+            "display": "milliliter"
+          }
+        },
+        "minimum_volume": {
+          "quantity": {
+            "value": 2.0,
+            "unit": {
+              "system": "http://unitsofmeasure.org",
+              "code": "mL",
+              "display": "milliliter"
+            }
+          }
+        },
+        "cap": {
+          "system": "http://terminology.hl7.org/CodeSystem/container-cap",
+          "code": "lavender",
+          "display": "lavender cap"
+        }
+      }
+    }
+  },
+  {
+    "title": "Serum",
+    "slug_value": "serum",
+    "description": "Liquid portion of blood obtained after coagulation, with clotting factors removed.",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "SER",
+      "display": "Serum"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "22778000",
+      "display": "Venipuncture"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true,
+      "container": {
+        "capacity": {
+          "value": 5.0,
+          "unit": {
+            "system": "http://unitsofmeasure.org",
+            "code": "mL",
+            "display": "milliliter"
+          }
+        },
+        "minimum_volume": {
+          "quantity": {
+            "value": 2.0,
+            "unit": {
+              "system": "http://unitsofmeasure.org",
+              "code": "mL",
+              "display": "milliliter"
+            }
+          }
+        },
+        "cap": {
+          "system": "http://terminology.hl7.org/CodeSystem/container-cap",
+          "code": "red",
+          "display": "red cap"
+        }
+      }
+    }
+  },
+  {
+    "title": "Plasma",
+    "slug_value": "plasma",
+    "description": "Liquid component of anticoagulated blood containing clotting factors and dissolved proteins",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "PLAS",
+      "display": "Plasma"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "22778000",
+      "display": "Venipuncture"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true,
+      "container": {
+        "capacity": {
+          "value": 5.0,
+          "unit": {
+            "system": "http://unitsofmeasure.org",
+            "code": "mL",
+            "display": "milliliter"
+          }
+        },
+        "minimum_volume": {
+          "quantity": {
+            "value": 2.0,
+            "unit": {
+              "system": "http://unitsofmeasure.org",
+              "code": "mL",
+              "display": "milliliter"
+            }
+          }
+        },
+        "cap": {
+          "system": "http://terminology.hl7.org/CodeSystem/container-cap",
+          "code": "lavender",
+          "display": "lavender cap"
+        }
+      }
+    }
+  },
+  {
+    "title": "Blood Venous",
+    "slug_value": "venous-blood",
+    "description": "Blood specimen collected from a vein via venipuncture for laboratory analysis.",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "BLDV",
+      "display": "Blood venous"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "22778000",
+      "display": "Venipuncture"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true,
+      "container": {
+        "capacity": {
+          "value": 5.0,
+          "unit": {
+            "system": "http://unitsofmeasure.org",
+            "code": "mL",
+            "display": "milliliter"
+          }
+        },
+        "minimum_volume": {
+          "quantity": {
+            "value": 2.0,
+            "unit": {
+              "system": "http://unitsofmeasure.org",
+              "code": "mL",
+              "display": "milliliter"
+            }
+          }
+        },
+        "cap": {
+          "system": "http://terminology.hl7.org/CodeSystem/container-cap",
+          "code": "red",
+          "display": "red cap"
+        }
+      }
+    }
+  },
+  {
+    "title": "Sputum",
+    "slug_value": "sputum",
+    "description": "Respiratory specimen consisting of mucus expectorated from the lower airways for laboratory analysis.",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "SPT",
+      "display": "Sputum"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "386089008",
+      "display": "Collection of coughed sputum"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  },
+  {
+    "title": "Urine",
+    "slug_value": "urine",
+    "description": "Urine sample collected from a patient for biochemical, microscopic and microbiological examination",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "UR",
+      "display": "Urine"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "73416001",
+      "display": "Urine specimen collection, clean catch, mid stream urine"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  },
+  {
+    "title": "Oral Swab",
+    "slug_value": "oral-swab",
+    "description": "Specimen collected using a sterile swab from a oral cavity for microbiological or molecular testing.",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "ORH",
+      "display": "Other"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "418622002",
+      "display": "Taking oral swab"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  },
+  {
+    "title": "CSF",
+    "slug_value": "cerebrospinalfluid",
+    "description": "Cerebrospinal fluid specimen for testing of central nervous system infections, inflammation, hemorrhage and malignancies",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "CSF",
+      "display": "Cerebral spinal fluid"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "277762005",
+      "display": "Lumbar puncture"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  },
+  {
+    "title": "Stool",
+    "slug_value": "stool",
+    "description": "Fecal specimen collected for microbiological, parasitological, or biochemical testing",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "STL",
+      "display": "Stool"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "225105004",
+      "display": "Collection of stool specimen"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  },
+  {
+    "title": "Ascitic Fluid",
+    "slug_value": "ascitic-fluid",
+    "description": "Peritoneal fluid collected from the abdominal cavity for diagnostic laboratory evaluation.",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "FGA",
+      "display": "Fluid, Abdomen"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "89305009",
+      "display": "Abdominal paracentesis"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  },
+  {
+    "title": "Synovial Fluid",
+    "slug_value": "synovial-fluid",
+    "description": "Joint fluid aspirated from a synovial cavity for analysis of joint disorders",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "SNV",
+      "display": "Fluid, synovial (Joint fluid)"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "90131007",
+      "display": "Arthrocentesis"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  },
+  {
+    "title": "Pleural Fluid",
+    "slug_value": "pleural-fluid",
+    "description": "Fluid collected from the pleural cavity for laboratory analysis of cells, proteins, microorganisms and biochemical markers to evaluate pleural diseases",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "PLR",
+      "display": "Pleural fluid (thoracentesis fluid)"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "91602002",
+      "display": "Thoracentesis"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  },
+  {
+    "title": "Nasal Swab",
+    "slug_value": "nasal-swab",
+    "description": "Specimen collected from the nasal cavity using a sterile swab for respiratory pathogen testing",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "ORH",
+      "display": "Other"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "312882009",
+      "display": "Taking nasal swab"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  },
+  {
+    "title": "Throat Swab",
+    "slug_value": "throat-swab",
+    "description": "Specimen collected from the oropharynx using a sterile swab to detect bacterial or viral infections of the throat and upper respiratory tract",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "ORH",
+      "display": "Other"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "312880001",
+      "display": "Taking throat swab"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  },
+  {
+    "title": "Bone marrow",
+    "slug_value": "bone-marrow",
+    "description": "Bone marrow is a soft, spongy tissue found inside bones, collected as a specimen to evaluate blood cell production and diagnose hematological conditions.",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "MAR",
+      "display": "Marrow"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "49401003",
+      "display": "Bone marrow aspiration procedure"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  },
+  {
+    "title": "Pus",
+    "slug_value": "pus-sample",
+    "description": "Pus is a thick, yellowish or greenish fluid collected from infected tissue, used as a specimen to identify causative organisms and diagnose infections.",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "PUS",
+      "display": "Pus"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "56783008",
+      "display": "Incision and drainage"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  },
+  {
+    "title": "Skin",
+    "slug_value": "skin-sample",
+    "description": "Skin is the outer protective layer of the body, collected as a specimen (scraping/biopsy) to diagnose infections, dermatological conditions, or other abnormalities.",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "SKN",
+      "display": "Skin"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "258489000",
+      "display": "Slit skin smear"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  },
+  {
+    "title": "Other",
+    "slug_value": "other",
+    "description": "Other specimens include any biological materials not classified under standard categories, collected for diagnostic, screening, or research purposes.",
+    "type_collected": {
+      "system": "http://terminology.hl7.org/CodeSystem/v2-0487",
+      "code": "ORH",
+      "display": "Other"
+    },
+    "collection": {
+      "system": "http://snomed.info/sct",
+      "code": "416107004",
+      "display": "Cervical cytology test"
+    },
+    "type_tested": {
+      "is_derived": false,
+      "preference": "preferred",
+      "single_use": true
+    }
+  }
+]

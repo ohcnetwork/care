@@ -1,0 +1,94 @@
+{
+  "patients": [
+    {
+      "ref": "patient:001",
+      "name": "Suresh Kumar",
+      "gender": "male",
+      "date_of_birth": "1999-01-15",
+      "blood_group": "A_positive",
+      "address": "12 Broadway, Ernakulam, Kochi",
+      "pincode": 682001
+    },
+    {
+      "ref": "patient:002",
+      "name": "Ramesh Sharma",
+      "gender": "male",
+      "date_of_birth": "1989-02-20",
+      "blood_group": "B_positive",
+      "address": "45 Banerji Road, Ernakulam North, Kochi",
+      "pincode": 682011
+    },
+    {
+      "ref": "patient:003",
+      "name": "Mukesh Nair",
+      "gender": "male",
+      "date_of_birth": "1979-03-10",
+      "blood_group": "O_positive",
+      "address": "8 Panampilly Nagar, Kochi",
+      "pincode": 682016
+    },
+    {
+      "ref": "patient:004",
+      "name": "Ankit Reddy",
+      "gender": "male",
+      "date_of_birth": "1969-04-18",
+      "blood_group": "AB_positive",
+      "address": "22 MG Road, Ernakulam, Kochi",
+      "pincode": 682018
+    },
+    {
+      "ref": "patient:005",
+      "name": "Sachin Singh",
+      "gender": "male",
+      "date_of_birth": "1994-05-25",
+      "blood_group": "O_negative",
+      "address": "17 Kadavanthra Junction, Kochi",
+      "pincode": 682020
+    },
+    {
+      "ref": "patient:006",
+      "name": "Sunil Patel",
+      "gender": "male",
+      "date_of_birth": "1996-06-12",
+      "blood_group": "A_negative",
+      "address": "9 Thevara Ferry Road, Kochi",
+      "pincode": 682024
+    },
+    {
+      "ref": "patient:007",
+      "name": "Pooja Das",
+      "gender": "female",
+      "date_of_birth": "1984-07-30",
+      "blood_group": "B_negative",
+      "address": "31 Palarivattom Pipeline Road, Kochi",
+      "pincode": 682025
+    },
+    {
+      "ref": "patient:008",
+      "name": "Lalita Joshi",
+      "gender": "female",
+      "date_of_birth": "1976-08-14",
+      "blood_group": "AB_negative",
+      "address": "5 Civil Lane, Kakkanad, Kochi",
+      "pincode": 682030
+    },
+    {
+      "ref": "patient:009",
+      "name": "Priya Kumar",
+      "gender": "female",
+      "date_of_birth": "1991-09-21",
+      "blood_group": "O_positive",
+      "address": "14 Infopark Road, Kakkanad, Kochi",
+      "pincode": 682031
+    },
+    {
+      "ref": "patient:010",
+      "name": "Anjali Sharma",
+      "gender": "female",
+      "date_of_birth": "1987-10-05",
+      "blood_group": "A_positive",
+      "address": "28 Edappally Toll Junction, Kochi",
+      "pincode": 682035
+    }
+  ]
+}

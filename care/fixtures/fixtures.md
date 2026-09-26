@@ -184,6 +184,12 @@ The `load_billing(base, facility_id, patients, encounters=None)` orchestrator in
 - `get_facility_organizations(facility_id)`
 - `get(...)/post(...)` - if utility unavailable make one can use these to load data
 
+Module-level helpers in `base.py` (import directly; not methods on `base`):
+
+- `print_log(message)` — prints a progress line to stdout during fixture runs. Do not call `print` directly — Ruff `T201` fails on bare `print`; route output through `print_log` instead.
+- `generate_phone_number()` — Indian `+91…` mobile for seeded users/patients
+- `slugify(text, max_length=36)` — URL-safe slug helper
+
 Every `create_*` method accepts `**kwargs` for any additional fields
 the API supports.
 

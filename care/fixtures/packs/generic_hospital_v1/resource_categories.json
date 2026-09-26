@@ -1,0 +1,27 @@
+[
+  {
+    "title": "Lab Tests",
+    "slug_value": "lab-tests",
+    "resource_type": "charge_item_definition"
+  },
+  {
+    "title": "Bed Charges",
+    "slug_value": "bed-charges",
+    "resource_type": "charge_item_definition"
+  },
+  {
+    "title": "Medicines",
+    "slug_value": "medicines",
+    "resource_type": "charge_item_definition"
+  },
+  {
+    "title": "Medicines",
+    "slug_value": "medicines-product-knowledge",
+    "resource_type": "product_knowledge"
+  },
+  {
+    "title": "Laboratory",
+    "slug_value": "laboratory",
+    "resource_type": "activity_definition"
+  }
+]
