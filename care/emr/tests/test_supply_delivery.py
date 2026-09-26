@@ -16,6 +16,11 @@ from care.emr.resources.inventory.supply_delivery.spec import (
     SupplyDeliveryStatusOptions,
     SupplyDeliveryTypeOptions,
 )
+from care.emr.signals.patient.facility_name_identifier import (
+    FacilityPatientNameIdentifierConfig,
+)
+from care.emr.signals.patient.name_identifier import NameIdentifierConfig
+from care.emr.signals.patient.phone_number_identifier import PhoneNumberIdentifierConfig
 from care.security.permissions.supply_delivery import SupplyDeliveryPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -212,6 +217,9 @@ class TestSupplyDeliveryViewSetBase(CareAPITestBase):
 class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
     def setUp(self):
         super().setUp()
+        NameIdentifierConfig.CACHED_CONFIG = {}
+        PhoneNumberIdentifierConfig.CACHED_CONFIG = {}
+        FacilityPatientNameIdentifierConfig.CACHED_CONFIG = {}
 
     def test_create_supply_delivery_internally_as_superuser(self):
         """
@@ -557,6 +565,82 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
             response,
             "Delivery order is abandoned or entered in error",
             status_code=400,
+        )
+
+    def test_create_supply_delivery_for_medication_return(self):
+        """
+        Test creating a supply delivery as a superuser for medication return
+        """
+        medication_return_order = self.create_delivery_order(
+            patient=self.patient, destination=self.destination
+        )
+        self.client.force_authenticate(user=self.superuser)
+        data = self.create_supply_delivery_data(
+            order=medication_return_order.external_id,
+            supplied_item=self.product.external_id,
+            delivery_type=SupplyDeliveryTypeOptions.product.value,
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["supplied_item_quantity"], "50.000000")
+        self.assertEqual(
+            get_response.data["status"], SupplyDeliveryStatusOptions.in_progress.value
+        )
+
+    def test_create_supply_delivery_for_medication_return_without_permission(self):
+        """
+        Test creating a supply delivery as a superuser for medication return without patient
+        """
+        medication_return_order = self.create_delivery_order(
+            destination=self.destination
+        )
+        self.client.force_authenticate(user=self.user)
+        data = self.create_supply_delivery_data(
+            order=medication_return_order.external_id,
+            supplied_item=self.product.external_id,
+            delivery_type=SupplyDeliveryTypeOptions.product.value,
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 403)
+        self.assertContains(
+            response,
+            "Cannot write supply requests",
+            status_code=403,
+        )
+
+    def test_create_supply_delivery_for_medication_return_with_permission(self):
+        """
+        Test creating a supply delivery for medication return as a user with permission
+        """
+        medication_return_order = self.create_delivery_order(
+            patient=self.patient, destination=self.destination
+        )
+        self.client.force_authenticate(user=self.user)
+        role = self.create_role_with_permissions(
+            permissions=[
+                SupplyDeliveryPermissions.can_read_supply_delivery.name,
+                SupplyDeliveryPermissions.can_write_medication_return.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            facility_organization=self.facility_organization,
+            user=self.user,
+            role=role,
+        )
+        data = self.create_supply_delivery_data(
+            order=medication_return_order.external_id,
+            supplied_item=self.product.external_id,
+            delivery_type=SupplyDeliveryTypeOptions.product.value,
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        get_response = self.client.get(self.get_detail_url(response.data["id"]))
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(get_response.data["supplied_item_quantity"], "50.000000")
+        self.assertEqual(
+            get_response.data["status"], SupplyDeliveryStatusOptions.in_progress.value
         )
 
     # Testcases for update supply delivery

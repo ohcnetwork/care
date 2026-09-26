@@ -92,6 +92,15 @@ class DeliveryOrderViewSet(
             return False
         return True
 
+    def authorize_location_medication_return(self, location_obj, raise_error=True):
+        if not AuthorizationController.call(
+            "can_write_facility_medication_return", self.request.user, location_obj
+        ):
+            if raise_error:
+                raise PermissionDenied("Cannot write medication return")
+            return False
+        return True
+
     def authorize_location_external_write(self, location_obj, raise_error=True):
         if not AuthorizationController.call(
             "can_write_facility_external_supply_delivery",
@@ -116,6 +125,10 @@ class DeliveryOrderViewSet(
     def authorize_order_write(self, order):
         if order.origin:
             allowed = self.authorize_location_write(order.origin, raise_error=False)
+        elif order.patient:
+            allowed = self.authorize_location_medication_return(
+                order.destination, raise_error=False
+            )
         else:
             allowed = self.authorize_location_external_write(
                 order.destination, raise_error=False
@@ -167,6 +180,11 @@ class DeliveryOrderViewSet(
                 FacilityLocation, external_id=instance.origin
             )
             self.authorize_location_write(origin_location)
+        elif instance.patient:
+            destination_location = get_object_or_404(
+                FacilityLocation, external_id=instance.destination
+            )
+            self.authorize_location_medication_return(destination_location)
         else:
             destination_location = get_object_or_404(
                 FacilityLocation, external_id=instance.destination

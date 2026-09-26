@@ -181,6 +181,15 @@ class SupplyDeliveryViewSet(
             return False
         return True
 
+    def authorize_location_medication_return(self, location_obj, raise_error=True):
+        if not AuthorizationController.call(
+            "can_write_facility_medication_return", self.request.user, location_obj
+        ):
+            if raise_error:
+                raise PermissionDenied("Cannot write medication return")
+            return False
+        return True
+
     def authorize_order_read(self, order):
         allowed = False
         if order.origin:
@@ -200,6 +209,10 @@ class SupplyDeliveryViewSet(
                 order.origin, raise_error=False
             )
             allowed = allowed or self.authorize_location_write(
+                order.destination, raise_error=False
+            )
+        if order.patient:
+            allowed = allowed or self.authorize_location_medication_return(
                 order.destination, raise_error=False
             )
         else:
