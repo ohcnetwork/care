@@ -200,6 +200,23 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
         cls.serialize_audit_users(mapping, obj)
 
 
+class OTPEncounterBaseSpec(BaseModel):
+    __model__ = Encounter
+    __exclude__ = [
+        "patient",
+        "organizations",
+        "facility",
+        "appointment",
+        "current_location",
+        "care_team",
+    ]
+    id: UUID4 = None
+    status: StatusChoices
+    period: PeriodSpec = {}
+    priority: EncounterPriorityChoices
+    external_identifier: str | None = None
+
+
 class EncounterCareTeamMemberSpec(BaseModel):
     user_id: UUID4
     role: ValueSetBoundCoding[PRACTITIONER_ROLE_VALUESET.slug]
