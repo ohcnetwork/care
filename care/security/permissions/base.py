@@ -47,6 +47,7 @@ from care.security.permissions.tag_config import TagConfigPermissions
 from care.security.permissions.template import TemplatePermissions
 from care.security.permissions.token import TokenPermissions
 from care.security.permissions.user import UserPermissions
+from care.security.permissions.valueset import ValueSetPermissions
 
 
 class PermissionHandler:
@@ -99,6 +100,7 @@ class PermissionController:
         ServiceAccountPermissions,
         ResourceCategoryPermissions,
         QuestionnaireResponseTemplatePermissions,
+        ValueSetPermissions,
     ]
 
     cache = {}

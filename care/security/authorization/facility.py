@@ -4,6 +4,7 @@ from care.security.authorization.base import (
     AuthorizationHandler,
 )
 from care.security.permissions.facility import FacilityPermissions
+from care.security.permissions.questionnaire import QuestionnairePermissions
 
 
 class FacilityAccess(AuthorizationHandler):
@@ -37,6 +38,30 @@ class FacilityAccess(AuthorizationHandler):
             orgs=facility.geo_organization_cache,
         ) or self.check_permission_in_facility_organization(
             [FacilityPermissions.can_update_facility.name],
+            user,
+            facility=facility,
+            root=True,
+        )
+
+    def can_submit_facility_questionnaire(self, user, facility):
+        return self.check_permission_in_organization(
+            [QuestionnairePermissions.can_submit_questionnaire.name],
+            user,
+            orgs=facility.geo_organization_cache,
+        ) or self.check_permission_in_facility_organization(
+            [QuestionnairePermissions.can_submit_questionnaire.name],
+            user,
+            facility=facility,
+            root=True,
+        )
+
+    def can_read_facility_questionnaire(self, user, facility):
+        return self.check_permission_in_organization(
+            [QuestionnairePermissions.can_view_resource_responses.name],
+            user,
+            orgs=facility.geo_organization_cache,
+        ) or self.check_permission_in_facility_organization(
+            [QuestionnairePermissions.can_view_resource_responses.name],
             user,
             facility=facility,
             root=True,
