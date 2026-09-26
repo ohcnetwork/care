@@ -127,5 +127,9 @@ class PatientAccess(AuthorizationHandler):
             | Q(users_cache__overlap=[user.id])
         )
 
+    def can_unmark_deceased_patient(self, user):
+        """Permission to reverse a patient's deceased status"""
+        return user.is_superuser
+
 
 AuthorizationController.register_internal_controller(PatientAccess)
