@@ -1,5 +1,8 @@
 from care.emr.models.tag_config import TagConfig
 from care.utils.evaluators.evaluation_metric.base import EvaluationMetricBase
+from care.utils.evaluators.evaluation_metric.validators import (
+    validate_encounter_tag_has_tag,
+)
 from care.utils.registries.evaluation_metric import (
     AllowedOperations,
     EvaluatorMetricsRegistry,
@@ -13,6 +16,9 @@ class EncounterTagsMetric(EvaluationMetricBase):
     allowed_operations = [
         AllowedOperations.has_tag.value,
     ]
+    validators = {
+        AllowedOperations.has_tag.value: validate_encounter_tag_has_tag,
+    }
 
     def evaluate_has_tag(self, rule):
         self._value_type = rule.get("value_type", "encounter")
