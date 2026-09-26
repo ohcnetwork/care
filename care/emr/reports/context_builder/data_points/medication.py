@@ -182,10 +182,27 @@ class MedicationRequestContextBuilder(QuerysetContextBuilder):
         return MedicationRequest.objects.filter(prescription=self.parent_context)
 
 
+MEDICATION_PRESCRIPTION_STATUS_DISPLAY = {
+    "active": "Active",
+    "on_hold": "On Hold",
+    "ended": "Ended",
+    "stopped": "Stopped",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "entered_in_error": "Entered in Error",
+    "draft": "Draft",
+}
+
+
 class MedicationPrescriptionContextBuilder(QuerysetContextBuilder):
     filterset_class = MedicationPrescriptionReportFilter
     __filterset_backends__ = [filters.DjangoFilterBackend]
 
+    name = Field(
+        display="Name",
+        preview_value="",
+        description="Name of the medication prescription",
+    )
     medications = Field(
         display="Medication",
         preview_value="",
@@ -194,14 +211,25 @@ class MedicationPrescriptionContextBuilder(QuerysetContextBuilder):
     )
     status = Field(
         display="Status",
-        preview_value="active",
+        preview_value="Active",
         description="Status of the medication prescription",
+        mapping=lambda m: (
+            MEDICATION_PRESCRIPTION_STATUS_DISPLAY.get(m.status, m.status.title())
+            if m.status
+            else ""
+        ),
     )
     prescribed_by = Field(
         display="Prescribed By",
         preview_value="",
         target_context=SingleUserRelatedContextBuilder,
         description="Details of the prescriber",
+    )
+    tags = Field(
+        display="Prescription Tags",
+        target_context=QuerysetContextBuilder,
+        preview_value="",
+        description="Tags associated with the prescription",
     )
     note = Field(
         display="Note",
