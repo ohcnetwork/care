@@ -6,6 +6,7 @@ from pydantic import UUID4, UUID5, ConfigDict, Field, field_validator, model_val
 
 from care.emr.models import Questionnaire, ValueSet
 from care.emr.resources.base import EMRResource
+from care.emr.resources.common import Coding
 from care.emr.resources.observation.valueset import (
     CARE_OBSERVATION_VALUSET,
     CARE_UCUM_UNITS,
@@ -89,7 +90,10 @@ class EnableWhen(QuestionnaireBaseSpec):
 
 
 class AnswerOption(QuestionnaireBaseSpec):
-    value: Any = Field(description="Value based on question type")
+    display: str | None = Field(
+        default=None, description="Display value for the option (optional)"
+    )
+    value: str | int | Coding = Field(description="Value for the option")
     initial_selected: bool = Field(
         default=False,
         description="Whether option is initially selected",
@@ -97,12 +101,14 @@ class AnswerOption(QuestionnaireBaseSpec):
 
     @field_validator("value")
     @classmethod
-    def validate_value(cls, value: str, info):
-        if not value.strip():
+    def validate_value_field(cls, value: str | int | Coding, info):
+        if isinstance(value, str):
+            value = value.strip()
+        if value is None:
             raise ValueError(
                 "All the answer option values must be provided for custom choices"
             )
-        return value.strip()
+        return value
 
 
 class TemplateConfig(QuestionnaireBaseSpec):
@@ -178,6 +184,18 @@ class Question(QuestionnaireBaseSpec):
 
         if self.type == QuestionType.group and not self.questions:
             raise ValueError("Group type questions must have at least one sub-question")
+
+        if self.answer_option and len(self.answer_option) > 1:
+            value_types = set()
+            for answer in self.answer_option:
+                value_type = type(answer.value)
+                value_types.add(value_type)
+
+            if len(value_types) > 1:
+                type_names = [t.__name__ for t in value_types]
+                error = f"All answer option values must have the same type. Found types: {', '.join(type_names)}"
+
+                raise ValueError(error)
 
         return self
 
