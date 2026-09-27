@@ -37,6 +37,11 @@ from care.emr.api.viewsets.facility_organization import (
 from care.emr.api.viewsets.file_upload import FileUploadViewSet
 from care.emr.api.viewsets.form_submission import FormSubmissionViewSet
 from care.emr.api.viewsets.healthcare_service import HealthcareServiceViewSet
+from care.emr.api.viewsets.immunization.immunization import ImmunizationRecordViewSet
+from care.emr.api.viewsets.immunization.policy import ImmunizationPolicyViewSet
+from care.emr.api.viewsets.immunization.recommendation import (
+    ImmunizationRecommendationViewSet,
+)
 from care.emr.api.viewsets.inventory.delivery_order import DeliveryOrderViewSet
 from care.emr.api.viewsets.inventory.dispense_order import DispenseOrderViewSet
 from care.emr.api.viewsets.inventory.inventory_item import InventoryItemViewSet
@@ -145,6 +150,11 @@ router.register("batch_requests", BatchRequestView, basename="batch-requests")
 router.register("valueset", ValueSetViewSet, basename="value-set")
 
 router.register("questionnaire", QuestionnaireViewSet, basename="questionnaire")
+
+router.register(
+    "immunization/policy", ImmunizationPolicyViewSet, basename="immunization-policy"
+)
+
 
 questionnaire_nested_router = NestedSimpleRouter(
     router, r"questionnaire", lookup="questionnaire"
@@ -484,6 +494,19 @@ patient_nested_router.register(
     r"medication/administration",
     MedicationAdministrationViewSet,
     basename="medication-administration",
+)
+
+patient_nested_router.register(
+    r"immunization/recommendation",
+    ImmunizationRecommendationViewSet,
+    basename="immunization-recommendation",
+)
+
+
+patient_nested_router.register(
+    r"immunization/record",
+    ImmunizationRecordViewSet,
+    basename="immunization-record",
 )
 
 
