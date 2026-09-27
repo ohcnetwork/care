@@ -877,6 +877,25 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
             status_code=400,
         )
 
+    def test_create_exception_rejects_booked_slot_ending_at_midnight(self):
+        """A booked slot ending at midnight (end time 00:00) blocks it."""
+        day, _ = self._create_slot_for_exception_overlap(
+            time(23, 0), time(0, 0), allocated=1
+        )
+        exception_data = self.generate_exception_data(
+            valid_from=day.isoformat(),
+            valid_to=day.isoformat(),
+            start_time="22:30:00",
+            end_time="23:30:00",
+        )
+
+        response = self.client.post(self.base_url, exception_data, format="json")
+        self.assertContains(
+            response,
+            "There are bookings during this exception",
+            status_code=400,
+        )
+
     def test_create_exception_allows_booked_slot_starting_at_its_end(self):
         """A booked slot that only touches the exception end does not block it."""
         day, slot = self._create_slot_for_exception_overlap(
