@@ -41,7 +41,6 @@ class BaseImmunizationRecommendationSpec(EMRResource):
     series: str | MISSING = MISSING
     dose_number: str | MISSING = MISSING
     series_number: str | MISSING = MISSING
-    forecast_status: ImmunizationRecommendationForecastStatus
 
 
 class ImmunizationRecommendationCreateSpec(BaseImmunizationRecommendationSpec):
@@ -49,6 +48,7 @@ class ImmunizationRecommendationCreateSpec(BaseImmunizationRecommendationSpec):
     patient: UUID4
     encounter: UUID4 | None = None
     is_group: bool
+    forecast_status: ImmunizationRecommendationForecastStatus
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.patient = get_object_or_404(
@@ -70,12 +70,17 @@ class ImmunizationRecommendationCreateSpec(BaseImmunizationRecommendationSpec):
 
 
 class ImmunizationRecommendationUpdateSpec(BaseImmunizationRecommendationSpec):
-    pass
+    forecast_status: ImmunizationRecommendationForecastStatus
 
 
 class ImmunizationRecommendationListSpec(BaseImmunizationRecommendationSpec):
+    forecast_status: ImmunizationRecommendationForecastStatus
     is_group: bool
 
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = obj.external_id
 
-class ImmunizationRecommendationRetrieveSpec(BaseImmunizationRecommendationSpec):
-    is_group: bool
+
+class ImmunizationRecommendationRetrieveSpec(ImmunizationRecommendationListSpec):
+    pass

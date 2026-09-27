@@ -52,9 +52,10 @@ class ImmunizationPolicyCreateSpec(ImmunizationPolicySpec):
     facility: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
-        obj.facility = get_object_or_404(
-            Facility.objects.only("id"), external_id=self.facility
-        )
+        if self.facility:
+            obj.facility = get_object_or_404(
+                Facility.objects.only("id"), external_id=self.facility
+            )
         return super().perform_extra_deserialization(is_update, obj)
 
 

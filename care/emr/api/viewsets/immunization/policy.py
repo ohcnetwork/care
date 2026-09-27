@@ -94,8 +94,8 @@ class ImmunizationPolicyViewSet(
                 ):
                     raise PermissionDenied("Access Denied to Immunization Policy")
                 queryset = queryset.filter(
-                    Q(facility=facility) | Q(facility__is_null=True)
+                    Q(facility=facility) | Q(facility__isnull=True)
                 )
             else:
-                queryset = queryset.filter(facility__is_null=True)
+                queryset = queryset.filter(facility__isnull=True)
         return queryset
