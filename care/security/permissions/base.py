@@ -14,6 +14,7 @@ from care.security.permissions.facility_organization import (
     FacilityOrganizationPermissions,
 )
 from care.security.permissions.healthcare_service import HealthcareServicePermissions
+from care.security.permissions.immunization import ImmunizationPermissions
 from care.security.permissions.inventory_item import InventoryItemPermissions
 from care.security.permissions.invoice import InvoicePermissions
 from care.security.permissions.location import FacilityLocationPermissions
@@ -101,6 +102,7 @@ class PermissionController:
         ResourceCategoryPermissions,
         QuestionnaireResponseTemplatePermissions,
         ValueSetPermissions,
+        ImmunizationPermissions,
     ]
 
     cache = {}
