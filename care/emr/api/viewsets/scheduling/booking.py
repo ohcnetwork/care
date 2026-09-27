@@ -361,15 +361,16 @@ def authorize_booking_list(  # noqa PLR0912
                     raise PermissionDenied(
                         "You do not have permission to list bookings"
                     )
-                users = FacilityOrganizationUser.objects.filter(
-                    organization=organization
-                ).values("user_id")
-                # TODO : Change to overlap to include children as well
-                base_query = base_query.filter(
-                    token_slot__resource__in=SchedulableResource.objects.filter(
-                        user__in=users, facility=facility
-                    )
+            # Bookings of practitioners in any of the requested organizations
+            users = FacilityOrganizationUser.objects.filter(
+                organization__in=organizations
+            ).values("user_id")
+            # TODO : Change to overlap to include children as well
+            base_query = base_query.filter(
+                token_slot__resource__in=SchedulableResource.objects.filter(
+                    user__in=users, facility=facility
                 )
+            )
         if not resource_ids and not organization_ids and not user.is_superuser:
             raise PermissionDenied("You do not have permission to list bookings")
     elif resource_type in [
