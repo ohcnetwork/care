@@ -34,3 +34,4 @@ from .template import *  # noqa
 from .token import *  # noqa
 from .user import *  # noqa
 from .valueset import *  # noqa
+from .immunization import *  # noqa
