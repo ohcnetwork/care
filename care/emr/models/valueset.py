@@ -62,20 +62,14 @@ class ValueSet(EMRBaseModel):
             compose = ValueSetCompose(**self.compose)
         for include in compose.include:
             system = include.system
-            if system not in systems:
-                systems[system] = {"include": []}
-            if "include" in systems[system]:
-                systems[system]["include"].append(
-                    include.model_dump(exclude_defaults=True)
-                )
+            systems.setdefault(system, {}).setdefault("include", []).append(
+                include.model_dump(exclude_defaults=True)
+            )
         for exclude in compose.exclude:
             system = exclude.system
-            if system not in systems:
-                systems[system] = {"exclude": []}
-            if "exclude" in systems[system]:
-                systems[system]["exclude"].append(
-                    exclude.model_dump(exclude_defaults=True)
-                )
+            systems.setdefault(system, {}).setdefault("exclude", []).append(
+                exclude.model_dump(exclude_defaults=True)
+            )
         if self.disable_composition:
             return systems
         if self.parent:
