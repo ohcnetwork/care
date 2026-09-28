@@ -97,6 +97,10 @@ class SupplyRequestOrderWriteSpec(BaseSupplyRequestOrderSpec):
             obj.origin = get_object_or_404(
                 FacilityLocation.objects.only("id").filter(external_id=self.origin)
             )
+            if obj.origin == obj.destination:
+                raise ValidationError(
+                    "Origin and destination locations must be different."
+                )
 
 
 class SupplyRequestOrderReadSpec(BaseSupplyRequestOrderSpec):

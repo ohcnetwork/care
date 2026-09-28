@@ -1054,6 +1054,36 @@ class TokenAPITests(CareAPITestBase):
         token.refresh_from_db()
         self.assertEqual(token.status, TokenStatusOptions.ENTERED_IN_ERROR)
 
+    def test_deleted_token_number_is_not_reused(self):
+        """A token created after a delete must not get an existing number."""
+        self.client.force_authenticate(user=self.superuser)
+        token_data = self.generate_token_data(
+            patient=self.patient.external_id,
+            category=self.token_category.external_id,
+        )
+        first = self.client.post(self.token_url, data=token_data, format="json")
+        second = self.client.post(self.token_url, data=token_data, format="json")
+        self.assertEqual(first.status_code, 200)
+        self.assertEqual(second.status_code, 200)
+
+        response = self.client.delete(
+            self.generate_detail_url(
+                str(self.facility.external_id),
+                str(self.token_queue.external_id),
+                first.data["id"],
+            )
+        )
+        self.assertEqual(response.status_code, 204)
+
+        third = self.client.post(self.token_url, data=token_data, format="json")
+        self.assertEqual(third.status_code, 200)
+        numbers = list(
+            Token.objects.filter(
+                queue=self.token_queue, category=self.token_category
+            ).values_list("number", flat=True)
+        )
+        self.assertEqual(sorted(numbers), [2, 3])
+
     def test_delete_token_as_user_with_permission(self):
         """Test deleting a token as a user with permission."""
         self.client.force_authenticate(user=self.user)
