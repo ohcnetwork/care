@@ -14,6 +14,13 @@ from care.emr.models.patient import (
 )
 from care.emr.models.tag_config import TagConfig
 from care.emr.resources.patient.spec import BloodGroupChoices, GenderChoices
+from care.emr.signals.patient.facility_name_identifier import (
+    FacilityPatientNameIdentifierConfig,
+)
+from care.emr.signals.patient.name_identifier import NameIdentifierConfig
+from care.emr.signals.patient.phone_number_identifier import (
+    PhoneNumberIdentifierConfig,
+)
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
 from care.utils.time_util import care_now
@@ -44,6 +51,10 @@ class TestPatientViewSet(CareAPITestBase):
     def setUp(self):
         """Set up test data that's needed for all tests"""
         self.base_url = reverse("patient-list")
+
+        NameIdentifierConfig.CACHED_CONFIG = {}
+        PhoneNumberIdentifierConfig.CACHED_CONFIG = {}
+        FacilityPatientNameIdentifierConfig.CACHED_CONFIG = {}
 
     def generate_patient_data(self, geo_organization, **kwargs):
         data = {
@@ -817,3 +828,44 @@ class TestPatientViewSet(CareAPITestBase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["facility_tags"], [])
+
+    def test_create_patient_with_missing_fields_to_default_missing(self):
+        superuser = self.create_super_user()
+        geo_organization = self.create_organization(org_type="govt")
+        self.client.force_authenticate(user=superuser)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id
+        )
+        patient_data.pop("pincode")
+        patient_data.pop("blood_group")
+
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertFalse(response.data["pincode"])
+        self.assertFalse(response.data["blood_group"])
+        self.assertIsNone(response.data["deceased_datetime"])
+
+    def test_update_patient_with_missing_fields_not_getting_updated(self):
+        superuser = self.create_super_user()
+        geo_organization = self.create_organization(org_type="govt")
+        self.client.force_authenticate(user=superuser)
+        deceased_datetime = care_now() - datetime.timedelta(days=2)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            deceased_datetime=deceased_datetime,
+        )
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+
+        update_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        response = self.client.patch(
+            update_url, {"name": "Updated Name"}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], "Updated Name")
+        self.assertEqual(response.data["pincode"], patient_data["pincode"])
+        self.assertEqual(response.data["blood_group"], patient_data["blood_group"])
+        self.assertIsNotNone(response.data["deceased_datetime"])

@@ -66,7 +66,7 @@ class PatientBaseSpec(EMRResource):
     emergency_phone_number: PhoneNumber | None = Field(None, max_length=14)
     address: str | MISSING = MISSING
     permanent_address: str | MISSING = MISSING
-    pincode: int | None | MISSING = MISSING
+    pincode: int | MISSING = MISSING
     deceased_datetime: StrictTZAwareDateTime | None | MISSING = MISSING
     blood_group: BloodGroupChoices | MISSING = MISSING
 
@@ -156,11 +156,13 @@ class PatientUpdateSpec(ExtensionValidator, PatientBaseSpec):
         default=MISSING, max_length=settings.PATIENT_NAME_MAX_LENGTH
     )
     gender: GenderChoices | MISSING = MISSING
-    phone_number: PhoneNumber | None = Field(default=None, max_length=14)
-    emergency_phone_number: PhoneNumber | None = Field(default=None, max_length=14)
+    phone_number: PhoneNumber | MISSING = Field(default=MISSING, max_length=14)
+    emergency_phone_number: PhoneNumber | MISSING = Field(
+        default=MISSING, max_length=14
+    )
     address: str | MISSING = MISSING
     permanent_address: str | MISSING = MISSING
-    pincode: int | None | MISSING = MISSING
+    pincode: int | MISSING = MISSING
     blood_group: BloodGroupChoices | MISSING = MISSING
     date_of_birth: datetime.date | None | MISSING = MISSING
     age: int | MISSING = MISSING
