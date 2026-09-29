@@ -96,7 +96,7 @@ class PatientViewSet(EMRModelViewSet):
             )
         )
 
-        if age and deceased:
+        if age is not None and deceased:
             calculated_birth_year = timezone.now().year - age
             if calculated_birth_year > deceased.year:
                 raise ValidationError("Year of birth cannot be after the year of death")

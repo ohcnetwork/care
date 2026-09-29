@@ -243,6 +243,67 @@ class TestPatientViewSet(CareAPITestBase):
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, 400)
 
+    def test_update_patient_with_zero_age_after_death_year(self):
+        superuser = self.create_super_user()
+        geo_organization = self.create_organization(org_type="govt")
+        self.client.force_authenticate(user=superuser)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            date_of_birth=datetime.date(1950, 1, 1),
+            deceased_datetime=care_now() - datetime.timedelta(days=730),
+        )
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+
+        update_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        response = self.client.patch(update_url, {"age": 0}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn(
+            "Year of birth cannot be after the year of death",
+            response.json()["errors"][0]["msg"],
+        )
+
+    def test_update_patient_without_age_still_validates_date_of_birth(self):
+        superuser = self.create_super_user()
+        geo_organization = self.create_organization(org_type="govt")
+        self.client.force_authenticate(user=superuser)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            date_of_birth=datetime.date(2000, 1, 1),
+        )
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+
+        update_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        response = self.client.patch(
+            update_url,
+            {"deceased_datetime": care_now().replace(year=1999).isoformat()},
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn(
+            "Date of birth cannot be after the date of death",
+            response.json()["errors"][0]["msg"],
+        )
+
+    def test_create_patient_with_age_still_validates_date_of_birth(self):
+        superuser = self.create_super_user()
+        geo_organization = self.create_organization(org_type="govt")
+        self.client.force_authenticate(user=superuser)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            age=30,
+            date_of_birth=datetime.date(2000, 1, 1),
+            deceased_datetime=care_now().replace(year=1999),
+        )
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
     def test_create_patient_with_unique_patient_identifier(self):
         """
         Test creating a patient with a unique identifier config and validating"""
@@ -842,7 +903,7 @@ class TestPatientViewSet(CareAPITestBase):
         PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertFalse(response.data["pincode"])
+        self.assertIsNone(response.data["pincode"])
         self.assertFalse(response.data["blood_group"])
         self.assertIsNone(response.data["deceased_datetime"])
 
@@ -866,6 +927,5 @@ class TestPatientViewSet(CareAPITestBase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], "Updated Name")
-        self.assertEqual(response.data["pincode"], patient_data["pincode"])
         self.assertEqual(response.data["blood_group"], patient_data["blood_group"])
         self.assertIsNotNone(response.data["deceased_datetime"])

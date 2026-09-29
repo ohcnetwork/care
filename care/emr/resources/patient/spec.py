@@ -107,7 +107,7 @@ class PatientCreateSpec(ExtensionValidator, PatientBaseSpec):
     geo_organization: UUID4
     date_of_birth: datetime.date | None = None
 
-    age: int | None = None
+    age: int | MISSING = MISSING
 
     identifiers: list[PatientIdentifierConfigRequest] = []
 
@@ -139,7 +139,7 @@ class PatientCreateSpec(ExtensionValidator, PatientBaseSpec):
         obj.geo_organization = Organization.objects.get(
             external_id=self.geo_organization
         )
-        if self.age:
+        if self.age is not MISSING:
             # override dob if user chooses to update age
             obj.date_of_birth = None
             obj.year_of_birth = timezone.now().date().year - self.age
@@ -147,7 +147,7 @@ class PatientCreateSpec(ExtensionValidator, PatientBaseSpec):
             obj.year_of_birth = self.date_of_birth.year
         obj._identifiers = self.identifiers  # noqa: SLF001
         obj._tags = self.tags  # noqa: SLF001
-        if not self.pincode:
+        if self.pincode is MISSING or not self.pincode:
             obj.pincode = None
 
 
@@ -193,7 +193,7 @@ class PatientUpdateSpec(ExtensionValidator, PatientBaseSpec):
                 obj.year_of_birth = timezone.now().year - self.age
             elif self.date_of_birth is not MISSING and self.date_of_birth:
                 obj.year_of_birth = self.date_of_birth.year
-        if self.pincode is not MISSING and not self.pincode:
+        if self.pincode is MISSING or not self.pincode:
             obj.pincode = None
 
     @field_validator("identifiers")
