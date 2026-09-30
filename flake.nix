@@ -20,12 +20,13 @@
           if pkgs.stdenv.isDarwin then
             "/usr/bin/pgrep"
           else
-            "${pgrep}";
+            "${pkgs.procps}/bin/pgrep";
+
         pkill =
           if pkgs.stdenv.isDarwin then
             "/usr/bin/pkill"
           else
-            "${pkill}";
+            "${pkgs.procps}/bin/pkill";
 
         # Create a Python environment with pip-installable packages
         pythonEnv = python.withPackages (
@@ -36,6 +37,20 @@
             virtualenv
           ]
         );
+
+        # WeasyPrint native libs (dlopened via cffi at runtime).
+        # Defined once and reused in buildInputs (below) and shellHook
+        # so LD_LIBRARY_PATH / DYLD_FALLBACK_LIBRARY_PATH stay in sync.
+        weasyPrintPkgs = with pkgs; [
+          glib
+          pango
+          harfbuzz
+          fontconfig
+          freetype
+          cairo
+          gdk-pixbuf
+        ];
+        weasyPrintLibs = pkgs.lib.makeLibraryPath weasyPrintPkgs;
 
         # Project-local data directory (still impure but isolated)
         projectDataDir = ".nix-data";
@@ -460,22 +475,17 @@
             curl
             wget
             git
-
-            # WeasyPrint native dependencies (loaded via cffi dlopen at runtime)
-            glib
-            pango
-            harfbuzz
-            fontconfig
-            freetype
-            cairo
-
+          ]
+          # WeasyPrint native dependencies (loaded via cffi dlopen at runtime)
+          ++ weasyPrintPkgs
+          ++ (with pkgs; [
             # Development tools
             pre-commit
 
             # Build tools
             gcc
             gnumake
-          ]
+          ])
           ++ pkgs.lib.optionals pkgs.stdenv.isLinux [
             pkgs.procps # pgrep/pkill (Darwin uses /usr/bin via processUtils above)
           ]
@@ -510,15 +520,10 @@
               pkgs.lib.mapAttrsToList (name: value: "export ${name}='${value}'") envVars
             )}
 
-            # WeasyPrint needs to dlopen native libs (glib, pango, etc.) at runtime
-            export DYLD_FALLBACK_LIBRARY_PATH="${pkgs.lib.makeLibraryPath [
-              pkgs.glib
-              pkgs.pango
-              pkgs.harfbuzz
-              pkgs.fontconfig
-              pkgs.freetype
-              pkgs.cairo
-            ]}''${DYLD_FALLBACK_LIBRARY_PATH:+:$DYLD_FALLBACK_LIBRARY_PATH}"
+            # WeasyPrint needs to dlopen native libs (glib, pango, etc.) at runtime.
+            # Set both vars on all platforms: Linux ignores DYLD_*, macOS ignores LD_*.
+            export LD_LIBRARY_PATH="${weasyPrintLibs}''${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}"
+            export DYLD_FALLBACK_LIBRARY_PATH="${weasyPrintLibs}''${DYLD_FALLBACK_LIBRARY_PATH:+:$DYLD_FALLBACK_LIBRARY_PATH}"
 
             # Create project data directory
             mkdir -p ${projectDataDir}
