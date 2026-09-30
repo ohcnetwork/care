@@ -14,6 +14,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.locks.billing import InventoryItemLock
 from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.location import FacilityLocation
 from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
@@ -61,7 +62,22 @@ class SupplyDeliveryFilters(filters.FilterSet):
     request_order = DummyUUIDFilter()
 
 
+class InventoryLockMixin:
+    """Inventory lock mixin to ensure atomic operations on inventory items before creating a supply delivery."""
+
+    def handle_create(self, request_data):
+        supplied_inventory_item = request_data.get("supplied_inventory_item")
+        if not supplied_inventory_item:
+            return super().handle_create(request_data)
+        inventory_item = get_object_or_404(
+            InventoryItem, external_id=supplied_inventory_item
+        )
+        with transaction.atomic(), InventoryItemLock(inventory_item):
+            return super().handle_create(request_data)
+
+
 class SupplyDeliveryViewSet(
+    InventoryLockMixin,
     EMRCreateMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,

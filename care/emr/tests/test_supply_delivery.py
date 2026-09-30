@@ -1,10 +1,14 @@
 from decimal import Decimal
+from unittest.mock import patch
 
 from django.urls import reverse
 from model_bakery import baker
 
+from care.emr.api.viewsets.inventory.supply_delivery import SupplyDeliveryViewSet
+from care.emr.locks.billing import InventoryItemLock
 from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.product_knowledge import ProductKnowledge
+from care.emr.models.supply_delivery import SupplyDelivery
 from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
     sync_inventory_item,
 )
@@ -16,6 +20,11 @@ from care.emr.resources.inventory.supply_delivery.spec import (
     SupplyDeliveryStatusOptions,
     SupplyDeliveryTypeOptions,
 )
+from care.emr.signals.patient.facility_name_identifier import (
+    FacilityPatientNameIdentifierConfig,
+)
+from care.emr.signals.patient.name_identifier import NameIdentifierConfig
+from care.emr.signals.patient.phone_number_identifier import PhoneNumberIdentifierConfig
 from care.security.permissions.supply_delivery import SupplyDeliveryPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -23,6 +32,9 @@ from care.utils.tests.base import CareAPITestBase
 class TestSupplyDeliveryViewSetBase(CareAPITestBase):
     def setUp(self):
         super().setUp()
+        NameIdentifierConfig.CACHED_CONFIG = {}
+        PhoneNumberIdentifierConfig.CACHED_CONFIG = {}
+        FacilityPatientNameIdentifierConfig.CACHED_CONFIG = {}
         self.user = self.create_user(username="testuser")
         self.superuser = self.create_super_user(username="superuser")
         self.patient = self.create_patient(name="Test Patient")
@@ -210,9 +222,6 @@ class TestSupplyDeliveryViewSetBase(CareAPITestBase):
 
 
 class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
-    def setUp(self):
-        super().setUp()
-
     def test_create_supply_delivery_internally_as_superuser(self):
         """
         Test creating a supply delivery internally as a superuser from origin to destination
@@ -1923,3 +1932,98 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
             response.data["results"][0]["supplied_item"]["id"],
             str(self.product.external_id),
         )
+
+    def full_stock_payload(self):
+        return self.create_supply_delivery_data(
+            supplied_inventory_item=self.inventory_item_origin.external_id,
+            order=self.delivery_order_internal.external_id,
+            quantity=Decimal(500),
+        )
+
+    def internal_deliveries(self):
+        return SupplyDelivery.objects.filter(order=self.delivery_order_internal)
+
+    def test_sequential_full_stock_deliveries_reject_the_second(self):
+        self.client.force_authenticate(user=self.superuser)
+        first = self.client.post(
+            self.base_url, self.full_stock_payload(), format="json"
+        )
+        self.assertEqual(first.status_code, 200)
+
+        self.inventory_item_origin.refresh_from_db()
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(0))
+
+        second = self.client.post(
+            self.base_url, self.full_stock_payload(), format="json"
+        )
+        self.assertContains(second, "Insufficient stock", status_code=400)
+        self.assertEqual(self.internal_deliveries().count(), 1)
+
+    def test_concurrent_full_stock_delivery_is_rejected_on_stale_stock(self):
+        """
+        Fire a second delivery from inside the first one's stock check, i.e. while the
+        first has read 500 units but not yet written. Without the inventory lock the
+        second request would pass validation on that stale read and oversell.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        original_validate_data = SupplyDeliveryViewSet.validate_data
+        concurrent_responses = []
+
+        def validate_data_and_reenter(viewset, instance, model_obj=None):
+            result = original_validate_data(viewset, instance, model_obj)
+            if not concurrent_responses:
+                concurrent_responses.append(None)
+                concurrent_responses[0] = self.client.post(
+                    self.base_url, self.full_stock_payload(), format="json"
+                )
+            return result
+
+        with patch.object(
+            SupplyDeliveryViewSet, "validate_data", validate_data_and_reenter
+        ):
+            response = self.client.post(
+                self.base_url, self.full_stock_payload(), format="json"
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(concurrent_responses[0].status_code, 423)
+        self.assertEqual(self.internal_deliveries().count(), 1)
+
+        self.inventory_item_origin.refresh_from_db()
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(0))
+
+    def test_create_is_rejected_while_origin_inventory_item_is_locked(self):
+        self.client.force_authenticate(user=self.superuser)
+        with InventoryItemLock(self.inventory_item_origin):
+            response = self.client.post(
+                self.base_url, self.full_stock_payload(), format="json"
+            )
+
+        self.assertEqual(response.status_code, 423)
+        self.assertEqual(self.internal_deliveries().count(), 0)
+
+        self.inventory_item_origin.refresh_from_db()
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(500))
+
+    def test_inventory_item_lock_is_released_after_create(self):
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            self.base_url, self.full_stock_payload(), format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+
+        with InventoryItemLock(self.inventory_item_origin):
+            pass
+
+    def test_inventory_item_lock_is_released_after_failed_validation(self):
+        self.client.force_authenticate(user=self.superuser)
+        data = self.create_supply_delivery_data(
+            supplied_inventory_item=self.inventory_item_origin.external_id,
+            order=self.delivery_order_internal.external_id,
+            quantity=Decimal(501),
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertContains(response, "Insufficient stock", status_code=400)
+
+        with InventoryItemLock(self.inventory_item_origin):
+            pass
