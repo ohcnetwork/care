@@ -168,6 +168,77 @@ class TestBookingViewSet(CareAPITestBase):
             response, "Schedule User is not part of the facility", status_code=400
         )
 
+    def test_list_booking_filtered_by_organization(self):
+        """Filtering by organization_ids lists bookings of the organization's practitioners only."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        booking = self.create_booking()
+
+        other_user = self.create_user()
+        other_resource = self.create_resource(user=other_user)
+        other_slot = self.create_slot(resource=other_resource)
+        self.create_booking(token_slot=other_slot)
+
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "organization_ids": str(self.organization.external_id),
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            [result["id"] for result in response.data["results"]],
+            [str(booking.external_id)],
+        )
+
+    def test_list_booking_filtered_by_multiple_organizations(self):
+        """Filtering by several organizations lists bookings from any of them."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        other_organization = self.create_facility_organization(facility=self.facility)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.attach_role_facility_organization_user(other_organization, self.user, role)
+        booking = self.create_booking()
+
+        other_user = self.create_user()
+        self.attach_role_facility_organization_user(
+            other_organization, other_user, role
+        )
+        other_slot = self.create_slot(resource=self.create_resource(user=other_user))
+        other_booking = self.create_booking(token_slot=other_slot)
+
+        outside_slot = self.create_slot(
+            resource=self.create_resource(user=self.create_user())
+        )
+        self.create_booking(token_slot=outside_slot)
+
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "organization_ids": f"{self.organization.external_id},"
+                f"{other_organization.external_id}",
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertCountEqual(
+            [result["id"] for result in response.data["results"]],
+            [str(booking.external_id), str(other_booking.external_id)],
+        )
+
+    def test_list_booking_filtered_by_organization_without_permissions(self):
+        """Users without permission in the organization cannot list its bookings."""
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "organization_ids": str(self.organization.external_id),
+            },
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_retrieve_booking_with_permissions(self):
         """Users with can_list_user_booking permission can retrieve bookings."""
         permissions = [SchedulePermissions.can_list_booking.name]
