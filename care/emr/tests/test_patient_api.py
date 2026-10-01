@@ -281,7 +281,7 @@ class TestPatientViewSet(CareAPITestBase):
         update_url = reverse("patient-detail", kwargs={"external_id": patient_id})
         response = self.client.patch(
             update_url,
-            {"deceased_datetime": care_now().replace(year=1999).isoformat()},
+            {"deceased_datetime": care_now().replace(year=1999, month=1, day=1).isoformat()},
             format="json",
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
