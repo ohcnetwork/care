@@ -1,18 +1,13 @@
-from care.emr.api.viewsets.base import EMRBaseViewSet, EMRCreateMixin, EMRListMixin
+from care.emr.api.otp_viewsets.base import OTPBaseViewset
+from care.emr.api.viewsets.base import EMRCreateMixin, EMRListMixin
 from care.emr.models.patient import Patient
 from care.emr.resources.patient.otp_based_flow import (
     PatientOTPReadSpec,
     PatientOTPWriteSpec,
 )
-from config.patient_otp_authentication import (
-    JWTTokenPatientAuthentication,
-    OTPAuthenticatedPermission,
-)
 
 
-class PatientOTPView(EMRCreateMixin, EMRListMixin, EMRBaseViewSet):
-    authentication_classes = [JWTTokenPatientAuthentication]
-    permission_classes = [OTPAuthenticatedPermission]
+class PatientOTPView(EMRCreateMixin, EMRListMixin, OTPBaseViewset):
     pydantic_model = PatientOTPWriteSpec
     pydantic_read_model = PatientOTPReadSpec
 
