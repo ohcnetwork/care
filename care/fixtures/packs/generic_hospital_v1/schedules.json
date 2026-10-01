@@ -1,0 +1,80 @@
+{
+  "schedules": [
+    {
+      "ref": "schedule:doctor",
+      "name": "General Medicine OPD",
+      "user_ref": "user:doctor",
+      "resource_type": "practitioner",
+      "is_public": true,
+      "valid_days": 365,
+      "availabilities": [
+        {
+          "name": "Morning",
+          "slot_type": "appointment",
+          "slot_size_in_minutes": 30,
+          "tokens_per_slot": 2,
+          "availability": [
+            {"day_of_week": 0, "start_time": "09:00:00", "end_time": "13:00:00"},
+            {"day_of_week": 1, "start_time": "09:00:00", "end_time": "13:00:00"},
+            {"day_of_week": 2, "start_time": "09:00:00", "end_time": "13:00:00"},
+            {"day_of_week": 3, "start_time": "09:00:00", "end_time": "13:00:00"},
+            {"day_of_week": 4, "start_time": "09:00:00", "end_time": "13:00:00"},
+            {"day_of_week": 5, "start_time": "09:00:00", "end_time": "13:00:00"}
+          ]
+        },
+        {
+          "name": "Evening",
+          "slot_type": "appointment",
+          "slot_size_in_minutes": 30,
+          "tokens_per_slot": 2,
+          "availability": [
+            {"day_of_week": 0, "start_time": "14:00:00", "end_time": "18:00:00"},
+            {"day_of_week": 1, "start_time": "14:00:00", "end_time": "18:00:00"},
+            {"day_of_week": 2, "start_time": "14:00:00", "end_time": "18:00:00"},
+            {"day_of_week": 3, "start_time": "14:00:00", "end_time": "18:00:00"},
+            {"day_of_week": 4, "start_time": "14:00:00", "end_time": "18:00:00"},
+            {"day_of_week": 5, "start_time": "14:00:00", "end_time": "18:00:00"}
+          ]
+        }
+      ]
+    },
+    {
+      "ref": "schedule:doctor_pediatrics",
+      "name": "Pediatrics OPD",
+      "user_ref": "user:doctor_pediatrics",
+      "resource_type": "practitioner",
+      "is_public": true,
+      "valid_days": 365,
+      "availabilities": [
+        {
+          "name": "Morning",
+          "slot_type": "appointment",
+          "slot_size_in_minutes": 30,
+          "tokens_per_slot": 2,
+          "availability": [
+            {"day_of_week": 0, "start_time": "09:00:00", "end_time": "13:00:00"},
+            {"day_of_week": 1, "start_time": "09:00:00", "end_time": "13:00:00"},
+            {"day_of_week": 2, "start_time": "09:00:00", "end_time": "13:00:00"},
+            {"day_of_week": 3, "start_time": "09:00:00", "end_time": "13:00:00"},
+            {"day_of_week": 4, "start_time": "09:00:00", "end_time": "13:00:00"},
+            {"day_of_week": 5, "start_time": "09:00:00", "end_time": "13:00:00"}
+          ]
+        },
+        {
+          "name": "Evening",
+          "slot_type": "appointment",
+          "slot_size_in_minutes": 30,
+          "tokens_per_slot": 2,
+          "availability": [
+            {"day_of_week": 0, "start_time": "14:00:00", "end_time": "18:00:00"},
+            {"day_of_week": 1, "start_time": "14:00:00", "end_time": "18:00:00"},
+            {"day_of_week": 2, "start_time": "14:00:00", "end_time": "18:00:00"},
+            {"day_of_week": 3, "start_time": "14:00:00", "end_time": "18:00:00"},
+            {"day_of_week": 4, "start_time": "14:00:00", "end_time": "18:00:00"},
+            {"day_of_week": 5, "start_time": "14:00:00", "end_time": "18:00:00"}
+          ]
+        }
+      ]
+    }
+  ]
+}

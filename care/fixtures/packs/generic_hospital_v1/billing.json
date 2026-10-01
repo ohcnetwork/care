@@ -1,0 +1,161 @@
+{
+  "invoice_number_expression": "f'#INV-{invoice_count + 100}-{current_year_yy}'",
+  "accounts": [
+    {
+      "ref": "account:patient-001",
+      "patient_ref": "patient:001",
+      "encounter_ref": "encounter:op-001-0"
+    },
+    {
+      "ref": "account:patient-002",
+      "patient_ref": "patient:002",
+      "encounter_ref": "encounter:op-002-0"
+    },
+    {
+      "ref": "account:patient-010",
+      "patient_ref": "patient:010",
+      "name": "Empty demo account",
+      "description": "Account with no primary encounter and no invoices",
+      "status": "active",
+      "billing_status": "open"
+    }
+  ],
+  "invoices": [
+    {
+      "ref": "invoice:001",
+      "account_ref": "account:patient-001",
+      "days_ago": 0,
+      "status": "draft",
+      "charge_items": [
+        {
+          "charge_item_definition_ref": "charge_item_definition:charge-cbc",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "ref": "invoice:002",
+      "account_ref": "account:patient-002",
+      "days_ago": 3,
+      "status": "issued",
+      "charge_items": [
+        {
+          "charge_item_definition_ref": "charge_item_definition:paracetamol-500-mg:lot-001",
+          "quantity": 10
+        }
+      ]
+    },
+    {
+      "ref": "invoice:003",
+      "account_ref": "account:patient-001",
+      "days_ago": 7,
+      "status": "issued",
+      "charge_items": [
+        {
+          "charge_item_definition_ref": "charge_item_definition:charge-rbs",
+          "quantity": 1
+        },
+        {
+          "charge_item_definition_ref": "charge_item_definition:amoxicillin-clavulanic-acid-500-m:lot-001",
+          "quantity": 15
+        }
+      ]
+    },
+    {
+      "ref": "invoice:004",
+      "account_ref": "account:patient-002",
+      "days_ago": 30,
+      "status": "issued",
+      "charge_items": [
+        {
+          "charge_item_definition_ref": "charge_item_definition:charge-lpt",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "ref": "invoice:005",
+      "account_ref": "account:patient-001",
+      "days_ago": 45,
+      "status": "cancelled",
+      "charge_items": [
+        {
+          "charge_item_definition_ref": "charge_item_definition:charge-fbg",
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "ref": "invoice:006",
+      "account_ref": "account:patient-002",
+      "days_ago": 60,
+      "status": "issued",
+      "charge_items": [
+        {
+          "charge_item_definition_ref": "charge_item_definition:ibuprofen:lot-001",
+          "quantity": 20
+        },
+        {
+          "charge_item_definition_ref": "charge_item_definition:enoxaparin-prefilled-syringe:lot-001",
+          "quantity": 2
+        }
+      ]
+    },
+    {
+      "ref": "invoice:007",
+      "account_ref": "account:patient-001",
+      "days_ago": 75,
+      "status": "entered_in_error",
+      "charge_items": [
+        {
+          "charge_item_definition_ref": "charge_item_definition:paracetamol-500-mg:lot-001",
+          "quantity": 5
+        }
+      ]
+    },
+    {
+      "ref": "invoice:008",
+      "account_ref": "account:patient-002",
+      "days_ago": 90,
+      "status": "issued",
+      "charge_items": [
+        {
+          "charge_item_definition_ref": "charge_item_definition:charge-fbg",
+          "quantity": 1
+        },
+        {
+          "charge_item_definition_ref": "charge_item_definition:charge-cbc",
+          "quantity": 1
+        },
+        {
+          "charge_item_definition_ref": "charge_item_definition:paracetamol-500-mg:lot-001",
+          "quantity": 5
+        }
+      ]
+    }
+  ],
+  "payments": [
+    {
+      "ref": "payment:003",
+      "invoice_ref": "invoice:003",
+      "days_ago": 7,
+      "status": "active",
+      "reconciliation_type": "payment",
+      "issuer_type": "patient",
+      "method": "cash",
+      "reference_number": "RCP-003",
+      "note": "Full cash payment for invoice 003"
+    },
+    {
+      "ref": "payment:006",
+      "invoice_ref": "invoice:006",
+      "days_ago": 60,
+      "status": "active",
+      "reconciliation_type": "payment",
+      "issuer_type": "patient",
+      "method": "debc",
+      "reference_number": "RCP-006",
+      "note": "Card payment for invoice 006"
+    }
+  ]
+}
