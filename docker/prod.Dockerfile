@@ -56,11 +56,15 @@ COPY --from=builder --chown=django:django $APP_HOME/.venv $APP_HOME/.venv
 ARG APP_VERSION="unknown"
 ENV APP_VERSION=$APP_VERSION
 
+ARG ADDITIONAL_PLUGS=""
+
 COPY --chmod=0755 --chown=django:django ./scripts/*.sh $APP_HOME
 
 COPY --chown=django:django . $APP_HOME
 
 USER django
+
+RUN ADDITIONAL_PLUGS="$ADDITIONAL_PLUGS" ./scripts/build_assets.sh -v 0
 
 HEALTHCHECK \
   --interval=30s \
