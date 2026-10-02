@@ -1,8 +1,9 @@
 from datetime import date
 from enum import Enum
 
-from pydantic import UUID4, Field
+from pydantic import UUID4, model_validator
 from pydantic.experimental.missing_sentinel import MISSING
+from pydantic_core.core_schema import ValidationInfo
 
 from care.emr.models.encounter import Encounter
 from care.emr.models.immunisation import ImmunizationRecommendation
@@ -28,9 +29,7 @@ class BaseImmunizationRecommendationSpec(EMRResource):
     __model__ = ImmunizationRecommendation
 
     id: UUID4 | None = None
-    codes: list[ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug]] = Field(
-        min_length=1
-    )
+    codes: list[ValueSetBoundCoding[CARE_MEDICATION_VALUESET.slug]] | MISSING = MISSING
     diseases: list[ValueSetBoundCoding[CARE_CODITION_CODE_VALUESET.slug]] | MISSING = (
         MISSING
     )
@@ -49,6 +48,12 @@ class ImmunizationRecommendationCreateSpec(BaseImmunizationRecommendationSpec):
     encounter: UUID4 | None = None
     is_group: bool
     forecast_status: ImmunizationRecommendationForecastStatus
+
+    @model_validator(mode="after")
+    def validate_codes(self):
+        if not self.is_group and self.codes is MISSING:
+            raise ValueError("Codes are required for non-group recommendations")
+        return self
 
     def perform_extra_deserialization(self, is_update, obj):
         obj.patient = get_object_or_404(
@@ -71,6 +76,13 @@ class ImmunizationRecommendationCreateSpec(BaseImmunizationRecommendationSpec):
 
 class ImmunizationRecommendationUpdateSpec(BaseImmunizationRecommendationSpec):
     forecast_status: ImmunizationRecommendationForecastStatus
+
+    @model_validator(mode="after")
+    def validate_codes(self, info: ValidationInfo):
+        obj = (info.context or {}).get("object")
+        if obj is not None and not obj.is_group and self.codes is MISSING:
+            raise ValueError("Codes are required for non-group recommendations")
+        return self
 
 
 class ImmunizationRecommendationListSpec(BaseImmunizationRecommendationSpec):

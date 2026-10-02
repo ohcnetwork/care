@@ -118,6 +118,7 @@ from care.emr.api.viewsets.tag_config import TagConfigViewSet
 from care.emr.api.viewsets.totp import TOTPViewSet
 from care.emr.api.viewsets.user import UserViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
+from care.emr.api.viewsets.workspace import WorkspaceViewSet
 from care.security.api.viewsets.permissions import PermissionViewSet
 from care.security.api.viewsets.roles import RoleViewSet
 from care.users.api.otp_viewset.reset_password import OTPResetPasswordView
@@ -150,6 +151,8 @@ router.register("batch_requests", BatchRequestView, basename="batch-requests")
 router.register("valueset", ValueSetViewSet, basename="value-set")
 
 router.register("questionnaire", QuestionnaireViewSet, basename="questionnaire")
+
+router.register("workspace", WorkspaceViewSet, basename="workspace")
 
 router.register(
     "immunization/policy", ImmunizationPolicyViewSet, basename="immunization-policy"

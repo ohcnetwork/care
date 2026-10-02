@@ -49,6 +49,7 @@ from care.security.permissions.template import TemplatePermissions
 from care.security.permissions.token import TokenPermissions
 from care.security.permissions.user import UserPermissions
 from care.security.permissions.valueset import ValueSetPermissions
+from care.security.permissions.workspace import WorkspacePermissions
 
 
 class PermissionHandler:
@@ -103,6 +104,7 @@ class PermissionController:
         QuestionnaireResponseTemplatePermissions,
         ValueSetPermissions,
         ImmunizationPermissions,
+        WorkspacePermissions,
     ]
 
     cache = {}
