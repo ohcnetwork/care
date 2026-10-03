@@ -1,7 +1,7 @@
 from pydantic import UUID4, model_validator
 from pydantic_core.core_schema import ValidationInfo
 
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, cacheable
 from care.emr.utils.slug_type import SlugType
 from care.security.models import PermissionModel, RoleModel
 from care.security.permissions.base import PermissionController
@@ -66,6 +66,7 @@ class RoleCreateSpec(RoleBaseSpec):
             obj.permissions = []
 
 
+@cacheable
 class RoleReadSpec(RoleBaseSpec):
     permissions: list[PermissionSpec]
 
