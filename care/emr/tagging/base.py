@@ -5,7 +5,6 @@ from rest_framework.exceptions import PermissionDenied, ValidationError
 
 from care.emr.models.tag_config import TagConfig
 from care.emr.resources.base import model_from_cache
-from care.emr.resources.tag.config_spec import TagConfigReadSpec
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.shortcuts import get_object_or_404
@@ -96,6 +95,8 @@ class SingleFacilityTagManager(BaseTagManager):
         resource.save(update_fields=fields)
 
     def render_tags(self, resource, *args, **kwargs):
+        from care.emr.resources.tag.config_spec import TagConfigReadSpec
+
         tags = self.get_resource_tag(resource)
         rendered_tags = []
         for tag in tags:
