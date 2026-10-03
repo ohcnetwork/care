@@ -9,10 +9,11 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import EMRModelViewSet
-from care.emr.models.organization import FacilityOrganization
+from care.emr.models.organization import FacilityOrganization, Organization
 from care.emr.models.workspace import (
     Workspace,
     WorkspaceFacilityOrganization,
+    WorkspaceOrganization,
     WorkSpaceUserDefault,
 )
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
@@ -233,3 +234,50 @@ class WorkspaceViewSet(EMRModelViewSet):
             ]
             cache.set(cache_key, results)
         return Response({"count": len(results), "results": results})
+
+    @action(detail=True, methods=["GET"])
+    def get_organizations(self, request, *args, **kwargs):
+        workspace = self.get_object()
+        if not workspace.auth_context == WorkspaceAuthContext.instance:
+            raise PermissionDenied(
+                "Organizations can only be set for instance level workspaces"
+            )
+        self.authorize_update(None, workspace)
+        workspace_organizations = WorkspaceOrganization.objects.filter(
+            workspace=workspace
+        ).select_related("organization")
+        organizations = [
+            FacilityOrganizationReadSpec.serialize(obj.organization).to_json()
+            for obj in workspace_organizations
+        ]
+        return Response(
+            {
+                "count": len(organizations),
+                "results": organizations,
+            }
+        )
+
+    class WorkspaceOrganizationUpdateSchema(BaseModel):
+        organizations: list[UUID4]
+
+    @extend_schema(request=WorkspaceOrganizationUpdateSchema)
+    @action(detail=True, methods=["POST"])
+    def set_organizations(self, request, *args, **kwargs):
+        workspace = self.get_object()
+        if not workspace.auth_context == WorkspaceAuthContext.instance:
+            raise PermissionDenied(
+                "Organizations can only be set for instance level workspaces"
+            )
+        self.authorize_update(None, workspace)
+        request_params = self.WorkspaceOrganizationUpdateSchema(**request.data)
+        with transaction.atomic():
+            WorkspaceOrganization.objects.filter(workspace=workspace).delete()
+            for org in request_params.organizations:
+                organization = get_object_or_404(
+                    Organization.objects.only("id"), external_id=org
+                )
+                WorkspaceOrganization.objects.create(
+                    workspace=workspace, organization=organization
+                )
+            workspace.sync_organization_cache()
+        return Response({})

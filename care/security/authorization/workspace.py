@@ -1,6 +1,6 @@
 from django.db.models import Q
 
-from care.emr.models.organization import FacilityOrganizationUser
+from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
 from care.security.authorization.base import (
     AuthorizationController,
     AuthorizationHandler,
@@ -68,6 +68,11 @@ class WorkspaceAccess(AuthorizationHandler):
                 user=user, role_id__in=roles
             ).values_list("organization_id", flat=True)
         )
+        organization_ids = list(
+            OrganizationUser.objects.filter(user=user, role_id__in=roles).values_list(
+                "organization_id", flat=True
+            )
+        )
         write_roles = self.get_role_from_permissions(
             [WorkspacePermissions.can_write_workspace.name]
         )
@@ -77,7 +82,7 @@ class WorkspaceAccess(AuthorizationHandler):
             organization__org_type="root",
         ).values_list("organization__facility_id", flat=True)
         return qs.filter(
-            Q(auth_context="instance")
+            Q(auth_context="instance", organization_cache__overlap=organization_ids)
             | Q(internal_organization_cache__overlap=facility_organization_ids)
             | Q(auth_context="user", created_by=user)
             | Q(auth_context="facility", facility_id__in=writable_facility_ids)

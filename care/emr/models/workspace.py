@@ -5,7 +5,7 @@ from django.db.models.signals import post_delete
 from django.dispatch import receiver
 
 from care.emr.models import EMRBaseModel
-from care.emr.models.organization import FacilityOrganization
+from care.emr.models.organization import FacilityOrganization, Organization
 from care.users.models import User
 
 WORKSPACE_USER_DEFAULT_CACHE_KEY = "workspace_user_default:{user_id}"
@@ -23,6 +23,7 @@ class Workspace(EMRBaseModel):
     description = models.TextField(default="")
     template = models.JSONField(default=dict)
     internal_organization_cache = ArrayField(models.IntegerField(), default=list)
+    organization_cache = ArrayField(models.IntegerField(), default=list)
 
     def sync_facility_org_cache(self):
         from care.emr.resources.workspace.spec import WorkspaceAuthContext
@@ -49,6 +50,22 @@ class Workspace(EMRBaseModel):
         self.internal_organization_cache = list(set(organization_ids))
         self.save(update_fields=["internal_organization_cache"])
 
+    def sync_organization_cache(self):
+        from care.emr.resources.workspace.spec import WorkspaceAuthContext
+
+        organization_ids = []
+        if self.auth_context == WorkspaceAuthContext.instance:
+            workspace_organization_objects = WorkspaceOrganization.objects.filter(
+                workspace=self
+            ).select_related("organization")
+            for workspace_organization_object in workspace_organization_objects:
+                organization_ids.extend(
+                    workspace_organization_object.organization.parent_cache
+                )
+                organization_ids.append(workspace_organization_object.organization.id)
+            self.organization_cache = list(set(organization_ids))
+            self.save(update_fields=["organization_cache"])
+
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
         self.invalidate_user_default_cache()
@@ -65,6 +82,11 @@ class Workspace(EMRBaseModel):
 class WorkspaceFacilityOrganization(EMRBaseModel):
     workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
     organization = models.ForeignKey(FacilityOrganization, on_delete=models.CASCADE)
+
+
+class WorkspaceOrganization(EMRBaseModel):
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
+    organization = models.ForeignKey(Organization, on_delete=models.CASCADE)
 
 
 class WorkSpaceUserDefault(EMRBaseModel):
