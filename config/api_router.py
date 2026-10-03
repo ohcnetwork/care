@@ -29,6 +29,7 @@ from care.emr.api.viewsets.facility import (
     FacilityUsersViewSet,
     FacilityViewSet,
 )
+from care.emr.api.viewsets.facility_flag import FacilityFlagViewSet
 from care.emr.api.viewsets.facility_organization import (
     FacilityOrganizationUsersViewSet,
     FacilityOrganizationViewSet,
@@ -105,6 +106,7 @@ from care.emr.api.viewsets.specimen_definition import SpecimenDefinitionViewSet
 from care.emr.api.viewsets.tag_config import TagConfigViewSet
 from care.emr.api.viewsets.totp import TOTPViewSet
 from care.emr.api.viewsets.user import UserViewSet
+from care.emr.api.viewsets.user_flag import UserFlagViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
 from care.security.api.viewsets.permissions import PermissionViewSet
 from care.security.api.viewsets.roles import RoleViewSet
@@ -114,6 +116,10 @@ from care.users.api.viewsets.plug_config import PlugConfigViewset
 router = DefaultRouter() if settings.DEBUG else SimpleRouter()
 
 router.register("users", UserViewSet, basename="users")
+
+router.register("user_flags", UserFlagViewSet, basename="user-flags")
+
+router.register("facility_flags", FacilityFlagViewSet, basename="facility-flags")
 
 router.register("plug_config", PlugConfigViewset, basename="plug_configs")
 
