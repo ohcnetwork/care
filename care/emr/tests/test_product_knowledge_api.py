@@ -41,6 +41,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
             "status": status or ProductKnowledgeStatusOptions.active.value,
             "product_type": product_type or ProductTypeOptions.medication.value,
             "code": None,
+            "definitional": None,
             "base_unit": {
                 "display": "Test Value",
                 "system": "http://test_system.care/test",
@@ -84,6 +85,7 @@ class ProductKnowledgeAPITest(CareAPITestBase):
             "status": ProductKnowledgeStatusOptions.retired.value,
             "product_type": ProductTypeOptions.medication.value,
             "code": None,
+            "definitional": None,
             "base_unit": {
                 "display": "Updated Test Value",
                 "system": "http://test_system.care/test",
