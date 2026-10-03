@@ -2477,7 +2477,11 @@ class QuestionnaireRepeatableEnableWhenAllBehaviorTests(CareAPITestBase):
                     "type": "choice",
                     "link_id": "1",
                     "repeats": True,
-                    "answer_option": [{"value": "1"}, {"value": "2"}, {"value": "3"}],
+                    "answer_option": [
+                        {"value": "1", "display": "one"},
+                        {"value": "2", "display": "two"},
+                        {"value": "3", "display": "three"},
+                    ],
                 },
                 {
                     "id": "409cabeb-e334-438b-a2a5-d9c378e93528",
@@ -2633,7 +2637,11 @@ class QuestionnaireRepeatableEnableWhenAnyBehaviorTests(CareAPITestBase):
                     "type": "choice",
                     "link_id": "1",
                     "repeats": True,
-                    "answer_option": [{"value": "1"}, {"value": "2"}, {"value": "3"}],
+                    "answer_option": [
+                        {"value": "1", "display": "one"},
+                        {"value": "2", "display": "two"},
+                        {"value": "3", "display": "three"},
+                    ],
                 },
                 {
                     "id": "409cabeb-e334-438b-a2a5-d9c378e93528",

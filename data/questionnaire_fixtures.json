@@ -36,15 +36,19 @@
                 "link_id": "2",
                 "answer_option": [
                     {
+                        "display": "Non-Invasive ventilator (NIV)",
                         "value": "Non-Invasive ventilator (NIV)"
                     },
                     {
+                        "display": "Invasive ventilator (IV)",
                         "value": "Invasive ventilator (IV)"
                     },
                     {
+                        "display": "Oxygen Support",
                         "value": "Oxygen Support"
                     },
                     {
+                        "display": "None",
                         "value": "None"
                     }
                 ]
@@ -234,9 +238,11 @@
                         "required": true,
                         "answer_option": [
                             {
+                                "display": "yes",
                                 "value": "yes"
                             },
                             {
+                                "display": "no",
                                 "value": "no"
                             }
                         ]
@@ -265,12 +271,15 @@
                         "required": true,
                         "answer_option": [
                             {
+                                "display": "oxygen_support",
                                 "value": "oxygen_support"
                             },
                             {
+                                "display": "non_invasive",
                                 "value": "non_invasive"
                             },
                             {
+                                "display": "invasive",
                                 "value": "invasive"
                             }
                         ]
@@ -283,15 +292,19 @@
                         "required": false,
                         "answer_option": [
                             {
+                                "display": "nasal_prongs",
                                 "value": "nasal_prongs"
                             },
                             {
+                                "display": "simple_face_mask",
                                 "value": "simple_face_mask"
                             },
                             {
+                                "display": "nrm",
                                 "value": "nrm"
                             },
                             {
+                                "display": "hfnc",
                                 "value": "hfnc"
                             }
                         ]
@@ -311,12 +324,15 @@
                         "required": false,
                         "answer_option": [
                             {
+                                "display": "cmv",
                                 "value": "cmv"
                             },
                             {
+                                "display": "simv",
                                 "value": "simv"
                             },
                             {
+                                "display": "cpap_psv",
                                 "value": "cpap_psv"
                             }
                         ]
