@@ -9,6 +9,12 @@ from care.facility.models.facility import Facility
 from care.utils.shortcuts import get_object_or_404
 
 
+class WorkspaceStatus(str, Enum):
+    draft = "draft"
+    active = "active"
+    archived = "archived"
+
+
 class WorkspaceAuthContext(str, Enum):
     instance = "instance"
     facility_organization = "facility_organization"
@@ -23,6 +29,7 @@ class WorkspaceBaseSpec(EMRResource):
     name: str
     description: str
     template: dict
+    status: WorkspaceStatus
 
 
 class WorkspaceCreateSpec(WorkspaceBaseSpec):

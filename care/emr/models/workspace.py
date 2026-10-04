@@ -24,6 +24,7 @@ class Workspace(EMRBaseModel):
     template = models.JSONField(default=dict)
     internal_organization_cache = ArrayField(models.IntegerField(), default=list)
     organization_cache = ArrayField(models.IntegerField(), default=list)
+    status = models.CharField(max_length=255)
 
     def sync_facility_org_cache(self):
         from care.emr.resources.workspace.spec import WorkspaceAuthContext
