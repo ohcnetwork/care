@@ -63,7 +63,7 @@ class SupplyDeliveryFilters(filters.FilterSet):
 
 
 class InventoryLockMixin:
-    """Inventory lock mixin to ensure atomic operations on inventory items before creating a supply delivery."""
+    """Locks the supplied inventory item for the duration of create."""
 
     def handle_create(self, request_data):
         supplied_inventory_item = request_data.get("supplied_inventory_item")
