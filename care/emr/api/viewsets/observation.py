@@ -13,6 +13,7 @@ from care.emr.resources.observation.spec import (
     ObservationRetrieveSpec,
 )
 from care.emr.resources.questionnaire.spec import QuestionType
+from care.utils.filters.multiselect import MultiSelectFilter
 
 
 class MultipleCodeFilter(filters.CharFilter):
@@ -34,6 +35,7 @@ class ObservationFilter(filters.FilterSet):
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
     codes = MultipleCodeFilter()
     ignore_group = IgnoreGroupFilter()
+    status = MultiSelectFilter(field_name="status")
 
 
 class ObservationAnalyseRequest(BaseModel):
