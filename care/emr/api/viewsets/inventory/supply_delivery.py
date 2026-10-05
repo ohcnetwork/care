@@ -72,7 +72,7 @@ class InventoryLockMixin:
         inventory_item = get_object_or_404(
             InventoryItem, external_id=supplied_inventory_item
         )
-        with transaction.atomic(), InventoryItemLock(inventory_item):
+        with InventoryItemLock(inventory_item), transaction.atomic():
             return super().handle_create(request_data)
 
 
