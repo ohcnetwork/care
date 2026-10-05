@@ -2027,3 +2027,81 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
 
         with InventoryItemLock(self.inventory_item_origin):
             pass
+
+    def test_upsert_same_inventory_item_uses_current_stock(self):
+        self.client.force_authenticate(user=self.superuser)
+        upsert_url = reverse("supply_delivery-upsert")
+        data = self.create_supply_delivery_data(
+            supplied_inventory_item=str(self.inventory_item_origin.external_id),
+            order=str(self.delivery_order_internal.external_id),
+            quantity=Decimal(50),
+        )
+        deliveries = SupplyDelivery.objects.filter(order=self.delivery_order_internal)
+        inventory_model = type(self.inventory_item_origin)
+        initial_inventory_count = inventory_model.objects.count()
+        delivery_ids = []
+
+        for batch_number in range(1, 3):
+            response = self.client.post(
+                upsert_url,
+                {"datapoints": [dict(data), dict(data)]},
+                format="json",
+            )
+            self.assertEqual(response.status_code, 200, response.data)
+            self.assertEqual(len(response.data), 2)
+            for result in response.data:
+                self.assertEqual(
+                    result["supplied_inventory_item"]["id"],
+                    str(self.inventory_item_origin.external_id),
+                )
+                delivery_ids.append(result["id"])
+            self.assertEqual(deliveries.count(), batch_number * 2)
+            self.inventory_item_origin.refresh_from_db()
+            self.inventory_item_destination.refresh_from_db()
+            self.assertEqual(
+                self.inventory_item_origin.net_content,
+                Decimal(500) - Decimal(100) * batch_number,
+            )
+            self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
+            self.assertEqual(inventory_model.objects.count(), initial_inventory_count)
+
+        completion_data = {
+            "datapoints": [
+                {
+                    "id": delivery_id,
+                    "status": SupplyDeliveryStatusOptions.completed.value,
+                }
+                for delivery_id in delivery_ids
+            ]
+        }
+        for _ in range(2):
+            response = self.client.post(upsert_url, completion_data, format="json")
+            self.assertEqual(response.status_code, 200, response.data)
+            self.inventory_item_origin.refresh_from_db()
+            self.inventory_item_destination.refresh_from_db()
+            self.assertEqual(self.inventory_item_origin.net_content, Decimal(300))
+            self.assertEqual(self.inventory_item_destination.net_content, Decimal(1700))
+            self.assertEqual(deliveries.count(), 4)
+            self.assertEqual(inventory_model.objects.count(), initial_inventory_count)
+
+    def test_upsert_same_inventory_item_rejects_combined_insufficient_stock(self):
+        self.client.force_authenticate(user=self.superuser)
+        data = self.create_supply_delivery_data(
+            supplied_inventory_item=str(self.inventory_item_origin.external_id),
+            order=str(self.delivery_order_internal.external_id),
+            quantity=Decimal(300),
+        )
+        initial_delivery_count = SupplyDelivery.objects.count()
+        response = self.client.post(
+            reverse("supply_delivery-upsert"),
+            {"datapoints": [dict(data), dict(data)]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(len(response.data), 2)
+        self.assertIn("Insufficient stock", str(response.data[1]))
+        self.assertEqual(SupplyDelivery.objects.count(), initial_delivery_count)
+        self.inventory_item_origin.refresh_from_db()
+        self.inventory_item_destination.refresh_from_db()
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(500))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
