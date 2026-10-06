@@ -12,4 +12,13 @@ from care_mcp.tools import generic
 # isort: on
 from care_mcp.tools.base import REGISTRY, Tool, ToolContext, ToolError
 
-__all__ = ["REGISTRY", "Tool", "ToolContext", "ToolError"]
+__all__ = [
+    "REGISTRY",
+    "Tool",
+    "ToolContext",
+    "ToolError",
+    "clinical",
+    "directory",
+    "generic",
+    "summary",
+]

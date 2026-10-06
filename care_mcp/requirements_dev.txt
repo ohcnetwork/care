@@ -1,0 +1,5 @@
+pip
+bump2version
+wheel
+ruff
+coverage

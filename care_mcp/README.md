@@ -58,8 +58,10 @@ ADDITIONAL_PLUGS='[{"name":"care_mcp","package_name":"git+https://github.com/ohc
 Then rebuild the image (`make down && make build && make up`) and run
 `make migrate` (the plugin adds one table for access tokens).
 
-For local development, place this directory inside the Care checkout and use
+For local development, clone this repo inside the Care checkout (a real
+directory, not a symlink, so Docker builds can see it) and use
 `package_name="care_mcp"` with `version=""`, which installs it in editable mode.
+Without Docker, `pip install -e /path/to/care_mcp` into Care's virtualenv works too.
 
 ## Create an access token
 
@@ -186,10 +188,17 @@ Resolution order: `PLUGIN_CONFIGS["care_mcp"][key]` → environment variable →
   Cursor and VS Code today.
 - Patient-portal (OTP) users: the server only serves staff accounts.
 
-## Tests
-
-From the Care checkout, with the plugin installed:
+## Development
 
 ```bash
-python manage.py test care_mcp --keepdb
+make lint   # ruff check + ruff format --check
+```
+
+The tests run inside Care. From the Care checkout, with this repo installed
+(`pip install -e /path/to/care_mcp`) and the plug registered, either in
+`plug_config.py` or through `ADDITIONAL_PLUGS`:
+
+```bash
+ADDITIONAL_PLUGS='[{"name":"care_mcp","package_name":"care_mcp","version":""}]' \
+  python manage.py test care_mcp --keepdb
 ```

@@ -7,9 +7,14 @@ from pathlib import Path
 from setuptools import find_packages, setup
 
 readme = Path("README.md").read_text()
+history = Path("HISTORY.rst").read_text()
 
-# Everything else (Django, DRF, jsonschema, django-ratelimit) comes from Care itself.
-requirements = []
+# Django, DRF, django-environ, django-ratelimit and jsonschema all come from Care.
+requirements = [
+    "django",
+    "djangorestframework",
+    "django-environ",
+]
 
 setup(
     author="Open Healthcare Network",
@@ -23,10 +28,10 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.13",
     ],
-    description="Model Context Protocol (MCP) server for CARE, running inside Care.",
+    description="Model Context Protocol (MCP) server plugin for CARE",
     install_requires=requirements,
     license="MIT license",
-    long_description=readme,
+    long_description=readme + "\n\n" + history,
     long_description_content_type="text/markdown",
     include_package_data=True,
     keywords="care_mcp",
