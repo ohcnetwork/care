@@ -1,0 +1,113 @@
+{
+  "password": "Ohcn@123",
+  "users": [
+    {
+      "ref": "user:fac_admin",
+      "username": "care-fac-admin",
+      "email": "care-fac-admin@example.com",
+      "first_name": "Care",
+      "last_name": "FacAdmin",
+      "gender": "female",
+      "role_name": "Facility Admin",
+      "role_org_ref": "role:facility-admin",
+      "facility_org_ref": "department:administration"
+    },
+    {
+      "ref": "user:admin",
+      "username": "care-admin",
+      "email": "care-admin@example.com",
+      "first_name": "Care",
+      "last_name": "Admin",
+      "gender": "male",
+      "role_name": "Administrator",
+      "role_org_ref": "role:administrator",
+      "facility_org_ref": "department:administration"
+    },
+    {
+      "ref": "user:doctor",
+      "username": "care-doctor",
+      "email": "care-doctor@example.com",
+      "first_name": "Care",
+      "last_name": "Doctor",
+      "gender": "male",
+      "role_name": "Doctor",
+      "role_org_ref": "role:doctor",
+      "facility_org_ref": "department:administration"
+    },
+    {
+      "ref": "user:nurse",
+      "username": "care-nurse",
+      "email": "care-nurse@example.com",
+      "first_name": "Care",
+      "last_name": "Nurse",
+      "gender": "female",
+      "role_name": "Nurse",
+      "role_org_ref": "role:nurse",
+      "facility_org_ref": "department:administration"
+    },
+    {
+      "ref": "user:staff",
+      "username": "care-staff",
+      "email": "care-staff@example.com",
+      "first_name": "Care",
+      "last_name": "Staff",
+      "gender": "male",
+      "role_name": "Staff",
+      "role_org_ref": "role:staff",
+      "facility_org_ref": "department:administration"
+    },
+    {
+      "ref": "user:volunteer",
+      "username": "care-volunteer",
+      "email": "care-volunteer@example.com",
+      "first_name": "Care",
+      "last_name": "Volunteer",
+      "gender": "female",
+      "role_name": "Volunteer",
+      "role_org_ref": "role:volunteer"
+    },
+    {
+      "ref": "user:pharmacist",
+      "username": "care-pharmacist",
+      "email": "care-pharmacist@example.com",
+      "first_name": "Care",
+      "last_name": "Pharmacist",
+      "gender": "female",
+      "role_name": "Pharmacist",
+      "facility_org_ref": "department:pharmacy"
+    },
+    {
+      "ref": "user:doctor_pediatrics",
+      "username": "care-doctor-peds",
+      "email": "care-doctor-peds@example.com",
+      "first_name": "Care",
+      "last_name": "Pediatrician",
+      "gender": "female",
+      "role_name": "Doctor",
+      "role_org_ref": "role:doctor",
+      "facility_org_ref": "department:pediatrics"
+    },
+    {
+      "ref": "user:nurse_pediatrics_1",
+      "username": "care-nurse-peds-1",
+      "email": "care-nurse-peds-1@example.com",
+      "first_name": "Care",
+      "last_name": "NurseOne",
+      "gender": "female",
+      "role_name": "Nurse",
+      "role_org_ref": "role:nurse",
+      "facility_org_ref": "department:pediatrics"
+    },
+    {
+      "ref": "user:nurse_pediatrics_2",
+      "username": "care-nurse-peds-2",
+      "email": "care-nurse-peds-2@example.com",
+      "first_name": "Care",
+      "last_name": "NurseTwo",
+      "gender": "female",
+      "role_name": "Nurse",
+      "role_org_ref": "role:nurse",
+      "facility_org_ref": "department:pediatrics"
+    }
+  ]
+}
