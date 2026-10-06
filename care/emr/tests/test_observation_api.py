@@ -170,6 +170,41 @@ class TestObservationViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["results"]), 1)
 
+    def test_list_filter_by_status(self):
+        self._grant_patient_read_permission()
+        final = self._create_observation(status=ObservationStatus.final.value)
+        self._create_observation(status=ObservationStatus.amended.value)
+        self._create_observation(status=ObservationStatus.entered_in_error.value)
+
+        response = self.client.get(
+            self.base_url, {"status": ObservationStatus.final.value}
+        )
+        self.assertEqual(response.status_code, 200)
+        results = response.json()["results"]
+        self.assertEqual(len(results), 1)
+        self.assertEqual(results[0]["id"], str(final.external_id))
+
+    def test_list_filter_by_multiple_statuses(self):
+        self._grant_patient_read_permission()
+        self._create_observation(status=ObservationStatus.final.value)
+        self._create_observation(status=ObservationStatus.amended.value)
+        self._create_observation(status=ObservationStatus.entered_in_error.value)
+
+        response = self.client.get(
+            self.base_url,
+            {
+                "status": f"{ObservationStatus.final.value},"
+                f"{ObservationStatus.amended.value}"
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+        results = response.json()["results"]
+        self.assertEqual(len(results), 2)
+        self.assertEqual(
+            {r["status"] for r in results},
+            {ObservationStatus.final.value, ObservationStatus.amended.value},
+        )
+
     def test_list_ordered_by_modified_date_descending(self):
         self._grant_patient_read_permission()
         obs1 = self._create_observation()
