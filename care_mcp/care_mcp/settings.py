@@ -56,7 +56,8 @@ class PluginSettings:  # pragma: no cover
             try:
                 val = env(attr, cast=type(val))
             except environ.ImproperlyConfigured:
-                pass
+                # Not set in the environment either: keep the default.
+                val = self.defaults[attr]
 
         if attr in self.import_strings:
             val = perform_import(val, attr)
