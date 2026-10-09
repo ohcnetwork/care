@@ -40,6 +40,7 @@ from care.security.authorization.base import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyUUIDFilter
 from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.filters.null_filter import NullFilter
+from care.utils.lock import ObjectLocked
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -72,8 +73,20 @@ class InventoryLockMixin:
         inventory_item = get_object_or_404(
             InventoryItem, external_id=supplied_inventory_item
         )
-        with InventoryItemLock(inventory_item), transaction.atomic():
-            return super().handle_create(request_data)
+        lock = InventoryItemLock(inventory_item)
+        try:
+            lock.acquire()
+        except ObjectLocked as e:
+            raise ValidationError(
+                "Supply delivery creation failed . try again after a while"
+            ) from e
+        try:
+            with transaction.atomic():
+                return super().handle_create(request_data)
+            transaction.on_commit(lock.release)
+        except Exception:
+            lock.release()
+            raise
 
 
 class SupplyDeliveryViewSet(
