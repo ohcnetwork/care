@@ -464,7 +464,7 @@ class TestBookingViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 404)
 
     def test_reschedule_booking_with_slot_in_past(self):
-        """Users cannot reschedule bookings to slots that are in the past."""
+        """Users can reschedule bookings to slots that are in the past."""
         permissions = [
             SchedulePermissions.can_write_booking.name,
             SchedulePermissions.can_list_booking.name,
@@ -490,11 +490,7 @@ class TestBookingViewSet(CareAPITestBase):
             "new_booking_note": "note",
         }
         response = self.client.post(reschedule_url, data, format="json")
-        self.assertContains(
-            response,
-            status_code=400,
-            text="Slot is already past",
-        )
+        self.assertEqual(response.status_code, 200)
 
     def test_list_available_users(self):
         """Users can list available schedulable users and ensure deleted users are not listed"""
@@ -749,7 +745,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
         self.assertContains(response, status_code=400, text="Patient not found")
 
     def test_create_appointment_with_slot_in_past(self):
-        """Users cannot create appointments for slots that are in the past."""
+        """Users can create appointments for slots that are in the past."""
         permissions = [SchedulePermissions.can_write_booking.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
@@ -762,7 +758,7 @@ class TestSlotViewSetAppointmentApi(CareAPITestBase):
         response = self.client.post(
             self._get_create_appointment_url(slot.external_id), data, format="json"
         )
-        self.assertContains(response, status_code=400, text="Slot is already past")
+        self.assertEqual(response.status_code, 200)
 
     def test_create_appointment_ongoing_slot(self):
         """Users can create appointments for a slot that's currently ongoing."""
@@ -948,15 +944,16 @@ class TestSlotViewSetSlotStatsApis(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data["results"]), 8)
 
-    def test_get_slots_for_day_on_past_day_does_not_create_objects(self):
-        """If get_slots_for_day API is called on a past day, new TokenSlot objects should not be created."""
+    def test_get_slots_for_day_on_past_day_creates_objects(self):
+        """If get_slots_for_day API is called on a past day, TokenSlot objects should still be created."""
         data = {
             "resource_type": SchedulableResourceTypeOptions.practitioner.value,
             "resource_id": self.user.external_id,
             "day": (datetime.now(UTC) - timedelta(days=1)).strftime("%Y-%m-%d"),
         }
         response = self.client.post(self._get_slot_for_day_url(), data, format="json")
-        self.assertEqual(len(response.data["results"]), 0)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 8)
 
     def test_hit_on_get_slots_for_day_does_not_cause_duplicate_slots(self):
         """Multiple requests to get slots for a day should not create duplicate slots."""

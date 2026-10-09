@@ -137,6 +137,7 @@ LOCAL_APPS = [
     "care.users",
     "care.audit_log",
     "care.emr",
+    "care.beckn",
 ]
 
 PLUGIN_APPS = manager.get_apps()
@@ -147,6 +148,46 @@ PLUGIN_CONFIGS = manager.get_config()
 
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS + PLUGIN_APPS
+
+# Beckn NFH integration
+# Base URL of the ONIX BPP caller used to deliver on_* callbacks to the BAP.
+# When unset, the BPP webhook only returns callbacks synchronously (direct mode).
+BECKN_BPP_CALLER_URL = env("BECKN_BPP_CALLER_URL", default="")
+# Optional username whose User is recorded as created_by/updated_by.
+BECKN_SYSTEM_USERNAME = env("BECKN_SYSTEM_USERNAME", default="beckn_system")
+# Identity used when publishing the Care catalog to the network (via the BPP
+# caller ``publish`` action). These mirror the BPP registration on the network.
+BECKN_BPP_ID = env("BECKN_BPP_ID", default="")
+BECKN_BPP_URI = env("BECKN_BPP_URI", default="")
+BECKN_NETWORK_ID = env("BECKN_NETWORK_ID", default="")
+# Beckn protocol version advertised in published/callback contexts.
+BECKN_VERSION = env("BECKN_VERSION", default="2.0.0")
+
+# Care-as-BAP (outbound) — used when Care initiates a Beckn transaction to an
+# external coordination center (CC) acting as BPP, e.g. for "other" category
+# resource requests. Delivery is enabled only when the caller URL is configured.
+BECKN_BAP_CALLER_URL = env("BECKN_BAP_CALLER_URL", default="")
+# Care's own BAP identity and the receiver URI the CC posts on_* callbacks to.
+BECKN_BAP_ID = env("BECKN_BAP_ID", default="")
+BECKN_BAP_URI = env("BECKN_BAP_URI", default="")
+# Target coordination-center (BPP) identity for the outbound referral confirm.
+BECKN_CC_BPP_ID = env("BECKN_CC_BPP_ID", default="")
+BECKN_CC_BPP_URI = env("BECKN_CC_BPP_URI", default="")
+
+# Care coordinator ("front desk") catalog — a ServiceCoordinationResource that
+# Care-as-BPP publishes so referrers can discover and route referrals to a desk
+# that reviews them manually. Scope values are optional; sensible defaults apply.
+BECKN_COORDINATOR_NAME = env("BECKN_COORDINATOR_NAME", default="Care Coordination Desk")
+BECKN_COORDINATOR_ID = env("BECKN_COORDINATOR_ID", default="")
+BECKN_COORDINATOR_TARGET_SERVICE_TYPES = env.list(
+    "BECKN_COORDINATOR_TARGET_SERVICE_TYPES",
+    default=["CONSULTATION", "INVESTIGATION", "DISPENSING"],
+)
+BECKN_COORDINATOR_PROGRAMMES = env.list(
+    "BECKN_COORDINATOR_PROGRAMMES", default=["PMJAY"]
+)
+# Optional LGD district scope, e.g. "507:Nashik" (code:display). Empty = omitted.
+BECKN_COORDINATOR_DISTRICT = env("BECKN_COORDINATOR_DISTRICT", default="")
 
 # MIGRATIONS
 # ------------------------------------------------------------------------------
@@ -711,6 +752,8 @@ SNOWSTORM_DEPLOYMENT_URL = env(
 DJANGO_REST_MULTITOKENAUTH_REQUIRE_USABLE_PASSWORD = False
 
 SMS_BACKEND = "care.utils.sms.backend.sns.SnsBackend"
+
+OTP_QUERYSET_ENABLED = env.bool("OTP_QUERYSET_ENABLED", default=False)
 
 OTP_SMS_LOGIN_CONTENT = env(
     "OTP_SMS_LOGIN_CONTENT",
