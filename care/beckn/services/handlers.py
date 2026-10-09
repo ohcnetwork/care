@@ -1,0 +1,558 @@
+"""Per-action handlers for the BPP webhook.
+
+Each handler receives the inbound Beckn ``context`` and ``message`` and returns
+the corresponding ``on_*`` callback payload. The ``select``/``init``/
+``confirm``/``status``/``cancel`` actions are shared between two flows and are
+routed by :func:`care.beckn.mappers.resolve_flow`:
+
+* the **referral** flow (T1/T2) creates/approves a Care ``ResourceRequest``;
+* the **appointment** flow drives the Care scheduling system
+  (``TokenSlot``/``TokenBooking``).
+
+``discover`` is always served by the appointment flow (catalog publish).
+"""
+
+import datetime
+
+from django.db import transaction
+from django.utils import timezone
+from django.utils.dateparse import parse_date, parse_datetime
+from rest_framework.exceptions import ValidationError as DRFValidationError
+
+from care.beckn.builders.catalog import (
+    build_appt_on_cancel,
+    build_appt_on_confirm,
+    build_appt_on_init,
+    build_appt_on_select,
+    build_appt_on_status,
+    build_appt_on_update,
+    build_on_discover,
+)
+from care.beckn.builders.referral import (
+    build_on_confirm,
+    build_on_init,
+    build_on_select,
+    build_on_status,
+)
+from care.beckn.config import resolve_assigned_facility, resolve_origin_facility
+from care.beckn.constants import FLOW_APPOINTMENT
+from care.beckn.mappers import (
+    find_patient_participant,
+    get_confirmed_appointment_time,
+    get_contract,
+    get_contract_attributes,
+    get_coordination_id,
+    get_requested_date,
+    get_selected_resource_id,
+    get_selected_slot_id,
+    resolve_flow,
+)
+from care.beckn.services import scheduling, txn_store
+from care.beckn.services.lookup import find_resource_request
+from care.beckn.services.patient import find_or_create_patient
+from care.emr.models.resource_request import ResourceRequest
+from care.emr.models.scheduling import SchedulableResource
+from care.emr.resources.resource_request.spec import CategoryChoices, StatusChoices
+
+# NFH clinicalUrgencyTier -> ResourceRequest priority (higher = more urgent).
+URGENCY_PRIORITY = {
+    "EMERGENCY": 3,
+    "URGENT": 2,
+    "ROUTINE": 1,
+}
+
+
+class BecknActionError(Exception):
+    """Raised when an inbound action cannot be processed."""
+
+
+def _first_validation_message(exc: DRFValidationError) -> str:
+    """Return a readable message from a DRF ``ValidationError``."""
+    detail = getattr(exc, "detail", None)
+    if isinstance(detail, list) and detail:
+        return str(detail[0])
+    if isinstance(detail, dict) and detail:
+        first = next(iter(detail.values()))
+        if isinstance(first, list) and first:
+            return str(first[0])
+        return str(first)
+    return str(detail or exc)
+
+
+def _resolve_system_user():
+    from django.conf import settings
+
+    from care.users.models import User
+
+    username = getattr(settings, "BECKN_SYSTEM_USERNAME", None)
+    if username:
+        return User.objects.filter(username=username).first()
+    return None
+
+
+# ---------------------------------------------------------------------------
+# Referral flow (T1/T2) — unchanged behaviour, routed when resolve_flow == referral
+# ---------------------------------------------------------------------------
+
+
+def _referral_contact(message: dict) -> dict:
+    """Extract referring-facility contact from a non-patient participant."""
+    contract = get_contract(message)
+    for participant in contract.get("participants", []) or []:
+        attributes = participant.get("participantAttributes", {}) or {}
+        role = attributes.get("participantRole")
+        if role in ("REFERRER", "PROVIDER", "COORDINATOR", "PRACTITIONER"):
+            descriptor = participant.get("descriptor", {}) or {}
+            telecom = attributes.get("telecom") or attributes.get("phone") or ""
+            return {
+                "referring_facility_contact_name": (descriptor.get("name") or "")[:255],
+                "referring_facility_contact_number": str(telecom)[:14],
+            }
+    return {
+        "referring_facility_contact_name": "",
+        "referring_facility_contact_number": "",
+    }
+
+
+def _referral_fields(message: dict) -> dict:
+    attributes = get_contract_attributes(message)
+    contract = get_contract(message)
+    target_criteria = attributes.get("targetCriteria", {}) or {}
+    urgency = attributes.get("clinicalUrgencyTier") or target_criteria.get(
+        "urgencyTier"
+    )
+    specialty = (target_criteria.get("specialty", {}) or {}).get("display") or (
+        target_criteria.get("specialty", {}) or {}
+    ).get("code")
+    descriptor = contract.get("descriptor", {}) or {}
+    title = descriptor.get("name") or (
+        f"NFH Referral - {specialty}" if specialty else "NFH Referral"
+    )
+    consent = attributes.get("consent", {}) or {}
+    reason = consent.get("clinicalJustification") or specialty or ""
+    return {
+        "title": title[:255],
+        "reason": reason,
+        "emergency": urgency == "EMERGENCY",
+        "priority": URGENCY_PRIORITY.get(urgency),
+        "category": CategoryChoices.patient_care.value,
+        **_referral_contact(message),
+    }
+
+
+def _referral_select(context: dict, message: dict) -> dict:
+    """Echo the selected offer (no state change)."""
+    return build_on_select(context, message)
+
+
+def _referral_init(context: dict, message: dict) -> dict:
+    """Create the patient and a pending ResourceRequest, return on_init.
+
+    The request is owned by whichever facility in the payload resolves to *this*
+    instance: the origin (referrer) facility on the referrer's Care, or the
+    assigned (target) facility on the receiving Care. This lets a referral whose
+    ``facilityId`` belongs to another instance still land here against the
+    locally-known target facility instead of being rejected.
+    """
+    origin_facility = resolve_origin_facility(context, message)
+    assigned_facility = resolve_assigned_facility(context, message)
+    facility = origin_facility or assigned_facility
+    if facility is None:
+        raise BecknActionError(
+            "No facility id in payload (contractAttributes.facilityId) "
+            "matched a Care facility"
+        )
+
+    user = _resolve_system_user()
+    contract = get_contract(message)
+    attributes = get_contract_attributes(message)
+    coordination_id = attributes.get("coordinationId") or contract.get("id")
+    transaction_id = (context or {}).get("transactionId")
+    # Role reflects which facility resolved locally so the matching ``confirm``
+    # approves this request in place instead of creating a duplicate: the origin
+    # (referrer) instance owns the "origin" request, the target instance owns the
+    # "assigned" request.
+    role = "origin" if origin_facility is not None else "assigned"
+
+    # Idempotent by coordinationId + role: a second init for the same referral
+    # (e.g. a loopback where the BAP creates the local request AND the sent init
+    # reaches this same instance's BPP) reuses the existing request instead of
+    # creating a pending duplicate.
+    existing = ResourceRequest.objects.filter(
+        extensions__beckn__coordinationId=coordination_id,
+        extensions__beckn__role=role,
+    ).first()
+    if existing is not None:
+        return build_on_init(context, message, existing)
+
+    with transaction.atomic():
+        participant = find_patient_participant(message)
+        patient = find_or_create_patient(message, participant, facility, user)
+
+        fields = _referral_fields(message)
+        resource_request = ResourceRequest(
+            origin_facility=facility,
+            # Only the target ("assigned") request records the assigned facility;
+            # the origin (referrer) request carries just its own facility.
+            assigned_facility=assigned_facility if role == "assigned" else None,
+            related_patient=patient,
+            status=StatusChoices.pending.value,
+            created_by=user,
+            updated_by=user,
+            **fields,
+        )
+        resource_request.extensions = {
+            "beckn": {
+                "role": role,
+                "coordinationId": coordination_id,
+                "transactionId": transaction_id,
+                "contract": contract,
+                "contractAttributes": attributes,
+                "participants": contract.get("participants", []),
+            }
+        }
+        resource_request.save()
+
+    return build_on_init(context, message, resource_request)
+
+
+def _referral_confirm(context: dict, message: dict) -> dict:
+    """Approve/create the referral ``ResourceRequest``(s) and return on_confirm.
+
+    A referral carries an origin facility (``contractAttributes.facilityId``)
+    and an assigned/target facility (``assignedFacilityId``). One request is
+    maintained per facility that resolves to this instance, each owned by that
+    facility (its ``origin_facility``):
+
+    * the **origin-facility** request — the referrer's record (approved in place
+      when ``init`` already created it);
+    * the **assigned-facility** request — so the referral also appears in the
+      receiving facility's queue.
+
+    In a single/loopback instance both facilities resolve, yielding **two**
+    requests; across instances each side keeps only the one it owns. Both are
+    keyed idempotently by ``coordinationId`` + role, so re-confirming never
+    duplicates them.
+    """
+    origin_facility = resolve_origin_facility(context, message)
+    assigned_facility = resolve_assigned_facility(context, message)
+
+    primary = None
+    if origin_facility is not None:
+        primary = _confirm_referral_for_facility(
+            context, message, origin_facility, role="origin", approve_existing=True
+        )
+    if assigned_facility is not None:
+        assigned_request = _confirm_referral_for_facility(
+            context, message, assigned_facility, role="assigned", approve_existing=False
+        )
+        primary = primary or assigned_request
+
+    if primary is None:
+        raise BecknActionError(
+            "No facility id in payload (contractAttributes.facilityId / "
+            "assignedFacilityId) matched a Care facility"
+        )
+    return build_on_confirm(context, message, primary)
+
+
+def _confirm_referral_for_facility(
+    context: dict, message: dict, facility, *, role: str, approve_existing: bool
+) -> ResourceRequest:
+    """Create or approve the referral ``ResourceRequest`` owned by ``facility``.
+
+    Idempotent by ``coordinationId`` + ``role``. ``approve_existing`` also
+    matches a request created earlier by ``init`` (before a role was stamped),
+    so the origin request is approved in place rather than duplicated.
+    """
+    contract = get_contract(message)
+    attributes = get_contract_attributes(message)
+    coordination_id = attributes.get("coordinationId") or contract.get("id")
+    transaction_id = (context or {}).get("transactionId")
+    assigned_facility = resolve_assigned_facility(context, message)
+    user = _resolve_system_user()
+
+    existing = ResourceRequest.objects.filter(
+        extensions__beckn__coordinationId=coordination_id,
+        extensions__beckn__role=role,
+    ).first()
+    if existing is None and approve_existing:
+        existing = find_resource_request(context, message)
+
+    with transaction.atomic():
+        if existing is not None:
+            resource_request = existing
+            resource_request.status = StatusChoices.approved.value
+        else:
+            participant = find_patient_participant(message)
+            patient = find_or_create_patient(message, participant, facility, user)
+            resource_request = ResourceRequest(
+                origin_facility=facility,
+                related_patient=patient,
+                status=StatusChoices.approved.value,
+                created_by=user,
+                updated_by=user,
+                **_referral_fields(message),
+            )
+        # Only the target ("assigned") request records the assigned facility; the
+        # origin (referrer) request carries just its own facility.
+        if role == "assigned" and assigned_facility is not None:
+            resource_request.assigned_facility = assigned_facility
+        extensions = resource_request.extensions or {}
+        beckn = extensions.setdefault("beckn", {})
+        beckn["role"] = role
+        beckn["coordinationId"] = coordination_id
+        beckn["transactionId"] = transaction_id
+        beckn["originResourceRequestId"] = coordination_id
+        # Persist the confirmed contract snapshot for status callbacks.
+        beckn["contract"] = contract or beckn.get("contract")
+        beckn["contractAttributes"] = attributes or beckn.get("contractAttributes")
+        if attributes.get("consent"):
+            beckn["consent"] = attributes["consent"]
+        if contract.get("participants"):
+            beckn["participants"] = contract["participants"]
+        beckn["returnRouting"] = {
+            "bapId": (context or {}).get("bapId"),
+            "bapUri": (context or {}).get("bapUri"),
+        }
+        resource_request.extensions = extensions
+        resource_request.save()
+
+    return resource_request
+
+
+def _referral_status(context: dict, message: dict) -> dict:
+    """Return the current referral state as on_status."""
+    resource_request = find_resource_request(context, message)
+    if resource_request is None:
+        raise BecknActionError("Referral not found for status")
+    return build_on_status(context, message, resource_request)
+
+
+# ---------------------------------------------------------------------------
+# Appointment flow — drives the Care scheduling system
+# ---------------------------------------------------------------------------
+
+
+def _parse_day(value: str | None) -> datetime.date:
+    """Parse an ISO date/date-time into a date, defaulting to today."""
+    if value:
+        parsed_date = parse_date(value[:10])
+        if parsed_date:
+            return parsed_date
+        parsed_dt = parse_datetime(value)
+        if parsed_dt:
+            return parsed_dt.date()
+    return timezone.localdate()
+
+
+def _resolve_schedulable_resource(message: dict):
+    resource_id = get_selected_resource_id(message)
+    if not resource_id:
+        return None
+    return (
+        SchedulableResource.objects.select_related("facility")
+        .filter(external_id=resource_id)
+        .first()
+    )
+
+
+def _appointment_discover(context: dict, message: dict) -> dict:
+    """Publish the catalog of bookable resources as on_discover."""
+    return build_on_discover(context)
+
+
+def _appointment_select(context: dict, message: dict) -> dict:
+    """Return concrete bookable slots for the selected resource as on_select."""
+    resource = _resolve_schedulable_resource(message)
+    if resource is None:
+        raise BecknActionError(
+            "No Care schedulable resource matched the selected resource id"
+        )
+    day = _parse_day(get_requested_date(context, message))
+    slots = scheduling.list_slots_for_day(resource, day)
+    return build_appt_on_select(context, message, slots)
+
+
+def _resolve_chosen_slot(message: dict):
+    slot_id = get_selected_slot_id(message)
+    slot = scheduling.resolve_token_slot(slot_id=slot_id)
+    if slot is not None:
+        return slot
+    confirmed_time = get_confirmed_appointment_time(message)
+    resource = _resolve_schedulable_resource(message)
+    if confirmed_time and resource is not None:
+        start = parse_datetime(confirmed_time)
+        if start is not None:
+            return scheduling.resolve_token_slot(
+                resource=resource, start_datetime=start
+            )
+    return None
+
+
+def _appointment_init(context: dict, message: dict) -> dict:
+    """Resolve the patient and the chosen slot, return on_init (no booking yet)."""
+    slot = _resolve_chosen_slot(message)
+    if slot is None:
+        raise BecknActionError("No Care slot matched the chosen appointment")
+    facility = slot.resource.facility
+    user = _resolve_system_user()
+    participant = find_patient_participant(message)
+    find_or_create_patient(message, participant, facility, user)
+    return build_appt_on_init(context, message, slot)
+
+
+def _appointment_confirm(context: dict, message: dict) -> dict:
+    """Book the chosen slot, generate a token, return on_confirm."""
+    slot = _resolve_chosen_slot(message)
+    if slot is None:
+        raise BecknActionError("No Care slot matched the chosen appointment")
+    facility = slot.resource.facility
+    user = _resolve_system_user()
+    participant = find_patient_participant(message)
+    patient = find_or_create_patient(message, participant, facility, user)
+    if patient is None:
+        raise BecknActionError("No patient participant found to book the appointment")
+
+    try:
+        with transaction.atomic():
+            booking = scheduling.book_appointment(slot, patient, user)
+            scheduling.ensure_token(booking, user)
+            # Care-coordinator resources (acceptanceMode=MANUAL_REVIEW) hold the
+            # booking pending a human review instead of auto-confirming; the BAP
+            # gets an on_confirm reporting DRAFT and, once a coordinator books it
+            # in Care, an unsolicited on_status with ACTIVE.
+            from care.beckn.constants import ACCEPTANCE_MODE_MANUAL_REVIEW
+            from care.beckn.services.catalog import resource_acceptance_mode
+            from care.emr.resources.scheduling.slot.spec import BookingStatusChoices
+
+            if resource_acceptance_mode(slot.resource) == ACCEPTANCE_MODE_MANUAL_REVIEW:
+                booking.status = BookingStatusChoices.pending.value
+            beckn = booking.meta.setdefault("beckn", {})
+            beckn["transactionId"] = (context or {}).get("transactionId")
+            beckn["bapId"] = (context or {}).get("bapId")
+            beckn["bapUri"] = (context or {}).get("bapUri")
+            # Persist the full inbound context and message snapshot so that
+            # unsolicited on_status callbacks can be rebuilt and routed back to
+            # the BAP when the booking changes, without the BAP calling status.
+            beckn["context"] = context or {}
+            beckn["message"] = message or {}
+            booking.save(update_fields=["meta", "status", "modified_date"])
+    except DRFValidationError as exc:
+        # Surface the booking rule (slot past/full/duplicate) as a clean NACK.
+        raise BecknActionError(_first_validation_message(exc)) from exc
+
+    booking.refresh_from_db()
+    # Link the booking to its originating referral in Redis (no core scheduling
+    # change): when this appointment is fulfilled, the referral is completed.
+    txn_store.link_booking_referral(booking.id, get_coordination_id(context, message))
+    return build_appt_on_confirm(context, message, booking)
+
+
+def _appointment_status(context: dict, message: dict) -> dict:
+    """Return the current appointment state as on_status."""
+    booking = scheduling.find_booking(get_contract(message).get("id"))
+    if booking is None:
+        raise BecknActionError("Appointment not found for status")
+    return build_appt_on_status(context, message, booking)
+
+
+def _appointment_cancel(context: dict, message: dict) -> dict:
+    """Cancel the appointment and return on_cancel."""
+    booking = scheduling.find_booking(get_contract(message).get("id"))
+    if booking is None:
+        raise BecknActionError("Appointment not found for cancel")
+    user = _resolve_system_user()
+    attributes = get_contract_attributes(message)
+    note = attributes.get("cancellationReason")
+    booking = scheduling.cancel_appointment(booking, user, note=note)
+    return build_appt_on_cancel(context, message, booking)
+
+
+def _appointment_update(context: dict, message: dict) -> dict:
+    """Reschedule the appointment to the chosen new slot and return on_update.
+
+    The replacement booking inherits the original's Beckn context (so future
+    Care-side changes still notify the BAP). The unsolicited on_status callbacks
+    are suppressed for this BAP-initiated change: the BAP gets a single
+    on_update carrying the new booking's contract id, correlated to the original
+    via the unchanged transactionId.
+    """
+    booking = scheduling.find_booking(get_contract(message).get("id"))
+    if booking is None:
+        raise BecknActionError("Appointment not found for update")
+    new_slot = _resolve_chosen_slot(message)
+    if new_slot is None:
+        raise BecknActionError("No Care slot matched the requested new appointment")
+    if new_slot.id == booking.token_slot_id:
+        raise BecknActionError("Cannot reschedule to the same slot")
+    user = _resolve_system_user()
+
+    from care.beckn.signals import suppress_beckn_notifications
+    from care.beckn.tasks import carry_beckn_context
+
+    try:
+        with suppress_beckn_notifications(), transaction.atomic():
+            new_booking = scheduling.reschedule_appointment(booking, new_slot, user)
+            carry_beckn_context(booking, new_booking)
+    except DRFValidationError as exc:
+        raise BecknActionError(_first_validation_message(exc)) from exc
+
+    new_booking.refresh_from_db()
+    return build_appt_on_update(context, message, new_booking)
+
+
+# ---------------------------------------------------------------------------
+# Public action handlers — route shared actions to the resolved flow
+# ---------------------------------------------------------------------------
+
+
+def handle_discover(context: dict, message: dict) -> dict:
+    return _appointment_discover(context, message)
+
+
+def handle_select(context: dict, message: dict) -> dict:
+    if resolve_flow("select", context, message) == FLOW_APPOINTMENT:
+        return _appointment_select(context, message)
+    return _referral_select(context, message)
+
+
+def handle_init(context: dict, message: dict) -> dict:
+    if resolve_flow("init", context, message) == FLOW_APPOINTMENT:
+        return _appointment_init(context, message)
+    return _referral_init(context, message)
+
+
+def handle_confirm(context: dict, message: dict) -> dict:
+    if resolve_flow("confirm", context, message) == FLOW_APPOINTMENT:
+        return _appointment_confirm(context, message)
+    return _referral_confirm(context, message)
+
+
+def handle_status(context: dict, message: dict) -> dict:
+    if resolve_flow("status", context, message) == FLOW_APPOINTMENT:
+        return _appointment_status(context, message)
+    return _referral_status(context, message)
+
+
+def handle_cancel(context: dict, message: dict) -> dict:
+    if resolve_flow("cancel", context, message) == FLOW_APPOINTMENT:
+        return _appointment_cancel(context, message)
+    raise BecknActionError("Cancel is not supported for the referral flow")
+
+
+def handle_update(context: dict, message: dict) -> dict:
+    if resolve_flow("update", context, message) == FLOW_APPOINTMENT:
+        return _appointment_update(context, message)
+    raise BecknActionError("Update is not supported for the referral flow")
+
+
+ACTION_HANDLERS = {
+    "discover": handle_discover,
+    "select": handle_select,
+    "init": handle_init,
+    "confirm": handle_confirm,
+    "status": handle_status,
+    "update": handle_update,
+    "cancel": handle_cancel,
+}

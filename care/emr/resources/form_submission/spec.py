@@ -35,12 +35,14 @@ class FormSubmissionUpdateSpec(BaseFormSubmissionSpec):
 class FormSubmissionWriteSpec(FormSubmissionUpdateSpec):
     """Form submission write specification"""
 
-    questionnaire: str
+    questionnaire: UUID4
     patient: UUID4
     encounter: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
-        obj.questionnaire = get_object_or_404(Questionnaire, slug=self.questionnaire)
+        obj.questionnaire = get_object_or_404(
+            Questionnaire, external_id=self.questionnaire
+        )
         obj.patient = get_object_or_404(Patient, external_id=self.patient)
         if self.encounter:
             obj.encounter = get_object_or_404(Encounter, external_id=self.encounter)
