@@ -1,5 +1,13 @@
 #!/bin/bash
 
+log_info() {
+  printf '%s [INFO] [%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "${0##*/}" "$*"
+}
+
+log_error() {
+  printf '%s [ERROR] [%s] %s\n' "$(date '+%Y-%m-%d %H:%M:%S')" "${0##*/}" "$*" >&2
+}
+
 postgres_ready() {
 python << END
 import sys
@@ -31,11 +39,11 @@ MAX_RETRIES=30
 RETRY_COUNT=0
 until postgres_ready; do
   if [ "$RETRY_COUNT" -ge "$MAX_RETRIES" ]; then
-    >&2 echo 'Failed to connect to PostgreSQL after 30 attempts. Exiting.'
+    log_error 'Failed to connect to PostgreSQL after 30 attempts. Exiting.'
     exit 1
   fi
-  >&2 echo 'Waiting for PostgreSQL to become available...'
+  log_info 'Waiting for PostgreSQL to become available...'
   sleep 1
   RETRY_COUNT=$((RETRY_COUNT + 1))
 done
->&2 echo 'PostgreSQL is available'
+log_info 'PostgreSQL is available'

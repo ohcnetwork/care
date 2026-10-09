@@ -11,6 +11,7 @@ from care.emr.api.otp_viewsets.medication_request_prescription import (
 from care.emr.api.otp_viewsets.patient import PatientOTPView
 from care.emr.api.otp_viewsets.slot import OTPSlotViewSet
 from care.emr.api.viewsets.account import AccountViewSet
+from care.emr.api.viewsets.action import ActionConfigurationViewSet
 from care.emr.api.viewsets.activity_definition import ActivityDefinitionViewSet
 from care.emr.api.viewsets.allergy_intolerance import AllergyIntoleranceViewSet
 from care.emr.api.viewsets.batch_request import BatchRequestView
@@ -40,6 +41,11 @@ from care.emr.api.viewsets.facility_organization import (
 from care.emr.api.viewsets.file_upload import FileUploadViewSet
 from care.emr.api.viewsets.form_submission import FormSubmissionViewSet
 from care.emr.api.viewsets.healthcare_service import HealthcareServiceViewSet
+from care.emr.api.viewsets.immunization.immunization import ImmunizationRecordViewSet
+from care.emr.api.viewsets.immunization.policy import ImmunizationPolicyViewSet
+from care.emr.api.viewsets.immunization.recommendation import (
+    ImmunizationRecommendationViewSet,
+)
 from care.emr.api.viewsets.inventory.delivery_order import DeliveryOrderViewSet
 from care.emr.api.viewsets.inventory.dispense_order import DispenseOrderViewSet
 from care.emr.api.viewsets.inventory.inventory_item import InventoryItemViewSet
@@ -76,8 +82,14 @@ from care.emr.api.viewsets.organization import (
 from care.emr.api.viewsets.patient import PatientViewSet
 from care.emr.api.viewsets.patient_identifier import PatientIdentifierConfigViewSet
 from care.emr.api.viewsets.payment_reconciliation import PaymentReconciliationViewSet
-from care.emr.api.viewsets.questionnaire import (
+from care.emr.api.viewsets.questionnaire.questionnaire import (
     QuestionnaireViewSet,
+)
+from care.emr.api.viewsets.questionnaire.resource_observation import (
+    ResourceObservationViewSet,
+)
+from care.emr.api.viewsets.questionnaire.resource_questionnaire_response import (
+    ResourceQuestionnaireResponseViewSet,
 )
 from care.emr.api.viewsets.questionnaire_response import QuestionnaireResponseViewSet
 from care.emr.api.viewsets.questionnaire_response_template import (
@@ -110,6 +122,7 @@ from care.emr.api.viewsets.tag_config import TagConfigViewSet
 from care.emr.api.viewsets.totp import TOTPViewSet
 from care.emr.api.viewsets.user import UserViewSet
 from care.emr.api.viewsets.valueset import ValueSetViewSet
+from care.emr.api.viewsets.workspace import WorkspaceViewSet
 from care.security.api.viewsets.permissions import PermissionViewSet
 from care.security.api.viewsets.roles import RoleViewSet
 from care.users.api.otp_viewset.reset_password import OTPResetPasswordView
@@ -153,6 +166,13 @@ router.register("batch_requests", BatchRequestView, basename="batch-requests")
 router.register("valueset", ValueSetViewSet, basename="value-set")
 
 router.register("questionnaire", QuestionnaireViewSet, basename="questionnaire")
+
+router.register("workspace", WorkspaceViewSet, basename="workspace")
+
+router.register(
+    "immunization/policy", ImmunizationPolicyViewSet, basename="immunization-policy"
+)
+
 
 questionnaire_nested_router = NestedSimpleRouter(
     router, r"questionnaire", lookup="questionnaire"
@@ -494,6 +514,19 @@ patient_nested_router.register(
     basename="medication-administration",
 )
 
+patient_nested_router.register(
+    r"immunization/recommendation",
+    ImmunizationRecommendationViewSet,
+    basename="immunization-recommendation",
+)
+
+
+patient_nested_router.register(
+    r"immunization/record",
+    ImmunizationRecordViewSet,
+    basename="immunization-record",
+)
+
 
 patient_nested_router.register(
     r"thread",
@@ -510,6 +543,20 @@ thread_nested_router.register(
     NoteMessageViewSet,
     basename="note",
 )
+
+router.register(
+    "resource_responses",
+    ResourceQuestionnaireResponseViewSet,
+    basename="resource-responses",
+)
+router.register(
+    "resource_observation", ResourceObservationViewSet, basename="resource-observation"
+)
+
+router.register(
+    "action_configuration", ActionConfigurationViewSet, basename="action-configuration"
+)
+
 
 router.register("template", TemplateViewSet, basename="template")
 router.register("template_reports", ReportUploadViewSet, basename="template-reports")

@@ -200,6 +200,8 @@ class Facility(BaseModel):
 
     print_templates = models.JSONField(default=list)
 
+    extensions = models.JSONField(default=dict)
+
     class Meta:
         verbose_name_plural = "Facilities"
 

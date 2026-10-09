@@ -123,6 +123,8 @@ class EMRCreateMixin:
                     updated_by=self.request.user,
                     form_submission=form_submission,
                 )
+            if getattr(self, "ACTIONS_ENABLED", False):
+                self.perform_actions(instance)
 
     def clean_create_data(self, request_data):
         return request_data
