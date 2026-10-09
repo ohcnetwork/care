@@ -82,7 +82,9 @@ class InventoryLockMixin:
             ) from e
         try:
             with transaction.atomic():
-                return super().handle_create(request_data)
+                result = super().handle_create(request_data)
+                transaction.on_commit(lock.release)
+                return result
             transaction.on_commit(lock.release)
         except Exception:
             lock.release()
