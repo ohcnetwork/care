@@ -14,6 +14,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.locks.billing import InventoryItemLock
 from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.location import FacilityLocation
 from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
@@ -39,6 +40,7 @@ from care.security.authorization.base import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyUUIDFilter
 from care.utils.filters.multiselect import MultiSelectFilter
 from care.utils.filters.null_filter import NullFilter
+from care.utils.lock import ObjectLocked
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -61,7 +63,35 @@ class SupplyDeliveryFilters(filters.FilterSet):
     request_order = DummyUUIDFilter()
 
 
+class InventoryLockMixin:
+    """Locks the supplied inventory item for the duration of create."""
+
+    def handle_create(self, request_data):
+        supplied_inventory_item = request_data.get("supplied_inventory_item")
+        if not supplied_inventory_item:
+            return super().handle_create(request_data)
+        inventory_item = get_object_or_404(
+            InventoryItem, external_id=supplied_inventory_item
+        )
+        lock = InventoryItemLock(inventory_item)
+        try:
+            lock.acquire()
+        except ObjectLocked as e:
+            raise ValidationError(
+                "Supply delivery creation failed . try again after a while"
+            ) from e
+        try:
+            with transaction.atomic():
+                result = super().handle_create(request_data)
+                transaction.on_commit(lock.release)
+                return result
+        except Exception:
+            lock.release()
+            raise
+
+
 class SupplyDeliveryViewSet(
+    InventoryLockMixin,
     EMRCreateMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,

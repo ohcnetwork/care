@@ -1,10 +1,12 @@
 from decimal import Decimal
 
+from django.db.models.signals import post_save
 from django.urls import reverse
 from model_bakery import baker
 
 from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.product_knowledge import ProductKnowledge
+from care.emr.models.supply_delivery import SupplyDelivery
 from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
     sync_inventory_item,
 )
@@ -16,6 +18,11 @@ from care.emr.resources.inventory.supply_delivery.spec import (
     SupplyDeliveryStatusOptions,
     SupplyDeliveryTypeOptions,
 )
+from care.emr.signals.patient.facility_name_identifier import (
+    FacilityPatientNameIdentifierConfig,
+)
+from care.emr.signals.patient.name_identifier import NameIdentifierConfig
+from care.emr.signals.patient.phone_number_identifier import PhoneNumberIdentifierConfig
 from care.security.permissions.supply_delivery import SupplyDeliveryPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -23,6 +30,9 @@ from care.utils.tests.base import CareAPITestBase
 class TestSupplyDeliveryViewSetBase(CareAPITestBase):
     def setUp(self):
         super().setUp()
+        NameIdentifierConfig.CACHED_CONFIG = {}
+        PhoneNumberIdentifierConfig.CACHED_CONFIG = {}
+        FacilityPatientNameIdentifierConfig.CACHED_CONFIG = {}
         self.user = self.create_user(username="testuser")
         self.superuser = self.create_super_user(username="superuser")
         self.patient = self.create_patient(name="Test Patient")
@@ -210,9 +220,6 @@ class TestSupplyDeliveryViewSetBase(CareAPITestBase):
 
 
 class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
-    def setUp(self):
-        super().setUp()
-
     def test_create_supply_delivery_internally_as_superuser(self):
         """
         Test creating a supply delivery internally as a superuser from origin to destination
@@ -1923,3 +1930,128 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
             response.data["results"][0]["supplied_item"]["id"],
             str(self.product.external_id),
         )
+
+    def internal_deliveries(self):
+        return SupplyDelivery.objects.filter(order=self.delivery_order_internal)
+
+    def test_upsert_same_supply_delivery_item_uses_current_stock(self):
+        self.client.force_authenticate(user=self.superuser)
+        upsert_url = reverse("supply_delivery-upsert")
+        data = self.create_supply_delivery_data(
+            supplied_inventory_item=str(self.inventory_item_origin.external_id),
+            order=str(self.delivery_order_internal.external_id),
+            quantity=Decimal(50),
+        )
+        deliveries = SupplyDelivery.objects.filter(order=self.delivery_order_internal)
+        inventory_model = type(self.inventory_item_origin)
+        initial_inventory_count = inventory_model.objects.count()
+
+        for _ in range(2):
+            response = self.client.post(
+                upsert_url,
+                {"datapoints": [dict(data), dict(data)]},
+                format="json",
+            )
+            self.assertEqual(response.status_code, 400, response.data)
+            self.assertEqual(len(response.data), 2)
+            self.assertIn(
+                "Supply delivery creation failed . try again after a while",
+                str(response.data[1]),
+            )
+            self.inventory_item_origin.refresh_from_db()
+            self.inventory_item_destination.refresh_from_db()
+            self.assertEqual(deliveries.count(), 0)
+            self.assertEqual(self.inventory_item_origin.net_content, Decimal(500))
+            self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
+            self.assertEqual(inventory_model.objects.count(), initial_inventory_count)
+
+    def test_upsert_same_supply_delivery_item_rejects_combined_insufficient_stock(self):
+        self.client.force_authenticate(user=self.superuser)
+        data = self.create_supply_delivery_data(
+            supplied_inventory_item=str(self.inventory_item_origin.external_id),
+            order=str(self.delivery_order_internal.external_id),
+            quantity=Decimal(300),
+        )
+        initial_delivery_count = SupplyDelivery.objects.count()
+        response = self.client.post(
+            reverse("supply_delivery-upsert"),
+            {"datapoints": [dict(data), dict(data)]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(len(response.data), 2)
+        self.assertIn(
+            "Supply delivery creation failed . try again after a while",
+            str(response.data[1]),
+        )
+        self.assertEqual(
+            response.data[0].get("supplied_inventory_item").get("id"),
+            str(self.inventory_item_origin.external_id),
+        )
+        self.assertEqual(SupplyDelivery.objects.count(), initial_delivery_count)
+        self.inventory_item_origin.refresh_from_db()
+        self.inventory_item_destination.refresh_from_db()
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(500))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
+
+    def test_lock_is_released_once_the_request_transaction_commits(self):
+        self.client.force_authenticate(user=self.superuser)
+        data = self.create_supply_delivery_data(
+            supplied_inventory_item=str(self.inventory_item_origin.external_id),
+            order=str(self.delivery_order_internal.external_id),
+            quantity=Decimal(100),
+        )
+
+        with self.captureOnCommitCallbacks(execute=True):
+            first = self.client.post(self.base_url, dict(data), format="json")
+        self.assertEqual(first.status_code, 200, first.data)
+
+        with self.captureOnCommitCallbacks(execute=True):
+            second = self.client.post(self.base_url, dict(data), format="json")
+        self.assertEqual(second.status_code, 200, second.data)
+
+        self.assertEqual(self.internal_deliveries().count(), 2)
+        self.inventory_item_origin.refresh_from_db()
+        self.inventory_item_destination.refresh_from_db()
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(300))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
+
+    def test_overlapping_create_on_same_inventory_item_consumes_stock_once(self):
+        self.client.force_authenticate(user=self.superuser)
+        data = self.create_supply_delivery_data(
+            supplied_inventory_item=str(self.inventory_item_origin.external_id),
+            order=str(self.delivery_order_internal.external_id),
+            quantity=Decimal(100),
+        )
+        overlapping_client = self.client_class()
+        overlapping_client.force_authenticate(user=self.superuser)
+        overlapping = {}
+
+        def send_overlapping_request(sender, instance, created, **kwargs):
+            # fires inside the first request, before its transaction commits
+            if not created or overlapping:
+                return
+            overlapping["response"] = None
+            overlapping["response"] = overlapping_client.post(
+                self.base_url, dict(data), format="json"
+            )
+
+        post_save.connect(send_overlapping_request, sender=SupplyDelivery)
+        self.addCleanup(
+            post_save.disconnect, send_overlapping_request, sender=SupplyDelivery
+        )
+
+        with self.captureOnCommitCallbacks(execute=True):
+            first = self.client.post(self.base_url, dict(data), format="json")
+
+        self.assertEqual(first.status_code, 200, first.data)
+        self.assertContains(
+            overlapping["response"],
+            "Supply delivery creation failed . try again after a while",
+            status_code=400,
+        )
+        self.assertEqual(self.internal_deliveries().count(), 1)
+        self.inventory_item_origin.refresh_from_db()
+        self.inventory_item_destination.refresh_from_db()
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(400))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
