@@ -1,5 +1,6 @@
 from decimal import Decimal
 
+from django.db.models.signals import post_save
 from django.urls import reverse
 from model_bakery import baker
 
@@ -1993,7 +1994,7 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
         self.assertEqual(self.inventory_item_origin.net_content, Decimal(500))
         self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
 
-    def test_second_create_on_same_inventory_item_hits_the_lock(self):
+    def test_lock_is_released_once_the_request_transaction_commits(self):
         self.client.force_authenticate(user=self.superuser)
         data = self.create_supply_delivery_data(
             supplied_inventory_item=str(self.inventory_item_origin.external_id),
@@ -2001,23 +2002,55 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
             quantity=Decimal(100),
         )
 
-        first = self.client.post(self.base_url, dict(data), format="json")
+        with self.captureOnCommitCallbacks(execute=True):
+            first = self.client.post(self.base_url, dict(data), format="json")
         self.assertEqual(first.status_code, 200, first.data)
-        self.assertEqual(
-            first.data["supplied_inventory_item"]["id"],
-            str(self.inventory_item_origin.external_id),
+
+        with self.captureOnCommitCallbacks(execute=True):
+            second = self.client.post(self.base_url, dict(data), format="json")
+        self.assertEqual(second.status_code, 200, second.data)
+
+        self.assertEqual(self.internal_deliveries().count(), 2)
+        self.inventory_item_origin.refresh_from_db()
+        self.inventory_item_destination.refresh_from_db()
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(300))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
+
+    def test_overlapping_create_on_same_inventory_item_consumes_stock_once(self):
+        self.client.force_authenticate(user=self.superuser)
+        data = self.create_supply_delivery_data(
+            supplied_inventory_item=str(self.inventory_item_origin.external_id),
+            order=str(self.delivery_order_internal.external_id),
+            quantity=Decimal(100),
+        )
+        overlapping_client = self.client_class()
+        overlapping_client.force_authenticate(user=self.superuser)
+        overlapping = {}
+
+        def send_overlapping_request(sender, instance, created, **kwargs):
+            # fires inside the first request, before its transaction commits
+            if not created or overlapping:
+                return
+            overlapping["response"] = None
+            overlapping["response"] = overlapping_client.post(
+                self.base_url, dict(data), format="json"
+            )
+
+        post_save.connect(send_overlapping_request, sender=SupplyDelivery)
+        self.addCleanup(
+            post_save.disconnect, send_overlapping_request, sender=SupplyDelivery
         )
 
-        second = self.client.post(self.base_url, dict(data), format="json")
+        with self.captureOnCommitCallbacks(execute=True):
+            first = self.client.post(self.base_url, dict(data), format="json")
+
+        self.assertEqual(first.status_code, 200, first.data)
         self.assertContains(
-            second,
+            overlapping["response"],
             "Supply delivery creation failed . try again after a while",
             status_code=400,
         )
-
-        self.assertEqual(
-            SupplyDelivery.objects.filter(order=self.delivery_order_internal).count(), 1
-        )
+        self.assertEqual(self.internal_deliveries().count(), 1)
         self.inventory_item_origin.refresh_from_db()
         self.inventory_item_destination.refresh_from_db()
         self.assertEqual(self.inventory_item_origin.net_content, Decimal(400))
