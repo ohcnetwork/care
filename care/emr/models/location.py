@@ -36,6 +36,7 @@ class FacilityLocation(EMRBaseModel):
     )  # Populated from FacilityLocationEncounter
     sort_index = models.IntegerField(default=0)
     tags = ArrayField(models.IntegerField(), default=list)
+    tags_data = models.JSONField(default=dict)
     cache_expiry_days = 15
 
     def get_parent_json(self):

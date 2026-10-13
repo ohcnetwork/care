@@ -34,6 +34,8 @@ class TokenBooking(EMRBaseModel):
     status = models.CharField()
     note = models.TextField(null=True, blank=True)
     tags = ArrayField(models.IntegerField(), default=list)
+    tags_data = models.JSONField(default=dict)
+
     associated_encounter = models.ForeignKey(
         "emr.Encounter", on_delete=models.PROTECT, null=True, blank=True, default=None
     )

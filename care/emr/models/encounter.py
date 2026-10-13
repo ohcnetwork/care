@@ -34,6 +34,8 @@ class Encounter(EMRBaseModel):
 
     tags = ArrayField(models.IntegerField(), default=list)
 
+    tags_data = models.JSONField(default=dict)
+
     extensions = models.JSONField(default=dict)
 
     def sync_organization_cache(self):

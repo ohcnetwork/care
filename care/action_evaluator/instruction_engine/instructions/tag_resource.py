@@ -14,7 +14,7 @@ from care.action_evaluator.instruction_engine.resolvers import (
     resolve_patient,
 )
 from care.emr.registries.actions.instruction import ActionInstructionRegistry
-from care.emr.resources.tag.config_spec import TagResource
+from care.emr.resources.tag.config_spec import TagResource, TagSetRequest
 from care.security.authorization.base import AuthorizationController
 
 
@@ -67,10 +67,11 @@ class BaseTagInstruction(BaseInstruction):
             }
         manager = self.tag_manager_for(tag_config, target)
         try:
-            manager.set_tag(
+            tag = TagSetRequest.model_validate({"tag": tag_config.external_id})
+            manager.lock_set_tag(
                 self.resource.value,
                 target,
-                tag_config.external_id,
+                tag,
                 self.user,
                 self.facility_for(tag_config, target),
             )

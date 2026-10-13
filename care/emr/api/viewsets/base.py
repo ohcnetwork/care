@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.http.response import Http404
 from drf_spectacular.utils import extend_schema
-from pydantic import UUID4, BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError as RestFrameworkValidationError
@@ -19,6 +19,7 @@ from care.emr.models.base import EMRBaseModel
 from care.emr.models.questionnaire import FormSubmission
 from care.emr.resources.base import EMRResource
 from care.emr.resources.form_submission.spec import FormSubmissionStatusChoices
+from care.emr.resources.tag.config_spec import TagSetRequest
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.utils.shortcuts import get_object_or_404
 
@@ -357,7 +358,7 @@ class EMRQuestionnaireResponseMixin:
 
 
 class TagRequest(BaseModel):
-    tags: list[UUID4] = []
+    tags: list[TagSetRequest] = []
 
 
 class EMRTagMixin:
@@ -394,9 +395,11 @@ class EMRTagMixin:
         # TODO Facility AuthZ missing
         if not self.resource_type:
             return Response({})
+
         instance = self.get_object()
         self.authorize_set_tags(instance)
         self.perform_set_tags(instance, request.data)
+
         return self.retrieve(request, *args, **kwargs)
 
     @extend_schema(request=TagRequest)
@@ -410,10 +413,12 @@ class EMRTagMixin:
         tag_request = TagRequest.model_validate(request.data)
         tag_manager = self.tag_manager()
         tag_manager.unset_tags(
+            self.resource_type,
             instance,
             tag_request.tags,
             request.user,
         )
+
         return self.retrieve(request, *args, **kwargs)
 
 

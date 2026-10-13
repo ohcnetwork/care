@@ -12,7 +12,10 @@ from rest_framework.response import Response
 
 from care.action_evaluator.context_engine.contexts.core import AppointmentContext
 from care.emr.api.viewsets.action_base import EMRActionBaseViewSet
-from care.emr.api.viewsets.base import EMRBaseViewSet, EMRRetrieveMixin
+from care.emr.api.viewsets.base import (
+    EMRBaseViewSet,
+    EMRRetrieveMixin,
+)
 from care.emr.api.viewsets.scheduling.schedule import get_schedulable_resource
 from care.emr.models import AvailabilityException, Schedule, TokenBooking
 from care.emr.models.patient import Patient
@@ -36,7 +39,7 @@ from care.emr.resources.scheduling.slot.spec import (
     TokenBookingReadSpec,
     TokenSlotBaseSpec,
 )
-from care.emr.resources.tag.config_spec import TagResource
+from care.emr.resources.tag.config_spec import TagResource, TagSetRequest
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
@@ -55,7 +58,7 @@ class AppointmentBookingSpec(BaseModel):
     patient: UUID4
     note: str
 
-    tags: list[UUID4] = []
+    tags: list[TagSetRequest] = []
 
 
 class AvailabilityStatsRequestSpec(BaseModel):
