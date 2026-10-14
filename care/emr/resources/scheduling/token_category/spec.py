@@ -15,7 +15,11 @@ class TokenCategoryBaseSpec(EMRResource):
     metadata: dict | None = None
 
 
-class TokenCategoryCreateSpec(TokenCategoryBaseSpec):
+class TokenCategoryUpdateSpec(TokenCategoryBaseSpec):
+    pass
+
+
+class TokenCategoryCreateSpec(TokenCategoryUpdateSpec):
     resource_type: SchedulableResourceTypeOptions
 
 

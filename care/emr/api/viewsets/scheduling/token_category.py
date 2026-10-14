@@ -12,10 +12,10 @@ from care.emr.api.viewsets.base import (
 )
 from care.emr.models.scheduling.token import TokenCategory
 from care.emr.resources.scheduling.token_category.spec import (
-    TokenCategoryBaseSpec,
     TokenCategoryCreateSpec,
     TokenCategoryReadSpec,
     TokenCategoryRetrieveSpec,
+    TokenCategoryUpdateSpec,
 )
 from care.facility.models import Facility
 from care.security.authorization import AuthorizationController
@@ -34,7 +34,7 @@ class TokenCategoryViewSet(
 ):
     database_model = TokenCategory
     pydantic_model = TokenCategoryCreateSpec
-    pydantic_update_model = TokenCategoryBaseSpec
+    pydantic_update_model = TokenCategoryUpdateSpec
     pydantic_read_model = TokenCategoryReadSpec
     pydantic_retrieve_model = TokenCategoryRetrieveSpec
     filterset_class = TokenCategoryFilters
