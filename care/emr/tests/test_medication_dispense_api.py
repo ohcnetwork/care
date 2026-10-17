@@ -201,6 +201,7 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             response.data["status"], MedicationDispenseStatus.in_progress.value
         )
         self.assertEqual(response.data["quantity"], "10")
+        self.assertEqual(Decimal(response.data["item"]["net_content"]), Decimal(40))
         self.assertEqual(
             response.data["item"]["id"], str(self.inventory_item.external_id)
         )

@@ -115,7 +115,7 @@ class MedicationDispenseViewSet(
                 charge_item.save()
                 instance.charge_item = charge_item
                 instance.save(update_fields=["charge_item", "modified_date"])
-            sync_inventory_item(instance.item.location, instance.item.product)
+            sync_inventory_item(inventory_item=instance.item)
             if instance._fully_dispensed is not None and instance.authorizing_request:  # noqa
                 if instance._fully_dispensed:  # noqa
                     instance.authorizing_request.dispense_status = (
@@ -167,8 +167,9 @@ class MedicationDispenseViewSet(
         return super().validate_data(instance, model_obj)
 
     def perform_update(self, instance):
-        with transaction.atomic():
+        with transaction.atomic(), InventoryItemLock(instance.item):
             current_obj = MedicationDispense.objects.get(id=instance.id)
+            self.validate_data(None, current_obj)
             if (
                 current_obj.status != instance.status
                 and instance.status in MEDICATION_DISPENSE_CANCELLED_STATUSES
@@ -187,7 +188,7 @@ class MedicationDispenseViewSet(
                 instance.authorizing_request = None
                 instance.charge_item.save()
             super().perform_update(instance)
-            sync_inventory_item(instance.item.location, instance.item.product)
+            sync_inventory_item(inventory_item=instance.item)
             if instance.authorizing_request and instance._fully_dispensed is not None:  # noqa
                 if instance._fully_dispensed:  # noqa
                     instance.authorizing_request.dispense_status = (

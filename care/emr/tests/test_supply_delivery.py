@@ -1,6 +1,6 @@
 from decimal import Decimal
+from unittest.mock import patch
 
-from django.db.models.signals import post_save
 from django.urls import reverse
 from model_bakery import baker
 
@@ -24,6 +24,7 @@ from care.emr.signals.patient.facility_name_identifier import (
 from care.emr.signals.patient.name_identifier import NameIdentifierConfig
 from care.emr.signals.patient.phone_number_identifier import PhoneNumberIdentifierConfig
 from care.security.permissions.supply_delivery import SupplyDeliveryPermissions
+from care.utils.lock import ObjectLocked
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -232,6 +233,10 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
         )
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            Decimal(response.data["supplied_inventory_item"]["net_content"]),
+            Decimal(450),
+        )
         get_response = self.client.get(self.get_detail_url(response.data["id"]))
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["supplied_item_quantity"], "50.000000")
@@ -288,6 +293,10 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
             format="json",
         )
         self.assertEqual(update_response.status_code, 200)
+        self.assertEqual(
+            Decimal(update_response.data["supplied_inventory_item"]["net_content"]),
+            Decimal(2000),
+        )
         self.inventory_item_destination.refresh_from_db()
         self.assertEqual(self.inventory_item_destination.net_content, Decimal(2000))
 
@@ -1946,22 +1955,21 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
         inventory_model = type(self.inventory_item_origin)
         initial_inventory_count = inventory_model.objects.count()
 
-        for _ in range(2):
+        for batch_number in range(1, 3):
             response = self.client.post(
                 upsert_url,
                 {"datapoints": [dict(data), dict(data)]},
                 format="json",
             )
-            self.assertEqual(response.status_code, 400, response.data)
+            self.assertEqual(response.status_code, 200, response.data)
             self.assertEqual(len(response.data), 2)
-            self.assertIn(
-                "Supply delivery creation failed . try again after a while",
-                str(response.data[1]),
-            )
             self.inventory_item_origin.refresh_from_db()
             self.inventory_item_destination.refresh_from_db()
-            self.assertEqual(deliveries.count(), 0)
-            self.assertEqual(self.inventory_item_origin.net_content, Decimal(500))
+            self.assertEqual(deliveries.count(), batch_number * 2)
+            self.assertEqual(
+                self.inventory_item_origin.net_content,
+                Decimal(500 - batch_number * 100),
+            )
             self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
             self.assertEqual(inventory_model.objects.count(), initial_inventory_count)
 
@@ -1981,7 +1989,7 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
         self.assertEqual(response.status_code, 400, response.data)
         self.assertEqual(len(response.data), 2)
         self.assertIn(
-            "Supply delivery creation failed . try again after a while",
+            "Insufficient stock",
             str(response.data[1]),
         )
         self.assertEqual(
@@ -1993,6 +2001,41 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
         self.inventory_item_destination.refresh_from_db()
         self.assertEqual(self.inventory_item_origin.net_content, Decimal(500))
         self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
+
+        retry = self.client.post(
+            self.base_url,
+            {**data, "supplied_item_quantity": 100},
+            format="json",
+        )
+        self.assertEqual(retry.status_code, 200, retry.data)
+        self.inventory_item_origin.refresh_from_db()
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(400))
+
+    def test_upsert_later_invalid_item_allows_immediate_retry(self):
+        self.client.force_authenticate(user=self.superuser)
+        data = self.create_supply_delivery_data(
+            supplied_inventory_item=str(self.inventory_item_origin.external_id),
+            order=str(self.delivery_order_internal.external_id),
+            quantity=Decimal(100),
+        )
+        invalid = {
+            **data,
+            "supplied_inventory_item": str(self.inventory_item_destination.external_id),
+        }
+        response = self.client.post(
+            reverse("supply_delivery-upsert"),
+            {"datapoints": [dict(data), invalid]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(self.internal_deliveries().count(), 0)
+        self.inventory_item_origin.refresh_from_db()
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(500))
+
+        retry = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(retry.status_code, 200, retry.data)
+        self.inventory_item_origin.refresh_from_db()
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(400))
 
     def test_lock_is_released_once_the_request_transaction_commits(self):
         self.client.force_authenticate(user=self.superuser)
@@ -2016,42 +2059,25 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
         self.assertEqual(self.inventory_item_origin.net_content, Decimal(300))
         self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
 
-    def test_overlapping_create_on_same_inventory_item_consumes_stock_once(self):
+    def test_create_rejects_locked_inventory_item(self):
         self.client.force_authenticate(user=self.superuser)
         data = self.create_supply_delivery_data(
             supplied_inventory_item=str(self.inventory_item_origin.external_id),
             order=str(self.delivery_order_internal.external_id),
             quantity=Decimal(100),
         )
-        overlapping_client = self.client_class()
-        overlapping_client.force_authenticate(user=self.superuser)
-        overlapping = {}
-
-        def send_overlapping_request(sender, instance, created, **kwargs):
-            # fires inside the first request, before its transaction commits
-            if not created or overlapping:
-                return
-            overlapping["response"] = None
-            overlapping["response"] = overlapping_client.post(
-                self.base_url, dict(data), format="json"
-            )
-
-        post_save.connect(send_overlapping_request, sender=SupplyDelivery)
-        self.addCleanup(
-            post_save.disconnect, send_overlapping_request, sender=SupplyDelivery
-        )
-
-        with self.captureOnCommitCallbacks(execute=True):
-            first = self.client.post(self.base_url, dict(data), format="json")
-
-        self.assertEqual(first.status_code, 200, first.data)
+        with patch(
+            "care.emr.api.viewsets.inventory.supply_delivery.lock_inventory_items",
+            side_effect=ObjectLocked,
+        ):
+            response = self.client.post(self.base_url, data, format="json")
         self.assertContains(
-            overlapping["response"],
+            response,
             "Supply delivery creation failed . try again after a while",
             status_code=400,
         )
-        self.assertEqual(self.internal_deliveries().count(), 1)
+        self.assertEqual(self.internal_deliveries().count(), 0)
         self.inventory_item_origin.refresh_from_db()
         self.inventory_item_destination.refresh_from_db()
-        self.assertEqual(self.inventory_item_origin.net_content, Decimal(400))
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(500))
         self.assertEqual(self.inventory_item_destination.net_content, Decimal(1500))
