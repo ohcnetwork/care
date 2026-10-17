@@ -1,4 +1,3 @@
-from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
@@ -13,7 +12,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
-from care.emr.locks.billing import lock_inventory_items
+from care.emr.locks.billing import DispenseOrderLock, lock_inventory_items
 from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.location import FacilityLocation
 from care.emr.models.medication_dispense import DispenseOrder, MedicationDispense
@@ -124,10 +123,9 @@ class DispenseOrderViewSet(
         )
 
     def perform_update(self, instance):
-        # TODO : Add a Lock to ensure that the dispense order is not updated concurrently
         user = self.request.user
-        with transaction.atomic():
-            old_object = DispenseOrder.objects.get(id=instance.id)
+        with DispenseOrderLock([instance.pk]) as lock:
+            old_object = lock.orders[instance.pk]
             if old_object.status != instance.status:
                 if old_object.status in [
                     MedicationDispenseOrderStatusOptions.abandoned.value,
@@ -136,18 +134,23 @@ class DispenseOrderViewSet(
                     raise ValidationError(
                         "Dispense order already abandoned or entered in error"
                     )
+                if (
+                    old_object.status
+                    == MedicationDispenseOrderStatusOptions.completed.value
+                    and instance.status
+                    not in [
+                        MedicationDispenseOrderStatusOptions.abandoned.value,
+                        MedicationDispenseOrderStatusOptions.entered_in_error.value,
+                    ]
+                ):
+                    raise ValidationError(
+                        "Completed dispense order can only be cancelled"
+                    )
                 if instance.status in [
                     MedicationDispenseOrderStatusOptions.abandoned.value,
                     MedicationDispenseOrderStatusOptions.entered_in_error.value,
                 ]:
                     cancel_dispense_order(instance, user)
-                elif (
-                    old_object.status
-                    == MedicationDispenseOrderStatusOptions.completed.value
-                ):
-                    raise ValidationError(
-                        "Completed dispense order can only be cancelled"
-                    )
             return super().perform_update(instance)
 
     def perform_create(self, instance):

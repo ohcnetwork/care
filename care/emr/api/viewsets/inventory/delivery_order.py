@@ -1,4 +1,3 @@
-from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
@@ -14,8 +13,12 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.locks.billing import DeliveryOrderLock
 from care.emr.models.location import FacilityLocation
 from care.emr.models.supply_delivery import DeliveryOrder
+from care.emr.resources.inventory.supply_delivery.cancel_delivery_order import (
+    cancel_supply_deliveries,
+)
 from care.emr.resources.inventory.supply_delivery.delivery_order import (
     BaseSupplyDeliveryOrderSpec,
     SupplyDeliveryOrderReadSpec,
@@ -124,8 +127,10 @@ class DeliveryOrderViewSet(
             raise PermissionDenied("Cannot write delivery orders")
 
     def perform_update(self, instance):
-        with transaction.atomic():
-            old_instance = DeliveryOrder.objects.get(id=instance.id)
+        with DeliveryOrderLock([instance.pk]) as lock:
+            old_instance = lock.orders[instance.pk]
+            instance.patient_invoice_id = old_instance.patient_invoice_id
+            instance.updated_by = self.request.user
             if old_instance.status != instance.status:
                 if old_instance.status in [
                     SupplyDeliveryOrderStatusOptions.abandoned.value,
@@ -154,6 +159,13 @@ class DeliveryOrderViewSet(
                     == SupplyDeliveryOrderStatusOptions.entered_in_error.value
                 ):
                     cancel_return_invoice(instance)
+                elif instance.status in [
+                    SupplyDeliveryOrderStatusOptions.abandoned.value,
+                    SupplyDeliveryOrderStatusOptions.entered_in_error.value,
+                ]:
+                    cancel_supply_deliveries(
+                        instance, instance.status, self.request.user
+                    )
 
             return super().perform_update(instance)
 

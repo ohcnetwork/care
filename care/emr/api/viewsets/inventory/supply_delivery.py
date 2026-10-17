@@ -1,6 +1,5 @@
 from decimal import Decimal
 
-from django.db import transaction
 from django.db.models import Q
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
@@ -16,7 +15,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
-from care.emr.locks.billing import lock_inventory_items
+from care.emr.locks.billing import DeliveryOrderLock, lock_inventory_items
 from care.emr.models.location import FacilityLocation
 from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
 from care.emr.models.supply_request import RequestOrder
@@ -112,27 +111,32 @@ class SupplyDeliveryViewSet(
             raise ValidationError("Insufficient stock")
 
     def perform_create(self, instance):
-        if instance.order.status in [
-            SupplyDeliveryOrderStatusOptions.abandoned.value,
-            SupplyDeliveryOrderStatusOptions.entered_in_error.value,
-        ]:
-            raise ValidationError("Delivery order is abandoned or entered in error")
-        if instance.order.status == SupplyDeliveryOrderStatusOptions.completed.value:
-            raise ValidationError("Delivery order is completed")
         try:
-            with (
-                transaction.atomic(),
-                lock_inventory_items(self.get_inventory_items(instance)),
-            ):
-                self.validate_stock(instance)
-                if instance.order.origin:
-                    instance.status = SupplyDeliveryStatusOptions.in_progress.value
-                super().perform_create(instance)
-                self.sync_inventory_item(instance)
+            with DeliveryOrderLock([instance.order_id]) as lock:
+                instance.order = lock.orders[instance.order_id]
+                self.create_with_inventory_lock(instance)
         except ObjectLocked as e:
             raise ValidationError(
                 "Supply delivery creation failed . try again after a while"
             ) from e
+
+    def validate_order(self, order):
+        if order.status in [
+            SupplyDeliveryOrderStatusOptions.abandoned.value,
+            SupplyDeliveryOrderStatusOptions.entered_in_error.value,
+        ]:
+            raise ValidationError("Delivery order is abandoned or entered in error")
+
+    def create_with_inventory_lock(self, instance):
+        self.validate_order(instance.order)
+        if instance.order.status == SupplyDeliveryOrderStatusOptions.completed.value:
+            raise ValidationError("Delivery order is completed")
+        with lock_inventory_items(self.get_inventory_items(instance)):
+            self.validate_stock(instance)
+            if instance.order.origin:
+                instance.status = SupplyDeliveryStatusOptions.in_progress.value
+            super().perform_create(instance)
+            self.sync_inventory_item(instance)
 
     def sync_inventory_item(self, instance):
         if instance.supplied_inventory_item:
@@ -144,10 +148,13 @@ class SupplyDeliveryViewSet(
             sync_inventory_item(inventory_item=instance.supplied_inventory_item)
 
     def perform_update(self, instance):
-        with (
-            transaction.atomic(),
-            lock_inventory_items(self.get_inventory_items(instance)),
-        ):
+        with DeliveryOrderLock([instance.order_id]) as lock:
+            instance.order = lock.orders[instance.order_id]
+            self.validate_order(instance.order)
+            return self.update_with_inventory_lock(instance)
+
+    def update_with_inventory_lock(self, instance):
+        with lock_inventory_items(self.get_inventory_items(instance)):
             old_instance = self.database_model.objects.get(id=instance.id)
             if instance.status != old_instance.status:
                 if old_instance.status in [
