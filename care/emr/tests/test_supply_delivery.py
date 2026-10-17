@@ -806,6 +806,76 @@ class TestSupplyDeliveryViewSet(TestSupplyDeliveryViewSetBase):
             status_code=400,
         )
 
+    def test_update_supply_delivery_rejects_cancelled_parent_order(self):
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_internal,
+            supplied_item_quantity=Decimal(50),
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_origin,
+        )
+        for status in (
+            SupplyDeliveryOrderStatusOptions.abandoned.value,
+            SupplyDeliveryOrderStatusOptions.entered_in_error.value,
+        ):
+            with self.subTest(status=status):
+                self.delivery_order_internal.status = status
+                self.delivery_order_internal.save(update_fields=["status"])
+
+                response = self.client.put(
+                    self.get_detail_url(supply_delivery.external_id),
+                    {"status": SupplyDeliveryStatusOptions.completed.value},
+                    format="json",
+                )
+
+                self.assertContains(
+                    response,
+                    "Delivery order is abandoned or entered in error",
+                    status_code=400,
+                )
+                supply_delivery.refresh_from_db()
+                self.assertEqual(
+                    supply_delivery.status,
+                    SupplyDeliveryStatusOptions.in_progress.value,
+                )
+                self.inventory_item_origin.refresh_from_db()
+                self.inventory_item_destination.refresh_from_db()
+                self.assertEqual(self.inventory_item_origin.net_content, Decimal(450))
+                self.assertEqual(
+                    self.inventory_item_destination.net_content, Decimal(1500)
+                )
+
+    def test_update_supply_delivery_with_completed_parent_order(self):
+        self.client.force_authenticate(user=self.superuser)
+        supply_delivery = self.create_supply_delivery(
+            order=self.delivery_order_internal,
+            supplied_item_quantity=Decimal(50),
+            supplied_item=self.product,
+            status=SupplyDeliveryStatusOptions.in_progress.value,
+            supplied_inventory_item=self.inventory_item_origin,
+        )
+        self.delivery_order_internal.status = (
+            SupplyDeliveryOrderStatusOptions.completed.value
+        )
+        self.delivery_order_internal.save(update_fields=["status"])
+
+        response = self.client.put(
+            self.get_detail_url(supply_delivery.external_id),
+            {"status": SupplyDeliveryStatusOptions.completed.value},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 200, response.data)
+        supply_delivery.refresh_from_db()
+        self.assertEqual(
+            supply_delivery.status, SupplyDeliveryStatusOptions.completed.value
+        )
+        self.inventory_item_origin.refresh_from_db()
+        self.inventory_item_destination.refresh_from_db()
+        self.assertEqual(self.inventory_item_origin.net_content, Decimal(450))
+        self.assertEqual(self.inventory_item_destination.net_content, Decimal(1550))
+
     def test_update_supply_delivery_with_status_abandoned(self):
         """
         Test updating a supply delivery with status as abandoned
