@@ -50,6 +50,9 @@ class SupplyDeliveryFilters(filters.FilterSet):
     origin = DummyUUIDFilter()
     destination = DummyUUIDFilter()
     supplied_item = filters.UUIDFilter(field_name="supplied_item__external_id")
+    supplied_inventory_item_product = filters.UUIDFilter(
+        field_name="supplied_inventory_item__product__external_id"
+    )
     supplied_item_product_knowledge = filters.UUIDFilter(
         field_name="supplied_item__product_knowledge__external_id"
     )
