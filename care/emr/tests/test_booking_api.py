@@ -168,6 +168,32 @@ class TestBookingViewSet(CareAPITestBase):
             response, "Schedule User is not part of the facility", status_code=400
         )
 
+    def test_list_booking_filtered_by_organization_ids_with_permission(self):
+        """Users with can_write_schedule permission can list bookings filtered by organization_ids."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "organization_ids": str(self.organization.external_id),
+            },
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_list_booking_filtered_by_organization_ids_without_permission(self):
+        """Users without permission cannot list bookings filtered by organization_ids."""
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "organization_ids": str(self.organization.external_id),
+            },
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_retrieve_booking_with_permissions(self):
         """Users with can_list_user_booking permission can retrieve bookings."""
         permissions = [SchedulePermissions.can_list_booking.name]
