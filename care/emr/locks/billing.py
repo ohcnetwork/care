@@ -2,6 +2,7 @@ from contextlib import contextmanager
 
 from django.conf import settings
 from django.db import OperationalError, transaction
+from rest_framework.exceptions import ValidationError
 
 from care.utils.lock import Lock, MultipleItemsLock, ObjectLocked
 
@@ -51,6 +52,72 @@ def _is_lock_unavailable(exc):
     cause = exc.__cause__
     code = getattr(cause, "sqlstate", None) or getattr(cause, "pgcode", None)
     return code == "55P03"  # PostgreSQL lock_not_available
+
+
+class DispenseOrderLock:
+    """Lock dispense orders before inventory rows or cancellation snapshots."""
+
+    def __init__(self, order_ids):
+        self.order_ids = set(order_ids) - {None}
+        self.orders = {}
+        self._transaction = transaction.atomic()
+
+    def __enter__(self):
+        from care.emr.models.medication_dispense import DispenseOrder
+
+        self._transaction.__enter__()
+        try:
+            orders = {
+                order.pk: order
+                for order in DispenseOrder.objects.filter(pk__in=self.order_ids)
+                .order_by("pk")
+                .select_for_update(nowait=True, no_key=True)
+            }
+            if len(orders) != len(self.order_ids):
+                raise ValidationError("Dispense order not found")
+            self.orders = orders
+        except BaseException as exc:
+            self._transaction.__exit__(type(exc), exc, exc.__traceback__)
+            if isinstance(exc, OperationalError) and _is_lock_unavailable(exc):
+                raise ObjectLocked from exc
+            raise
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        return self._transaction.__exit__(exc_type, exc_value, traceback)
+
+
+class DeliveryOrderLock:
+    """Lock delivery orders before inventory rows or cancellation snapshots."""
+
+    def __init__(self, order_ids):
+        self.order_ids = set(order_ids) - {None}
+        self.orders = {}
+        self._transaction = transaction.atomic()
+
+    def __enter__(self):
+        from care.emr.models.supply_delivery import DeliveryOrder
+
+        self._transaction.__enter__()
+        try:
+            orders = {
+                order.pk: order
+                for order in DeliveryOrder.objects.filter(pk__in=self.order_ids)
+                .order_by("pk")
+                .select_for_update(nowait=True, no_key=True)
+            }
+            if len(orders) != len(self.order_ids):
+                raise ValidationError("Delivery order not found")
+            self.orders = orders
+        except BaseException as exc:
+            self._transaction.__exit__(type(exc), exc, exc.__traceback__)
+            if isinstance(exc, OperationalError) and _is_lock_unavailable(exc):
+                raise ObjectLocked from exc
+            raise
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        return self._transaction.__exit__(exc_type, exc_value, traceback)
 
 
 class InventoryCreationLock:
