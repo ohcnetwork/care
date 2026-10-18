@@ -15,7 +15,7 @@ from care.emr.api.viewsets.base import (
 )
 from care.emr.locks.billing import DeliveryOrderLock
 from care.emr.models.location import FacilityLocation
-from care.emr.models.supply_delivery import DeliveryOrder
+from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
 from care.emr.resources.inventory.supply_delivery.cancel_delivery_order import (
     cancel_supply_deliveries,
 )
@@ -25,6 +25,9 @@ from care.emr.resources.inventory.supply_delivery.delivery_order import (
     SupplyDeliveryOrderRetrieveSpec,
     SupplyDeliveryOrderStatusOptions,
     SupplyDeliveryOrderWriteSpec,
+)
+from care.emr.resources.inventory.supply_delivery.spec import (
+    SupplyDeliveryStatusOptions,
 )
 from care.emr.resources.invoice.return_items_invoice import (
     cancel_return_invoice,
@@ -147,12 +150,23 @@ class DeliveryOrderViewSet(
                     raise ValidationError(
                         "Cannot abandon a delivery order with medication return"
                     )
-                if (
-                    instance.patient
-                    and instance.status
-                    == SupplyDeliveryOrderStatusOptions.completed.value
-                ):
-                    generate_return_invoice(instance)
+                if instance.status == SupplyDeliveryOrderStatusOptions.completed.value:
+                    if (
+                        SupplyDelivery.objects.filter(order=instance)
+                        .exclude(
+                            status__in=[
+                                SupplyDeliveryStatusOptions.completed.value,
+                                SupplyDeliveryStatusOptions.abandoned.value,
+                                SupplyDeliveryStatusOptions.entered_in_error.value,
+                            ]
+                        )
+                        .exists()
+                    ):
+                        raise ValidationError(
+                            "Finalise Deliveries before completing order"
+                        )
+                    if instance.patient:
+                        generate_return_invoice(instance)
                 if (
                     instance.patient
                     and instance.status

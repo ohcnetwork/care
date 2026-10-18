@@ -17,11 +17,16 @@ from care.emr.resources.inventory.supply_delivery.spec import (
 
 
 def cancel_supply_deliveries(delivery_order, status, user):
-    """Cancel children and resync stock while the caller holds the order lock."""
+    """Cancel remaining children and resync stock while the caller holds the order lock."""
     deliveries = list(
-        SupplyDelivery.objects.filter(order=delivery_order).select_related(
-            "supplied_inventory_item__product"
+        SupplyDelivery.objects.filter(order=delivery_order)
+        .exclude(
+            status__in=[
+                SupplyDeliveryStatusOptions.abandoned.value,
+                SupplyDeliveryStatusOptions.entered_in_error.value,
+            ]
         )
+        .select_related("supplied_inventory_item__product")
     )
     inventory_items = {}
     stock_to_remove = defaultdict(Decimal)

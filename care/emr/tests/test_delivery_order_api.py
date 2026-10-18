@@ -7,6 +7,7 @@ from model_bakery import baker
 from care.emr.api.viewsets.inventory.delivery_order import DeliveryOrderViewSet
 from care.emr.models import FacilityLocation, FacilityLocationOrganization
 from care.emr.models.charge_item import ChargeItem
+from care.emr.models.invoice import Invoice
 from care.emr.models.medication_dispense import MedicationDispense
 from care.emr.models.supply_delivery import DeliveryOrder
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
@@ -980,6 +981,169 @@ class DeliveryOrderAPITest(CareAPITestBase):
         )
 
 
+class DeliveryOrderCompletionAPITestCase(TestSupplyDeliveryViewSetBase):
+    def complete_order(self, order):
+        self.client.force_authenticate(user=self.superuser)
+        return self.client.put(
+            reverse(
+                "delivery-order-detail",
+                kwargs={
+                    "external_id": order.external_id,
+                    "facility_external_id": self.facility.external_id,
+                },
+            ),
+            {
+                "name": order.name,
+                "status": SupplyDeliveryOrderStatusOptions.completed.value,
+            },
+            format="json",
+        )
+
+    def test_complete_order_rejects_unfinished_deliveries(self):
+        for internal in (True, False):
+            for status in (SupplyDeliveryStatusOptions.in_progress.value, "draft"):
+                with self.subTest(internal=internal, status=status):
+                    order = self.create_delivery_order(
+                        origin=self.origin if internal else None,
+                        supplier=None if internal else self.supplier,
+                        destination=self.destination,
+                        status=SupplyDeliveryOrderStatusOptions.in_progress.value,
+                    )
+                    inventory_item = (
+                        self.inventory_item_origin
+                        if internal
+                        else self.inventory_item_destination
+                    )
+                    self.create_supply_delivery(
+                        order=order,
+                        supplied_item=self.product,
+                        supplied_inventory_item=inventory_item,
+                        supplied_item_quantity=Decimal(10),
+                        status=SupplyDeliveryStatusOptions.completed.value,
+                    )
+                    unfinished_child = self.create_supply_delivery(
+                        order=order,
+                        supplied_item=self.product,
+                        supplied_inventory_item=inventory_item,
+                        supplied_item_quantity=Decimal(10),
+                        status=status,
+                        updated_by=self.user,
+                    )
+                    modified_date = unfinished_child.modified_date
+
+                    response = self.complete_order(order)
+
+                    self.assertContains(
+                        response,
+                        "Finalise Deliveries before completing order",
+                        status_code=400,
+                    )
+                    order.refresh_from_db()
+                    unfinished_child.refresh_from_db()
+                    self.assertEqual(
+                        order.status, SupplyDeliveryOrderStatusOptions.in_progress.value
+                    )
+                    self.assertEqual(unfinished_child.status, status)
+                    self.assertEqual(unfinished_child.updated_by_id, self.user.pk)
+                    self.assertEqual(unfinished_child.modified_date, modified_date)
+
+    def test_complete_order_preserves_cancelled_deliveries(self):
+        for internal in (True, False):
+            with self.subTest(internal=internal):
+                order = self.create_delivery_order(
+                    origin=self.origin if internal else None,
+                    supplier=None if internal else self.supplier,
+                    destination=self.destination,
+                    status=SupplyDeliveryOrderStatusOptions.in_progress.value,
+                )
+                inventory_item = (
+                    self.inventory_item_origin
+                    if internal
+                    else self.inventory_item_destination
+                )
+                self.create_supply_delivery(
+                    order=order,
+                    supplied_item=self.product,
+                    supplied_inventory_item=inventory_item,
+                    supplied_item_quantity=Decimal(10),
+                    status=SupplyDeliveryStatusOptions.completed.value,
+                )
+                cancelled_children = [
+                    self.create_supply_delivery(
+                        order=order,
+                        supplied_item=self.product,
+                        supplied_inventory_item=inventory_item,
+                        supplied_item_quantity=Decimal(10),
+                        status=status,
+                        updated_by=self.user,
+                    )
+                    for status in (
+                        SupplyDeliveryStatusOptions.abandoned.value,
+                        SupplyDeliveryStatusOptions.entered_in_error.value,
+                    )
+                ]
+                original_audits = {
+                    child.pk: (child.status, child.updated_by_id, child.modified_date)
+                    for child in cancelled_children
+                }
+
+                response = self.complete_order(order)
+
+                self.assertEqual(response.status_code, 200, response.data)
+                order.refresh_from_db()
+                self.assertEqual(
+                    order.status, SupplyDeliveryOrderStatusOptions.completed.value
+                )
+                for child in cancelled_children:
+                    child.refresh_from_db()
+                    self.assertEqual(
+                        (child.status, child.updated_by_id, child.modified_date),
+                        original_audits[child.pk],
+                    )
+
+    def test_complete_order_allows_completed_children_and_ignores_deleted_children(
+        self,
+    ):
+        for internal in (True, False):
+            with self.subTest(internal=internal):
+                order = self.create_delivery_order(
+                    origin=self.origin if internal else None,
+                    supplier=None if internal else self.supplier,
+                    destination=self.destination,
+                    status=SupplyDeliveryOrderStatusOptions.in_progress.value,
+                )
+                inventory_item = (
+                    self.inventory_item_origin
+                    if internal
+                    else self.inventory_item_destination
+                )
+                for _ in range(2):
+                    self.create_supply_delivery(
+                        order=order,
+                        supplied_item=self.product,
+                        supplied_inventory_item=inventory_item,
+                        supplied_item_quantity=Decimal(10),
+                        status=SupplyDeliveryStatusOptions.completed.value,
+                    )
+                for status in (SupplyDeliveryStatusOptions.in_progress.value, "draft"):
+                    self.create_supply_delivery(
+                        order=order,
+                        supplied_item=self.product,
+                        supplied_inventory_item=inventory_item,
+                        supplied_item_quantity=Decimal(10),
+                        status=status,
+                        deleted=True,
+                    )
+
+                response = self.complete_order(order)
+
+                self.assertEqual(response.status_code, 200, response.data)
+                order.refresh_from_db()
+                self.assertEqual(
+                    order.status, SupplyDeliveryOrderStatusOptions.completed.value
+                )
+
+
 class DeliveryOrderCancellationAPITestCase(TestSupplyDeliveryViewSetBase):
     def update_order_status(self, order, status):
         self.client.force_authenticate(user=self.superuser)
@@ -1080,6 +1244,63 @@ class DeliveryOrderCancellationAPITestCase(TestSupplyDeliveryViewSetBase):
                 )
                 self.assertEqual(other_origin.net_content, Decimal(200))
                 self.assertEqual(other_destination.net_content, Decimal(0))
+
+    def test_cancel_order_preserves_already_cancelled_children(self):
+        for status in (
+            SupplyDeliveryOrderStatusOptions.abandoned.value,
+            SupplyDeliveryOrderStatusOptions.entered_in_error.value,
+        ):
+            with self.subTest(status=status):
+                order = self.create_delivery_order(
+                    origin=self.origin,
+                    destination=self.destination,
+                    status=SupplyDeliveryOrderStatusOptions.in_progress.value,
+                )
+                cancelled_children = [
+                    self.create_supply_delivery(
+                        order=order,
+                        supplied_item=self.product,
+                        supplied_inventory_item=self.inventory_item_origin,
+                        supplied_item_quantity=Decimal(25),
+                        status=child_status,
+                        updated_by=self.user,
+                    )
+                    for child_status in (
+                        SupplyDeliveryStatusOptions.abandoned.value,
+                        SupplyDeliveryStatusOptions.entered_in_error.value,
+                    )
+                ]
+                original_values = {
+                    child.pk: (child.status, child.updated_by_id, child.modified_date)
+                    for child in cancelled_children
+                }
+                active_child = self.create_supply_delivery(
+                    order=order,
+                    supplied_item=self.product,
+                    supplied_inventory_item=self.inventory_item_origin,
+                    supplied_item_quantity=Decimal(50),
+                    status=SupplyDeliveryStatusOptions.completed.value,
+                )
+                sync_inventory_item(inventory_item=self.inventory_item_destination)
+
+                response = self.update_order_status(order, status)
+
+                self.assertEqual(response.status_code, 200, response.data)
+                active_child.refresh_from_db()
+                self.assertEqual(active_child.status, status)
+                self.assertEqual(active_child.updated_by_id, self.superuser.pk)
+                for child in cancelled_children:
+                    child.refresh_from_db()
+                    self.assertEqual(
+                        (child.status, child.updated_by_id, child.modified_date),
+                        original_values[child.pk],
+                    )
+                self.inventory_item_origin.refresh_from_db()
+                self.inventory_item_destination.refresh_from_db()
+                self.assertEqual(self.inventory_item_origin.net_content, Decimal(500))
+                self.assertEqual(
+                    self.inventory_item_destination.net_content, Decimal(1500)
+                )
 
     def test_cancel_external_order_reverses_received_stock(self):
         for status in (
@@ -1334,9 +1555,27 @@ class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
         """
         Test creating a medication return delivery order as superuser
         Verify that return invoice is generated when delivery order status is updated to completed,
-        Check the inventory item restored with the return net content
+        Check that cancelled children do not affect stock or refund items.
 
         """
+        cancelled_children = [
+            self.create_supply_delivery(
+                order=self.return_order_destination,
+                supplied_item_quantity=Decimal(100),
+                supplied_item=self.product,
+                status=status,
+                supplied_inventory_item=self.inventory_item_destination,
+                updated_by=self.user,
+            )
+            for status in (
+                SupplyDeliveryStatusOptions.abandoned.value,
+                SupplyDeliveryStatusOptions.entered_in_error.value,
+            )
+        ]
+        original_audits = {
+            child.pk: (child.status, child.updated_by_id, child.modified_date)
+            for child in cancelled_children
+        }
         self.client.force_authenticate(user=self.superuser)
         self.return_delivery_order_data["status"] = (
             SupplyDeliveryOrderStatusOptions.completed.value
@@ -1361,9 +1600,16 @@ class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
         self.assertEqual(get_invoice.status_code, 200)
         self.assertTrue(get_invoice.data["is_refund"])
         self.assertEqual(get_invoice.data["total_net"], "-5000.000000")
+        self.assertEqual(len(get_invoice.data["charge_items"]), 1)
         self.assertEqual(
             get_invoice.data["charge_items"][0]["total_price"], "-5000.000000"
         )
+        for child in cancelled_children:
+            child.refresh_from_db()
+            self.assertEqual(
+                (child.status, child.updated_by_id, child.modified_date),
+                original_audits[child.pk],
+            )
 
     def test_medication_return_delivery_order_cancellation_as_superuser(self):
         """
@@ -1700,33 +1946,66 @@ class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
             SupplyDeliveryStatusOptions.entered_in_error.value,
         )
 
-    def test_create_medication_return_delivery_order_with_in_progress_supply_delivery(
+    def test_complete_medication_return_order_rejects_unfinished_supply_deliveries(
         self,
     ):
-        """
-        Test creating a medication return delivery order with in-progress supply delivery
-        Verify that delivery order cannot be marked as completed and return invoice is not generated until the supply delivery is completed
-        """
+        """Reject incomplete returns before changing stock or creating refund items."""
         self.client.force_authenticate(user=self.superuser)
-        self.return_delivery_order_destination.status = (
-            SupplyDeliveryStatusOptions.in_progress.value
-        )
-        self.return_delivery_order_destination.save(update_fields=["status"])
         self.return_delivery_order_data["status"] = (
             SupplyDeliveryOrderStatusOptions.completed.value
         )
-        response = self.client.put(
-            self.generate_order_detail_url(
-                self.return_order_destination.external_id, self.facility.external_id
-            ),
-            self.return_delivery_order_data,
-            format="json",
-        )
-        self.assertEqual(response.status_code, 400)
-        self.assertIn(
-            "Finalise Deliveries before completing order",
-            response.data["errors"][0]["msg"],
-        )
+        invoice_count = Invoice.objects.count()
+        charge_count = ChargeItem.objects.count()
+        self.inventory_item_destination.refresh_from_db()
+        original_stock = self.inventory_item_destination.net_content
+        original_stock_modified_date = self.inventory_item_destination.modified_date
+        for status in (
+            SupplyDeliveryStatusOptions.in_progress.value,
+            "draft",
+        ):
+            with self.subTest(status=status):
+                self.return_delivery_order_destination.status = status
+                self.return_delivery_order_destination.save(update_fields=["status"])
+                child_modified_date = (
+                    self.return_delivery_order_destination.modified_date
+                )
+
+                response = self.client.put(
+                    self.generate_order_detail_url(
+                        self.return_order_destination.external_id,
+                        self.facility.external_id,
+                    ),
+                    self.return_delivery_order_data,
+                    format="json",
+                )
+
+                self.assertContains(
+                    response,
+                    "Finalise Deliveries before completing order",
+                    status_code=400,
+                )
+                self.return_order_destination.refresh_from_db()
+                self.assertEqual(
+                    self.return_order_destination.status,
+                    SupplyDeliveryOrderStatusOptions.draft.value,
+                )
+                self.assertIsNone(self.return_order_destination.patient_invoice_id)
+                self.assertEqual(Invoice.objects.count(), invoice_count)
+                self.assertEqual(ChargeItem.objects.count(), charge_count)
+                self.return_delivery_order_destination.refresh_from_db()
+                self.assertEqual(self.return_delivery_order_destination.status, status)
+                self.assertEqual(
+                    self.return_delivery_order_destination.modified_date,
+                    child_modified_date,
+                )
+                self.inventory_item_destination.refresh_from_db()
+                self.assertEqual(
+                    self.inventory_item_destination.net_content, original_stock
+                )
+                self.assertEqual(
+                    self.inventory_item_destination.modified_date,
+                    original_stock_modified_date,
+                )
 
     def test_cancel_medication_return_delivery_order_without_generating_return_invoice(
         self,

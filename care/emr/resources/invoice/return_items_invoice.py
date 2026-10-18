@@ -3,7 +3,6 @@ Utilities to create a return invoice for items based on delivery order
 """
 
 from django.db import transaction
-from rest_framework.exceptions import ValidationError
 
 from care.emr.locks.billing import DeliveryOrderLock
 from care.emr.models.charge_item import ChargeItem
@@ -36,10 +35,6 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
 
     with transaction.atomic():
         charge_items = []
-        if SupplyDelivery.objects.filter(
-            order=delivery_order, status=SupplyDeliveryStatusOptions.in_progress.value
-        ).exists():
-            raise ValidationError("Finalise Deliveries before completing order")
         invoice_obj = Invoice()
         invoice_obj.status = InvoiceStatusOptions.draft.value
         invoice_obj.facility = delivery_order.destination.facility

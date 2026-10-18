@@ -125,6 +125,40 @@ class DeliveryOrderConcurrencyTests(TransactionTestCase):
         self.assert_stock(self.origin_item, 500)
         self.assert_stock(self.destination_item, 500)
 
+    def test_completion_waits_for_child_creation_then_requires_completed_child(self):
+        def complete_order():
+            instance = DeliveryOrder.objects.get(pk=self.order.pk)
+            instance.status = "completed"
+            self.view(DeliveryOrderViewSet).perform_update(instance)
+
+        with ThreadPoolExecutor(max_workers=1) as executor:
+            with transaction.atomic():
+                delivery = self.create_delivery()
+                future = executor.submit(self.run_in_another_connection, complete_order)
+                with self.assertRaises(ObjectLocked):
+                    future.result(timeout=5)
+
+            future = executor.submit(self.run_in_another_connection, complete_order)
+            with self.assertRaisesMessage(
+                ValidationError, "Finalise Deliveries before completing order"
+            ):
+                future.result(timeout=5)
+
+            self.order.refresh_from_db()
+            delivery.refresh_from_db()
+            self.assertEqual(self.order.status, "in_progress")
+            self.assertEqual(delivery.status, "in_progress")
+
+            self.complete_delivery(delivery)
+            executor.submit(self.run_in_another_connection, complete_order).result(
+                timeout=5
+            )
+
+        self.order.refresh_from_db()
+        self.assertEqual(self.order.status, "completed")
+        self.assert_stock(self.origin_item, 400)
+        self.assert_stock(self.destination_item, 600)
+
     def test_empty_order_cancellation_blocks_new_child_on_different_stock(self):
         def create():
             return self.create_delivery(self.other_item)
