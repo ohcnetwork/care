@@ -308,7 +308,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_from=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
+            valid_from=(datetime.now(UTC) - timedelta(days=1)).replace(tzinfo=None)
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -324,7 +324,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_to=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
+            valid_to=(datetime.now(UTC) - timedelta(days=1)).replace(tzinfo=None)
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -349,6 +349,33 @@ class TestScheduleViewSet(CareAPITestBase):
             "Valid from cannot be greater than valid to",
             status_code=400,
         )
+
+    def test_create_schedule_starting_today(self):
+        """Users can create schedule starting today."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        today_str = datetime.now(UTC).date().isoformat()
+        schedule_data = self.generate_schedule_data(
+            valid_from=today_str,
+            valid_to=(datetime.now(UTC) + timedelta(days=7)).date().isoformat(),
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_schedule_with_timezone_aware_dates(self):
+        """Users can create schedule with timezone-aware datetime values."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        schedule_data = self.generate_schedule_data(
+            valid_from=datetime.now(UTC).isoformat(),
+            valid_to=(datetime.now(UTC) + timedelta(days=7)).isoformat(),
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_schedule_with_permissions(self):
         """Users with can_write_user_schedule permission can update schedules."""
