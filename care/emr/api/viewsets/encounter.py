@@ -387,20 +387,36 @@ class EncounterViewSet(
         patient_identifier = PatientIdentifier.objects.filter(
             patient=encounter.patient, config=config, facility=encounter.facility
         ).first()
-        if (
-            not request_data.value
-            and patient_identifier
-            and not request_data.set_default
-        ):
-            patient_identifier.delete()
-        if not patient_identifier:
-            patient_identifier = PatientIdentifier(
-                patient=encounter.patient, config=config, facility=encounter.facility
-            )
         if config.config.get("default_value") and request_data.set_default:
-            patient_identifier.value = evaluate_patient_default_expression(
-                config, config.config.get("default_value")
-            )
+            # Like encounter create, only fill in a missing identifier, under
+            # the same lock: defaults count existing identifiers, so evaluating
+            # one again would give this patient the next patient's value.
+            if not patient_identifier:
+                lock = FacilityEncounterCreateLock(encounter.facility.id)
+                try:
+                    lock.acquire()
+                except ObjectLocked as e:
+                    raise ValidationError(
+                        "Setting the identifier failed, try again after a while"
+                    ) from e
+                try:
+                    if not PatientIdentifier.objects.filter(
+                        patient=encounter.patient,
+                        config=config,
+                        facility=encounter.facility,
+                    ).exists():
+                        PatientIdentifier.objects.create(
+                            patient=encounter.patient,
+                            config=config,
+                            facility=encounter.facility,
+                            value=evaluate_patient_default_expression(
+                                config, config.config.get("default_value")
+                            ),
+                        )
+                    transaction.on_commit(lock.release)
+                except Exception:
+                    lock.release()
+                    raise
         elif request_data.value:
             try:
                 validate_identifier_config(
@@ -410,9 +426,22 @@ class EncounterViewSet(
                 )
             except ValueError as e:
                 raise ValidationError({"value": str(e)}) from e
-
-        patient_identifier.value = request_data.value
-        patient_identifier.save()
+            if not patient_identifier:
+                patient_identifier = PatientIdentifier(
+                    patient=encounter.patient,
+                    config=config,
+                    facility=encounter.facility,
+                )
+            patient_identifier.value = request_data.value
+            patient_identifier.save()
+        elif request_data.set_default:
+            raise ValidationError({"identifier": "Identifier has no default value"})
+        elif config.config.get("required"):
+            raise ValidationError({"value": "Value is required"})
+        elif patient_identifier:
+            patient_identifier.delete()
+        encounter.patient.build_facility_identifiers(encounter.facility.id)
+        encounter.patient.save(update_fields=["facility_identifiers"])
         return Response({})
 
     @extend_schema(

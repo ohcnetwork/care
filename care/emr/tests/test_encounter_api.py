@@ -540,6 +540,20 @@ class EncounterAPITests(CareAPITestBase):
             config=config_data,
         )
 
+    def _set_facility_identifier(self, identifier_config, **data):
+        url = reverse(
+            "encounter-set-facility-identifier",
+            kwargs={"external_id": self.encounter.external_id},
+        )
+        data["identifier"] = str(identifier_config.external_id)
+        # Run on_commit callbacks, so the facility lock is released as in a request.
+        with self.captureOnCommitCallbacks(execute=True):
+            return self.client.post(url, data, format="json")
+
+    def _facility_identifiers(self):
+        self.patient.refresh_from_db()
+        return (self.patient.facility_identifiers or {}).get(str(self.facility.id), [])
+
     def test_set_facility_identifier_with_permissions(self):
         role = self.create_role_with_permissions(
             permissions=[
@@ -621,6 +635,19 @@ class EncounterAPITests(CareAPITestBase):
             ).exists()
         )
 
+        data["value"] = None
+        response = self.client.post(url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(
+            PatientIdentifier.objects.filter(
+                patient=self.patient, config=identifier_config
+            ).exists()
+        )
+        self.assertNotIn(
+            str(identifier_config.external_id),
+            [x["config"] for x in self._facility_identifiers()],
+        )
+
     def test_set_facility_identifier_with_value_and_set_default(self):
         self.client.force_authenticate(user=self.superuser)
         identifier_config = self._create_identifier_config(
@@ -641,6 +668,105 @@ class EncounterAPITests(CareAPITestBase):
             patient=self.patient, config=identifier_config
         )
         self.assertEqual(patient_identifier.value, "EXPLICIT-VALUE")
+
+    def test_set_facility_identifier_set_default_uses_default_value(self):
+        self.client.force_authenticate(user=self.superuser)
+        identifier_config = self._create_identifier_config(
+            self.facility,
+            default_value="f'ID-{patient_count}'",
+        )
+        response = self._set_facility_identifier(identifier_config, set_default=True)
+        self.assertEqual(response.status_code, 200)
+        patient_identifier = PatientIdentifier.objects.get(
+            patient=self.patient, config=identifier_config
+        )
+        self.assertEqual(patient_identifier.value, "ID-0")
+        self.assertIn(
+            {"config": str(identifier_config.external_id), "value": "ID-0"},
+            self._facility_identifiers(),
+        )
+
+    def test_set_facility_identifier_set_default_keeps_existing_value(self):
+        self.client.force_authenticate(user=self.superuser)
+        identifier_config = self._create_identifier_config(
+            self.facility,
+            default_value="f'ID-{patient_count}'",
+        )
+        self._set_facility_identifier(identifier_config, value="EXISTING")
+        response = self._set_facility_identifier(identifier_config, set_default=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            list(
+                PatientIdentifier.objects.filter(
+                    patient=self.patient, config=identifier_config
+                ).values_list("value", flat=True)
+            ),
+            ["EXISTING"],
+        )
+
+    def test_set_facility_identifier_set_default_takes_precedence_over_value(self):
+        self.client.force_authenticate(user=self.superuser)
+        identifier_config = self._create_identifier_config(
+            self.facility,
+            default_value="f'ID-{patient_count}'",
+        )
+        response = self._set_facility_identifier(
+            identifier_config, set_default=True, value="EXPLICIT-VALUE"
+        )
+        self.assertEqual(response.status_code, 200)
+        patient_identifier = PatientIdentifier.objects.get(
+            patient=self.patient, config=identifier_config
+        )
+        self.assertEqual(patient_identifier.value, "ID-0")
+
+    def test_set_facility_identifier_set_default_without_default_value(self):
+        self.client.force_authenticate(user=self.superuser)
+        identifier_config = self._create_identifier_config(self.facility)
+        response = self._set_facility_identifier(identifier_config, set_default=True)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("no default value", str(response.data))
+        self.assertFalse(
+            PatientIdentifier.objects.filter(
+                patient=self.patient, config=identifier_config
+            ).exists()
+        )
+
+    def test_set_facility_identifier_null_value_without_identifier(self):
+        self.client.force_authenticate(user=self.superuser)
+        identifier_config = self._create_identifier_config(self.facility)
+        response = self._set_facility_identifier(identifier_config, value=None)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(
+            PatientIdentifier.objects.filter(
+                patient=self.patient, config=identifier_config
+            ).exists()
+        )
+
+    def test_set_facility_identifier_required_value_cannot_be_removed(self):
+        self.client.force_authenticate(user=self.superuser)
+        identifier_config = self._create_identifier_config(self.facility, required=True)
+        self._set_facility_identifier(identifier_config, value="TEST-VALUE")
+        response = self._set_facility_identifier(identifier_config, value=None)
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Value is required", str(response.data))
+        self.assertTrue(
+            PatientIdentifier.objects.filter(
+                patient=self.patient, config=identifier_config, value="TEST-VALUE"
+            ).exists()
+        )
+
+    def test_set_facility_identifier_invalid_value(self):
+        self.client.force_authenticate(user=self.superuser)
+        identifier_config = self._create_identifier_config(
+            self.facility, regex="^[0-9]+$"
+        )
+        response = self._set_facility_identifier(identifier_config, value="ABC")
+        self.assertEqual(response.status_code, 400)
+        self.assertFalse(
+            PatientIdentifier.objects.filter(
+                patient=self.patient, config=identifier_config
+            ).exists()
+        )
 
 
 class EncounterOrganizationAPITests(CareAPITestBase):
