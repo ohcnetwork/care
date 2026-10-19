@@ -15,7 +15,4 @@ fi
 ./wait_for_db.sh
 ./wait_for_redis.sh
 
-python manage.py collectstatic --noinput
-python manage.py compilemessages -v 0
-
 celery --app=config.celery_app worker --max-tasks-per-child=6 --loglevel=info --concurrency=${CELERY_WORKER_CONCURRENCY:-1}
