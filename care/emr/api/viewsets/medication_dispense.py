@@ -1,6 +1,5 @@
 from decimal import Decimal
 
-from django.db import transaction
 from django.db.models import Count, Q
 from django_filters import rest_framework as filters
 from rest_framework.decorators import action
@@ -16,7 +15,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
-from care.emr.locks.billing import InventoryItemLock
+from care.emr.locks.billing import DispenseOrderLock, InventoryItemLock
 from care.emr.models.encounter import Encounter
 from care.emr.models.location import FacilityLocation
 from care.emr.models.medication_dispense import MedicationDispense
@@ -34,6 +33,9 @@ from care.emr.resources.encounter.spec import EncounterListSpec
 from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
     sync_inventory_item,
 )
+from care.emr.resources.medication.dispense.dispense_order import (
+    MedicationDispenseOrderStatusOptions,
+)
 from care.emr.resources.medication.dispense.spec import (
     MEDICATION_DISPENSE_CANCELLED_STATUSES,
     MedicationDispenseReadSpec,
@@ -45,6 +47,7 @@ from care.emr.resources.medication.request.spec import MedicationRequestDispense
 from care.security.authorization.base import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter, DummyUUIDFilter
 from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.lock import ObjectLocked
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -87,8 +90,22 @@ class MedicationDispenseViewSet(
     def get_serializer_create_context(self):
         return {"user": self.request.user}
 
+    def validate_order(self, order):
+        if order and order.status in [
+            MedicationDispenseOrderStatusOptions.abandoned.value,
+            MedicationDispenseOrderStatusOptions.entered_in_error.value,
+        ]:
+            raise ValidationError("Dispense order is abandoned or entered in error")
+
     def perform_create(self, instance):
-        with transaction.atomic(), InventoryItemLock(instance.item):
+        with DispenseOrderLock([instance.order_id]) as lock:
+            order = lock.orders.get(instance.order_id)
+            self.validate_order(order)
+            instance.order = order
+            self.create_with_inventory_lock(instance)
+
+    def create_with_inventory_lock(self, instance):
+        with InventoryItemLock(instance.item):
             net_content = instance.item.net_content
             if Decimal(net_content) < Decimal(instance.quantity):
                 raise ValidationError("Inventory item does not have enough stock")
@@ -115,7 +132,7 @@ class MedicationDispenseViewSet(
                 charge_item.save()
                 instance.charge_item = charge_item
                 instance.save(update_fields=["charge_item", "modified_date"])
-            sync_inventory_item(instance.item.location, instance.item.product)
+            sync_inventory_item(inventory_item=instance.item)
             if instance._fully_dispensed is not None and instance.authorizing_request:  # noqa
                 if instance._fully_dispensed:  # noqa
                     instance.authorizing_request.dispense_status = (
@@ -167,8 +184,26 @@ class MedicationDispenseViewSet(
         return super().validate_data(instance, model_obj)
 
     def perform_update(self, instance):
-        with transaction.atomic():
+        if hasattr(instance, "_original_order_id"):
+            original_order_id = instance._original_order_id  # noqa: SLF001
+        else:
+            original_order_id = MedicationDispense.objects.values_list(
+                "order_id", flat=True
+            ).get(pk=instance.pk)
+        with DispenseOrderLock([original_order_id, instance.order_id]) as lock:
+            self.validate_order(lock.orders.get(original_order_id))
+            order = lock.orders.get(instance.order_id)
+            self.validate_order(order)
+            instance.order = order
+            return self.update_with_inventory_lock(instance, original_order_id)
+
+    def update_with_inventory_lock(self, instance, original_order_id):
+        with InventoryItemLock(instance.item):
             current_obj = MedicationDispense.objects.get(id=instance.id)
+            # Reject a stale membership snapshot rather than moving it back.
+            if current_obj.order_id != original_order_id:
+                raise ObjectLocked
+            self.validate_data(None, current_obj)
             if (
                 current_obj.status != instance.status
                 and instance.status in MEDICATION_DISPENSE_CANCELLED_STATUSES
@@ -187,7 +222,7 @@ class MedicationDispenseViewSet(
                 instance.authorizing_request = None
                 instance.charge_item.save()
             super().perform_update(instance)
-            sync_inventory_item(instance.item.location, instance.item.product)
+            sync_inventory_item(inventory_item=instance.item)
             if instance.authorizing_request and instance._fully_dispensed is not None:  # noqa
                 if instance._fully_dispensed:  # noqa
                     instance.authorizing_request.dispense_status = (

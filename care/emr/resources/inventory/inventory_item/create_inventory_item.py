@@ -1,3 +1,4 @@
+from care.emr.locks.billing import InventoryCreationLock
 from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.location import FacilityLocation
 from care.emr.models.product import Product
@@ -10,12 +11,15 @@ def create_inventory_item(product: Product, location: FacilityLocation):
         .only("id")
         .first()
     )
-    if not inventory_obj:
-        inventory_obj = InventoryItem(
-            status=InventoryItemStatusOptions.active.value,
+    if inventory_obj:
+        return inventory_obj
+    with InventoryCreationLock(product):
+        inventory_obj, _ = InventoryItem.objects.get_or_create(
             product=product,
             location=location,
-            net_content=0,
+            defaults={
+                "status": InventoryItemStatusOptions.active.value,
+                "net_content": 0,
+            },
         )
-        inventory_obj.save()
     return inventory_obj

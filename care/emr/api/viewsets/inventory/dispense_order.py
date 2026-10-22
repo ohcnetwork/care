@@ -1,4 +1,3 @@
-from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
@@ -13,6 +12,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.locks.billing import DispenseOrderLock, lock_inventory_items
 from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.location import FacilityLocation
 from care.emr.models.medication_dispense import DispenseOrder, MedicationDispense
@@ -39,37 +39,41 @@ from care.utils.filters.multiselect import MultiSelectFilter
 
 
 def cancel_dispense_order(instance, user):
-    related_dispenses = MedicationDispense.objects.filter(order=instance)
+    related_dispenses = MedicationDispense.objects.filter(
+        order=instance
+    ).select_related("item")
+
     if instance.status == MedicationDispenseOrderStatusOptions.abandoned.value:
         dispense_status = MedicationDispenseStatus.cancelled.value
     elif instance.status == MedicationDispenseOrderStatusOptions.entered_in_error.value:
         dispense_status = MedicationDispenseStatus.entered_in_error.value
     else:
         raise ValidationError("Dispense order can only be cancelled")
-    synced_inventory_items = set()
-    for dispense in related_dispenses:
-        if dispense.charge_item:
-            handle_charge_item_cancel(dispense.charge_item)
-            dispense.charge_item.status = ChargeItemStatusOptions.aborted.value
-            dispense.charge_item.updated_by = user
-            dispense.charge_item.save()
-        if dispense.authorizing_request:
-            dispense.authorizing_request.dispense_status = (
-                MedicationRequestDispenseStatus.incomplete.value
-            )
-            dispense.authorizing_request.updated_by = user
-            dispense.authorizing_request.save(
-                update_fields=["dispense_status", "updated_by", "modified_date"]
-            )
-            dispense.authorizing_request = None
-        dispense.status = dispense_status
-        dispense.save()
-        synced_inventory_items.add(dispense.item_id)
+    with lock_inventory_items([dispense.item for dispense in related_dispenses]):
+        synced_inventory_items = set()
+        for dispense in related_dispenses:
+            if dispense.charge_item:
+                handle_charge_item_cancel(dispense.charge_item)
+                dispense.charge_item.status = ChargeItemStatusOptions.aborted.value
+                dispense.charge_item.updated_by = user
+                dispense.charge_item.save()
+            if dispense.authorizing_request:
+                dispense.authorizing_request.dispense_status = (
+                    MedicationRequestDispenseStatus.incomplete.value
+                )
+                dispense.authorizing_request.updated_by = user
+                dispense.authorizing_request.save(
+                    update_fields=["dispense_status", "updated_by", "modified_date"]
+                )
+                dispense.authorizing_request = None
+            dispense.status = dispense_status
+            dispense.save()
+            synced_inventory_items.add(dispense.item_id)
 
-    for inventory_item in InventoryItem.objects.filter(
-        id__in=synced_inventory_items
-    ).select_related("location", "product"):
-        sync_inventory_item(inventory_item=inventory_item)
+        for inventory_item in InventoryItem.objects.filter(
+            id__in=synced_inventory_items
+        ).select_related("location", "product"):
+            sync_inventory_item(inventory_item=inventory_item)
 
 
 class DispenseOrderFilters(filters.FilterSet):
@@ -119,10 +123,9 @@ class DispenseOrderViewSet(
         )
 
     def perform_update(self, instance):
-        # TODO : Add a Lock to ensure that the dispense order is not updated concurrently
         user = self.request.user
-        with transaction.atomic():
-            old_object = DispenseOrder.objects.get(id=instance.id)
+        with DispenseOrderLock([instance.pk]) as lock:
+            old_object = lock.orders[instance.pk]
             if old_object.status != instance.status:
                 if old_object.status in [
                     MedicationDispenseOrderStatusOptions.abandoned.value,
@@ -131,18 +134,23 @@ class DispenseOrderViewSet(
                     raise ValidationError(
                         "Dispense order already abandoned or entered in error"
                     )
+                if (
+                    old_object.status
+                    == MedicationDispenseOrderStatusOptions.completed.value
+                    and instance.status
+                    not in [
+                        MedicationDispenseOrderStatusOptions.abandoned.value,
+                        MedicationDispenseOrderStatusOptions.entered_in_error.value,
+                    ]
+                ):
+                    raise ValidationError(
+                        "Completed dispense order can only be cancelled"
+                    )
                 if instance.status in [
                     MedicationDispenseOrderStatusOptions.abandoned.value,
                     MedicationDispenseOrderStatusOptions.entered_in_error.value,
                 ]:
                     cancel_dispense_order(instance, user)
-                elif (
-                    old_object.status
-                    == MedicationDispenseOrderStatusOptions.completed.value
-                ):
-                    raise ValidationError(
-                        "Completed dispense order can only be cancelled"
-                    )
             return super().perform_update(instance)
 
     def perform_create(self, instance):
