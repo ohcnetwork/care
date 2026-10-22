@@ -69,8 +69,8 @@ class AvailabilityExceptionsViewSet(
                 resource=resource,
                 start_datetime__date__gte=instance.valid_from,
                 start_datetime__date__lte=instance.valid_to,
-                start_datetime__time__gte=instance.start_time,
-                start_datetime__time__lte=instance.end_time,
+                start_datetime__time__lt=instance.end_time,
+                end_datetime__time__gt=instance.start_time,
             )
             if slots.filter(allocated__gt=0).exists():
                 raise ValidationError("There are bookings during this exception")
