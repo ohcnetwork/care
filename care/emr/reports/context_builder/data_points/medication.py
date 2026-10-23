@@ -6,6 +6,7 @@ from care.emr.models.medication_request import (
     MedicationRequest,
     MedicationRequestPrescription,
 )
+from care.emr.reports.context_builder import QuerysetTagContextBuilder
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
@@ -227,7 +228,7 @@ class MedicationPrescriptionContextBuilder(QuerysetContextBuilder):
     )
     tags = Field(
         display="Prescription Tags",
-        target_context=QuerysetContextBuilder,
+        target_context=QuerysetTagContextBuilder,
         preview_value="",
         description="Tags associated with the prescription",
     )
