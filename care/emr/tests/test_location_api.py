@@ -23,6 +23,7 @@ from care.emr.resources.location.spec import (
     FacilityLocationFormChoices,
     FacilityLocationModeChoices,
     FacilityLocationOperationalStatusChoices,
+    InventoryUsage,
     LocationEncounterAvailabilityStatusChoices,
     StatusChoices,
 )
@@ -207,6 +208,7 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
         data = self.generate_data_for_facility_location()
         response = self.client.post(self.base_url, data=data, format="json")
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["inventory_usage"], InventoryUsage.none.value)
 
         data = self.generate_data_for_facility_location(organizations=[])
         response = self.client.post(self.base_url, data=data, format="json")
@@ -433,6 +435,38 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
         response = self.client.put(url, data=data, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["name"], data["name"])
+
+    def test_update_inventory_usage_preserves_omitted_value_and_allows_none(self):
+        self.authenticate_with_permissions(
+            [
+                FacilityLocationPermissions.can_list_facility_locations.name,
+                FacilityLocationPermissions.can_write_facility_locations.name,
+            ]
+        )
+        location = self.create_facility_location(
+            inventory_usage=InventoryUsage.store.value
+        )
+        self.assertEqual(location["inventory_usage"], InventoryUsage.store.value)
+        url = reverse(
+            "location-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": location["id"],
+            },
+        )
+        data = self.generate_data_for_facility_location()
+        response = self.client.put(url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["inventory_usage"], InventoryUsage.store.value)
+
+        data["inventory_usage"] = InventoryUsage.none.value
+        response = self.client.put(url, data=data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["inventory_usage"], InventoryUsage.none.value)
+        self.assertEqual(
+            FacilityLocation.objects.get(external_id=location["id"]).inventory_usage,
+            InventoryUsage.none.value,
+        )
 
     def test_update_facility_location_with_parent(self):
         self.authenticate_with_permissions(

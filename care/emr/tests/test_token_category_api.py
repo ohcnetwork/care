@@ -115,14 +115,11 @@ class TokenCategoryAPITestCase(CareAPITestBase):
     # Test cases for update token categories
 
     def test_update_token_category_as_superuser(self):
-        category = self.create_token_category(facility=self.facility)
-        self.client.force_authenticate(user=self.superuser)
-        self.generate_token_category_data(
-            name="Updated Category",
-            shorthand="UPD",
-            metadata={"description": "Updated description"},
-            resource_type=SchedulableResourceTypeOptions.healthcare_service,
+        category = self.create_token_category(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.location,
         )
+        self.client.force_authenticate(user=self.superuser)
         response = self.client.put(
             self.generate_detail_url(
                 facility=str(self.facility.external_id),
@@ -139,9 +136,41 @@ class TokenCategoryAPITestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["name"], "Updated Category")
         self.assertEqual(response.data["shorthand"], "UPD")
+        self.assertEqual(
+            response.data["resource_type"],
+            SchedulableResourceTypeOptions.location.value,
+        )
+
+    def test_update_token_category_does_not_update_resource_type(self):
+        category = self.create_token_category(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.location,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.put(
+            self.generate_detail_url(
+                facility=str(self.facility.external_id),
+                external_id=category.external_id,
+            ),
+            self.generate_token_category_data(
+                name="Updated Category",
+                shorthand="UPD",
+                metadata={"description": "Updated description"},
+                resource_type=SchedulableResourceTypeOptions.practitioner,
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.data["resource_type"],
+            SchedulableResourceTypeOptions.location.value,
+        )
 
     def test_update_token_category_as_user_with_permissions(self):
-        category = self.create_token_category(facility=self.facility)
+        category = self.create_token_category(
+            facility=self.facility,
+            resource_type=SchedulableResourceTypeOptions.location,
+        )
         self.client.force_authenticate(user=self.user)
         self.attach_role_facility_organization_user(
             user=self.user,
@@ -164,6 +193,10 @@ class TokenCategoryAPITestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["name"], "Updated Category")
         self.assertEqual(response.data["shorthand"], "UPD")
+        self.assertEqual(
+            response.data["resource_type"],
+            SchedulableResourceTypeOptions.location.value,
+        )
 
     def test_update_token_category_as_user_without_permissions(self):
         category = self.create_token_category(facility=self.facility)

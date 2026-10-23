@@ -189,6 +189,26 @@ class RequestOrderAPITestCase(CareAPITestBase):
             response.data["detail"],
         )
 
+    def test_create_request_order_with_same_origin_and_destination(self):
+        """Test creating a request order with same origin and destination location"""
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=self.role,
+            facility_organization=self.facility_organization,
+            user=self.user,
+        )
+        url = self.generate_base_url(self.facility.external_id)
+        data = self.generate_request_order_data(
+            origin=self.destination.external_id,
+            destination=self.destination.external_id,
+        )
+        response = self.client.post(url, data, format="json")
+        self.assertContains(
+            response,
+            "Origin and destination locations must be different.",
+            status_code=400,
+        )
+
     def test_create_request_order_with_invalid_supplier_type(self):
         """Test creating a request order with an invalid supplier organization type."""
 

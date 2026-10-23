@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Start MinIO in the background
-minio server /data --console-address ":9001" &
+silo server /data --console-address ":9001" &
 
 # Wait for MinIO to be ready before running the initialization script
 TIMEOUT=300  # 5 minutes

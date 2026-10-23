@@ -108,7 +108,9 @@ class Patient(EMRBaseModel):
     def build_instance_identifiers(self):
         self.instance_identifiers = [
             {"config": str(x.config.external_id), "value": x.value}
-            for x in PatientIdentifier.objects.filter(patient=self)
+            for x in PatientIdentifier.objects.filter(
+                patient=self, config__facility__isnull=True
+            )
         ]
 
     def build_facility_identifiers(self, facility_id):

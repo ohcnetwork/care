@@ -12,7 +12,7 @@ from care.emr.models import (
     TokenBooking,
     TokenSlot,
 )
-from care.emr.models.scheduling.token import TokenCategory, TokenQueue
+from care.emr.models.scheduling.token import Token, TokenCategory, TokenQueue
 from care.emr.resources.scheduling.schedule.spec import (
     SchedulableResourceTypeOptions,
     SlotTypeOptions,
@@ -1699,6 +1699,35 @@ class TestGenerateTokenApi(CareAPITestBase):
         # Verify that the token queue was created with the correct IST date
         queue = TokenQueue.objects.get(facility=self.facility, resource=self.resource)
         self.assertEqual(queue.date, ist_date)
+
+    def test_generate_token_does_not_reuse_deleted_token_number(self):
+        """Numbers of deleted tokens are not given to newly generated tokens."""
+        permissions = [
+            SchedulePermissions.can_write_booking.name,
+            SchedulePermissions.can_list_booking.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        data = {"category": str(self.category.external_id)}
+
+        numbers = []
+        for _ in range(2):
+            booking = self.create_booking(patient=self.create_patient())
+            response = self.client.post(
+                self._get_generate_token_url(booking.external_id), data, format="json"
+            )
+            self.assertEqual(response.status_code, 200)
+            numbers.append(response.data["number"])
+        self.assertEqual(numbers, [1, 2])
+
+        Token.objects.get(number=1, category=self.category).delete()
+
+        booking = self.create_booking(patient=self.create_patient())
+        response = self.client.post(
+            self._get_generate_token_url(booking.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["number"], 3)
 
     def test_generate_token_already_generated(self):
         """Cannot generate token if already generated for booking."""

@@ -36,7 +36,7 @@ services:
       timeout: 10s
 
   minio:
-    image: minio/minio:latest
+    image: docker.io/pgsty/silo:latest
     restart: unless-stopped
     environment:
       MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
