@@ -6,7 +6,6 @@ from care.emr.models.medication_request import (
     MedicationRequest,
     MedicationRequestPrescription,
 )
-from care.emr.reports.context_builder import QuerysetTagContextBuilder
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
@@ -14,6 +13,7 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.user import (
     SingleUserRelatedContextBuilder,
 )
+from care.emr.reports.context_builder.tag import QuerysetTagContextBuilder
 from care.utils.filters.multiselect import MultiSelectFilter
 
 STATUS_DISPLAY = {
