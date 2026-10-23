@@ -3,7 +3,10 @@ import uuid
 from django.conf import settings
 from django.test.utils import override_settings
 from django.urls import reverse
+from model_bakery import baker
 
+from care.emr.models.device import Device
+from care.emr.models.location import FacilityLocation, FacilityLocationOrganization
 from care.emr.models.organization import FacilityOrganizationUser
 from care.security.permissions.facility_organization import (
     FacilityOrganizationPermissions,
@@ -209,6 +212,7 @@ class FacilityOrganizationAPITests(CareAPITestBase):
         self.superuser = self.create_super_user()
         self.facility = self.create_facility(user=self.user)
         self.root_facility_organization = self.facility.default_internal_organization
+        self.facility_organization = self.create_facility_organization(self.facility)
         self.role = self.create_role_with_permissions(
             permissions=[
                 FacilityOrganizationPermissions.can_view_facility_organization.name,
@@ -495,4 +499,167 @@ class FacilityOrganizationAPITests(CareAPITestBase):
         self.assertEqual(
             response.data["errors"][0]["msg"],
             "Organization already exists with same name",
+        )
+
+    # Testcases for deleting facility organizations
+
+    def test_delete_facility_organization_as_superuser(self):
+        """
+        Test that deleting a facility organization as a superuser.
+        """
+        self.client.force_authenticate(self.superuser)
+        organization = self.create_facility_organization(self.facility)
+        url = self.get_detail_url(self.facility.external_id, organization.external_id)
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+
+    def test_delete_root_facility_organization(self):
+        """
+        Test that deleting a root facility organization fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_detail_url(
+            self.facility.external_id, self.root_facility_organization.external_id
+        )
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"], "Cannot delete root organization"
+        )
+
+    def test_delete_facility_organization_with_children(self):
+        """
+        Test that deleting a facility organization with children fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        parent_organization = self.create_facility_organization(self.facility)
+        self.create_facility_organization(self.facility, parent=parent_organization)
+        url = self.get_detail_url(
+            self.facility.external_id, parent_organization.external_id
+        )
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot delete organization with children",
+        )
+
+    def test_delete_facility_organization_with_users(self):
+        """
+        Test that deleting a facility organization with users fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        url = self.get_detail_url(
+            self.facility.external_id, self.facility_organization.external_id
+        )
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"], "Cannot delete organization with users"
+        )
+
+    def test_delete_facility_organization_with_encounters(self):
+        """
+        Test that deleting a facility organization with encounters fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        patient = self.create_patient()
+        self.create_encounter(
+            organization=self.facility_organization,
+            facility=self.facility,
+            patient=patient,
+        )
+        url = self.get_detail_url(
+            self.facility.external_id, self.facility_organization.external_id
+        )
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot delete organization with encounters",
+        )
+
+    def create_location(self):
+        return baker.make(FacilityLocation, facility=self.facility)
+
+    def attach_location_to_organization(self, location, organization):
+        return baker.make(
+            FacilityLocationOrganization, location=location, organization=organization
+        )
+
+    def test_delete_facility_organization_with_location(self):
+        """
+        Test that deleting a facility organization with locations fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        location = self.create_location()
+        self.attach_location_to_organization(location, self.facility_organization)
+        url = self.get_detail_url(
+            self.facility.external_id, self.facility_organization.external_id
+        )
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot delete organization with locations",
+        )
+
+    def test_delete_facility_organization_with_device(self):
+        """
+        Test that deleting a facility organization with devices fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        baker.make(
+            Device,
+            facility=self.facility,
+            managing_organization=self.facility_organization,
+        )
+        url = self.get_detail_url(
+            self.facility.external_id, self.facility_organization.external_id
+        )
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"], "Cannot delete organization with devices"
+        )
+
+    def test_delete_facility_organization_as_user_with_permission(self):
+        """
+        Test that a user with the appropriate permission can delete a facility organization.
+        """
+        self.client.force_authenticate(self.user)
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        url = self.get_detail_url(
+            self.facility.external_id, self.facility_organization.external_id
+        )
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 204)
+
+    def test_delete_facility_organization_as_user_without_permission(self):
+        """
+        Test that a user without the appropriate permission cannot delete a facility organization.
+        """
+        self.client.force_authenticate(self.user)
+        manage_role = self.create_role_with_permissions(
+            permissions=[
+                FacilityOrganizationPermissions.can_manage_facility_organization.name,
+                FacilityOrganizationPermissions.can_view_facility_organization.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, manage_role
+        )
+        url = self.get_detail_url(
+            self.facility.external_id, self.facility_organization.external_id
+        )
+        response = self.client.delete(url)
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "User does not have the required permissions to delete this organization",
         )
