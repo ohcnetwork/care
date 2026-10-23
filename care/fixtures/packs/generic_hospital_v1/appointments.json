@@ -1,0 +1,39 @@
+{
+  "appointments": [
+    {
+      "patient_ref": "patient:001",
+      "user_ref": "user:doctor",
+      "resource_type": "practitioner",
+      "slot_index": 0,
+      "note": "Pack demo appointment 1"
+    },
+    {
+      "patient_ref": "patient:002",
+      "user_ref": "user:doctor",
+      "resource_type": "practitioner",
+      "slot_index": 1,
+      "note": "Pack demo appointment 2"
+    },
+    {
+      "patient_ref": "patient:003",
+      "user_ref": "user:doctor",
+      "resource_type": "practitioner",
+      "slot_index": 2,
+      "note": "Pack demo appointment 3"
+    },
+    {
+      "patient_ref": "patient:004",
+      "user_ref": "user:doctor_pediatrics",
+      "resource_type": "practitioner",
+      "slot_index": 0,
+      "note": "Pack demo appointment 4"
+    },
+    {
+      "patient_ref": "patient:005",
+      "user_ref": "user:doctor_pediatrics",
+      "resource_type": "practitioner",
+      "slot_index": 1,
+      "note": "Pack demo appointment 5"
+    }
+  ]
+}

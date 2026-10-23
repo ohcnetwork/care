@@ -1,0 +1,28 @@
+{
+  "queues": [
+    {
+      "ref": "token_queue:doctor",
+      "user_ref": "user:doctor",
+      "name": "General Medicine Queue",
+      "resource_type": "practitioner",
+      "sub_queues": [
+        {
+          "name": "Consultation Room 1",
+          "status": "active"
+        }
+      ]
+    },
+    {
+      "ref": "token_queue:doctor_pediatrics",
+      "user_ref": "user:doctor_pediatrics",
+      "name": "Pediatrics Queue",
+      "resource_type": "practitioner",
+      "sub_queues": [
+        {
+          "name": "Pediatrics Room 1",
+          "status": "active"
+        }
+      ]
+    }
+  ]
+}
