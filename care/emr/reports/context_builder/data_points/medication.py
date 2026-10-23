@@ -13,6 +13,7 @@ from care.emr.reports.context_builder.data_points.base import (
 from care.emr.reports.context_builder.data_points.user import (
     SingleUserRelatedContextBuilder,
 )
+from care.emr.reports.context_builder.tag import QuerysetTagContextBuilder
 from care.utils.filters.multiselect import MultiSelectFilter
 
 STATUS_DISPLAY = {
@@ -182,10 +183,27 @@ class MedicationRequestContextBuilder(QuerysetContextBuilder):
         return MedicationRequest.objects.filter(prescription=self.parent_context)
 
 
+MEDICATION_PRESCRIPTION_STATUS_DISPLAY = {
+    "active": "Active",
+    "on_hold": "On Hold",
+    "ended": "Ended",
+    "stopped": "Stopped",
+    "completed": "Completed",
+    "cancelled": "Cancelled",
+    "entered_in_error": "Entered in Error",
+    "draft": "Draft",
+}
+
+
 class MedicationPrescriptionContextBuilder(QuerysetContextBuilder):
     filterset_class = MedicationPrescriptionReportFilter
     __filterset_backends__ = [filters.DjangoFilterBackend]
 
+    name = Field(
+        display="Name",
+        preview_value="",
+        description="Name of the medication prescription",
+    )
     medications = Field(
         display="Medication",
         preview_value="",
@@ -194,14 +212,25 @@ class MedicationPrescriptionContextBuilder(QuerysetContextBuilder):
     )
     status = Field(
         display="Status",
-        preview_value="active",
+        preview_value="Active",
         description="Status of the medication prescription",
+        mapping=lambda m: (
+            MEDICATION_PRESCRIPTION_STATUS_DISPLAY.get(m.status, m.status.title())
+            if m.status
+            else ""
+        ),
     )
     prescribed_by = Field(
         display="Prescribed By",
         preview_value="",
         target_context=SingleUserRelatedContextBuilder,
         description="Details of the prescriber",
+    )
+    tags = Field(
+        display="Prescription Tags",
+        target_context=QuerysetTagContextBuilder,
+        preview_value="",
+        description="Tags associated with the prescription",
     )
     note = Field(
         display="Note",
