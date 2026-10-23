@@ -1,3 +1,7 @@
+import uuid
+
+from django.conf import settings
+from django.test.utils import override_settings
 from django.urls import reverse
 
 from care.emr.models.organization import FacilityOrganizationUser
@@ -196,3 +200,299 @@ class FacilityOrganizationUserApiTestCases(CareAPITestBase):
 
         response = self.client.put(url, data={"role": role_to_update.external_id})
         self.assertEqual(response.status_code, 200, response.data)
+
+
+class FacilityOrganizationAPITests(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_user()
+        self.superuser = self.create_super_user()
+        self.facility = self.create_facility(user=self.user)
+        self.root_facility_organization = self.facility.default_internal_organization
+        self.role = self.create_role_with_permissions(
+            permissions=[
+                FacilityOrganizationPermissions.can_view_facility_organization.name,
+                FacilityOrganizationPermissions.can_create_facility_organization.name,
+                FacilityOrganizationPermissions.can_delete_facility_organization.name,
+                FacilityOrganizationPermissions.can_manage_facility_organization.name,
+            ]
+        )
+
+    def get_url(self, facility):
+        return reverse(
+            "facility-organization-list", kwargs={"facility_external_id": facility}
+        )
+
+    def get_detail_url(self, facility, external_id):
+        return reverse(
+            "facility-organization-detail",
+            kwargs={
+                "facility_external_id": facility,
+                "external_id": external_id,
+            },
+        )
+
+    def generate_facility_organization_data(self):
+        return {
+            "name": "Test Facility Organization",
+            "description": "Test Description",
+            "org_type": "dept",
+        }
+
+    # Testcases for creating facility organizations
+    def test_create_facility_organization_as_superuser(self):
+        """
+        Test that a superuser can create a facility organization.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_url(self.facility.external_id)
+        data = self.generate_facility_organization_data()
+        response = self.client.post(url, data=data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["name"], data["name"])
+
+    def test_create_facility_organization_as_user_without_permission(self):
+        """
+        Test that a regular user cannot create a facility organization.
+        """
+        self.client.force_authenticate(self.user)
+        url = self.get_url(self.facility.external_id)
+        data = self.generate_facility_organization_data()
+        response = self.client.post(url, data=data, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertIn("detail", response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "User does not have the required permissions to create organizations",
+        )
+
+    def test_create_facility_organization_as_user_with_permission(self):
+        """
+        Test that a regular user with the appropriate permission can create a facility organization.
+        """
+        self.client.force_authenticate(self.user)
+        self.attach_role_facility_organization_user(
+            self.root_facility_organization, self.user, self.role
+        )
+        url = self.get_url(self.facility.external_id)
+        data = self.generate_facility_organization_data()
+        response = self.client.post(url, data=data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["name"], data["name"])
+
+    def test_create_create_facility_organization_with_a_parent(self):
+        """
+        Test that a facility organization can be created with a parent organization.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_url(self.facility.external_id)
+        data = self.generate_facility_organization_data()
+        facility_organization = self.create_facility_organization(
+            facility=self.facility,
+        )
+        data["parent"] = facility_organization.external_id
+        response = self.client.post(url, data=data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["name"], data["name"])
+        self.assertEqual(response.data["parent"]["id"], str(data["parent"]))
+
+    def test_create_facility_organization_with_invalid_parent(self):
+        """
+        Test that creating a facility organization with an invalid parent fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_url(self.facility.external_id)
+        data = self.generate_facility_organization_data()
+        data["parent"] = uuid.uuid4()
+        response = self.client.post(url, data=data, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"], "Value error, Parent not found"
+        )
+
+    def test_create_root_facility_organization(self):
+        """
+        Test that a root facility organization cannot be created.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_url(self.facility.external_id)
+        data = self.generate_facility_organization_data()
+        data["org_type"] = "root"
+        response = self.client.post(url, data=data, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"], "Cannot create root organization"
+        )
+
+    def test_create_facility_organization_with_root_org_as_parent(self):
+        """
+        Test that creating a facility organization with a root organization as parent fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_url(self.facility.external_id)
+        data = self.generate_facility_organization_data()
+        data["parent"] = self.root_facility_organization.external_id
+        response = self.client.post(url, data=data, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot create organizations under root organization",
+        )
+
+    def test_create_facility_organization_with_role_org_as_parent(self):
+        """
+        Test that creating a facility organization with a role organization as parent fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_url(self.facility.external_id)
+        data = self.generate_facility_organization_data()
+        role_organization = self.create_facility_organization(
+            facility=self.facility, org_type="role"
+        )
+        data["parent"] = role_organization.external_id
+        response = self.client.post(url, data=data, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot create nested facility organizations under 'role' type facility organization",
+        )
+
+    @override_settings(FACILITY_ORGANIZATION_MAX_DEPTH=1)
+    def test_create_facility_organization_exceeding_max_depth(self):
+        """
+        Test that creating a facility organization exceeding the max depth fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_url(self.facility.external_id)
+        data = self.generate_facility_organization_data()
+        parent = self.create_facility_organization(self.facility)
+        child = self.create_facility_organization(self.facility, parent=parent)
+        data["parent"] = child.external_id
+        response = self.client.post(url, data=data, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            f"Max depth reached ({settings.FACILITY_ORGANIZATION_MAX_DEPTH})",
+        )
+
+    @override_settings(MAX_ORGANIZATION_IN_FACILITY=1)
+    def test_create_facility_organization_exceeding_max_organizations_in_facility(self):
+        """
+        Test that creating a facility organization exceeding the max organizations in a facility fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_url(self.facility.external_id)
+        data = self.generate_facility_organization_data()
+        self.create_facility_organization(self.facility)
+        response = self.client.post(url, data=data, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            f"Max location reached for facility ({settings.MAX_ORGANIZATION_IN_FACILITY})",
+        )
+
+    def test_create_facility_organization_with_duplicate_name(self):
+        """
+        Test that creating a facility organization with a duplicate name fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_url(self.facility.external_id)
+        data = self.generate_facility_organization_data()
+        self.create_facility_organization(self.facility, name=data["name"])
+        response = self.client.post(url, data=data, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Organization already exists with same name",
+        )
+
+    # Testcases for updating facility organizations
+
+    def test_update_facility_organization_as_superuser(self):
+        """
+        Test that updating a facility organization as a superuser succeeds.
+        """
+        self.client.force_authenticate(self.superuser)
+        organization = self.create_facility_organization(self.facility)
+        url = self.get_detail_url(self.facility.external_id, organization.external_id)
+        data = self.generate_facility_organization_data()
+        response = self.client.put(url, data=data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["name"], data["name"])
+        self.assertEqual(response.data["org_type"], data["org_type"])
+
+    def test_update_facility_organization_as_user_without_permission(self):
+        """
+        Test that updating a facility organization as a non-superuser without permission fails.
+        """
+        view_only_role = self.create_role_with_permissions(
+            permissions=[
+                FacilityOrganizationPermissions.can_view_facility_organization.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.root_facility_organization, self.user, view_only_role
+        )
+        self.client.force_authenticate(self.user)
+        organization = self.create_facility_organization(self.facility)
+        url = self.get_detail_url(self.facility.external_id, organization.external_id)
+        data = self.generate_facility_organization_data()
+        response = self.client.put(url, data=data, format="json")
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "User does not have the required permissions to update organization",
+        )
+
+    def test_update_facility_organization_as_user_with_permission(self):
+        """
+        Test that updating a facility organization as a non-superuser with permission succeeds.
+        """
+        manage_role = self.create_role_with_permissions(
+            permissions=[
+                FacilityOrganizationPermissions.can_manage_facility_organization.name,
+                FacilityOrganizationPermissions.can_view_facility_organization.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(
+            self.root_facility_organization, self.user, manage_role
+        )
+        self.client.force_authenticate(self.user)
+        organization = self.create_facility_organization(self.facility)
+        url = self.get_detail_url(self.facility.external_id, organization.external_id)
+        data = self.generate_facility_organization_data()
+        response = self.client.put(url, data=data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["name"], data["name"])
+        self.assertEqual(response.data["org_type"], data["org_type"])
+
+    def test_update_root_facility_organization(self):
+        """
+        Test that updating a root facility organization fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_detail_url(
+            self.facility.external_id, self.root_facility_organization.external_id
+        )
+        data = self.generate_facility_organization_data()
+        response = self.client.put(url, data=data, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"], "Cannot update root organization"
+        )
+
+    def test_update_facility_organization_with_duplicate_name(self):
+        """
+        Test that updating a facility organization with a duplicate name fails.
+        """
+        self.client.force_authenticate(self.superuser)
+        organization = self.create_facility_organization(self.facility)
+        data = self.generate_facility_organization_data()
+        self.create_facility_organization(self.facility, name=data["name"])
+        url = self.get_detail_url(self.facility.external_id, organization.external_id)
+        response = self.client.put(url, data=data, format="json")
+        self.assertEqual(response.status_code, 400, response.data)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Organization already exists with same name",
+        )
