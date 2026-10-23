@@ -8,6 +8,7 @@ from care.emr.reports.context_builder.data_point_registry import DataPointRegist
 from care.emr.reports.context_builder.data_points.allergy_intolerance import (
     AllergyIntoleranceContextBuilder,
 )
+from care.emr.reports.context_builder.data_points.audit import AuditContextMixin
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
@@ -225,7 +226,7 @@ class PatientFacilityIdentifiersContextBuilder(IdentifiersContextBuilder):
         )
 
 
-class EncounterReportContext(SingleObjectContextBuilder):
+class EncounterReportContext(AuditContextMixin, SingleObjectContextBuilder):
     standalone_context = True
     __slug__ = "encounter_base"
     __associating_model__ = Encounter
