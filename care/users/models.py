@@ -4,11 +4,12 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from care.utils.models.base import BaseFlag, BaseModel
+from care.utils.models.base import BaseFlag
 from care.utils.models.choices import reverse_choices
 from care.utils.models.validators import (
     UsernameValidator,
@@ -68,28 +69,6 @@ class CustomUserManager(UserManager):
         else:
             password = "".join(secrets.choice(allowed_chars) for _ in range(length))
         return password
-
-
-class Skill(BaseModel):
-    name = models.CharField(max_length=255, unique=True)
-    description = models.TextField(null=True, blank=True, default="")
-
-    def __str__(self):
-        return self.name
-
-
-class UserSkill(BaseModel):
-    user = models.ForeignKey("User", on_delete=models.CASCADE, null=True, blank=True)
-    skill = models.ForeignKey("Skill", on_delete=models.CASCADE, null=True, blank=True)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["skill", "user"],
-                condition=models.Q(deleted=False),
-                name="unique_user_skill",
-            )
-        ]
 
 
 class User(AbstractUser):
@@ -156,6 +135,7 @@ class User(AbstractUser):
     preferences = models.JSONField(default=dict)
 
     cached_role_orgs = models.JSONField(default=None, null=True, blank=True)
+    role_org_ids = ArrayField(models.IntegerField(), default=list)
 
     objects = CustomUserManager()
 
@@ -165,6 +145,19 @@ class User(AbstractUser):
     REQUIRED_FIELDS = [
         "email",
     ]
+
+    def populate_role_orgs_array(self, commit=False):
+        from care.emr.models.organization import OrganizationUser
+        from care.emr.resources.organization.spec import OrganizationTypeChoices
+
+        self.role_org_ids = list(
+            OrganizationUser.objects.filter(
+                user=self, organization__org_type=OrganizationTypeChoices.role.value
+            ).values_list("organization_id", flat=True)
+        )
+
+        if commit:
+            self.save(update_fields=["role_org_ids"])
 
     def get_cached_role_orgs(self):
         from care.emr.models.organization import OrganizationUser
