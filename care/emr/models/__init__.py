@@ -16,6 +16,7 @@ from .invoice import *  # noqa F403
 from .location import *  # noqa F403
 from .medication_dispense import *  # noqa F403
 from .meta_artifact import *  # noqa F403
+from .notes import *  # noqa F403
 from .observation import *  # noqa F403
 from .observation_definition import *  # noqa F403
 from .patient import *  # noqa F403
@@ -35,3 +36,4 @@ from .valueset import *  # noqa F403
 from .action import *  # noqa F403
 from .immunisation import *  # noqa F403
 from .workspace import *  # noqa F403
+from .referral import *  # noqa F403

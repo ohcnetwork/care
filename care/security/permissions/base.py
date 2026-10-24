@@ -36,6 +36,7 @@ from care.security.permissions.questionnaire import QuestionnairePermissions
 from care.security.permissions.questionnaire_response_template import (
     QuestionnaireResponseTemplatePermissions,
 )
+from care.security.permissions.referral import ReferralPermissions
 from care.security.permissions.resource_category import ResourceCategoryPermissions
 from care.security.permissions.schedule import SchedulePermissions
 from care.security.permissions.service_account import ServiceAccountPermissions
@@ -102,6 +103,7 @@ class PermissionController:
         ServiceAccountPermissions,
         ResourceCategoryPermissions,
         QuestionnaireResponseTemplatePermissions,
+        ReferralPermissions,
         ValueSetPermissions,
         ImmunizationPermissions,
         WorkspacePermissions,

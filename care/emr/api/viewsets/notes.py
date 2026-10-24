@@ -11,6 +11,7 @@ from care.emr.api.viewsets.base import (
 from care.emr.models import Encounter
 from care.emr.models.notes import NoteMessage, NoteThread
 from care.emr.models.patient import Patient
+from care.emr.resources.notes.constants import NoteThreadType
 from care.emr.resources.notes.notes_spec import (
     NoteMessageCreateSpec,
     NoteMessageReadSpec,
@@ -80,6 +81,7 @@ class NoteThreadViewSet(
             raise PermissionDenied("You do not have permission for this action")
 
     def perform_create(self, instance):
+        instance.thread_type = NoteThreadType.patient.value
         instance.patient = self.get_patient()
         if instance.encounter and instance.encounter.patient != instance.patient:
             raise ValidationError("Patient Mismatch")
@@ -103,7 +105,11 @@ class NoteThreadViewSet(
             else:
                 raise PermissionDenied("Permission denied to user")
 
-        queryset = super().get_queryset().filter(patient=patient)
+        queryset = (
+            super()
+            .get_queryset()
+            .filter(patient=patient, thread_type=NoteThreadType.patient.value)
+        )
         return queryset.order_by("-created_date")
 
 
@@ -123,7 +129,9 @@ class NoteMessageViewSet(
     def get_thread_obj(self):
         patient = self.get_patient_obj()
         thread = get_object_or_404(
-            NoteThread, external_id=self.kwargs["thread_external_id"]
+            NoteThread,
+            external_id=self.kwargs["thread_external_id"],
+            thread_type=NoteThreadType.patient.value,
         )
         if thread.patient_id != patient.id:
             raise ValidationError("Thread does not belong to the patient")
@@ -182,7 +190,12 @@ class NoteMessageViewSet(
                     raise PermissionDenied("Permission denied to user")
             else:
                 raise PermissionDenied("Permission denied to user")
-        queryset = super().get_queryset().select_related("thread")
+        queryset = (
+            super()
+            .get_queryset()
+            .select_related("thread")
+            .filter(thread__thread_type=NoteThreadType.patient.value)
+        )
         if self.action == "list":
             thread = self.get_thread_obj()
             return queryset.filter(thread=thread).order_by("-created_date")

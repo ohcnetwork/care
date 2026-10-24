@@ -72,20 +72,13 @@ def emr_exception_handler(exc, context):
 
 
 class EMRRetrieveMixin:
-    def get_serializer_retrieve_context(self):
-        return {}
-
     def authorize_retrieve(self, model_instance):
         pass
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         self.authorize_retrieve(instance)
-        data = (
-            self.get_retrieve_pydantic_model()
-            .serialize(instance, request.user, **self.get_serializer_retrieve_context())
-            .to_json()
-        )
+        data = self.serialize_retrieve(instance)
         return Response(data)
 
 
@@ -151,7 +144,7 @@ class EMRCreateMixin:
         self.authorize_create(instance)
         model_instance = instance.de_serialize()
         self.perform_create(model_instance)
-        return self.get_retrieve_pydantic_model().serialize(model_instance).to_json()
+        return self.serialize_retrieve(model_instance)
 
 
 class EMRListMixin:
@@ -243,7 +236,7 @@ class EMRUpdateMixin:
         partial = getattr(self, "partial", False)
         model_instance = serializer_obj.de_serialize(obj=instance, partial=partial)
         self.perform_update(model_instance)
-        return self.get_retrieve_pydantic_model().serialize(model_instance).to_json()
+        return self.serialize_retrieve(instance)
 
 
 class EMRDestroyMixin:
@@ -351,6 +344,18 @@ class EMRBaseViewSet(GenericViewSet):
 
     def fetch_patient_from_instance(self, instance):
         return instance.patient
+
+    def get_serializer_retrieve_context(self):
+        return {}
+
+    def serialize_retrieve(self, instance):
+        return (
+            self.get_retrieve_pydantic_model()
+            .serialize(
+                instance, self.request.user, **self.get_serializer_retrieve_context()
+            )
+            .to_json()
+        )
 
 
 class EMRQuestionnaireResponseMixin:

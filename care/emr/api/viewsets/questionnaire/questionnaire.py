@@ -240,6 +240,7 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
         self.authorize_update(self.request, instance)
 
     def authorize_retrieve(self, model_instance):
+        # TODO: Authorization for instance level missing
         if model_instance.auth_context == QuestionnaireAuthContext.facility:
             facility = model_instance.facility
             if not AuthorizationController.call(
@@ -413,7 +414,7 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
                     response,
                     actions,
                     field_cache=build_cleaned_response(
-                        questionnaire.questions,
+                        response._validated_questions,  # noqa SLF001
                         response._responses,  # noqa SLF001
                         "q_",
                     ),

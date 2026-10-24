@@ -1,4 +1,6 @@
 import uuid
+from copy import deepcopy
+from dataclasses import dataclass
 from datetime import datetime
 from decimal import InvalidOperation
 from urllib.parse import urlparse
@@ -20,6 +22,7 @@ from care.emr.models.valueset import ValueSet
 from care.emr.resources.observation.resource_spec import ResourceObservationSpec
 from care.emr.resources.observation.spec import ObservationSpec, ObservationStatus
 from care.emr.resources.questionnaire.spec import QuestionnaireAuthContext, QuestionType
+from care.emr.resources.questionnaire_response.spec import QuestionnaireSubmitResult
 from care.emr.resources.valueset.spec import ValueSetAuthContext
 from care.utils.rounding.covert_type import convert_to_decimal
 
@@ -653,16 +656,56 @@ def get_link_id_map(questions):
     return mapping
 
 
-def handle_response(questionnaire_obj: Questionnaire, results, user):
-    """
-    Generate observations and questionnaire responses after validation
-    """
+@dataclass
+class ValidatedQuestionnaireResponse:
+    questions: list[dict]
+    responses: dict
+    cleaned_response: dict
+
+
+def validate_questionnaire_response(
+    questionnaire_obj: Questionnaire, results: list[QuestionnaireSubmitResult]
+) -> ValidatedQuestionnaireResponse:
+    """Run the shared answer engine without persisting clinical resources."""
     if questionnaire_obj.status != "active":
         raise ValidationError(
             {"type": "questionnaire_inactive", "msg": "Questionnaire is inactive"}
         )
+    responses = create_responses_mapping(results)
+    if not responses:
+        raise ValidationError(
+            {
+                "type": "questionnaire_empty",
+                "msg": "Empty Questionnaire cannot be submitted",
+            }
+        )
+    errors = []
+    questions = collect_and_validate_enable_when_questions(
+        deepcopy(questionnaire_obj.questions), responses, questionnaire_obj, errors
+    )
+    questionnaire_mapping = {}
+    for question in questions:
+        validate_question_result(
+            question,
+            responses,
+            errors,
+            parent=None,
+            questionnaire_mapping=questionnaire_mapping,
+        )
+    if errors:
+        raise ValidationError({"errors": errors})
+    return ValidatedQuestionnaireResponse(
+        questions=questions,
+        responses=responses,
+        cleaned_response=build_cleaned_response(questions, responses),
+    )
 
-    # Construct questionnaire response
+
+def handle_response(questionnaire_obj: Questionnaire, results, user):
+    """
+    Generate observations and questionnaire responses after validation
+    """
+    validated = validate_questionnaire_response(questionnaire_obj, results.results)
 
     if questionnaire_obj.subject_type == "patient":
         if questionnaire_obj.auth_context != QuestionnaireAuthContext.instance:
@@ -681,35 +724,9 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):
     if not patient:
         raise ValidationError({"type": "object_not_found", "msg": "Patient not found"})
 
-    questionnaire_mapping = {}
-    errors = []
-
-    responses = create_responses_mapping(results.results)
-    if not responses:
-        raise ValidationError(
-            {
-                "type": "questionnaire_empty",
-                "msg": "Empty Questionnaire cannot be submitted",
-            }
-        )
-
-    questionnaire_obj.questions = collect_and_validate_enable_when_questions(
-        questionnaire_obj.questions, responses, questionnaire_obj, errors
-    )
-
-    for question in questionnaire_obj.questions:
-        validate_question_result(
-            question,
-            responses,
-            errors,
-            parent=None,
-            questionnaire_mapping=questionnaire_mapping,
-        )
-    if errors:
-        raise ValidationError({"errors": errors})
     # Validate and create observation objects
     observations = convert_to_observation_spec(
-        {"questions": questionnaire_obj.questions}, responses
+        {"questions": validated.questions}, validated.responses
     )
     # Bulk create observations
     observations_objects = [
@@ -731,11 +748,12 @@ def handle_response(questionnaire_obj: Questionnaire, results, user):
         encounter=encounter,
         patient=patient,
         responses=json_results["results"],
-        cleaned_response=build_cleaned_response(questionnaire_obj.questions, responses),
+        cleaned_response=validated.cleaned_response,
         created_by=user,
         updated_by=user,
     )
-    questionnaire_response._responses = responses  # noqa SLF001
+    questionnaire_response._responses = validated.responses  # noqa SLF001
+    questionnaire_response._validated_questions = validated.questions  # noqa SLF001
     # Serialize and return questionnaire response
     if encounter:
         bulk = []
@@ -756,42 +774,10 @@ def handle_resource_response(questionnaire_obj: Questionnaire, results, user, fa
     """
     Generate observations and questionnaire responses after validation for resource questionnaires
     """
-    if questionnaire_obj.status != "active":
-        raise ValidationError(
-            {"type": "questionnaire_inactive", "msg": "Questionnaire is inactive"}
-        )
-
-    # Construct questionnaire response
-
-    questionnaire_mapping = {}
-    errors = []
-
-    responses = create_responses_mapping(results.results)
-    if not responses:
-        raise ValidationError(
-            {
-                "type": "questionnaire_empty",
-                "msg": "Empty Questionnaire cannot be submitted",
-            }
-        )
-
-    questionnaire_obj.questions = collect_and_validate_enable_when_questions(
-        questionnaire_obj.questions, responses, questionnaire_obj, errors
-    )
-
-    for question in questionnaire_obj.questions:
-        validate_question_result(
-            question,
-            responses,
-            errors,
-            parent=None,
-            questionnaire_mapping=questionnaire_mapping,
-        )
-    if errors:
-        raise ValidationError({"errors": errors})
+    validated = validate_questionnaire_response(questionnaire_obj, results.results)
     # Validate and create observation objects
     observations = convert_to_observation_spec(
-        {"questions": questionnaire_obj.questions}, responses
+        {"questions": validated.questions}, validated.responses
     )
 
     # Create questionnaire response
@@ -802,7 +788,7 @@ def handle_resource_response(questionnaire_obj: Questionnaire, results, user, fa
         subject_type=questionnaire_obj.subject_type,
         subject_id=results.resource_id,
         responses=json_results["results"],
-        cleaned_response=build_cleaned_response(questionnaire_obj.questions, responses),
+        cleaned_response=validated.cleaned_response,
         created_by=user,
         updated_by=user,
     )

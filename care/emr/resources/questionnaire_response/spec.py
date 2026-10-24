@@ -33,11 +33,14 @@ class QuestionnaireSubmitResult(BaseModel):
     sub_results: list[list["QuestionnaireSubmitResult"]] = []
 
 
-class QuestionnaireSubmitRequest(BaseModel):
+class QuestionnaireResponseSubmission(BaseModel):
+    results: list[QuestionnaireSubmitResult]
+
+
+class QuestionnaireSubmitRequest(QuestionnaireResponseSubmission):
     resource_id: UUID4
     encounter: UUID4 | None = None
     patient: UUID4
-    results: list[QuestionnaireSubmitResult]
     form_submission: UUID4 | None = None
 
 

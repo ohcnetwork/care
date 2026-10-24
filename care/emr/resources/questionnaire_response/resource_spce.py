@@ -8,7 +8,7 @@ from care.emr.resources.common import Coding
 from care.emr.resources.questionnaire.spec import QuestionnaireReadSpec
 from care.emr.resources.questionnaire_response.spec import (
     QuestionnaireResponseStatusChoices,
-    QuestionnaireSubmitResult,
+    QuestionnaireResponseSubmission,
     QuestionnaireSubmitResultValue,
 )
 from care.emr.resources.user.spec import UserSpec
@@ -23,9 +23,8 @@ class ResourceQuestionnaireSubmitResult(BaseModel):
     sub_results: list[list["ResourceQuestionnaireSubmitResult"]] = []
 
 
-class ResourceQuestionnaireSubmitRequest(BaseModel):
+class ResourceQuestionnaireSubmitRequest(QuestionnaireResponseSubmission):
     resource_id: UUID4
-    results: list[QuestionnaireSubmitResult]
 
 
 class EMRResourceQuestionnaireResponseBase(EMRResource):
