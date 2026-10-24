@@ -41,3 +41,24 @@ class SupplyDeliveryPermissions(enum.Enum):
         PermissionContext.FACILITY,
         [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
     )
+    can_read_medication_return = Permission(
+        "Can Read Medication Returns",
+        "Can read patient medication return orders and their deliveries",
+        PermissionContext.FACILITY,
+        [
+            FACILITY_ADMIN_ROLE,
+            ADMINISTRATOR,
+            ADMIN_ROLE,
+            STAFF_ROLE,
+            DOCTOR_ROLE,
+            NURSE_ROLE,
+            VOLUNTEER_ROLE,
+            PHARMACIST_ROLE,
+        ],
+    )
+    can_write_medication_return = Permission(
+        "Can Write Medication Returns",
+        "Can create and update patient medication return orders and their deliveries",
+        PermissionContext.FACILITY,
+        [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
+    )
