@@ -22,6 +22,7 @@ from care.emr.models.patient import (
 from care.emr.resources.base import EMRResource, PhoneNumber
 from care.emr.resources.patient_identifier.spec import PatientIdentifierListSpec
 from care.emr.resources.permissions import PatientPermissionsMixin
+from care.emr.resources.tag.config_spec import TagSetRequest
 from care.emr.tagging.base import PatientFacilityTagManager, PatientInstanceTagManager
 from care.emr.utils.datetime_type import StrictTZAwareDateTime
 from care.utils.time_util import care_now
@@ -110,7 +111,7 @@ class PatientCreateSpec(ExtensionValidator, PatientBaseSpec):
 
     identifiers: list[PatientIdentifierConfigRequest] = []
 
-    tags: list[UUID4] = []
+    tags: list[TagSetRequest] = []
 
     @field_validator("geo_organization")
     @classmethod

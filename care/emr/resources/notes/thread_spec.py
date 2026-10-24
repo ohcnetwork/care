@@ -5,6 +5,7 @@ from pydantic import UUID4, Field, field_validator
 from care.emr.models import Encounter
 from care.emr.models.notes import NoteThread
 from care.emr.resources.base import EMRResource
+from care.emr.resources.notes.constants import NoteThreadType
 
 
 class NoteThreadSpec(EMRResource):
@@ -35,6 +36,7 @@ class NoteThreadUpdateSpec(NoteThreadSpec):
 
 
 class NoteThreadReadSpec(NoteThreadSpec):
+    thread_type: NoteThreadType
     created_by: dict | None = None
     updated_by: dict | None = None
     created_date: datetime.datetime

@@ -3,6 +3,7 @@ from datetime import UTC, datetime, timedelta
 from django.conf import settings
 from django.test.utils import ignore_warnings
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 
 from care.emr.models import (
@@ -119,8 +120,8 @@ class TestScheduleViewSet(CareAPITestBase):
 
     def generate_schedule_data(self, **kwargs):
         """Helper to generate valid schedule data."""
-        valid_from = datetime.now(UTC).replace(tzinfo=None)
-        valid_to = (datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None)
+        valid_from = timezone.make_naive(timezone.now())
+        valid_to = valid_from + timedelta(minutes=30)
 
         return {
             "resource_type": SchedulableResourceTypeOptions.practitioner.value,
@@ -226,7 +227,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None)
+            valid_from=timezone.localdate().isoformat()
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -234,9 +235,7 @@ class TestScheduleViewSet(CareAPITestBase):
 
     def test_create_schedule_without_permissions(self):
         """Users without can_write_user_schedule permission cannot create schedules."""
-        schedule_data = self.generate_schedule_data(
-            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None)
-        )
+        schedule_data = self.generate_schedule_data()
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
 
@@ -294,7 +293,6 @@ class TestScheduleViewSet(CareAPITestBase):
         user = self.create_user()
         schedule_data = self.generate_schedule_data(
             resource_id=user.external_id,
-            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -302,13 +300,13 @@ class TestScheduleViewSet(CareAPITestBase):
         )
 
     def test_create_schedule_with_valid_from_date_less_than_current_date(self):
-        """Users cannot create schedule with valid_from date less than now date"""
+        """Users cannot create schedules starting before today's date."""
         permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_from=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
+            valid_from=(timezone.localdate() - timedelta(days=1)).isoformat()
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -318,13 +316,13 @@ class TestScheduleViewSet(CareAPITestBase):
         )
 
     def test_create_schedule_with_valid_to_date_less_than_current_date(self):
-        """Users cannot create schedule with valid_to date less than now date"""
+        """Users cannot create schedules ending before today's date."""
         permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_to=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
+            valid_to=(timezone.localdate() - timedelta(days=1)).isoformat()
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -339,9 +337,10 @@ class TestScheduleViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
+        now = timezone.make_naive(timezone.now())
         schedule_data = self.generate_schedule_data(
-            valid_to=(datetime.now(UTC) + timedelta(minutes=10)).replace(tzinfo=None),
-            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
+            valid_to=now + timedelta(minutes=10),
+            valid_from=now + timedelta(minutes=30),
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(

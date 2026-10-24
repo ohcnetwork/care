@@ -64,6 +64,23 @@ class QuestionnairePermissions(enum.Enum):
             ROLE_ORGANIZATION_MANAGER_ROLE,
         ],
     )
+    can_view_resource_responses = Permission(
+        "Can View Resource Responses",
+        "",
+        PermissionContext.QUESTIONNAIRE,
+        [
+            ADMIN_ROLE,
+            DOCTOR_ROLE,
+            NURSE_ROLE,
+            ADMINISTRATOR,
+            STAFF_ROLE,
+            FACILITY_ADMIN_ROLE,
+            VOLUNTEER_ROLE,
+            ROLE_ORGANIZATION_ADMIN_ROLE,
+            ROLE_ORGANIZATION_MEMBER_ROLE,
+            ROLE_ORGANIZATION_MANAGER_ROLE,
+        ],
+    )
     can_manage_questionnaire = Permission(
         "Can Manage Questionnaires",
         "Allows users to add or remove organizations from questionnaires, ie control Access Management",

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 
 from django.contrib.postgres.fields import ArrayField
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Max
 from django.utils import timezone
 
@@ -25,6 +25,14 @@ class FacilityLocation(EMRBaseModel):
         "emr.FacilityLocation", on_delete=models.SET_NULL, null=True, blank=True
     )
     has_children = models.BooleanField(default=False)
+    has_sub_locations = models.BooleanField(
+        default=False,
+        help_text="Whether this location has direct, undeleted child locations in kind mode.",
+    )
+    has_beds = models.BooleanField(
+        default=False,
+        help_text="Whether this location has direct, undeleted child locations in instance mode.",
+    )
     level_cache = models.IntegerField(default=0)
     parent_cache = ArrayField(models.IntegerField(), default=list)
     metadata = models.JSONField(default=dict)
@@ -37,6 +45,7 @@ class FacilityLocation(EMRBaseModel):
     )  # Populated from FacilityLocationEncounter
     sort_index = models.IntegerField(default=0)
     tags = ArrayField(models.IntegerField(), default=list)
+    tags_data = models.JSONField(default=dict)
     cache_expiry_days = 15
 
     def get_parent_json(self):
@@ -101,7 +110,38 @@ class FacilityLocation(EMRBaseModel):
         self.facility_organization_cache = list(orgs)
         super().save(update_fields=["facility_organization_cache"])
 
+    def sync_children_flags(self, *, sync_parent=True):
+        """Refresh child flags and optionally update the immediate parent."""
+        from care.emr.resources.location.spec import FacilityLocationModeChoices
+
+        child_modes = set(
+            FacilityLocation.objects.filter(parent_id=self.pk)
+            .values_list("mode", flat=True)
+            .distinct()
+        )
+        self.has_children = bool(child_modes)
+        self.has_sub_locations = FacilityLocationModeChoices.kind.value in child_modes
+        self.has_beds = FacilityLocationModeChoices.instance.value in child_modes
+        FacilityLocation._base_manager.filter(pk=self.pk).update(
+            has_children=self.has_children,
+            has_sub_locations=self.has_sub_locations,
+            has_beds=self.has_beds,
+        )
+        if sync_parent and self.parent_id:
+            self.parent.sync_children_flags(sync_parent=False)
+
+    @transaction.atomic
     def save(self, *args, **kwargs):
+        update_fields = kwargs.get("update_fields")
+        if update_fields is not None and not update_fields:
+            return
+
+        parent = (
+            FacilityLocation._base_manager.select_for_update().get(pk=self.parent_id)
+            if self.parent_id
+            else None
+        )
+
         if not self.id:
             if self.parent:
                 self.level_cache = self.parent.level_cache + 1
@@ -109,12 +149,11 @@ class FacilityLocation(EMRBaseModel):
                     self.root_location = self.parent
                 else:
                     self.root_location = self.parent.root_location
-                if not self.parent.has_children:
-                    self.parent.has_children = True
-                    self.parent.save(update_fields=["has_children"])
                 self.parent_cache = [*self.parent.parent_cache, self.parent.id]
         else:
             self.cached_parent_json = {}
+            if update_fields is not None:
+                kwargs["update_fields"] = {*update_fields, "cached_parent_json"}
         if not self.sort_index:
             self.sort_index = (
                 FacilityLocation.objects.filter(parent=self.parent).aggregate(
@@ -124,6 +163,9 @@ class FacilityLocation(EMRBaseModel):
             )
         super().save(*args, **kwargs)
         self.sync_organization_cache()
+        if parent:
+            self.parent = parent
+        self.sync_children_flags()
 
     def cascade_changes(self):
         handle_cascade(self.id)

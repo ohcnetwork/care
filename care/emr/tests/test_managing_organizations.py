@@ -509,6 +509,7 @@ class CachedRoleOrgsTestCase(CareAPITestBase):
         )
         self.user.refresh_from_db()
         self.assertIsNone(self.user.cached_role_orgs)
+        self.assertEqual(self.user.role_org_ids, [self.doctors_org.id])
         data = self.user.get_cached_role_orgs()
         self.assertEqual(len(data), 1)
         self.assertEqual(data[0]["organization"]["name"], "Doctors")
@@ -531,6 +532,9 @@ class CachedRoleOrgsTestCase(CareAPITestBase):
         )
         self.user.refresh_from_db()
         self.assertIsNone(self.user.cached_role_orgs)
+        self.assertCountEqual(
+            self.user.role_org_ids, [self.doctors_org.id, other_org.id]
+        )
 
     def test_cached_role_orgs_not_invalidated_for_non_role_orgs(self):
         # Assign user to a role org and populate cache
@@ -550,6 +554,32 @@ class CachedRoleOrgsTestCase(CareAPITestBase):
         self.attach_role_organization_user(govt_org, self.user, admin_role)
         self.user.refresh_from_db()
         self.assertIsNotNone(self.user.cached_role_orgs)
+        self.assertEqual(self.user.role_org_ids, [self.doctors_org.id])
+
+    def test_role_org_ids_updated_when_membership_is_removed(self):
+        membership = self.attach_role_organization_user(
+            self.doctors_org, self.user, self.role_org_member_role
+        )
+        membership.delete()
+
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.role_org_ids, [])
+
+    def test_populate_role_org_ids_commit_excludes_non_role_organizations(self):
+        self.attach_role_organization_user(
+            self.doctors_org, self.user, self.role_org_member_role
+        )
+        govt_org = self.create_organization(name="Govt Org", org_type="govt")
+        self.attach_role_organization_user(
+            govt_org, self.user, self.role_org_member_role
+        )
+        self.user.role_org_ids = []
+        self.user.save(update_fields=["role_org_ids"])
+
+        self.user.populate_role_orgs_array(commit=True)
+
+        self.user.refresh_from_db()
+        self.assertEqual(self.user.role_org_ids, [self.doctors_org.id])
 
     def test_user_serialization_includes_role_orgs(self):
         self.attach_role_organization_user(

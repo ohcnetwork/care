@@ -10,12 +10,18 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import EMRBaseViewSet, EMRRetrieveMixin
+from care.action_evaluator.context_engine.contexts.core import AppointmentContext
+from care.emr.api.viewsets.action_base import EMRActionBaseViewSet
+from care.emr.api.viewsets.base import (
+    EMRBaseViewSet,
+    EMRRetrieveMixin,
+)
 from care.emr.api.viewsets.scheduling.schedule import get_schedulable_resource
 from care.emr.models import AvailabilityException, Schedule, TokenBooking
 from care.emr.models.patient import Patient
 from care.emr.models.scheduling.booking import TokenSlot
 from care.emr.models.scheduling.schedule import Availability
+from care.emr.resources.action.spec import ActionContextOptions
 from care.emr.resources.charge_item.apply_charge_item_definition import (
     apply_charge_item_definition,
 )
@@ -33,7 +39,7 @@ from care.emr.resources.scheduling.slot.spec import (
     TokenBookingReadSpec,
     TokenSlotBaseSpec,
 )
-from care.emr.resources.tag.config_spec import TagResource
+from care.emr.resources.tag.config_spec import TagResource, TagSetRequest
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.facility.models.facility import Facility
 from care.security.authorization import AuthorizationController
@@ -52,7 +58,7 @@ class AppointmentBookingSpec(BaseModel):
     patient: UUID4
     note: str
 
-    tags: list[UUID4] = []
+    tags: list[TagSetRequest] = []
 
 
 class AvailabilityStatsRequestSpec(BaseModel):
@@ -197,9 +203,11 @@ def lock_create_appointment(token_slot, patient, created_by, note):
         return booking
 
 
-class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
+class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet, EMRActionBaseViewSet):
     database_model = TokenSlot
     pydantic_read_model = TokenSlotBaseSpec
+    ACTION_CONTEXT = ActionContextOptions.APPOINTMENT.value
+    ACTION_CONTEXT_CLASS = AppointmentContext
 
     @action(detail=False, methods=["POST"])
     def get_slots_for_day(self, request, *args, **kwargs):
@@ -335,14 +343,22 @@ class SlotViewSet(EMRRetrieveMixin, EMRBaseViewSet):
         ):
             raise PermissionDenied("You do not have permission to create appointments")
 
+    def get_facility_from_instance(self, instance):
+        return instance.token_slot.resource.facility
+
     @action(detail=True, methods=["POST"])
     def create_appointment(self, request, *args, **kwargs):
         slot_obj = self.get_object()
         self.authorize_update(None, slot_obj)
-        appointment = self.create_appointment_handler(
-            slot_obj, request.data, request.user
-        )
-        return Response(TokenBookingReadSpec.serialize(appointment).to_json())
+        actions_response = []
+        with transaction.atomic():
+            appointment = self.create_appointment_handler(
+                slot_obj, request.data, request.user
+            )
+            actions_response = self.perform_actions(appointment)
+        response = TokenBookingReadSpec.serialize(appointment).to_json()
+        response["_actions"] = actions_response
+        return Response(response)
 
     @action(detail=False, methods=["POST"])
     def availability_stats(self, request, *args, **kwargs):

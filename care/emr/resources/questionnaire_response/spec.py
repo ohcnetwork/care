@@ -33,11 +33,14 @@ class QuestionnaireSubmitResult(BaseModel):
     sub_results: list[list["QuestionnaireSubmitResult"]] = []
 
 
-class QuestionnaireSubmitRequest(BaseModel):
+class QuestionnaireResponseSubmission(BaseModel):
+    results: list[QuestionnaireSubmitResult]
+
+
+class QuestionnaireSubmitRequest(QuestionnaireResponseSubmission):
     resource_id: UUID4
     encounter: UUID4 | None = None
     patient: UUID4
-    results: list[QuestionnaireSubmitResult]
     form_submission: UUID4 | None = None
 
 
@@ -55,8 +58,10 @@ class QuestionnaireResponseReadSpec(EMRQuestionnaireResponseBase):
     id: UUID4
     status: str
     questionnaire: QuestionnaireReadSpec
+    questionnaire_latest_revision_id: UUID4 | None = None
     subject_id: str
     responses: list
+    cleaned_response: dict
     encounter: str | None = None
     structured_responses: dict
     structured_response_type: str
@@ -68,10 +73,10 @@ class QuestionnaireResponseReadSpec(EMRQuestionnaireResponseBase):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
-        if obj.questionnaire:
-            mapping["questionnaire"] = QuestionnaireReadSpec.serialize(
-                obj.questionnaire
-            )
+        questionnaire = obj.resolved_questionnaire
+        if questionnaire:
+            mapping["questionnaire"] = QuestionnaireReadSpec.serialize(questionnaire)
+            mapping["questionnaire_latest_revision_id"] = obj.questionnaire.external_id
         if obj.encounter:
             mapping["encounter"] = obj.encounter.external_id
         else:

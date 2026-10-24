@@ -7,6 +7,7 @@ from .condition import *  # noqa F403
 from .device import *  # noqa F403
 from .diagnostic_report import *  # noqa F403
 from .encounter import *  # noqa F403
+from .facility_resource import *  # noqa F403
 from .facility_config import *  # noqa F003
 from .file_upload import *  # noqa F403
 from .healthcare_service import *  # noqa F403
@@ -15,6 +16,7 @@ from .invoice import *  # noqa F403
 from .location import *  # noqa F403
 from .medication_dispense import *  # noqa F403
 from .meta_artifact import *  # noqa F403
+from .notes import *  # noqa F403
 from .observation import *  # noqa F403
 from .observation_definition import *  # noqa F403
 from .patient import *  # noqa F403
@@ -31,3 +33,7 @@ from .supply_delivery import *  # noqa F403
 from .supply_request import *  # noqa F403
 from .tag_config import *  # noqa F403
 from .valueset import *  # noqa F403
+from .action import *  # noqa F403
+from .immunisation import *  # noqa F403
+from .workspace import *  # noqa F403
+from .referral import *  # noqa F403
