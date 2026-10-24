@@ -1,5 +1,9 @@
 import re
+from enum import Enum
+from typing import Any, Literal
 
+import pycountry
+from django.conf import settings
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
@@ -20,6 +24,56 @@ def is_valid_username(username):
     return bool(re.fullmatch(pattern, username))
 
 
+class UserLanguageSpec(BaseModel):
+    code: str = Field(pattern=r"^[a-z]{3}$")
+    system: Literal["urn:iso:std:iso:639:-3"]
+
+    @field_validator("code")
+    @classmethod
+    def validate_language_code(cls, code):
+        if pycountry.languages.get(alpha_3=code) is None:
+            raise ValueError("Invalid ISO 639-3 language code")
+        return code
+
+
+class CEFRLevel(str, Enum):
+    A1 = "A1"
+    A2 = "A2"
+    B1 = "B1"
+    B2 = "B2"
+    C1 = "C1"
+    C2 = "C2"
+
+
+class UserCommunicationSpec(BaseModel):
+    language: UserLanguageSpec
+    preferred: bool
+    proficiency: CEFRLevel | None = None
+
+
+class UserDegreeSpec(BaseModel):
+    code: str = Field(min_length=1)
+    system: str = Field(min_length=1)
+
+
+class UserQualificationSpec(BaseModel):
+    registration_number: str
+    issuer: str
+    degree: UserDegreeSpec
+    meta: dict[str, Any] = Field(default_factory=dict)
+
+    @field_validator("degree")
+    @classmethod
+    def validate_degree(cls, degree):
+        if not any(
+            degree.code == available_degree["code"]
+            and degree.system == available_degree["system"]
+            for available_degree in settings.USER_QUALIFICATION_DEGREES
+        ):
+            raise ValueError("Degree must be one of the available qualifications")
+        return degree
+
+
 class UserBaseSpec(EMRResource):
     __model__ = User
     __exclude__ = ["geo_organization"]
@@ -38,8 +92,20 @@ class UserUpdateSpec(UserBaseSpec):
     gender: GenderChoices
     phone_number: str = Field(max_length=14)
     geo_organization: UUID4 | None = None
+    communication: list[UserCommunicationSpec] = Field(default_factory=list)
+    qualification: list[UserQualificationSpec] = Field(default_factory=list)
 
     def perform_extra_deserialization(self, is_update, obj):
+        if "communication" in self.model_fields_set:
+            obj.communication = [
+                communication.model_dump(mode="json")
+                for communication in self.communication
+            ]
+        if "qualification" in self.model_fields_set:
+            obj.qualifications = [
+                qualification.model_dump(mode="json")
+                for qualification in self.qualification
+            ]
         if self.geo_organization is not None:
             obj.geo_organization = get_object_or_404(
                 Organization, external_id=self.geo_organization, org_type="govt"
@@ -114,13 +180,17 @@ class UserSpec(UserBaseSpec):
     phone_number: str = Field(max_length=14)
     deleted: bool = False
     role_orgs: dict
+    communication: list[UserCommunicationSpec] = Field(default_factory=list)
+    qualification: list[UserQualificationSpec] = Field(default_factory=list)
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj: User):
+        super().perform_extra_serialization(mapping, obj)
         mapping["id"] = str(obj.external_id)
         mapping["profile_picture_url"] = obj.read_profile_picture_url()
         mapping["mfa_enabled"] = obj.is_mfa_enabled()
         mapping["role_orgs"] = obj.get_cached_role_orgs()
+        mapping["qualification"] = obj.qualifications
 
 
 class UserRetrieveSpec(UserSpec):
@@ -146,13 +216,8 @@ class UserRetrieveSpec(UserSpec):
 
 class CurrentUserRetrieveSpec(UserRetrieveSpec):
     is_superuser: bool
-    qualification: str | None
-    doctor_experience_commenced_on: str | None
-    doctor_medical_council_registration: str | None
-    weekly_working_hours: str | None
     alt_phone_number: str | None
     date_of_birth: str | None
-    verified: bool
     pf_endpoint: str | None
     pf_p256dh: str | None
     pf_auth: str | None

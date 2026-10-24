@@ -4,7 +4,6 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
-from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
@@ -128,7 +127,6 @@ class User(AbstractUser):
         blank=True,
         null=True,
     )
-    video_connect_link = models.URLField(blank=True, null=True)
 
     old_gender = models.IntegerField(
         choices=GENDER_CHOICES, blank=True, null=True, default=None
@@ -138,36 +136,12 @@ class User(AbstractUser):
     profile_picture_url = models.CharField(
         blank=True, null=True, default=None, max_length=500
     )
-    skills = models.ManyToManyField("Skill", through=UserSkill)
-    home_facility = models.ForeignKey(
-        "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
-    )
-    weekly_working_hours = models.IntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(168)], null=True, blank=True
-    )
-
-    qualification = models.TextField(
-        blank=False,
-        null=True,
-    )
-    doctor_experience_commenced_on = models.DateField(
-        default=None,
-        blank=False,
-        null=True,
-    )
-    doctor_medical_council_registration = models.CharField(
-        max_length=255,
-        default=None,
-        blank=False,
-        null=True,
-    )
 
     prefix = models.CharField(max_length=10, blank=True, null=True)
     suffix = models.CharField(max_length=50, blank=True, null=True)
 
     is_service_account = models.BooleanField(default=False)
 
-    verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
     # Notification Data
@@ -184,6 +158,9 @@ class User(AbstractUser):
     cached_role_orgs = models.JSONField(default=None, null=True, blank=True)
 
     objects = CustomUserManager()
+
+    qualifications = models.JSONField(default=list)
+    communication = models.JSONField(default=list)
 
     REQUIRED_FIELDS = [
         "email",
