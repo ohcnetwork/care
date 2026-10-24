@@ -11,17 +11,21 @@ class TokenCategoryBaseSpec(EMRResource):
 
     id: UUID4 | None = None
     name: str
-    resource_type: SchedulableResourceTypeOptions
     shorthand: str = Field(max_length=5)
     metadata: dict | None = None
 
 
-class TokenCategoryCreateSpec(TokenCategoryBaseSpec):
+class TokenCategoryUpdateSpec(TokenCategoryBaseSpec):
     pass
+
+
+class TokenCategoryCreateSpec(TokenCategoryUpdateSpec):
+    resource_type: SchedulableResourceTypeOptions
 
 
 class TokenCategoryReadSpec(TokenCategoryBaseSpec):
     default: bool
+    resource_type: SchedulableResourceTypeOptions
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):

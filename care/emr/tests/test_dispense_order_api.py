@@ -9,6 +9,9 @@ from care.emr.models.medication_dispense import DispenseOrder, MedicationDispens
 from care.emr.models.medication_request import MedicationRequest
 from care.emr.models.product import Product
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
+from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
+    sync_inventory_item,
+)
 from care.emr.resources.location.spec import FacilityLocationModeChoices
 from care.emr.resources.medication.dispense.dispense_order import (
     MedicationDispenseOrderStatusOptions,
@@ -92,8 +95,9 @@ class DispenseOrderAPITestCase(CareAPITestBase):
             ),
         )
         product = baker.make(Product, facility=order.facility)
-        inventory_item = baker.make(
-            InventoryItem, location=order.location, product=product
+        inventory_item = overrides.pop(
+            "item",
+            baker.make(InventoryItem, location=order.location, product=product),
         )
         return baker.make(
             MedicationDispense,
@@ -1007,3 +1011,91 @@ class DispenseOrderAPITestCase(CareAPITestBase):
         self._assert_cancelled_side_effects(
             [dispense_with_request], MedicationDispenseStatus.cancelled.value
         )
+
+    def test_cancel_dispense_order_restores_inventory_net_content(self):
+        self.client.force_authenticate(user=self.superuser)
+        dispense_order = self.create_dispense_order(
+            location=self.location,
+            patient=self.patient,
+            name="Completed Order",
+            status=MedicationDispenseOrderStatusOptions.completed,
+            facility=self.facility,
+        )
+        dispense = self.create_medication_dispense_for_order(dispense_order, quantity=5)
+        inventory_item = dispense.item
+        # Two dispenses sharing the same inventory item should be synced once.
+        same_item_dispense = self.create_medication_dispense_for_order(
+            dispense_order, item=inventory_item, quantity=3
+        )
+        other_item_dispense = self.create_medication_dispense_for_order(
+            dispense_order, quantity=4
+        )
+        other_inventory_item = other_item_dispense.item
+        sync_inventory_item(inventory_item=inventory_item)
+        sync_inventory_item(inventory_item=other_inventory_item)
+        inventory_item.refresh_from_db()
+        other_inventory_item.refresh_from_db()
+        self.assertEqual(inventory_item.net_content, -8)
+        self.assertEqual(other_inventory_item.net_content, -4)
+
+        response = self._put_status(
+            dispense_order, MedicationDispenseOrderStatusOptions.abandoned
+        )
+        self.assertEqual(response.status_code, 200)
+        inventory_item.refresh_from_db()
+        other_inventory_item.refresh_from_db()
+        self.assertEqual(inventory_item.net_content, 0)
+        self.assertEqual(other_inventory_item.net_content, 0)
+        self._assert_cancelled_side_effects(
+            [dispense, same_item_dispense, other_item_dispense],
+            MedicationDispenseStatus.cancelled.value,
+        )
+
+    def test_repeated_cancellation_does_not_update_children_or_inventory(self):
+        self.client.force_authenticate(user=self.superuser)
+        for order_status, dispense_status in (
+            (
+                MedicationDispenseOrderStatusOptions.abandoned,
+                MedicationDispenseStatus.cancelled,
+            ),
+            (
+                MedicationDispenseOrderStatusOptions.entered_in_error,
+                MedicationDispenseStatus.entered_in_error,
+            ),
+        ):
+            with self.subTest(status=order_status):
+                order = self.create_dispense_order(
+                    location=self.location,
+                    patient=self.patient,
+                    name="Active Order",
+                    status=MedicationDispenseOrderStatusOptions.in_progress.value,
+                    facility=self.facility,
+                )
+                dispense = self.create_medication_dispense_for_order(
+                    order,
+                    quantity=5,
+                    status=MedicationDispenseStatus.in_progress.value,
+                )
+                inventory_item = dispense.item
+                sync_inventory_item(inventory_item=inventory_item)
+                inventory_item.refresh_from_db()
+                self.assertEqual(inventory_item.net_content, -5)
+
+                response = self._put_status(order, order_status)
+
+                self.assertEqual(response.status_code, 200)
+                self._assert_cancelled_side_effects([dispense], dispense_status.value)
+                inventory_item.refresh_from_db()
+                self.assertEqual(inventory_item.net_content, 0)
+                dispense_modified_date = dispense.modified_date
+                inventory_modified_date = inventory_item.modified_date
+
+                response = self._put_status(order, order_status)
+
+                self.assertEqual(response.status_code, 200)
+                dispense.refresh_from_db()
+                inventory_item.refresh_from_db()
+                self.assertEqual(dispense.status, dispense_status.value)
+                self.assertEqual(inventory_item.net_content, 0)
+                self.assertEqual(dispense.modified_date, dispense_modified_date)
+                self.assertEqual(inventory_item.modified_date, inventory_modified_date)

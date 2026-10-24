@@ -18,6 +18,7 @@ class FacilityLocation(EMRBaseModel):
     mode = models.CharField(max_length=255)
     location_type = models.JSONField(default=dict, null=True, blank=True)
     form = models.CharField(max_length=255)
+    inventory_usage = models.CharField(max_length=255, default="none")
     facility_organization_cache = ArrayField(models.IntegerField(), default=list)
     facility = models.ForeignKey("facility.Facility", on_delete=models.PROTECT)
     parent = models.ForeignKey(

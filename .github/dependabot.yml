@@ -1,13 +1,21 @@
 version: 2
+# Routine maintenance runs every January and July, using releases at least 90 days old.
+# Dependabot cannot filter by the age of the currently installed version.
+# Security updates must be enabled in repository settings; they bypass this
+# schedule, cooldown, and version-update PR limit.
 updates:
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "semiannually"
+    cooldown:
+      default-days: 90
+    open-pull-requests-limit: 1
     groups:
-      boto:
+      all-dependencies:
+        applies-to: version-updates
         patterns:
-          - "boto*"
+          - "*"
     commit-message:
       prefix: "chore"
       include: "scope"
@@ -15,9 +23,13 @@ updates:
   - package-ecosystem: "docker"
     directory: "/docker"
     schedule:
-      interval: "weekly"
+      interval: "semiannually"
+    cooldown:
+      default-days: 90
+    open-pull-requests-limit: 1
     groups:
       all-dependencies:
+        applies-to: version-updates
         patterns:
           - "*"
     commit-message:
@@ -27,9 +39,13 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "semiannually"
+    cooldown:
+      default-days: 90
+    open-pull-requests-limit: 1
     groups:
       all-dependencies:
+        applies-to: version-updates
         patterns:
           - "*"
     commit-message:
@@ -39,9 +55,13 @@ updates:
   - package-ecosystem: "devcontainers"
     directory: "/"
     schedule:
-      interval: "weekly"
+      interval: "semiannually"
+    cooldown:
+      default-days: 90
+    open-pull-requests-limit: 1
     groups:
       all-dependencies:
+        applies-to: version-updates
         patterns:
           - "*"
     commit-message:
