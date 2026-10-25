@@ -1,4 +1,5 @@
 from datetime import datetime
+from enum import Enum
 from typing import Annotated
 from uuid import UUID
 
@@ -30,6 +31,7 @@ from care.emr.resources.referral.common import (
     deserialize_care_team,
     serialize_care_team,
 )
+from care.emr.resources.referral.spec import ReferralEndpoint
 from care.facility.models.facility import Facility
 from care.utils.shortcuts import get_object_or_404
 
@@ -97,10 +99,49 @@ def validate_internal_organization_facility(availability):
 
 
 class ReferralAvailabilityQuerySpec(BaseModel):
-    entity_type: ReferralEntityType
+    entity_type: ReferralEntityType | None = None
+    facility: UUID4 | None = None
+
+    @model_validator(mode="after")
+    def validate_scope(self):
+        if self.entity_type is None and self.facility is None:
+            raise ValueError("An entity type or facility is required")
+        return self
+
+
+class ReferralDestinationKind(str, Enum):
+    facility = "facility"
+    department = "department"
+    organization = "organization"
+
+
+class ReferralDestinationQuerySpec(BaseModel):
+    kind: ReferralDestinationKind
+    facility: UUID4 | None = None
+    name: str = ""
+
+    @model_validator(mode="after")
+    def validate_facility_scope(self):
+        if self.kind == ReferralDestinationKind.department:
+            if self.facility is None:
+                raise ValueError("A facility is required to browse departments")
+        elif self.facility is not None:
+            raise ValueError("Facility scope is only supported for departments")
+        return self
+
+
+class ReferralDestinationReadSpec(BaseModel):
+    id: UUID4
+    name: str
+
+
+class ReferralDestinationListSpec(BaseModel):
+    count: int
+    results: list[ReferralDestinationReadSpec]
 
 
 class ReferralAvailabilityConfigQuerySpec(ReferralAvailabilityQuerySpec):
+    entity_type: ReferralEntityType
     entity_id: UUID4
 
     @field_validator("entity_type")
@@ -208,6 +249,7 @@ class ReferralAvailabilityUpdateSpec(EMRResource):
 
 
 class ReferralAvailabilityReadSpec(ReferralAvailabilitySpec):
+    destination: ReferralEndpoint
     entity_type: ReferralEntityType
     external_organization: UUID4 | None = None
     internal_organization: UUID4 | None = None
@@ -222,6 +264,7 @@ class ReferralAvailabilityReadSpec(ReferralAvailabilitySpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+        mapping["destination"] = ReferralEndpoint.from_availability(obj)
         for field in ("external_organization", "internal_organization", "facility"):
             entity = getattr(obj, field)
             mapping[field] = entity.external_id if entity else None

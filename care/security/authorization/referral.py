@@ -1,6 +1,9 @@
 from django.db.models import Q
 
+from care.emr.models.encounter import Encounter
 from care.emr.models.organization import FacilityOrganizationUser, OrganizationUser
+from care.emr.models.patient import PatientUser
+from care.emr.resources.encounter.constants import COMPLETED_CHOICES
 from care.security.authorization.base import (
     AuthorizationController,
     AuthorizationHandler,
@@ -134,6 +137,81 @@ class ReferralAccess(AuthorizationHandler):
         ) or self.check_referral_entity_permission(
             user, referral.availability, permission
         )
+
+    def get_filtered_referrals(self, qs, user):
+        """Apply referral read access before aggregate counts and pagination."""
+        if not user.is_authenticated:
+            return qs.none()
+        if user.is_superuser:
+            return qs
+
+        roles = self.get_role_from_permissions(
+            [ReferralPermissions.can_read_referral.name]
+        )
+        facility_memberships = FacilityOrganizationUser.objects.filter(
+            user=user, role_id__in=roles
+        )
+        facility_organization_ids = list(
+            facility_memberships.values_list("organization_id", flat=True)
+        )
+        organization_ids = list(
+            OrganizationUser.objects.filter(user=user, role_id__in=roles).values_list(
+                "organization_id", flat=True
+            )
+        )
+        encounter_access = Q(
+            encounter__facility_organization_cache__overlap=facility_organization_ids
+        ) | Q(
+            encounter__current_location__facility_organization_cache__overlap=facility_organization_ids
+        )
+        # Patient-only origins use the same active-encounter, organization, and
+        # direct-role paths as PatientAccess.find_roles_on_patient.
+        accessible_patient_encounters = Encounter.objects.exclude(
+            status__in=COMPLETED_CHOICES
+        ).filter(
+            Q(facility_organization_cache__overlap=facility_organization_ids)
+            | Q(
+                current_location__facility_organization_cache__overlap=facility_organization_ids
+            )
+        )
+        patient_access = Q(encounter__isnull=True) & (
+            Q(patient__organization_cache__overlap=organization_ids)
+            | Q(patient_id__in=accessible_patient_encounters.values("patient_id"))
+            | Q(
+                patient_id__in=PatientUser.objects.filter(
+                    user=user, role_id__in=roles
+                ).values("patient_id")
+            )
+        )
+        destination_access = (
+            Q(
+                availability__entity_type="facility",
+                availability__facility_id__in=facility_memberships.filter(
+                    organization__org_type="root"
+                ).values("organization__facility_id"),
+            )
+            | (
+                Q(availability__entity_type="internal_organization")
+                & (
+                    Q(
+                        availability__internal_organization_id__in=facility_organization_ids
+                    )
+                    | Q(
+                        availability__internal_organization__parent_cache__overlap=facility_organization_ids
+                    )
+                )
+            )
+            | (
+                Q(availability__entity_type="external_organization")
+                & (
+                    Q(availability__external_organization_id__in=organization_ids)
+                    | Q(
+                        availability__external_organization__parent_cache__overlap=organization_ids
+                    )
+                )
+            )
+        )
+        return qs.filter(encounter_access | patient_access | destination_access)
 
     def get_accessible_referral_availabilities(self, qs, user, entity_type):
         qs = qs.filter(entity_type=entity_type, status="active")

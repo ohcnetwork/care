@@ -4,7 +4,7 @@ from enum import Enum
 from pydantic import UUID4, BaseModel, Field, field_validator, model_validator
 from pydantic.experimental.missing_sentinel import MISSING
 
-from care.emr.models.encounter import Encounter
+from care.emr.models.encounter import Encounter, EncounterOrganization
 from care.emr.models.patient import Patient
 from care.emr.models.questionnaire import Questionnaire
 from care.emr.models.referral import (
@@ -25,6 +25,8 @@ from care.emr.resources.referral.common import (
     deserialize_care_team,
     serialize_care_team,
 )
+from care.security.authorization import AuthorizationController
+from care.security.permissions.referral import ReferralPermissions
 from care.utils.shortcuts import get_object_or_404
 
 
@@ -36,11 +38,18 @@ class ReferralStatus(str, Enum):
     rejected = "rejected"
 
 
+class ReferralDirection(str, Enum):
+    all = "all"
+    incoming = "incoming"
+    outgoing = "outgoing"
+
+
 class ReferralListQuerySpec(BaseModel):
     entity_type: ReferralEntityType | None = None
     entity_id: UUID4 | None = None
     patient: UUID4 | None = None
     encounter: UUID4 | None = None
+    direction: ReferralDirection | None = None
 
     @field_validator("entity_type")
     @classmethod
@@ -55,6 +64,13 @@ class ReferralListQuerySpec(BaseModel):
             raise ValueError("entity_type and entity_id must be supplied together")
         if not (self.entity_type or self.patient or self.encounter):
             raise ValueError("An entity, patient, or encounter scope is required")
+        if self.direction is not None and self.entity_type not in (
+            ReferralEntityType.facility,
+            ReferralEntityType.internal_organization,
+        ):
+            raise ValueError(
+                "Direction requires a facility or internal organization scope"
+            )
         return self
 
 
@@ -112,12 +128,43 @@ class ReferralSpec(EMRResource):
         return value.strip()
 
 
+class ReferralResourceType(str, Enum):
+    diagnostic_report = "diagnostic_report"
+    observation = "observation"
+    condition = "condition"
+    allergy_intolerance = "allergy_intolerance"
+    service_request = "service_request"
+    specimen = "specimen"
+    questionnaire_response = "questionnaire_response"
+    file_upload = "file_upload"
+    immunization = "immunization"
+    appointment = "appointment"
+    referral = "referral"
+
+
+class ReferralResourceCategory(str, Enum):
+    source = "source"
+    response = "response"
+    metadata = "metadata"
+
+
+class ReferralResourceCreateSpec(EMRResource):
+    __model__ = ReferralResource
+    id: UUID4 | None = None
+    resource_type: ReferralResourceType
+    attachment_type: ReferralResourceCategory = ReferralResourceCategory.source.value
+    resource_id: UUID4
+    metadata: dict = Field(default_factory=dict)
+
+
 class ReferralCreateSpec(ReferralSpec):
+    __exclude__ = [*ReferralSpec.__exclude__, "resources"]
     availability: UUID4
     patient: UUID4 | None = None
     encounter: UUID4 | None = None
     questionnaire: UUID4
     questionnaire_response: QuestionnaireResponseSubmission
+    resources: list[ReferralResourceCreateSpec] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def validate_origin(self):
@@ -145,6 +192,9 @@ class ReferralCreateSpec(ReferralSpec):
             if self.encounter
             else None
         )
+        obj._initial_resources = [
+            resource.de_serialize() for resource in self.resources
+        ]  # noqa: SLF001
         obj._initial_questionnaire_response = (  # noqa: SLF001
             ReferralQuestionnaireResponseCreateSpec(
                 questionnaire=self.questionnaire,
@@ -177,6 +227,76 @@ class ReferralAssigneesWriteSpec(BaseModel):
     members: list[EncounterCareTeamMemberSpec]
 
 
+class ReferralEndpointEntity(BaseModel):
+    id: UUID4
+    name: str
+
+    @classmethod
+    def from_entity(cls, entity):
+        return cls(id=entity.external_id, name=entity.name)
+
+
+class ReferralEndpoint(BaseModel):
+    facility: ReferralEndpointEntity | None = None
+    departments: list[ReferralEndpointEntity] = Field(default_factory=list)
+    organization: ReferralEndpointEntity | None = None
+    external_name: str | None = None
+
+    @classmethod
+    def from_encounter(cls, encounter):
+        if encounter is None:
+            return None
+        links = getattr(encounter, "referral_source_organizations", None)
+        if links is None:
+            # Create/update serializers also receive standalone model instances.
+            links = EncounterOrganization.objects.filter(
+                encounter=encounter
+            ).select_related("organization")
+        organizations = {
+            link.organization.id: link.organization
+            for link in links
+            if link.organization.org_type != "root"
+        }
+        return cls(
+            facility=ReferralEndpointEntity.from_entity(encounter.facility),
+            departments=[
+                ReferralEndpointEntity.from_entity(organization)
+                for organization in sorted(
+                    organizations.values(),
+                    key=lambda organization: (
+                        organization.name.casefold(),
+                        str(organization.external_id),
+                    ),
+                )
+            ],
+        )
+
+    @classmethod
+    def from_availability(cls, availability):
+        if availability.entity_type == ReferralEntityType.internal_organization:
+            organization = availability.internal_organization
+            return cls(
+                facility=ReferralEndpointEntity.from_entity(organization.facility),
+                departments=[ReferralEndpointEntity.from_entity(organization)]
+                if organization.org_type != "root"
+                else [],
+            )
+        if availability.entity_type == ReferralEntityType.facility:
+            return cls(
+                facility=ReferralEndpointEntity.from_entity(availability.facility)
+            )
+        if availability.entity_type == ReferralEntityType.external_organization:
+            return cls(
+                organization=ReferralEndpointEntity.from_entity(
+                    availability.external_organization
+                )
+            )
+        name = availability.external_entity.get("name")
+        return cls(
+            external_name=(name.strip() or None) if isinstance(name, str) else None
+        )
+
+
 class ReferralReadSpec(ReferralSpec):
     availability: UUID4
     patient: UUID4
@@ -186,6 +306,8 @@ class ReferralReadSpec(ReferralSpec):
     assignees: list[dict]
     created_date: datetime
     modified_date: datetime
+    source: ReferralEndpoint | None
+    destination: ReferralEndpoint
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -195,12 +317,16 @@ class ReferralReadSpec(ReferralSpec):
         mapping["patient_name"] = obj.patient.name
         mapping["availability_name"] = obj.availability.name
         mapping["assignees"] = serialize_care_team(obj.assignees)
+        mapping["source"] = ReferralEndpoint.from_encounter(obj.encounter)
+        mapping["destination"] = ReferralEndpoint.from_availability(obj.availability)
 
 
 class ReferralRetrieveSpec(ReferralReadSpec):
     questionnaire_responses: list[ReferralQuestionnaireResponseReadSpec]
     encounter: UUID4 | None = None
     thread: UUID4 | None = None
+    thread_title: str | None = None
+    permissions: list[str] = Field(default_factory=list)
     created_by: dict | None = None
     updated_by: dict | None = None
 
@@ -213,36 +339,19 @@ class ReferralRetrieveSpec(ReferralReadSpec):
         ]
         mapping["encounter"] = obj.encounter.external_id if obj.encounter_id else None
         mapping["thread"] = obj.thread.external_id if obj.thread_id else None
+        mapping["thread_title"] = obj.thread.title if obj.thread_id else None
         cls.serialize_audit_users(mapping, obj)
 
-
-class ReferralResourceType(str, Enum):
-    diagnostic_report = "diagnostic_report"
-    observation = "observation"
-    condition = "condition"
-    allergy_intolerance = "allergy_intolerance"
-    service_request = "service_request"
-    specimen = "specimen"
-    questionnaire_response = "questionnaire_response"
-    file_upload = "file_upload"
-    immunization = "immunization"
-    appointment = "appointment"
-    referral = "referral"
-
-
-class ReferralResourceCategory(str, Enum):
-    source = "source"
-    response = "response"
-    metadata = "metadata"
-
-
-class ReferralResourceCreateSpec(EMRResource):
-    __model__ = ReferralResource
-    id: UUID4 | None = None
-    resource_type: ReferralResourceType
-    attachment_type: ReferralResourceCategory = ReferralResourceCategory.source.value
-    resource_id: UUID4
-    metadata: dict = Field(default_factory=dict)
+    @classmethod
+    def perform_extra_user_serialization(cls, mapping, obj, user):
+        mapping["permissions"] = [
+            permission.name
+            for permission in (
+                ReferralPermissions.can_read_referral,
+                ReferralPermissions.can_write_referral,
+            )
+            if AuthorizationController.call(permission.name, user, obj)
+        ]
 
 
 class ReferralResourceReadSpec(ReferralResourceCreateSpec):

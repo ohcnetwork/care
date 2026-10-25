@@ -229,6 +229,140 @@ class ReferralAPITestCase(CareAPITestBase):
             **kwargs,
         )
 
+    def test_create_with_initial_resources_persists_the_complete_referral(self):
+        conditions = baker.make(
+            Condition, patient=self.patient, encounter=self.encounter, _quantity=2
+        )
+        response = self.client.post(
+            self.referral_url(),
+            self.referral_payload(
+                resources=[
+                    {
+                        "resource_type": "condition",
+                        "resource_id": str(conditions[0].external_id),
+                        "metadata": {"label": "Presenting problem"},
+                    },
+                    {
+                        "resource_type": "condition",
+                        "resource_id": str(conditions[1].external_id),
+                        "attachment_type": "metadata",
+                    },
+                ]
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        referral = Referral.objects.get(external_id=response.data["id"])
+        self.assertEqual(referral.status, "pending")
+        self.assertEqual(referral.questionnaire_responses.count(), 1)
+        listed = self.client.get(self.resource_url(referral))
+        self.assertEqual(listed.status_code, 200, listed.data)
+        self.assertEqual(listed.data["count"], 2)
+        resources = {item["resource_id"]: item for item in listed.data["results"]}
+        self.assertEqual(
+            resources[str(conditions[0].external_id)]["attachment_type"], "source"
+        )
+        self.assertEqual(
+            resources[str(conditions[0].external_id)]["metadata"],
+            {"label": "Presenting problem"},
+        )
+        self.assertEqual(
+            resources[str(conditions[1].external_id)]["attachment_type"], "metadata"
+        )
+        self.assertEqual(
+            ReferralResource.objects.filter(
+                referral=referral, created_by=self.user, updated_by=self.user
+            ).count(),
+            2,
+        )
+
+    def test_invalid_initial_resource_rolls_back_referral_form_and_prior_resources(
+        self,
+    ):
+        condition = baker.make(
+            Condition, patient=self.patient, encounter=self.encounter
+        )
+        other_patient = self.create_patient()
+        other_encounter = self.create_encounter(
+            patient=other_patient,
+            facility=self.destination,
+            organization=self.destination_organization,
+        )
+        wrong_patient = baker.make(
+            Condition, patient=other_patient, encounter=other_encounter
+        )
+        inaccessible_encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.destination,
+            organization=self.destination_organization,
+        )
+        inaccessible = baker.make(
+            Condition, patient=self.patient, encounter=inaccessible_encounter
+        )
+        first_resource = {
+            "resource_type": "condition",
+            "resource_id": str(condition.external_id),
+        }
+        for resource_id, expected_status in (
+            (wrong_patient.external_id, 400),
+            (inaccessible.external_id, 403),
+            (uuid.uuid4(), 404),
+            (condition.external_id, 400),
+        ):
+            with self.subTest(resource_id=resource_id):
+                response = self.client.post(
+                    self.referral_url(),
+                    self.referral_payload(
+                        resources=[
+                            first_resource,
+                            {
+                                "resource_type": "condition",
+                                "resource_id": str(resource_id),
+                            },
+                        ]
+                    ),
+                    format="json",
+                )
+                self.assertEqual(response.status_code, expected_status, response.data)
+                self.assertFalse(Referral.objects.exists())
+                self.assertFalse(ReferralQuestionnaireResponse.objects.exists())
+                self.assertFalse(ReferralResource.objects.exists())
+
+    def test_initial_resources_require_write_but_empty_resources_allow_create_only(
+        self,
+    ):
+        self.grant_origin(
+            ReferralPermissions.can_create_referral.name,
+            EncounterPermissions.can_read_encounter_clinical_data.name,
+            user=self.outsider,
+        )
+        condition = baker.make(
+            Condition, patient=self.patient, encounter=self.encounter
+        )
+        self.client.force_authenticate(user=self.outsider)
+        response = self.client.post(
+            self.referral_url(),
+            self.referral_payload(
+                resources=[
+                    {
+                        "resource_type": "condition",
+                        "resource_id": str(condition.external_id),
+                    }
+                ]
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertFalse(Referral.objects.exists())
+        self.assertFalse(ReferralQuestionnaireResponse.objects.exists())
+        self.assertFalse(ReferralResource.objects.exists())
+        response = self.client.post(
+            self.referral_url(), self.referral_payload(resources=[]), format="json"
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(Referral.objects.count(), 1)
+        self.assertFalse(ReferralResource.objects.exists())
+
     def test_patient_referral_can_be_created_without_any_encounter(self):
         patient = self.create_patient()
         self.grant_patient(
@@ -490,6 +624,81 @@ class ReferralAPITestCase(CareAPITestBase):
         self.assertEqual(response.data["count"], 1)
         response = self.client.get(self.availability_url(self.availability))
         self.assertEqual(response.status_code, 200, response.data)
+
+    def test_availability_list_and_detail_identify_the_actual_destination(self):
+        external_organization = self.create_organization()
+        department_availability = ReferralAvailability.objects.create(
+            entity_type="internal_organization",
+            facility=self.destination,
+            internal_organization=self.destination_organization,
+            name="Department referral",
+            status="active",
+            is_public=True,
+            referral_type="consultation",
+        )
+        external_availability = ReferralAvailability.objects.create(
+            entity_type="external_organization",
+            external_organization=external_organization,
+            name="Organization referral",
+            status="active",
+            is_public=True,
+            referral_type="consultation",
+        )
+        facility = {
+            "id": str(self.destination.external_id),
+            "name": self.destination.name,
+        }
+        for availability, expected in (
+            (
+                self.availability,
+                {
+                    "facility": facility,
+                    "departments": [],
+                    "organization": None,
+                    "external_name": None,
+                },
+            ),
+            (
+                department_availability,
+                {
+                    "facility": facility,
+                    "departments": [
+                        {
+                            "id": str(self.destination_organization.external_id),
+                            "name": self.destination_organization.name,
+                        }
+                    ],
+                    "organization": None,
+                    "external_name": None,
+                },
+            ),
+            (
+                external_availability,
+                {
+                    "facility": None,
+                    "departments": [],
+                    "organization": {
+                        "id": str(external_organization.external_id),
+                        "name": external_organization.name,
+                    },
+                    "external_name": None,
+                },
+            ),
+        ):
+            with self.subTest(entity_type=availability.entity_type):
+                listed = self.client.get(
+                    self.availability_url(entity_type=availability.entity_type)
+                )
+                self.assertEqual(listed.status_code, 200, listed.data)
+                item = next(
+                    item
+                    for item in listed.data["results"]
+                    if item["id"] == str(availability.external_id)
+                )
+                self.assertEqual(item.get("destination"), expected)
+                detail = self.client.get(self.availability_url(availability))
+                self.assertEqual(detail.status_code, 200, detail.data)
+                self.assertEqual(detail.data.get("destination"), expected)
 
     def test_availability_list_omits_questionnaires_without_loading_them(self):
         self.create_response_questionnaire()
@@ -3012,7 +3221,7 @@ class ReferralAPITestCase(CareAPITestBase):
         )
         return referral, organization
 
-    def test_reverse_referral_lookup_returns_metadata_without_parent_read_permission(
+    def test_reverse_referral_lookup_hides_external_parents_without_read_permission(
         self,
     ):
         target = self.create_referral()
@@ -3028,9 +3237,7 @@ class ReferralAPITestCase(CareAPITestBase):
         )
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200, response.data)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(response.data["results"][0]["id"], str(parent.external_id))
-        self.assertNotIn("questionnaire_responses", response.data["results"][0])
+        self.assertEqual(response.data, {"count": 0, "results": []})
         denied = self.client.get(self.referral_url(parent))
         self.assertEqual(denied.status_code, 403, denied.data)
 
@@ -3044,13 +3251,13 @@ class ReferralAPITestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 200, response.data)
         self.assertEqual(response.data["count"], 1)
         self.assertEqual(response.data["results"][0]["id"], str(parent.external_id))
+        self.assertNotIn("questionnaire_responses", response.data["results"][0])
         allowed = self.client.get(self.referral_url(parent))
         self.assertEqual(allowed.status_code, 200, allowed.data)
         membership.delete()
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200, response.data)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(response.data["results"][0]["id"], str(parent.external_id))
+        self.assertEqual(response.data, {"count": 0, "results": []})
         denied = self.client.get(self.referral_url(parent))
         self.assertEqual(denied.status_code, 403, denied.data)
 
@@ -3069,7 +3276,6 @@ class ReferralAPITestCase(CareAPITestBase):
         url = self.referral_url(target, "referenced-by")
         expected = [
             str(first.external_id),
-            str(restricted.external_id),
             str(second.external_id),
         ]
         for pagination_params in (
@@ -3084,7 +3290,7 @@ class ReferralAPITestCase(CareAPITestBase):
                 )
                 self.assertEqual(response.status_code, 200, response.data)
                 self.assertEqual(set(response.data), {"count", "results"})
-                self.assertEqual(response.data["count"], 3)
+                self.assertEqual(response.data["count"], 2)
                 self.assertEqual(
                     [item["id"] for item in response.data["results"]], expected
                 )
@@ -3690,6 +3896,7 @@ class ReferralAPITestCase(CareAPITestBase):
         response = self.client.get(self.referral_url(referral))
         self.assertEqual(response.status_code, 200, response.data)
         self.assertEqual(response.data["thread"], str(referral.thread.external_id))
+        self.assertEqual(response.data["thread_title"], "Referral follow-up")
 
     def test_partial_availability_update_preserves_then_clears_form_mapping(self):
         self.grant_destination(
