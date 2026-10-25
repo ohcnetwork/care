@@ -2,7 +2,6 @@ from copy import deepcopy
 from uuid import UUID
 
 from django.db import IntegrityError, transaction
-from django.db.models import Prefetch, Q
 from django.http import Http404
 from django_filters import rest_framework as filters
 from drf_spectacular.types import OpenApiTypes
@@ -24,7 +23,6 @@ from care.emr.api.viewsets.base import (
 from care.emr.api.viewsets.questionnaire.questionnaire import QuestionnaireViewSet
 from care.emr.models import Encounter
 from care.emr.models.consent import Consent
-from care.emr.models.encounter import EncounterOrganization
 from care.emr.models.file_upload import FileUpload
 from care.emr.models.notes import NoteMessage, NoteThread
 from care.emr.models.organization import FacilityOrganization, Organization
@@ -57,9 +55,6 @@ from care.emr.resources.referral.availability import (
     ReferralAvailabilityReadSpec,
     ReferralAvailabilityRetrieveSpec,
     ReferralAvailabilityUpdateSpec,
-    ReferralDestinationKind,
-    ReferralDestinationListSpec,
-    ReferralDestinationQuerySpec,
 )
 from care.emr.resources.referral.common import (
     ReferralEntityType,
@@ -68,7 +63,6 @@ from care.emr.resources.referral.common import (
 from care.emr.resources.referral.spec import (
     ReferralAssigneesWriteSpec,
     ReferralCreateSpec,
-    ReferralDirection,
     ReferralListQuerySpec,
     ReferralQuestionnaireResponseCreateSpec,
     ReferralQuestionnaireResponseReadSpec,
@@ -110,74 +104,6 @@ def authorize_referral(user, referral, *, write=False):
     permission = "can_write_referral" if write else "can_read_referral"
     if not AuthorizationController.call(permission, user, referral):
         raise PermissionDenied("Permission denied to referral")
-
-
-def validate_referral_file(referral, resource):
-    try:
-        associating_id = UUID(resource.associating_id)
-    except ValueError as error:
-        raise ValidationError(
-            "File is not an available file for this patient"
-        ) from error
-    if resource.file_type == "patient":
-        same_patient = associating_id == referral.patient.external_id
-    elif resource.file_type == "encounter":
-        same_patient = Encounter.objects.filter(
-            external_id=associating_id, patient_id=referral.patient_id
-        ).exists()
-    elif resource.file_type in ("diagnostic_report", "service_request"):
-        model = get_resource_handler(resource.file_type).model
-        same_patient = model.objects.filter(
-            external_id=associating_id, patient_id=referral.patient_id
-        ).exists()
-    elif resource.file_type == "consent":
-        same_patient = Consent.objects.filter(
-            external_id=associating_id, encounter__patient_id=referral.patient_id
-        ).exists()
-    elif resource.file_type == "referral":
-        same_patient = Referral.objects.filter(
-            external_id=associating_id, patient_id=referral.patient_id
-        ).exists()
-    else:
-        same_patient = False
-    if not same_patient or not resource.upload_completed or resource.is_archived:
-        raise ValidationError("File is not an available file for this patient")
-
-
-def get_referral_resource(referral, resource_type, resource_id):
-    resource = get_resource_handler(resource_type).get_object(resource_id)
-    if isinstance(resource, FileUpload):
-        validate_referral_file(referral, resource)
-    elif resource.patient_id != referral.patient_id:
-        raise ValidationError("Resource does not belong to the referral patient")
-    elif isinstance(resource, Referral) and resource.id == referral.id:
-        raise ValidationError("A referral cannot be attached to itself")
-    return resource
-
-
-def validate_referral_resource(user, referral, resource_type, resource_id):
-    authorize_referral(user, referral, write=True)
-    resource = get_referral_resource(referral, resource_type, resource_id)
-    if (
-        isinstance(resource, FileUpload)
-        and resource.file_type == "referral"
-        and UUID(resource.associating_id) == referral.external_id
-    ):
-        return
-    get_resource_handler(resource_type).authorize_read(user, resource)
-
-
-def save_referral_resource(referral, instance, user):
-    instance.referral = referral
-    instance.created_by = user
-    instance.updated_by = user
-    try:
-        with transaction.atomic():
-            instance.save()
-    except IntegrityError as error:
-        raise ValidationError(
-            "Resource is already attached to this referral"
-        ) from error
 
 
 def prepare_referral_questionnaire_response(
@@ -262,24 +188,13 @@ class ReferralAvailabilityFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="exact")
     referral_type = filters.CharFilter(lookup_expr="exact")
     is_public = filters.BooleanFilter()
-    facility = filters.UUIDFilter(method="filter_facility")
+    facility = filters.UUIDFilter(field_name="facility__external_id")
     internal_organization = filters.UUIDFilter(
         field_name="internal_organization__external_id"
     )
     external_organization = filters.UUIDFilter(
         field_name="external_organization__external_id"
     )
-
-    def filter_facility(self, queryset, name, value):
-        # The internal organization's actual facility is authoritative, including
-        # older rows where the optional availability facility cache is absent.
-        return queryset.filter(
-            Q(entity_type="facility", facility__external_id=value)
-            | Q(
-                entity_type="internal_organization",
-                internal_organization__facility__external_id=value,
-            )
-        )
 
 
 class ReferralAvailabilityBaseViewSet(EMRBaseViewSet):
@@ -295,18 +210,9 @@ class ReferralAvailabilityBaseViewSet(EMRBaseViewSet):
             super()
             .get_queryset()
             .select_related(
-                "facility", "external_organization", "internal_organization__facility"
+                "facility", "external_organization", "internal_organization"
             )
         )
-
-    def filter_queryset(self, queryset):
-        queryset = super().filter_queryset(queryset)
-        ordering = queryset.query.order_by
-        if not any(field.lstrip("-") in ("id", "pk") for field in ordering):
-            # Unit names can repeat across departments. Keep page boundaries
-            # deterministic without requiring callers to supply a tie-breaker.
-            queryset = queryset.order_by(*ordering, "id")
-        return queryset
 
 
 @extend_schema_view(
@@ -315,11 +221,8 @@ class ReferralAvailabilityBaseViewSet(EMRBaseViewSet):
             OpenApiParameter(
                 "entity_type",
                 enum=[entity.value for entity in ReferralEntityType],
-                description=(
-                    "Browse active referral destinations of this entity type. "
-                    "When omitted, facility is required and both facility and "
-                    "internal organization services are included."
-                ),
+                required=True,
+                description="Browse active referral destinations of this entity type.",
             )
         ]
     ),
@@ -345,86 +248,12 @@ class ReferralAvailabilityViewSet(
         query = ReferralAvailabilityQuerySpec.model_validate(
             self.request.query_params.dict()
         )
-        return self.get_accessible_availabilities(
-            (query.entity_type,)
-            if query.entity_type is not None
-            else (ReferralEntityType.facility, ReferralEntityType.internal_organization)
+        return AuthorizationController.call(
+            "get_accessible_referral_availabilities",
+            queryset,
+            self.request.user,
+            query.entity_type.value,
         )
-
-    def get_accessible_availabilities(self, entity_types):
-        queryset = super().get_queryset()
-        accessible = queryset.none()
-        for entity_type in entity_types:
-            accessible |= AuthorizationController.call(
-                "get_accessible_referral_availabilities",
-                queryset,
-                self.request.user,
-                entity_type.value,
-            )
-        return accessible
-
-    @extend_schema(
-        parameters=[
-            OpenApiParameter(
-                "kind",
-                enum=[kind.value for kind in ReferralDestinationKind],
-                required=True,
-            ),
-            OpenApiParameter(
-                "facility",
-                type=OpenApiTypes.UUID,
-                description="Required only for department discovery.",
-            ),
-            OpenApiParameter(
-                "name", description="Case-insensitive destination name search."
-            ),
-        ],
-        responses=ReferralDestinationListSpec,
-    )
-    @action(detail=False, methods=["GET"], filter_backends=[])
-    def destinations(self, request, *args, **kwargs):
-        query = ReferralDestinationQuerySpec.model_validate(request.query_params.dict())
-        if query.kind == ReferralDestinationKind.facility:
-            available = self.get_accessible_availabilities(
-                (ReferralEntityType.facility, ReferralEntityType.internal_organization)
-            ).order_by()
-            destinations = Facility.objects.filter(
-                Q(id__in=available.filter(entity_type="facility").values("facility_id"))
-                | Q(
-                    id__in=available.filter(entity_type="internal_organization").values(
-                        "internal_organization__facility_id"
-                    )
-                )
-            )
-        elif query.kind == ReferralDestinationKind.department:
-            available = self.get_accessible_availabilities(
-                (ReferralEntityType.internal_organization,)
-            ).order_by()
-            destinations = FacilityOrganization.objects.filter(
-                facility__external_id=query.facility,
-                id__in=available.values("internal_organization_id"),
-            )
-        else:
-            available = self.get_accessible_availabilities(
-                (ReferralEntityType.external_organization,)
-            ).order_by()
-            destinations = Organization.objects.filter(
-                id__in=available.values("external_organization_id")
-            )
-        # Select the unique destination records, not availability rows: search,
-        # counts and pagination therefore cannot expose hidden units or repeat
-        # the same destination for each of its services.
-        destinations = (
-            destinations.filter(name__icontains=query.name.strip())
-            .order_by("name", "external_id")
-            .values("external_id", "name")
-        )
-        page = self.paginate_queryset(destinations)
-        rows = page if page is not None else destinations
-        data = [{"id": str(row["external_id"]), "name": row["name"]} for row in rows]
-        if page is not None:
-            return self.get_paginated_response(data)
-        return Response(data)
 
     def authorize_manage(self, instance):
         if not AuthorizationController.call(
@@ -591,23 +420,7 @@ class ReferralBaseViewSet(EMRBaseViewSet):
         return (
             super()
             .get_queryset()
-            .select_related(
-                "availability__facility",
-                "availability__internal_organization__facility",
-                "availability__external_organization",
-                "patient",
-                "encounter__facility",
-                "thread",
-            )
-            .prefetch_related(
-                Prefetch(
-                    "encounter__encounterorganization_set",
-                    queryset=EncounterOrganization.objects.select_related(
-                        "organization"
-                    ),
-                    to_attr="referral_source_organizations",
-                )
-            )
+            .select_related("availability", "patient", "encounter", "thread")
         )
 
 
@@ -625,14 +438,7 @@ class AssignedReferralViewSet(EMRListMixin, ReferralBaseViewSet):
         description=(
             "Supply entity_type and entity_id, an encounter, or a patient. "
             "Entity scope takes precedence, followed by encounter and patient. "
-            "Additional patient and encounter filters only narrow the chosen scope. "
-            "An explicit direction supports facility and internal organization scopes. "
-            "Facility incoming includes direct and departmental destinations; department "
-            "incoming matches the exact destination. Outgoing uses the origin encounter's "
-            "facility or current department/location organization caches, including "
-            "descendants. Patient-only referrals have no outgoing facility origin. "
-            "All combines incoming and outgoing without duplicates. Omitting direction "
-            "preserves the exact destination scope."
+            "Additional patient and encounter filters only narrow the chosen scope."
         ),
         parameters=[
             OpenApiParameter(
@@ -648,14 +454,6 @@ class AssignedReferralViewSet(EMRListMixin, ReferralBaseViewSet):
                 "entity_id",
                 type=OpenApiTypes.UUID,
                 description="Destination entity UUID; requires entity_type.",
-            ),
-            OpenApiParameter(
-                "direction",
-                enum=[direction.value for direction in ReferralDirection],
-                description=(
-                    "Direction relative to the selected facility or internal organization. "
-                    "Requires entity_type and entity_id; other entity types are unsupported."
-                ),
             ),
             OpenApiParameter(
                 "encounter",
@@ -702,7 +500,10 @@ class ReferralViewSet(
                 **{query.entity_type.value: entity},
             )
             permission = "can_list_entity_referrals"
-            queryset = self.filter_entity_scope(queryset, query, entity)
+            queryset = queryset.filter(
+                availability__entity_type=query.entity_type.value,
+                **{f"availability__{query.entity_type.value}_id": entity.id},
+            )
         elif query.encounter:
             scope = get_object_or_404(
                 Encounter.objects.select_related("current_location"),
@@ -716,40 +517,7 @@ class ReferralViewSet(
             queryset = queryset.filter(patient=scope)
         if not AuthorizationController.call(permission, self.request.user, scope):
             raise PermissionDenied("Permission denied to list referrals in this scope")
-        if query.direction is not None:
-            queryset = AuthorizationController.call(
-                "get_filtered_referrals", queryset, self.request.user
-            )
         return queryset
-
-    def filter_entity_scope(self, queryset, query, entity):
-        incoming = Q(
-            availability__entity_type=query.entity_type.value,
-            **{f"availability__{query.entity_type.value}_id": entity.id},
-        )
-        if query.direction is None:
-            return queryset.filter(incoming)
-
-        if query.entity_type == ReferralEntityType.facility:
-            incoming |= Q(
-                availability__entity_type=ReferralEntityType.internal_organization.value,
-                availability__internal_organization__facility=entity,
-            )
-            outgoing = Q(encounter__facility=entity)
-        else:
-            outgoing = Q(
-                encounter__facility_organization_cache__contains=[entity.id]
-            ) | Q(
-                encounter__current_location__facility_organization_cache__contains=[
-                    entity.id
-                ]
-            )
-        directions = {
-            ReferralDirection.incoming: incoming,
-            ReferralDirection.outgoing: outgoing,
-            ReferralDirection.all: incoming | outgoing,
-        }
-        return queryset.filter(directions[query.direction]).distinct()
 
     def authorize_create(self, instance):
         candidate = instance.de_serialize()
@@ -801,14 +569,6 @@ class ReferralViewSet(
             response.created_by = self.request.user
             response.updated_by = self.request.user
             response.save()
-            for resource in instance._initial_resources:  # noqa: SLF001
-                validate_referral_resource(
-                    self.request.user,
-                    instance,
-                    resource.resource_type,
-                    resource.resource_id,
-                )
-                save_referral_resource(instance, resource, self.request.user)
 
     @extend_schema(request=ReferralAssigneesWriteSpec, responses=ReferralRetrieveSpec)
     @action(detail=True, methods=["POST"])
@@ -838,9 +598,6 @@ class ReferralViewSet(
                 patient_id=referral.patient_id,
             )
             .exclude(id=referral.id)
-        )
-        queryset = AuthorizationController.call(
-            "get_filtered_referrals", queryset, request.user
         )
         results = [self.serialize_list(instance) for instance in queryset]
         return Response({"count": len(results), "results": results})
@@ -999,12 +756,27 @@ class ReferralResourceViewSet(
         return super().get_queryset().filter(referral=referral)
 
     def validate_data(self, instance, model_obj=None):
-        validate_referral_resource(
-            self.request.user,
-            self.get_referral(),
-            instance.resource_type.value,
-            instance.resource_id,
-        )
+        referral = self.get_referral()
+        authorize_referral(self.request.user, referral, write=True)
+        resource_type = instance.resource_type.value
+        resource = self.get_resource(referral, resource_type, instance.resource_id)
+        if (
+            isinstance(resource, FileUpload)
+            and resource.file_type == "referral"
+            and UUID(resource.associating_id) == referral.external_id
+        ):
+            return
+        get_resource_handler(resource_type).authorize_read(self.request.user, resource)
+
+    def get_resource(self, referral, resource_type, resource_id):
+        resource = get_resource_handler(resource_type).get_object(resource_id)
+        if isinstance(resource, FileUpload):
+            self.validate_file(referral, resource)
+        elif resource.patient_id != referral.patient_id:
+            raise ValidationError("Resource does not belong to the referral patient")
+        elif isinstance(resource, Referral) and resource.id == referral.id:
+            raise ValidationError("A referral cannot be attached to itself")
+        return resource
 
     @extend_schema(responses=ReferralResolvedResourceSpec)
     @action(detail=True, methods=["GET"])
@@ -1012,8 +784,8 @@ class ReferralResourceViewSet(
         referral = self.get_referral()
         authorize_referral(self.request.user, referral)
         attachment = self.get_object()
-        resource = get_referral_resource(
-            referral, attachment.resource_type, attachment.resource_id
+        resource = self.get_resource(
+            self.get_referral(), attachment.resource_type, attachment.resource_id
         )
         return Response(
             {
@@ -1024,8 +796,46 @@ class ReferralResourceViewSet(
             }
         )
 
+    def validate_file(self, referral, resource):
+        try:
+            associating_id = UUID(resource.associating_id)
+        except ValueError as error:
+            raise ValidationError(
+                "File is not an available file for this patient"
+            ) from error
+        if resource.file_type == "patient":
+            same_patient = associating_id == referral.patient.external_id
+        elif resource.file_type == "encounter":
+            same_patient = Encounter.objects.filter(
+                external_id=associating_id, patient_id=referral.patient_id
+            ).exists()
+        elif resource.file_type in ("diagnostic_report", "service_request"):
+            model = get_resource_handler(resource.file_type).model
+            same_patient = model.objects.filter(
+                external_id=associating_id, patient_id=referral.patient_id
+            ).exists()
+        elif resource.file_type == "consent":
+            same_patient = Consent.objects.filter(
+                external_id=associating_id, encounter__patient_id=referral.patient_id
+            ).exists()
+        elif resource.file_type == "referral":
+            same_patient = Referral.objects.filter(
+                external_id=associating_id, patient_id=referral.patient_id
+            ).exists()
+        else:
+            same_patient = False
+        if not same_patient or not resource.upload_completed or resource.is_archived:
+            raise ValidationError("File is not an available file for this patient")
+
     def perform_create(self, instance):
-        save_referral_resource(self.get_referral(), instance, self.request.user)
+        instance.referral = self.get_referral()
+        try:
+            with transaction.atomic():
+                super().perform_create(instance)
+        except IntegrityError as error:
+            raise ValidationError(
+                "Resource is already attached to this referral"
+            ) from error
 
 
 class ReferralNoteMessageViewSet(

@@ -1,13 +1,9 @@
 import uuid
 from unittest.mock import patch
 
-from django.db import connection
-from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from model_bakery import baker
 
-from care.emr.models.encounter import EncounterOrganization
-from care.emr.models.location import FacilityLocation, FacilityLocationOrganization
 from care.emr.models.notes import NoteMessage
 from care.emr.models.patient import PatientUser
 from care.emr.models.questionnaire import Questionnaire
@@ -136,15 +132,6 @@ class ReferralListAPITestCase(CareAPITestBase):
             {"patient": "invalid"},
             {"encounter": "invalid"},
             {"entity_type": "facility", "encounter": str(self.encounter.external_id)},
-            {"direction": "all"},
-            {"direction": "incoming", "patient": str(self.patient.external_id)},
-            {"direction": "outgoing", "encounter": str(self.encounter.external_id)},
-            {**self.entity_scope(), "direction": "invalid"},
-            {**self.entity_scope(), "direction": ""},
-            {
-                **self.entity_scope(entity_type="external_organization"),
-                "direction": "all",
-            },
         ):
             with self.subTest(params=params):
                 response = self.client.get(reverse("referral-list"), params)
@@ -172,10 +159,6 @@ class ReferralListAPITestCase(CareAPITestBase):
         self.assign(self.referral, self.user)
         for params in (
             self.entity_scope(),
-            *(
-                {**self.entity_scope(), "direction": direction}
-                for direction in ("all", "incoming", "outgoing")
-            ),
             {"encounter": str(self.encounter.external_id)},
             {"patient": str(self.patient.external_id)},
         ):
@@ -378,364 +361,6 @@ class ReferralListAPITestCase(CareAPITestBase):
         self.assert_list({**self.entity_scope(), "pending": False}, [completed])
         self.assert_list({**self.entity_scope(), "status": "pending"}, [self.referral])
 
-    def test_facility_directions_include_department_destinations_and_deduplicate(self):
-        self.grant_destination()
-        department_availability = self.make_availability(
-            entity_type="internal_organization", internal_organization=self.department
-        )
-        departmental = self.make_referral(
-            availability=department_availability, encounter=self.encounter
-        )
-        local_encounter = self.create_encounter(
-            patient=self.patient,
-            facility=self.destination,
-            organization=self.department,
-        )
-        other_availability = self.make_availability(facility=self.origin)
-        outgoing = self.make_referral(
-            availability=other_availability, encounter=local_encounter
-        )
-        internal = self.make_referral(
-            availability=department_availability, encounter=local_encounter
-        )
-        self.make_referral(availability=other_availability, encounter=self.encounter)
-        self.make_referral(availability=other_availability)
-
-        for direction, expected in (
-            ("incoming", [self.referral, departmental, internal]),
-            ("outgoing", [outgoing, internal]),
-            ("all", [self.referral, departmental, outgoing, internal]),
-        ):
-            with self.subTest(direction=direction):
-                self.assert_list(
-                    {**self.entity_scope(), "direction": direction}, expected
-                )
-                for referral in expected:
-                    response = self.client.get(
-                        reverse(
-                            "referral-detail",
-                            kwargs={"external_id": referral.external_id},
-                        )
-                    )
-                    self.assertEqual(response.status_code, 200, response.data)
-
-        # Existing callers still receive only the exact facility destination.
-        self.assert_list(self.entity_scope(), [self.referral])
-
-    def test_department_directions_use_current_encounter_and_location_organizations(
-        self,
-    ):
-        self.grant(self.department)
-        child = self.create_facility_organization(
-            facility=self.destination, parent=self.department, org_type="team"
-        )
-        department_availability = self.make_availability(
-            entity_type="internal_organization", internal_organization=self.department
-        )
-        incoming = self.make_referral(availability=department_availability)
-        child_availability = self.make_availability(
-            entity_type="internal_organization", internal_organization=child
-        )
-        self.make_referral(availability=child_availability, encounter=self.encounter)
-        child_encounter = self.create_encounter(
-            patient=self.patient, facility=self.destination, organization=child
-        )
-        internal = self.make_referral(
-            availability=department_availability, encounter=child_encounter
-        )
-        outgoing = self.make_referral(encounter=child_encounter)
-        location = baker.make(FacilityLocation, facility=self.destination)
-        FacilityLocationOrganization.objects.create(
-            location=location, organization=self.department
-        )
-        location_encounter = self.create_encounter(
-            patient=self.patient,
-            facility=self.destination,
-            organization=self.destination.default_internal_organization,
-            current_location=location,
-        )
-        through_location = self.make_referral(encounter=location_encounter)
-        params = self.entity_scope(
-            entity_type="internal_organization", entity=self.department
-        )
-        for direction, expected in (
-            ("incoming", [incoming, internal]),
-            ("outgoing", [internal, outgoing, through_location]),
-            ("all", [incoming, internal, outgoing, through_location]),
-        ):
-            with self.subTest(direction=direction):
-                self.assert_list({**params, "direction": direction}, expected)
-                for referral in expected:
-                    response = self.client.get(
-                        reverse(
-                            "referral-detail",
-                            kwargs={"external_id": referral.external_id},
-                        )
-                    )
-                    self.assertEqual(response.status_code, 200, response.data)
-                denied = self.client.get(
-                    reverse("referral-list"),
-                    {**self.entity_scope(), "direction": direction},
-                )
-                self.assertEqual(denied.status_code, 403, denied.data)
-
-    def test_direction_filters_readability_before_count_and_pagination(self):
-        self.grant_destination()
-        separate_department = self.create_facility_organization(
-            facility=self.destination, org_type="dept"
-        )
-        availability = self.make_availability(
-            entity_type="internal_organization",
-            internal_organization=separate_department,
-        )
-        local_encounter = self.create_encounter(
-            patient=self.patient,
-            facility=self.destination,
-            organization=self.department,
-        )
-        readable_at_origin = self.make_referral(
-            availability=availability, encounter=local_encounter
-        )
-        unreadable = self.make_referral(
-            availability=availability, patient=self.other_patient
-        )
-        params = {**self.entity_scope(), "direction": "incoming"}
-        response = self.client.get(
-            reverse("referral-list"),
-            {**params, "ordering": "-created_date", "limit": 1},
-        )
-        self.assertEqual(response.status_code, 200, response.data)
-        self.assertEqual(response.data["count"], 2)
-        self.assertEqual(
-            [item["id"] for item in response.data["results"]],
-            [str(readable_at_origin.external_id)],
-        )
-        denied = self.client.get(
-            reverse("referral-detail", kwargs={"external_id": unreadable.external_id})
-        )
-        self.assertEqual(denied.status_code, 403, denied.data)
-
-        # Direct patient access permits patient-only origins, not an otherwise
-        # unreadable encounter belonging to the same patient.
-        role = self.create_role_with_permissions(
-            permissions=[ReferralPermissions.can_read_referral.name]
-        )
-        PatientUser.objects.create(
-            patient=self.other_patient, user=self.user, role=role
-        )
-        foreign_encounter = self.create_encounter(
-            patient=self.other_patient,
-            facility=self.origin,
-            organization=self.origin_organization,
-        )
-        self.make_referral(availability=availability, encounter=foreign_encounter)
-        self.assert_list(params, [self.referral, readable_at_origin, unreadable])
-
-    def test_directions_preserve_status_assignment_ordering_and_pagination(self):
-        self.grant_destination()
-        local_encounter = self.create_encounter(
-            patient=self.patient,
-            facility=self.destination,
-            organization=self.department,
-        )
-        other_availability = self.make_availability(facility=self.origin)
-        outgoing = self.make_referral(
-            availability=other_availability, encounter=local_encounter
-        )
-        internal = self.make_referral(encounter=local_encounter)
-        completed = self.make_referral(encounter=local_encounter, status="completed")
-        for referral in (self.referral, outgoing, internal, completed):
-            self.assign(referral, self.user)
-        self.make_referral(availability=other_availability, encounter=local_encounter)
-        params = {
-            **self.entity_scope(),
-            "direction": "all",
-            "status": "pending",
-            "assigned_to_me": True,
-            "ordering": "created_date",
-        }
-        self.assert_list(params, [self.referral, outgoing, internal])
-        response = self.client.get(
-            reverse("referral-list"), {**params, "limit": 1, "offset": 1}
-        )
-        self.assertEqual(response.status_code, 200, response.data)
-        self.assertEqual(response.data["count"], 3)
-        self.assertEqual(
-            [item["id"] for item in response.data["results"]],
-            [str(outgoing.external_id)],
-        )
-
-    def test_referral_endpoints_include_all_direct_departments_without_roots(self):
-        self.grant_destination()
-        additional_department = self.create_facility_organization(
-            facility=self.origin,
-            parent=self.origin.default_internal_organization,
-            org_type="dept",
-            name="Additional department",
-        )
-        for organization in (
-            additional_department,
-            self.origin_organization,
-            self.origin.default_internal_organization,
-        ):
-            EncounterOrganization.objects.create(
-                encounter=self.encounter, organization=organization
-            )
-        availability = self.make_availability(
-            entity_type="internal_organization", internal_organization=self.department
-        )
-        referral = self.make_referral(
-            availability=availability, encounter=self.encounter
-        )
-        response = self.client.get(
-            reverse("referral-list"),
-            {
-                **self.entity_scope(),
-                "direction": "incoming",
-                "encounter": self.encounter.external_id,
-            },
-        )
-        self.assertEqual(response.status_code, 200, response.data)
-        item = response.data["results"][0]
-        expected_source = {
-            "facility": {"id": str(self.origin.external_id), "name": self.origin.name},
-            "departments": [
-                {"id": str(org.external_id), "name": org.name}
-                for org in sorted(
-                    [self.origin_organization, additional_department],
-                    key=lambda org: (org.name.casefold(), str(org.external_id)),
-                )
-            ],
-            "organization": None,
-            "external_name": None,
-        }
-        expected_destination = {
-            "facility": {
-                "id": str(self.destination.external_id),
-                "name": self.destination.name,
-            },
-            "departments": [
-                {"id": str(self.department.external_id), "name": self.department.name}
-            ],
-            "organization": None,
-            "external_name": None,
-        }
-        self.assertEqual(item["source"], expected_source)
-        self.assertEqual(item["destination"], expected_destination)
-        detail = self.client.get(
-            reverse("referral-detail", kwargs={"external_id": referral.external_id})
-        )
-        self.assertEqual(detail.status_code, 200, detail.data)
-        self.assertEqual(detail.data["source"], expected_source)
-        self.assertEqual(detail.data["destination"], expected_destination)
-
-    def test_referral_endpoints_handle_patient_only_and_external_destinations(self):
-        self.grant_patient()
-        organization = self.create_organization(name="Regional network")
-        external = self.make_referral(
-            availability=self.make_availability(
-                entity_type="external_organization", external_organization=organization
-            )
-        )
-        off_instance = self.make_referral(
-            availability=self.make_availability(
-                entity_type="external", external_entity={"name": "External specialist"}
-            )
-        )
-        unnamed_external = self.make_referral(
-            availability=self.make_availability(
-                entity_type="external",
-                external_entity={"name": {"unstructured": "data"}},
-            )
-        )
-        response = self.client.get(
-            reverse("referral-list"), {"patient": str(self.patient.external_id)}
-        )
-        self.assertEqual(response.status_code, 200, response.data)
-        items = {item["id"]: item for item in response.data["results"]}
-        for item in items.values():
-            self.assertIsNone(item["source"])
-            self.assertEqual(item["destination"]["departments"], [])
-        self.assertEqual(
-            items[str(self.referral.external_id)]["destination"],
-            {
-                "facility": {
-                    "id": str(self.destination.external_id),
-                    "name": self.destination.name,
-                },
-                "departments": [],
-                "organization": None,
-                "external_name": None,
-            },
-        )
-        self.assertEqual(
-            items[str(external.external_id)]["destination"],
-            {
-                "facility": None,
-                "departments": [],
-                "organization": {
-                    "id": str(organization.external_id),
-                    "name": organization.name,
-                },
-                "external_name": None,
-            },
-        )
-        self.assertEqual(
-            items[str(off_instance.external_id)]["destination"],
-            {
-                "facility": None,
-                "departments": [],
-                "organization": None,
-                "external_name": "External specialist",
-            },
-        )
-        self.assertEqual(
-            items[str(unnamed_external.external_id)]["destination"],
-            {
-                "facility": None,
-                "departments": [],
-                "organization": None,
-                "external_name": None,
-            },
-        )
-
-    def test_referral_endpoint_queries_do_not_grow_with_page_size(self):
-        self.user.is_superuser = True
-        self.user.save(update_fields=["is_superuser"])
-        for index in range(5):
-            department = self.create_facility_organization(
-                facility=self.destination, org_type="dept", name=f"Destination {index}"
-            )
-            availability = self.make_availability(
-                entity_type="internal_organization", internal_organization=department
-            )
-            encounter = self.create_encounter(
-                patient=self.other_patient,
-                facility=self.origin,
-                organization=self.origin_organization,
-            )
-            self.make_referral(availability=availability, encounter=encounter)
-        params = {
-            **self.entity_scope(),
-            "direction": "incoming",
-            "patient": str(self.other_patient.external_id),
-        }
-        url = reverse("referral-list")
-        # Warm request-level caches before comparing one row with a full page.
-        self.client.get(url, {**params, "limit": 5})
-        with CaptureQueriesContext(connection) as single_queries:
-            single = self.client.get(url, {**params, "limit": 1})
-        with CaptureQueriesContext(connection) as page_queries:
-            page = self.client.get(url, {**params, "limit": 5})
-        self.assertEqual(single.status_code, 200, single.data)
-        self.assertEqual(page.status_code, 200, page.data)
-        self.assertEqual(len(single.data["results"]), 1)
-        self.assertEqual(len(page.data["results"]), 5)
-        self.assertTrue(
-            all(item["source"]["departments"] for item in page.data["results"])
-        )
-        self.assertLessEqual(len(page_queries), len(single_queries))
-
     def test_referral_retrieve_update_and_references_keep_working_without_list_scope(
         self,
     ):
@@ -755,15 +380,8 @@ class ReferralListAPITestCase(CareAPITestBase):
         url = reverse("referral-detail", kwargs={"external_id": referral.external_id})
         detail = self.client.get(url)
         self.assertEqual(detail.status_code, 200, detail.data)
-        self.assertCountEqual(
-            detail.data["permissions"], ["can_read_referral", "can_write_referral"]
-        )
-        self.assertIsNone(detail.data["thread_title"])
         updated = self.client.patch(url, {"status": "completed"}, format="json")
         self.assertEqual(updated.status_code, 200, updated.data)
-        self.assertCountEqual(
-            updated.data["permissions"], ["can_read_referral", "can_write_referral"]
-        )
         references = self.client.get(
             reverse(
                 "referral-referenced-by", kwargs={"external_id": referral.external_id}
@@ -798,53 +416,25 @@ class ReferralListAPITestCase(CareAPITestBase):
             ],
         )
         self.availability.questionnaires.add(questionnaire)
-        payload = {
-            "title": "No list scope needed",
-            "availability": str(self.availability.external_id),
-            "encounter": str(self.encounter.external_id),
-            "questionnaire": str(questionnaire.external_id),
-            "questionnaire_response": {
-                "results": [
-                    {
-                        "question_id": question_id,
-                        "values": [{"value": "Specialist assessment"}],
-                    }
-                ]
-            },
-        }
         response = self.client.post(
             reverse("referral-list"),
-            payload,
+            {
+                "title": "No list scope needed",
+                "availability": str(self.availability.external_id),
+                "encounter": str(self.encounter.external_id),
+                "questionnaire": str(questionnaire.external_id),
+                "questionnaire_response": {
+                    "results": [
+                        {
+                            "question_id": question_id,
+                            "values": [{"value": "Specialist assessment"}],
+                        }
+                    ]
+                },
+            },
             format="json",
         )
         self.assertEqual(response.status_code, 200, response.data)
-        self.assertEqual(response.data["permissions"], ["can_read_referral"])
-        self.assertIsNone(response.data["thread_title"])
-        self.assertEqual(
-            response.data["source"]["facility"],
-            {"id": str(self.origin.external_id), "name": self.origin.name},
-        )
-        self.assertEqual(
-            response.data["source"]["departments"],
-            [
-                {
-                    "id": str(self.origin_organization.external_id),
-                    "name": self.origin_organization.name,
-                }
-            ],
-        )
-        self.assertEqual(
-            response.data["destination"]["facility"],
-            {"id": str(self.destination.external_id), "name": self.destination.name},
-        )
-        self.grant_origin(
-            user=self.other_user,
-            permissions=[ReferralPermissions.can_create_referral.name],
-        )
-        self.client.force_authenticate(user=self.other_user)
-        create_only = self.client.post(reverse("referral-list"), payload, format="json")
-        self.assertEqual(create_only.status_code, 200, create_only.data)
-        self.assertEqual(create_only.data["permissions"], [])
 
     def test_referral_retrieve_checks_read_permission_and_preserves_missing_objects(
         self,
@@ -857,9 +447,6 @@ class ReferralListAPITestCase(CareAPITestBase):
         self.grant_patient()
         allowed = self.client.get(url)
         self.assertEqual(allowed.status_code, 200, allowed.data)
-        self.assertEqual(allowed.data["permissions"], ["can_read_referral"])
-        rejected = self.client.patch(url, {"status": "completed"}, format="json")
-        self.assertEqual(rejected.status_code, 403, rejected.data)
         missing = self.client.get(
             reverse("referral-detail", kwargs={"external_id": uuid.uuid4()})
         )
@@ -880,86 +467,90 @@ class ReferralListAPITestCase(CareAPITestBase):
             "referral-note-list",
             kwargs={"referral_external_id": self.referral.external_id},
         )
-        for method in (self.client.patch, self.client.put):
-            updated = method(detail_url, {"status": "in_progress"}, format="json")
-            self.assertEqual(updated.status_code, 200, updated.data)
-            self.assertEqual(updated.data["status"], "in_progress")
-            self.assertEqual(updated.data["permissions"], ["can_write_referral"])
-        assigned = self.client.post(
-            reverse(
-                "referral-set-assignees",
-                kwargs={"external_id": self.referral.external_id},
-            ),
-            {
-                "members": [
-                    {
-                        "user_id": str(self.user.external_id),
-                        "role": {
-                            "system": "http://snomed.info/sct",
-                            "code": "doctor",
-                        },
-                    }
-                ]
-            },
-            format="json",
-        )
-        self.assertEqual(assigned.status_code, 200, assigned.data)
-        self.assertEqual(assigned.data["permissions"], ["can_write_referral"])
-        self.referral.refresh_from_db()
-        self.assertEqual(self.referral.assignee_users, [self.user.id])
-        thread_url = reverse(
-            "referral-thread", kwargs={"external_id": self.referral.external_id}
-        )
-        created_thread = self.client.post(
-            thread_url, {"title": "Referral discussion"}, format="json"
-        )
-        self.assertEqual(created_thread.status_code, 200, created_thread.data)
-        updated_thread = self.client.put(
-            thread_url, {"title": "Updated discussion"}, format="json"
-        )
-        self.assertEqual(updated_thread.status_code, 200, updated_thread.data)
-        self.assertEqual(updated_thread.data["title"], "Updated discussion")
-        created_note = self.client.post(
-            notes_url, {"message": "Write-only discussion note"}, format="json"
-        )
-        self.assertEqual(created_note.status_code, 200, created_note.data)
-        note_url = reverse(
-            "referral-note-detail",
-            kwargs={
-                "referral_external_id": self.referral.external_id,
-                "external_id": created_note.data["id"],
-            },
-        )
-        for method in (self.client.patch, self.client.put):
-            message = f"Updated with {method.__name__}"
-            updated_note = method(note_url, {"message": message}, format="json")
-            self.assertEqual(updated_note.status_code, 200, updated_note.data)
-            self.assertEqual(updated_note.data["message"], message)
-        note = NoteMessage.objects.get(external_id=created_note.data["id"])
-        self.assertEqual(note.created_by_id, self.user.id)
-        self.referral.refresh_from_db()
-        other_note = NoteMessage.objects.create(
-            thread_id=self.referral.thread_id,
-            message="Another author's note",
-            created_by=self.other_user,
-            updated_by=self.other_user,
-        )
-        other_note_url = reverse(
-            "referral-note-detail",
-            kwargs={
-                "referral_external_id": self.referral.external_id,
-                "external_id": other_note.external_id,
-            },
-        )
-        for method in (self.client.patch, self.client.put):
-            denied = method(
-                other_note_url,
-                {"message": "Unauthorized author change"},
+        with patch.object(
+            ReferralAccess,
+            "can_read_referral",
+            autospec=True,
+            side_effect=AssertionError("Referral mutations authorize write only"),
+        ):
+            for method in (self.client.patch, self.client.put):
+                updated = method(detail_url, {"status": "in_progress"}, format="json")
+                self.assertEqual(updated.status_code, 200, updated.data)
+                self.assertEqual(updated.data["status"], "in_progress")
+            assigned = self.client.post(
+                reverse(
+                    "referral-set-assignees",
+                    kwargs={"external_id": self.referral.external_id},
+                ),
+                {
+                    "members": [
+                        {
+                            "user_id": str(self.user.external_id),
+                            "role": {
+                                "system": "http://snomed.info/sct",
+                                "code": "doctor",
+                            },
+                        }
+                    ]
+                },
                 format="json",
             )
-            self.assertEqual(denied.status_code, 403, denied.data)
-        other_note.refresh_from_db()
-        self.assertEqual(other_note.message, "Another author's note")
+            self.assertEqual(assigned.status_code, 200, assigned.data)
+            self.referral.refresh_from_db()
+            self.assertEqual(self.referral.assignee_users, [self.user.id])
+            thread_url = reverse(
+                "referral-thread", kwargs={"external_id": self.referral.external_id}
+            )
+            created_thread = self.client.post(
+                thread_url, {"title": "Referral discussion"}, format="json"
+            )
+            self.assertEqual(created_thread.status_code, 200, created_thread.data)
+            updated_thread = self.client.put(
+                thread_url, {"title": "Updated discussion"}, format="json"
+            )
+            self.assertEqual(updated_thread.status_code, 200, updated_thread.data)
+            self.assertEqual(updated_thread.data["title"], "Updated discussion")
+            created_note = self.client.post(
+                notes_url, {"message": "Write-only discussion note"}, format="json"
+            )
+            self.assertEqual(created_note.status_code, 200, created_note.data)
+            note_url = reverse(
+                "referral-note-detail",
+                kwargs={
+                    "referral_external_id": self.referral.external_id,
+                    "external_id": created_note.data["id"],
+                },
+            )
+            for method in (self.client.patch, self.client.put):
+                message = f"Updated with {method.__name__}"
+                updated_note = method(note_url, {"message": message}, format="json")
+                self.assertEqual(updated_note.status_code, 200, updated_note.data)
+                self.assertEqual(updated_note.data["message"], message)
+            note = NoteMessage.objects.get(external_id=created_note.data["id"])
+            self.assertEqual(note.created_by_id, self.user.id)
+            self.referral.refresh_from_db()
+            other_note = NoteMessage.objects.create(
+                thread_id=self.referral.thread_id,
+                message="Another author's note",
+                created_by=self.other_user,
+                updated_by=self.other_user,
+            )
+            other_note_url = reverse(
+                "referral-note-detail",
+                kwargs={
+                    "referral_external_id": self.referral.external_id,
+                    "external_id": other_note.external_id,
+                },
+            )
+            for method in (self.client.patch, self.client.put):
+                denied = method(
+                    other_note_url,
+                    {"message": "Unauthorized author change"},
+                    format="json",
+                )
+                self.assertEqual(denied.status_code, 403, denied.data)
+            other_note.refresh_from_db()
+            self.assertEqual(other_note.message, "Another author's note")
         for url in (
             detail_url,
             notes_url,
@@ -977,7 +568,9 @@ class ReferralListAPITestCase(CareAPITestBase):
                 denied = self.client.get(url)
                 self.assertEqual(denied.status_code, 403, denied.data)
 
-    def test_reverse_referral_requires_read_access_to_target_and_each_parent(self):
+    def test_reverse_referral_requires_target_read_without_authorizing_each_parent(
+        self,
+    ):
         # A completed encounter does not also grant patient-level access.
         self.encounter.status = "completed"
         self.encounter.save(update_fields=["status"])
@@ -988,9 +581,7 @@ class ReferralListAPITestCase(CareAPITestBase):
         )
         readable_parent = self.make_referral(availability=restricted_availability)
         restricted_parent = self.make_referral(
-            availability=restricted_availability,
-            encounter=self.encounter,
-            note="Restricted referral details",
+            availability=restricted_availability, encounter=self.encounter
         )
         wrong_patient = self.make_referral(
             availability=restricted_availability, patient=self.other_patient
@@ -1004,26 +595,35 @@ class ReferralListAPITestCase(CareAPITestBase):
         url = reverse(
             "referral-referenced-by", kwargs={"external_id": self.referral.external_id}
         )
+        read_referral = ReferralAccess.can_read_referral
 
-        def assert_references(expected, params=None):
-            return self.assert_list(params or {}, expected, url=url)
+        def authorize_target(access, user, referral):
+            self.assertEqual(referral.id, self.referral.id)
+            return read_referral(access, user, referral)
 
-        response = assert_references([readable_parent])
-        self.assertNotIn(restricted_parent.note, str(response.data))
+        def assert_references(params=None):
+            with patch.object(
+                ReferralAccess,
+                "can_read_referral",
+                autospec=True,
+                side_effect=authorize_target,
+            ):
+                return self.assert_list(
+                    params or {}, [readable_parent, restricted_parent], url=url
+                )
+
+        assert_references()
         parent_url = reverse(
             "referral-detail", kwargs={"external_id": restricted_parent.external_id}
         )
         denied_parent = self.client.get(parent_url)
         self.assertEqual(denied_parent.status_code, 403, denied_parent.data)
         parent_membership = self.grant_origin()
-        assert_references(
-            [readable_parent, restricted_parent], {"limit": 1, "offset": 100}
-        )
+        assert_references({"limit": 1, "offset": 100})
         allowed_parent = self.client.get(parent_url)
         self.assertEqual(allowed_parent.status_code, 200, allowed_parent.data)
         parent_membership.delete()
-        response = assert_references([readable_parent])
-        self.assertNotIn(restricted_parent.note, str(response.data))
+        response = assert_references()
         self.assertNotIn(str(wrong_patient.external_id), str(response.data))
         denied_parent = self.client.get(parent_url)
         self.assertEqual(denied_parent.status_code, 403, denied_parent.data)
