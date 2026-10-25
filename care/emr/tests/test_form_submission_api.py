@@ -1,13 +1,25 @@
 import uuid
+from concurrent.futures import ThreadPoolExecutor
+from threading import Barrier
+from unittest.mock import patch
 
+from django.db import close_old_connections
+from django.test import skipUnlessDBFeature
 from django.urls import reverse
 from model_bakery import baker
+from rest_framework import status as http_status
+from rest_framework.test import APIClient, APITransactionTestCase
+from rest_framework_simplejwt.tokens import AccessToken
 
+from care.emr.api.viewsets.form_submission import FormSubmissionViewSet
+from care.emr.models import Condition, Encounter, Patient
 from care.emr.models.questionnaire import FormSubmission, Questionnaire
 from care.emr.resources.encounter.constants import StatusChoices
 from care.emr.resources.form_submission.spec import FormSubmissionStatusChoices
+from care.facility.models.facility import Facility
 from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
+from care.users.models import User
 from care.utils.tests.base import CareAPITestBase
 
 
@@ -51,7 +63,7 @@ class TestFormSubmissionViewSet(CareAPITestBase):
 
     def _generate_create_data(self, encounter=None, patient=None, **kwargs):
         data = {
-            "questionnaire": self.questionnaire.slug,
+            "questionnaire": str(self.questionnaire.external_id),
             "patient": str((patient or self.patient).external_id),
             "status": FormSubmissionStatusChoices.draft.value,
             "response_dump": {"answer": 42},
@@ -247,10 +259,10 @@ class TestFormSubmissionViewSet(CareAPITestBase):
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, 403)
 
-    def test_create_with_invalid_questionnaire_slug(self):
+    def test_create_with_invalid_questionnaire_uuid(self):
         self._grant_patient_submit_permission()
         data = self._generate_create_data()
-        data["questionnaire"] = "nonexistent-slug"
+        data["questionnaire"] = str(uuid.uuid4())
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, 404)
 
@@ -324,14 +336,18 @@ class TestFormSubmissionViewSet(CareAPITestBase):
 
     def test_update_with_patient_permissions(self):
         self._grant_patient_submit_permission()
-        submission = self._create_form_submission()
-        url = self._get_detail_url(submission.external_id)
-        update_data = {
-            "status": FormSubmissionStatusChoices.submitted.value,
-            "response_dump": {"updated": True},
-        }
-        response = self.client.put(url, update_data, format="json")
-        self.assertEqual(response.status_code, 200)
+        for initial_status in ("draft", "submitted"):
+            with self.subTest(initial_status=initial_status):
+                submission = self._create_form_submission(status=initial_status)
+                url = self._get_detail_url(submission.external_id)
+                update_data = {
+                    "status": FormSubmissionStatusChoices.submitted.value,
+                    "response_dump": {"updated": True},
+                }
+                response = self.client.put(url, update_data, format="json")
+                self.assertEqual(response.status_code, 200)
+                submission.refresh_from_db()
+                self.assertEqual(submission.response_dump, {"updated": True})
 
     def test_update_without_permissions(self):
         submission = self._create_form_submission(encounter=self.encounter)
@@ -383,3 +399,109 @@ class TestFormSubmissionViewSet(CareAPITestBase):
         url = self._get_detail_url(submission.external_id)
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 405)
+
+
+class TestFormSubmissionCompletionConcurrency(APITransactionTestCase):
+    @skipUnlessDBFeature("has_select_for_update")
+    def test_concurrent_structured_completion_commits_only_one_batch(self):
+        user = baker.make(User, is_superuser=True)
+        patient = baker.make(Patient)
+        facility = baker.make(Facility, created_by=user)
+        encounter = baker.make(
+            Encounter,
+            patient=patient,
+            facility=facility,
+            status=StatusChoices.in_progress.value,
+        )
+        submission = baker.make(
+            FormSubmission,
+            patient=patient,
+            encounter=encounter,
+            status="draft",
+            response_dump={},
+        )
+        user.get_cached_role_orgs()
+        token = str(AccessToken.for_user(user))
+        completion_url = reverse(
+            "form_submission-detail",
+            kwargs={"external_id": submission.external_id},
+        )
+        diagnosis_url = reverse(
+            "diagnosis-list", kwargs={"patient_external_id": patient.external_id}
+        )
+        barrier = Barrier(2)
+        original_update = FormSubmissionViewSet.update
+
+        def complete_together(view, *args, **kwargs):
+            # Both batches have written their diagnosis before either completes.
+            barrier.wait(timeout=10)
+            return original_update(view, *args, **kwargs)
+
+        def submit(marker):
+            close_old_connections()
+            try:
+                client = APIClient()
+                client.credentials(HTTP_AUTHORIZATION=f"Bearer {token}")
+                response = client.post(
+                    reverse("batch-requests-list"),
+                    {
+                        "requests": [
+                            {
+                                "url": diagnosis_url,
+                                "method": "POST",
+                                "reference_id": "diagnosis",
+                                "body": {
+                                    "encounter": str(encounter.external_id),
+                                    "form_submission": str(submission.external_id),
+                                    "category": "encounter_diagnosis",
+                                    "clinical_status": "active",
+                                    "verification_status": "confirmed",
+                                    "severity": "mild",
+                                    "code": {
+                                        "display": "Test diagnosis",
+                                        "system": "http://test_system.care/test",
+                                        "code": "123",
+                                    },
+                                    "note": marker,
+                                },
+                            },
+                            {
+                                "url": completion_url,
+                                "method": "PUT",
+                                "reference_id": "completion",
+                                "body": {
+                                    "expected_status": "draft",
+                                    "status": "submitted",
+                                    "response_dump": {"marker": marker},
+                                },
+                            },
+                        ]
+                    },
+                    format="json",
+                )
+                return response.status_code, response.json()
+            finally:
+                close_old_connections()
+
+        with (
+            patch.object(FormSubmissionViewSet, "update", complete_together),
+            ThreadPoolExecutor(max_workers=2) as executor,
+        ):
+            responses = list(executor.map(submit, ("first", "second")))
+
+        self.assertCountEqual([status for status, _ in responses], [200, 400])
+        failed = next(
+            body
+            for status, body in responses
+            if status == http_status.HTTP_400_BAD_REQUEST
+        )
+        self.assertEqual(failed["results"][0]["status_code"], 200)
+        self.assertEqual(failed["results"][1]["status_code"], 400)
+        self.assertEqual(
+            failed["results"][1]["data"]["errors"][0]["msg"],
+            "Form submission status has changed",
+        )
+        diagnosis = Condition.objects.get(patient=patient)
+        submission.refresh_from_db()
+        self.assertEqual(submission.status, "submitted")
+        self.assertEqual(submission.response_dump, {"marker": diagnosis.note})

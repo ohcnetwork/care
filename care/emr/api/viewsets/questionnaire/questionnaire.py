@@ -3,6 +3,7 @@ from django.db.models import Q
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
+from pydantic.experimental.missing_sentinel import MISSING
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
@@ -183,8 +184,9 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
         ):
             raise PermissionDenied("Permission Denied to create user questionnaire")
 
-        if getattr(request_obj, "actions", None):
-            for action in request_obj.actions:
+        actions = getattr(request_obj, "actions", None)
+        if actions is not MISSING and actions:
+            for action in actions:
                 ActionEvaluator.authorize(self.request, self.request.user, action)
         elif getattr(model_instance, "actions", None):
             for action in model_instance.actions:
@@ -232,8 +234,9 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
                 read_only=False,
             ):
                 raise PermissionDenied("Permission Denied to create user questionnaire")
-        if getattr(instance, "actions", None):
-            for action in instance.actions:
+        actions = getattr(instance, "actions", None)
+        if actions is not MISSING and actions:
+            for action in actions:
                 ActionEvaluator.authorize(self.request, self.request.user, action)
 
     def authorize_destroy(self, instance):

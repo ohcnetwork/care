@@ -32,6 +32,12 @@ class FormSubmissionUpdateSpec(BaseFormSubmissionSpec):
     response_dump: dict
 
 
+class FormSubmissionConditionalUpdateSpec(FormSubmissionUpdateSpec):
+    """Optionally require the persisted status before applying an update."""
+
+    expected_status: FormSubmissionStatusChoices | None = None
+
+
 class FormSubmissionWriteSpec(FormSubmissionUpdateSpec):
     """Form submission write specification"""
 
