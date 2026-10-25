@@ -23,7 +23,7 @@ class ValueSetAccess(AuthorizationHandler):
             )
         permission = [ValueSetPermissions.can_write_valueset.name]
         return self.check_permission_in_facility_organization(
-            permission, user, facility, root=True
+            permission, user, facility=facility, root=True
         )
 
     def can_access_facility_organization_valueset(
@@ -68,9 +68,18 @@ class ValueSetAccess(AuthorizationHandler):
                 user=user, role_id__in=roles
             ).values_list("organization_id", flat=True)
         )
+        write_roles = self.get_role_from_permissions(
+            [ValueSetPermissions.can_write_valueset.name]
+        )
+        writable_facility_ids = FacilityOrganizationUser.objects.filter(
+            user=user,
+            role_id__in=write_roles,
+            organization__org_type="root",
+        ).values_list("organization__facility_id", flat=True)
         return qs.filter(
             Q(auth_context="instance")
             | Q(internal_organization_cache__overlap=facility_organization_ids)
+            | Q(auth_context="facility", facility_id__in=writable_facility_ids)
             | Q(auth_context="user", created_by=user)
         )
 
