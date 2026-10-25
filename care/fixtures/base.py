@@ -293,12 +293,18 @@ class CareFixtureBase:
             existing = Questionnaire.objects.filter(
                 slug=questionnaire_data["slug"],
                 auth_context=questionnaire_data["auth_context"],
-                facility__external_id=questionnaire_data.get("facility"),
-                facility_organization__external_id=questionnaire_data.get(
-                    "facility_organization"
-                ),
                 latest_revision__isnull=True,
             )
+            if questionnaire_data["auth_context"] in ("facility", "user"):
+                existing = existing.filter(
+                    facility__external_id=questionnaire_data.get("facility")
+                )
+            elif questionnaire_data["auth_context"] == "facility_organization":
+                existing = existing.filter(
+                    facility_organization__external_id=questionnaire_data.get(
+                        "facility_organization"
+                    )
+                )
             if questionnaire_data["auth_context"] == "user":
                 existing = existing.filter(created_by=self.user)
             if existing.exists():
