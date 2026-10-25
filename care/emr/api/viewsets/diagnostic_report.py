@@ -13,8 +13,8 @@ from care.emr.api.viewsets.base import (
     EMRRetrieveMixin,
     EMRUpdateMixin,
 )
+from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
 from care.emr.models.diagnostic_report import DiagnosticReport
-from care.emr.models.encounter import Encounter
 from care.emr.models.observation import Observation
 from care.emr.models.observation_definition import ObservationDefinition
 from care.emr.models.patient import Patient
@@ -51,9 +51,11 @@ class BatchUpdateObservationRequest(BaseModel):
 class DiagnosticReportFilters(filters.FilterSet):
     status = filters.CharFilter(lookup_expr="iexact")
     encounter = filters.UUIDFilter(field_name="encounter__external_id")
+    service_request = filters.UUIDFilter(field_name="service_request__external_id")
 
 
 class DiagnosticReportViewSet(
+    EncounterBasedAuthorizationBase,
     EMRCreateMixin,
     EMRRetrieveMixin,
     EMRUpdateMixin,
@@ -115,47 +117,23 @@ class DiagnosticReportViewSet(
 
     def get_queryset(self):
         queryset = super().get_queryset().filter(patient=self.get_patient_obj())
-        if self.action != "list":
-            return queryset  # Authz is handled separately
-        if self.request.user.is_superuser:
+        if self.action != "list" or self.request.user.is_superuser:
             return queryset
-        if self.request.GET.get("encounter"):
-            encounter = get_object_or_404(
-                Encounter, external_id=self.request.GET.get("encounter")
-            )
-            if not AuthorizationController.call(
-                "can_read_diagnostic_report_in_encounter",
-                self.request.user,
-                encounter,
-            ):
-                raise PermissionDenied(
-                    "You do not have permission to read this diagnostic report in this encounter"
-                )
-            return queryset.filter(encounter=encounter)
-        if self.request.GET.get("service_request"):
-            service_request = get_object_or_404(
-                ServiceRequest, external_id=self.request.GET.get("service_request")
+        if service_request := self.request.GET.get("service_request"):
+            service_request_obj = get_object_or_404(
+                ServiceRequest, external_id=service_request
             )
             if not AuthorizationController.call(
                 "can_read_diagnostic_report",
                 self.request.user,
-                service_request,
+                service_request_obj,
             ):
                 raise PermissionDenied(
                     "You do not have permission to read this diagnostic report for this service request"
                 )
-            return queryset.filter(service_request=service_request)
-        # Authorize with Patient
-        patient = self.get_patient_obj()
-        if not AuthorizationController.call(
-            "can_view_clinical_data",
-            self.request.user,
-            patient,
-        ):
-            raise PermissionDenied(
-                "You do not have permission to view clinical data for this patient"
-            )
-        return queryset.filter(patient=patient)
+        else:
+            self.authorize_read_encounter()
+        return queryset
 
     @extend_schema(
         request=BatchUpdateObservationRequest,

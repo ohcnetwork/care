@@ -1,9 +1,12 @@
 from secrets import choice
+from uuid import uuid4
 
 from django.urls import reverse
 from model_bakery import baker
+from rest_framework import status
 
 from care.emr.models.diagnostic_report import DiagnosticReport
+from care.emr.models.location import FacilityLocation, FacilityLocationOrganization
 from care.emr.models.observation_definition import ObservationDefinition
 from care.emr.resources.activity_definition.spec import (
     ActivityDefinitionCategoryOptions,
@@ -16,6 +19,7 @@ from care.emr.resources.service_request.spec import (
     ServiceRequestStatusChoices,
 )
 from care.security.permissions.diagnostic_report import DiagnosticReportPermissions
+from care.security.permissions.encounter import EncounterPermissions
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -306,7 +310,7 @@ class DiagnosticReportAPITestCases(CareAPITestBase):
         self.assertEqual(response.status_code, 403, response.data)
         self.assertEqual(
             response.data["detail"],
-            "You do not have permission to view clinical data for this patient",
+            "Permission denied to user",
             response.data,
         )
 
@@ -388,7 +392,7 @@ class DiagnosticReportAPITestCases(CareAPITestBase):
         self.assertEqual(response.status_code, 403, response.data)
         self.assertEqual(
             response.data["detail"],
-            "You do not have permission to read this diagnostic report in this encounter",
+            "Permission denied to user",
             response.data,
         )
 
@@ -419,6 +423,255 @@ class DiagnosticReportAPITestCases(CareAPITestBase):
             "You do not have permission to read this diagnostic report for this service request",
             response.data,
         )
+
+    def test_list_with_only_patient_clinical_permission(self):
+        report = self.create_diagnostic_report()
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            self.user,
+            self.create_role_with_permissions(
+                [PatientPermissions.can_view_clinical_data.name]
+            ),
+        )
+        self.client.force_authenticate(user=self.user)
+        for params, expected_status in (
+            ({}, 200),
+            ({"encounter": self.encounter.external_id}, 200),
+            ({"service_request": self.service_request.external_id}, 403),
+            ({"service_request": uuid4()}, 404),
+            (
+                {
+                    "encounter": self.encounter.external_id,
+                    "service_request": self.service_request.external_id,
+                },
+                403,
+            ),
+        ):
+            with self.subTest(params=params):
+                response = self.client.get(self.url, params)
+                self.assertEqual(response.status_code, expected_status, response.data)
+                if expected_status == status.HTTP_200_OK:
+                    self.assertEqual(
+                        [item["id"] for item in response.data["results"]],
+                        [str(report.external_id)],
+                    )
+
+    def test_list_with_only_encounter_clinical_permission_requires_encounter(self):
+        report = self.create_diagnostic_report()
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            self.user,
+            self.create_role_with_permissions(
+                [EncounterPermissions.can_read_encounter_clinical_data.name]
+            ),
+        )
+        unauthorized_encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.create_facility_organization(facility=self.facility),
+        )
+        self.client.force_authenticate(user=self.user)
+        for params, expected_status in (
+            ({}, 403),
+            ({"service_request": self.service_request.external_id}, 403),
+            ({"encounter": unauthorized_encounter.external_id}, 403),
+            ({"encounter": self.encounter.external_id}, 200),
+            (
+                {
+                    "encounter": self.encounter.external_id,
+                    "service_request": self.service_request.external_id,
+                },
+                403,
+            ),
+        ):
+            with self.subTest(params=params):
+                response = self.client.get(self.url, params)
+                self.assertEqual(response.status_code, expected_status, response.data)
+                if expected_status == status.HTTP_200_OK:
+                    self.assertEqual(
+                        [item["id"] for item in response.data["results"]],
+                        [str(report.external_id)],
+                    )
+
+    def test_list_with_only_diagnostic_report_permission_requires_service_request(self):
+        report = self.create_diagnostic_report()
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            self.user,
+            self.create_role_with_permissions(
+                [DiagnosticReportPermissions.can_read_diagnostic_report.name]
+            ),
+        )
+        self.client.force_authenticate(user=self.user)
+        for params, expected_status in (
+            ({}, 403),
+            ({"encounter": self.encounter.external_id}, 403),
+            ({"service_request": self.service_request.external_id}, 200),
+            (
+                {
+                    "encounter": self.encounter.external_id,
+                    "service_request": self.service_request.external_id,
+                },
+                200,
+            ),
+        ):
+            with self.subTest(params=params):
+                response = self.client.get(self.url, params)
+                self.assertEqual(response.status_code, expected_status, response.data)
+                if expected_status == status.HTTP_200_OK:
+                    self.assertEqual(
+                        [item["id"] for item in response.data["results"]],
+                        [str(report.external_id)],
+                    )
+
+    def test_list_with_service_request_location_permission(self):
+        lab_organization = self.create_facility_organization(facility=self.facility)
+        lab_location = baker.make(FacilityLocation, facility=self.facility)
+        FacilityLocationOrganization.objects.create(
+            location=lab_location, organization=lab_organization
+        )
+        self.service_request.locations = [lab_location.id]
+        self.service_request.save(update_fields=["locations"])
+        report = self.create_diagnostic_report()
+        self.create_diagnostic_report(
+            service_request=self.create_service_request(
+                patient=self.patient,
+                facility=self.facility,
+                encounter=self.encounter,
+            )
+        )
+        role = self.create_role_with_permissions(
+            [DiagnosticReportPermissions.can_read_diagnostic_report.name]
+        )
+        self.attach_role_facility_organization_user(lab_organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+        for params in (
+            {"service_request": self.service_request.external_id},
+            {
+                "encounter": self.encounter.external_id,
+                "service_request": self.service_request.external_id,
+            },
+        ):
+            with self.subTest(params=params):
+                response = self.client.get(self.url, params)
+                self.assertEqual(response.status_code, 200, response.data)
+                self.assertEqual(
+                    [item["id"] for item in response.data["results"]],
+                    [str(report.external_id)],
+                )
+
+        unrelated_lab_user = self.create_user()
+        self.attach_role_facility_organization_user(
+            self.create_facility_organization(facility=self.facility),
+            unrelated_lab_user,
+            role,
+        )
+        self.client.force_authenticate(user=unrelated_lab_user)
+        response = self.client.get(
+            self.url, {"service_request": self.service_request.external_id}
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+
+    def test_list_superuser_filters_by_service_request_and_encounter(self):
+        report = self.create_diagnostic_report()
+        another_service_request = self.create_service_request(
+            patient=self.patient,
+            facility=self.facility,
+            encounter=self.encounter,
+        )
+        self.create_diagnostic_report(service_request=another_service_request)
+        another_encounter = self.create_encounter(
+            patient=self.patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        for params, expected_ids in (
+            (
+                {"service_request": self.service_request.external_id},
+                [str(report.external_id)],
+            ),
+            (
+                {
+                    "encounter": self.encounter.external_id,
+                    "service_request": self.service_request.external_id,
+                },
+                [str(report.external_id)],
+            ),
+            (
+                {
+                    "encounter": another_encounter.external_id,
+                    "service_request": self.service_request.external_id,
+                },
+                [],
+            ),
+        ):
+            with self.subTest(params=params):
+                response = self.client.get(self.url, params)
+                self.assertEqual(response.status_code, 200, response.data)
+                self.assertEqual(
+                    [item["id"] for item in response.data["results"]], expected_ids
+                )
+
+    def test_list_superuser_service_request_without_encounter(self):
+        self.create_diagnostic_report()
+        service_request = self.create_service_request(
+            patient=self.patient, facility=self.facility, encounter=None
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.get(
+            self.url, {"service_request": service_request.external_id}
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["results"], [])
+
+    def test_list_returns_only_requested_patient_reports(self):
+        report = self.create_diagnostic_report()
+        other_patient = self.create_patient()
+        other_encounter = self.create_encounter(
+            patient=other_patient,
+            facility=self.facility,
+            organization=self.facility_organization,
+        )
+        other_service_request = self.create_service_request(
+            patient=other_patient,
+            facility=self.facility,
+            encounter=other_encounter,
+        )
+        self.create_diagnostic_report(
+            patient=other_patient,
+            encounter=other_encounter,
+            service_request=other_service_request,
+        )
+        self.attach_role_facility_organization_user(
+            self.facility_organization,
+            self.user,
+            self.create_role_with_permissions(
+                [
+                    PatientPermissions.can_view_clinical_data.name,
+                    DiagnosticReportPermissions.can_read_diagnostic_report.name,
+                ]
+            ),
+        )
+        self.client.force_authenticate(user=self.user)
+        for params, expected_ids in (
+            ({}, [str(report.external_id)]),
+            ({"encounter": other_encounter.external_id}, []),
+            ({"service_request": other_service_request.external_id}, []),
+            (
+                {
+                    "encounter": other_encounter.external_id,
+                    "service_request": other_service_request.external_id,
+                },
+                [],
+            ),
+        ):
+            with self.subTest(params=params):
+                response = self.client.get(self.url, params)
+                self.assertEqual(response.status_code, 200, response.data)
+                self.assertEqual(
+                    [item["id"] for item in response.data["results"]], expected_ids
+                )
 
     # Testcases for updating a diagnostic report status
 
