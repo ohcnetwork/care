@@ -12,6 +12,7 @@ from faker import Faker
 from rest_framework import status as http_status
 
 from care.emr.models.invoice import Invoice
+from care.emr.models.questionnaire import Questionnaire
 from care.emr.resources.device.spec import (
     DeviceAvailabilityStatusChoices,
     DeviceStatusChoices,
@@ -283,12 +284,27 @@ class CareFixtureBase:
         with fixture_path.open() as f:
             questionnaires = json.load(f)
         results = []
-        for questionnaire_data in questionnaires:
-            try:
-                result = self.create_questionnaire(organizations, questionnaire_data)
-                results.append(result)
-            except FixtureError:
-                pass
+        for fixture_data in questionnaires:
+            questionnaire_data = {
+                "auth_context": "instance",
+                "actions": [],
+                **fixture_data,
+            }
+            existing = Questionnaire.objects.filter(
+                slug=questionnaire_data["slug"],
+                auth_context=questionnaire_data["auth_context"],
+                facility__external_id=questionnaire_data.get("facility"),
+                facility_organization__external_id=questionnaire_data.get(
+                    "facility_organization"
+                ),
+                latest_revision__isnull=True,
+            )
+            if questionnaire_data["auth_context"] == "user":
+                existing = existing.filter(created_by=self.user)
+            if existing.exists():
+                continue
+            result = self.create_questionnaire(organizations, questionnaire_data)
+            results.append(result)
         return results
 
     def create_resource_category(self, facility_id, title, resource_type, **kwargs):
