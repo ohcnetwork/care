@@ -29,6 +29,65 @@ class FacilityOrganizationUserApiTestCases(CareAPITestBase):
         self.super_user = self.create_super_user()
         self.facility = self.create_facility(user=self.super_user)
         self.facility_root_organization = self.facility.default_internal_organization
+        self.child_organization = self.create_facility_organization(
+            self.facility,
+            parent=self.facility_root_organization,
+            org_type="dept",
+            name="Child",
+        )
+        self.viewer_role = self.create_role_with_permissions(
+            permissions=[
+                FacilityOrganizationPermissions.can_view_facility_organization.name,
+                FacilityOrganizationPermissions.can_list_facility_organization_users.name,
+            ]
+        )
+        self.basic_role = self.create_role_with_permissions(
+            permissions=[
+                FacilityOrganizationPermissions.can_view_facility_organization.name,
+            ]
+        )
+
+    def get_list_url(self, organization=None):
+        return reverse(
+            "facility-organization-users-list",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "facility_organizations_external_id": (
+                    organization or self.facility_root_organization
+                ).external_id,
+            },
+        )
+
+    def get_detail_url(self, org_user, organization=None):
+        return reverse(
+            "facility-organization-users-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "facility_organizations_external_id": (
+                    organization or self.facility_root_organization
+                ).external_id,
+                "external_id": org_user.external_id,
+            },
+        )
+
+    def list_ids(self, response):
+        return {result["id"] for result in response.data["results"]}
+
+    def create_admin(self, organization=None):
+        user = self.create_user()
+        self.attach_role_facility_organization_user(
+            organization or self.facility_root_organization,
+            user,
+            self.facility_admin_role,
+        )
+        return user
+
+    def add_member(self, organization=None, role=None, **user_kwargs):
+        return self.attach_role_facility_organization_user(
+            organization or self.facility_root_organization,
+            self.create_user(**user_kwargs),
+            role or self.basic_role,
+        )
 
     def test_user_can_update_role_of_user_with_subset_roles(self):
         """
@@ -203,6 +262,650 @@ class FacilityOrganizationUserApiTestCases(CareAPITestBase):
 
         response = self.client.put(url, data={"role": role_to_update.external_id})
         self.assertEqual(response.status_code, 200, response.data)
+
+    # List
+    def test_list_users_without_authentication(self):
+        """
+        Test that an unauthenticated request cannot list organization users.
+        """
+        response = self.client.get(self.get_list_url())
+        self.assertEqual(response.status_code, 403, response.data)
+
+    def test_list_users_as_superuser(self):
+        """
+        Test that a superuser can list the users of any facility organization.
+        """
+        member = self.add_member(self.child_organization)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.get(self.get_list_url(self.child_organization))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(self.list_ids(response), {str(member.external_id)})
+
+    def test_list_users_as_user_with_permission(self):
+        """
+        Test that a user with the list users permission can list organization users.
+        """
+        admin = self.create_admin()
+        member = self.add_member()
+        self.client.force_authenticate(admin)
+        response = self.client.get(self.get_list_url())
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertTrue(
+            {str(member.external_id)}.issubset(self.list_ids(response)),
+        )
+
+    def test_list_users_as_user_without_permission(self):
+        """
+        Test that a user without the list users permission cannot list organization users.
+        """
+        member = self.add_member()
+        self.client.force_authenticate(member.user)
+        response = self.client.get(self.get_list_url())
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "User does not have the required permissions to list users",
+        )
+
+    def test_list_users_as_user_not_in_facility(self):
+        """
+        Test that a user who is not part of the facility cannot list organization users.
+        """
+        self.client.force_authenticate(self.create_user())
+        response = self.client.get(self.get_list_url())
+        self.assertEqual(response.status_code, 403, response.data)
+
+    def test_list_users_only_returns_users_of_the_organization(self):
+        """
+        Test that listing returns only the users attached to the requested organization.
+        """
+        member = self.add_member(self.child_organization)
+        self.add_member(self.facility_root_organization)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.get(self.get_list_url(self.child_organization))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(self.list_ids(response), {str(member.external_id)})
+
+    def test_list_users_excludes_deleted(self):
+        """
+        Test that soft-deleted organization users are not listed.
+        """
+        member = self.add_member(self.child_organization)
+        member.deleted = True
+        member.save(update_fields=["deleted"])
+        self.client.force_authenticate(self.super_user)
+        response = self.client.get(self.get_list_url(self.child_organization))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["count"], 0)
+
+    def test_list_users_with_invalid_organization(self):
+        """
+        Test that listing users of a non-existent organization returns 404.
+        """
+        self.client.force_authenticate(self.super_user)
+        url = reverse(
+            "facility-organization-users-list",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "facility_organizations_external_id": uuid.uuid4(),
+            },
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404, response.data)
+
+    def test_list_users_excludes_service_accounts_by_default(self):
+        """
+        Test that service accounts are hidden from the list unless explicitly requested.
+        """
+        self.add_member(self.child_organization, is_service_account=True)
+        regular = self.add_member(self.child_organization)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.get(self.get_list_url(self.child_organization))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(self.list_ids(response), {str(regular.external_id)})
+
+    def test_list_users_filter_service_accounts(self):
+        """
+        Test that the is_service_account filter returns only service accounts.
+        """
+        service_account = self.add_member(
+            self.child_organization, is_service_account=True
+        )
+        self.add_member(self.child_organization)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.get(
+            self.get_list_url(self.child_organization), {"is_service_account": "true"}
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(self.list_ids(response), {str(service_account.external_id)})
+
+    def test_list_users_search(self):
+        """
+        Test that users can be searched by their name.
+        """
+        match = self.add_member(
+            self.child_organization, first_name="Zebulon", last_name="Quimby"
+        )
+        self.add_member(self.child_organization, first_name="Other", last_name="Person")
+        self.client.force_authenticate(self.super_user)
+        response = self.client.get(
+            self.get_list_url(self.child_organization), {"search_text": "zebu"}
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(self.list_ids(response), {str(match.external_id)})
+
+    def test_list_users_pagination(self):
+        """
+        Test that the user list is paginated using the limit parameter.
+        """
+        for _ in range(3):
+            self.add_member(self.child_organization)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.get(
+            self.get_list_url(self.child_organization), {"limit": 2}
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["count"], 3)
+        self.assertEqual(len(response.data["results"]), 2)
+
+    # Retrieve
+    def test_retrieve_user_as_user_with_permission(self):
+        """
+        Test that a user with the list users permission can retrieve an organization user.
+        """
+        admin = self.create_admin()
+        member = self.add_member()
+        self.client.force_authenticate(admin)
+        response = self.client.get(self.get_detail_url(member))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["id"], str(member.external_id))
+        self.assertEqual(response.data["user"]["id"], str(member.user.external_id))
+        self.assertEqual(response.data["role"]["id"], str(self.basic_role.external_id))
+
+    def test_retrieve_user_as_user_without_permission(self):
+        """
+        Test that a user without the list users permission cannot retrieve an organization user.
+        """
+        member = self.add_member()
+        self.client.force_authenticate(self.create_user())
+        response = self.client.get(self.get_detail_url(member))
+        self.assertEqual(response.status_code, 403, response.data)
+
+    def test_retrieve_user_from_another_organization(self):
+        """
+        Test that a user attached to a different organization cannot be retrieved through this one.
+        """
+        member = self.add_member(self.child_organization)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.get(self.get_detail_url(member))
+        self.assertEqual(response.status_code, 404, response.data)
+
+    def test_retrieve_user_with_invalid_id(self):
+        """
+        Test that retrieving a non-existent organization user returns 404.
+        """
+        self.client.force_authenticate(self.super_user)
+        member = self.add_member()
+        member.external_id = uuid.uuid4()
+        response = self.client.get(self.get_detail_url(member))
+        self.assertEqual(response.status_code, 404, response.data)
+
+    # Create
+    def test_add_user_as_superuser(self):
+        """
+        Test that a superuser can add a user to an organization.
+        """
+        user = self.create_user()
+        self.client.force_authenticate(self.super_user)
+        response = self.client.post(
+            self.get_list_url(self.child_organization),
+            {"user": user.external_id, "role": self.basic_role.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertTrue(
+            FacilityOrganizationUser.objects.filter(
+                organization=self.child_organization,
+                user=user,
+                role=self.basic_role,
+            ).exists()
+        )
+
+    def test_add_user_as_user_with_permission(self):
+        """
+        Test that a user with the manage users permission can add a user with a subset role.
+        """
+        admin = self.create_admin()
+        user = self.create_user()
+        self.client.force_authenticate(admin)
+        response = self.client.post(
+            self.get_list_url(self.child_organization),
+            {"user": user.external_id, "role": self.viewer_role.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["user"]["id"], str(user.external_id))
+        self.assertEqual(response.data["role"]["id"], str(self.viewer_role.external_id))
+
+    def test_add_user_as_user_without_permission(self):
+        """
+        Test that a user without the manage users permission cannot add users.
+        """
+        actor = self.add_member(role=self.viewer_role).user
+        self.client.force_authenticate(actor)
+        response = self.client.post(
+            self.get_list_url(),
+            {
+                "user": self.create_user().external_id,
+                "role": self.basic_role.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(
+            response.data["detail"], "User does not have permission for this action"
+        )
+
+    def test_add_user_with_role_exceeding_own_permissions(self):
+        """
+        Test that a user cannot add someone with a role that has permissions they do not have.
+        """
+        higher_role = self.create_role_with_permissions(
+            permissions=[
+                FacilityOrganizationPermissions.can_view_facility_organization.name,
+                FacilityOrganizationPermissions.can_delete_facility_organization.name,
+            ]
+        )
+        admin = self.create_admin()
+        self.client.force_authenticate(admin)
+        response = self.client.post(
+            self.get_list_url(),
+            {
+                "user": self.create_user().external_id,
+                "role": higher_role.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+
+    def test_add_user_with_permission_only_on_child_organization(self):
+        """
+        Test that manage permission on a child organization does not allow adding users to its parent.
+        """
+        admin = self.create_admin(self.child_organization)
+        self.client.force_authenticate(admin)
+        response = self.client.post(
+            self.get_list_url(),
+            {
+                "user": self.create_user().external_id,
+                "role": self.basic_role.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+
+    def test_add_user_with_permission_on_parent_organization(self):
+        """
+        Test that manage permission on a parent organization allows adding users to its child.
+        """
+        admin = self.create_admin()
+        self.client.force_authenticate(admin)
+        response = self.client.post(
+            self.get_list_url(self.child_organization),
+            {
+                "user": self.create_user().external_id,
+                "role": self.basic_role.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+
+    def test_add_user_without_authentication(self):
+        """
+        Test that an unauthenticated request cannot add a user to an organization.
+        """
+        response = self.client.post(
+            self.get_list_url(),
+            {
+                "user": self.create_user().external_id,
+                "role": self.basic_role.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+
+    def test_add_user_already_in_organization(self):
+        """
+        Test that a user cannot be added to an organization they already belong to.
+        """
+        member = self.add_member(self.child_organization)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.post(
+            self.get_list_url(self.child_organization),
+            {"user": member.user.external_id, "role": self.basic_role.external_id},
+            format="json",
+        )
+        self.assertContains(
+            response, "User association already exists", status_code=400
+        )
+
+    def test_add_user_already_in_parent_organization(self):
+        """
+        Test that a user cannot be added to an organization if already linked to one of its parents.
+        """
+        member = self.add_member()
+        self.client.force_authenticate(self.super_user)
+        response = self.client.post(
+            self.get_list_url(self.child_organization),
+            {"user": member.user.external_id, "role": self.basic_role.external_id},
+            format="json",
+        )
+        self.assertContains(
+            response, "User is already linked to a parent organization", status_code=400
+        )
+
+    def test_add_user_already_in_child_organization(self):
+        """
+        Test that a user cannot be added to an organization if already linked to one of its children.
+        """
+        member = self.add_member(self.child_organization)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.post(
+            self.get_list_url(),
+            {"user": member.user.external_id, "role": self.basic_role.external_id},
+            format="json",
+        )
+        self.assertContains(
+            response, "User has association to some child organization", status_code=400
+        )
+
+    def test_add_user_already_in_a_sibling_organization(self):
+        """
+        Test that a user already linked to a sibling organization can still be added.
+        """
+        sibling = self.create_facility_organization(
+            self.facility,
+            parent=self.facility_root_organization,
+            org_type="dept",
+            name="Sibling",
+        )
+        member = self.add_member(sibling)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.post(
+            self.get_list_url(self.child_organization),
+            {"user": member.user.external_id, "role": self.basic_role.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+
+    def test_add_user_with_invalid_user(self):
+        """
+        Test that adding a non-existent user fails validation.
+        """
+        self.client.force_authenticate(self.super_user)
+        response = self.client.post(
+            self.get_list_url(self.child_organization),
+            {"user": uuid.uuid4(), "role": self.basic_role.external_id},
+            format="json",
+        )
+        self.assertContains(response, "User does not exist", status_code=400)
+
+    def test_add_user_with_invalid_role(self):
+        """
+        Test that adding a user with a non-existent role fails validation.
+        """
+        self.client.force_authenticate(self.super_user)
+        response = self.client.post(
+            self.get_list_url(self.child_organization),
+            {"user": self.create_user().external_id, "role": uuid.uuid4()},
+            format="json",
+        )
+        self.assertContains(response, "Role does not exist", status_code=400)
+
+    def test_add_user_without_required_fields(self):
+        """
+        Test that adding a user without the user and role fields fails validation.
+        """
+        self.client.force_authenticate(self.super_user)
+        response = self.client.post(
+            self.get_list_url(self.child_organization), {}, format="json"
+        )
+        self.assertEqual(response.status_code, 400, response.data)
+
+    def test_add_user_to_invalid_organization(self):
+        """
+        Test that adding a user to a non-existent organization returns 404.
+        """
+        self.client.force_authenticate(self.super_user)
+        url = reverse(
+            "facility-organization-users-list",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "facility_organizations_external_id": uuid.uuid4(),
+            },
+        )
+        response = self.client.post(
+            url,
+            {
+                "user": self.create_user().external_id,
+                "role": self.basic_role.external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 404, response.data)
+
+    # Update
+    def test_update_user_role_as_superuser(self):
+        """
+        Test that a superuser can change the role of an organization user.
+        """
+        member = self.add_member(self.child_organization)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.put(
+            self.get_detail_url(member, self.child_organization),
+            {"role": self.viewer_role.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        member.refresh_from_db()
+        self.assertEqual(member.role, self.viewer_role)
+
+    def test_update_user_role_as_user_without_permission(self):
+        """
+        Test that a user without the manage users permission cannot change a user's role.
+        """
+        actor = self.add_member(role=self.viewer_role).user
+        member = self.add_member(self.child_organization)
+        self.client.force_authenticate(actor)
+        response = self.client.put(
+            self.get_detail_url(member, self.child_organization),
+            {"role": self.basic_role.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+        member.refresh_from_db()
+        self.assertEqual(member.role, self.basic_role)
+
+    def test_update_user_role_with_invalid_role(self):
+        """
+        Test that updating a user's role to a non-existent role fails validation.
+        """
+        member = self.add_member(self.child_organization)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.put(
+            self.get_detail_url(member, self.child_organization),
+            {"role": uuid.uuid4()},
+            format="json",
+        )
+        self.assertContains(response, "Role does not exist", status_code=400)
+
+    def test_update_user_role_without_role(self):
+        """
+        Test that updating a user without providing a role fails validation.
+        """
+        member = self.add_member(self.child_organization)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.put(
+            self.get_detail_url(member, self.child_organization), {}, format="json"
+        )
+        self.assertEqual(response.status_code, 400, response.data)
+
+    def test_update_user_role_does_not_change_user(self):
+        """
+        Test that an update only changes the role and ignores an attempt to change the user.
+        """
+        member = self.add_member(self.child_organization)
+        original_user = member.user
+        self.client.force_authenticate(self.super_user)
+        response = self.client.put(
+            self.get_detail_url(member, self.child_organization),
+            {
+                "role": self.viewer_role.external_id,
+                "user": self.create_user().external_id,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        member.refresh_from_db()
+        self.assertEqual(member.user, original_user)
+
+    def test_update_user_role_without_authentication(self):
+        """
+        Test that an unauthenticated request cannot change a user's role.
+        """
+        member = self.add_member(self.child_organization)
+        response = self.client.put(
+            self.get_detail_url(member, self.child_organization),
+            {"role": self.viewer_role.external_id},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+
+    # Destroy
+    def test_remove_user_as_superuser(self):
+        """
+        Test that a superuser can remove a user from an organization.
+        """
+        member = self.add_member(self.child_organization)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.delete(
+            self.get_detail_url(member, self.child_organization)
+        )
+        self.assertEqual(response.status_code, 204, response.data)
+        member.refresh_from_db()
+        self.assertTrue(member.deleted)
+
+    def test_remove_user_as_user_with_permission(self):
+        """
+        Test that a user with the manage users permission can remove a user with a subset role.
+        """
+        admin = self.create_admin()
+        member = self.add_member()
+        self.client.force_authenticate(admin)
+        response = self.client.delete(self.get_detail_url(member))
+        self.assertEqual(response.status_code, 204, response.data)
+        member.refresh_from_db()
+        self.assertTrue(member.deleted)
+
+    def test_remove_user_as_user_without_permission(self):
+        """
+        Test that a user without the manage users permission cannot remove users.
+        """
+        actor = self.add_member(role=self.viewer_role).user
+        member = self.add_member(self.child_organization)
+        self.client.force_authenticate(actor)
+        response = self.client.delete(
+            self.get_detail_url(member, self.child_organization)
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+        member.refresh_from_db()
+        self.assertFalse(member.deleted)
+
+    def test_remove_user_with_role_exceeding_own_permissions(self):
+        """
+        Test that a user cannot remove someone whose role has permissions they do not have.
+        """
+        higher_role = self.create_role_with_permissions(
+            permissions=[
+                FacilityOrganizationPermissions.can_view_facility_organization.name,
+                FacilityOrganizationPermissions.can_delete_facility_organization.name,
+            ]
+        )
+        member = self.add_member(self.child_organization, role=higher_role)
+        admin = self.create_admin()
+        self.client.force_authenticate(admin)
+        response = self.client.delete(
+            self.get_detail_url(member, self.child_organization)
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+        member.refresh_from_db()
+        self.assertFalse(member.deleted)
+
+    def test_remove_last_user_from_root_organization(self):
+        """
+        Test that the last user of a root organization cannot be removed.
+        """
+        user = self.create_user()
+        facility = self.create_facility(user=user)
+        root = facility.default_internal_organization
+        org_user = FacilityOrganizationUser.objects.get(organization=root, user=user)
+        self.client.force_authenticate(self.super_user)
+        url = reverse(
+            "facility-organization-users-detail",
+            kwargs={
+                "facility_external_id": facility.external_id,
+                "facility_organizations_external_id": root.external_id,
+                "external_id": org_user.external_id,
+            },
+        )
+        response = self.client.delete(url)
+        self.assertContains(
+            response,
+            "Cannot delete the last user from the root organization",
+            status_code=400,
+        )
+        org_user.refresh_from_db()
+        self.assertFalse(org_user.deleted)
+
+    def test_remove_user_from_root_organization_with_other_users(self):
+        """
+        Test that a user can be removed from a root organization when other users remain.
+        """
+        member = self.add_member()
+        self.client.force_authenticate(self.super_user)
+        response = self.client.delete(self.get_detail_url(member))
+        self.assertEqual(response.status_code, 204, response.data)
+
+    def test_remove_last_user_from_non_root_organization(self):
+        """
+        Test that the last user of a non-root organization can be removed.
+        """
+        member = self.add_member(self.child_organization)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.delete(
+            self.get_detail_url(member, self.child_organization)
+        )
+        self.assertEqual(response.status_code, 204, response.data)
+
+    def test_remove_user_without_authentication(self):
+        """
+        Test that an unauthenticated request cannot remove a user from an organization.
+        """
+        member = self.add_member(self.child_organization)
+        response = self.client.delete(
+            self.get_detail_url(member, self.child_organization)
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+
+    def test_remove_user_with_invalid_id(self):
+        """
+        Test that removing a non-existent organization user returns 404.
+        """
+        self.client.force_authenticate(self.super_user)
+        member = self.add_member()
+        member.external_id = uuid.uuid4()
+        response = self.client.delete(self.get_detail_url(member))
+        self.assertEqual(response.status_code, 404, response.data)
 
 
 class FacilityOrganizationAPITests(CareAPITestBase):
