@@ -300,6 +300,40 @@ class FacilityOrganizationAPITests(CareAPITestBase):
         self.assertEqual(response.data["name"], data["name"])
         self.assertEqual(response.data["parent"]["id"], str(data["parent"]))
 
+    def test_create_facility_organization_with_parent_as_user_with_permission(self):
+        """
+        Test that a user with create permission can create an organization under a parent.
+        """
+        self.attach_role_facility_organization_user(
+            self.root_facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        data = self.generate_facility_organization_data()
+        data["parent"] = self.facility_organization.external_id
+        response = self.client.post(
+            self.get_url(self.facility.external_id), data=data, format="json"
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            response.data["parent"]["id"], str(self.facility_organization.external_id)
+        )
+
+    def test_create_facility_organization_with_parent_as_user_without_permission(self):
+        """
+        Test that a user without create permission cannot create an organization under a parent.
+        """
+        self.client.force_authenticate(self.user)
+        data = self.generate_facility_organization_data()
+        data["parent"] = self.facility_organization.external_id
+        response = self.client.post(
+            self.get_url(self.facility.external_id), data=data, format="json"
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "User does not have the required permissions to create organizations",
+        )
+
     def test_create_facility_organization_with_invalid_parent(self):
         """
         Test that creating a facility organization with an invalid parent fails.
@@ -513,6 +547,36 @@ class FacilityOrganizationAPITests(CareAPITestBase):
         response = self.client.delete(url)
         self.assertEqual(response.status_code, 204)
 
+    def test_delete_facility_organization_updates_parent_has_children(self):
+        """
+        Test that deleting a child organization updates has_children on the parent.
+        """
+        self.client.force_authenticate(self.superuser)
+        parent = self.create_facility_organization(self.facility, org_type="dept")
+        child = self.create_facility_organization(
+            self.facility, org_type="team", parent=parent
+        )
+        sibling = self.create_facility_organization(
+            self.facility, org_type="team", parent=parent
+        )
+        parent.refresh_from_db()
+        self.assertTrue(parent.has_children)
+
+        response = self.client.delete(
+            self.get_detail_url(self.facility.external_id, child.external_id)
+        )
+        self.assertEqual(response.status_code, 204)
+        parent.refresh_from_db()
+        self.assertTrue(parent.has_children)
+        self.assertEqual(parent.updated_by, self.superuser)
+
+        response = self.client.delete(
+            self.get_detail_url(self.facility.external_id, sibling.external_id)
+        )
+        self.assertEqual(response.status_code, 204)
+        parent.refresh_from_db()
+        self.assertFalse(parent.has_children)
+
     def test_delete_root_facility_organization(self):
         """
         Test that deleting a root facility organization fails.
@@ -663,3 +727,415 @@ class FacilityOrganizationAPITests(CareAPITestBase):
             response.data["detail"],
             "User does not have the required permissions to delete this organization",
         )
+
+    # Testcases for listing facility organizations
+
+    def get_mine_url(self, facility):
+        return reverse(
+            "facility-organization-mine", kwargs={"facility_external_id": facility}
+        )
+
+    def list_ids(self, response):
+        return {result["id"] for result in response.data["results"]}
+
+    def test_list_facility_organizations_as_superuser(self):
+        """
+        Test that a superuser can list all organizations of a facility, including root.
+        """
+        self.client.force_authenticate(self.superuser)
+        response = self.client.get(self.get_url(self.facility.external_id))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["count"], 2)
+        self.assertEqual(
+            self.list_ids(response),
+            {
+                str(self.root_facility_organization.external_id),
+                str(self.facility_organization.external_id),
+            },
+        )
+
+    def test_list_facility_organizations_without_authentication(self):
+        """
+        Test that an unauthenticated user cannot list facility organizations.
+        """
+        response = self.client.get(self.get_url(self.facility.external_id))
+        self.assertEqual(response.status_code, 403, response.data)
+
+    def test_list_facility_organizations_as_user_without_permission(self):
+        """
+        Test that a user with no permission gets an empty list.
+        """
+        self.client.force_authenticate(self.user)
+        response = self.client.get(self.get_url(self.facility.external_id))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["count"], 0)
+
+    def test_list_facility_organizations_as_user_with_permission_on_root(self):
+        """
+        Test that a user with view permission on the root organization can see all organizations.
+        """
+        self.attach_role_facility_organization_user(
+            self.root_facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        response = self.client.get(self.get_url(self.facility.external_id))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            self.list_ids(response),
+            {
+                str(self.root_facility_organization.external_id),
+                str(self.facility_organization.external_id),
+            },
+        )
+
+    def test_list_facility_organizations_as_user_with_permission_on_non_root(self):
+        """
+        Test that a user with view permission only on a non-root organization cannot see the root organization.
+        """
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        response = self.client.get(self.get_url(self.facility.external_id))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            self.list_ids(response), {str(self.facility_organization.external_id)}
+        )
+
+    def test_list_facility_organizations_with_invalid_facility(self):
+        """
+        Test that listing organizations of a non-existent facility returns 404.
+        """
+        self.client.force_authenticate(self.superuser)
+        response = self.client.get(self.get_url(uuid.uuid4()))
+        self.assertEqual(response.status_code, 404, response.data)
+
+    def test_list_facility_organizations_excludes_other_facilities(self):
+        """
+        Test that organizations of other facilities are not listed.
+        """
+        other_facility = self.create_facility(user=self.user)
+        other_organization = self.create_facility_organization(other_facility)
+        self.client.force_authenticate(self.superuser)
+        response = self.client.get(self.get_url(self.facility.external_id))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertNotIn(str(other_organization.external_id), self.list_ids(response))
+        self.assertEqual(response.data["count"], 2)
+
+    def test_list_facility_organizations_excludes_deleted(self):
+        """
+        Test that deleted organizations are not listed.
+        """
+        deleted_organization = self.create_facility_organization(
+            self.facility, deleted=True
+        )
+        self.client.force_authenticate(self.superuser)
+        response = self.client.get(self.get_url(self.facility.external_id))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertNotIn(str(deleted_organization.external_id), self.list_ids(response))
+
+    def test_list_facility_organizations_filter_by_name(self):
+        """
+        Test that organizations can be filtered by a case-insensitive partial name.
+        """
+        organization = self.create_facility_organization(
+            self.facility, name="Cardiology Department"
+        )
+        self.client.force_authenticate(self.superuser)
+        response = self.client.get(
+            self.get_url(self.facility.external_id), {"name": "cardio"}
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(self.list_ids(response), {str(organization.external_id)})
+
+        response = self.client.get(
+            self.get_url(self.facility.external_id), {"name": "no-such-name"}
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["count"], 0)
+
+    def test_list_facility_organizations_filter_by_org_type(self):
+        """
+        Test that organizations can be filtered by org_type.
+        """
+        team = self.create_facility_organization(
+            self.facility, name="Team A", org_type="team"
+        )
+        self.create_facility_organization(self.facility, name="Dept A", org_type="dept")
+        self.client.force_authenticate(self.superuser)
+        response = self.client.get(
+            self.get_url(self.facility.external_id), {"org_type": "TEAM"}
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(self.list_ids(response), {str(team.external_id)})
+
+        response = self.client.get(
+            self.get_url(self.facility.external_id), {"org_type": "root"}
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            self.list_ids(response), {str(self.root_facility_organization.external_id)}
+        )
+
+    def test_list_facility_organizations_filter_by_parent(self):
+        """
+        Test that organizations can be filtered by parent.
+        """
+        parent = self.create_facility_organization(
+            self.facility, name="Parent", org_type="dept"
+        )
+        child = self.create_facility_organization(
+            self.facility, name="Child", org_type="team", parent=parent
+        )
+        self.client.force_authenticate(self.superuser)
+        response = self.client.get(
+            self.get_url(self.facility.external_id), {"parent": parent.external_id}
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(self.list_ids(response), {str(child.external_id)})
+        self.assertEqual(
+            response.data["results"][0]["parent"]["id"], str(parent.external_id)
+        )
+
+    def test_list_facility_organizations_filter_by_empty_parent(self):
+        """
+        Test that an empty parent filter returns only top level organizations.
+        """
+        parent = self.create_facility_organization(
+            self.facility, name="Parent", org_type="dept"
+        )
+        child = self.create_facility_organization(
+            self.facility, name="Child", org_type="team", parent=parent
+        )
+        self.client.force_authenticate(self.superuser)
+        response = self.client.get(
+            self.get_url(self.facility.external_id), {"parent": ""}
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        ids = self.list_ids(response)
+        self.assertIn(str(parent.external_id), ids)
+        self.assertIn(str(self.root_facility_organization.external_id), ids)
+        self.assertNotIn(str(child.external_id), ids)
+
+    def test_list_facility_organizations_filter_by_containing_user(self):
+        """
+        Test that organizations can be filtered by a user attached to them.
+        """
+        member = self.create_user()
+        self.attach_role_facility_organization_user(
+            self.facility_organization, member, self.role
+        )
+        self.create_facility_organization(self.facility, name="Unrelated")
+        self.client.force_authenticate(self.superuser)
+        response = self.client.get(
+            self.get_url(self.facility.external_id),
+            {"containing_user": member.external_id},
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            self.list_ids(response), {str(self.facility_organization.external_id)}
+        )
+
+    def test_list_facility_organizations_filter_by_invalid_containing_user(self):
+        """
+        Test that filtering by a non-existent user returns 404.
+        """
+        self.client.force_authenticate(self.superuser)
+        response = self.client.get(
+            self.get_url(self.facility.external_id), {"containing_user": uuid.uuid4()}
+        )
+        self.assertEqual(response.status_code, 404, response.data)
+
+    def test_list_facility_organizations_pagination(self):
+        """
+        Test that the list is paginated using limit and offset.
+        """
+        for i in range(3):
+            self.create_facility_organization(self.facility, name=f"Paginated {i}")
+        self.client.force_authenticate(self.superuser)
+        response = self.client.get(
+            self.get_url(self.facility.external_id), {"limit": 2, "offset": 0}
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["count"], 5)
+        self.assertEqual(len(response.data["results"]), 2)
+
+    def test_list_mine_facility_organizations(self):
+        """
+        Test that the mine endpoint returns only organizations directly attached to the user in the facility.
+        """
+        member = self.create_user()
+        self.attach_role_facility_organization_user(
+            self.facility_organization, member, self.role
+        )
+        other_facility = self.create_facility(user=self.user)
+        other_organization = self.create_facility_organization(other_facility)
+        self.attach_role_facility_organization_user(
+            other_organization, member, self.role
+        )
+        self.client.force_authenticate(member)
+        response = self.client.get(self.get_mine_url(self.facility.external_id))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["count"], 1)
+        self.assertEqual(
+            response.data["results"][0]["id"],
+            str(self.facility_organization.external_id),
+        )
+
+    def test_list_mine_facility_organizations_without_memberships(self):
+        """
+        Test that the mine endpoint returns an empty list for a user without memberships.
+        """
+        self.client.force_authenticate(self.create_user())
+        response = self.client.get(self.get_mine_url(self.facility.external_id))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["count"], 0)
+        self.assertEqual(response.data["results"], [])
+
+    # Testcases for retrieving facility organizations
+
+    def test_retrieve_facility_organization_as_superuser(self):
+        """
+        Test that a superuser can retrieve a facility organization.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_detail_url(
+            self.facility.external_id, self.facility_organization.external_id
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            response.data["id"], str(self.facility_organization.external_id)
+        )
+        self.assertEqual(response.data["name"], self.facility_organization.name)
+        self.assertEqual(response.data["org_type"], self.facility_organization.org_type)
+        self.assertIn("permissions", response.data)
+
+    def test_retrieve_root_facility_organization_as_superuser(self):
+        """
+        Test that a superuser can retrieve the root organization.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_detail_url(
+            self.facility.external_id, self.root_facility_organization.external_id
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["org_type"], "root")
+
+    def test_retrieve_facility_organization_without_authentication(self):
+        """
+        Test that an unauthenticated user cannot retrieve a facility organization.
+        """
+        url = self.get_detail_url(
+            self.facility.external_id, self.facility_organization.external_id
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 403, response.data)
+
+    def test_retrieve_facility_organization_as_user_without_permission(self):
+        """
+        Test that a user without view permission cannot retrieve a facility organization.
+        """
+        self.client.force_authenticate(self.user)
+        url = self.get_detail_url(
+            self.facility.external_id, self.facility_organization.external_id
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404, response.data)
+
+    def test_retrieve_facility_organization_as_user_with_permission(self):
+        """
+        Test that a user with view permission can retrieve an organization and sees their permissions on it.
+        """
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        url = self.get_detail_url(
+            self.facility.external_id, self.facility_organization.external_id
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            response.data["id"], str(self.facility_organization.external_id)
+        )
+        self.assertIn(
+            FacilityOrganizationPermissions.can_view_facility_organization.name,
+            response.data["permissions"],
+        )
+
+    def test_retrieve_root_facility_organization_with_permission_only_on_non_root(self):
+        """
+        Test that a user with permission only on a non-root organization cannot retrieve the root organization.
+        """
+        self.attach_role_facility_organization_user(
+            self.facility_organization, self.user, self.role
+        )
+        self.client.force_authenticate(self.user)
+        url = self.get_detail_url(
+            self.facility.external_id, self.root_facility_organization.external_id
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404, response.data)
+
+    def test_retrieve_facility_organization_with_parent(self):
+        """
+        Test that the parent details are returned for a nested organization.
+        """
+        parent = self.create_facility_organization(
+            self.facility, name="Parent", org_type="dept"
+        )
+        child = self.create_facility_organization(
+            self.facility, name="Child", org_type="team", parent=parent
+        )
+        self.client.force_authenticate(self.superuser)
+        url = self.get_detail_url(self.facility.external_id, child.external_id)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["parent"]["id"], str(parent.external_id))
+        self.assertEqual(response.data["parent"]["name"], parent.name)
+
+    def test_retrieve_facility_organization_with_invalid_id(self):
+        """
+        Test that retrieving a non-existent organization returns 404.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_detail_url(self.facility.external_id, uuid.uuid4())
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404, response.data)
+
+    def test_retrieve_facility_organization_with_invalid_facility(self):
+        """
+        Test that retrieving an organization under a non-existent facility returns 404.
+        """
+        self.client.force_authenticate(self.superuser)
+        url = self.get_detail_url(uuid.uuid4(), self.facility_organization.external_id)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404, response.data)
+
+    def test_retrieve_facility_organization_from_another_facility(self):
+        """
+        Test that an organization cannot be retrieved through a different facility.
+        """
+        other_facility = self.create_facility(user=self.user)
+        self.client.force_authenticate(self.superuser)
+        url = self.get_detail_url(
+            other_facility.external_id, self.facility_organization.external_id
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404, response.data)
+
+    def test_retrieve_deleted_facility_organization(self):
+        """
+        Test that a deleted organization cannot be retrieved.
+        """
+        deleted_organization = self.create_facility_organization(
+            self.facility, deleted=True
+        )
+        self.client.force_authenticate(self.superuser)
+        url = self.get_detail_url(
+            self.facility.external_id, deleted_organization.external_id
+        )
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 404, response.data)
