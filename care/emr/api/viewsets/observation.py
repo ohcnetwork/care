@@ -2,18 +2,27 @@ from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import BaseModel, Field
 from rest_framework.decorators import action
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
-from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet
+from care.emr.api.viewsets.base import (
+    EMRCreateMixin,
+    EMRDestroyMixin,
+    EMRModelReadOnlyViewSet,
+)
 from care.emr.api.viewsets.encounter_authz_base import EncounterBasedAuthorizationBase
+from care.emr.models.encounter import Encounter
 from care.emr.models.observation import Observation
 from care.emr.resources.common.coding import Coding
 from care.emr.resources.observation.spec import (
+    ObservationCreateSpec,
     ObservationReadSpec,
     ObservationRetrieveSpec,
+    ObservationStatus,
 )
 from care.emr.resources.questionnaire.spec import QuestionType
 from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.shortcuts import get_object_or_404
 
 
 class MultipleCodeFilter(filters.CharFilter):
@@ -43,15 +52,47 @@ class ObservationAnalyseRequest(BaseModel):
     page_size: int = Field(10, le=30)
 
 
-class ObservationViewSet(EncounterBasedAuthorizationBase, EMRModelReadOnlyViewSet):
+class ObservationViewSet(
+    EncounterBasedAuthorizationBase,
+    EMRCreateMixin,
+    EMRDestroyMixin,
+    EMRModelReadOnlyViewSet,
+):
     database_model = Observation
-    pydantic_model = ObservationReadSpec
+    pydantic_model = ObservationCreateSpec
+    pydantic_read_model = ObservationReadSpec
     pydantic_retrieve_model = ObservationRetrieveSpec
     filterset_class = ObservationFilter
     filter_backends = [filters.DjangoFilterBackend]
 
+    def validate_data(self, instance, model_obj=None):
+        if model_obj is None:
+            patient = self.get_patient_obj()
+            encounter = get_object_or_404(Encounter, external_id=instance.encounter)
+            if encounter.patient_id != patient.id:
+                raise ValidationError(
+                    "Patient external ID mismatch with encounter's patient"
+                )
+
+    def perform_create(self, instance):
+        instance.data_entered_by = self.request.user
+        super().perform_create(instance)
+
+    def authorize_destroy(self, instance):
+        super().authorize_destroy(instance)
+        if not instance.is_random:
+            raise ValidationError(
+                "Only random observations can be marked as entered in error"
+            )
+
+    def perform_destroy(self, instance):
+        instance.status = ObservationStatus.entered_in_error.value
+        instance.updated_by = self.request.user
+        instance.save(update_fields=["status", "updated_by", "modified_date"])
+
     def get_queryset(self):
-        self.authorize_read_encounter()
+        if self.action != "destroy":
+            self.authorize_read_encounter()
 
         queryset = (
             super()
