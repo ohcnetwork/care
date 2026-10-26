@@ -3,6 +3,8 @@ from datetime import UTC, datetime, timedelta
 from django.conf import settings
 from django.test.utils import ignore_warnings
 from django.urls import reverse
+from django.utils import timezone
+from freezegun import freeze_time
 from rest_framework import status
 
 from care.emr.models import (
@@ -308,7 +310,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_from=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
+            valid_from=(datetime.now(UTC) - timedelta(days=1)).replace(tzinfo=None)
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -324,7 +326,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_to=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
+            valid_to=(datetime.now(UTC) - timedelta(days=1)).replace(tzinfo=None)
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -349,6 +351,35 @@ class TestScheduleViewSet(CareAPITestBase):
             "Valid from cannot be greater than valid to",
             status_code=400,
         )
+
+    @freeze_time("2026-10-01 10:00:00")
+    def test_create_schedule_starting_today(self):
+        """A schedule can start today when the dates are sent without a time"""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        today = timezone.localdate()
+        schedule_data = self.generate_schedule_data(
+            valid_from=today.isoformat(),
+            valid_to=(today + timedelta(days=7)).isoformat(),
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_schedule_with_timezone_aware_datetimes(self):
+        """Timezone-aware valid_from and valid_to are accepted"""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        valid_from = timezone.now() + timedelta(days=1)
+        schedule_data = self.generate_schedule_data(
+            valid_from=valid_from.isoformat(),
+            valid_to=(valid_from + timedelta(days=7)).isoformat(),
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_update_schedule_with_permissions(self):
         """Users with can_write_user_schedule permission can update schedules."""
