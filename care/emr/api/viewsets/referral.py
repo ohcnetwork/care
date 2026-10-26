@@ -42,7 +42,7 @@ from care.emr.resources.notes.notes_spec import (
     NoteMessageUpdateSpec,
 )
 from care.emr.resources.notes.thread_spec import NoteThreadReadSpec
-from care.emr.resources.questionnaire.spec import QuestionnaireReadSpec
+from care.emr.resources.questionnaire.spec import QuestionnaireReadSpec, SubjectType
 from care.emr.resources.questionnaire.utils import validate_questionnaire_response
 from care.emr.resources.questionnaire_response.spec import (
     QuestionnaireResponseStatusChoices,
@@ -125,12 +125,8 @@ def prepare_referral_questionnaire_response(
         raise ValidationError("A request questionnaire is required to start a referral")
     if questionnaire.latest_revision_id:
         raise ValidationError("A current questionnaire is required")
-    if questionnaire.subject_type not in ("patient", "encounter"):
-        raise ValidationError("Referral forms must target a patient or encounter")
-    if not referral.encounter_id and questionnaire.subject_type != "patient":
-        raise ValidationError(
-            "A patient referral without an encounter requires a patient questionnaire"
-        )
+    if questionnaire.subject_type != SubjectType.referral:
+        raise ValidationError("Referral forms must use the referral subject type")
     submission = QuestionnaireResponseSubmission.model_validate(
         instance.questionnaire_response
     )
@@ -160,15 +156,13 @@ def set_referral_questionnaires(instance):
         )
 
 
-def render_referral_questionnaires(
-    availability, query_params, *, subject_types=("patient", "encounter")
-):
+def render_referral_questionnaires(availability, query_params):
     query = ReferralQuestionnaireQuerySpec.model_validate(query_params.dict())
     mappings = availability.questionnaire_mappings.filter(
         questionnaire__deleted=False,
         questionnaire__status="active",
         questionnaire__latest_revision__isnull=True,
-        questionnaire__subject_type__in=subject_types,
+        questionnaire__subject_type=SubjectType.referral.value,
     ).select_related("questionnaire")
     if query.questionnaire_type is not None:
         mappings = mappings.filter(questionnaire_type=query.questionnaire_type.value)
@@ -290,9 +284,9 @@ class ReferralAvailabilityViewSet(
                 raise ValidationError(
                     "Only active, current questionnaires can be mapped"
                 )
-            if questionnaire.subject_type not in ("patient", "encounter"):
+            if questionnaire.subject_type != SubjectType.referral:
                 raise ValidationError(
-                    "Referral forms must target a patient or encounter"
+                    "Referral forms must use the referral subject type"
                 )
             view.authorize_retrieve(questionnaire)
 
@@ -385,6 +379,7 @@ class ReferralFilters(filters.FilterSet):
     assigned_to = filters.UUIDFilter(method="filter_assigned_to")
     assigned_to_me = filters.BooleanFilter(method="filter_assigned_to_me")
     pending = filters.BooleanFilter(method="filter_pending")
+    encounter_facility = filters.UUIDFilter(method="encounter__facility__external_id")
 
     def filter_assigned_to(self, queryset, name, value):
         user = User.objects.filter(external_id=value, is_active=True).first()
@@ -611,9 +606,6 @@ class ReferralViewSet(
             render_referral_questionnaires(
                 referral.availability,
                 request.query_params,
-                subject_types=("patient", "encounter")
-                if referral.encounter_id
-                else ("patient",),
             )
         )
 

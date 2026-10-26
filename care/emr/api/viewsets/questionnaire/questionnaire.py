@@ -3,6 +3,7 @@ from django.db.models import Q
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel
+from pydantic.experimental.missing_sentinel import MISSING
 from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
@@ -183,7 +184,10 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
         ):
             raise PermissionDenied("Permission Denied to create user questionnaire")
 
-        if getattr(request_obj, "actions", None):
+        if (
+            getattr(request_obj, "actions", MISSING) is not MISSING
+            and request_obj.actions
+        ):
             for action in request_obj.actions:
                 ActionEvaluator.authorize(self.request, self.request.user, action)
         elif getattr(model_instance, "actions", None):
@@ -232,7 +236,7 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
                 read_only=False,
             ):
                 raise PermissionDenied("Permission Denied to create user questionnaire")
-        if getattr(instance, "actions", None):
+        if instance.actions is not MISSING and instance.actions:
             for action in instance.actions:
                 ActionEvaluator.authorize(self.request, self.request.user, action)
 
@@ -295,6 +299,10 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
     def submit_resource(self, request, *args, **kwargs):
         request_params = ResourceQuestionnaireSubmitRequest(**request.data)
         questionnaire = self.get_object()
+        if questionnaire.subject_type == SubjectType.referral:
+            raise ValidationError(
+                "Referral questionnaires must be submitted through a referral"
+            )
         if questionnaire.latest_revision:
             raise ValidationError(
                 "This Questionniare is a past revision, please submit to the latest revision"
@@ -339,6 +347,10 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
     def submit(self, request, *args, **kwargs):
         request_params = QuestionnaireSubmitRequest(**request.data)
         questionnaire = self.get_object()
+        if questionnaire.subject_type == SubjectType.referral:
+            raise ValidationError(
+                "Referral questionnaires must be submitted through a referral"
+            )
         if questionnaire.latest_revision:
             raise ValidationError(
                 "This Questionniare is a past revision, please submit to the latest revision"

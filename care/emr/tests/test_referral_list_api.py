@@ -403,7 +403,7 @@ class ReferralListAPITestCase(CareAPITestBase):
         question_id = str(uuid.uuid4())
         questionnaire = baker.make(
             Questionnaire,
-            subject_type="encounter",
+            subject_type="referral",
             status="active",
             questions=[
                 {

@@ -62,11 +62,13 @@ class ReferralAvailabilityCreationSpecTests(TestCase):
 
 
 class ReferralAvailabilityQuestionnaireSpecTests(TestCase):
-    def test_patient_and_encounter_questionnaires_are_resolved(self):
-        questionnaires = [
-            baker.make(Questionnaire, status="active", subject_type=subject.value)
-            for subject in (SubjectType.patient, SubjectType.encounter)
-        ]
+    def test_referral_questionnaires_are_resolved(self):
+        questionnaires = baker.make(
+            Questionnaire,
+            status="active",
+            subject_type=SubjectType.referral.value,
+            _quantity=2,
+        )
 
         resolved = resolve_questionnaires(
             [questionnaire.external_id for questionnaire in questionnaires]
@@ -75,16 +77,18 @@ class ReferralAvailabilityQuestionnaireSpecTests(TestCase):
         self.assertCountEqual(resolved, questionnaires)
 
     def test_other_subjects_are_rejected_including_mixed_requests(self):
-        patient_questionnaire = baker.make(
-            Questionnaire, status="active", subject_type=SubjectType.patient.value
+        referral_questionnaire = baker.make(
+            Questionnaire, status="active", subject_type=SubjectType.referral.value
         )
-        for subject in (SubjectType.location, SubjectType.device, SubjectType.facility):
+        for subject in SubjectType:
+            if subject == SubjectType.referral:
+                continue
             questionnaire = baker.make(
                 Questionnaire, status="active", subject_type=subject.value
             )
             for identifiers in (
                 [questionnaire.external_id],
-                [patient_questionnaire.external_id, questionnaire.external_id],
+                [referral_questionnaire.external_id, questionnaire.external_id],
             ):
                 with (
                     self.subTest(subject=subject, identifiers=identifiers),

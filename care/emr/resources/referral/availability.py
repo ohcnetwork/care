@@ -40,11 +40,11 @@ def resolve_questionnaires(identifiers):
             external_id__in=identifiers,
             latest_revision__isnull=True,
             status="active",
-            subject_type__in=[SubjectType.patient.value, SubjectType.encounter.value],
+            subject_type=SubjectType.referral.value,
         )
     )
     if len(questionnaires) != len(set(identifiers)):
-        raise ValidationError("Active questionnaire not found")
+        raise ValidationError("Active referral questionnaire not found")
     return questionnaires
 
 
@@ -59,7 +59,7 @@ def normalize_questionnaire_mappings(value):
     if not isinstance(value, list):
         return value
     return [
-        {"questionnaire": entry} if isinstance(entry, (str, UUID)) else entry
+        {"questionnaire": entry} if isinstance(entry, str | UUID) else entry
         for entry in value
     ]
 

@@ -33,7 +33,7 @@ class ReferralAuthorizationTestCase(CareAPITestBase):
         )
         self.questionnaire = baker.make(
             Questionnaire,
-            subject_type="encounter",
+            subject_type="referral",
             status="active",
             questions=[],
         )

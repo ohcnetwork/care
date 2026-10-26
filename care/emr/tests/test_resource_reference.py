@@ -252,7 +252,7 @@ class ResourceReferenceTests(CareAPITestBase):
             title="Clinical referral",
         )
         questionnaire = baker.make(
-            Questionnaire, status="active", subject_type="encounter", questions=[]
+            Questionnaire, status="active", subject_type="referral", questions=[]
         )
         ReferralQuestionnaireResponse.objects.create(
             referral=referral,

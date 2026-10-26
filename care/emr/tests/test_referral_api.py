@@ -25,6 +25,7 @@ from care.emr.models.scheduling.schedule import (
     Schedule,
 )
 from care.emr.resources.notes.constants import NoteThreadType
+from care.emr.resources.questionnaire.spec import SubjectType
 from care.emr.resources.referral.availability import (
     ReferralAvailabilityQuestionnaireSpec,
     ReferralAvailabilityReadSpec,
@@ -73,7 +74,7 @@ class ReferralAPITestCase(CareAPITestBase):
             version="1.0",
             auth_context="facility",
             facility=self.destination,
-            subject_type="encounter",
+            subject_type="referral",
             status="active",
             internal_organization_cache=[self.destination_organization.id],
             questions=[
@@ -221,8 +222,6 @@ class ReferralAPITestCase(CareAPITestBase):
         return Referral.objects.get(external_id=response.data["id"])
 
     def patient_referral_payload(self, patient=None, **kwargs):
-        self.questionnaire.subject_type = "patient"
-        self.questionnaire.save(update_fields=["subject_type"])
         return self.referral_payload(
             patient=str((patient or self.patient).external_id),
             encounter=None,
@@ -295,16 +294,20 @@ class ReferralAPITestCase(CareAPITestBase):
         self.assertEqual(missing.status_code, 404, missing.data)
         self.assertFalse(Referral.objects.exists())
 
-    def test_patient_referral_requires_patient_subject_form(self):
-        response = self.client.post(
-            self.referral_url(),
-            self.referral_payload(
-                patient=str(self.patient.external_id), encounter=None
-            ),
-            format="json",
-        )
-        self.assertEqual(response.status_code, 400, response.data)
+    def test_referral_requires_referral_subject_forms_for_any_origin(self):
+        for subject in SubjectType:
+            if subject == SubjectType.referral:
+                continue
+            self.questionnaire.subject_type = subject.value
+            self.questionnaire.save(update_fields=["subject_type"])
+            for payload in (self.referral_payload(), self.patient_referral_payload()):
+                with self.subTest(subject=subject, encounter=payload["encounter"]):
+                    response = self.client.post(
+                        self.referral_url(), payload, format="json"
+                    )
+                    self.assertEqual(response.status_code, 400, response.data)
         self.assertFalse(Referral.objects.exists())
+        self.assertFalse(ReferralQuestionnaireResponse.objects.exists())
 
     def test_patient_filter_includes_referrals_with_and_without_encounters(self):
         encounter_referral = self.create_referral()
@@ -1257,44 +1260,55 @@ class ReferralAPITestCase(CareAPITestBase):
         response = self.client.get(self.referral_url(referral, "questionnaires"))
         self.assertIn(response.status_code, (403, 404), response.data)
 
-    def test_patient_referral_form_rendering_only_returns_active_current_patient_forms(
+    def test_form_rendering_only_returns_active_current_referral_forms(
         self,
     ):
+        encounter_referral = self.create_referral()
         response = self.client.post(
             self.referral_url(), self.patient_referral_payload(), format="json"
         )
         self.assertEqual(response.status_code, 200, response.data)
-        referral = Referral.objects.get(external_id=response.data["id"])
-        encounter_form = baker.make(
-            Questionnaire,
-            status="active",
-            subject_type="encounter",
-            questions=self.questionnaire.questions,
-        )
+        patient_referral = Referral.objects.get(external_id=response.data["id"])
+        other_subject_forms = [
+            baker.make(
+                Questionnaire,
+                status="active",
+                subject_type=subject.value,
+                questions=self.questionnaire.questions,
+            )
+            for subject in SubjectType
+            if subject != SubjectType.referral
+        ]
         inactive_form = baker.make(
             Questionnaire,
             status="inactive",
-            subject_type="patient",
+            subject_type="referral",
             questions=self.questionnaire.questions,
         )
         outdated_form = baker.make(
             Questionnaire,
             status="active",
-            subject_type="patient",
+            subject_type="referral",
             latest_revision=self.questionnaire,
             questions=self.questionnaire.questions,
         )
         self.availability.questionnaires.add(
-            encounter_form, inactive_form, outdated_form
+            *other_subject_forms, inactive_form, outdated_form
         )
 
-        response = self.client.get(self.referral_url(referral, "questionnaires"))
-        self.assertEqual(response.status_code, 200, response.data)
-        self.assertEqual(response.data["count"], 1)
-        self.assertEqual(
-            [form["id"] for form in response.data["results"]],
-            [str(self.questionnaire.external_id)],
-        )
+        for url in (
+            self.availability_url(self.availability, "questionnaires"),
+            self.referral_url(encounter_referral, "questionnaires"),
+            self.referral_url(patient_referral, "questionnaires"),
+        ):
+            with self.subTest(url=url):
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 200, response.data)
+                self.assertEqual(response.data["count"], 1)
+                self.assertEqual(
+                    [form["id"] for form in response.data["results"]],
+                    [str(self.questionnaire.external_id)],
+                )
 
     def test_public_submission_requires_origin_permission(self):
         self.client.force_authenticate(user=self.outsider)
@@ -1324,7 +1338,7 @@ class ReferralAPITestCase(CareAPITestBase):
             title="Unmapped form",
             slug="unmapped-form",
             status="active",
-            subject_type="encounter",
+            subject_type="referral",
             questions=deepcopy(self.questionnaire.questions),
         )
         response = self.client.post(
@@ -1366,14 +1380,20 @@ class ReferralAPITestCase(CareAPITestBase):
 
     def test_referrals_and_questionnaires_share_answer_processing(self):
         self.client.force_authenticate(user=self.create_super_user())
-        self.questionnaire.facility = self.facility
-        self.questionnaire.save()
+        clinical_questionnaire = baker.make(
+            Questionnaire,
+            auth_context="facility",
+            facility=self.facility,
+            subject_type="encounter",
+            status="active",
+            questions=deepcopy(self.questionnaire.questions),
+        )
         payload = self.referral_payload()
         original_questions = deepcopy(self.questionnaire.questions)
         response = self.client.post(
             reverse(
                 "questionnaire-submit",
-                kwargs={"external_id": self.questionnaire.external_id},
+                kwargs={"external_id": clinical_questionnaire.external_id},
             ),
             {
                 "resource_id": str(self.encounter.external_id),
@@ -1401,14 +1421,21 @@ class ReferralAPITestCase(CareAPITestBase):
 
     def test_referrals_and_questionnaires_return_the_same_validation_errors(self):
         self.client.force_authenticate(user=self.create_super_user())
-        self.questionnaire.facility = self.facility
         self.questionnaire.questions[0]["type"] = "integer"
         self.questionnaire.save()
+        clinical_questionnaire = baker.make(
+            Questionnaire,
+            auth_context="facility",
+            facility=self.facility,
+            subject_type="encounter",
+            status="active",
+            questions=deepcopy(self.questionnaire.questions),
+        )
         payload = self.referral_payload()
         normal = self.client.post(
             reverse(
                 "questionnaire-submit",
-                kwargs={"external_id": self.questionnaire.external_id},
+                kwargs={"external_id": clinical_questionnaire.external_id},
             ),
             {
                 "resource_id": str(self.encounter.external_id),
@@ -1468,7 +1495,7 @@ class ReferralAPITestCase(CareAPITestBase):
             version="1.0",
             auth_context="facility",
             facility=self.destination,
-            subject_type="encounter",
+            subject_type="referral",
             status="active",
             internal_organization_cache=[self.destination_organization.id],
             questions=deepcopy(self.questionnaire.questions),
@@ -2155,7 +2182,7 @@ class ReferralAPITestCase(CareAPITestBase):
         other = baker.make(
             Questionnaire,
             status="active",
-            subject_type="encounter",
+            subject_type="referral",
             questions=self.questionnaire.questions,
         )
         unmapped = self.client.post(
@@ -2195,34 +2222,41 @@ class ReferralAPITestCase(CareAPITestBase):
         self.assertEqual(initial.questionnaire_response, original_answers)
         self.assertFalse(QuestionnaireResponse.objects.exists())
 
-    def test_patient_referral_additional_responses_require_patient_subject_forms(self):
+    def test_additional_responses_require_referral_subject_forms_for_any_origin(self):
+        encounter_referral = self.create_referral()
         response = self.client.post(
             self.referral_url(), self.patient_referral_payload(), format="json"
         )
         self.assertEqual(response.status_code, 200, response.data)
-        referral = Referral.objects.get(external_id=response.data["id"])
-        additional = self.client.post(
-            self.questionnaire_response_url(referral),
-            self.questionnaire_response_payload(),
-            format="json",
-        )
-        self.assertEqual(additional.status_code, 200, additional.data)
-        encounter_form = baker.make(
-            Questionnaire,
-            status="active",
-            subject_type="encounter",
-            questions=self.questionnaire.questions,
-        )
-        self.availability.questionnaires.add(encounter_form)
-        invalid = self.client.post(
-            self.questionnaire_response_url(referral),
-            self.questionnaire_response_payload(
-                questionnaire=str(encounter_form.external_id)
-            ),
-            format="json",
-        )
-        self.assertEqual(invalid.status_code, 400, invalid.data)
-        self.assertEqual(referral.questionnaire_responses.count(), 2)
+        patient_referral = Referral.objects.get(external_id=response.data["id"])
+        for referral in (encounter_referral, patient_referral):
+            additional = self.client.post(
+                self.questionnaire_response_url(referral),
+                self.questionnaire_response_payload(),
+                format="json",
+            )
+            self.assertEqual(additional.status_code, 200, additional.data)
+        for subject in SubjectType:
+            if subject == SubjectType.referral:
+                continue
+            questionnaire = baker.make(
+                Questionnaire,
+                status="active",
+                subject_type=subject.value,
+                questions=self.questionnaire.questions,
+            )
+            self.availability.questionnaires.add(questionnaire)
+            for referral in (encounter_referral, patient_referral):
+                with self.subTest(subject=subject, encounter=referral.encounter_id):
+                    invalid = self.client.post(
+                        self.questionnaire_response_url(referral),
+                        self.questionnaire_response_payload(
+                            questionnaire=str(questionnaire.external_id)
+                        ),
+                        format="json",
+                    )
+                    self.assertEqual(invalid.status_code, 400, invalid.data)
+                    self.assertEqual(referral.questionnaire_responses.count(), 2)
 
     def test_resource_types_can_be_classified_and_filtered(self):
         referral = self.create_referral()
