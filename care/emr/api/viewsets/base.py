@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError as DjangoValidationError
 from django.db import transaction
 from django.http.response import Http404
 from drf_spectacular.utils import extend_schema
-from pydantic import UUID4, BaseModel, ValidationError
+from pydantic import BaseModel, ValidationError
 from rest_framework import status
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError as RestFrameworkValidationError
@@ -19,6 +19,7 @@ from care.emr.models.base import EMRBaseModel
 from care.emr.models.questionnaire import FormSubmission
 from care.emr.resources.base import EMRResource
 from care.emr.resources.form_submission.spec import FormSubmissionStatusChoices
+from care.emr.resources.tag.config_spec import TagSetRequest
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.utils.shortcuts import get_object_or_404
 
@@ -71,20 +72,13 @@ def emr_exception_handler(exc, context):
 
 
 class EMRRetrieveMixin:
-    def get_serializer_retrieve_context(self):
-        return {}
-
     def authorize_retrieve(self, model_instance):
         pass
 
     def retrieve(self, request, *args, **kwargs):
         instance = self.get_object()
         self.authorize_retrieve(instance)
-        data = (
-            self.get_retrieve_pydantic_model()
-            .serialize(instance, request.user, **self.get_serializer_retrieve_context())
-            .to_json()
-        )
+        data = self.serialize_retrieve(instance)
         return Response(data)
 
 
@@ -123,6 +117,8 @@ class EMRCreateMixin:
                     updated_by=self.request.user,
                     form_submission=form_submission,
                 )
+            if getattr(self, "ACTIONS_ENABLED", False):
+                self.perform_actions(instance)
 
     def clean_create_data(self, request_data):
         return request_data
@@ -148,7 +144,7 @@ class EMRCreateMixin:
         self.authorize_create(instance)
         model_instance = instance.de_serialize()
         self.perform_create(model_instance)
-        return self.get_retrieve_pydantic_model().serialize(model_instance).to_json()
+        return self.serialize_retrieve(model_instance)
 
 
 class EMRListMixin:
@@ -240,7 +236,7 @@ class EMRUpdateMixin:
         partial = getattr(self, "partial", False)
         model_instance = serializer_obj.de_serialize(obj=instance, partial=partial)
         self.perform_update(model_instance)
-        return self.get_retrieve_pydantic_model().serialize(model_instance).to_json()
+        return self.serialize_retrieve(instance)
 
 
 class EMRDestroyMixin:
@@ -349,13 +345,25 @@ class EMRBaseViewSet(GenericViewSet):
     def fetch_patient_from_instance(self, instance):
         return instance.patient
 
+    def get_serializer_retrieve_context(self):
+        return {}
+
+    def serialize_retrieve(self, instance):
+        return (
+            self.get_retrieve_pydantic_model()
+            .serialize(
+                instance, self.request.user, **self.get_serializer_retrieve_context()
+            )
+            .to_json()
+        )
+
 
 class EMRQuestionnaireResponseMixin:
     CREATE_QUESTIONNAIRE_RESPONSE = True
 
 
 class TagRequest(BaseModel):
-    tags: list[UUID4] = []
+    tags: list[TagSetRequest] = []
 
 
 class EMRTagMixin:
@@ -392,9 +400,11 @@ class EMRTagMixin:
         # TODO Facility AuthZ missing
         if not self.resource_type:
             return Response({})
+
         instance = self.get_object()
         self.authorize_set_tags(instance)
         self.perform_set_tags(instance, request.data)
+
         return self.retrieve(request, *args, **kwargs)
 
     @extend_schema(request=TagRequest)
@@ -408,10 +418,12 @@ class EMRTagMixin:
         tag_request = TagRequest.model_validate(request.data)
         tag_manager = self.tag_manager()
         tag_manager.unset_tags(
+            self.resource_type,
             instance,
             tag_request.tags,
             request.user,
         )
+
         return self.retrieve(request, *args, **kwargs)
 
 

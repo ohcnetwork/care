@@ -30,7 +30,7 @@ from care.emr.resources.patient_identifier.default_expression_evaluator import (
 )
 from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
 from care.emr.resources.scheduling.token.spec import TokenRetrieveSpec
-from care.emr.resources.tag.config_spec import TagResource
+from care.emr.resources.tag.config_spec import TagResource, TagSetRequest
 from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import PatientFacilityTagManager, PatientInstanceTagManager
 from care.facility.models.facility import Facility
@@ -441,7 +441,7 @@ class PatientViewSet(EMRModelViewSet):
         return Response(PatientRetrieveSpec.serialize(patient).to_json())
 
     class PatientTagRequest(BaseModel):
-        tags: list[UUID4]
+        tags: list[TagSetRequest]
         facility: UUID4 | None = None
 
     @extend_schema(request=PatientTagRequest)
@@ -467,6 +467,7 @@ class PatientViewSet(EMRModelViewSet):
         tag_request = self.PatientTagRequest.model_validate(request.data)
         tag_manager = PatientInstanceTagManager()
         tag_manager.unset_tags(
+            TagResource.patient,
             instance,
             tag_request.tags,
             request.user,
@@ -496,6 +497,7 @@ class PatientViewSet(EMRModelViewSet):
         tag_request = self.PatientTagRequest.model_validate(request.data)
         tag_manager = PatientFacilityTagManager(tag_request.facility)
         tag_manager.unset_tags(
+            TagResource.patient,
             instance,
             tag_request.tags,
             request.user,

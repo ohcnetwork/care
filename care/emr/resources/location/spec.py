@@ -137,6 +137,8 @@ class FacilityLocationMinimalListSpec(FacilityLocationSpec):
     parent: dict
     mode: str
     has_children: bool
+    has_sub_locations: bool
+    has_beds: bool
     system_availability_status: str
 
     @classmethod
@@ -146,10 +148,6 @@ class FacilityLocationMinimalListSpec(FacilityLocationSpec):
 
 
 class FacilityLocationListSpec(FacilityLocationMinimalListSpec):
-    parent: dict
-    mode: str
-    has_children: bool
-    system_availability_status: str
     current_encounter: dict | None = None
     tags: list[dict] = []
 

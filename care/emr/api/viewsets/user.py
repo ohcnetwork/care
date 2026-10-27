@@ -4,7 +4,7 @@ from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from jsonschema import validate
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, RootModel, model_validator
 from rest_framework import filters as drf_filters
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
@@ -17,6 +17,7 @@ from rest_framework.response import Response
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models import Organization
 from care.emr.models.organization import OrganizationUser
+from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.mail_type import MailTypeChoices
 from care.emr.resources.organization.spec import OrganizationTypeChoices
 from care.emr.resources.user.spec import (
@@ -78,6 +79,10 @@ class UserPreferenceRequest(BaseModel):
             except Exception as e:
                 raise ValueError("Invalid JSON") from e
         return self
+
+
+class UserDegreesResponse(RootModel[list[Coding]]):
+    pass
 
 
 class UserFilter(filters.FilterSet):
@@ -175,6 +180,11 @@ class UserViewSet(EMRModelViewSet):
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):
         return Response(CurrentUserRetrieveSpec.serialize(request.user).to_json())
+
+    @extend_schema(responses={200: UserDegreesResponse})
+    @action(detail=False, methods=["GET"])
+    def degrees(self, request):
+        return Response(settings.USER_QUALIFICATION_DEGREES)
 
     @action(methods=["GET"], detail=True)
     def check_availability(self, request, username):

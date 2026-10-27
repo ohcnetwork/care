@@ -1,0 +1,96 @@
+from datetime import datetime
+
+from pydantic import UUID4
+
+from care.emr.models.facility_resource import FacilityResourceObservation
+from care.emr.resources.base import EMRResource, model_from_cache
+from care.emr.resources.common import Coding
+from care.emr.resources.common.codable_concept import CodeableConcept
+from care.emr.resources.observation.spec import (
+    Component,
+    ObservationStatus,
+    Performer,
+    ReferenceRange,
+)
+from care.emr.resources.observation.valueset import (
+    CARE_OBSERVATION_COLLECTION_METHOD,
+)
+from care.emr.resources.observation_definition.spec import BaseObservationDefinitionSpec
+from care.emr.resources.questionnaire.spec import QuestionType, SubjectType
+from care.emr.resources.questionnaire_response.spec import (
+    QuestionnaireSubmitResultValue,
+)
+from care.emr.resources.user.spec import UserSpec
+from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
+
+
+class BaseResourceObservationSpec(EMRResource):
+    __model__ = FacilityResourceObservation
+
+    id: UUID4 | None
+    status: ObservationStatus
+    category: Coding | None = None
+    main_code: Coding | None = None
+    alternate_coding: CodeableConcept | None = None
+    subject_type: SubjectType
+    subject_id: UUID4
+    effective_datetime: datetime
+    performer: Performer | None = None
+    value_type: QuestionType
+    value: QuestionnaireSubmitResultValue
+    note: str | None = None
+    method: ValueSetBoundCoding[CARE_OBSERVATION_COLLECTION_METHOD.slug] | None = None
+    reference_range: list[ReferenceRange] = []
+    interpretation: dict = {}
+    parent: UUID4 | None = None
+    questionnaire_response: UUID4 | None = None
+    component: list[Component] = []
+
+
+class ResourceObservationSpec(BaseResourceObservationSpec):
+    data_entered_by_id: int
+    created_by_id: int
+    updated_by_id: int
+    facility_id: int
+    questionnaire_response_id: int
+
+    def perform_extra_deserialization(self, is_update, obj):
+        obj.external_id = self.id
+        obj.data_entered_by_id = self.data_entered_by_id
+        obj.created_by_id = self.created_by_id
+        obj.updated_by_id = self.updated_by_id
+        obj.facility_id = self.facility_id
+        obj.questionnaire_response_id = self.questionnaire_response_id
+        self.meta.pop("data_entered_by_id", None)
+        if not is_update:
+            obj.id = None
+
+
+class ResourceObservationReadSpec(BaseResourceObservationSpec):
+    created_by: UserSpec = {}
+    updated_by: UserSpec = {}
+    data_entered_by: UserSpec | None = None
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        mapping["id"] = obj.external_id
+        # Avoiding extra queries
+        mapping["questionnaire_response"] = None
+
+        cls.serialize_audit_users(mapping, obj)
+        if obj.data_entered_by:
+            mapping["data_entered_by"] = model_from_cache(
+                UserSpec, id=obj.data_entered_by_id
+            )
+
+
+class ResourceObservationRetrieveSpec(ResourceObservationReadSpec):
+    observation_definition: dict | None = None
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        if obj.observation_definition:
+            mapping["observation_definition"] = BaseObservationDefinitionSpec.serialize(
+                obj.observation_definition
+            )

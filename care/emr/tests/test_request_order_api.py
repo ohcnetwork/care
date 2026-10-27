@@ -1,5 +1,8 @@
+from unittest.mock import patch
+
 from django.urls import reverse
 from model_bakery import baker
+from rest_framework.exceptions import ValidationError
 
 from care.emr.resources.inventory.supply_request.request_order import (
     SupplyRequestCategoryOptions,
@@ -8,6 +11,7 @@ from care.emr.resources.inventory.supply_request.request_order import (
     SupplyRequestPriorityOptions,
     SupplyRequestReason,
 )
+from care.emr.resources.inventory.supply_request.spec import SupplyRequestStatusOptions
 from care.security.permissions.supply_request import SupplyRequestPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -394,6 +398,237 @@ class RequestOrderAPITestCase(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot write supply requests", response.data["detail"])
+
+    def test_cancel_request_order_cancels_all_children(self):
+        self.client.force_authenticate(user=self.superuser)
+        item = baker.make("emr.ProductKnowledge", facility=self.facility)
+        unrelated_order = self.create_request_order(destination=self.destination)
+        unrelated_request = baker.make(
+            "emr.SupplyRequest",
+            order=unrelated_order,
+            item=item,
+            status=SupplyRequestStatusOptions.active.value,
+        )
+
+        for order_status in [
+            SupplyRequestOrderStatusOptions.in_progress,
+            SupplyRequestOrderStatusOptions.completed,
+        ]:
+            for cancelled_status, child_status in [
+                (
+                    SupplyRequestOrderStatusOptions.abandoned,
+                    SupplyRequestStatusOptions.cancelled,
+                ),
+                (
+                    SupplyRequestOrderStatusOptions.entered_in_error,
+                    SupplyRequestStatusOptions.entered_in_error,
+                ),
+            ]:
+                with self.subTest(
+                    order_status=order_status, cancelled_status=cancelled_status
+                ):
+                    request_order = self.create_request_order(
+                        origin=self.origin,
+                        destination=self.destination,
+                        status=order_status.value,
+                    )
+                    children = [
+                        baker.make(
+                            "emr.SupplyRequest",
+                            order=request_order,
+                            item=item,
+                            status=status.value,
+                        )
+                        for status in SupplyRequestStatusOptions
+                    ]
+                    response = self.client.patch(
+                        self.generate_detail_url(
+                            request_order.external_id, self.facility.external_id
+                        ),
+                        data=self.generate_request_order_data(
+                            status=cancelled_status.value
+                        ),
+                        format="json",
+                    )
+
+                    self.assertEqual(response.status_code, 200)
+                    request_order.refresh_from_db()
+                    self.assertEqual(request_order.status, cancelled_status.value)
+                    for child in children:
+                        modified_date = child.modified_date
+                        child.refresh_from_db()
+                        self.assertEqual(child.status, child_status.value)
+                        self.assertEqual(child.updated_by, self.superuser)
+                        self.assertGreater(child.modified_date, modified_date)
+                    unrelated_request.refresh_from_db()
+                    self.assertEqual(
+                        unrelated_request.status,
+                        SupplyRequestStatusOptions.active.value,
+                    )
+
+    def test_update_request_order_without_cancellation_preserves_children(self):
+        self.client.force_authenticate(user=self.superuser)
+        request_order = self.create_request_order(
+            origin=self.origin, destination=self.destination
+        )
+        item = baker.make("emr.ProductKnowledge", facility=self.facility)
+        children = [
+            baker.make(
+                "emr.SupplyRequest",
+                order=request_order,
+                item=item,
+                status=status.value,
+            )
+            for status in SupplyRequestStatusOptions
+        ]
+        response = self.client.patch(
+            self.generate_detail_url(
+                request_order.external_id, self.facility.external_id
+            ),
+            data=self.generate_request_order_data(
+                status=SupplyRequestOrderStatusOptions.completed.value
+            ),
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        for child in children:
+            original_status = child.status
+            child.refresh_from_db()
+            self.assertEqual(child.status, original_status)
+
+    def test_cancel_request_order_rolls_back_children_when_order_save_fails(self):
+        self.client.force_authenticate(user=self.superuser)
+        request_order = self.create_request_order(
+            origin=self.origin, destination=self.destination
+        )
+        child = baker.make(
+            "emr.SupplyRequest",
+            order=request_order,
+            item=baker.make("emr.ProductKnowledge", facility=self.facility),
+            status=SupplyRequestStatusOptions.completed.value,
+        )
+        modified_date = child.modified_date
+
+        with patch(
+            "care.emr.models.supply_request.RequestOrder.save",
+            side_effect=ValidationError("Order save failed"),
+        ):
+            response = self.client.patch(
+                self.generate_detail_url(
+                    request_order.external_id, self.facility.external_id
+                ),
+                data=self.generate_request_order_data(
+                    status=SupplyRequestOrderStatusOptions.abandoned.value
+                ),
+                format="json",
+            )
+
+        self.assertEqual(response.status_code, 400)
+        request_order.refresh_from_db()
+        self.assertEqual(
+            request_order.status, SupplyRequestOrderStatusOptions.draft.value
+        )
+        child.refresh_from_db()
+        self.assertEqual(child.status, SupplyRequestStatusOptions.completed.value)
+        self.assertIsNone(child.updated_by)
+        self.assertEqual(child.modified_date, modified_date)
+
+    def test_request_order_cannot_change_status_after_cancellation(self):
+        self.client.force_authenticate(user=self.superuser)
+        item = baker.make("emr.ProductKnowledge", facility=self.facility)
+
+        for current_status, child_status in [
+            (
+                SupplyRequestOrderStatusOptions.abandoned,
+                SupplyRequestStatusOptions.cancelled,
+            ),
+            (
+                SupplyRequestOrderStatusOptions.entered_in_error,
+                SupplyRequestStatusOptions.entered_in_error,
+            ),
+        ]:
+            for new_status in SupplyRequestOrderStatusOptions:
+                if new_status == current_status:
+                    continue
+                with self.subTest(current_status=current_status, new_status=new_status):
+                    request_order = self.create_request_order(
+                        origin=self.origin,
+                        destination=self.destination,
+                        status=current_status.value,
+                    )
+                    child = baker.make(
+                        "emr.SupplyRequest",
+                        order=request_order,
+                        item=item,
+                        status=child_status.value,
+                    )
+                    modified_date = child.modified_date
+                    response = self.client.patch(
+                        self.generate_detail_url(
+                            request_order.external_id, self.facility.external_id
+                        ),
+                        data=self.generate_request_order_data(status=new_status.value),
+                        format="json",
+                    )
+
+                    self.assertEqual(response.status_code, 400)
+                    self.assertIn(
+                        "Request order already abandoned or entered in error",
+                        response.data["errors"][0]["msg"],
+                    )
+                    request_order.refresh_from_db()
+                    self.assertEqual(request_order.status, current_status.value)
+                    child.refresh_from_db()
+                    self.assertEqual(child.status, child_status.value)
+                    self.assertIsNone(child.updated_by)
+                    self.assertEqual(child.modified_date, modified_date)
+
+    def test_cancelled_request_order_allows_edits_without_status_change(self):
+        self.client.force_authenticate(user=self.superuser)
+        item = baker.make("emr.ProductKnowledge", facility=self.facility)
+
+        for order_status, child_status in [
+            (
+                SupplyRequestOrderStatusOptions.abandoned,
+                SupplyRequestStatusOptions.cancelled,
+            ),
+            (
+                SupplyRequestOrderStatusOptions.entered_in_error,
+                SupplyRequestStatusOptions.entered_in_error,
+            ),
+        ]:
+            with self.subTest(order_status=order_status):
+                request_order = self.create_request_order(
+                    origin=self.origin,
+                    destination=self.destination,
+                    status=order_status.value,
+                )
+                child = baker.make(
+                    "emr.SupplyRequest",
+                    order=request_order,
+                    item=item,
+                    status=child_status.value,
+                )
+                modified_date = child.modified_date
+                response = self.client.patch(
+                    self.generate_detail_url(
+                        request_order.external_id, self.facility.external_id
+                    ),
+                    data=self.generate_request_order_data(
+                        status=order_status.value, note="Updated cancellation note"
+                    ),
+                    format="json",
+                )
+
+                self.assertEqual(response.status_code, 200)
+                request_order.refresh_from_db()
+                self.assertEqual(request_order.status, order_status.value)
+                self.assertEqual(request_order.note, "Updated cancellation note")
+                child.refresh_from_db()
+                self.assertEqual(child.status, child_status.value)
+                self.assertIsNone(child.updated_by)
+                self.assertEqual(child.modified_date, modified_date)
 
     # Test cases for list request orders
 

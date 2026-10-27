@@ -12,7 +12,10 @@ from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.patient.otp_based_flow import PatientOTPReadSpec
 from care.emr.resources.patient.spec import PatientRetrieveSpec
 from care.emr.resources.scheduling.resource.spec import serialize_resource
-from care.emr.resources.scheduling.schedule.spec import SchedulableResourceTypeOptions
+from care.emr.resources.scheduling.schedule.spec import (
+    SchedulableResourceTypeOptions,
+    serialize_schedule_participants,
+)
 from care.emr.resources.scheduling.token.spec import TokenReadSpec
 from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import SingleFacilityTagManager
@@ -174,3 +177,6 @@ class TokenBookingRetrieveSpec(TokenBookingReadSpec):
             mapping["associated_encounter"] = EncounterListSpec.serialize(
                 obj.associated_encounter
             ).to_json()
+        mapping["token_slot"]["availability"]["schedule"].update(
+            serialize_schedule_participants(obj.token_slot.availability.schedule)
+        )

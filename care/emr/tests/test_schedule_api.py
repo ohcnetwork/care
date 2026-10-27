@@ -1,8 +1,10 @@
 from datetime import UTC, datetime, timedelta
+from uuid import uuid4
 
 from django.conf import settings
 from django.test.utils import ignore_warnings
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 
 from care.emr.models import (
@@ -19,6 +21,7 @@ from care.emr.resources.scheduling.schedule.spec import (
 from care.emr.resources.scheduling.slot.spec import (
     CANCELLED_STATUS_CHOICES,
     BookingStatusChoices,
+    TokenBookingOTPReadSpec,
 )
 from care.security.permissions.schedule import SchedulePermissions
 from care.utils.tests.base import CareAPITestBase
@@ -119,8 +122,8 @@ class TestScheduleViewSet(CareAPITestBase):
 
     def generate_schedule_data(self, **kwargs):
         """Helper to generate valid schedule data."""
-        valid_from = datetime.now(UTC).replace(tzinfo=None)
-        valid_to = (datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None)
+        valid_from = timezone.make_naive(timezone.now())
+        valid_to = valid_from + timedelta(minutes=30)
 
         return {
             "resource_type": SchedulableResourceTypeOptions.practitioner.value,
@@ -226,19 +229,322 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None)
+            valid_from=timezone.localdate().isoformat()
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], schedule_data["name"])
+        self.assertEqual(response.data["organizations"], [])
+        self.assertEqual(response.data["care_team"], [])
 
     def test_create_schedule_without_permissions(self):
         """Users without can_write_user_schedule permission cannot create schedules."""
-        schedule_data = self.generate_schedule_data(
-            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None)
-        )
+        schedule_data = self.generate_schedule_data()
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def _grant_schedule_defaults_permissions(self):
+        role = self.create_role_with_permissions(
+            [
+                SchedulePermissions.can_write_schedule.name,
+                SchedulePermissions.can_list_schedule.name,
+                SchedulePermissions.can_list_booking.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        return role
+
+    @staticmethod
+    def _care_team_member(user, role_code="NURSE", *, internal=False):
+        return {
+            "user_id": user.id if internal else str(user.external_id),
+            "role": {
+                "code": role_code,
+                "system": "local",
+                "version": None,
+                "display": None,
+            },
+        }
+
+    def test_create_schedule_with_organizations_and_care_team(self):
+        role = self._grant_schedule_defaults_permissions()
+        organization = self.create_facility_organization(facility=self.facility)
+        member = self.create_user()
+        for member_organization in [self.organization, organization]:
+            self.attach_role_facility_organization_user(
+                member_organization, member, role
+            )
+
+        response = self.client.post(
+            self.base_url,
+            self.generate_schedule_data(
+                organizations=[
+                    str(organization.external_id),
+                    str(self.organization.external_id),
+                    str(organization.external_id),
+                ],
+                care_team=[
+                    self._care_team_member(member),
+                    self._care_team_member(self.user, "TREATING_DOCTOR"),
+                ],
+            ),
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        schedule = Schedule.objects.get(external_id=response.data["id"])
+        self.assertCountEqual(
+            schedule.organizations, [organization.id, self.organization.id]
+        )
+        self.assertEqual(
+            schedule.care_team,
+            [
+                self._care_team_member(member, internal=True),
+                self._care_team_member(self.user, "TREATING_DOCTOR", internal=True),
+            ],
+        )
+        self.assertCountEqual(
+            [organization["id"] for organization in response.data["organizations"]],
+            [str(organization.external_id), str(self.organization.external_id)],
+        )
+        self.assertEqual(
+            [member["member"]["id"] for member in response.data["care_team"]],
+            [str(member.external_id), str(self.user.external_id)],
+        )
+        self.assertEqual(
+            [member["role"] for member in response.data["care_team"]],
+            [
+                self._care_team_member(member)["role"],
+                self._care_team_member(self.user, "TREATING_DOCTOR")["role"],
+            ],
+        )
+
+    def test_update_schedule_defaults_can_be_replaced_preserved_and_cleared(self):
+        role = self._grant_schedule_defaults_permissions()
+        self.schedule.organizations = [self.organization.id]
+        self.schedule.care_team = [self._care_team_member(self.user, internal=True)]
+        self.schedule.save()
+        organization = self.create_facility_organization(facility=self.facility)
+        member = self.create_user()
+        self.attach_role_facility_organization_user(organization, member, role)
+        url = self._get_schedule_url(self.schedule.external_id)
+        data = {
+            "name": self.schedule.name,
+            "is_public": self.schedule.is_public,
+            "valid_from": self.schedule.valid_from,
+            "valid_to": self.schedule.valid_to,
+        }
+
+        for changes, expected_organizations, expected_care_team in [
+            (
+                {"organizations": [str(organization.external_id)]},
+                [organization.id],
+                [self._care_team_member(self.user, internal=True)],
+            ),
+            ({}, [organization.id], [self._care_team_member(self.user, internal=True)]),
+            (
+                {"care_team": [self._care_team_member(member, "TREATING_DOCTOR")]},
+                [organization.id],
+                [self._care_team_member(member, "TREATING_DOCTOR", internal=True)],
+            ),
+            ({"organizations": [], "care_team": []}, [], []),
+        ]:
+            with self.subTest(changes=changes):
+                response = self.client.put(url, {**data, **changes}, format="json")
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+                self.schedule.refresh_from_db()
+                self.assertEqual(self.schedule.organizations, expected_organizations)
+                self.assertEqual(self.schedule.care_team, expected_care_team)
+
+    def test_schedule_defaults_are_exposed_in_staff_details_and_omitted_from_lists(
+        self,
+    ):
+        role = self._grant_schedule_defaults_permissions()
+        url = self._get_schedule_url(self.schedule.external_id)
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["organizations"], [])
+        self.assertEqual(response.data["care_team"], [])
+
+        member = self.create_user()
+        self.attach_role_facility_organization_user(self.organization, member, role)
+        self.schedule.organizations = [self.organization.id]
+        self.schedule.care_team = [
+            self._care_team_member(self.user, "TREATING_DOCTOR", internal=True),
+            self._care_team_member(member, internal=True),
+        ]
+        self.schedule.save()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        organizations = response.data["organizations"]
+        care_team = response.data["care_team"]
+        self.assertEqual(organizations[0]["id"], str(self.organization.external_id))
+        self.assertEqual(organizations[0]["name"], self.organization.name)
+        self.assertEqual(care_team[0]["member"]["id"], str(self.user.external_id))
+        self.assertEqual(care_team[0]["member"]["username"], self.user.username)
+        self.assertEqual(
+            care_team[0]["role"],
+            self._care_team_member(self.user, "TREATING_DOCTOR")["role"],
+        )
+        self.assertEqual(care_team[1]["member"]["id"], str(member.external_id))
+        self.assertEqual(care_team[1]["role"], self._care_team_member(member)["role"])
+
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": self.resource.resource_type,
+                "resource_id": str(self.user.external_id),
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertNotIn("organizations", response.data["results"][0])
+        self.assertNotIn("care_team", response.data["results"][0])
+
+        booking = self.create_booking()
+        response = self.client.get(
+            reverse(
+                "appointments-detail",
+                kwargs={
+                    "facility_external_id": self.facility.external_id,
+                    "external_id": booking.external_id,
+                },
+            )
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        appointment_schedule = response.data["token_slot"]["availability"]["schedule"]
+        self.assertEqual(appointment_schedule["organizations"], organizations)
+        self.assertEqual(appointment_schedule["care_team"], care_team)
+
+        response = self.client.get(
+            reverse(
+                "appointments-list",
+                kwargs={"facility_external_id": self.facility.external_id},
+            ),
+            {
+                "resource_type": self.resource.resource_type,
+                "resource_ids": str(self.user.external_id),
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        appointment_schedule = response.data["results"][0]["token_slot"][
+            "availability"
+        ]["schedule"]
+        self.assertNotIn("organizations", appointment_schedule)
+        self.assertNotIn("care_team", appointment_schedule)
+
+        otp_schedule = TokenBookingOTPReadSpec.serialize(booking).to_json()[
+            "token_slot"
+        ]["availability"]["schedule"]
+        self.assertNotIn("organizations", otp_schedule)
+        self.assertNotIn("care_team", otp_schedule)
+
+    def test_create_schedule_rejects_invalid_organizations_and_care_team(self):
+        role = self._grant_schedule_defaults_permissions()
+        other_facility = self.create_facility(user=self.user)
+        other_organization = self.create_facility_organization(facility=other_facility)
+        deleted_organization = self.create_facility_organization(
+            facility=self.facility, deleted=True
+        )
+        unaffiliated_user = self.create_user()
+        other_user = self.create_user()
+        deleted_user = self.create_user(deleted=True)
+        inactive_user = self.create_user(is_active=False)
+        self.attach_role_facility_organization_user(
+            other_organization, other_user, role
+        )
+        self.attach_role_facility_organization_user(
+            self.organization, deleted_user, role
+        )
+        self.attach_role_facility_organization_user(
+            self.organization, inactive_user, role
+        )
+
+        for field, invalid_ids in [
+            (
+                "organizations",
+                [
+                    uuid4(),
+                    other_organization.external_id,
+                    deleted_organization.external_id,
+                ],
+            ),
+            (
+                "care_team",
+                [
+                    uuid4(),
+                    unaffiliated_user.external_id,
+                    other_user.external_id,
+                    deleted_user.external_id,
+                    inactive_user.external_id,
+                ],
+            ),
+        ]:
+            for invalid_id in invalid_ids:
+                with self.subTest(field=field, invalid_id=invalid_id):
+                    value = str(invalid_id)
+                    if field == "care_team":
+                        value = {
+                            "user_id": value,
+                            "role": self._care_team_member(self.user)["role"],
+                        }
+                    response = self.client.post(
+                        self.base_url,
+                        self.generate_schedule_data(**{field: [value]}),
+                        format="json",
+                    )
+                    self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Schedule.objects.count(), 1)
+
+    def test_update_schedule_rejects_invalid_defaults_without_saving(self):
+        self._grant_schedule_defaults_permissions()
+        self.schedule.organizations = [self.organization.id]
+        self.schedule.care_team = [self._care_team_member(self.user, internal=True)]
+        self.schedule.save()
+        data = {
+            "name": "Invalid update",
+            "is_public": self.schedule.is_public,
+            "valid_from": self.schedule.valid_from,
+            "valid_to": self.schedule.valid_to,
+        }
+        for field in ["organizations", "care_team"]:
+            with self.subTest(field=field):
+                value = str(uuid4())
+                if field == "care_team":
+                    value = {
+                        "user_id": value,
+                        "role": self._care_team_member(self.user)["role"],
+                    }
+                response = self.client.put(
+                    self._get_schedule_url(self.schedule.external_id),
+                    {**data, field: [value]},
+                    format="json",
+                )
+                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+                self.schedule.refresh_from_db()
+                self.assertEqual(self.schedule.name, "Test Schedule")
+                self.assertEqual(self.schedule.organizations, [self.organization.id])
+                self.assertEqual(
+                    self.schedule.care_team,
+                    [self._care_team_member(self.user, internal=True)],
+                )
+
+    def test_create_schedule_rejects_duplicate_members_and_invalid_roles(self):
+        self._grant_schedule_defaults_permissions()
+        member = self._care_team_member(self.user)
+        for care_team in [
+            [member, self._care_team_member(self.user, "TREATING_DOCTOR")],
+            [{"user_id": str(self.user.external_id)}],
+            [{**member, "role": {"system": "local"}}],
+            [{**member, "role": "NURSE"}],
+        ]:
+            with self.subTest(care_team=care_team):
+                response = self.client.post(
+                    self.base_url,
+                    self.generate_schedule_data(care_team=care_team),
+                    format="json",
+                )
+                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Schedule.objects.count(), 1)
 
     def test_create_schedule_with_overlapping_availability(self):
         """Schedule creation fails when availability sessions overlap"""
@@ -294,7 +600,6 @@ class TestScheduleViewSet(CareAPITestBase):
         user = self.create_user()
         schedule_data = self.generate_schedule_data(
             resource_id=user.external_id,
-            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -302,13 +607,13 @@ class TestScheduleViewSet(CareAPITestBase):
         )
 
     def test_create_schedule_with_valid_from_date_less_than_current_date(self):
-        """Users cannot create schedule with valid_from date less than now date"""
+        """Users cannot create schedules starting before today's date."""
         permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_from=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
+            valid_from=(timezone.localdate() - timedelta(days=1)).isoformat()
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -318,13 +623,13 @@ class TestScheduleViewSet(CareAPITestBase):
         )
 
     def test_create_schedule_with_valid_to_date_less_than_current_date(self):
-        """Users cannot create schedule with valid_to date less than now date"""
+        """Users cannot create schedules ending before today's date."""
         permissions = [SchedulePermissions.can_write_schedule.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_to=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
+            valid_to=(timezone.localdate() - timedelta(days=1)).isoformat()
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -339,9 +644,10 @@ class TestScheduleViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
+        now = timezone.make_naive(timezone.now())
         schedule_data = self.generate_schedule_data(
-            valid_to=(datetime.now(UTC) + timedelta(minutes=10)).replace(tzinfo=None),
-            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
+            valid_to=now + timedelta(minutes=10),
+            valid_from=now + timedelta(minutes=30),
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(

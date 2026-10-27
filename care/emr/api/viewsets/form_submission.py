@@ -13,6 +13,7 @@ from care.emr.models.patient import Patient
 from care.emr.models.questionnaire import FormSubmission
 from care.emr.resources.form_submission.spec import (
     FormSubmissionReadSpec,
+    FormSubmissionStatusChoices,
     FormSubmissionUpdateSpec,
     FormSubmissionWriteSpec,
 )
@@ -61,6 +62,19 @@ class FormSubmissionViewSet(
         elif model_instance.patient:
             self.authorize_request(patient=model_instance.patient)
         return super().authorize_update(request_obj, model_instance)
+
+    def perform_update(self, instance):
+        old_instance = FormSubmission.objects.filter(id=instance.id).first()
+        if old_instance.status == FormSubmissionStatusChoices.entered_in_error.value:
+            raise ValidationError("Form submission is already entered in error")
+        if (
+            old_instance.status == FormSubmissionStatusChoices.submitted.value
+            and instance.status == FormSubmissionStatusChoices.draft.value
+        ):
+            raise ValidationError(
+                "Form submission cannot be set to draft after submission"
+            )
+        return super().perform_update(instance)
 
     def authorize_retrieve(self, model_instance):
         self.authorize_update(None, model_instance)

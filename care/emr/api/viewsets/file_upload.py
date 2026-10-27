@@ -20,87 +20,14 @@ from care.emr.api.viewsets.base import (
     EMRRetrieveMixin,
     EMRUpdateMixin,
 )
-from care.emr.models import Encounter, FileUpload, Patient
-from care.emr.models.consent import Consent
-from care.emr.models.diagnostic_report import DiagnosticReport
-from care.emr.models.service_request import ServiceRequest
+from care.emr.models import FileUpload
 from care.emr.resources.file_upload.spec import (
-    FileTypeChoices,
     FileUploadCreateSpec,
     FileUploadListSpec,
     FileUploadRetrieveSpec,
     FileUploadUpdateSpec,
 )
-from care.security.authorization import AuthorizationController
-from care.utils.shortcuts import get_object_or_404
-
-
-def file_authorizer(user, file_type, associating_id, permission):  # noqa PLR0912
-    allowed = False
-    if file_type == FileTypeChoices.patient.value:
-        patient_obj = get_object_or_404(Patient, external_id=associating_id)
-        if permission == "read":
-            allowed = AuthorizationController.call(
-                "can_view_clinical_data", user, patient_obj
-            )
-        elif permission == "write":
-            allowed = AuthorizationController.call(
-                "can_write_patient_obj", user, patient_obj
-            )
-    elif file_type == FileTypeChoices.encounter.value:
-        encounter_obj = get_object_or_404(Encounter, external_id=associating_id)
-        if permission == "read":
-            allowed = AuthorizationController.call(
-                "can_view_clinical_data", user, encounter_obj.patient
-            ) or AuthorizationController.call(
-                "can_view_encounter_clinical_data", user, encounter_obj
-            )
-        elif permission == "write":
-            allowed = AuthorizationController.call(
-                "can_update_encounter_clinical_data", user, encounter_obj
-            )
-    elif file_type == FileTypeChoices.consent.value:
-        encounter_obj = get_object_or_404(Consent, external_id=associating_id).encounter
-        if permission == "read":
-            allowed = AuthorizationController.call(
-                "can_view_clinical_data", user, encounter_obj.patient
-            ) or AuthorizationController.call(
-                "can_view_encounter_clinical_data", user, encounter_obj
-            )
-        elif permission == "write":
-            allowed = AuthorizationController.call(
-                "can_update_encounter_clinical_data", user, encounter_obj
-            )
-    elif file_type == FileTypeChoices.diagnostic_report.value:
-        diagnostic_report_obj = get_object_or_404(
-            DiagnosticReport, external_id=associating_id
-        )
-        if permission == "read":
-            allowed = AuthorizationController.call(
-                "can_read_diagnostic_report",
-                user,
-                diagnostic_report_obj.service_request,
-            )
-        elif permission == "write":
-            allowed = AuthorizationController.call(
-                "can_write_diagnostic_report",
-                user,
-                diagnostic_report_obj.service_request,
-            )
-    elif file_type == FileTypeChoices.service_request.value:
-        service_request_obj = get_object_or_404(
-            ServiceRequest, external_id=associating_id
-        )
-        if permission == "read":
-            allowed = AuthorizationController.call(
-                "can_read_service_request", user, service_request_obj
-            )
-        elif permission == "write":
-            allowed = AuthorizationController.call(
-                "can_write_service_request", user, service_request_obj
-            )
-    if not allowed:
-        raise PermissionDenied("Cannot View File")
+from care.security.authorization.file_upload import file_authorizer
 
 
 class FileCategoryFilter(filters.CharFilter):
@@ -147,6 +74,14 @@ class FileUploadViewSet(
             "write",
         )
 
+    def authorize_retrieve(self, model_instance):
+        file_authorizer(
+            self.request.user,
+            model_instance.file_type,
+            model_instance.associating_id,
+            "read",
+        )
+
     def get_queryset(self):
         if self.action == "list":
             if (
@@ -169,8 +104,6 @@ class FileUploadViewSet(
                     upload_completed=True,
                 )
             )
-        obj = get_object_or_404(FileUpload, external_id=self.kwargs["external_id"])
-        file_authorizer(self.request.user, obj.file_type, obj.associating_id, "read")
         return super().get_queryset()
 
     @extend_schema(responses={200: FileUploadListSpec})
@@ -256,6 +189,8 @@ class FileUploadViewSet(
             file_upload = FileUploadCreateSpec(**request_data).de_serialize()
             file_upload._just_created = False  # noqa SLF001
             self.authorize_create(file_upload)
+            file_upload.created_by = request.user
+            file_upload.updated_by = request.user
             file_upload.save()
 
             try:

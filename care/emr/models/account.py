@@ -26,6 +26,8 @@ class Account(EMRBaseModel):
         default=0, max_digits=20, decimal_places=6
     )
     tags = ArrayField(models.IntegerField(), default=list)
+    tags_data = models.JSONField(default=dict)
+
     extensions = models.JSONField(default=dict)
     primary_encounter = models.ForeignKey(
         "emr.Encounter", on_delete=models.SET_NULL, null=True, blank=True, default=None

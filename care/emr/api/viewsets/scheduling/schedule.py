@@ -29,6 +29,7 @@ from care.emr.resources.scheduling.schedule.spec import (
     SchedulableResourceTypeOptions,
     ScheduleCreateSpec,
     ScheduleReadSpec,
+    ScheduleRetrieveSpec,
     ScheduleUpdateSpec,
 )
 from care.facility.models import Facility
@@ -143,6 +144,7 @@ class ScheduleViewSet(EMRModelViewSet):
     pydantic_model = ScheduleCreateSpec
     pydantic_update_model = ScheduleUpdateSpec
     pydantic_read_model = ScheduleReadSpec
+    pydantic_retrieve_model = ScheduleRetrieveSpec
     filterset_class = ScheduleFilters
     filter_backends = [DjangoFilterBackend]
     CREATE_QUESTIONNAIRE_RESPONSE = False

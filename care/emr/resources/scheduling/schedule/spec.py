@@ -4,13 +4,21 @@ from enum import Enum
 
 from django.conf import settings
 from django.db.models import Sum
+from django.utils import timezone
 from pydantic import UUID4, Field, field_validator, model_validator
 from rest_framework.exceptions import ValidationError
 
+from care.emr.models.organization import FacilityOrganization, FacilityOrganizationUser
 from care.emr.models.scheduling.booking import TokenSlot
 from care.emr.models.scheduling.schedule import Availability, Schedule
 from care.emr.resources.base import EMRResource
 from care.emr.resources.charge_item_definition.spec import ChargeItemDefinitionReadSpec
+from care.emr.resources.encounter.care_team import EncounterCareTeamMemberSpec
+from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
+from care.emr.resources.referral.common import (
+    deserialize_care_team,
+    serialize_care_team,
+)
 from care.facility.models import Facility
 from care.utils.time_util import care_now
 
@@ -129,7 +137,43 @@ class ScheduleBaseSpec(EMRResource):
     is_public: bool
 
 
-class ScheduleCreateSpec(ScheduleBaseSpec):
+class ScheduleWriteSpec(ScheduleBaseSpec):
+    __exclude__ = [*ScheduleBaseSpec.__exclude__, "organizations", "care_team"]
+
+    organizations: list[UUID4] = Field(default_factory=list)
+    care_team: list[EncounterCareTeamMemberSpec] = Field(default_factory=list)
+
+    def perform_extra_deserialization(self, is_update, obj):
+        facility_id = obj.resource.facility_id if is_update else obj.facility.id
+        if "organizations" in self.model_fields_set:
+            organizations = list(
+                FacilityOrganization.objects.filter(
+                    external_id__in=self.organizations, facility_id=facility_id
+                ).values_list("id", flat=True)
+            )
+            if len(organizations) != len(set(self.organizations)):
+                raise ValidationError(
+                    "Organizations must belong to the schedule facility"
+                )
+            obj.organizations = organizations
+        if "care_team" in self.model_fields_set:
+            care_team = deserialize_care_team(self.care_team)
+            user_ids = {member["user_id"] for member in care_team}
+            facility_users = set(
+                FacilityOrganizationUser.objects.filter(
+                    organization__facility_id=facility_id,
+                    organization__deleted=False,
+                    user_id__in=user_ids,
+                ).values_list("user_id", flat=True)
+            )
+            if user_ids != facility_users:
+                raise ValidationError(
+                    "Care team members must belong to the schedule facility"
+                )
+            obj.care_team = care_team
+
+
+class ScheduleCreateSpec(ScheduleWriteSpec):
     facility: UUID4
     name: str
     valid_from: datetime.datetime
@@ -141,8 +185,12 @@ class ScheduleCreateSpec(ScheduleBaseSpec):
     @field_validator("valid_from", "valid_to")
     @classmethod
     def validate_dates(cls, value):
-        now = care_now().replace(tzinfo=None)
-        if value < now:
+        date = (
+            timezone.localtime(value).date()
+            if timezone.is_aware(value)
+            else value.date()
+        )
+        if date < timezone.localdate(care_now()):
             raise ValueError("Date cannot be before the current date")
         return value
 
@@ -169,9 +217,10 @@ class ScheduleCreateSpec(ScheduleBaseSpec):
         obj._resource_id = self.resource_id  # noqa SLF001
         obj._resource_type = self.resource_type  # noqa SLF001
         obj.availabilities = self.availabilities
+        super().perform_extra_deserialization(is_update, obj)
 
 
-class ScheduleUpdateSpec(ScheduleBaseSpec):
+class ScheduleUpdateSpec(ScheduleWriteSpec):
     name: str
     valid_from: datetime.datetime
     valid_to: datetime.datetime
@@ -207,6 +256,18 @@ class ScheduleUpdateSpec(ScheduleBaseSpec):
                 f"Old range has {old_allocated_sum} allocated slots while new range has {new_allocated_sum} allocated slots."
             )
             raise ValidationError(msg)
+        super().perform_extra_deserialization(is_update, obj)
+
+
+def serialize_schedule_participants(obj):
+    organizations = FacilityOrganization.objects.filter(id__in=obj.organizations)
+    return {
+        "organizations": [
+            FacilityOrganizationReadSpec.serialize(organization).to_json()
+            for organization in organizations
+        ],
+        "care_team": serialize_care_team(obj.care_team),
+    }
 
 
 class ScheduleReadSpec(ScheduleBaseSpec):
@@ -241,6 +302,16 @@ class ScheduleReadSpec(ScheduleBaseSpec):
             if obj.revisit_charge_item_definition
             else None
         )
+
+
+class ScheduleRetrieveSpec(ScheduleReadSpec):
+    organizations: list[dict] = Field(default_factory=list)
+    care_team: list[dict] = Field(default_factory=list)
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        mapping.update(serialize_schedule_participants(obj))
 
 
 def has_overlapping_availability(availabilities: list[AvailabilityDateTimeSpec]):
