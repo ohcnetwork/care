@@ -78,6 +78,7 @@ from care.emr.api.viewsets.organization import (
 from care.emr.api.viewsets.patient import PatientViewSet
 from care.emr.api.viewsets.patient_identifier import PatientIdentifierConfigViewSet
 from care.emr.api.viewsets.payment_reconciliation import PaymentReconciliationViewSet
+from care.emr.api.viewsets.procedure import ProcedureViewSet
 from care.emr.api.viewsets.questionnaire.questionnaire import (
     QuestionnaireViewSet,
 )
@@ -494,6 +495,7 @@ patient_nested_router.register(
 
 patient_nested_router.register(r"symptom", SymptomViewSet, basename="symptom")
 patient_nested_router.register(r"diagnosis", DiagnosisViewSet, basename="diagnosis")
+patient_nested_router.register(r"procedure", ProcedureViewSet, basename="procedure")
 
 patient_nested_router.register(
     r"diagnostic_report",
