@@ -15,6 +15,7 @@ from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
 from care.emr.resources.questionnaire.utils import (
     handle_resource_response,
     handle_response,
+    is_question_enabled,
     validate_questionnaire_response,
 )
 from care.emr.resources.questionnaire_response.resource_spce import (
@@ -206,6 +207,110 @@ class QuestionnaireEngineValidationTests(SimpleTestCase):
             questionnaire, [self.answer(controller, "true"), self.answer(conditional)]
         )
         self.assertEqual(result.cleaned_response, {"urgent": True, "reason": "Answer"})
+
+    def _is_enabled_for(self, controller, controller_values, operator, answer):
+        conditional = self.question(
+            "details",
+            enable_when=[
+                {
+                    "question": controller["link_id"],
+                    "operator": operator,
+                    "answer": answer,
+                }
+            ],
+        )
+        questionnaire = self.questionnaire([controller, conditional])
+        result = QuestionnaireSubmitResult.model_validate(
+            {"question_id": controller["id"], "values": controller_values}
+        )
+        return is_question_enabled(
+            conditional, {str(result.question_id): result}, questionnaire
+        )
+
+    def coded(self, code, system="http://snomed.info/sct"):
+        return {"system": system, "code": code}
+
+    def test_enable_when_matches_coded_answers_by_code(self):
+        controller = self.question("medication", "choice")
+        coded = [
+            {
+                "coding": {
+                    **self.coded("50020131000188108"),
+                    "display": "Cefatrizine only product",
+                }
+            }
+        ]
+        cases = [
+            ("equals", self.coded("50020131000188108"), True),
+            ("equals", self.coded("12345"), False),
+            ("not_equals", self.coded("50020131000188108"), False),
+            ("not_equals", self.coded("12345"), True),
+            ("exists", True, True),
+            # Only coded conditions compare codes; a plain string never does.
+            ("equals", "50020131000188108", False),
+        ]
+        for operator, answer, expected in cases:
+            with self.subTest(operator=operator, answer=answer):
+                self.assertEqual(
+                    self._is_enabled_for(controller, coded, operator, answer),
+                    expected,
+                )
+
+    def test_enable_when_compares_codes_within_the_condition_system(self):
+        controller = self.question("answer", "choice")
+        other_system = [{"coding": self.coded("123", "http://example.org/codes")}]
+        self.assertFalse(
+            self._is_enabled_for(controller, other_system, "equals", self.coded("123"))
+        )
+        self.assertTrue(
+            self._is_enabled_for(
+                controller, other_system, "not_equals", self.coded("123")
+            )
+        )
+        # A coded condition must match the system as well as the code.
+        self.assertFalse(
+            self._is_enabled_for(controller, other_system, "equals", {"code": "123"})
+        )
+        self.assertTrue(
+            self._is_enabled_for(
+                controller,
+                other_system,
+                "equals",
+                self.coded("123", "http://example.org/codes"),
+            )
+        )
+
+    def test_enable_when_compares_codes_without_boolean_normalization(self):
+        controller = self.question("answer", "choice")
+        system = "http://example.org/codes"
+        for submitted, expected in [("1", "yes"), ("N", "no"), ("Y", "y")]:
+            values = [{"coding": self.coded(submitted, system)}]
+            with self.subTest(submitted=submitted, expected=expected):
+                self.assertFalse(
+                    self._is_enabled_for(
+                        controller, values, "equals", self.coded(expected, system)
+                    )
+                )
+                self.assertTrue(
+                    self._is_enabled_for(
+                        controller,
+                        values,
+                        "not_equals",
+                        self.coded(expected, system),
+                    )
+                )
+
+    def test_enable_when_quantity_answers_still_compare_by_value(self):
+        controller = self.question("dose", "quantity")
+        values = [
+            {
+                "value": "20",
+                "unit": {"system": "http://unitsofmeasure.org", "code": "mg"},
+                "coding": {"system": "http://unitsofmeasure.org", "code": "mg"},
+            }
+        ]
+        self.assertTrue(self._is_enabled_for(controller, values, "greater", 10))
+        self.assertFalse(self._is_enabled_for(controller, values, "less", 10))
 
 
 class QuestionnaireEnginePersistenceTests(CareAPITestBase):

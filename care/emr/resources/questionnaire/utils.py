@@ -182,20 +182,20 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
             continue
 
         condition_question_id = question_link_id_to_id[link_id]
-
-        if (
-            condition_question_id not in responses
-            or not responses[condition_question_id].values
-        ):
-            all_values = []
-        else:
-            all_values = [
-                normalize_boolean_value(v.value)
-                for v in responses[condition_question_id].values
-            ]
+        values = (
+            responses[condition_question_id].values
+            if condition_question_id in responses
+            else []
+        )
 
         operator = condition["operator"]
-        expected_answer = normalize_boolean_value(condition["answer"])
+        answer = condition["answer"]
+        if isinstance(answer, dict):
+            expected_answer = (answer.get("system"), answer.get("code"))
+            all_values = [(v.coding.system, v.coding.code) for v in values if v.coding]
+        else:
+            expected_answer = normalize_boolean_value(answer)
+            all_values = [normalize_boolean_value(v.value) for v in values]
 
         # Evaluate the condition across all values
         if operator == "exists":
