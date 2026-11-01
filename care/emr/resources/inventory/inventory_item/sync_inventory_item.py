@@ -5,11 +5,12 @@ The current availability can change based on the dispense and delivery in the sy
 
 from django.db.models import Sum
 
-from care.emr.locks.inventory import InventoryLock
-from care.emr.models.inventory_item import InventoryItem
+from care.emr.locks.billing import InventoryItemLock
 from care.emr.models.medication_dispense import MedicationDispense
 from care.emr.models.supply_delivery import SupplyDelivery
-from care.emr.resources.inventory.inventory_item.spec import InventoryItemStatusOptions
+from care.emr.resources.inventory.inventory_item.create_inventory_item import (
+    create_inventory_item,
+)
 from care.emr.resources.inventory.supply_delivery.spec import (
     SupplyDeliveryStatusOptions,
 )
@@ -29,20 +30,11 @@ def sync_inventory_item(location=None, product=None, inventory_item=None):
     if inventory_item:
         product = inventory_item.product
         location = inventory_item.location
-    with InventoryLock(product, location):
-        current_location = location
-        inventory_item = InventoryItem.objects.filter(
-            product=product, location=location
-        ).first()
-        if not inventory_item:
-            inventory_item = InventoryItem(
-                product=product,
-                location=location,
-                net_content=0,
-                status=InventoryItemStatusOptions.active.value,
-            )
-            inventory_item.save()
+    current_location = location
+    if not inventory_item:
+        inventory_item = create_inventory_item(product, location)
 
+    with InventoryItemLock(inventory_item):
         delivery_requests_incoming = SupplyDelivery.objects.filter(
             order__destination=current_location,
             status=SupplyDeliveryStatusOptions.completed.value,
@@ -81,4 +73,4 @@ def sync_inventory_item(location=None, product=None, inventory_item=None):
         )
 
         inventory_item.net_content = total_quantity
-        inventory_item.save()
+        inventory_item.save(update_fields=["net_content", "modified_date"])

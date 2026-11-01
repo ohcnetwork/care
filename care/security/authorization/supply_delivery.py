@@ -4,6 +4,20 @@ from care.security.permissions.supply_delivery import SupplyDeliveryPermissions
 
 
 class SupplyDeliveryAccess(AuthorizationHandler):
+    def can_list_facility_medication_return(self, user, location):
+        return self.check_permission_in_facility_organization(
+            [SupplyDeliveryPermissions.can_read_medication_return.name],
+            user,
+            orgs=location.facility_organization_cache,
+        )
+
+    def can_write_facility_medication_return(self, user, location):
+        return self.check_permission_in_facility_organization(
+            [SupplyDeliveryPermissions.can_write_medication_return.name],
+            user,
+            orgs=location.facility_organization_cache,
+        )
+
     def can_list_facility_supply_delivery(self, user, location):
         """
         Check if the user has permission to view supply deliveries in the location

@@ -1,4 +1,3 @@
-from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
@@ -14,14 +13,21 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.locks.billing import DeliveryOrderLock
 from care.emr.models.location import FacilityLocation
-from care.emr.models.supply_delivery import DeliveryOrder
+from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
+from care.emr.resources.inventory.supply_delivery.cancel_delivery_order import (
+    cancel_supply_deliveries,
+)
 from care.emr.resources.inventory.supply_delivery.delivery_order import (
     BaseSupplyDeliveryOrderSpec,
     SupplyDeliveryOrderReadSpec,
     SupplyDeliveryOrderRetrieveSpec,
     SupplyDeliveryOrderStatusOptions,
     SupplyDeliveryOrderWriteSpec,
+)
+from care.emr.resources.inventory.supply_delivery.spec import (
+    SupplyDeliveryStatusOptions,
 )
 from care.emr.resources.invoice.return_items_invoice import (
     cancel_return_invoice,
@@ -46,6 +52,9 @@ class DeliveryOrderFilters(filters.FilterSet):
     origin_isnull = NullFilter(field_name="origin")
     patient = filters.UUIDFilter(field_name="patient__external_id")
     patient_isnull = NullFilter(field_name="patient")
+    patient_return = DummyBooleanFilter(
+        help_text="Filter patient medication returns. Defaults to false."
+    )
 
 
 class DeliveryOrderViewSet(
@@ -74,10 +83,18 @@ class DeliveryOrderViewSet(
     def get_facility_from_instance(self, instance):
         return instance.destination.facility  # Overide as needed
 
-    def authorize_location_read(self, location_obj, raise_error=True):
-        if not AuthorizationController.call(
-            "can_list_facility_supply_delivery", self.request.user, location_obj
-        ):
+    def authorize_location_read(
+        self, location_obj, raise_error=True, *, medication_return=False
+    ):
+        if medication_return:
+            allowed = AuthorizationController.call(
+                "can_list_facility_medication_return", self.request.user, location_obj
+            )
+        else:
+            allowed = AuthorizationController.call(
+                "can_list_facility_supply_delivery", self.request.user, location_obj
+            )
+        if not allowed:
             if raise_error:
                 raise PermissionDenied("Cannot list delivery orders")
             return False
@@ -114,7 +131,13 @@ class DeliveryOrderViewSet(
         return super().perform_create(instance)
 
     def authorize_order_write(self, order):
-        if order.origin:
+        if order.patient_id is not None:
+            allowed = AuthorizationController.call(
+                "can_write_facility_medication_return",
+                self.request.user,
+                order.destination,
+            )
+        elif order.origin:
             allowed = self.authorize_location_write(order.origin, raise_error=False)
         else:
             allowed = self.authorize_location_external_write(
@@ -124,8 +147,10 @@ class DeliveryOrderViewSet(
             raise PermissionDenied("Cannot write delivery orders")
 
     def perform_update(self, instance):
-        with transaction.atomic():
-            old_instance = DeliveryOrder.objects.get(id=instance.id)
+        with DeliveryOrderLock([instance.pk]) as lock:
+            old_instance = lock.orders[instance.pk]
+            instance.patient_invoice_id = old_instance.patient_invoice_id
+            instance.updated_by = self.request.user
             if old_instance.status != instance.status:
                 if old_instance.status in [
                     SupplyDeliveryOrderStatusOptions.abandoned.value,
@@ -142,18 +167,36 @@ class DeliveryOrderViewSet(
                     raise ValidationError(
                         "Cannot abandon a delivery order with medication return"
                     )
-                if (
-                    instance.patient
-                    and instance.status
-                    == SupplyDeliveryOrderStatusOptions.completed.value
-                ):
-                    generate_return_invoice(instance)
+                if instance.status == SupplyDeliveryOrderStatusOptions.completed.value:
+                    if (
+                        SupplyDelivery.objects.filter(order=instance)
+                        .exclude(
+                            status__in=[
+                                SupplyDeliveryStatusOptions.completed.value,
+                                SupplyDeliveryStatusOptions.abandoned.value,
+                                SupplyDeliveryStatusOptions.entered_in_error.value,
+                            ]
+                        )
+                        .exists()
+                    ):
+                        raise ValidationError(
+                            "Finalise Deliveries before completing order"
+                        )
+                    if instance.patient:
+                        generate_return_invoice(instance)
                 if (
                     instance.patient
                     and instance.status
                     == SupplyDeliveryOrderStatusOptions.entered_in_error.value
                 ):
                     cancel_return_invoice(instance)
+                elif instance.status in [
+                    SupplyDeliveryOrderStatusOptions.abandoned.value,
+                    SupplyDeliveryOrderStatusOptions.entered_in_error.value,
+                ]:
+                    cancel_supply_deliveries(
+                        instance, instance.status, self.request.user
+                    )
 
             return super().perform_update(instance)
 
@@ -162,7 +205,17 @@ class DeliveryOrderViewSet(
         If the order is an external order, then destination is the owner,
         else the owner is the origin.
         """
-        if instance.origin:
+        if instance.patient:
+            destination_location = get_object_or_404(
+                FacilityLocation, external_id=instance.destination
+            )
+            if not AuthorizationController.call(
+                "can_write_facility_medication_return",
+                self.request.user,
+                destination_location,
+            ):
+                raise PermissionDenied("Cannot write medication return orders")
+        elif instance.origin:
             origin_location = get_object_or_404(
                 FacilityLocation, external_id=instance.origin
             )
@@ -187,13 +240,16 @@ class DeliveryOrderViewSet(
         """
         if not (
             (
-                model_instance.origin
+                model_instance.patient_id is None
+                and model_instance.origin
                 and self.authorize_location_read(
                     model_instance.origin, raise_error=False
                 )
             )
             or self.authorize_location_read(
-                model_instance.destination, raise_error=False
+                model_instance.destination,
+                raise_error=False,
+                medication_return=model_instance.patient_id is not None,
             )
         ):
             raise PermissionDenied("Cannot read delivery orders")
@@ -216,18 +272,34 @@ class DeliveryOrderViewSet(
     def get_queryset(self):
         queryset = super().get_queryset()
         if self.action == "list":
+            patient_return = (
+                self.request.GET.get("patient_return", "false").lower() == "true"
+            )
+            origin_id = self.request.GET.get("origin")
+            destination_id = self.request.GET.get("destination")
+            if not origin_id and not destination_id:
+                raise ValidationError("Origin or destination is required")
+            if patient_return and not destination_id:
+                raise ValidationError("Destination is required for patient returns")
+            queryset = queryset.filter(
+                destination__facility__external_id=self.kwargs["facility_external_id"],
+                patient__isnull=not patient_return,
+            )
             include_children = (
                 self.request.GET.get("include_children", "false").lower() == "true"
             )
-            if "origin" in self.request.GET:
-                origin = self.get_location_obj(self.request.GET["origin"])
-                self.authorize_location_read(origin)
+            if origin_id:
+                origin = self.get_location_obj(origin_id)
+                if not patient_return:
+                    self.authorize_location_read(origin)
                 queryset = self.filter_location_queryset(
                     queryset, "origin", origin, include_children
                 )
-            if "destination" in self.request.GET:
-                destination = self.get_location_obj(self.request.GET["destination"])
-                self.authorize_location_read(destination)
+            if destination_id:
+                destination = self.get_location_obj(destination_id)
+                self.authorize_location_read(
+                    destination, medication_return=patient_return
+                )
                 queryset = self.filter_location_queryset(
                     queryset, "destination", destination, include_children
                 )

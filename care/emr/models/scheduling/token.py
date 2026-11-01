@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Max
 
 from care.emr.models import EMRBaseModel
 
@@ -72,3 +73,14 @@ class Token(EMRBaseModel):
         blank=True,
         related_name="booking_token",
     )
+
+    @classmethod
+    def get_next_number(cls, queue, category):
+        """
+        Next token number for a queue and category.
+        Deleted tokens are included, so their numbers are never given out again.
+        """
+        last_number = cls._base_manager.filter(
+            queue=queue, category=category
+        ).aggregate(Max("number"))["number__max"]
+        return (last_number or 0) + 1

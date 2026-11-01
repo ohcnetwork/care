@@ -45,7 +45,7 @@ from care.emr.resources.scheduling.slot.spec import (
     TokenBookingWriteSpec,
 )
 from care.emr.resources.scheduling.token.spec import TokenReadSpec, TokenStatusOptions
-from care.emr.resources.tag.config_spec import TagResource
+from care.emr.resources.tag.config_spec import TagResource, TagSetRequest
 from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.emr.tagging.filters import SingleFacilityTagFilter
@@ -77,7 +77,7 @@ class RescheduleBookingSpec(BaseModel):
     new_booking_note: str
     previous_booking_note: str | None = None
 
-    tags: list[UUID4] = []
+    tags: list[TagSetRequest] = []
 
 
 class TokenBookingFilters(FilterSet):
@@ -335,7 +335,7 @@ class TokenBookingViewSet(
             raise ValidationError("Category not found")
         note = request_data.note
         with Lock(f"booking:token:{queue.id}"), transaction.atomic():
-            number = Token.objects.filter(queue=queue, category=category).count() + 1
+            number = Token.get_next_number(queue, category)
             token = Token.objects.create(
                 facility=booking.token_slot.resource.facility,
                 queue=queue,

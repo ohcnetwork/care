@@ -23,7 +23,6 @@ class UserAdmin(auth_admin.UserAdmin):
                     "phone_number",
                     "alt_phone_number",
                     "gender",
-                    "verified",
                 )
             },
         ),

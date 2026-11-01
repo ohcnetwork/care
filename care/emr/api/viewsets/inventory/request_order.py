@@ -1,7 +1,8 @@
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 from django_filters import rest_framework as filters
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
 
 from care.emr.api.viewsets.base import (
@@ -14,12 +15,14 @@ from care.emr.api.viewsets.base import (
     EMRUpsertMixin,
 )
 from care.emr.models.location import FacilityLocation
-from care.emr.models.supply_request import RequestOrder
+from care.emr.models.supply_request import RequestOrder, SupplyRequest
 from care.emr.resources.inventory.supply_request.request_order import (
     BaseSupplyRequestOrderSpec,
     SupplyRequestOrderReadSpec,
+    SupplyRequestOrderStatusOptions,
     SupplyRequestOrderWriteSpec,
 )
+from care.emr.resources.inventory.supply_request.spec import SupplyRequestStatusOptions
 from care.emr.resources.tag.config_spec import TagResource
 from care.emr.tagging.filters import SingleFacilityTagFilter
 from care.security.authorization.base import AuthorizationController
@@ -95,6 +98,30 @@ class RequestOrderViewSet(
                 "Origin and destination must be in the same facility"
             )
         return super().perform_create(instance)
+
+    def perform_update(self, instance):
+        with transaction.atomic():
+            old_instance = RequestOrder.objects.select_for_update().get(id=instance.id)
+            if old_instance.status != instance.status:
+                if old_instance.status in [
+                    SupplyRequestOrderStatusOptions.abandoned.value,
+                    SupplyRequestOrderStatusOptions.entered_in_error.value,
+                ]:
+                    raise ValidationError(
+                        "Request order already abandoned or entered in error"
+                    )
+                child_status = {
+                    SupplyRequestOrderStatusOptions.abandoned.value: SupplyRequestStatusOptions.cancelled.value,
+                    SupplyRequestOrderStatusOptions.entered_in_error.value: SupplyRequestStatusOptions.entered_in_error.value,
+                }.get(instance.status)
+                if child_status:
+                    for supply_request in SupplyRequest.objects.filter(order=instance):
+                        supply_request.status = child_status
+                        supply_request.updated_by = self.request.user
+                        supply_request.save(
+                            update_fields=["status", "updated_by", "modified_date"]
+                        )
+            return super().perform_update(instance)
 
     def authorize_create(self, instance):
         """

@@ -18,6 +18,7 @@ class MedicationRequestPrescription(EMRBaseModel):
     approval_status = models.CharField(max_length=100, null=True, blank=True)
     alternate_identifier = models.CharField(max_length=100, null=True, blank=True)
     tags = ArrayField(models.IntegerField(), default=list)
+    tags_data = models.JSONField(default=dict)
 
     class Meta:
         constraints = [

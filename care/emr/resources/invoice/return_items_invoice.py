@@ -3,9 +3,8 @@ Utilities to create a return invoice for items based on delivery order
 """
 
 from django.db import transaction
-from rest_framework.exceptions import ValidationError
 
-from care.emr.locks.billing import InventoryItemLock
+from care.emr.locks.billing import DeliveryOrderLock
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.invoice import Invoice
 from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
@@ -15,11 +14,8 @@ from care.emr.resources.charge_item.apply_charge_item_definition import (
     apply_charge_item_definition,
 )
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
-from care.emr.resources.inventory.inventory_item.create_inventory_item import (
-    create_inventory_item,
-)
-from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
-    sync_inventory_item,
+from care.emr.resources.inventory.supply_delivery.cancel_delivery_order import (
+    cancel_supply_deliveries,
 )
 from care.emr.resources.inventory.supply_delivery.spec import (
     SupplyDeliveryStatusOptions,
@@ -39,10 +35,6 @@ def generate_return_invoice(delivery_order: DeliveryOrder):
 
     with transaction.atomic():
         charge_items = []
-        if SupplyDelivery.objects.filter(
-            order=delivery_order, status=SupplyDeliveryStatusOptions.in_progress.value
-        ).exists():
-            raise ValidationError("Finalise Deliveries before completing order")
         invoice_obj = Invoice()
         invoice_obj.status = InvoiceStatusOptions.draft.value
         invoice_obj.facility = delivery_order.destination.facility
@@ -92,7 +84,8 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
     """
     Cancel the return invoice for items based on delivery order
     """
-    with transaction.atomic():
+    with DeliveryOrderLock([delivery_order.pk]):
+        delivery_order.refresh_from_db(fields=["patient_invoice"])
         if delivery_order.patient_invoice:
             delivery_order.patient_invoice.status = InvoiceStatusOptions.cancelled.value
             delivery_order.patient_invoice.updated_by = delivery_order.updated_by
@@ -118,29 +111,8 @@ def cancel_return_invoice(delivery_order: DeliveryOrder):
                 )
             rebalance_account_task(delivery_order.patient_invoice.account.id)
 
-        supply_deliveries = SupplyDelivery.objects.filter(order=delivery_order)
-        for supply_delivery in supply_deliveries:
-            inventory_item = create_inventory_item(
-                product=supply_delivery.supplied_item,
-                location=delivery_order.destination,
-            )
-            with InventoryItemLock(inventory_item):
-                inventory_item.refresh_from_db(fields=["net_content"])
-                if (
-                    supply_delivery.status
-                    == SupplyDeliveryStatusOptions.completed.value
-                    and inventory_item.net_content
-                    < supply_delivery.supplied_item_quantity
-                ):
-                    raise ValidationError("Inventory item does not have enough stock")
-                supply_delivery.status = (
-                    SupplyDeliveryStatusOptions.entered_in_error.value
-                )
-                supply_delivery.updated_by = delivery_order.updated_by
-                supply_delivery.save(
-                    update_fields=["status", "updated_by", "modified_date"]
-                )
-                sync_inventory_item(
-                    location=delivery_order.destination,
-                    product=supply_delivery.supplied_item,
-                )
+        cancel_supply_deliveries(
+            delivery_order,
+            SupplyDeliveryStatusOptions.entered_in_error.value,
+            delivery_order.updated_by,
+        )

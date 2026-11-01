@@ -61,6 +61,11 @@ TAX_CODES = MonetaryCodes(
                 "display": "UTGST",
                 "system": "http://ohc.network/codes/monetary/tax",
             },
+            {
+                "code": "gst",
+                "display": "GST",
+                "system": "http://ohc.network/codes/monetary/tax",
+            },
         ],
     )
 )
@@ -161,6 +166,17 @@ TAX_MONETARY_COMPONENT_DEFINITIONS = MonetaryComponentDefinitions(
                 },
                 "monetary_component_type": "tax",
                 "factor": 5,
+            },
+            # 0% Slab
+            {
+                "title": "GST @ 0",
+                "code": {
+                    "code": "gst",
+                    "display": "GST",
+                    "system": "http://ohc.network/codes/monetary/tax",
+                },
+                "monetary_component_type": "tax",
+                "factor": 0,
             },
         ],
     )

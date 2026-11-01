@@ -89,6 +89,7 @@ class QuestionnaireStatus(str, Enum):
 class SubjectType(str, Enum):
     patient = "patient"
     encounter = "encounter"
+    referral = "referral"
     location = "location"
     device = "device"
     facility = "facility"

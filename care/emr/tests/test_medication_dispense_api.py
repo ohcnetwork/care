@@ -15,6 +15,9 @@ from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
 from care.emr.resources.inventory.supply_delivery.spec import (
     SupplyDeliveryStatusOptions,
 )
+from care.emr.resources.medication.dispense.dispense_order import (
+    MedicationDispenseOrderStatusOptions,
+)
 from care.emr.resources.medication.dispense.spec import MedicationDispenseStatus
 from care.emr.resources.medication.request.spec import MedicationRequestDispenseStatus
 from care.security.permissions.medication import MedicationPermissions
@@ -90,7 +93,7 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             patient=self.patient,
             location=self.location,
             facility=self.facility,
-            status=MedicationDispenseStatus.cancelled.value,
+            status=MedicationDispenseOrderStatusOptions.in_progress.value,
             alternate_identifier="test-alternate-id",
         )
         self.delivery_order_destination_external = self.create_delivery_order(
@@ -201,6 +204,7 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             response.data["status"], MedicationDispenseStatus.in_progress.value
         )
         self.assertEqual(response.data["quantity"], "10")
+        self.assertEqual(Decimal(response.data["item"]["net_content"]), Decimal(40))
         self.assertEqual(
             response.data["item"]["id"], str(self.inventory_item.external_id)
         )
@@ -284,6 +288,10 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
     ):
         """Test creating a medication dispense with create dispense order for an inactive prescription"""
         self.client.force_authenticate(user=self.superuser)
+        self.dispense_order.status = (
+            MedicationDispenseOrderStatusOptions.completed.value
+        )
+        self.dispense_order.save(update_fields=["status"])
 
         data = self.generate_medication_dispense_data(
             create_dispense_order={
@@ -300,6 +308,34 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
             response.data["errors"][0]["msg"],
             "Prescription is not active",
         )
+
+    def test_create_medication_dispense_rejects_cancelled_order(self):
+        self.client.force_authenticate(user=self.superuser)
+        for status in (
+            MedicationDispenseOrderStatusOptions.abandoned,
+            MedicationDispenseOrderStatusOptions.entered_in_error,
+        ):
+            with self.subTest(status=status):
+                self.dispense_order.status = status.value
+                self.dispense_order.save(update_fields=["status"])
+                response = self.client.post(
+                    self.generate_base_url(),
+                    self.generate_medication_dispense_data(
+                        order=str(self.dispense_order.external_id)
+                    ),
+                    format="json",
+                )
+
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(
+                    response.data["errors"][0]["msg"],
+                    "Dispense order is abandoned or entered in error",
+                )
+                self.assertFalse(MedicationDispense.objects.exists())
+                self.inventory_item.refresh_from_db()
+                self.assertEqual(self.inventory_item.net_content, 50)
+                self.dispense_order.refresh_from_db()
+                self.assertEqual(self.dispense_order.status, status.value)
 
     def test_create_medication_dispense_with_product_with_chargeitem_definition(self):
         """
@@ -410,6 +446,56 @@ class MedicationDispenseAPITestCase(CareAPITestBase):
         )
 
     # Testcases for update dispenses
+
+    def test_reassign_medication_dispense_rejects_cancelled_order(self):
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.post(
+            self.generate_base_url(),
+            self.generate_medication_dispense_data(
+                order=str(self.dispense_order.external_id)
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        dispense = MedicationDispense.objects.get(external_id=response.data["id"])
+        self.inventory_item.refresh_from_db()
+        self.assertEqual(self.inventory_item.net_content, 40)
+
+        for status in (
+            MedicationDispenseOrderStatusOptions.abandoned,
+            MedicationDispenseOrderStatusOptions.entered_in_error,
+        ):
+            with self.subTest(status=status):
+                cancelled_order = self.create_dispense_order(
+                    patient=self.patient,
+                    location=self.location,
+                    facility=self.facility,
+                    status=status.value,
+                )
+                response = self.client.put(
+                    self.get_detail_url(dispense.external_id),
+                    {
+                        "status": MedicationDispenseStatus.completed.value,
+                        "order": str(cancelled_order.external_id),
+                    },
+                    format="json",
+                )
+
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(
+                    response.data["errors"][0]["msg"],
+                    "Dispense order is abandoned or entered in error",
+                )
+                dispense.refresh_from_db()
+                self.assertEqual(dispense.order_id, self.dispense_order.id)
+                self.assertEqual(
+                    dispense.status, MedicationDispenseStatus.in_progress.value
+                )
+                self.assertFalse(
+                    MedicationDispense.objects.filter(order=cancelled_order).exists()
+                )
+                self.inventory_item.refresh_from_db()
+                self.assertEqual(self.inventory_item.net_content, 40)
 
     def test_update_medication_dispense_as_superuser(self):
         """

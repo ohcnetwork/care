@@ -19,12 +19,11 @@ class InventoryItem(EMRBaseModel):
         default=Decimal(0), max_digits=20, decimal_places=6
     )
 
-    def save(self, *args, **kwargs) -> None:
-        if (
-            not self.id
-            and InventoryItem.objects.filter(
-                location=self.location, product=self.product
-            ).exists()
-        ):
-            raise ValueError("Inventory item already exists")
-        return super().save(*args, **kwargs)
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["product", "location"],
+                condition=models.Q(deleted=False),
+                name="unique_active_inventory_product_location",
+            )
+        ]

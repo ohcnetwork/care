@@ -5,6 +5,7 @@ from care.emr.models import EMRBaseModel
 
 class NoteThread(EMRBaseModel):
     title = models.CharField(max_length=255, null=True, blank=True)
+    thread_type = models.CharField(max_length=100, default="patient")
     patient = models.ForeignKey("emr.Patient", on_delete=models.CASCADE)
     encounter = models.ForeignKey(
         "emr.Encounter", on_delete=models.CASCADE, null=True, blank=True

@@ -9,6 +9,7 @@ from rest_framework.exceptions import PermissionDenied
 from care.emr.api.viewsets.base import EMRModelReadOnlyViewSet, EMRUpdateMixin
 from care.emr.models import Encounter, Patient
 from care.emr.models.observation import Observation
+from care.emr.models.organization import Organization
 from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
 from care.emr.resources.observation.spec import ObservationStatus
 from care.emr.resources.questionnaire_response.spec import (
@@ -36,6 +37,16 @@ class QuestionnaireFilter(filters.UUIDFilter):
         )
 
 
+class QuestionnaireRoleFilter(filters.UUIDFilter):
+    def filter(self, qs, value):
+        if value is None:
+            return qs
+        role = Organization.objects.only("id").filter(external_id=value).first()
+        if not role:
+            return qs.none()
+        return qs.filter(created_by__role_org_ids__overlap=[role.id])
+
+
 class QuestionnaireResponseFilters(filters.FilterSet):
     encounter = filters.CharFilter(field_name="encounter__external_id")
     subject_type = filters.CharFilter(field_name="questionnaire__subject_type")
@@ -44,6 +55,7 @@ class QuestionnaireResponseFilters(filters.FilterSet):
     form_submission = filters.UUIDFilter(field_name="form_submission__external_id")
     status = filters.CharFilter(field_name="status")
     created_by = filters.UUIDFilter(field_name="created_by__external_id")
+    role = QuestionnaireRoleFilter()
 
 
 class QuestionnaireResponseViewSet(EMRModelReadOnlyViewSet, EMRUpdateMixin):

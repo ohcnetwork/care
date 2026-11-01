@@ -82,6 +82,7 @@ from care.emr.api.viewsets.organization import (
 from care.emr.api.viewsets.patient import PatientViewSet
 from care.emr.api.viewsets.patient_identifier import PatientIdentifierConfigViewSet
 from care.emr.api.viewsets.payment_reconciliation import PaymentReconciliationViewSet
+from care.emr.api.viewsets.procedure import ProcedureViewSet
 from care.emr.api.viewsets.questionnaire.questionnaire import (
     QuestionnaireViewSet,
 )
@@ -94,6 +95,15 @@ from care.emr.api.viewsets.questionnaire.resource_questionnaire_response import 
 from care.emr.api.viewsets.questionnaire_response import QuestionnaireResponseViewSet
 from care.emr.api.viewsets.questionnaire_response_template import (
     QuestionnaireResponseTemplateViewSet,
+)
+from care.emr.api.viewsets.referral import (
+    AssignedReferralViewSet,
+    ReferralAvailabilityConfigViewSet,
+    ReferralAvailabilityViewSet,
+    ReferralNoteMessageViewSet,
+    ReferralQuestionnaireResponseViewSet,
+    ReferralResourceViewSet,
+    ReferralViewSet,
 )
 from care.emr.api.viewsets.report.report_upload import ReportUploadViewSet
 from care.emr.api.viewsets.report.template import TemplateViewSet
@@ -229,6 +239,33 @@ router.register("permission", PermissionViewSet, basename="permission")
 
 
 router.register("encounter", EncounterViewSet, basename="encounter")
+
+router.register(
+    "referral_availability",
+    ReferralAvailabilityViewSet,
+    basename="referral-availability",
+)
+router.register(
+    "referral_availability_config",
+    ReferralAvailabilityConfigViewSet,
+    basename="referral-availability-config",
+)
+router.register("referral", ReferralViewSet, basename="referral")
+router.register(
+    "referral_assigned", AssignedReferralViewSet, basename="referral-assigned"
+)
+referral_nested_router = NestedSimpleRouter(router, r"referral", lookup="referral")
+referral_nested_router.register(
+    r"resources", ReferralResourceViewSet, basename="referral-resource"
+)
+referral_nested_router.register(
+    r"notes", ReferralNoteMessageViewSet, basename="referral-note"
+)
+referral_nested_router.register(
+    r"questionnaire_responses",
+    ReferralQuestionnaireResponseViewSet,
+    basename="referral-questionnaire-response",
+)
 
 router.register("mfa/totp", TOTPViewSet, basename="mfa-totp")
 
@@ -473,6 +510,7 @@ patient_nested_router.register(
 
 patient_nested_router.register(r"symptom", SymptomViewSet, basename="symptom")
 patient_nested_router.register(r"diagnosis", DiagnosisViewSet, basename="diagnosis")
+patient_nested_router.register(r"procedure", ProcedureViewSet, basename="procedure")
 
 patient_nested_router.register(
     r"diagnostic_report",
@@ -571,6 +609,7 @@ urlpatterns = [
     path("", include(queue_nested_router.urls)),
     path("", include(patient_nested_router.urls)),
     path("", include(thread_nested_router.urls)),
+    path("", include(referral_nested_router.urls)),
     path("", include(resource_nested_router.urls)),
     path("", include(organization_nested_router.urls)),
     path("", include(facility_organization_nested_router.urls)),
