@@ -147,6 +147,9 @@ class ProcedureReadSpec(BaseProcedureSpec):
     reason: list[Coding] = Field(default_factory=list)
     outcome: ProcedureOutcome | None = None
     note: str | None = None
+    encounter: UUID4
+    created_by: dict | None = None
+    updated_by: dict | None = None
 
     created_date: datetime
     modified_date: datetime
@@ -154,15 +157,9 @@ class ProcedureReadSpec(BaseProcedureSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
+        mapping["encounter"] = obj.encounter.external_id
+        cls.serialize_audit_users(mapping, obj)
 
 
 class ProcedureRetrieveSpec(ProcedureReadSpec):
-    encounter: UUID4
-    created_by: dict | None = None
-    updated_by: dict | None = None
-
-    @classmethod
-    def perform_extra_serialization(cls, mapping, obj):
-        super().perform_extra_serialization(mapping, obj)
-        mapping["encounter"] = obj.encounter.external_id
-        cls.serialize_audit_users(mapping, obj)
+    pass

@@ -805,6 +805,12 @@ class TestProcedureViewSet(CareAPITestBase):
             [item["id"] for item in response.data["results"]],
             [str(procedure.external_id) for procedure in procedures],
         )
+        # History views link each row to its encounter and recorder.
+        self.assertCountEqual(
+            [item["encounter"] for item in response.data["results"]],
+            [str(procedure.encounter.external_id) for procedure in procedures],
+        )
+        self.assertTrue(all("created_by" in item for item in response.data["results"]))
 
     def test_encounter_only_reads_are_limited_to_the_authorized_encounter(self):
         self.grant_permissions(
