@@ -184,11 +184,9 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
         ):
             raise PermissionDenied("Permission Denied to create user questionnaire")
 
-        if (
-            getattr(request_obj, "actions", MISSING) is not MISSING
-            and request_obj.actions
-        ):
-            for action in request_obj.actions:
+        actions = getattr(request_obj, "actions", None)
+        if actions is not MISSING and actions:
+            for action in actions:
                 ActionEvaluator.authorize(self.request, self.request.user, action)
         elif getattr(model_instance, "actions", None):
             for action in model_instance.actions:
@@ -236,8 +234,9 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
                 read_only=False,
             ):
                 raise PermissionDenied("Permission Denied to create user questionnaire")
-        if instance.actions is not MISSING and instance.actions:
-            for action in instance.actions:
+        actions = getattr(instance, "actions", None)
+        if actions is not MISSING and actions:
+            for action in actions:
                 ActionEvaluator.authorize(self.request, self.request.user, action)
 
     def authorize_destroy(self, instance):

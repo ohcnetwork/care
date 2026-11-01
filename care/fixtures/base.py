@@ -12,6 +12,7 @@ from faker import Faker
 from rest_framework import status as http_status
 
 from care.emr.models.invoice import Invoice
+from care.emr.models.questionnaire import Questionnaire
 from care.emr.resources.device.spec import (
     DeviceAvailabilityStatusChoices,
     DeviceStatusChoices,
@@ -94,6 +95,16 @@ class CareFixtureBase:
             http_status.HTTP_201_CREATED,
         ):
             msg = f"POST {url} failed ({response.status_code}): {response.data}"
+            raise FixtureError(msg)
+        return to_attr_dict(response.data)
+
+    def put(self, url, data):
+        response = self.client.put(url, data, format="json")
+        if response.status_code not in (
+            http_status.HTTP_200_OK,
+            http_status.HTTP_201_CREATED,
+        ):
+            msg = f"PUT {url} failed ({response.status_code}): {response.data}"
             raise FixtureError(msg)
         return to_attr_dict(response.data)
 
@@ -273,12 +284,33 @@ class CareFixtureBase:
         with fixture_path.open() as f:
             questionnaires = json.load(f)
         results = []
-        for questionnaire_data in questionnaires:
-            try:
-                result = self.create_questionnaire(organizations, questionnaire_data)
-                results.append(result)
-            except FixtureError:
-                pass
+        for fixture_data in questionnaires:
+            questionnaire_data = {
+                "auth_context": "instance",
+                "actions": [],
+                **fixture_data,
+            }
+            existing = Questionnaire.objects.filter(
+                slug=questionnaire_data["slug"],
+                auth_context=questionnaire_data["auth_context"],
+                latest_revision__isnull=True,
+            )
+            if questionnaire_data["auth_context"] in ("facility", "user"):
+                existing = existing.filter(
+                    facility__external_id=questionnaire_data.get("facility")
+                )
+            elif questionnaire_data["auth_context"] == "facility_organization":
+                existing = existing.filter(
+                    facility_organization__external_id=questionnaire_data.get(
+                        "facility_organization"
+                    )
+                )
+            if questionnaire_data["auth_context"] == "user":
+                existing = existing.filter(created_by=self.user)
+            if existing.exists():
+                continue
+            result = self.create_questionnaire(organizations, questionnaire_data)
+            results.append(result)
         return results
 
     def create_resource_category(self, facility_id, title, resource_type, **kwargs):

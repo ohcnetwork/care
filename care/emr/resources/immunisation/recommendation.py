@@ -1,7 +1,7 @@
 from datetime import date
 from enum import Enum
 
-from pydantic import UUID4, model_validator
+from pydantic import UUID4, BaseModel, model_validator
 from pydantic.experimental.missing_sentinel import MISSING
 from pydantic_core.core_schema import ValidationInfo
 
@@ -83,6 +83,23 @@ class ImmunizationRecommendationUpdateSpec(BaseImmunizationRecommendationSpec):
         if obj is not None and not obj.is_group and self.codes is MISSING:
             raise ValueError("Codes are required for non-group recommendations")
         return self
+
+
+class ImmunizationRecommendationTreeNodeSpec(BaseImmunizationRecommendationSpec):
+    is_group: bool
+    children: list["ImmunizationRecommendationTreeNodeSpec"] = []
+
+    @model_validator(mode="after")
+    def validate_only_groups_contain_children(self):
+        if self.children and not self.is_group:
+            raise ValueError("Only groups can contain children")
+        return self
+
+
+class ImmunizationRecommendationTreeCreateSpec(BaseModel):
+    patient: UUID4
+    encounter: UUID4
+    root: ImmunizationRecommendationTreeNodeSpec
 
 
 class ImmunizationRecommendationListSpec(BaseImmunizationRecommendationSpec):

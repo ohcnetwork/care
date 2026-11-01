@@ -1,5 +1,7 @@
+from django.db import transaction
 from django_filters import rest_framework as filters
 from rest_framework.exceptions import PermissionDenied, ValidationError
+from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -12,9 +14,9 @@ from care.emr.models.encounter import Encounter
 from care.emr.models.patient import Patient
 from care.emr.models.questionnaire import FormSubmission
 from care.emr.resources.form_submission.spec import (
+    FormSubmissionConditionalUpdateSpec,
     FormSubmissionReadSpec,
     FormSubmissionStatusChoices,
-    FormSubmissionUpdateSpec,
     FormSubmissionWriteSpec,
 )
 from care.security.authorization.base import AuthorizationController
@@ -42,7 +44,7 @@ class FormSubmissionViewSet(
     database_model = FormSubmission
     pydantic_model = FormSubmissionWriteSpec
     pydantic_read_model = FormSubmissionReadSpec
-    pydantic_update_model = FormSubmissionUpdateSpec
+    pydantic_update_model = FormSubmissionConditionalUpdateSpec
     filter_backends = (filters.DjangoFilterBackend,)
     filterset_class = FormSubmissionFilters
 
@@ -61,7 +63,22 @@ class FormSubmissionViewSet(
             self.authorize_request(encounter=model_instance.encounter)
         elif model_instance.patient:
             self.authorize_request(patient=model_instance.patient)
+        if (
+            request_obj is not None
+            and request_obj.expected_status is not None
+            and model_instance.status != request_obj.expected_status
+        ):
+            raise ValidationError("Form submission status has changed")
         return super().authorize_update(request_obj, model_instance)
+
+    @transaction.atomic
+    def update(self, request, *args, **kwargs):
+        # Keep the status check and update locked through the outer batch commit.
+        instance = get_object_or_404(
+            self.get_queryset().select_for_update(no_key=True),
+            **{self.lookup_field: self.kwargs[self.lookup_field]},
+        )
+        return Response(self.handle_update(instance, request.data))
 
     def perform_update(self, instance):
         old_instance = FormSubmission.objects.filter(id=instance.id).first()

@@ -4,6 +4,7 @@ from django.conf import settings
 from django.urls import reverse
 
 from care.emr.models.observation import Observation
+from care.emr.models.questionnaire import Questionnaire
 from care.emr.resources.questionnaire.spec import QuestionType
 from care.security.permissions.questionnaire import QuestionnairePermissions
 from care.utils.tests.base import CareAPITestBase
@@ -20,6 +21,76 @@ def deterministic_uuid(string):
         str: A UUID generated from the input string.
     """
     return str(uuid.uuid5(uuid.NAMESPACE_DNS, string))
+
+
+class QuestionnaireOptionalActionsTests(CareAPITestBase):
+    def setUp(self):
+        super().setUp()
+        self.client.force_authenticate(user=self.create_super_user())
+        self.base_url = reverse("questionnaire-list")
+        self.payload = {
+            "slug": "optional-actions",
+            "title": "Optional actions",
+            "status": "active",
+            "auth_context": "instance",
+            "subject_type": "patient",
+            "questions": [
+                {
+                    "id": str(uuid.uuid4()),
+                    "link_id": "symptom",
+                    "type": "boolean",
+                    "text": "Any symptoms?",
+                }
+            ],
+        }
+
+    def test_create_without_actions_defaults_to_no_actions(self):
+        response = self.client.post(self.base_url, self.payload, format="json")
+
+        self.assertEqual(response.status_code, 200, response.data)
+        questionnaire = Questionnaire.objects.get(external_id=response.data["id"])
+        self.assertEqual(questionnaire.actions, [])
+        self.assertEqual(response.data["actions"], [])
+
+    def test_update_without_actions_preserves_them_until_explicitly_cleared(self):
+        actions = [
+            {
+                "condition": "True",
+                "instructions": [
+                    {
+                        "slug": "show_message",
+                        "context": "self",
+                        "params": {"message": "Follow up with the care team"},
+                    }
+                ],
+            }
+        ]
+        response = self.client.post(
+            self.base_url, {**self.payload, "actions": actions}, format="json"
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        questionnaire = Questionnaire.objects.get(external_id=response.data["id"])
+        detail_url = reverse(
+            "questionnaire-detail", kwargs={"external_id": response.data["id"]}
+        )
+        updated_payload = {**self.payload, "title": "Updated questionnaire"}
+
+        with self.captureOnCommitCallbacks(execute=True):
+            response = self.client.put(detail_url, updated_payload, format="json")
+
+        self.assertEqual(response.status_code, 200, response.data)
+        questionnaire.refresh_from_db()
+        self.assertEqual(questionnaire.title, "Updated questionnaire")
+        self.assertEqual(questionnaire.actions, actions)
+
+        with self.captureOnCommitCallbacks(execute=True):
+            response = self.client.put(
+                detail_url, {**updated_payload, "actions": []}, format="json"
+            )
+
+        self.assertEqual(response.status_code, 200, response.data)
+        questionnaire.refresh_from_db()
+        self.assertEqual(questionnaire.actions, [])
 
 
 class QuestionnaireTestBase(CareAPITestBase):
