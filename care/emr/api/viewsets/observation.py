@@ -108,7 +108,7 @@ class ObservationViewSet(
     @action(methods=["POST"], detail=False)
     def analyse(self, request, **kwargs):
         request_params = ObservationAnalyseRequest(**request.data)
-        queryset = self.get_queryset()
+        queryset = self.filter_queryset(self.get_queryset())
         page_size = request_params.page_size
         results = []
         for code in request_params.codes:
