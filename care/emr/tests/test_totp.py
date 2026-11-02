@@ -19,17 +19,19 @@ class TestTOTPViewSet(CareAPITestBase):
 
     def _setup_and_verify_totp(self):
         """Set up TOTP, verify it, and return the secret key and backup codes"""
-        setup_response = self.client.post(
-            self.totp_setup_url, {"password": self.password}, format="json"
-        )
+        with self.captureOnCommitCallbacks(execute=True):
+            setup_response = self.client.post(
+                self.totp_setup_url, {"password": self.password}, format="json"
+            )
         self.assertEqual(setup_response.status_code, 200)
         secret_key = setup_response.data["secret_key"]
 
         totp = TOTP(secret_key)
         code = totp.now()
-        verify_response = self.client.post(
-            self.totp_verify_url, {"code": code}, format="json"
-        )
+        with self.captureOnCommitCallbacks(execute=True):
+            verify_response = self.client.post(
+                self.totp_verify_url, {"code": code}, format="json"
+            )
         self.assertEqual(verify_response.status_code, 200)
 
         return secret_key, verify_response.data["backup_codes"]
@@ -114,9 +116,10 @@ class TestTOTPViewSet(CareAPITestBase):
 
     def test_totp_verify_with_invalid_code(self):
         """Test TOTP verify fails with invalid code"""
-        self.client.post(
-            self.totp_setup_url, {"password": self.password}, format="json"
-        )
+        with self.captureOnCommitCallbacks(execute=True):
+            self.client.post(
+                self.totp_setup_url, {"password": self.password}, format="json"
+            )
 
         response = self.client.post(
             self.totp_verify_url, {"code": "000000"}, format="json"

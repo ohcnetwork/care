@@ -35,9 +35,17 @@ class PasswordTokenRevocationTests(CareAPITestBase):
         self.refresh_url = reverse("token_refresh")
         self.current_user_url = reverse("users-getcurrentuser")
 
+    def _post(self, *args, **kwargs):
+        with self.captureOnCommitCallbacks(execute=True):
+            return self.client.post(*args, **kwargs)
+
+    def _put(self, *args, **kwargs):
+        with self.captureOnCommitCallbacks(execute=True):
+            return self.client.put(*args, **kwargs)
+
     def _login(self, user=None, password=None):
         user = user or self.user
-        response = self.client.post(
+        response = self._post(
             self.login_url,
             {"username": user.username, "password": password or self.password},
             format="json",
@@ -46,7 +54,7 @@ class PasswordTokenRevocationTests(CareAPITestBase):
         return response.data
 
     def _refresh(self, refresh):
-        return self.client.post(self.refresh_url, {"refresh": refresh}, format="json")
+        return self._post(self.refresh_url, {"refresh": refresh}, format="json")
 
     def _current_user(self, access):
         return self.client.get(
@@ -97,7 +105,7 @@ class PasswordTokenRevocationTests(CareAPITestBase):
         self._assert_session_active(other, other_user)
 
     def _send_reset_otp(self):
-        response = self.client.post(
+        response = self._post(
             reverse("otp-password-reset-send"),
             {"phone_number": self.user.phone_number},
             format="json",
@@ -110,7 +118,7 @@ class PasswordTokenRevocationTests(CareAPITestBase):
         )
 
     def _confirm_reset_otp(self, otp):
-        return self.client.post(
+        return self._post(
             reverse("otp-password-reset-confirm"),
             {
                 "phone_number": self.user.phone_number,
@@ -128,7 +136,7 @@ class PasswordTokenRevocationTests(CareAPITestBase):
 
     def test_email_reset_revokes_access_and_refresh_for_all_sessions(self):
         sessions, other_user, other = self._prepare_sessions()
-        response = self.client.post(
+        response = self._post(
             reverse("password_reset_confirm"),
             {
                 "token": generate_password_reset_token(self.user),
@@ -141,7 +149,7 @@ class PasswordTokenRevocationTests(CareAPITestBase):
 
     def test_authenticated_password_change_revokes_all_sessions(self):
         sessions, other_user, other = self._prepare_sessions()
-        response = self.client.put(
+        response = self._put(
             reverse("change_password_view"),
             {"old_password": self.password, "new_password": self.new_password},
             format="json",
@@ -160,7 +168,7 @@ class PasswordTokenRevocationTests(CareAPITestBase):
 
     def test_failed_email_reset_keeps_existing_session_valid(self):
         session = self._login()
-        response = self.client.post(
+        response = self._post(
             reverse("password_reset_confirm"),
             {"token": "invalid-token", "password": self.new_password},
             format="json",
@@ -170,7 +178,7 @@ class PasswordTokenRevocationTests(CareAPITestBase):
 
     def test_failed_password_change_keeps_existing_session_valid(self):
         session = self._login()
-        response = self.client.put(
+        response = self._put(
             reverse("change_password_view"),
             {"old_password": "wrong-password", "new_password": self.new_password},
             format="json",
@@ -214,7 +222,7 @@ class PasswordTokenRevocationTests(CareAPITestBase):
         response = self._confirm_reset_otp(self._send_reset_otp())
         self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
 
-        response = self.client.post(
+        response = self._post(
             reverse("mfa-login"),
             {
                 "method": "totp",
@@ -227,7 +235,7 @@ class PasswordTokenRevocationTests(CareAPITestBase):
         self.assertNotIn("access", response.data)
 
         fresh_temp_token = self._login(password=self.new_password)["temp_token"]
-        response = self.client.post(
+        response = self._post(
             reverse("mfa-login"),
             {
                 "method": "totp",
@@ -255,7 +263,7 @@ class PasswordTokenRevocationTests(CareAPITestBase):
             "care.emr.api.viewsets.mfa_login.check_mfa_user_rate_limit",
             side_effect=reset_password,
         ):
-            response = self.client.post(
+            response = self._post(
                 reverse("mfa-login"),
                 {
                     "method": "totp",
@@ -265,7 +273,7 @@ class PasswordTokenRevocationTests(CareAPITestBase):
                 format="json",
             )
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
-        self._assert_session_revoked(response.data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN, response.data)
+        self.assertNotIn("access", response.data)
         self.user.refresh_from_db()
         self.assertTrue(self.user.check_password(self.new_password))
