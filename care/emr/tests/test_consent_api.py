@@ -1,6 +1,7 @@
 import uuid
 from datetime import timedelta, timezone
 from secrets import choice
+from unittest.mock import patch
 
 from django.forms import model_to_dict
 from django.test import ignore_warnings
@@ -8,6 +9,7 @@ from django.urls import reverse
 from model_bakery import baker
 
 from care.emr.models.consent import Consent
+from care.emr.models.file_upload import FileUpload
 from care.emr.resources.consent.spec import (
     CategoryChoice,
     ConsentStatusChoices,
@@ -348,7 +350,12 @@ class TestConsentViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["verification_details"]), 0)
 
-    def test_for_attachments(self):
+    @patch.object(
+        FileUpload.files_manager,
+        "signed_url",
+        return_value="https://storage.test/upload",
+    )
+    def test_for_attachments(self, signed_url):
         permissions = [
             PatientPermissions.can_view_clinical_data.name,
         ]
@@ -371,6 +378,7 @@ class TestConsentViewSet(CareAPITestBase):
         }
         response = self.client.post(file_url, file_data, format="json")
         self.assertEqual(response.status_code, 403)
+        signed_url.assert_not_called()
 
         permissions = [
             EncounterPermissions.can_write_encounter_clinical_data.name,
@@ -380,6 +388,9 @@ class TestConsentViewSet(CareAPITestBase):
 
         response = self.client.post(file_url, file_data, format="json")
         self.assertEqual(response.status_code, 200)
+        upload = FileUpload.objects.get(external_id=response.data["id"])
+        signed_url.assert_called_once_with(upload)
+        self.assertEqual(upload.associating_id, str(consent.external_id))
 
         consent_url = self._get_consent_url(consent.external_id)
         response = self.client.get(consent_url)

@@ -23,7 +23,7 @@ class ValueSetAccess(AuthorizationHandler):
             )
         permission = [ValueSetPermissions.can_write_valueset.name]
         return self.check_permission_in_facility_organization(
-            permission, user, facility, root=True
+            permission, user, facility=facility, root=True
         )
 
     def can_access_facility_organization_valueset(

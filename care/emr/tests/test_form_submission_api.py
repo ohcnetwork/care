@@ -51,7 +51,7 @@ class TestFormSubmissionViewSet(CareAPITestBase):
 
     def _generate_create_data(self, encounter=None, patient=None, **kwargs):
         data = {
-            "questionnaire": self.questionnaire.slug,
+            "questionnaire": str(self.questionnaire.external_id),
             "patient": str((patient or self.patient).external_id),
             "status": FormSubmissionStatusChoices.draft.value,
             "response_dump": {"answer": 42},
@@ -247,10 +247,10 @@ class TestFormSubmissionViewSet(CareAPITestBase):
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, 403)
 
-    def test_create_with_invalid_questionnaire_slug(self):
+    def test_create_with_nonexistent_questionnaire_uuid(self):
         self._grant_patient_submit_permission()
         data = self._generate_create_data()
-        data["questionnaire"] = "nonexistent-slug"
+        data["questionnaire"] = str(uuid.uuid4())
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, 404)
 

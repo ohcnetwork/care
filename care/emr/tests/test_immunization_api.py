@@ -59,6 +59,7 @@ class TestImmunizationRecordViewSet(CareAPITestBase):
             "status": "completed",
             "code": self.code,
             "primary_source": True,
+            "administered_by": self.user.username,
             **kwargs,
         }
 
@@ -71,6 +72,7 @@ class TestImmunizationRecordViewSet(CareAPITestBase):
             "status": "completed",
             "code": self.code,
             "primary_source": True,
+            "administered_by": self.user,
             **kwargs,
         }
         return baker.make(Immunization, **data)
@@ -93,7 +95,9 @@ class TestImmunizationRecordViewSet(CareAPITestBase):
 
     def test_create_with_optional_relationships_omitted(self):
         self.grant_access()
-        response = self.client.post(self.list_url(), self.payload(), format="json")
+        payload = self.payload()
+        payload.pop("administered_by")
+        response = self.client.post(self.list_url(), payload, format="json")
         self.assertEqual(response.status_code, 200, response.data)
         record = Immunization.objects.get(external_id=response.data["id"])
         self.assertEqual(record.encounter, self.encounter)
@@ -102,6 +106,49 @@ class TestImmunizationRecordViewSet(CareAPITestBase):
         self.assertEqual(record.created_by, self.user)
         self.assertIsNone(record.recommendation)
         self.assertIsNone(record.product)
+        self.assertIsNone(record.location)
+        self.assertIsNone(record.administered_by)
+        self.assertIsNone(response.data["administered_by"])
+        response = self.client.get(self.detail_url(record))
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertIsNone(response.data["administered_by"])
+        response = self.client.get(self.list_url())
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            [item["id"] for item in response.data["results"]],
+            [str(record.external_id)],
+        )
+        self.assertIsNone(response.data["results"][0]["administered_by"])
+
+    def test_create_with_explicitly_null_administered_by(self):
+        self.grant_access()
+        response = self.client.post(
+            self.list_url(), self.payload(administered_by=None), format="json"
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertIsNone(response.data["administered_by"])
+        record = Immunization.objects.get(external_id=response.data["id"])
+        self.assertIsNone(record.administered_by)
+
+    def test_patch_preserves_administered_by_until_explicitly_cleared(self):
+        self.grant_access()
+        record = self.make_record()
+        response = self.client.patch(
+            self.detail_url(record), {"note": "Updated"}, format="json"
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            response.data["administered_by"]["username"], self.user.username
+        )
+        record.refresh_from_db()
+        self.assertEqual(record.administered_by, self.user)
+        response = self.client.patch(
+            self.detail_url(record), {"administered_by": None}, format="json"
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertIsNone(response.data["administered_by"])
+        record.refresh_from_db()
+        self.assertIsNone(record.administered_by)
 
     def test_create_and_retrieve_optional_relationships(self):
         self.grant_access()
@@ -118,14 +165,20 @@ class TestImmunizationRecordViewSet(CareAPITestBase):
             self.list_url(), self.payload(**relationships), format="json"
         )
         self.assertEqual(response.status_code, 200, response.data)
-        for field, value in relationships.items():
-            self.assertEqual(response.data[field], value)
+        for field in ("recommendation", "product", "location"):
+            self.assertEqual(response.data[field], relationships[field])
+        self.assertEqual(
+            response.data["administered_by"]["username"], self.user.username
+        )
         record = Immunization.objects.get(external_id=response.data["id"])
         response = self.client.get(self.detail_url(record))
         self.assertEqual(response.status_code, 200, response.data)
         self.assertEqual(response.data["encounter"], str(self.encounter.external_id))
-        for field, value in relationships.items():
-            self.assertEqual(response.data[field], value)
+        for field in ("recommendation", "product", "location"):
+            self.assertEqual(response.data[field], relationships[field])
+        self.assertEqual(
+            response.data["administered_by"]["username"], self.user.username
+        )
 
     def test_patch_preserves_omitted_relationships_and_clears_explicit_null(self):
         self.grant_access()

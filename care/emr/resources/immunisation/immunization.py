@@ -117,7 +117,7 @@ class ImmunizationListSpec(BaseImmunizationSpec):
     encounter: UUID4
     recommendation: UUID4 | None = None
 
-    administered_by: str | None = None
+    administered_by: UserSpec | None = None
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
@@ -126,8 +126,10 @@ class ImmunizationListSpec(BaseImmunizationSpec):
         mapping["recommendation"] = (
             obj.recommendation.external_id if obj.recommendation else None
         )
-        mapping["administered_by"] = model_from_cache(
-            UserSpec, id=obj.administered_by_id
+        mapping["administered_by"] = (
+            model_from_cache(UserSpec, id=obj.administered_by_id)
+            if obj.administered_by_id is not None
+            else None
         )
 
 
