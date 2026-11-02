@@ -139,6 +139,64 @@ class TestBookingViewSet(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 200)
 
+    def test_list_booking_with_multiple_organizations(self):
+        """Appointments from all selected organizations should be returned."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+
+        # Give the requesting user access to the first organization.
+        self.attach_role_facility_organization_user(
+            self.organization, self.user, role
+        )
+
+        # Create a second organization in the same facility.
+        organization_2 = self.create_facility_organization(
+            facility=self.facility
+        )
+        self.attach_role_facility_organization_user(
+            organization_2, self.user, role
+        )
+
+        # Create a second practitioner and associate them with organization 2.
+        practitioner_2 = self.create_user()
+        self.attach_role_facility_organization_user(
+            organization_2, practitioner_2, role
+        )
+
+        resource_2 = self.create_resource(user=practitioner_2)
+
+        # Create a schedule and appointment for the second practitioner.
+        schedule_2 = self.create_schedule(resource=resource_2)
+        availability_2 = self.create_availability(schedule=schedule_2)
+        slot_2 = self.create_slot(
+            resource=resource_2,
+            availability=availability_2,
+        )
+
+        # Create one appointment for each organization.
+        booking_1 = self.create_booking()
+        booking_2 = self.create_booking(token_slot=slot_2)
+
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "organization_ids": (
+                    f"{self.organization.external_id},"
+                    f"{organization_2.external_id}"
+                ),
+            },
+        )
+
+        self.assertEqual(response.status_code, 200)
+        returned_ids = {
+            str(booking["id"]) for booking in response.data["results"]
+        }
+
+        self.assertIn(str(booking_1.external_id), returned_ids)
+        self.assertIn(str(booking_2.external_id), returned_ids)
+        self.assertEqual(len(returned_ids), 2)
+
     def test_list_booking_without_permissions(self):
         """Users without can_list_user_booking permission cannot list bookings."""
         response = self.client.get(
