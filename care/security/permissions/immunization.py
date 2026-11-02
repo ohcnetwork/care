@@ -15,15 +15,15 @@ from care.security.roles.role import (
 
 class ImmunizationPermissions(enum.Enum):
     can_write_immunization = Permission(
-        "Can Create Immunization",
-        "",
-        PermissionContext.FACILITY,
-        [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
+        "Can Write Immunization",
+        "Create and update immunization records in an encounter",
+        PermissionContext.ENCOUNTER,
+        [FACILITY_ADMIN_ROLE, ADMIN_ROLE, DOCTOR_ROLE, NURSE_ROLE],
     )
     can_read_immunization = Permission(
         "Can Read Immunization",
-        "",
-        PermissionContext.FACILITY,
+        "Read immunization records for authorized patients and encounters",
+        PermissionContext.ENCOUNTER,
         [
             FACILITY_ADMIN_ROLE,
             ADMINISTRATOR,
@@ -57,15 +57,15 @@ class ImmunizationPermissions(enum.Enum):
         ],
     )
     can_write_immunization_recommendation = Permission(
-        "Can Create Immunization Recommendation",
-        "",
-        PermissionContext.FACILITY,
-        [FACILITY_ADMIN_ROLE, ADMIN_ROLE],
+        "Can Write Immunization Recommendation",
+        "Create and update recommendations, including applying immunization policies",
+        PermissionContext.PATIENT,
+        [FACILITY_ADMIN_ROLE, ADMIN_ROLE, DOCTOR_ROLE, NURSE_ROLE],
     )
     can_read_immunization_recommendation = Permission(
         "Can Read Immunization Recommendation",
-        "",
-        PermissionContext.FACILITY,
+        "Read immunization recommendations for authorized patients and encounters",
+        PermissionContext.PATIENT,
         [
             FACILITY_ADMIN_ROLE,
             ADMINISTRATOR,

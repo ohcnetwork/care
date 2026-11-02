@@ -1,12 +1,14 @@
+from datetime import date
 from itertools import pairwise
 
-from pydantic import UUID4, model_validator
+from pydantic import UUID4, BaseModel, Field, RootModel, model_validator
 from pydantic.experimental.missing_sentinel import MISSING
 
 from care.emr.models.immunisation import ImmunizationPolicy
 from care.emr.resources.base import EMRResource
 from care.emr.resources.immunisation.recommendation import (
     BaseImmunizationRecommendationSpec,
+    ImmunizationRecommendationRetrieveSpec,
 )
 from care.facility.models.facility import Facility
 from care.utils.shortcuts import get_object_or_404
@@ -14,15 +16,27 @@ from care.utils.shortcuts import get_object_or_404
 
 class ImmunizationPolicyTemplateSpec(BaseImmunizationRecommendationSpec):
     is_group: bool
-    children: list["ImmunizationPolicyTemplateSpec"] = []
-    due_date: int | MISSING = MISSING
-    earliest_date: int | MISSING = MISSING
-    overdue_date: int | MISSING = MISSING
+    children: list["ImmunizationPolicyTemplateSpec"] = Field(default_factory=list)
+    due_date: int | MISSING = Field(
+        default=MISSING, description="Days from the reference date"
+    )
+    earliest_date: int | MISSING = Field(
+        default=MISSING, description="Days from the reference date"
+    )
+    overdue_date: int | MISSING = Field(
+        default=MISSING, description="Days from the reference date"
+    )
 
     @model_validator(mode="after")
     def validate_only_groups_contain_children(self):
         if self.children and not self.is_group:
             raise ValueError("Only groups can contain children")
+        return self
+
+    @model_validator(mode="after")
+    def validate_codes(self):
+        if not self.is_group and (self.codes is MISSING or not self.codes):
+            raise ValueError("Codes are required for non-group recommendations")
         return self
 
     @model_validator(mode="after")
@@ -68,6 +82,21 @@ class ImmunizationPolicyListSpec(ImmunizationPolicySpec):
 
 
 class ImmunizationPolicyRetrieveSpec(ImmunizationPolicySpec):
+    pass
+
+
+class ImmunizationPolicyApplySpec(BaseModel):
+    policy: UUID4
+    reference_date: date = Field(
+        description="Date from which policy day offsets are calculated"
+    )
+    encounter: UUID4 | None = None
+    parent: UUID4 | None = None
+
+
+class ImmunizationPolicyApplyResponseSpec(
+    RootModel[list[ImmunizationRecommendationRetrieveSpec]]
+):
     pass
 
 

@@ -24,7 +24,7 @@ class ImmunizationRecommendationForecastStatus(str, Enum):
 
 
 class BaseImmunizationRecommendationSpec(EMRResource):
-    """Base model for healthcare service"""
+    """Clinical details shared by recommendations and policy templates."""
 
     __model__ = ImmunizationRecommendation
 
@@ -51,7 +51,7 @@ class ImmunizationRecommendationCreateSpec(BaseImmunizationRecommendationSpec):
 
     @model_validator(mode="after")
     def validate_codes(self):
-        if not self.is_group and self.codes is MISSING:
+        if not self.is_group and (self.codes is MISSING or not self.codes):
             raise ValueError("Codes are required for non-group recommendations")
         return self
 
@@ -61,9 +61,9 @@ class ImmunizationRecommendationCreateSpec(BaseImmunizationRecommendationSpec):
         )
         if self.parent:
             obj.parent = get_object_or_404(
-                ImmunizationRecommendation.objects.filter(patient=obj.patient).only(
-                    "id"
-                ),
+                ImmunizationRecommendation.objects.filter(
+                    patient=obj.patient, is_group=True
+                ).only("id"),
                 external_id=self.parent,
             )
         if self.encounter:
@@ -75,12 +75,13 @@ class ImmunizationRecommendationCreateSpec(BaseImmunizationRecommendationSpec):
 
 
 class ImmunizationRecommendationUpdateSpec(BaseImmunizationRecommendationSpec):
-    forecast_status: ImmunizationRecommendationForecastStatus
+    forecast_status: ImmunizationRecommendationForecastStatus | MISSING = MISSING
 
     @model_validator(mode="after")
     def validate_codes(self, info: ValidationInfo):
         obj = (info.context or {}).get("object")
-        if obj is not None and not obj.is_group and self.codes is MISSING:
+        codes = obj.codes if obj is not None and self.codes is MISSING else self.codes
+        if obj is not None and not obj.is_group and not codes:
             raise ValueError("Codes are required for non-group recommendations")
         return self
 
@@ -89,10 +90,24 @@ class ImmunizationRecommendationListSpec(BaseImmunizationRecommendationSpec):
     forecast_status: ImmunizationRecommendationForecastStatus
     is_group: bool
 
+    parent: UUID4 | None = None
+
     @classmethod
-    def perform_extra_serialization(cls, mapping, obj):
-        mapping["id"] = obj.external_id
+    def perform_extra_serialization(cls, mapping, obj, *args, **kwargs):
+        super().perform_extra_serialization(mapping, obj, *args, **kwargs)
+
+        mapping["parent"] = obj.parent.external_id if obj.parent_id else None
 
 
 class ImmunizationRecommendationRetrieveSpec(ImmunizationRecommendationListSpec):
-    pass
+    created_by: dict | None = None
+    updated_by: dict | None = None
+    patient: UUID4
+    encounter: UUID4 | None = None
+
+    @classmethod
+    def perform_extra_serialization(cls, mapping, obj):
+        super().perform_extra_serialization(mapping, obj)
+        cls.serialize_audit_users(mapping, obj)
+        mapping["patient"] = obj.patient.external_id
+        mapping["encounter"] = obj.encounter.external_id if obj.encounter_id else None
