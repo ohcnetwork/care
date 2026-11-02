@@ -110,6 +110,51 @@ class TestAttachAccountToInvoice(CareAPITestBase):
         self.assertEqual(self.charge_item_1.paid_invoice, invoice)
         self.assertEqual(self.charge_item_2.paid_invoice, invoice)
 
+    def test_attach_account_to_invoice_keeps_existing_charge_items(self):
+        role = self.create_role_with_permissions(
+            [
+                InvoicePermissions.can_read_invoice.name,
+                InvoicePermissions.can_write_invoice.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        # charge_item_1 is already on the draft invoice, charge_item_2 is still billable
+        invoice = baker.make(
+            "emr.Invoice",
+            facility=self.facility,
+            account=self.account,
+            patient=self.patient,
+            status=InvoiceStatusOptions.draft.value,
+            charge_items=[self.charge_item_1.id],
+            total_net=Decimal("100.00"),
+            total_gross=Decimal("100.00"),
+        )
+        self.charge_item_1.status = ChargeItemStatusOptions.billed.value
+        self.charge_item_1.paid_invoice = invoice
+        self.charge_item_1.save()
+
+        response = self.client.post(self._get_url(invoice.external_id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        invoice.refresh_from_db()
+        self.assertEqual(
+            sorted(invoice.charge_items),
+            sorted([self.charge_item_1.id, self.charge_item_2.id]),
+        )
+
+        self.charge_item_1.refresh_from_db()
+        self.charge_item_2.refresh_from_db()
+        self.assertEqual(
+            self.charge_item_1.status, ChargeItemStatusOptions.billed.value
+        )
+        self.assertEqual(
+            self.charge_item_2.status, ChargeItemStatusOptions.billed.value
+        )
+        self.assertEqual(self.charge_item_1.paid_invoice, invoice)
+        self.assertEqual(self.charge_item_2.paid_invoice, invoice)
+
     def test_attach_account_to_invoice_rejects_negative_total_without_refund(self):
         role = self.create_role_with_permissions(
             [
