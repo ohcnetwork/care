@@ -13,7 +13,6 @@ from care.emr.utils.mfa import (
     create_auth_response,
     validate_temp_token,
 )
-from care.users.models import User
 
 
 class MFALoginViewSet(EMRBaseViewSet):
@@ -32,10 +31,10 @@ class MFALoginViewSet(EMRBaseViewSet):
         check_mfa_ip_rate_limit(request)
         request_data = MFALoginRequest(**request.data)
 
-        user_id = validate_temp_token(request_data.temp_token)
-        check_mfa_user_rate_limit(request, user_id)
-
-        user = User.objects.get(external_id=user_id)
+        # Keep the validated password state when issuing tokens, even if a
+        # password reset commits while this MFA request is in progress.
+        user = validate_temp_token(request_data.temp_token)
+        check_mfa_user_rate_limit(request, str(user.external_id))
 
         if request_data.method == LoginMethod.totp:
             return self._handle_totp_login(user, request_data.code)

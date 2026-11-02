@@ -409,6 +409,7 @@ SIMPLE_JWT = {
     ),
     "ROTATE_REFRESH_TOKENS": True,
     "USER_ID_FIELD": "external_id",
+    "CHECK_REVOKE_TOKEN": True,
 }
 
 # Celery (background tasks)
