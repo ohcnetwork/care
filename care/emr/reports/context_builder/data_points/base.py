@@ -1,5 +1,7 @@
 import random
 from collections.abc import Callable
+from datetime import date, datetime
+from decimal import Decimal
 from types import SimpleNamespace
 from typing import Any
 
@@ -27,15 +29,17 @@ class Field:
 
     def get_value(self, parent_context, parent_attribute, is_preview):  # noqa PLR0911
         if self.target_context:
-            return self.target_context(
-                parent_context, parent_attribute, is_preview=is_preview
+            return template_value(
+                self.target_context(
+                    parent_context, parent_attribute, is_preview=is_preview
+                )
             )
 
         if is_preview:
-            if self.preview_value:
-                return self.preview_value
+            if self.preview_value is not None:
+                return template_value(self.preview_value)
             if self.preview_fn:
-                return self.preview_fn()
+                return template_value(self.preview_fn())
             return self.DEFAULT_NONE_VALUE
 
         if isinstance(self.mapping, str):
@@ -49,7 +53,7 @@ class Field:
             return self.DEFAULT_NONE_VALUE
 
         if isinstance(value, (list, dict)):
-            return value
+            return template_value(value)
 
         return str(value)
 
@@ -69,7 +73,7 @@ class ContextBuilderBase:
     ):
         self.parent_context = parent_context
         self.parent_attribute = parent_attribute
-        if not context and not bool(is_preview):
+        if context is None and not bool(is_preview):
             context = self.get_context()
         self.context = context
         self.is_preview = bool(is_preview)
@@ -131,3 +135,18 @@ class SingleObjectContextBuilder(ContextBuilderBase):
 
 class ListContextBuilder(ContextBuilderBase):
     __context_type__ = "list"
+
+
+def template_value(value):
+    """Copy report data without exposing objects hidden inside JSON-like values."""
+    if value is None or type(value) in (str, bool, int, float, date, datetime, Decimal):
+        return value
+    if isinstance(value, ContextBuilderBase):
+        return value
+    if type(value) is dict:
+        if any(type(key) is not str for key in value):
+            raise TypeError("Report data must have string dictionary keys")
+        return {key: template_value(item) for key, item in value.items()}
+    if type(value) in (list, tuple):
+        return [template_value(item) for item in value]
+    raise TypeError("Report data contains an unsupported object")
