@@ -204,9 +204,7 @@ class TemplateViewSet(
             preview_context = context_class(is_preview=True)
             context_dict = {context_class.context_key: preview_context}
 
-            context_dict["current_user"] = SingleUserIdContextBuilder(
-                context=request.user,
-            )
+            context_dict["current_user"] = SingleUserIdContextBuilder(is_preview=True)
 
             rendered_content = Renderer(generator).render(
                 request_data.template_data, context_dict, validated_options
