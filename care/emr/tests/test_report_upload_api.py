@@ -865,3 +865,185 @@ class ReportUploadAPITest(CareAPITestBase):
             response.data["detail"], "Cannot write report of type discharge_summary"
         )
         self.assertEqual(ReportUpload.objects.count(), 0)
+
+    # Archive report uploads
+
+    def test_archive_report_upload_as_superuser(self):
+        """Verify archiving persists audit metadata and updates list responses."""
+        report = self.create_report_upload()
+        internal_name = report.internal_name
+        before = timezone.now()
+        response = self.client.post(
+            self.get_archive_url(report.external_id),
+            {"archive_reason": "Replaced by an updated report"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        report.refresh_from_db()
+        self.assertTrue(report.is_archived)
+        self.assertEqual(report.archive_reason, "Replaced by an updated report")
+        self.assertEqual(report.archived_by, self.superuser)
+        self.assertGreaterEqual(report.archived_datetime, before)
+        self.assertLessEqual(report.archived_datetime, timezone.now())
+        self.assertEqual(response.data["id"], str(report.external_id))
+        self.assertTrue(response.data["is_archived"])
+        self.assertEqual(response.data["archive_reason"], report.archive_reason)
+        self.assertIsNotNone(response.data["archived_datetime"])
+        listed = self.client.get(
+            self.get_url(), self.list_report_data(is_archived="true")
+        )
+        self.assertEqual(listed.status_code, 200)
+        self.assertEqual(
+            listed.data["results"][0]["archive_reason"], report.archive_reason
+        )
+        self.assertEqual(report.internal_name, internal_name)
+        self.assertTrue(report.upload_completed)
+        self.assertNotIn("internal_name", response.data)
+
+    def test_archive_report_upload_with_write_permission(self):
+        """Verify encounter write permission allows archiving its reports."""
+        report = self.create_report_upload()
+        user = self.create_user_with_permissions(
+            [EncounterPermissions.can_write_encounter]
+        )
+        self.client.force_authenticate(user=user)
+        response = self.client.post(
+            self.get_archive_url(report.external_id),
+            {"archive_reason": "Incorrect report"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        report.refresh_from_db()
+        self.assertTrue(report.is_archived)
+        self.assertEqual(report.archived_by, user)
+
+    def test_archive_report_upload_without_permission(self):
+        """Verify denied archive requests leave report metadata unchanged."""
+        report = self.create_report_upload()
+        self.client.force_authenticate(user=self.user)
+        response = self.client.post(
+            self.get_archive_url(report.external_id),
+            {"archive_reason": "Incorrect report"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.data["detail"], "Cannot write report of type discharge_summary"
+        )
+        report.refresh_from_db()
+        self.assertFalse(report.is_archived)
+        self.assertEqual(report.archive_reason, "")
+        self.assertIsNone(report.archived_by)
+        self.assertIsNone(report.archived_datetime)
+
+    def test_archive_report_upload_with_only_read_permission(self):
+        """Verify read permission alone does not allow archiving reports."""
+        report = self.create_report_upload()
+        user = self.create_user_with_permissions(
+            [EncounterPermissions.can_read_encounter]
+        )
+        self.client.force_authenticate(user=user)
+        response = self.client.post(
+            self.get_archive_url(report.external_id),
+            {"archive_reason": "Incorrect report"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.data["detail"], "Cannot write report of type discharge_summary"
+        )
+        report.refresh_from_db()
+        self.assertFalse(report.is_archived)
+        self.assertEqual(report.archive_reason, "")
+        self.assertIsNone(report.archived_by)
+        self.assertIsNone(report.archived_datetime)
+
+    def test_archive_report_upload_unauthenticated(self):
+        """Verify unauthenticated archive requests leave the report active."""
+        report = self.create_report_upload()
+        self.client.force_authenticate(user=None)
+        response = self.client.post(
+            self.get_archive_url(report.external_id),
+            {"archive_reason": "Incorrect report"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403)
+        report.refresh_from_db()
+        self.assertFalse(report.is_archived)
+        self.assertEqual(report.archive_reason, "")
+        self.assertIsNone(report.archived_by)
+        self.assertIsNone(report.archived_datetime)
+
+    def test_archive_nonexistent_report_upload(self):
+        """Verify archiving a nonexistent report returns not found."""
+        response = self.client.post(
+            self.get_archive_url(uuid.uuid4()),
+            {"archive_reason": "Incorrect report"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 404)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "No ReportUpload matches the given query.",
+        )
+
+    def test_archive_report_upload_with_missing_reason(self):
+        """Verify archiving requires an archive reason field."""
+        report = self.create_report_upload()
+        response = self.client.post(
+            self.get_archive_url(report.external_id), {}, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(response.data["errors"][0]["loc"], ["archive_reason"])
+        report.refresh_from_db()
+        self.assertFalse(report.is_archived)
+
+    def test_archive_report_upload_with_invalid_reason(self):
+        """Verify archive reasons must be strings and invalid values change nothing."""
+        report = self.create_report_upload()
+        for reason in (None, 123, []):
+            with self.subTest(reason=reason):
+                response = self.client.post(
+                    self.get_archive_url(report.external_id),
+                    {"archive_reason": reason},
+                    format="json",
+                )
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(response.data["errors"][0]["loc"], ["archive_reason"])
+                report.refresh_from_db()
+                self.assertFalse(report.is_archived)
+
+    def test_archive_report_upload_with_empty_reason(self):
+        """Verify the current archive contract accepts an empty reason string."""
+        report = self.create_report_upload()
+        response = self.client.post(
+            self.get_archive_url(report.external_id),
+            {"archive_reason": ""},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        report.refresh_from_db()
+        self.assertTrue(report.is_archived)
+        self.assertEqual(report.archive_reason, "")
+
+    def test_archive_report_upload_again_updates_metadata(self):
+        """Verify rearchiving updates the reason, archiver and archive timestamp."""
+        report = self.create_report_upload(
+            is_archived=True,
+            archive_reason="Old reason",
+            archived_by=self.user,
+            archived_datetime=timezone.now() - timedelta(days=1),
+        )
+        response = self.client.post(
+            self.get_archive_url(report.external_id),
+            {"archive_reason": "Updated reason"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        report.refresh_from_db()
+        self.assertTrue(report.is_archived)
+        self.assertEqual(report.archive_reason, "Updated reason")
+        self.assertEqual(report.archived_by, self.superuser)
+        self.assertGreater(
+            report.archived_datetime, timezone.now() - timedelta(minutes=1)
+        )
