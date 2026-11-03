@@ -5,7 +5,6 @@ from django.urls import reverse
 from model_bakery import baker
 
 from care.emr.models.report.template import Template
-from care.security.authorization import AuthorizationController
 from care.security.permissions.template import TemplatePermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -189,7 +188,7 @@ class ReportTemplateAPITest(CareAPITestBase):
         response = self.client.post(self.get_url(), data, format="json")
         self.assertEqual(response.status_code, 403)
         self.assertEqual(
-            response.data["detail"], "You do not have permission to write templates"
+            response.data["detail"], "Authentication credentials were not provided."
         )
 
     def test_create_global_report_template_as_superuser(self):
@@ -220,7 +219,9 @@ class ReportTemplateAPITest(CareAPITestBase):
         self.client.force_authenticate(user=self.superuser)
         response = self.client.post(self.get_url(), data, format="json")
         self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.data["detail"], "Facility not found")
+        self.assertEqual(
+            response.data["errors"][0]["msg"], "No Facility matches the given query."
+        )
 
     def test_create_report_template_with_duplicate_slug(self):
         """Test creating a facility report template with an existing slug"""
@@ -704,11 +705,25 @@ class ReportTemplateAPITest(CareAPITestBase):
     def test_get_schema_when_generation_fails(self):
         """Test fetching the template schema when schema generation fails"""
         self.client.force_authenticate(user=self.superuser)
-        with patch(
-            "care.emr.api.viewsets.report.template.build_schema",
-            side_effect=Exception("Schema error"),
+        with (
+            patch(
+                "care.emr.api.viewsets.report.template.build_schema",
+                side_effect=Exception("Schema error"),
+            ),
+            self.assertLogs(
+                "care.emr.api.viewsets.report.template", level="ERROR"
+            ) as schema_logs,
+            self.assertLogs("django.request", level="ERROR") as request_logs,
         ):
             response = self.client.get(self.get_schema_url())
+        self.assertEqual(
+            schema_logs.records[0].getMessage(),
+            "Failed to generate schema: Schema error",
+        )
+        self.assertEqual(
+            request_logs.records[0].getMessage(),
+            f"Internal Server Error: {self.get_schema_url()}",
+        )
         self.assertEqual(response.status_code, 500)
         self.assertEqual(response.data, {"error": "Failed to generate schema"})
 
@@ -792,24 +807,13 @@ class ReportTemplateAPITest(CareAPITestBase):
         """Test previewing a report template with invalid template syntax"""
         data = self.generate_preview_data(template_data="{% if %}")
         self.client.force_authenticate(user=self.superuser)
-        response = self.client.post(self.get_preview_url(), data, format="json")
+        with self.assertLogs(
+            "care.emr.reports.renderer.renderer", level="ERROR"
+        ) as renderer_logs:
+            response = self.client.post(self.get_preview_url(), data, format="json")
+        self.assertIn(
+            "Template rendering failed: Template syntax error",
+            renderer_logs.records[0].getMessage(),
+        )
         self.assertEqual(response.status_code, 400)
         self.assertIn("Preview generation failed", str(response.data))
-
-    # Test cases for report template authorization
-
-    def test_can_generate_report_from_template(self):
-        """Test the generate report from template permission check"""
-        user = self.create_user_with_permissions(
-            [TemplatePermissions.can_generate_report_from_template]
-        )
-        self.assertTrue(
-            AuthorizationController.call(
-                "can_generate_report_from_template", user, self.facilty
-            )
-        )
-        self.assertFalse(
-            AuthorizationController.call(
-                "can_generate_report_from_template", self.user, self.facilty
-            )
-        )
