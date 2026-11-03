@@ -4,6 +4,7 @@ from typing import Any, Literal
 from django.http import HttpResponse
 from pydantic import Field
 from weasyprint import CSS, HTML
+from weasyprint.urls import URLFetcher
 
 from care.emr.reports.renderer.generators.base import BaseOptions, BaseOutputGenerator
 
@@ -29,14 +30,23 @@ class WeasyPrintGenerator(BaseOutputGenerator):
     ) -> bytes:
         options = options or WeasyPrintGeneratorOptions()
         try:
-            html_obj = self.HTML(string=html)
+            # Templates are untrusted: assets must be embedded, never loaded from
+            # the worker's filesystem or network (including PDF attachments).
+            url_fetcher = URLFetcher(allowed_protocols={"data"}, allow_redirects=False)
+            html_obj = self.HTML(string=html, url_fetcher=url_fetcher)
             stylesheets = []
 
             if options.stylesheets:
                 for css_string in options.stylesheets:
-                    stylesheets.append(self.CSS(string=css_string))
+                    stylesheets.append(
+                        self.CSS(string=css_string, url_fetcher=url_fetcher)
+                    )
             else:
-                stylesheets.append(self.CSS(string=self._get_default_css(options)))
+                stylesheets.append(
+                    self.CSS(
+                        string=self._get_default_css(options), url_fetcher=url_fetcher
+                    )
+                )
 
             return html_obj.write_pdf(stylesheets=stylesheets)
         except Exception as e:
