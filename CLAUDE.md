@@ -83,7 +83,7 @@ plug_config.py          # Plugin system configuration
 CARE supports a plugin architecture via `plug_config.py` and the `plugs` package. Plugins extend core functionality without modifying the main codebase. Be aware of plugin interfaces when modifying core models or APIs.
 
 ### Settings
-- **Local dev**: `config.settings.local` (DEBUG=True, CORS open, email to console)
+- **Local dev**: `config.settings.local` (DEBUG defaults to False, CORS open, email to console)
 - **Tests**: `config.settings.test`
 - **Production**: `config.settings.deployment`
 
