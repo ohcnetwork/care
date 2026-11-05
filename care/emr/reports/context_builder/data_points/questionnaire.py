@@ -1,6 +1,6 @@
 from types import SimpleNamespace
 
-from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
+from care.emr.models.questionnaire import QuestionnaireResponse
 from care.emr.reports.context_builder.data_points.base import (
     Field,
     QuerysetContextBuilder,
@@ -89,5 +89,4 @@ class QuestionnaireContextBuilder(QuerysetContextBuilder):
     def perform_extra_filters(self, qs, **kwargs):
         if "slug" not in kwargs:
             raise ValueError("slug is required")
-        questionnaire = Questionnaire.objects.get(slug=kwargs["slug"])
-        return qs.filter(questionnaire=questionnaire).order_by("-created_date")
+        return qs.filter(questionnaire__slug=kwargs["slug"]).order_by("-created_date")

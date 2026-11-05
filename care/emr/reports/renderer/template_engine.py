@@ -2,10 +2,60 @@ from datetime import date, datetime
 from decimal import Decimal
 
 from django.utils.timezone import is_aware, localtime, make_aware
-from jinja2 import BaseLoader, Environment, StrictUndefined, TemplateSyntaxError
-from jinja2.sandbox import SandboxedEnvironment
+from jinja2 import (
+    BaseLoader,
+    Environment,
+    StrictUndefined,
+    TemplateSyntaxError,
+    Undefined,
+)
+from jinja2.sandbox import ImmutableSandboxedEnvironment, SandboxedEnvironment
 
+from care.emr.reports.context_builder.data_points.base import (
+    ContextBuilderBase,
+    Field,
+    QuerysetContextBuilder,
+    template_value,
+)
 from care.utils.time_util import care_now
+
+
+class ReportSandbox(ImmutableSandboxedEnvironment):
+    """Allow templates to read declared report fields, never builder internals."""
+
+    @staticmethod
+    def _is_report_attribute(obj, attribute):
+        return (
+            isinstance(attribute, str)
+            and not attribute.startswith("_")
+            and (
+                isinstance(getattr(type(obj), attribute, None), Field)
+                or (attribute == "filter" and isinstance(obj, QuerysetContextBuilder))
+            )
+        )
+
+    def getattr(self, obj, attribute):
+        # Check before getattr: an undeclared property must not execute either.
+        if isinstance(obj, ContextBuilderBase) and not self._is_report_attribute(
+            obj, attribute
+        ):
+            return self.unsafe_undefined(obj, attribute)
+        return super().getattr(obj, attribute)
+
+    def getitem(self, obj, argument):
+        if isinstance(obj, ContextBuilderBase):
+            return self.getattr(obj, argument)
+        return super().getitem(obj, argument)
+
+    def is_safe_attribute(self, obj, attr, value):
+        if isinstance(obj, ContextBuilderBase) and not self._is_report_attribute(
+            obj, attr
+        ):
+            return False
+        if type(obj) in (list, dict):
+            # Templates own these containers or receive copies via template_value.
+            return SandboxedEnvironment.is_safe_attribute(self, obj, attr, value)
+        return super().is_safe_attribute(obj, attr, value)
 
 
 class TemplateEngine:
@@ -16,15 +66,15 @@ class TemplateEngine:
 
     def _setup_jinja_env(self):
         env = (
-            SandboxedEnvironment(
+            ReportSandbox(
                 loader=BaseLoader(),
-                undefined=StrictUndefined if self.strict_undefined else None,
+                undefined=StrictUndefined if self.strict_undefined else Undefined,
                 autoescape=True,
             )
             if self.use_sandbox
             else Environment(
                 loader=BaseLoader(),
-                undefined=StrictUndefined if self.strict_undefined else None,
+                undefined=StrictUndefined if self.strict_undefined else Undefined,
                 autoescape=True,
             )
         )
@@ -170,7 +220,7 @@ class TemplateEngine:
     def render(self, template_string: str, context: dict) -> str:
         try:
             template = self.env.from_string(template_string)
-            return template.render(**context)
+            return template.render(**template_value(context))
         except TemplateSyntaxError as e:
             msg = f"Template syntax error at line {e.lineno}: {e.message}"
             raise TemplateSyntaxError(msg, e.lineno) from e

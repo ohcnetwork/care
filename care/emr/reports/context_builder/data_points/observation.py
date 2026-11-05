@@ -46,7 +46,7 @@ class ObservationValueContextBuilder(SingleObjectContextBuilder):
     value = Field(
         display="Observation Value",
         preview_value="12",
-        mapping=lambda o: o.get("value") if o and o.get("value") else None,
+        mapping=lambda o: o.get("value") if o else None,
         description="The value of the observation recorded",
     )
 
