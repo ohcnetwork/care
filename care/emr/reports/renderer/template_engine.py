@@ -9,7 +9,7 @@ from jinja2 import (
     TemplateSyntaxError,
     Undefined,
 )
-from jinja2.sandbox import ImmutableSandboxedEnvironment
+from jinja2.sandbox import ImmutableSandboxedEnvironment, SandboxedEnvironment
 
 from care.emr.reports.context_builder.data_points.base import (
     ContextBuilderBase,
@@ -52,6 +52,9 @@ class ReportSandbox(ImmutableSandboxedEnvironment):
             obj, attr
         ):
             return False
+        if type(obj) in (list, dict):
+            # Templates own these containers or receive copies via template_value.
+            return SandboxedEnvironment.is_safe_attribute(self, obj, attr, value)
         return super().is_safe_attribute(obj, attr, value)
 
 

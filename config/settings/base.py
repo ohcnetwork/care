@@ -696,6 +696,9 @@ FACILITY_CDN = env("FACILITY_CDN", default=None)
 
 # REPORT RENDERING
 # ------------------------------------------------------------------------------
+REPORT_MAX_RESOURCE_SIZE_BYTES = env.int(
+    "REPORT_MAX_RESOURCE_SIZE_BYTES", default=10 * 1024 * 1024
+)
 REPORT_ALLOWED_RESOURCE_ORIGINS = env.list(
     "REPORT_ALLOWED_RESOURCE_ORIGINS",
     default=env.list(

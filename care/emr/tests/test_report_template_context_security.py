@@ -150,7 +150,7 @@ class ReportTemplateContextSecurityTests(SimpleTestCase):
             ):
                 self.engine.render(source, {"rows": rows})
 
-    def test_json_fields_remain_readable_and_cannot_be_mutated(self):
+    def test_templates_can_mutate_json_field_copies_without_changing_source_data(self):
         details = {"label": "Visible label", "values": [{"value": 123}]}
         report = ReportDataContext(context=SimpleNamespace(details=details))
         self.assertEqual(
@@ -160,19 +160,64 @@ class ReportTemplateContextSecurityTests(SimpleTestCase):
             ),
             "Visible label:123",
         )
+        self.assertEqual(
+            self.engine.render(
+                "{% set details = report.details %}"
+                "{% set _ = details.update(label='changed') %}"
+                "{% set _ = details['values'].append({'value': 456}) %}"
+                "{% set _ = details['values'][0].clear() %}"
+                "{{ details.label }}:{{ details['values']|length }}:"
+                "{{ details['values'][1].value }}",
+                {"report": report},
+            ),
+            "changed:2:456",
+        )
+        self.assertEqual(
+            details, {"label": "Visible label", "values": [{"value": 123}]}
+        )
+
+    def test_template_local_list_operations_and_dictionary_cache_work(self):
+        self.assertEqual(
+            self.engine.render(
+                "{% set items = ['c'] %}"
+                "{% set _ = items.append('a') %}"
+                "{% set _ = items.extend(['b', 'd']) %}"
+                "{% set _ = items.insert(0, 'e') %}"
+                "{% set _ = items.pop() %}"
+                "{% set _ = items.remove('b') %}"
+                "{% set _ = items.sort() %}"
+                "{% set _ = items.reverse() %}"
+                "{% set cache = namespace(by_slug={}) %}"
+                "{% set _ = cache.by_slug.update({'section': items}) %}"
+                "{{ cache.by_slug.get('section')|join(',') }}",
+                {},
+            ),
+            "e,c,a",
+        )
+
+    def test_mutating_input_containers_does_not_change_the_callers_context(self):
+        data = {"rows": [{"label": "Original"}]}
+        source = (
+            "{% set _ = data['rows'][0].update(label='Changed') %}"
+            "{% set _ = data['rows'].append({'label': 'Added'}) %}"
+            "{{ data['rows']|map(attribute='label')|join(',') }}"
+        )
+        self.assertEqual(self.engine.render(source, {"data": data}), "Changed,Added")
+        self.assertEqual(data, {"rows": [{"label": "Original"}]})
+        self.assertEqual(self.engine.render(source, {"data": data}), "Changed,Added")
+
+    def test_mutable_containers_cannot_expose_private_attributes(self):
         for source in (
-            "{{ report.details.update(label='changed') }}",
-            "{{ report.details['values'].append('changed') }}",
-            "{{ report.details['values'][0].clear() }}",
+            "{{ data.__class__ }}",
+            "{{ data['rows'].__class__ }}",
+            "{{ data.update.__self__ }}",
+            "{{ data['rows'].append.__self__ }}",
         ):
             with (
                 self.subTest(source=source),
                 self.assertRaises((SecurityError, UndefinedError)),
             ):
-                self.engine.render(source, {"report": report})
-        self.assertEqual(
-            details, {"label": "Visible label", "values": [{"value": 123}]}
-        )
+                self.engine.render(source, {"data": {"rows": []}})
 
     def test_objects_and_callables_hidden_in_json_fields_are_rejected(self):
         for value in (
