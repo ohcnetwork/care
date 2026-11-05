@@ -1,15 +1,13 @@
 from html import escape
 from typing import Any
 
+from django.conf import settings
 from django.http import HttpResponse
 from pydantic import Field
 
 from care.emr.reports.renderer.generators.base import BaseOptions, BaseOutputGenerator
 from care.emr.reports.renderer.generators.registry import GeneratorRegistry
-from care.emr.reports.renderer.html_sanitizer import (
-    REPORT_CONTENT_SECURITY_POLICY,
-    sanitize_report_html,
-)
+from care.emr.reports.renderer.html_sanitizer import sanitize_report_html
 
 
 class HTMLGeneratorOptions(BaseOptions):
@@ -75,7 +73,7 @@ class HTMLGenerator(BaseOutputGenerator):
 
     def get_http_response(self, content):
         response = HttpResponse(content, content_type="text/html; charset=utf-8")
-        response["Content-Security-Policy"] = REPORT_CONTENT_SECURITY_POLICY
+        response["Content-Security-Policy"] = settings.REPORT_CONTENT_SECURITY_POLICY
         response["X-Content-Type-Options"] = "nosniff"
         return response
 

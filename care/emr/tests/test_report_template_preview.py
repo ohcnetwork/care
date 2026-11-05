@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 from tempfile import TemporaryDirectory
 from unittest.mock import patch
@@ -144,6 +145,12 @@ class ReportTemplatePreviewSecurityTests(SimpleTestCase):
             (settings.BASE_DIR / "data/template_fixtures.json").read_text()
         )
         for template in templates:
+            # Use a synthetic asset URL instead of the fixture's hosted logo.
+            template_data = re.sub(
+                r"https://[^\s\"'<>]+",
+                "https://assets.example/logo.png",
+                template["template_data"],
+            )
             context_class = DataPointRegistry.get(template["context"])
             context = {
                 context_class.context_key: context_class(is_preview=True),
@@ -161,7 +168,7 @@ class ReportTemplatePreviewSecurityTests(SimpleTestCase):
                         "urllib.request.OpenerDirector.open", autospec=True
                     ) as open_url:
                         content = Renderer(generator).render(
-                            template["template_data"], context, options
+                            template_data, context, options
                         )
                     open_url.assert_not_called()
                     self.assertTrue(content)

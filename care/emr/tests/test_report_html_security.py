@@ -1,21 +1,155 @@
-from django.test import SimpleTestCase
+from django.conf import settings
+from django.test import SimpleTestCase, override_settings
 from tinyhtml5 import parse
 
 from care.emr.reports.renderer.generators.html_generator import (
     HTMLGenerator,
     HTMLGeneratorOptions,
 )
-from care.emr.reports.renderer.html_sanitizer import REPORT_CONTENT_SECURITY_POLICY
 
 INLINE_IMAGE = (
     "data:image/png;base64,"
     "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+/l9sAAAAASUVORK5CYII="
 )
+IMAGE_ORIGIN = "https://assets.example"
+REMOTE_IMAGE = f"{IMAGE_ORIGIN}/logo.png"
 
 
 class ReportHTMLSecurityTests(SimpleTestCase):
     def setUp(self):
         self.generator = HTMLGenerator()
+
+    @override_settings(REPORT_ALLOWED_RESOURCE_ORIGINS=[IMAGE_ORIGIN])
+    def test_preserves_images_from_configured_https_origins(self):
+        result = self.generator.generate(
+            f'<img src="{REMOTE_IMAGE}" onerror="alert(1)" srcset="{REMOTE_IMAGE} 2x">'
+        ).decode()
+        image = parse(result, namespace_html_elements=False).find(".//img")
+        self.assertEqual(image.attrib, {"src": REMOTE_IMAGE})
+
+    @override_settings(REPORT_ALLOWED_RESOURCE_ORIGINS=[IMAGE_ORIGIN])
+    def test_configured_image_origins_require_an_exact_match(self):
+        for url in (
+            REMOTE_IMAGE.replace("https:", "http:"),
+            REMOTE_IMAGE.removeprefix("https:"),
+            REMOTE_IMAGE.replace(IMAGE_ORIGIN, IMAGE_ORIGIN + ".evil.example"),
+            REMOTE_IMAGE.replace(IMAGE_ORIGIN, IMAGE_ORIGIN + ":444"),
+            REMOTE_IMAGE.replace("https://", "https://user:password@"),
+            IMAGE_ORIGIN + "@evil.example/logo.png",
+            IMAGE_ORIGIN + "\\@evil.example/logo.png",
+            REMOTE_IMAGE.replace("https://", "https://\n"),
+        ):
+            with self.subTest(url=url):
+                result = self.generator.generate(f'<img src="{url}">').decode()
+                image = parse(result, namespace_html_elements=False).find(".//img")
+                self.assertIsNone(image.get("src"))
+
+    @override_settings(REPORT_ALLOWED_RESOURCE_ORIGINS=[IMAGE_ORIGIN + "/images"])
+    def test_path_configuration_does_not_trust_an_entire_origin(self):
+        result = self.generator.generate(f'<img src="{REMOTE_IMAGE}">').decode()
+        self.assertIsNone(
+            parse(result, namespace_html_elements=False).find(".//img").get("src")
+        )
+
+    @override_settings(REPORT_ALLOWED_RESOURCE_ORIGINS=[IMAGE_ORIGIN])
+    def test_preserves_trusted_stylesheet_links_and_only_passive_attributes(self):
+        url = f"{IMAGE_ORIGIN}/report.css"
+        result = self.generator.generate(
+            f'<link rel="stylesheet" href="{url}" media="print" type="text/css" '
+            'crossorigin="anonymous" onload="alert(1)">'
+        ).decode()
+        link = parse(result, namespace_html_elements=False).find(".//link")
+        self.assertEqual(
+            link.attrib,
+            {
+                "rel": "stylesheet",
+                "href": url,
+                "media": "print",
+                "type": "text/css",
+                "crossorigin": "anonymous",
+            },
+        )
+
+    @override_settings(REPORT_ALLOWED_RESOURCE_ORIGINS=[IMAGE_ORIGIN])
+    def test_untrusted_stylesheets_and_other_link_types_are_removed(self):
+        for rel, url in (
+            ("stylesheet", "https://untrusted.example/report.css"),
+            ("stylesheet", "file:///etc/report.css"),
+            ("stylesheet", "//untrusted.example/report.css"),
+            ("stylesheet", "data:text/css,p{}"),
+            ("attachment", f"{IMAGE_ORIGIN}/secret"),
+            ("prefetch", f"{IMAGE_ORIGIN}/report.css"),
+            ("preload", f"{IMAGE_ORIGIN}/report.css"),
+            ("stylesheet attachment", f"{IMAGE_ORIGIN}/report.css"),
+        ):
+            with self.subTest(rel=rel, url=url):
+                result = self.generator.generate(f'<link rel="{rel}" href="{url}">')
+                self.assertEqual(
+                    list(
+                        parse(result.decode(), namespace_html_elements=False).iter(
+                            "link"
+                        )
+                    ),
+                    [],
+                )
+
+    @override_settings(REPORT_ALLOWED_RESOURCE_ORIGINS=[IMAGE_ORIGIN])
+    def test_preserves_trusted_css_imports_font_sources_and_backgrounds(self):
+        urls = {
+            "stylesheet": f"{IMAGE_ORIGIN}/report.css",
+            "font": f"{IMAGE_ORIGIN}/report.woff2",
+            "background": f"{IMAGE_ORIGIN}/background.png",
+        }
+        for css in (
+            f'@import "{urls["stylesheet"]}";',
+            f"@import url({urls['stylesheet']}) print;",
+            f'@import u\\72l("{urls["stylesheet"]}") layer(report) supports(display: grid);',
+            (
+                '@font-face {font-family: Report; src: local("Report"), '
+                f'url("{urls["font"]}") format("woff2");}}'
+            ),
+            f'@media print {{p {{background: url("{urls["background"]}")}}}}',
+            f'p {{--image: url("{urls["background"]}"); background: var(--image)}}',
+        ):
+            with self.subTest(css=css):
+                result = self.generator.generate(f"<style>{css}</style>").decode()
+                self.assertIn(next(url for url in urls.values() if url in css), result)
+        result = self.generator.generate(
+            f'<p style="background: url({urls["background"]}); color: red">Report</p>'
+        ).decode()
+        self.assertIn(urls["background"], result)
+        self.assertIn("color: red", result)
+
+    @override_settings(REPORT_ALLOWED_RESOURCE_ORIGINS=[IMAGE_ORIGIN])
+    def test_css_urls_cannot_use_untrusted_origins_or_active_data_types(self):
+        for url in (
+            "https://untrusted.example/resource",
+            "file:///etc/passwd",
+            "//untrusted.example/resource",
+            "javascript:alert(1)",
+            "data:text/html,secret",
+            "data:image/svg+xml,secret",
+            IMAGE_ORIGIN + ".untrusted.example/resource",
+        ):
+            for css in (
+                f'@import "{url}";',
+                f'@import u\\72l("{url}");',
+                f'p {{background: u\\72l("{url}")}}',
+                f'@font-face {{font-family: Report; src: url("{url}") format("woff2");}}',
+                f'p {{background: url("{REMOTE_IMAGE}"), url("{url}")}}',
+            ):
+                with self.subTest(url=url, css=css):
+                    result = self.generator.generate(f"<style>{css}</style>").decode()
+                    self.assertNotIn(url, result)
+
+    def test_css_allows_embedded_images_and_fonts(self):
+        font = "data:font/woff2;base64,dGVzdA=="
+        result = self.generator.generate(
+            f'<style>@font-face {{font-family:Report; src:url("{font}") format("woff2");}}'
+            f'p {{background:url("{INLINE_IMAGE}")}}</style>'
+        ).decode()
+        self.assertIn(font, result)
+        self.assertIn(INLINE_IMAGE, result)
 
     def test_removes_external_resource_attributes_and_active_markup(self):
         url = "https://exfil.example/secret"
@@ -139,13 +273,32 @@ class ReportHTMLSecurityTests(SimpleTestCase):
         root = parse(content.decode(), namespace_html_elements=False)
         metas = root.findall("./head/meta")
         self.assertEqual(metas[0].get("charset"), "utf-8")
-        self.assertEqual(metas[1].get("content"), REPORT_CONTENT_SECURITY_POLICY)
+        self.assertEqual(
+            metas[1].get("content"), settings.REPORT_CONTENT_SECURITY_POLICY
+        )
         self.assertEqual(len(metas), 2)
         response = self.generator.get_http_response(content)
         self.assertEqual(
-            response["Content-Security-Policy"], REPORT_CONTENT_SECURITY_POLICY
+            response["Content-Security-Policy"], settings.REPORT_CONTENT_SECURITY_POLICY
         )
         self.assertEqual(response["X-Content-Type-Options"], "nosniff")
+
+    def test_configured_csp_is_used_in_saved_html_and_response_headers(self):
+        policy = (
+            "default-src 'none'; img-src data: "
+            f"{IMAGE_ORIGIN}; style-src 'unsafe-inline'"
+        )
+        with override_settings(
+            REPORT_ALLOWED_RESOURCE_ORIGINS=[IMAGE_ORIGIN],
+            REPORT_CONTENT_SECURITY_POLICY=policy,
+        ):
+            content = self.generator.generate(f'<img src="{REMOTE_IMAGE}">')
+            root = parse(content.decode(), namespace_html_elements=False)
+            self.assertEqual(root.find(".//img").get("src"), REMOTE_IMAGE)
+            meta = root.find("./head/meta[@http-equiv='Content-Security-Policy']")
+            self.assertEqual(meta.get("content"), policy)
+            response = self.generator.get_http_response(content)
+            self.assertEqual(response["Content-Security-Policy"], policy)
 
     def test_wrapped_document_options_are_escaped(self):
         result = self.generator.generate(
