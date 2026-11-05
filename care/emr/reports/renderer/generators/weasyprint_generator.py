@@ -1,14 +1,52 @@
 import logging
+from io import BytesIO
 from typing import Any, Literal
 
 from django.http import HttpResponse
+from PIL import Image
 from pydantic import Field
 from weasyprint import CSS, HTML
-from weasyprint.urls import URLFetcher
+from weasyprint.text.fonts import FontConfiguration
+from weasyprint.urls import URLFetcher, URLFetcherResponse
 
 from care.emr.reports.renderer.generators.base import BaseOptions, BaseOutputGenerator
+from care.emr.reports.renderer.resource_policy import (
+    FONT_MIME_TYPES,
+    IMAGE_MIME_TYPES,
+    is_allowed_remote_resource,
+)
 
 logger = logging.getLogger(__name__)
+
+
+class ReportURLFetcher(URLFetcher):
+    def __init__(self):
+        super().__init__(allowed_protocols={"data", "https"}, allow_redirects=False)
+
+    def fetch(self, url, headers=None):
+        embedded = url.lower().startswith("data:")
+        if not embedded and not is_allowed_remote_resource(url):
+            raise ValueError("Report resource origin is not allowed")
+        response = super().fetch(url, headers)
+        if embedded:
+            return response
+        if response.content_type in FONT_MIME_TYPES | {"text/css"}:
+            return response
+        try:
+            if response.content_type not in IMAGE_MIME_TYPES:
+                raise ValueError(
+                    "Remote report resources must be images, CSS, or fonts"
+                )
+            body = response.read()
+            # WeasyPrint falls back to parsing SVG when Pillow rejects an image,
+            # even if its server advertised a raster MIME type.
+            with Image.open(BytesIO(body)) as image:
+                if Image.MIME.get(image.format) not in IMAGE_MIME_TYPES:
+                    raise ValueError("Remote report resources must be raster images")
+                image.verify()
+        finally:
+            response.close()
+        return URLFetcherResponse(response.url, body, response.headers, response.status)
 
 
 class WeasyPrintGeneratorOptions(BaseOptions):
@@ -30,25 +68,32 @@ class WeasyPrintGenerator(BaseOutputGenerator):
     ) -> bytes:
         options = options or WeasyPrintGeneratorOptions()
         try:
-            # Templates are untrusted: assets must be embedded, never loaded from
-            # the worker's filesystem or network (including PDF attachments).
-            url_fetcher = URLFetcher(allowed_protocols={"data"}, allow_redirects=False)
+            # Templates can load embedded assets, images, CSS, and fonts from explicitly
+            # trusted origins. Files and redirects remain inaccessible.
+            url_fetcher = ReportURLFetcher()
+            font_config = FontConfiguration()
             html_obj = self.HTML(string=html, url_fetcher=url_fetcher)
             stylesheets = []
 
             if options.stylesheets:
                 for css_string in options.stylesheets:
                     stylesheets.append(
-                        self.CSS(string=css_string, url_fetcher=url_fetcher)
+                        self.CSS(
+                            string=css_string,
+                            url_fetcher=url_fetcher,
+                            font_config=font_config,
+                        )
                     )
             else:
                 stylesheets.append(
                     self.CSS(
-                        string=self._get_default_css(options), url_fetcher=url_fetcher
+                        string=self._get_default_css(options),
+                        url_fetcher=url_fetcher,
+                        font_config=font_config,
                     )
                 )
 
-            return html_obj.write_pdf(stylesheets=stylesheets)
+            return html_obj.write_pdf(stylesheets=stylesheets, font_config=font_config)
         except Exception as e:
             logger.error("WeasyPrint PDF generation failed: %s", e)
             msg = f"Failed to generate PDF: {e!s}"
