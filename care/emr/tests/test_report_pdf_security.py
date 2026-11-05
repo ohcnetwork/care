@@ -8,6 +8,7 @@ from urllib.request import HTTPRedirectHandler, OpenerDirector
 from django.test import SimpleTestCase, override_settings
 from PIL import UnidentifiedImageError
 from weasyprint.document import Document
+from weasyprint.images import SVGImage
 from weasyprint.urls import URLFetcher, URLFetcherResponse
 
 from care.emr.reports.renderer.generators.weasyprint_generator import (
@@ -15,6 +16,7 @@ from care.emr.reports.renderer.generators.weasyprint_generator import (
     WeasyPrintGenerator,
     WeasyPrintGeneratorOptions,
 )
+from care.emr.reports.renderer.resource_policy import FONT_MIME_TYPES
 
 IMAGE_ORIGIN = "https://assets.example"
 REMOTE_IMAGE = f"{IMAGE_ORIGIN}/logo.png"
@@ -186,6 +188,70 @@ class ReportPDFResourceSecurityTests(SimpleTestCase):
                 ReportURLFetcher().fetch(REMOTE_IMAGE)
             close.assert_called_once()
         open_url.assert_called_once()
+
+    @override_settings(REPORT_ALLOWED_RESOURCE_ORIGINS=[IMAGE_ORIGIN])
+    def test_xml_cannot_bypass_remote_image_check_with_css_or_font_content_types(self):
+        svg = (
+            '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">'
+            '<rect width="20" height="20" fill="red"/></svg>'
+        )
+        payloads = (
+            svg.encode(),
+            ('<?xml version="1.0" encoding="UTF-8"?>' + svg).encode(),
+            b"\xef\xbb\xbf" + svg.encode(),
+            svg.encode("utf-16"),
+            ("<!-- SVG asset -->" + svg).encode(),
+            ('<!DOCTYPE svg [<!ENTITY label "Report">]>' + svg).encode(),
+            svg.replace("<svg", "<s:svg")
+            .replace("</svg>", "</s:svg>")
+            .replace("xmlns=", "xmlns:s=")
+            .encode(),
+            f'<report width="20" height="20">{svg}</report>'.encode(),
+        )
+        for content_type in sorted(FONT_MIME_TYPES | {"text/css"}):
+            for payload in payloads:
+                with self.subTest(content_type=content_type, payload=payload):
+                    response = URLFetcherResponse(
+                        REMOTE_IMAGE, payload, {"Content-Type": content_type}
+                    )
+                    with (
+                        patch(
+                            "urllib.request.OpenerDirector.open",
+                            autospec=True,
+                            return_value=response,
+                        ) as open_url,
+                        patch.object(response, "close", wraps=response.close) as close,
+                    ):
+                        with self.assertRaises(ValueError):
+                            ReportURLFetcher().fetch(REMOTE_IMAGE)
+                        close.assert_called_once()
+                    open_url.assert_called_once()
+
+    @override_settings(REPORT_ALLOWED_RESOURCE_ORIGINS=[IMAGE_ORIGIN])
+    def test_mislabeled_remote_svg_never_reaches_weasyprint_svg_renderer(self):
+        svg = (
+            b'<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20">'
+            b'<rect width="20" height="20" fill="red"/></svg>'
+        )
+        for content_type in ("text/css", "font/woff2"):
+            with self.subTest(content_type=content_type):
+                response = URLFetcherResponse(
+                    REMOTE_IMAGE, svg, {"Content-Type": content_type}
+                )
+                with (
+                    patch(
+                        "urllib.request.OpenerDirector.open",
+                        autospec=True,
+                        return_value=response,
+                    ) as open_url,
+                    patch("weasyprint.images.SVGImage", wraps=SVGImage) as render_svg,
+                    patch.object(response, "close", wraps=response.close) as close,
+                ):
+                    pdf = self.generator.generate(f'<img src="{REMOTE_IMAGE}">')
+                self.assertTrue(pdf.startswith(b"%PDF-"))
+                render_svg.assert_not_called()
+                close.assert_called_once()
+                open_url.assert_called_once()
 
     @override_settings(REPORT_ALLOWED_RESOURCE_ORIGINS=[IMAGE_ORIGIN])
     def test_trusting_image_origin_does_not_open_other_origins_or_local_files(self):

@@ -1,6 +1,7 @@
 import logging
 from io import BytesIO
 from typing import Any, Literal
+from xml.parsers import expat
 
 from django.http import HttpResponse
 from PIL import Image
@@ -23,6 +24,10 @@ class ReportURLFetcher(URLFetcher):
     def __init__(self):
         super().__init__(allowed_protocols={"data", "https"}, allow_redirects=False)
 
+    @staticmethod
+    def _reject_remote_xml(*_args):
+        raise ValueError("Remote XML/SVG report resources are not allowed")
+
     def fetch(self, url, headers=None):
         embedded = url.lower().startswith("data:")
         if not embedded and not is_allowed_remote_resource(url):
@@ -30,20 +35,32 @@ class ReportURLFetcher(URLFetcher):
         response = super().fetch(url, headers)
         if embedded:
             return response
-        if response.content_type in FONT_MIME_TYPES | {"text/css"}:
-            return response
         try:
-            if response.content_type not in IMAGE_MIME_TYPES:
+            if response.content_type not in IMAGE_MIME_TYPES | FONT_MIME_TYPES | {
+                "text/css"
+            }:
                 raise ValueError(
                     "Remote report resources must be images, CSS, or fonts"
                 )
             body = response.read()
-            # WeasyPrint falls back to parsing SVG when Pillow rejects an image,
-            # even if its server advertised a raster MIME type.
-            with Image.open(BytesIO(body)) as image:
-                if Image.MIME.get(image.format) not in IMAGE_MIME_TYPES:
-                    raise ValueError("Remote report resources must be raster images")
-                image.verify()
+            if response.content_type in IMAGE_MIME_TYPES:
+                with Image.open(BytesIO(body)) as image:
+                    if Image.MIME.get(image.format) not in IMAGE_MIME_TYPES:
+                        raise ValueError(
+                            "Remote report resources must be raster images"
+                        )
+                    image.verify()
+            else:
+                # WeasyPrint tries SVG for any non-raster image, regardless of
+                # MIME type. Reject XML before returning CSS/font bytes, stopping
+                # at the first element or doctype without building an XML tree.
+                parser = expat.ParserCreate()
+                parser.StartElementHandler = self._reject_remote_xml
+                parser.StartDoctypeDeclHandler = self._reject_remote_xml
+                try:
+                    parser.Parse(body, True)  # noqa: FBT003 - isfinal is positional-only.
+                except expat.ExpatError:
+                    pass  # Ordinary CSS and font bytes are not XML documents.
         finally:
             response.close()
         return URLFetcherResponse(response.url, body, response.headers, response.status)
