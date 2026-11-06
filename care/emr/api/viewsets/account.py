@@ -39,6 +39,9 @@ class AccountFilters(filters.FilterSet):
     patient = filters.UUIDFilter(field_name="patient__external_id")
     created_date = filters.DateTimeFromToRangeFilter(field_name="created_date")
     encounter = filters.UUIDFilter(field_name="primary_encounter__external_id")
+    encounter_class = filters.CharFilter(
+        field_name="primary_encounter__encounter_class", lookup_expr="exact"
+    )
 
 
 class AccountSetPrimaryEncounterSpec(BaseModel):
