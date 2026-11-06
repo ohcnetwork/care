@@ -1,6 +1,8 @@
 from decimal import Decimal
 from types import SimpleNamespace
 
+from django.conf import settings
+from django.test import override_settings
 from django.urls import reverse
 from model_bakery import baker
 
@@ -1470,6 +1472,16 @@ class DeliveryOrderCancellationAPITestCase(TestSupplyDeliveryViewSetBase):
                 sync_inventory_item(inventory_item=self.inventory_item_origin)
 
 
+# Parallel workers use separate databases but share numeric account lock keys.
+@override_settings(
+    CACHES={
+        **settings.CACHES,
+        "default": {
+            **settings.CACHES["default"],
+            "KEY_PREFIX": "medication-return-delivery-order-tests",
+        },
+    }
+)
 class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
     def setUp(self):
         """
