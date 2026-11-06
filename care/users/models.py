@@ -4,12 +4,12 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser, UserManager
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
 
-from care.utils.models.base import BaseFlag, BaseModel
+from care.utils.models.base import BaseFlag
 from care.utils.models.choices import reverse_choices
 from care.utils.models.validators import (
     UsernameValidator,
@@ -71,28 +71,6 @@ class CustomUserManager(UserManager):
         return password
 
 
-class Skill(BaseModel):
-    name = models.CharField(max_length=255, unique=True)
-    description = models.TextField(null=True, blank=True, default="")
-
-    def __str__(self):
-        return self.name
-
-
-class UserSkill(BaseModel):
-    user = models.ForeignKey("User", on_delete=models.CASCADE, null=True, blank=True)
-    skill = models.ForeignKey("Skill", on_delete=models.CASCADE, null=True, blank=True)
-
-    class Meta:
-        constraints = [
-            models.UniqueConstraint(
-                fields=["skill", "user"],
-                condition=models.Q(deleted=False),
-                name="unique_user_skill",
-            )
-        ]
-
-
 class User(AbstractUser):
     external_id = models.UUIDField(default=uuid.uuid4, unique=True, db_index=True)
     username_validator = UsernameValidator()
@@ -128,7 +106,6 @@ class User(AbstractUser):
         blank=True,
         null=True,
     )
-    video_connect_link = models.URLField(blank=True, null=True)
 
     old_gender = models.IntegerField(
         choices=GENDER_CHOICES, blank=True, null=True, default=None
@@ -138,36 +115,12 @@ class User(AbstractUser):
     profile_picture_url = models.CharField(
         blank=True, null=True, default=None, max_length=500
     )
-    skills = models.ManyToManyField("Skill", through=UserSkill)
-    home_facility = models.ForeignKey(
-        "facility.Facility", on_delete=models.PROTECT, null=True, blank=True
-    )
-    weekly_working_hours = models.IntegerField(
-        validators=[MinValueValidator(0), MaxValueValidator(168)], null=True, blank=True
-    )
-
-    qualification = models.TextField(
-        blank=False,
-        null=True,
-    )
-    doctor_experience_commenced_on = models.DateField(
-        default=None,
-        blank=False,
-        null=True,
-    )
-    doctor_medical_council_registration = models.CharField(
-        max_length=255,
-        default=None,
-        blank=False,
-        null=True,
-    )
 
     prefix = models.CharField(max_length=10, blank=True, null=True)
     suffix = models.CharField(max_length=50, blank=True, null=True)
 
     is_service_account = models.BooleanField(default=False)
 
-    verified = models.BooleanField(default=False)
     deleted = models.BooleanField(default=False)
 
     # Notification Data
@@ -182,12 +135,29 @@ class User(AbstractUser):
     preferences = models.JSONField(default=dict)
 
     cached_role_orgs = models.JSONField(default=None, null=True, blank=True)
+    role_org_ids = ArrayField(models.IntegerField(), default=list)
 
     objects = CustomUserManager()
+
+    qualifications = models.JSONField(default=list)
+    communication = models.JSONField(default=list)
 
     REQUIRED_FIELDS = [
         "email",
     ]
+
+    def populate_role_orgs_array(self, commit=False):
+        from care.emr.models.organization import OrganizationUser
+        from care.emr.resources.organization.spec import OrganizationTypeChoices
+
+        self.role_org_ids = list(
+            OrganizationUser.objects.filter(
+                user=self, organization__org_type=OrganizationTypeChoices.role.value
+            ).values_list("organization_id", flat=True)
+        )
+
+        if commit:
+            self.save(update_fields=["role_org_ids"])
 
     def get_cached_role_orgs(self):
         from care.emr.models.organization import OrganizationUser

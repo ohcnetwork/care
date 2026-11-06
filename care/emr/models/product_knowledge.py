@@ -25,11 +25,14 @@ class ProductKnowledge(SlugBaseModel):
         blank=True,
     )
 
-    def save(self, *args, **kwargs):
+    def set_names_cache(self):
         self.names_cache = f"{self.name} "
         for name in self.names or []:
             if isinstance(name, dict):
                 self.names_cache += f" {name['name']} "
             else:
                 self.names_cache += f" {name.name} "
+
+    def save(self, *args, **kwargs):
+        self.set_names_cache()
         super().save(*args, **kwargs)

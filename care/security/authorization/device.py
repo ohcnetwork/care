@@ -1,5 +1,6 @@
 from care.security.authorization import AuthorizationController, AuthorizationHandler
 from care.security.permissions.device import DevicePermissions
+from care.security.permissions.questionnaire import QuestionnairePermissions
 
 
 class DeviceAccess(AuthorizationHandler):
@@ -33,6 +34,20 @@ class DeviceAccess(AuthorizationHandler):
     def can_manage_device(self, user, device):
         return self.check_permission_in_facility_organization(
             [DevicePermissions.can_manage_devices.name],
+            user,
+            device.facility_organization_cache,
+        )
+
+    def can_submit_device_questionnaire(self, user, device):
+        return self.check_permission_in_facility_organization(
+            [QuestionnairePermissions.can_submit_questionnaire.name],
+            user,
+            device.facility_organization_cache,
+        )
+
+    def can_read_device_questionnaire(self, user, device):
+        return self.check_permission_in_facility_organization(
+            [QuestionnairePermissions.can_view_resource_responses.name],
             user,
             device.facility_organization_cache,
         )

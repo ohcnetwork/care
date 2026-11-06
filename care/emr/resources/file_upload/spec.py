@@ -17,6 +17,7 @@ class FileTypeChoices(str, Enum):
     consent = "consent"
     diagnostic_report = "diagnostic_report"
     service_request = "service_request"
+    referral = "referral"
 
 
 class FileCategoryChoices(str, Enum):

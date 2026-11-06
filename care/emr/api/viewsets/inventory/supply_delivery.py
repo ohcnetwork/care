@@ -2,10 +2,8 @@ from decimal import Decimal
 
 from django.db.models import Q
 from django_filters import rest_framework as filters
-from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.filters import OrderingFilter
-from rest_framework.response import Response
 
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
@@ -16,9 +14,7 @@ from care.emr.api.viewsets.base import (
     EMRUpsertMixin,
 )
 from care.emr.locks.billing import DeliveryOrderLock, lock_inventory_items
-from care.emr.models.location import FacilityLocation
 from care.emr.models.supply_delivery import DeliveryOrder, SupplyDelivery
-from care.emr.models.supply_request import RequestOrder
 from care.emr.resources.inventory.inventory_item.create_inventory_item import (
     create_inventory_item,
 )
@@ -26,7 +22,6 @@ from care.emr.resources.inventory.inventory_item.sync_inventory_item import (
     sync_inventory_item,
 )
 from care.emr.resources.inventory.supply_delivery.delivery_order import (
-    SupplyDeliveryOrderReadSpec,
     SupplyDeliveryOrderStatusOptions,
 )
 from care.emr.resources.inventory.supply_delivery.spec import (
@@ -170,10 +165,18 @@ class SupplyDeliveryViewSet(
             self.sync_inventory_item(instance)
         return instance
 
-    def authorize_location_read(self, location_obj, raise_error=True):
-        if not AuthorizationController.call(
-            "can_list_facility_supply_delivery", self.request.user, location_obj
-        ):
+    def authorize_location_read(
+        self, location_obj, raise_error=True, *, medication_return=False
+    ):
+        if medication_return:
+            allowed = AuthorizationController.call(
+                "can_list_facility_medication_return", self.request.user, location_obj
+            )
+        else:
+            allowed = AuthorizationController.call(
+                "can_list_facility_supply_delivery", self.request.user, location_obj
+            )
+        if not allowed:
             if raise_error:
                 raise PermissionDenied("Cannot list supply requests")
             return False
@@ -200,6 +203,9 @@ class SupplyDeliveryViewSet(
         return True
 
     def authorize_order_read(self, order):
+        if order.patient_id is not None:
+            self.authorize_location_read(order.destination, medication_return=True)
+            return
         allowed = False
         if order.origin:
             allowed = allowed or self.authorize_location_read(
@@ -213,7 +219,13 @@ class SupplyDeliveryViewSet(
 
     def authorize_order_write(self, order):
         allowed = False
-        if order.origin:
+        if order.patient_id is not None:
+            allowed = AuthorizationController.call(
+                "can_write_facility_medication_return",
+                self.request.user,
+                order.destination,
+            )
+        elif order.origin:
             allowed = allowed or self.authorize_location_write(
                 order.origin, raise_error=False
             )
@@ -249,61 +261,14 @@ class SupplyDeliveryViewSet(
             queryset = queryset.filter(**{attribute: location_obj})
         return queryset
 
-    @action(detail=False, methods=["GET"])
-    def delivery_orders(self, request, *args, **kwargs):
-        queryset = self.get_queryset()
-        if "request_order" not in request.GET:
-            raise ValidationError("request_order is required")
-        orders = queryset.values("order_id").distinct()[:100]
-        orders_qs = DeliveryOrder.objects.filter(id__in=orders)
-        response = [
-            SupplyDeliveryOrderReadSpec.serialize(order).to_json()
-            for order in orders_qs
-        ]
-        return Response({"results": response})
-
     def get_queryset(self):
         queryset = self.database_model.objects.all()
         if self.action == "list":
             queryset = queryset.order_by("-id")
-        if self.action in ["list", "delivery_orders"]:
-            include_children = (
-                self.request.GET.get("include_children", "false").lower() == "true"
-            )
-            filtered = False
-            if "order" in self.request.GET:
-                order = get_object_or_404(
-                    DeliveryOrder, external_id=self.request.GET["order"]
-                )
-                self.authorize_order_read(order)
-                queryset = queryset.filter(order=order)
-                filtered = True
-            if "request_order" in self.request.GET:
-                order = get_object_or_404(
-                    RequestOrder, external_id=self.request.GET["request_order"]
-                )
-                self.authorize_order_read(order)
-                # TODO Optimize without joins
-                queryset = queryset.filter(supply_request__order=order)
-                filtered = True
-            if "destination" in self.request.GET:
-                destination = get_object_or_404(
-                    FacilityLocation, external_id=self.request.GET["destination"]
-                )
-                self.authorize_location_read(destination)
-                queryset = self.filter_location_queryset(
-                    queryset, "order__destination", destination, include_children
-                )
-                filtered = True
-            if "origin" in self.request.GET:
-                origin = get_object_or_404(
-                    FacilityLocation, external_id=self.request.GET["origin"]
-                )
-                self.authorize_location_read(origin)
-                queryset = self.filter_location_queryset(
-                    queryset, "order__origin", origin, include_children
-                )
-                filtered = True
-            if not filtered:
+            order_id = self.request.GET.get("order")
+            if not order_id:
                 raise ValidationError("No filters provided")
+            order = get_object_or_404(DeliveryOrder, external_id=order_id)
+            self.authorize_order_read(order)
+            queryset = queryset.filter(order=order)
         return queryset
