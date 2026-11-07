@@ -3,7 +3,11 @@ from django.urls import include, path
 from rest_framework.routers import DefaultRouter, SimpleRouter
 from rest_framework_nested.routers import NestedSimpleRouter
 
+from care.emr.api.otp_viewsets.diagnostic_report import OTPDiagnosticReportViewSet
 from care.emr.api.otp_viewsets.login import OTPLoginView
+from care.emr.api.otp_viewsets.medication_request_prescription import (
+    OTPMedicationRequestPrescriptionViewSet,
+)
 from care.emr.api.otp_viewsets.patient import PatientOTPView
 from care.emr.api.otp_viewsets.slot import OTPSlotViewSet
 from care.emr.api.viewsets.account import AccountViewSet
@@ -131,6 +135,17 @@ router.register("otp/patient", PatientOTPView, basename="otp-patient")
 
 router.register("otp/slots", OTPSlotViewSet, basename="otp-slots")
 
+router.register(
+    "otp/diagnostic_report",
+    OTPDiagnosticReportViewSet,
+    basename="otp-diagnostic-report",
+)
+
+router.register(
+    "otp/medication_prescription",
+    OTPMedicationRequestPrescriptionViewSet,
+    basename="otp-medication-prescription",
+)
 
 router.register("batch_requests", BatchRequestView, basename="batch-requests")
 
