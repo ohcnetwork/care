@@ -141,8 +141,9 @@ class ScheduleCreateSpec(ScheduleBaseSpec):
     @field_validator("valid_from", "valid_to")
     @classmethod
     def validate_dates(cls, value):
-        now = care_now().replace(tzinfo=None)
-        if value < now:
+        now = care_now().date()
+        date_value = value.date() if isinstance(value, datetime.datetime) else value
+        if date_value < now:
             raise ValueError("Date cannot be before the current date")
         return value
 
