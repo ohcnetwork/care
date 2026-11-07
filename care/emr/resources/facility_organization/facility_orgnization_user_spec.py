@@ -1,7 +1,7 @@
 from pydantic import UUID4, field_validator
 
 from care.emr.models.organization import FacilityOrganizationUser
-from care.emr.resources.base import EMRResource
+from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.role.spec import RoleReadSpec
 from care.emr.resources.user.spec import UserSpec
 from care.security.models import RoleModel
@@ -53,5 +53,5 @@ class FacilityOrganizationUserReadSpec(FacilityOrganizationUserBaseSpec):
     def perform_extra_serialization(cls, mapping, obj):
         mapping["id"] = obj.external_id
         mapping["user"] = UserSpec.serialize(obj.user).to_json()
-        mapping["role"] = RoleReadSpec.serialize(obj.role).to_json()
+        mapping["role"] = model_from_cache(RoleReadSpec, id=obj.role_id)
         return mapping
