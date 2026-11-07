@@ -4,6 +4,7 @@ from enum import Enum
 
 from django.conf import settings
 from django.db.models import Sum
+from django.utils import timezone
 from pydantic import UUID4, Field, field_validator, model_validator
 from rest_framework.exceptions import ValidationError
 
@@ -141,8 +142,10 @@ class ScheduleCreateSpec(ScheduleBaseSpec):
     @field_validator("valid_from", "valid_to")
     @classmethod
     def validate_dates(cls, value):
-        now = care_now().replace(tzinfo=None)
-        if value < now:
+        # A value without a timezone (e.g. a plain date) is in local time
+        if timezone.is_naive(value):
+            value = timezone.make_aware(value)
+        if timezone.localdate(value) < timezone.localdate(care_now()):
             raise ValueError("Date cannot be before the current date")
         return value
 
