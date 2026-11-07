@@ -52,11 +52,6 @@ class FacilityOrganizationViewSet(EMRModelViewSet, EMRFavoritesMixin):
     filter_backends = [filters.DjangoFilterBackend, FavoritesFilter]
     FAVORITE_RESOURCE = FavoriteResourceChoices.facility_organization.value
 
-    def get_organization_obj(self):
-        return get_object_or_404(
-            FacilityOrganization, external_id=self.kwargs["external_id"]
-        )
-
     def get_facility_obj(self):
         return get_object_or_404(
             Facility, external_id=self.kwargs["facility_external_id"]
@@ -64,21 +59,21 @@ class FacilityOrganizationViewSet(EMRModelViewSet, EMRFavoritesMixin):
 
     def validate_data(self, instance, model_obj=None):
         if model_obj is not None and model_obj.org_type == "root":
-            raise PermissionDenied("Cannot update root organization")
+            raise ValidationError("Cannot update root organization")
 
         if instance.org_type == "root":
-            raise PermissionDenied("Cannot create root organization")
+            raise ValidationError("Cannot create root organization")
 
         if instance.parent:
             parent = get_object_or_404(
                 FacilityOrganization, external_id=instance.parent
             )
             if parent.org_type == "root":
-                raise PermissionDenied(
+                raise ValidationError(
                     "Cannot create organizations under root organization"
                 )
             if parent.org_type == "role":
-                raise PermissionDenied(
+                raise ValidationError(
                     "Cannot create nested facility organizations under 'role' type facility organization"
                 )
             if (

@@ -76,7 +76,7 @@ class OrganizationCommonBase(EMRBaseModel):
     @classmethod
     def validate_uniqueness(cls, queryset, pydantic_instance, model_instance):
         if model_instance:
-            name = model_instance.name
+            name = pydantic_instance.name if pydantic_instance else model_instance.name
             level_cache = model_instance.level_cache
             root_org = model_instance.root_org
             queryset = queryset.exclude(id=model_instance.id)
