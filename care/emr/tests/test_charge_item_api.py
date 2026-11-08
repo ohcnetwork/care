@@ -171,6 +171,34 @@ class TestChargeItemViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["title"], data["title"])
 
+    def test_create_charge_item_with_performer_actor(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        data = self.get_valid_charge_item_data(performer_actor=self.user.external_id)
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        charge_item = ChargeItem.objects.get(external_id=response.data["id"])
+        self.assertEqual(charge_item.facility, self.facility)
+        self.assertEqual(charge_item.performer_actor, self.user)
+
+    def test_create_charge_item_with_performer_actor_outside_facility(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        other_user = self.create_user()
+        data = self.get_valid_charge_item_data(performer_actor=other_user.external_id)
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(ChargeItem.objects.filter(performer_actor=other_user).exists())
+
     def test_create_charge_item_with_patient_only(self):
         role = self.create_role_with_permissions(
             [ChargeItemPermissions.can_create_charge_item.name]

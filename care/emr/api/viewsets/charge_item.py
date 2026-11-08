@@ -176,6 +176,7 @@ class ChargeItemViewSet(
         return {"facility": self.get_facility_obj()}
 
     def perform_create(self, instance):
+        instance.facility = self.get_facility_obj()
         if (
             instance.performer_actor
             and not FacilityOrganizationUser.objects.filter(
@@ -184,7 +185,6 @@ class ChargeItemViewSet(
             ).exists()
         ):
             raise ValidationError("Performer is not associated with the facility")
-        instance.facility = self.get_facility_obj()
         if instance.service_resource and not validate_service_resource(
             instance.facility,
             instance.service_resource,
