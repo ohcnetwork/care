@@ -13,7 +13,7 @@ from care.emr.utils.mfa import (
     create_auth_response,
     validate_temp_token,
 )
-from care.users.models import User
+from care.users.locks import lock_user_auth
 
 
 class MFALoginViewSet(EMRBaseViewSet):
@@ -32,15 +32,19 @@ class MFALoginViewSet(EMRBaseViewSet):
         check_mfa_ip_rate_limit(request)
         request_data = MFALoginRequest(**request.data)
 
-        user_id = validate_temp_token(request_data.temp_token)
-        check_mfa_user_rate_limit(request, user_id)
+        user = validate_temp_token(request_data.temp_token)
+        check_mfa_user_rate_limit(request, str(user.external_id))
 
-        user = User.objects.get(external_id=user_id)
+        with lock_user_auth(user.external_id):
+            # A reset may have committed since the preliminary validation.
+            user = validate_temp_token(request_data.temp_token)
+            if not user.is_mfa_enabled():
+                raise ValidationError("MFA is not enabled")
 
-        if request_data.method == LoginMethod.totp:
-            return self._handle_totp_login(user, request_data.code)
-        if request_data.method == LoginMethod.backup:
-            return self._handle_backup_login(user, request_data.code)
+            if request_data.method == LoginMethod.totp:
+                return self._handle_totp_login(user, request_data.code)
+            if request_data.method == LoginMethod.backup:
+                return self._handle_backup_login(user, request_data.code)
 
         raise ValidationError("Invalid login method")
 
