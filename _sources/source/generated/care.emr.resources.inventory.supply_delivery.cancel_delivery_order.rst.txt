@@ -1,0 +1,7 @@
+care.emr.resources.inventory.supply\_delivery.cancel\_delivery\_order module
+============================================================================
+
+.. automodule:: care.emr.resources.inventory.supply_delivery.cancel_delivery_order
+   :members:
+   :show-inheritance:
+   :undoc-members:

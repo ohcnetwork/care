@@ -1,0 +1,7 @@
+care.utils.filters.default\_filter module
+=========================================
+
+.. automodule:: care.utils.filters.default_filter
+   :members:
+   :show-inheritance:
+   :undoc-members:

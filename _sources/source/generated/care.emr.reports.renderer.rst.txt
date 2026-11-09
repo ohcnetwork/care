@@ -20,5 +20,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   care.emr.reports.renderer.html_sanitizer
    care.emr.reports.renderer.renderer
+   care.emr.reports.renderer.resource_policy
    care.emr.reports.renderer.template_engine

@@ -24,5 +24,6 @@ Submodules
    care.users.admin
    care.users.apps
    care.users.forms
+   care.users.locks
    care.users.models
    care.users.reset_password_views

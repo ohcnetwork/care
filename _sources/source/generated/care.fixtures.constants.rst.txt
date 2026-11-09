@@ -1,0 +1,7 @@
+care.fixtures.constants module
+==============================
+
+.. automodule:: care.fixtures.constants
+   :members:
+   :show-inheritance:
+   :undoc-members:

@@ -21,6 +21,7 @@ Subpackages
    care.utils.pagination
    care.utils.queryset
    care.utils.registries
+   care.utils.rounding
    care.utils.sms
    care.utils.swagger
 

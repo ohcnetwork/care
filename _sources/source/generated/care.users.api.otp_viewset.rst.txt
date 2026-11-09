@@ -1,0 +1,15 @@
+care.users.api.otp\_viewset package
+===================================
+
+.. automodule:: care.users.api.otp_viewset
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.users.api.otp_viewset.reset_password

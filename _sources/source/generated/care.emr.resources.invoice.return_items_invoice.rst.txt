@@ -1,0 +1,7 @@
+care.emr.resources.invoice.return\_items\_invoice module
+========================================================
+
+.. automodule:: care.emr.resources.invoice.return_items_invoice
+   :members:
+   :show-inheritance:
+   :undoc-members:

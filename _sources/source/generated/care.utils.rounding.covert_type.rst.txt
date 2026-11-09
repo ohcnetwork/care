@@ -1,0 +1,7 @@
+care.utils.rounding.covert\_type module
+=======================================
+
+.. automodule:: care.utils.rounding.covert_type
+   :members:
+   :show-inheritance:
+   :undoc-members:

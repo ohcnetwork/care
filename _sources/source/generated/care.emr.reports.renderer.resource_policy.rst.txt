@@ -1,0 +1,7 @@
+care.emr.reports.renderer.resource\_policy module
+=================================================
+
+.. automodule:: care.emr.reports.renderer.resource_policy
+   :members:
+   :show-inheritance:
+   :undoc-members:

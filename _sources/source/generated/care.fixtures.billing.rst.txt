@@ -1,0 +1,7 @@
+care.fixtures.billing module
+============================
+
+.. automodule:: care.fixtures.billing
+   :members:
+   :show-inheritance:
+   :undoc-members:

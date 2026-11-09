@@ -1,0 +1,7 @@
+care.emr.reports.context\_builder.data\_points.facility module
+==============================================================
+
+.. automodule:: care.emr.reports.context_builder.data_points.facility
+   :members:
+   :show-inheritance:
+   :undoc-members:

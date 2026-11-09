@@ -44,6 +44,7 @@ Subpackages
    care.emr.resources.payment_reconciliation
    care.emr.resources.questionnaire
    care.emr.resources.questionnaire_response
+   care.emr.resources.questionnaire_response_template
    care.emr.resources.report
    care.emr.resources.resource_category
    care.emr.resources.resource_request

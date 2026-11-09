@@ -1,0 +1,7 @@
+care.emr.models.facility\_config module
+=======================================
+
+.. automodule:: care.emr.models.facility_config
+   :members:
+   :show-inheritance:
+   :undoc-members:

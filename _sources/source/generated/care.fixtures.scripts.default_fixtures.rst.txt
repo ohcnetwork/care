@@ -1,0 +1,7 @@
+care.fixtures.scripts.default\_fixtures module
+==============================================
+
+.. automodule:: care.fixtures.scripts.default_fixtures
+   :members:
+   :show-inheritance:
+   :undoc-members:

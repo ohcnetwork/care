@@ -60,6 +60,7 @@ Submodules
    care.emr.api.viewsets.payment_reconciliation
    care.emr.api.viewsets.questionnaire
    care.emr.api.viewsets.questionnaire_response
+   care.emr.api.viewsets.questionnaire_response_template
    care.emr.api.viewsets.resource_category
    care.emr.api.viewsets.resource_request
    care.emr.api.viewsets.service_request

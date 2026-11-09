@@ -36,8 +36,10 @@ Submodules
    care.security.permissions.product
    care.security.permissions.product_knowledge
    care.security.permissions.questionnaire
+   care.security.permissions.questionnaire_response_template
    care.security.permissions.resource_category
    care.security.permissions.schedule
+   care.security.permissions.service_account
    care.security.permissions.service_request
    care.security.permissions.specimen
    care.security.permissions.specimen_definition

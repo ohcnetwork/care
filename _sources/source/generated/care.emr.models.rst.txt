@@ -32,6 +32,7 @@ Submodules
    care.emr.models.device
    care.emr.models.diagnostic_report
    care.emr.models.encounter
+   care.emr.models.facility_config
    care.emr.models.favorites
    care.emr.models.file_upload
    care.emr.models.healthcare_service

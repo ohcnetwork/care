@@ -1,0 +1,7 @@
+care.fixtures.context module
+============================
+
+.. automodule:: care.fixtures.context
+   :members:
+   :show-inheritance:
+   :undoc-members:

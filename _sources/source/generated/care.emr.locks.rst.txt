@@ -14,3 +14,4 @@ Submodules
 
    care.emr.locks.billing
    care.emr.locks.inventory
+   care.emr.locks.otp

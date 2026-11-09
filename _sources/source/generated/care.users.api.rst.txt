@@ -12,5 +12,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   care.users.api.otp_viewset
    care.users.api.serializers
    care.users.api.viewsets

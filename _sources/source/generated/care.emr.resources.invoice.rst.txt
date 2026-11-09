@@ -13,5 +13,6 @@ Submodules
    :maxdepth: 4
 
    care.emr.resources.invoice.default_expression_evaluator
+   care.emr.resources.invoice.return_items_invoice
    care.emr.resources.invoice.spec
    care.emr.resources.invoice.sync_items

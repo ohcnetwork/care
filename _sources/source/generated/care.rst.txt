@@ -16,6 +16,7 @@ Subpackages
    care.contrib
    care.emr
    care.facility
+   care.fixtures
    care.security
    care.users
    care.utils

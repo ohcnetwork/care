@@ -1,0 +1,26 @@
+care.fixtures package
+=====================
+
+.. automodule:: care.fixtures
+   :members:
+   :show-inheritance:
+   :undoc-members:
+
+Subpackages
+-----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.fixtures.scripts
+
+Submodules
+----------
+
+.. toctree::
+   :maxdepth: 4
+
+   care.fixtures.base
+   care.fixtures.billing
+   care.fixtures.constants
+   care.fixtures.context

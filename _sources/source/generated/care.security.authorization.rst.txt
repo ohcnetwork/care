@@ -35,8 +35,10 @@ Submodules
    care.security.authorization.product
    care.security.authorization.product_knowledge
    care.security.authorization.questionnaire
+   care.security.authorization.questionnaire_response_template
    care.security.authorization.resource_category
    care.security.authorization.scheduling
+   care.security.authorization.service_account
    care.security.authorization.service_request
    care.security.authorization.specimen_definition
    care.security.authorization.supply_delivery

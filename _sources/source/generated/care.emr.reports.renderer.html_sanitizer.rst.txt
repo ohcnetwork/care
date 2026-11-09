@@ -1,0 +1,7 @@
+care.emr.reports.renderer.html\_sanitizer module
+================================================
+
+.. automodule:: care.emr.reports.renderer.html_sanitizer
+   :members:
+   :show-inheritance:
+   :undoc-members:

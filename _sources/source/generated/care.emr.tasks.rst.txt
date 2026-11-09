@@ -12,6 +12,7 @@ Submodules
 .. toctree::
    :maxdepth: 4
 
+   care.emr.tasks.cleanup_expired_otps
    care.emr.tasks.cleanup_expired_token_slots
    care.emr.tasks.cleanup_incomplete_file_uploads
    care.emr.tasks.report_generation
