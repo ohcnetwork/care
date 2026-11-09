@@ -6,7 +6,9 @@ from care.emr.models.charge_item import ChargeItem
 from care.emr.models.invoice import Invoice
 from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
-from care.emr.resources.invoice.spec import InvoiceStatusOptions
+from care.emr.resources.invoice.spec import (
+    INVOICE_CANCELLED_STATUS,
+)
 from care.emr.resources.payment_reconciliation.spec import (
     PaymentReconciliationOutcomeOptions,
     PaymentReconciliationStatusOptions,
@@ -33,7 +35,7 @@ def sync_account_items(account: Account):
             status=ChargeItemStatusOptions.billable.value,
         )
         invoices = Invoice.objects.filter(account=account).exclude(
-            status=InvoiceStatusOptions.cancelled.value,
+            status__in=INVOICE_CANCELLED_STATUS,
         )
         payment_reconciliations = PaymentReconciliation.objects.filter(
             account=account,

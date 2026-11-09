@@ -192,6 +192,16 @@ class TestAttachAccountToInvoice(CareAPITestBase):
 
 class TestCancelInvoice(CareAPITestBase):
     def test_cancel_invoice_rebalances_account(self):
+        self.cancel_invoice_and_assert_account_totals(
+            InvoiceStatusOptions.cancelled.value
+        )
+
+    def test_entered_in_error_invoice_rebalances_account(self):
+        self.cancel_invoice_and_assert_account_totals(
+            InvoiceStatusOptions.entered_in_error.value
+        )
+
+    def cancel_invoice_and_assert_account_totals(self, reason):
         user = self.create_super_user()
         facility = self.create_facility(user=user)
         patient = self.create_patient()
@@ -241,14 +251,14 @@ class TestCancelInvoice(CareAPITestBase):
                     "external_id": invoice.external_id,
                 },
             ),
-            data={"reason": InvoiceStatusOptions.cancelled.value},
+            data={"reason": reason},
             format="json",
         )
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         invoice.refresh_from_db()
         account.refresh_from_db()
-        self.assertEqual(invoice.status, InvoiceStatusOptions.cancelled.value)
+        self.assertEqual(invoice.status, reason)
         self.assertEqual(account.total_gross, Decimal("200.00"))
         self.assertEqual(account.total_paid, Decimal("40.00"))
         self.assertEqual(account.total_balance, Decimal("160.00"))
