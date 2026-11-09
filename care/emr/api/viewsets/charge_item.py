@@ -175,8 +175,7 @@ class ChargeItemViewSet(
     def get_serializer_create_context(self):
         return {"facility": self.get_facility_obj()}
 
-    def perform_create(self, instance):
-        instance.facility = self.get_facility_obj()
+    def validate_performer(self, instance):
         if (
             instance.performer_actor
             and not FacilityOrganizationUser.objects.filter(
@@ -185,6 +184,10 @@ class ChargeItemViewSet(
             ).exists()
         ):
             raise ValidationError("Performer is not associated with the facility")
+
+    def perform_create(self, instance):
+        instance.facility = self.get_facility_obj()
+        self.validate_performer(instance)
         if instance.service_resource and not validate_service_resource(
             instance.facility,
             instance.service_resource,
@@ -247,6 +250,8 @@ class ChargeItemViewSet(
         with transaction.atomic():
             # TODO Lock Charge item and Invoice
             old_obj = ChargeItem.objects.get(id=instance.id)
+            if instance.performer_actor_id != old_obj.performer_actor_id:
+                self.validate_performer(instance)
             sync = True
             if (
                 instance.charge_item_definition

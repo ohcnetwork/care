@@ -194,10 +194,53 @@ class TestChargeItemViewSet(CareAPITestBase):
         self.client.force_authenticate(user=self.user)
 
         other_user = self.create_user()
+        count_before = ChargeItem.objects.count()
         data = self.get_valid_charge_item_data(performer_actor=other_user.external_id)
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertFalse(ChargeItem.objects.filter(performer_actor=other_user).exists())
+        self.assertEqual(ChargeItem.objects.count(), count_before)
+
+    def test_create_charge_item_with_performer_actor_from_another_facility(self):
+        role = self.create_role_with_permissions(
+            [ChargeItemPermissions.can_create_charge_item.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        other_user = self.create_user()
+        other_facility = self.create_facility(user=other_user)
+        other_organization = self.create_facility_organization(facility=other_facility)
+        self.attach_role_facility_organization_user(
+            other_organization, other_user, role
+        )
+
+        count_before = ChargeItem.objects.count()
+        data = self.get_valid_charge_item_data(performer_actor=other_user.external_id)
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(ChargeItem.objects.count(), count_before)
+
+    def test_update_charge_item_with_performer_actor_outside_facility(self):
+        role = self.create_role_with_permissions(
+            [
+                ChargeItemPermissions.can_read_charge_item.name,
+                ChargeItemPermissions.can_update_charge_item.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        charge_item = self.create_charge_item()
+        other_user = self.create_user()
+        data = self.get_valid_charge_item_data(performer_actor=other_user.external_id)
+        del data["encounter"]
+        del data["account"]
+        response = self.client.put(
+            self._get_detail_url(charge_item.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        charge_item.refresh_from_db()
+        self.assertIsNone(charge_item.performer_actor)
 
     def test_create_charge_item_with_patient_only(self):
         role = self.create_role_with_permissions(
