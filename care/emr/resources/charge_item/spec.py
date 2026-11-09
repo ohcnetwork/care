@@ -141,7 +141,7 @@ class ChargeItemWriteSpec(ChargeItemSpec):
 
 
 class ChargeItemUpdateSpec(ChargeItemSpec):
-    status: ChargeItemWriteStatusOptions | None = None
+    status: ChargeItemStatusOptions | None = None
     performer_actor: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):

@@ -96,6 +96,17 @@ class ChargeItemCreationStatusTests(CareAPITestBase):
             data,
         )
 
+    def assert_status_transition_error(self, data):
+        self.assertTrue(
+            any(
+                error["type"] == "validation_error"
+                and error["msg"]
+                == "Billed and paid statuses can only be set by an invoice"
+                for error in data["errors"]
+            ),
+            data,
+        )
+
     def test_create_rejects_invoice_managed_statuses(self):
         for item_status in (
             ChargeItemStatusOptions.billed.value,
@@ -143,13 +154,15 @@ class ChargeItemCreationStatusTests(CareAPITestBase):
         self.assertIsNone(item.paid_on)
         self.assertFalse(Invoice.objects.exists())
 
-    def test_update_input_rejects_invoice_managed_statuses_even_when_unchanged(self):
+    def test_update_rejects_transitions_into_invoice_managed_statuses(self):
         for attached in (False, True):
             item = self.make_charge_item(attached=attached)
             original_status = item.status
             original_invoice_id = item.paid_invoice_id
             for method in (self.client.put, self.client.patch):
                 for item_status in ("billed", "paid"):
+                    if item_status == original_status:
+                        continue
                     with self.subTest(
                         attached=attached,
                         method=method.__name__,
@@ -164,11 +177,32 @@ class ChargeItemCreationStatusTests(CareAPITestBase):
                         self.assertEqual(
                             response.status_code, status.HTTP_400_BAD_REQUEST
                         )
-                        self.assert_status_spec_error(response.data)
+                        self.assert_status_transition_error(response.data)
                         item.refresh_from_db()
                         self.assertEqual(item.title, "Consultation")
                         self.assertEqual(item.status, original_status)
                         self.assertEqual(item.paid_invoice_id, original_invoice_id)
+
+    def test_update_accepts_unchanged_billed_status_on_draft_invoice(self):
+        item = self.make_charge_item(attached=True)
+        invoice_id = item.paid_invoice_id
+        for method in (self.client.put, self.client.patch):
+            with self.subTest(method=method.__name__):
+                response = method(
+                    self.item_url(item),
+                    {**self.update_data(), "status": "billed"},
+                    format="json",
+                )
+
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+                self.assertEqual(response.data["status"], "billed")
+                item.refresh_from_db()
+                self.assertEqual(item.title, "Updated consultation")
+                self.assertEqual(item.status, "billed")
+                self.assertEqual(item.paid_invoice_id, invoice_id)
+                self.assertEqual(
+                    Invoice.objects.get(pk=invoice_id).charge_items, [item.pk]
+                )
 
     def test_upsert_rolls_back_edits_when_later_status_is_invoice_managed(self):
         for item_status in ("billed", "paid"):
@@ -191,7 +225,7 @@ class ChargeItemCreationStatusTests(CareAPITestBase):
                 )
 
                 self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-                self.assert_status_spec_error(response.data[1])
+                self.assert_status_transition_error(response.data[1])
                 for item in (first, second):
                     item.refresh_from_db()
                     self.assertEqual(item.title, "Consultation")
@@ -216,23 +250,35 @@ class ChargeItemCreationStatusTests(CareAPITestBase):
         self.assertEqual(item.paid_invoice_id, invoice_id)
         self.assertEqual(Invoice.objects.get(pk=invoice_id).charge_items, [item.pk])
 
-    def test_upsert_can_edit_billed_draft_item_without_submitting_status(self):
+    def test_upsert_can_edit_billed_draft_item_with_or_without_current_status(self):
         item = self.make_charge_item(attached=True)
         invoice_id = item.paid_invoice_id
 
-        response = self.client.post(
-            self.upsert_url,
-            {"datapoints": [{"id": str(item.external_id), **self.update_data()}]},
-            format="json",
-        )
+        for status_data in ({}, {"status": "billed"}):
+            with self.subTest(status=status_data):
+                response = self.client.post(
+                    self.upsert_url,
+                    {
+                        "datapoints": [
+                            {
+                                "id": str(item.external_id),
+                                **self.update_data(),
+                                **status_data,
+                            }
+                        ]
+                    },
+                    format="json",
+                )
 
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]["status"], "billed")
-        item.refresh_from_db()
-        self.assertEqual(item.title, "Updated consultation")
-        self.assertEqual(item.status, "billed")
-        self.assertEqual(item.paid_invoice_id, invoice_id)
-        self.assertEqual(Invoice.objects.get(pk=invoice_id).charge_items, [item.pk])
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+                self.assertEqual(response.data[0]["status"], "billed")
+                item.refresh_from_db()
+                self.assertEqual(item.title, "Updated consultation")
+                self.assertEqual(item.status, "billed")
+                self.assertEqual(item.paid_invoice_id, invoice_id)
+                self.assertEqual(
+                    Invoice.objects.get(pk=invoice_id).charge_items, [item.pk]
+                )
 
     def test_upsert_accepts_billable_creation(self):
         response = self.client.post(

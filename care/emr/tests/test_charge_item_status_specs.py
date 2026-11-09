@@ -38,19 +38,32 @@ class ChargeItemStatusSpecTests(SimpleTestCase):
 
         return choices(schema["properties"]["status"])
 
-    def test_request_specs_reject_invoice_managed_statuses(self):
-        for spec in (ChargeItemWriteSpec, ChargeItemUpdateSpec):
-            for item_status in (
-                "billed",
-                "paid",
-                ChargeItemStatusOptions.billed,
-                ChargeItemStatusOptions.paid,
-            ):
-                with (
-                    self.subTest(spec=spec.__name__, status=item_status),
-                    self.assertRaises(ValidationError),
-                ):
-                    spec(**self.data(spec), status=item_status)
+    def test_creation_spec_rejects_invoice_managed_statuses(self):
+        for item_status in (
+            "billed",
+            "paid",
+            ChargeItemStatusOptions.billed,
+            ChargeItemStatusOptions.paid,
+        ):
+            with self.subTest(status=item_status), self.assertRaises(ValidationError):
+                ChargeItemWriteSpec(
+                    **self.data(ChargeItemWriteSpec), status=item_status
+                )
+
+    def test_update_spec_parses_invoice_managed_statuses_for_transition_validation(
+        self,
+    ):
+        for item_status in (
+            "billed",
+            "paid",
+            ChargeItemStatusOptions.billed,
+            ChargeItemStatusOptions.paid,
+        ):
+            with self.subTest(status=item_status):
+                request = ChargeItemUpdateSpec(
+                    **self.data(ChargeItemUpdateSpec), status=item_status
+                )
+                self.assertEqual(request.status, item_status)
 
     def test_request_specs_accept_user_settable_statuses(self):
         for spec in (ChargeItemWriteSpec, ChargeItemUpdateSpec):
@@ -59,10 +72,16 @@ class ChargeItemStatusSpecTests(SimpleTestCase):
                     request = spec(**self.data(spec), status=item_status)
                     self.assertEqual(request.status, item_status)
 
-    def test_request_schemas_only_offer_user_settable_statuses(self):
-        for spec in (ChargeItemWriteSpec, ChargeItemUpdateSpec):
-            with self.subTest(spec=spec.__name__):
-                self.assertEqual(self.status_choices(spec), self.allowed_statuses)
+    def test_creation_schema_only_offers_user_settable_statuses(self):
+        self.assertEqual(
+            self.status_choices(ChargeItemWriteSpec), self.allowed_statuses
+        )
+
+    def test_update_schema_includes_existing_invoice_managed_statuses(self):
+        self.assertEqual(
+            self.status_choices(ChargeItemUpdateSpec),
+            {item_status.value for item_status in ChargeItemStatusOptions},
+        )
 
     def test_read_spec_includes_invoice_managed_statuses(self):
         self.assertEqual(

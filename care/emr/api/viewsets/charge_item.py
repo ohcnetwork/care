@@ -210,6 +210,13 @@ class ChargeItemViewSet(
         super().perform_create(instance)
 
     def validate_data(self, instance, model_obj=None):
+        if instance.status in [
+            ChargeItemStatusOptions.billed.value,
+            ChargeItemStatusOptions.paid.value,
+        ] and (model_obj is None or model_obj.status != instance.status):
+            raise ValidationError(
+                "Billed and paid statuses can only be set by an invoice"
+            )
         if (
             model_obj
             and model_obj.paid_invoice

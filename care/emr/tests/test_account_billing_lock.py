@@ -13,6 +13,7 @@ from rest_framework import status
 from rest_framework.exceptions import ValidationError
 from rest_framework.test import APIClient
 
+from care.emr.api.viewsets.charge_item import ChargeItemViewSet
 from care.emr.locks.billing import AccountLock
 from care.emr.models.account import Account
 from care.emr.models.charge_item import ChargeItem
@@ -512,6 +513,64 @@ class AccountBillingLockTests(TransactionTestCase):
         self.assertEqual(self.item.title, "Updated consultation")
         self.assertEqual(self.item.status, "billable")
         self.assertIsNone(self.item.paid_invoice_id)
+
+    def test_stale_billed_update_cannot_restore_status_after_invoice_removal(self):
+        invoice = self.make_invoice(owns_item=True)
+        loaded = Event()
+        resume = Event()
+        get_object = ChargeItemViewSet.get_object
+
+        def pause_after_initial_read(view):
+            instance = get_object(view)
+            self.assertEqual(instance.status, "billed")
+            loaded.set()
+            self.assertTrue(resume.wait(timeout=15))
+            return instance
+
+        def update_charge():
+            return self.request(
+                "put",
+                reverse(
+                    "charge_item-detail",
+                    kwargs={
+                        "facility_external_id": self.facility.external_id,
+                        "external_id": self.item.external_id,
+                    },
+                ),
+                {
+                    "title": "Stale invoice edit",
+                    "status": "billed",
+                    "quantity": "2.00",
+                    "unit_price_components": self.item.unit_price_components,
+                },
+            )
+
+        with (
+            ThreadPoolExecutor(max_workers=1) as executor,
+            patch.object(ChargeItemViewSet, "get_object", pause_after_initial_read),
+        ):
+            future = executor.submit(self.in_another_connection, update_charge)
+            try:
+                self.assertTrue(loaded.wait(timeout=10))
+                response_status, data = self.request(
+                    "post",
+                    self.invoice_url("remove-item-from-invoice", invoice),
+                    {"charge_item": str(self.item.external_id)},
+                )
+                self.assertEqual(response_status, status.HTTP_200_OK, data)
+            finally:
+                resume.set()
+            response_status, data = future.result(timeout=15)
+            self.assertEqual(response_status, status.HTTP_400_BAD_REQUEST, data)
+
+        self.item.refresh_from_db()
+        invoice.refresh_from_db()
+        self.assertEqual(self.item.status, "billable")
+        self.assertIsNone(self.item.paid_invoice_id)
+        self.assertEqual(self.item.title, "Consultation")
+        self.assertEqual(self.item.quantity, Decimal("1.00"))
+        self.assertEqual(invoice.charge_items, [])
+        self.assertEqual(invoice.total_gross, Decimal("0.00"))
 
     def test_second_creation_cannot_claim_item_before_first_invoice_commits(self):
         with ThreadPoolExecutor(max_workers=1) as executor:

@@ -324,6 +324,8 @@ class InvoiceChargeItemOwnershipTests(CareAPITestBase):
         )
 
         for item_status in ChargeItemStatusOptions:
+            if item_status == ChargeItemStatusOptions.billed:
+                continue
             with self.subTest(status=item_status.value):
                 response = self.client.put(
                     url,
@@ -406,6 +408,89 @@ class InvoiceChargeItemOwnershipTests(CareAPITestBase):
         self.assertEqual(owner.status, InvoiceStatusOptions.draft.value)
         self.assertEqual(owner.charge_items, [self.item.id])
         self.assertEqual(owner.total_gross, Decimal("200.00"))
+
+    def test_frontend_upsert_can_edit_billed_draft_items_and_recalculate_invoice(self):
+        owner = self.make_owned_invoice()
+        second_item = self.make_charge_item()
+        response = self.attach(owner, [second_item])
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        response = self.client.post(
+            reverse(
+                "charge_item-upsert",
+                kwargs={"facility_external_id": self.facility.external_id},
+            ),
+            {
+                "datapoints": [
+                    {
+                        "id": str(item.external_id),
+                        "title": "Edited invoice item",
+                        "status": ChargeItemStatusOptions.billed.value,
+                        "quantity": quantity,
+                        "unit_price_components": [
+                            {"amount": amount, "monetary_component_type": "base"}
+                        ],
+                    }
+                    for item, quantity, amount in [
+                        (self.item, "2.00", "150.00"),
+                        (second_item, "3.00", "50.00"),
+                    ]
+                ]
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK, response.data)
+        self.assert_item_owned_by(owner)
+        second_item.refresh_from_db()
+        self.assertEqual(second_item.paid_invoice_id, owner.pk)
+        self.assertEqual(second_item.status, ChargeItemStatusOptions.billed.value)
+        self.assertEqual(self.item.total_price, Decimal("300.00"))
+        self.assertEqual(second_item.total_price, Decimal("150.00"))
+        self.assertCountEqual(owner.charge_items, [self.item.pk, second_item.pk])
+        self.assertEqual(owner.total_gross, Decimal("450.00"))
+        self.assertEqual(owner.status, InvoiceStatusOptions.draft.value)
+        self.assertEqual(Invoice.objects.count(), 1)
+
+    def test_unchanged_managed_status_does_not_allow_editing_finalized_invoice_items(
+        self,
+    ):
+        owner = self.make_owned_invoice()
+        for invoice_status, item_status in [
+            (InvoiceStatusOptions.issued, ChargeItemStatusOptions.billed),
+            (InvoiceStatusOptions.balanced, ChargeItemStatusOptions.paid),
+        ]:
+            with self.subTest(invoice_status=invoice_status.value):
+                response = self.client.put(
+                    self.invoice_url("detail", owner),
+                    {"status": invoice_status.value},
+                    format="json",
+                )
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+                response = self.client.put(
+                    reverse(
+                        "charge_item-detail",
+                        kwargs={
+                            "facility_external_id": self.facility.external_id,
+                            "external_id": self.item.external_id,
+                        },
+                    ),
+                    {
+                        "title": "Forbidden edit",
+                        "status": item_status.value,
+                        "quantity": "2.00",
+                        "unit_price_components": self.item.unit_price_components,
+                    },
+                    format="json",
+                )
+
+                self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+                self.assert_item_owned_by(owner, item_status)
+                self.assertEqual(self.item.title, "Consultation")
+                self.assertEqual(self.item.quantity, Decimal("1.00"))
+                self.assertEqual(owner.total_gross, Decimal("100.00"))
+                self.assertEqual(owner.status, invoice_status.value)
 
     def test_cannot_balance_invoice_when_charge_item_points_to_another_invoice(self):
         owner = self.make_owned_invoice(
