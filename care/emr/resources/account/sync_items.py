@@ -84,5 +84,7 @@ def sync_account_items(account: Account):
 @app.task()
 def rebalance_account_task(account_id):
     account = Account.objects.get(id=account_id)
-    sync_account_items(account)
-    account.save()
+    with AccountLock(account):
+        account.refresh_from_db()
+        sync_account_items(account)
+        account.save()

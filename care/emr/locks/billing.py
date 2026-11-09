@@ -4,13 +4,38 @@ from django.conf import settings
 from django.db import OperationalError, transaction
 from rest_framework.exceptions import ValidationError
 
+from care.emr.models.account import Account
 from care.utils.lock import Lock, MultipleItemsLock, ObjectLocked
 
 
-class AccountLock(Lock):
-    def __init__(self, account, timeout=settings.LOCK_TIMEOUT):
-        self.key = f"lock:account:{account.id}"
-        self.timeout = timeout
+class AccountLock:
+    def __init__(self, account):
+        accounts = account if isinstance(account, list) else [account]
+        self.account_ids = {item.pk for item in accounts}
+        self.database = accounts[0]._state.db if accounts else None  # noqa: SLF001
+        self._transaction = transaction.atomic(using=self.database)
+
+    def __enter__(self):
+        self._transaction.__enter__()
+        try:
+            account_ids = list(
+                Account.objects.using(self.database)
+                .filter(pk__in=self.account_ids)
+                .order_by("pk")
+                .select_for_update(nowait=True, no_key=True)
+                .values_list("pk", flat=True)
+            )
+            if len(account_ids) != len(self.account_ids):
+                raise ValidationError("Account not found")
+        except BaseException as exc:
+            self._transaction.__exit__(type(exc), exc, exc.__traceback__)
+            if isinstance(exc, OperationalError) and _is_lock_unavailable(exc):
+                raise ObjectLocked from exc
+            raise
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        return self._transaction.__exit__(exc_type, exc_value, traceback)
 
 
 class InvoiceLock(Lock):
@@ -19,10 +44,31 @@ class InvoiceLock(Lock):
         self.timeout = timeout
 
 
-class InvoiceCreateLock(Lock):
-    def __init__(self, timeout=settings.LOCK_TIMEOUT):
-        self.key = "lock:create_invoice"
-        self.timeout = timeout
+class InvoiceCreateLock:
+    """Keep facility invoice numbering exclusive until the transaction ends."""
+
+    def __init__(self, facility):
+        self.facility = facility
+        self.database = facility._state.db  # noqa: SLF001
+        self._transaction = transaction.atomic(using=self.database)
+
+    def __enter__(self):
+        from care.facility.models.facility import Facility
+
+        self._transaction.__enter__()
+        try:
+            Facility.objects.using(self.database).select_for_update(
+                nowait=True, no_key=True
+            ).only("pk").get(pk=self.facility.pk)
+        except BaseException as exc:
+            self._transaction.__exit__(type(exc), exc, exc.__traceback__)
+            if isinstance(exc, OperationalError) and _is_lock_unavailable(exc):
+                raise ObjectLocked from exc
+            raise
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        return self._transaction.__exit__(exc_type, exc_value, traceback)
 
 
 class PatientCreateLock(Lock):
