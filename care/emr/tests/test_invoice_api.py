@@ -188,3 +188,67 @@ class TestAttachAccountToInvoice(CareAPITestBase):
 
         response = self.client.post(self._get_url(invoice.external_id))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class TestCancelInvoice(CareAPITestBase):
+    def test_cancel_invoice_rebalances_account(self):
+        user = self.create_super_user()
+        facility = self.create_facility(user=user)
+        patient = self.create_patient()
+        account = baker.make(
+            "emr.Account",
+            facility=facility,
+            patient=patient,
+            status=AccountStatusOptions.active.value,
+            billing_status=AccountBillingStatusOptions.open.value,
+            total_gross=Decimal("300.00"),
+            total_paid=Decimal("40.00"),
+            total_balance=Decimal("260.00"),
+        )
+        invoice = baker.make(
+            "emr.Invoice",
+            facility=facility,
+            patient=patient,
+            account=account,
+            status=InvoiceStatusOptions.issued.value,
+            total_gross=Decimal("100.00"),
+        )
+        remaining_invoice = baker.make(
+            "emr.Invoice",
+            facility=facility,
+            patient=patient,
+            account=account,
+            status=InvoiceStatusOptions.issued.value,
+            total_gross=Decimal("200.00"),
+        )
+        baker.make(
+            "emr.PaymentReconciliation",
+            facility=facility,
+            target_invoice=remaining_invoice,
+            account=account,
+            status="active",
+            outcome="complete",
+            amount=Decimal("40.00"),
+            is_credit_note=False,
+        )
+        self.client.force_authenticate(user=user)
+
+        response = self.client.post(
+            reverse(
+                "invoice-cancel-invoice",
+                kwargs={
+                    "facility_external_id": facility.external_id,
+                    "external_id": invoice.external_id,
+                },
+            ),
+            data={"reason": InvoiceStatusOptions.cancelled.value},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        invoice.refresh_from_db()
+        account.refresh_from_db()
+        self.assertEqual(invoice.status, InvoiceStatusOptions.cancelled.value)
+        self.assertEqual(account.total_gross, Decimal("200.00"))
+        self.assertEqual(account.total_paid, Decimal("40.00"))
+        self.assertEqual(account.total_balance, Decimal("160.00"))
