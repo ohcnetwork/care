@@ -340,6 +340,7 @@ class InvoiceViewSet(
                 )
                 invoice.updated_by = self.request.user
                 invoice.save()
+        rebalance_account_task(invoice.account.id)
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
 
     def check_invoice_lock_permission(self, invoice):
