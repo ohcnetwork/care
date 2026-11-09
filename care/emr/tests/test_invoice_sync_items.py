@@ -14,6 +14,8 @@ from care.emr.resources.invoice.sync_items import sync_invoice_items
 
 
 @override_settings(
+    ACCOUNTING_PRECISION=2,
+    ACCOUNTING_ROUNDING_METHOD="care.utils.rounding.RoundingHalfUp",
     INVOICE_FINAL_AMOUNT_PRECISION=0,
     INVOICE_FINAL_AMOUNT_ROUNDING_METHOD="care.utils.rounding.RoundingHalfUp",
 )
@@ -51,7 +53,7 @@ class InvoiceSyncItemsTests(TestCase):
         )
         self.invoice.charge_items.append(charge_item.id)
 
-    def test_preserves_net_precision_across_charge_items_and_price_components(self):
+    def test_rounds_net_after_summing_charge_items_and_price_components(self):
         self.add_charge_item(
             [
                 {"monetary_component_type": "base", "amount": "10.123456"},
@@ -73,7 +75,7 @@ class InvoiceSyncItemsTests(TestCase):
         self.invoice.save()
         self.invoice.refresh_from_db()
 
-        self.assertEqual(self.invoice.total_net, Decimal("12.691356"))
+        self.assertEqual(self.invoice.total_net, Decimal("12.69"))
         self.assertEqual(self.invoice.total_gross, Decimal(14))
 
     @override_settings(
@@ -93,10 +95,54 @@ class InvoiceSyncItemsTests(TestCase):
         self.invoice.save()
         self.invoice.refresh_from_db()
 
-        self.assertEqual(self.invoice.total_net, Decimal("10.987654"))
+        self.assertEqual(self.invoice.total_net, Decimal("10.99"))
         self.assertEqual(self.invoice.total_gross, Decimal("10.99"))
 
-    def test_refund_preserves_negative_net_precision(self):
+    @override_settings(
+        ACCOUNTING_PRECISION=3,
+        ACCOUNTING_ROUNDING_METHOD="care.utils.rounding.RoundingDown",
+    )
+    def test_net_uses_accounting_rounding_settings(self):
+        self.add_charge_item(
+            [
+                {"monetary_component_type": "base", "amount": "10.987654"},
+                {"monetary_component_type": "tax", "amount": "0.009876"},
+            ],
+            "10.997530",
+        )
+
+        sync_invoice_items(self.invoice)
+        self.invoice.save()
+        self.invoice.refresh_from_db()
+
+        self.assertEqual(self.invoice.total_net, Decimal("10.987"))
+        self.assertEqual(self.invoice.total_gross, Decimal(11))
+
+    def test_rounds_net_and_gross_independently_at_rounding_boundaries(self):
+        for is_refund, amount, expected_net in (
+            (False, "0.494999", "0.49"),
+            (False, "0.495000", "0.50"),
+            (False, "-0.000001", "0.00"),
+            (True, "-0.494999", "-0.49"),
+            (True, "-0.495000", "-0.50"),
+            (True, "-0.000001", "0.00"),
+        ):
+            with self.subTest(is_refund=is_refund, amount=amount):
+                self.invoice.is_refund = is_refund
+                self.invoice.charge_items = []
+                self.add_charge_item(
+                    [{"monetary_component_type": "base", "amount": amount}],
+                    amount,
+                )
+
+                sync_invoice_items(self.invoice)
+                self.invoice.save()
+                self.invoice.refresh_from_db()
+
+                self.assertEqual(self.invoice.total_net, Decimal(expected_net))
+                self.assertEqual(self.invoice.total_gross, Decimal(0))
+
+    def test_refund_rounds_negative_net_to_accounting_precision(self):
         self.invoice.is_refund = True
         self.add_charge_item(
             [
@@ -110,13 +156,41 @@ class InvoiceSyncItemsTests(TestCase):
         self.invoice.save()
         self.invoice.refresh_from_db()
 
-        self.assertEqual(self.invoice.total_net, Decimal("-10.123456"))
+        self.assertEqual(self.invoice.total_net, Decimal("-10.12"))
         self.assertEqual(self.invoice.total_gross, Decimal(-11))
 
     def test_rejects_negative_net_when_gross_rounds_to_zero_without_refund(self):
         self.add_charge_item(
-            [{"monetary_component_type": "base", "amount": "-0.000001"}],
-            "-0.000001",
+            [{"monetary_component_type": "base", "amount": "-0.01"}],
+            "-0.01",
+        )
+
+        with self.assertRaisesRegex(
+            ValidationError, "A Refund Invoice is required for negative values"
+        ):
+            sync_invoice_items(self.invoice)
+
+    def test_rejects_negative_net_when_tax_makes_gross_positive(self):
+        self.add_charge_item(
+            [
+                {"monetary_component_type": "base", "amount": "-0.01"},
+                {"monetary_component_type": "tax", "amount": "1.00"},
+            ],
+            "0.99",
+        )
+
+        with self.assertRaisesRegex(
+            ValidationError, "A Refund Invoice is required for negative values"
+        ):
+            sync_invoice_items(self.invoice)
+
+    def test_rejects_negative_gross_when_net_rounds_to_zero(self):
+        self.add_charge_item(
+            [
+                {"monetary_component_type": "base", "amount": "0.000001"},
+                {"monetary_component_type": "tax", "amount": "-0.500001"},
+            ],
+            "-0.500000",
         )
 
         with self.assertRaisesRegex(
