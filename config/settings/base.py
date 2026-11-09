@@ -115,7 +115,7 @@ DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.admin",
+    "config.apps.CareAdminConfig",
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
