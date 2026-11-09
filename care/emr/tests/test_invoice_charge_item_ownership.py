@@ -1,5 +1,6 @@
 from decimal import Decimal
 from unittest.mock import patch
+from uuid import uuid4
 
 from django.urls import reverse
 from model_bakery import baker
@@ -39,12 +40,12 @@ class InvoiceChargeItemOwnershipTests(CareAPITestBase):
         self.item = self.make_charge_item()
         self.client.force_authenticate(user=self.user)
 
-    def make_charge_item(self):
+    def make_charge_item(self, account=None):
         return baker.make(
             ChargeItem,
             facility=self.facility,
             patient=self.patient,
-            account=self.account,
+            account=account or self.account,
             title="Consultation",
             status=ChargeItemStatusOptions.billable.value,
             quantity=Decimal("1.00"),
@@ -108,6 +109,81 @@ class InvoiceChargeItemOwnershipTests(CareAPITestBase):
         self.assertEqual(self.item.paid_invoice_id, invoice.id)
         self.assertEqual(self.item.status, item_status.value)
         self.assertIn(self.item.id, invoice.charge_items)
+
+    def invalid_requested_items(self):
+        other_account = baker.make(
+            Account,
+            facility=self.facility,
+            patient=self.patient,
+            status=AccountStatusOptions.active.value,
+            billing_status=AccountBillingStatusOptions.open.value,
+        )
+        return [
+            ("nonexistent", ChargeItem(external_id=uuid4())),
+            ("other_account", self.make_charge_item(account=other_account)),
+        ]
+
+    def test_create_rejects_any_unmatched_requested_item_without_claiming_items(self):
+        invoice_count = Invoice.objects.count()
+        for invalid_kind, invalid_item in self.invalid_requested_items():
+            for include_valid_item in (False, True):
+                with self.subTest(kind=invalid_kind, mixed=include_valid_item):
+                    requested = [invalid_item]
+                    if include_valid_item:
+                        requested.append(self.item)
+
+                    response = self.create_invoice(requested)
+
+                    self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+                    self.assertEqual(Invoice.objects.count(), invoice_count)
+                    self.item.refresh_from_db()
+                    self.assertIsNone(self.item.paid_invoice_id)
+                    self.assertEqual(self.item.status, ChargeItemStatusOptions.billable)
+
+    def test_explicit_attach_rejects_any_unmatched_item_without_partial_attachment(
+        self,
+    ):
+        target = self.make_owned_invoice()
+        available = self.make_charge_item()
+        for invalid_kind, invalid_item in self.invalid_requested_items():
+            for include_valid_item in (False, True):
+                with self.subTest(kind=invalid_kind, mixed=include_valid_item):
+                    requested = [invalid_item]
+                    if include_valid_item:
+                        requested.append(available)
+
+                    response = self.attach(target, requested)
+
+                    self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+                    self.assert_item_owned_by(target)
+                    self.assertEqual(target.charge_items, [self.item.id])
+                    self.assertEqual(target.total_gross, Decimal("100.00"))
+                    available.refresh_from_db()
+                    self.assertIsNone(available.paid_invoice_id)
+                    self.assertEqual(available.status, ChargeItemStatusOptions.billable)
+
+    def test_create_accepts_duplicate_requested_ids_without_duplicate_billing(self):
+        response = self.create_invoice([self.item, self.item])
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        invoice = Invoice.objects.get(external_id=response.data["id"])
+        self.assert_item_owned_by(invoice)
+        self.assertEqual(invoice.charge_items, [self.item.id])
+        self.assertEqual(invoice.total_gross, Decimal("100.00"))
+
+    def test_explicit_attach_accepts_duplicate_new_and_existing_ids(self):
+        target = self.make_owned_invoice()
+        available = self.make_charge_item()
+
+        response = self.attach(target, [self.item, available, available, self.item])
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assert_item_owned_by(target)
+        available.refresh_from_db()
+        self.assertEqual(available.paid_invoice_id, target.pk)
+        self.assertEqual(available.status, ChargeItemStatusOptions.billed)
+        self.assertCountEqual(target.charge_items, [self.item.id, available.id])
+        self.assertEqual(target.total_gross, Decimal("200.00"))
 
     def test_create_rejects_item_already_on_a_draft_invoice(self):
         owner = self.make_owned_invoice()

@@ -144,7 +144,9 @@ class InvoiceViewSet(
                     external_id__in=instance.charge_items,
                 )
             )
-            self.validate_items_for_attachment(charge_items)
+            self.validate_items_for_attachment(
+                charge_items, requested_charge_items=instance.charge_items
+            )
             instance.charge_items = [item.id for item in charge_items]
             with InvoiceCreateLock(instance.facility):
                 if not instance.number:
@@ -184,8 +186,16 @@ class InvoiceViewSet(
         rebalance_account_task(instance.account.id)
         return result
 
-    def validate_items_for_attachment(self, charge_items, invoice=None):
+    def validate_items_for_attachment(
+        self, charge_items, invoice=None, requested_charge_items=None
+    ):
         charge_items = list(charge_items)
+        if requested_charge_items is not None and set(requested_charge_items) != {
+            item.external_id for item in charge_items
+        }:
+            raise ValidationError(
+                "One or more charge items were not found in this account"
+            )
         validate_charge_item_ownership(charge_items, invoice)
         existing_ids = set(invoice.charge_items) if invoice else set()
         if any(
@@ -277,7 +287,11 @@ class InvoiceViewSet(
                         account=invoice.account,
                     )
                 )
-                self.validate_items_for_attachment(charge_items, invoice)
+                self.validate_items_for_attachment(
+                    charge_items,
+                    invoice,
+                    requested_charge_items=request_params.charge_items,
+                )
                 extra_charge_items = [
                     item.id
                     for item in charge_items
