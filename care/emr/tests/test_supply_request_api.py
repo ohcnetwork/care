@@ -372,6 +372,39 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         self.assertEqual(get_response.data["id"], str(supply_request.external_id))
         self.assertEqual(Decimal(get_response.data["quantity"]), Decimal(200))
 
+    def test_update_cancelled_supply_request_status_is_rejected(self):
+        supply_request = self.create_supply_request(
+            order=self.request_order_internal,
+            status=SupplyRequestStatusOptions.cancelled,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_supply_request_data(
+            status=SupplyRequestStatusOptions.active,
+            order=str(self.request_order_internal.external_id),
+        )
+        response = self.client.patch(
+            self.get_detail_url(supply_request.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        supply_request.refresh_from_db()
+        self.assertEqual(supply_request.status, SupplyRequestStatusOptions.cancelled)
+
+    def test_update_active_supply_request_to_cancelled(self):
+        supply_request = self.create_supply_request(
+            order=self.request_order_internal,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_supply_request_data(
+            status=SupplyRequestStatusOptions.cancelled,
+            order=str(self.request_order_internal.external_id),
+        )
+        response = self.client.patch(
+            self.get_detail_url(supply_request.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 200)
+        supply_request.refresh_from_db()
+        self.assertEqual(supply_request.status, SupplyRequestStatusOptions.cancelled)
+
     def test_update_supply_request_internally_as_user_with_permissions(self):
         """Test updating a supply request as a user with permissions"""
         supply_request = self.create_supply_request(
