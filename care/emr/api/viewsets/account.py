@@ -13,6 +13,7 @@ from care.emr.api.viewsets.base import (
     EMRTagMixin,
     EMRUpdateMixin,
 )
+from care.emr.locks.billing import AccountLock
 from care.emr.models.account import Account
 from care.emr.models.encounter import Encounter
 from care.emr.models.patient import Patient
@@ -79,6 +80,11 @@ class AccountViewSet(
             Facility,
             external_id=self.kwargs["facility_external_id"],
         )
+
+    def handle_update(self, instance, request_data):
+        with AccountLock(instance):
+            instance.refresh_from_db()
+            return super().handle_update(instance, request_data)
 
     def validate_data(self, instance, model_obj=None):
         patient = model_obj.patient.external_id if model_obj else instance.patient
@@ -175,9 +181,11 @@ class AccountViewSet(
     @action(methods=["POST"], detail=True)
     def rebalance(self, request, *args, **kwargs):
         account = self.get_object()
-        self.authorize_update({}, account)
-        sync_account_items(account)
-        account.save()
+        with AccountLock(account):
+            account.refresh_from_db()
+            self.authorize_update({}, account)
+            sync_account_items(account)
+            account.save()
         return Response(AccountRetrieveSpec.serialize(account).to_json())
 
     def authorize_read(self, facility):

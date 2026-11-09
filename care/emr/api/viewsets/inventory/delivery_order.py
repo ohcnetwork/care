@@ -143,6 +143,18 @@ class DeliveryOrderViewSet(
                         "Delivery order already abandoned or entered in error"
                     )
                 if (
+                    old_instance.status
+                    == SupplyDeliveryOrderStatusOptions.completed.value
+                    and instance.status
+                    not in [
+                        SupplyDeliveryOrderStatusOptions.abandoned.value,
+                        SupplyDeliveryOrderStatusOptions.entered_in_error.value,
+                    ]
+                ):
+                    raise ValidationError(
+                        "Completed delivery order can only be cancelled"
+                    )
+                if (
                     instance.patient
                     and instance.status
                     == SupplyDeliveryOrderStatusOptions.abandoned.value
