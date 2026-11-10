@@ -279,23 +279,25 @@ class EMRUpsertMixin:
         try:
             with transaction.atomic():
                 for datapoint in datapoints:
-                    try:
-                        if "id" in datapoint:
-                            instance = get_object_or_404(
-                                self.database_model,
-                                **{self.lookup_field: datapoint["id"]},
-                            )
-                            result = self.handle_update(instance, datapoint)
-                        else:
-                            result = self.handle_create(datapoint)
-                        results.append(result)
-                    except Exception as e:
-                        errored = True
-                        handler = emr_exception_handler(e, {})
-                        if not getattr(handler, "data", None):
-                            unhandled = True
-                            raise e
-                        results.append(handler.data)
+                    with transaction.atomic():
+                        try:
+                            if "id" in datapoint:
+                                instance = get_object_or_404(
+                                    self.database_model,
+                                    **{self.lookup_field: datapoint["id"]},
+                                )
+                                result = self.handle_update(instance, datapoint)
+                            else:
+                                result = self.handle_create(datapoint)
+                            results.append(result)
+                        except Exception as e:
+                            errored = True
+                            handler = emr_exception_handler(e, {})
+                            if not getattr(handler, "data", None):
+                                unhandled = True
+                                raise e
+                            results.append(handler.data)
+                            transaction.set_rollback(True)
                 if errored:
                     raise Exception
         except Exception as e:
