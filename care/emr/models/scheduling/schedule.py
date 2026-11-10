@@ -59,6 +59,7 @@ class Schedule(EMRBaseModel):
     is_public = models.BooleanField(default=False)
     organizations = ArrayField(models.IntegerField(), default=list)
     care_team = models.JSONField(default=list)
+    encounter_type = models.CharField(max_length=100, null=True, blank=True)
 
 
 class Availability(EMRBaseModel):

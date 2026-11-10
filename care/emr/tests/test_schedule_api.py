@@ -236,6 +236,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.assertEqual(response.data["name"], schedule_data["name"])
         self.assertEqual(response.data["organizations"], [])
         self.assertEqual(response.data["care_team"], [])
+        self.assertIsNone(response.data["encounter_type"])
 
     def test_create_schedule_without_permissions(self):
         """Users without can_write_user_schedule permission cannot create schedules."""
@@ -265,6 +266,77 @@ class TestScheduleViewSet(CareAPITestBase):
                 "display": None,
             },
         }
+
+    def test_schedule_encounter_type_is_stored_and_returned(self):
+        self._grant_schedule_defaults_permissions()
+        data = self.generate_schedule_data(
+            valid_from=(timezone.localdate() + timedelta(days=1)).isoformat(),
+            valid_to=(timezone.localdate() + timedelta(days=2)).isoformat(),
+            encounter_type="amb",
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        schedule = Schedule.objects.get(external_id=response.data["id"])
+        self.assertEqual(schedule.encounter_type, "amb")
+        self.assertEqual(response.data["encounter_type"], "amb")
+
+        response = self.client.get(self._get_schedule_url(schedule.external_id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["encounter_type"], "amb")
+
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": self.resource.resource_type,
+                "resource_id": str(self.user.external_id),
+            },
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        schedules = {item["id"]: item for item in response.data["results"]}
+        self.assertEqual(schedules[str(schedule.external_id)]["encounter_type"], "amb")
+
+    def test_update_schedule_encounter_type_preserves_replaces_and_clears(self):
+        self._grant_schedule_defaults_permissions()
+        data = {
+            "name": self.schedule.name,
+            "is_public": self.schedule.is_public,
+            "valid_from": self.schedule.valid_from,
+            "valid_to": self.schedule.valid_to,
+        }
+        for changes, expected in [
+            ({"encounter_type": "amb"}, "amb"),
+            ({}, "amb"),
+            ({"encounter_type": "imp"}, "imp"),
+            ({"encounter_type": None}, None),
+        ]:
+            with self.subTest(changes=changes):
+                response = self.client.put(
+                    self._get_schedule_url(self.schedule.external_id),
+                    {**data, **changes},
+                    format="json",
+                )
+                self.assertEqual(response.status_code, status.HTTP_200_OK)
+                self.schedule.refresh_from_db()
+                self.assertEqual(self.schedule.encounter_type, expected)
+                self.assertEqual(response.data["encounter_type"], expected)
+
+    def test_schedule_rejects_invalid_encounter_type(self):
+        self._grant_schedule_defaults_permissions()
+        data = self.generate_schedule_data(
+            valid_from=(timezone.localdate() + timedelta(days=1)).isoformat(),
+            valid_to=(timezone.localdate() + timedelta(days=2)).isoformat(),
+            encounter_type="invalid-type",
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Schedule.objects.count(), 1)
+
+        response = self.client.put(
+            self._get_schedule_url(self.schedule.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.schedule.refresh_from_db()
+        self.assertIsNone(self.schedule.encounter_type)
 
     def test_create_schedule_with_organizations_and_care_team(self):
         role = self._grant_schedule_defaults_permissions()

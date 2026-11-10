@@ -6,6 +6,7 @@ from django.conf import settings
 from django.db.models import Sum
 from django.utils import timezone
 from pydantic import UUID4, Field, field_validator, model_validator
+from pydantic.experimental.missing_sentinel import MISSING
 from rest_framework.exceptions import ValidationError
 
 from care.emr.models.organization import FacilityOrganization, FacilityOrganizationUser
@@ -14,6 +15,7 @@ from care.emr.models.scheduling.schedule import Availability, Schedule
 from care.emr.resources.base import EMRResource
 from care.emr.resources.charge_item_definition.spec import ChargeItemDefinitionReadSpec
 from care.emr.resources.encounter.care_team import EncounterCareTeamMemberSpec
+from care.emr.resources.encounter.constants import ClassChoices
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.referral.common import (
     deserialize_care_team,
@@ -135,6 +137,7 @@ class ScheduleBaseSpec(EMRResource):
 
     id: UUID4 | None = None
     is_public: bool
+    encounter_type: ClassChoices | None = None
 
 
 class ScheduleWriteSpec(ScheduleBaseSpec):
@@ -142,6 +145,7 @@ class ScheduleWriteSpec(ScheduleBaseSpec):
 
     organizations: list[UUID4] = Field(default_factory=list)
     care_team: list[EncounterCareTeamMemberSpec] = Field(default_factory=list)
+    encounter_type: ClassChoices | None | MISSING = MISSING
 
     def perform_extra_deserialization(self, is_update, obj):
         facility_id = obj.resource.facility_id if is_update else obj.facility.id
