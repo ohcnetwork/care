@@ -25,7 +25,6 @@ from care.emr.models import TokenSlot
 from care.emr.models.organization import (
     FacilityOrganization,
     FacilityOrganizationUser,
-    OrganizationUser,
 )
 from care.emr.models.scheduling import SchedulableResource, TokenBooking
 from care.emr.models.scheduling.token import Token, TokenCategory, TokenQueue
@@ -353,43 +352,60 @@ def authorize_booking_list(  # noqa PLR0912
             )
             if organizations.count() != len(organization_ids):
                 raise PermissionDenied("Invalid organization ids")
+
             for organization in organizations:
                 if not AuthorizationController.call(
                     "can_list_booking_organization",
                     organization,
                     user,
-                    facility,
                 ):
                     raise PermissionDenied(
                         "You do not have permission to list bookings"
                     )
-                users = OrganizationUser.objects.filter(
-                    organization=organization
-                ).values("user_id")
-                # TODO : Change to overlap to include children as well
-                base_query = base_query.filter(
-                    token_slot__resource__in=SchedulableResource.objects.filter(
-                        user__in=users, facility=facility
-                    )
-                )
+
+            # Get users belonging to all selected organizations.
+            users = FacilityOrganizationUser.objects.filter(
+                organization__in=organizations
+            ).values("user_id")
+
+            # TODO : Change to overlap to include children as well
+            organization_resources = SchedulableResource.objects.filter(
+                user__in=users,
+                facility=facility,
+            )
+
+            # Include bookings from any selected organization.
+            base_query = base_query.filter(
+                token_slot__resource__in=organization_resources
+            )
+
         if not resource_ids and not organization_ids and not user.is_superuser:
             raise PermissionDenied("You do not have permission to list bookings")
+
     elif resource_type in [
         SchedulableResourceTypeOptions.healthcare_service.value,
         SchedulableResourceTypeOptions.location.value,
     ]:
         if not resource_ids:
             raise PermissionDenied("You do not have permission to list bookings")
+
     else:
         raise ValidationError("Invalid resource type")
+
     if resource_ids:
         resource_pk_ids = []
+
         for resource_id in resource_ids:
             resource = get_schedulable_resource(resource_type, resource_id, facility)
+
             if not resource:
                 raise ValidationError("No schedules found for this resource")
+
             if not AuthorizationController.call("can_list_booking", resource, user):
                 raise PermissionDenied("You do not have permission to list bookings")
+
             resource_pk_ids.append(resource.id)
+
         base_query = base_query.filter(token_slot__resource_id__in=resource_pk_ids)
+
     return base_query
