@@ -20,6 +20,7 @@ from care.emr.api.otp_viewsets.login import (
 from care.emr.api.viewsets.base import EMRBaseViewSet
 from care.emr.locks.otp import OTPVerifyLock
 from care.facility.models.patient import MobileOTP
+from care.users.locks import lock_user_auth
 from care.users.models import User
 from care.utils.time_util import care_now
 
@@ -121,16 +122,18 @@ class OTPResetPasswordView(EMRBaseViewSet):
         if user is None:
             raise ValidationError({"otp": "Invalid OTP"})
 
-        validate_password(
-            data.password,
-            user=user,
-            password_validators=get_password_validators(
-                settings.AUTH_PASSWORD_VALIDATORS
-            ),
-        )
-        user.set_password(data.password)
-        user.save()
-        MobileOTP.objects.filter(
-            phone_number=data.phone_number,
-        ).delete()
+        with lock_user_auth(user.external_id):
+            user.refresh_from_db()
+            validate_password(
+                data.password,
+                user=user,
+                password_validators=get_password_validators(
+                    settings.AUTH_PASSWORD_VALIDATORS
+                ),
+            )
+            user.set_password(data.password)
+            user.save(update_fields=["password"])
+            MobileOTP.objects.filter(
+                phone_number=data.phone_number,
+            ).delete()
         return Response({"message": "Password reset successful"})

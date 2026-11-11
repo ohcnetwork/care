@@ -36,7 +36,6 @@ class CustomUserManager(UserManager):
         return super().get_queryset()
 
     def create_superuser(self, username, email, password, **extra_fields):
-        extra_fields["phone_number"] = "+919696969696"
         extra_fields["gender"] = "non_binary"
         extra_fields["user_type"] = "administrator"
         return super().create_superuser(username, email, password, **extra_fields)
@@ -187,6 +186,7 @@ class User(AbstractUser):
 
     REQUIRED_FIELDS = [
         "email",
+        "phone_number",
     ]
 
     def get_cached_role_orgs(self):

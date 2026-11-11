@@ -115,7 +115,7 @@ DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.admin",
+    "config.apps.CareAdminConfig",
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
@@ -409,6 +409,7 @@ SIMPLE_JWT = {
     ),
     "ROTATE_REFRESH_TOKENS": True,
     "USER_ID_FIELD": "external_id",
+    "CHECK_REVOKE_TOKEN": True,
 }
 
 # Celery (background tasks)

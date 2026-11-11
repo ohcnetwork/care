@@ -13,6 +13,13 @@ CLINICAL_STATUS_DISPLAY = {
     "resolved": "Resolved",
 }
 
+CATEGORY_DISPLAY = {
+    "food": "Food",
+    "medication": "Medication",
+    "environment": "Environment",
+    "biologic": "Biologic",
+}
+
 VERIFICATION_STATUS_DISPLAY = {
     "unconfirmed": "Unconfirmed",
     "confirmed": "Confirmed",
@@ -24,6 +31,11 @@ CRITICALITY_DISPLAY = {
     "low": "Low",
     "high": "High",
     "unable_to_assess": "Unable to Assess",
+}
+
+ALLERGY_INTOLERANCE_TYPE_DISPLAY = {
+    "allergy": "Allergy",
+    "intolerance": "Intolerance",
 }
 
 
@@ -45,29 +57,41 @@ class AllergyIntoleranceContextBuilder(QuerysetContextBuilder):
     clinical_status = Field(
         display="Clinical Status",
         preview_value="Active",
-        mapping=lambda a: CLINICAL_STATUS_DISPLAY.get(
-            a.clinical_status, a.clinical_status.title()
-        )
-        if a.clinical_status
-        else "",
+        mapping=lambda a: (
+            CLINICAL_STATUS_DISPLAY.get(a.clinical_status, a.clinical_status.title())
+            if a.clinical_status
+            else ""
+        ),
         description="Clinical status of the allergy or intolerance",
+    )
+    category = Field(
+        display="Category",
+        preview_value="Food",
+        mapping=lambda a: (
+            CATEGORY_DISPLAY.get(a.category, a.category.title()) if a.category else ""
+        ),
+        description="Category of the allergy or intolerance",
     )
     verification_status = Field(
         display="Verification Status",
         preview_value="Confirmed",
-        mapping=lambda a: VERIFICATION_STATUS_DISPLAY.get(
-            a.verification_status, a.verification_status.title()
-        )
-        if a.verification_status
-        else "",
+        mapping=lambda a: (
+            VERIFICATION_STATUS_DISPLAY.get(
+                a.verification_status, a.verification_status.title()
+            )
+            if a.verification_status
+            else ""
+        ),
         description="Verification status of the allergy or intolerance",
     )
     criticality = Field(
         display="Criticality",
         preview_value="High",
-        mapping=lambda a: CRITICALITY_DISPLAY.get(a.criticality, a.criticality.title())
-        if a.criticality
-        else "",
+        mapping=lambda a: (
+            CRITICALITY_DISPLAY.get(a.criticality, a.criticality.title())
+            if a.criticality
+            else ""
+        ),
         description="Criticality of the allergy or intolerance",
     )
     name = Field(
@@ -85,6 +109,17 @@ class AllergyIntoleranceContextBuilder(QuerysetContextBuilder):
         display="Occurrence",
         preview_value="2025-12-03 12:09:13.880000+00:00",
         description="The last occurrence date and time of the allergy or intolerance",
+    )
+    allergy_intolerance_type = Field(
+        display="Allergy Intolerance Type",
+        preview_value="Allergy",
+        mapping=lambda a: (
+            ALLERGY_INTOLERANCE_TYPE_DISPLAY.get(
+                a.allergy_intolerance_type, a.allergy_intolerance_type.title()
+            )
+            if a.allergy_intolerance_type
+            else ""
+        ),
     )
 
     def get_context(self):
