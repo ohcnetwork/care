@@ -3,13 +3,25 @@ import hashlib
 import jwt
 from django.conf import settings
 from django.core import mail
-from django.core.cache import cache
+from django.core.cache import cache, caches
 from django.test import override_settings
 from django.urls import reverse
 
 from care.utils.tests.base import CareAPITestBase
 
 
+# Parallel test workers can clear the shared Redis cache between requests.
+@override_settings(
+    CACHES={
+        **settings.CACHES,
+        "reset_password_ratelimit": {
+            "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+            "LOCATION": "reset-password-ratelimit-tests",
+        },
+    },
+    RATELIMIT_USE_CACHE="reset_password_ratelimit",
+    RATELIMIT_CACHE_PREFIX="reset-password-tests:",
+)
 class ResetPasswordAPITest(CareAPITestBase):
     def setUp(self):
         super().setUp()
@@ -21,7 +33,11 @@ class ResetPasswordAPITest(CareAPITestBase):
         self.reset_password_confirm_url = reverse("password_reset_confirm")
         self.reset_password_check_url = reverse("password_reset_check")
         self.change_password_url = reverse("change_password_view")
-        cache.clear()
+        caches[settings.RATELIMIT_USE_CACHE].clear()
+
+    def _clear_shared_ratelimit_cache(self):
+        # Simulate a shared-cache clear without deleting other tests' entries.
+        cache.delete_pattern(f"*{settings.RATELIMIT_CACHE_PREFIX}*")
 
     def extract_token_from_email(self, email_body):
         """Extract token from reset password email body"""
@@ -367,6 +383,8 @@ class ResetPasswordAPITest(CareAPITestBase):
                     {"username": "testuser"},
                     format="json",
                 )
+                self.assertEqual(response.status_code, 200)
+            self._clear_shared_ratelimit_cache()
             response = self.client.post(
                 self.reset_password_request_url,
                 {"username": "testuser"},
@@ -398,6 +416,7 @@ class ResetPasswordAPITest(CareAPITestBase):
                     format="json",
                 )
                 self.assertEqual(response.status_code, 200)
+            self._clear_shared_ratelimit_cache()
             response = self.client.post(
                 self.reset_password_check_url,
                 {"token": token},
@@ -429,6 +448,7 @@ class ResetPasswordAPITest(CareAPITestBase):
                     {"token": token, "password": new_password},
                     format="json",
                 )
+            self._clear_shared_ratelimit_cache()
             response = self.client.post(
                 self.reset_password_confirm_url,
                 {"token": token, "password": new_password},

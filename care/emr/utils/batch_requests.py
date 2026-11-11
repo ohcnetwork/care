@@ -20,6 +20,8 @@ def get_response(wsgi_request):
             data = resp.data
             headers = resp.headers.values()
             status_code = resp.status_code
+            if status_code >= 300:  # noqa PLR2004
+                transaction.set_rollback(True)
     except Resolver404:
         data = {"detail": "Route not found"}
         headers = {}
@@ -88,7 +90,8 @@ def get_wsgi_request_object(curr_request, method, url, headers, body):
 
 
 def execute_serially(requests, resp_generator):
-    return [resp_generator(request) for request in requests]
+    for request in requests:
+        yield resp_generator(request)
 
 
 def construct_wsgi_from_data(request, data):

@@ -1,0 +1,22 @@
+{% extends "admin/login.html" %}
+{% load i18n %}
+
+{% block content %}
+<div id="content-main">
+  <p>{% translate "Enter the six-digit code from your authenticator app to finish signing in." %}</p>
+  {% for error in form.non_field_errors %}
+    <p class="errornote">{{ error }}</p>
+  {% endfor %}
+  <form method="post" id="login-form">
+    {% csrf_token %}
+    <div class="form-row">
+      {{ form.code.errors }}
+      {{ form.code.label_tag }} {{ form.code }}
+    </div>
+    <div class="submit-row">
+      <input type="submit" value="{% translate 'Verify' %}">
+    </div>
+  </form>
+  <p><a href="{% url 'admin:login' %}">{% translate "Back to log in" %}</a></p>
+</div>
+{% endblock %}

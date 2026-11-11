@@ -28,6 +28,10 @@ from care.emr.models.invoice import Invoice
 from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.resources.account.sync_items import rebalance_account_task
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
+from care.emr.resources.invoice.charge_item_ownership import (
+    validate_charge_item_ownership,
+    validate_invoice_charge_items,
+)
 from care.emr.resources.invoice.default_expression_evaluator import (
     evaluate_invoice_identifier_default_expression,
 )
@@ -43,7 +47,6 @@ from care.emr.resources.invoice.sync_items import sync_invoice_items
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
 from care.utils.filters.dummy_filter import DummyBooleanFilter
-from care.utils.lock import ObjectLocked
 from care.utils.shortcuts import get_object_or_404
 from care.utils.time_util import care_now
 
@@ -135,24 +138,23 @@ class InvoiceViewSet(
         instance.status = InvoiceStatusOptions.draft.value
         instance.facility = self.get_facility_obj()
         with transaction.atomic(), AccountLock(instance.account):
-            charge_items = ChargeItem.objects.filter(
-                account=instance.account,
-                status=ChargeItemStatusOptions.billable.value,
-                external_id__in=instance.charge_items,
+            charge_items = list(
+                ChargeItem.objects.filter(
+                    account=instance.account,
+                    external_id__in=instance.charge_items,
+                )
             )
-            instance.charge_items = list(charge_items.values_list("id", flat=True))
-            try:
-                with InvoiceCreateLock():
-                    if not instance.number:
-                        instance.number = (
-                            evaluate_invoice_identifier_default_expression(
-                                instance.facility
-                            )
-                        )
-                    super().perform_create(instance)
-            except ObjectLocked as e:
-                raise ValidationError("Invoice creation failed") from e
-            charge_items.update(
+            self.validate_items_for_attachment(
+                charge_items, requested_charge_items=instance.charge_items
+            )
+            instance.charge_items = [item.id for item in charge_items]
+            with InvoiceCreateLock(instance.facility):
+                if not instance.number:
+                    instance.number = evaluate_invoice_identifier_default_expression(
+                        instance.facility
+                    )
+                super().perform_create(instance)
+            ChargeItem.objects.filter(id__in=instance.charge_items).update(
                 status=ChargeItemStatusOptions.billed.value, paid_invoice=instance
             )
             sync_invoice_items(instance)
@@ -177,6 +179,38 @@ class InvoiceViewSet(
         ):
             raise PermissionDenied("Cannot write invoice")
 
+    def handle_update(self, instance, request_data):
+        with AccountLock(instance.account):
+            instance.refresh_from_db()
+            result = super().handle_update(instance, request_data)
+        rebalance_account_task(instance.account.id)
+        return result
+
+    def validate_items_for_attachment(
+        self, charge_items, invoice=None, requested_charge_items=None
+    ):
+        charge_items = list(charge_items)
+        if requested_charge_items is not None and set(requested_charge_items) != {
+            item.external_id for item in charge_items
+        }:
+            raise ValidationError(
+                "One or more charge items were not found in this account"
+            )
+        validate_charge_item_ownership(charge_items, invoice)
+        existing_ids = set(invoice.charge_items) if invoice else set()
+        if any(
+            item.status != ChargeItemStatusOptions.billable.value
+            and not (
+                item.pk in existing_ids
+                and item.paid_invoice_id == invoice.pk
+                and item.status == ChargeItemStatusOptions.billed.value
+            )
+            for item in charge_items
+        ):
+            raise ValidationError(
+                "Charge item must be billable to add it to an invoice"
+            )
+
     def perform_update(self, instance):
         with InvoiceLock(instance):
             old_invoice = Invoice.objects.get(id=instance.id)
@@ -195,6 +229,11 @@ class InvoiceViewSet(
                     and len(instance.charge_items) == 0
                 ):
                     raise ValidationError("Invoice must have at least one charge item")
+                if instance.status in (
+                    InvoiceStatusOptions.issued.value,
+                    InvoiceStatusOptions.balanced.value,
+                ):
+                    validate_invoice_charge_items(instance)
                 if old_invoice.status == InvoiceStatusOptions.balanced.value:
                     raise ValidationError("Invoice is already balanced")
                 if (
@@ -213,6 +252,7 @@ class InvoiceViewSet(
                 ):
                     ChargeItem.objects.filter(
                         account=instance.account,
+                        paid_invoice=instance,
                         status=ChargeItemStatusOptions.billed.value,
                         id__in=instance.charge_items,
                     ).update(
@@ -221,7 +261,6 @@ class InvoiceViewSet(
                         paid_on=care_now(),
                     )
             super().perform_update(instance)
-            rebalance_account_task(instance.account.id)
         return instance
 
     def check_invoice_in_draft(self, instance):
@@ -236,24 +275,36 @@ class InvoiceViewSet(
     def attach_items_to_invoice(self, request, *args, **kwargs):
         invoice = self.get_object()
         with AccountLock(invoice.account):
+            invoice.refresh_from_db()
             self.authorize_update({}, invoice)
             self.check_invoice_in_draft(invoice)
             request_params = AttachChargeItemToInvoiceRequest(**request.data)
             with transaction.atomic():
-                charge_items = ChargeItem.objects.filter(
-                    external_id__in=request_params.charge_items,
-                    account=invoice.account,
-                    status=ChargeItemStatusOptions.billable.value,
+                validate_invoice_charge_items(invoice)
+                charge_items = list(
+                    ChargeItem.objects.filter(
+                        external_id__in=request_params.charge_items,
+                        account=invoice.account,
+                    )
                 )
-                extra_charge_items = list(charge_items.values_list("id", flat=True))
+                self.validate_items_for_attachment(
+                    charge_items,
+                    invoice,
+                    requested_charge_items=request_params.charge_items,
+                )
+                extra_charge_items = [
+                    item.id
+                    for item in charge_items
+                    if item.status == ChargeItemStatusOptions.billable.value
+                ]
                 invoice.charge_items = invoice.charge_items + extra_charge_items
-                sync_invoice_items(invoice)
-                invoice.updated_by = self.request.user
-                invoice.save()
-                charge_items.update(
+                ChargeItem.objects.filter(id__in=extra_charge_items).update(
                     status=ChargeItemStatusOptions.billed.value,
                     paid_invoice=invoice,
                 )
+                sync_invoice_items(invoice)
+                invoice.updated_by = self.request.user
+                invoice.save()
         rebalance_account_task(invoice.account.id)
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
 
@@ -264,6 +315,7 @@ class InvoiceViewSet(
     def remove_item_from_invoice(self, request, *args, **kwargs):
         invoice = self.get_object()
         with AccountLock(invoice.account):
+            invoice.refresh_from_db()
             self.authorize_update({}, invoice)
             self.check_invoice_in_draft(invoice)
             request_params = RemoveChargeItemFromInvoiceRequest(**request.data)
@@ -272,6 +324,8 @@ class InvoiceViewSet(
                 external_id=request_params.charge_item,
                 account=invoice.account,
             )
+            if charge_item.paid_invoice_id != invoice.pk:
+                raise ValidationError("Charge item does not belong to this invoice")
             try:
                 with transaction.atomic():
                     invoice.charge_items.remove(charge_item.id)
@@ -291,20 +345,28 @@ class InvoiceViewSet(
     def attach_account_to_invoice(self, request, *args, **kwargs):
         invoice = self.get_object()
         with AccountLock(invoice.account):
+            invoice.refresh_from_db()
             self.authorize_update({}, invoice)
             self.check_invoice_in_draft(invoice)
             with transaction.atomic():
-                charge_items = ChargeItem.objects.filter(
-                    account=invoice.account,
-                    status=ChargeItemStatusOptions.billable.value,
+                validate_invoice_charge_items(invoice)
+                charge_items = list(
+                    ChargeItem.objects.filter(
+                        account=invoice.account,
+                        status=ChargeItemStatusOptions.billable.value,
+                    )
                 )
-                invoice.charge_items = list(charge_items.values_list("id", flat=True))
+                self.validate_items_for_attachment(charge_items)
+                extra_charge_items = [item.id for item in charge_items]
+                invoice.charge_items = list(
+                    set(invoice.charge_items + extra_charge_items)
+                )
+                ChargeItem.objects.filter(id__in=extra_charge_items).update(
+                    status=ChargeItemStatusOptions.billed.value, paid_invoice=invoice
+                )
                 sync_invoice_items(invoice)
                 invoice.updated_by = self.request.user
                 invoice.save()
-                charge_items.update(
-                    status=ChargeItemStatusOptions.billed.value, paid_invoice=invoice
-                )
         rebalance_account_task(invoice.account.id)
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
 
@@ -312,6 +374,7 @@ class InvoiceViewSet(
     def cancel_invoice(self, request, *args, **kwargs):
         invoice = self.get_object()
         with AccountLock(invoice.account):
+            invoice.refresh_from_db()
             if invoice.created_date >= care_now() - timedelta(
                 minutes=settings.INVOICE_FREE_CANCEL_PERIOD_MINUTES
             ):
@@ -332,6 +395,7 @@ class InvoiceViewSet(
                 invoice.status = request_params.reason
                 ChargeItem.objects.filter(
                     account=invoice.account,
+                    paid_invoice=invoice,
                     id__in=invoice.charge_items,
                 ).update(
                     status=ChargeItemStatusOptions.billable.value,
@@ -340,6 +404,7 @@ class InvoiceViewSet(
                 )
                 invoice.updated_by = self.request.user
                 invoice.save()
+        rebalance_account_task(invoice.account.id)
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
 
     def check_invoice_lock_permission(self, invoice):
@@ -351,35 +416,43 @@ class InvoiceViewSet(
     @action(methods=["POST"], detail=True)
     def lock(self, request, *args, **kwargs):
         invoice = self.get_object()
-        self.check_invoice_lock_permission(invoice)
-        if invoice.locked:
-            raise ValidationError("Invoice is already locked")
-        invoice.locked = True
-        invoice.lock_history.append(
-            {
-                "user": self.request.user.id,
-                "timestamp": str(care_now()),
-                "action": "lock",
-            }
-        )
-        invoice.updated_by = self.request.user
-        invoice.save()
+        with AccountLock(invoice.account):
+            invoice.refresh_from_db()
+            self.check_invoice_lock_permission(invoice)
+            if invoice.locked:
+                raise ValidationError("Invoice is already locked")
+            invoice.locked = True
+            invoice.lock_history.append(
+                {
+                    "user": self.request.user.id,
+                    "timestamp": str(care_now()),
+                    "action": "lock",
+                }
+            )
+            invoice.updated_by = self.request.user
+            invoice.save(
+                update_fields=["locked", "lock_history", "updated_by", "modified_date"]
+            )
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
 
     @action(methods=["POST"], detail=True)
     def unlock(self, request, *args, **kwargs):
         invoice = self.get_object()
-        self.check_invoice_lock_permission(invoice)
-        if not invoice.locked:
-            raise ValidationError("Invoice is not locked")
-        invoice.locked = False
-        invoice.lock_history.append(
-            {
-                "user": self.request.user.id,
-                "timestamp": str(care_now()),
-                "action": "unlock",
-            }
-        )
-        invoice.updated_by = self.request.user
-        invoice.save()
+        with AccountLock(invoice.account):
+            invoice.refresh_from_db()
+            self.check_invoice_lock_permission(invoice)
+            if not invoice.locked:
+                raise ValidationError("Invoice is not locked")
+            invoice.locked = False
+            invoice.lock_history.append(
+                {
+                    "user": self.request.user.id,
+                    "timestamp": str(care_now()),
+                    "action": "unlock",
+                }
+            )
+            invoice.updated_by = self.request.user
+            invoice.save(
+                update_fields=["locked", "lock_history", "updated_by", "modified_date"]
+            )
         return Response(InvoiceRetrieveSpec.serialize(invoice).to_json())
