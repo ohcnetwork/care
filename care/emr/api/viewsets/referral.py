@@ -376,10 +376,12 @@ class ReferralFilters(filters.FilterSet):
     )
     status = filters.CharFilter(lookup_expr="exact")
     referral_type = filters.CharFilter(field_name="availability__referral_type")
-    assigned_to = filters.UUIDFilter(method="filter_assigned_to")
-    assigned_to_me = filters.BooleanFilter(method="filter_assigned_to_me")
-    pending = filters.BooleanFilter(method="filter_pending")
-    encounter_facility = filters.UUIDFilter(method="encounter__facility__external_id")
+    assigned_to = filters.UUIDFilter(field_name="filter_assigned_to")
+    assigned_to_me = filters.BooleanFilter(field_name="filter_assigned_to_me")
+    pending = filters.BooleanFilter(field_name="filter_pending")
+    encounter_facility = filters.UUIDFilter(
+        field_name="encounter__facility__external_id"
+    )
 
     def filter_assigned_to(self, queryset, name, value):
         user = User.objects.filter(external_id=value, is_active=True).first()
