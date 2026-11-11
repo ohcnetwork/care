@@ -7,6 +7,7 @@ class EMRConfig(AppConfig):
     verbose_name = _("Electronic Medical Record")
 
     def ready(self):
+        import care.action_evaluator
         import care.emr.extensions
         import care.emr.reports.context_builder
         import care.emr.signals  # noqa F401

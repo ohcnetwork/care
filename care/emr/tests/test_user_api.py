@@ -416,6 +416,9 @@ class UserProfilePictureTestCase(CareAPITestBase):
 
     def setUp(self):
         super().setUp()
+        storage = patch("care.utils.file_uploads.cover_image.boto3.client")
+        self.addCleanup(storage.stop)
+        self.s3 = storage.start().return_value
         self.super_user = self.create_super_user(
             username="superuser", first_name="Super", last_name="User"
         )
@@ -464,6 +467,10 @@ class UserProfilePictureTestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 200)
         self.user.refresh_from_db()
         self.assertIsNotNone(self.user.profile_picture_url)
+        self.s3.put_object.assert_called_once()
+        self.assertEqual(
+            self.s3.put_object.call_args.kwargs["Key"], self.user.profile_picture_url
+        )
 
     def test_upload_invalid_file_format(self):
         """Test uploading a file with an unsupported format"""
@@ -542,9 +549,14 @@ class UserProfilePictureTestCase(CareAPITestBase):
         image_file = self.generate_image(500, 500, "red", 95)
         self.client.force_authenticate(user=self.user)
         self.client.post(self.url, {"profile_picture": image_file}, format="multipart")
+        self.user.refresh_from_db()
+        file_path = self.user.profile_picture_url
         # Now delete the profile picture
         response = self.client.delete(self.url)
         self.assertEqual(response.status_code, 204)
+        self.s3.delete_object.assert_called_once()
+        self.assertEqual(self.s3.delete_object.call_args.kwargs["Key"], file_path)
+        self.user.refresh_from_db()
         self.assertIsNone(self.user.profile_picture_url)
 
     def test_delete_profile_picture_without_authentication(self):

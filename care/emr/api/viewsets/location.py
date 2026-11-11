@@ -88,19 +88,10 @@ class FacilityLocationViewSet(EMRModelViewSet, EMRTagMixin):
         # TODO Add validation to check if patient association exists
 
     def perform_destroy(self, instance):
-        parent = instance.parent
         with transaction.atomic():
             instance.deleted = True
             instance.updated_by = self.request.user
             instance.save(update_fields=["deleted", "updated_by", "modified_date"])
-            if parent:
-                parent.has_children = FacilityLocation.objects.filter(
-                    parent=parent
-                ).exists()
-                parent.updated_by = self.request.user
-                parent.save(
-                    update_fields=["has_children", "updated_by", "modified_date"]
-                )
 
     def validate_data(self, instance, model_obj=None):
         facility = self.get_facility_obj()

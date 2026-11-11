@@ -1,3 +1,4 @@
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 from care.emr.models import EMRBaseModel
@@ -56,6 +57,9 @@ class Schedule(EMRBaseModel):
         related_name="schedule_revisit_charge_item_definition",
     )
     is_public = models.BooleanField(default=False)
+    organizations = ArrayField(models.IntegerField(), default=list)
+    care_team = models.JSONField(default=list)
+    encounter_type = models.CharField(max_length=100, null=True, blank=True)
 
 
 class Availability(EMRBaseModel):

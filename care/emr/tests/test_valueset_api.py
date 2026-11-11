@@ -45,22 +45,22 @@ class ValueSetTestBase(CareAPITestBase):
         )
         self.list_url = reverse("value-set-list")
         self.detail_url = reverse(
-            "value-set-detail", kwargs={"slug": self.valueset.slug}
+            "value-set-detail", kwargs={"external_id": self.valueset.external_id}
         )
 
     def tearDown(self):
         cache.clear()
         super().tearDown()
 
-    def get_detail_url(self, slug):
-        return reverse("value-set-detail", kwargs={"slug": slug})
+    def get_detail_url(self, external_id):
+        return reverse("value-set-detail", kwargs={"external_id": external_id})
 
-    def get_action_url(self, action_name, slug):
-        return reverse(f"value-set-{action_name}", kwargs={"slug": slug})
+    def get_action_url(self, action_name, external_id):
+        return reverse(f"value-set-{action_name}", kwargs={"external_id": external_id})
 
 
-class TestValueSetPermissionsController(ValueSetTestBase):
-    """Tests for permissions_controller — read actions open to all, write only for superusers."""
+class TestValueSetAuthorization(ValueSetTestBase):
+    """Instance value sets are readable by authenticated users and writable by superusers."""
 
     def test_list_as_superuser(self):
         """
@@ -115,9 +115,12 @@ class TestValueSetPermissionsController(ValueSetTestBase):
     def test_create_as_superuser(self):
         payload = {
             "slug": "new-valueset",
+            "auth_context": "instance",
+            "inherited": False,
             "name": "New ValueSet",
             "description": "desc",
             "status": "active",
+            "disable_composition": False,
             "compose": {
                 "include": [
                     {
@@ -141,9 +144,12 @@ class TestValueSetPermissionsController(ValueSetTestBase):
         self.client.force_authenticate(user=user)
         payload = {
             "slug": "blocked-valueset",
+            "auth_context": "instance",
+            "inherited": False,
             "name": "Blocked",
             "description": "desc",
             "status": "active",
+            "disable_composition": False,
             "compose": {
                 "include": [
                     {
@@ -160,7 +166,7 @@ class TestValueSetPermissionsController(ValueSetTestBase):
         self.assertFalse(ValueSet.objects.filter(slug="blocked-valueset").exists())
         self.assertEqual(
             response.json()["detail"],
-            "You do not have permission to perform this action.",
+            "You are not authorized to create a value set",
         )
 
     def test_update_as_superuser(self):
@@ -169,6 +175,7 @@ class TestValueSetPermissionsController(ValueSetTestBase):
             "name": "Updated Name",
             "description": "updated",
             "status": "active",
+            "disable_composition": False,
             "compose": {
                 "include": [
                     {
@@ -193,6 +200,7 @@ class TestValueSetPermissionsController(ValueSetTestBase):
             "name": "Hacked",
             "description": "hacked",
             "status": "active",
+            "disable_composition": False,
             "compose": {
                 "include": [
                     {
@@ -208,7 +216,7 @@ class TestValueSetPermissionsController(ValueSetTestBase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json()["detail"],
-            "You do not have permission to perform this action.",
+            "You are not authorized to create a value set",
         )
 
     def test_delete_as_superuser(self):
@@ -222,7 +230,7 @@ class TestValueSetPermissionsController(ValueSetTestBase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(
             response.json()["detail"],
-            "You do not have permission to perform this action.",
+            "You are not authorized to create a value set",
         )
 
 
@@ -235,7 +243,7 @@ class TestValueSetExpand(ValueSetTestBase):
             display="Test Code", system="http://snomed.info/sct", code="123"
         )
         mock_search.return_value = [mock_result]
-        url = self.get_action_url("expand", self.valueset.slug)
+        url = self.get_action_url("expand", self.valueset.external_id)
         response = self.client.post(url, {"search": "test", "count": 5}, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()["results"]), 1)
@@ -249,14 +257,14 @@ class TestValueSetExpand(ValueSetTestBase):
         user = self.create_user()
         self.client.force_authenticate(user=user)
         mock_search.return_value = []
-        url = self.get_action_url("expand", self.valueset.slug)
+        url = self.get_action_url("expand", self.valueset.external_id)
         response = self.client.post(url, {"search": ""}, format="json")
         self.assertEqual(response.status_code, 200)
 
     @patch.object(ValueSet, "search")
     def test_expand_default_params(self, mock_search):
         mock_search.return_value = []
-        url = self.get_action_url("expand", self.valueset.slug)
+        url = self.get_action_url("expand", self.valueset.external_id)
         response = self.client.post(url, {}, format="json")
         self.assertEqual(response.status_code, 200)
         mock_search.assert_called_once_with(
@@ -279,6 +287,7 @@ class TestValueSetPreviewSearch(ValueSetTestBase):
             "name": "Preview Test",
             "description": "desc",
             "status": "active",
+            "disable_composition": False,
             "compose": {
                 "include": [
                     {
@@ -304,6 +313,7 @@ class TestValueSetPreviewSearch(ValueSetTestBase):
             "name": "Preview Default",
             "description": "desc",
             "status": "active",
+            "disable_composition": False,
             "compose": {
                 "include": [
                     {
@@ -331,6 +341,7 @@ class TestValueSetPreviewSearch(ValueSetTestBase):
             "name": "Preview Regular",
             "description": "desc",
             "status": "active",
+            "disable_composition": False,
             "compose": {
                 "include": [
                     {
@@ -354,7 +365,7 @@ class TestValueSetValidateCode(ValueSetTestBase):
     @patch.object(ValueSet, "lookup")
     def test_validate_code_found(self, mock_lookup):
         mock_lookup.return_value = True
-        url = self.get_action_url("validate-code", self.valueset.slug)
+        url = self.get_action_url("validate-code", self.valueset.external_id)
         payload = {"code": "123", "system": "http://snomed.info/sct"}
         response = self.client.post(url, payload, format="json")
         self.assertEqual(response.status_code, 200)
@@ -363,7 +374,7 @@ class TestValueSetValidateCode(ValueSetTestBase):
     @patch.object(ValueSet, "lookup")
     def test_validate_code_not_found(self, mock_lookup):
         mock_lookup.return_value = False
-        url = self.get_action_url("validate-code", self.valueset.slug)
+        url = self.get_action_url("validate-code", self.valueset.external_id)
         payload = {"code": "999", "system": "http://snomed.info/sct"}
         response = self.client.post(url, payload, format="json")
         self.assertEqual(response.status_code, 200)
@@ -374,7 +385,7 @@ class TestValueSetValidateCode(ValueSetTestBase):
         user = self.create_user()
         self.client.force_authenticate(user=user)
         mock_lookup.return_value = True
-        url = self.get_action_url("validate-code", self.valueset.slug)
+        url = self.get_action_url("validate-code", self.valueset.external_id)
         payload = {"code": "123", "system": "http://snomed.info/sct"}
         response = self.client.post(url, payload, format="json")
         self.assertEqual(response.status_code, 200)
@@ -435,7 +446,7 @@ class TestValueSetFavourites(ValueSetTestBase):
     """Tests for favourites, add_favourite, remove_favourite, clear_favourites actions."""
 
     def test_favourites_empty(self):
-        url = self.get_action_url("favourites", self.valueset.slug)
+        url = self.get_action_url("favourites", self.valueset.external_id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), [])
@@ -448,19 +459,19 @@ class TestValueSetFavourites(ValueSetTestBase):
                 {"code": "123", "display": "Test", "system": "http://snomed.info/sct"}
             ],
         )
-        url = self.get_action_url("favourites", self.valueset.slug)
+        url = self.get_action_url("favourites", self.valueset.external_id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 1)
         self.assertEqual(response.json()[0]["code"], "123")
 
     def test_favourites_from_cache(self):
-        cache_key = f"user_valueset_code_prefs:{self.valueset.slug}:{self.user.external_id}:favourites"
+        cache_key = f"user_valueset_code_prefs:{self.valueset.external_id}:{self.user.external_id}:favourites"
         cached_favs = [
             {"code": "456", "display": "Cached", "system": "http://snomed.info/sct"}
         ]
         cache.set(cache_key, cached_favs)
-        url = self.get_action_url("favourites", self.valueset.slug)
+        url = self.get_action_url("favourites", self.valueset.external_id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()[0]["code"], "456")
@@ -468,14 +479,14 @@ class TestValueSetFavourites(ValueSetTestBase):
     def test_favourites_as_regular_user(self):
         user = self.create_user()
         self.client.force_authenticate(user=user)
-        url = self.get_action_url("favourites", self.valueset.slug)
+        url = self.get_action_url("favourites", self.valueset.external_id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), [])
 
     @patch.object(ValueSet, "lookup", return_value=True)
     def test_add_favourite(self, mock_lookup):
-        url = self.get_action_url("add-favourite", self.valueset.slug)
+        url = self.get_action_url("add-favourite", self.valueset.external_id)
         payload = {
             "code": "123",
             "display": "Test Code",
@@ -498,7 +509,7 @@ class TestValueSetFavourites(ValueSetTestBase):
                 {"code": "123", "display": "Test", "system": "http://snomed.info/sct"}
             ],
         )
-        url = self.get_action_url("add-favourite", self.valueset.slug)
+        url = self.get_action_url("add-favourite", self.valueset.external_id)
         payload = {
             "code": "123",
             "display": "Test Code",
@@ -510,7 +521,7 @@ class TestValueSetFavourites(ValueSetTestBase):
 
     @patch.object(ValueSet, "lookup", return_value=False)
     def test_add_favourite_invalid_code(self, mock_lookup):
-        url = self.get_action_url("add-favourite", self.valueset.slug)
+        url = self.get_action_url("add-favourite", self.valueset.external_id)
         payload = {
             "code": "invalid",
             "display": "Invalid",
@@ -523,7 +534,7 @@ class TestValueSetFavourites(ValueSetTestBase):
     def test_add_favourite_as_regular_user(self, mock_lookup):
         user = self.create_user()
         self.client.force_authenticate(user=user)
-        url = self.get_action_url("add-favourite", self.valueset.slug)
+        url = self.get_action_url("add-favourite", self.valueset.external_id)
         payload = {
             "code": "123",
             "display": "Test",
@@ -540,7 +551,7 @@ class TestValueSetFavourites(ValueSetTestBase):
                 {"code": "123", "display": "Test", "system": "http://snomed.info/sct"}
             ],
         )
-        url = self.get_action_url("remove-favourite", self.valueset.slug)
+        url = self.get_action_url("remove-favourite", self.valueset.external_id)
         payload = {
             "code": "123",
             "display": "Test",
@@ -555,7 +566,7 @@ class TestValueSetFavourites(ValueSetTestBase):
         self.assertEqual(len(pref.favorite_codes), 0)
 
     def test_remove_favourite_no_preference_exists(self):
-        url = self.get_action_url("remove-favourite", self.valueset.slug)
+        url = self.get_action_url("remove-favourite", self.valueset.external_id)
         payload = {
             "code": "123",
             "display": "Test",
@@ -568,7 +579,7 @@ class TestValueSetFavourites(ValueSetTestBase):
     def test_remove_favourite_as_regular_user(self):
         user = self.create_user()
         self.client.force_authenticate(user=user)
-        url = self.get_action_url("remove-favourite", self.valueset.slug)
+        url = self.get_action_url("remove-favourite", self.valueset.external_id)
         payload = {
             "code": "123",
             "display": "Test",
@@ -585,7 +596,7 @@ class TestValueSetFavourites(ValueSetTestBase):
                 {"code": "123", "display": "Test", "system": "http://snomed.info/sct"}
             ],
         )
-        url = self.get_action_url("clear-favourites", self.valueset.slug)
+        url = self.get_action_url("clear-favourites", self.valueset.external_id)
         response = self.client.post(url, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertIn("All favourites cleared", response.json()["message"])
@@ -595,7 +606,7 @@ class TestValueSetFavourites(ValueSetTestBase):
         self.assertEqual(pref.favorite_codes, [])
 
     def test_clear_favourites_no_preference_exists(self):
-        url = self.get_action_url("clear-favourites", self.valueset.slug)
+        url = self.get_action_url("clear-favourites", self.valueset.external_id)
         response = self.client.post(url, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertIn("No favourites found", response.json()["message"])
@@ -603,7 +614,7 @@ class TestValueSetFavourites(ValueSetTestBase):
     def test_clear_favourites_as_regular_user(self):
         user = self.create_user()
         self.client.force_authenticate(user=user)
-        url = self.get_action_url("clear-favourites", self.valueset.slug)
+        url = self.get_action_url("clear-favourites", self.valueset.external_id)
         response = self.client.post(url, format="json")
         self.assertEqual(response.status_code, 200)
 
@@ -611,7 +622,7 @@ class TestValueSetFavourites(ValueSetTestBase):
 class TestValueSetRecentViews(ValueSetTestBase):
     @patch.object(ValueSet, "lookup", return_value=True)
     def test_add_recent_view(self, mock_lookup):
-        url = self.get_action_url("add-recent-view", self.valueset.slug)
+        url = self.get_action_url("add-recent-view", self.valueset.external_id)
         payload = {
             "code": "123",
             "display": "Test",
@@ -623,7 +634,7 @@ class TestValueSetRecentViews(ValueSetTestBase):
 
     @patch.object(ValueSet, "lookup", return_value=False)
     def test_add_recent_view_invalid_code(self, mock_lookup):
-        url = self.get_action_url("add-recent-view", self.valueset.slug)
+        url = self.get_action_url("add-recent-view", self.valueset.external_id)
         payload = {
             "code": "invalid",
             "display": "Invalid",
@@ -637,7 +648,7 @@ class TestValueSetRecentViews(ValueSetTestBase):
     def test_add_recent_view_as_regular_user(self, mock_lookup):
         user = self.create_user()
         self.client.force_authenticate(user=user)
-        url = self.get_action_url("add-recent-view", self.valueset.slug)
+        url = self.get_action_url("add-recent-view", self.valueset.external_id)
         payload = {
             "code": "123",
             "display": "Test",
@@ -647,7 +658,7 @@ class TestValueSetRecentViews(ValueSetTestBase):
         self.assertEqual(response.status_code, 200)
 
     def test_remove_recent_view(self):
-        url = self.get_action_url("remove-recent-view", self.valueset.slug)
+        url = self.get_action_url("remove-recent-view", self.valueset.external_id)
         payload = {
             "code": "123",
             "display": "Test",
@@ -660,7 +671,7 @@ class TestValueSetRecentViews(ValueSetTestBase):
     def test_remove_recent_view_as_regular_user(self):
         user = self.create_user()
         self.client.force_authenticate(user=user)
-        url = self.get_action_url("remove-recent-view", self.valueset.slug)
+        url = self.get_action_url("remove-recent-view", self.valueset.external_id)
         payload = {
             "code": "123",
             "display": "Test",
@@ -671,7 +682,7 @@ class TestValueSetRecentViews(ValueSetTestBase):
 
     @patch.object(RecentViewsManager, "get_recent_views", return_value=[])
     def test_recent_views_empty(self, mock_get):
-        url = self.get_action_url("recent-views", self.valueset.slug)
+        url = self.get_action_url("recent-views", self.valueset.external_id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json(), [])
@@ -684,7 +695,7 @@ class TestValueSetRecentViews(ValueSetTestBase):
         ],
     )
     def test_recent_views_with_data(self, mock_get):
-        url = self.get_action_url("recent-views", self.valueset.slug)
+        url = self.get_action_url("recent-views", self.valueset.external_id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.json()), 1)
@@ -694,13 +705,13 @@ class TestValueSetRecentViews(ValueSetTestBase):
     def test_recent_views_as_regular_user(self, mock_get):
         user = self.create_user()
         self.client.force_authenticate(user=user)
-        url = self.get_action_url("recent-views", self.valueset.slug)
+        url = self.get_action_url("recent-views", self.valueset.external_id)
         response = self.client.get(url)
         self.assertEqual(response.status_code, 200)
 
     @patch.object(RecentViewsManager, "clear_recent_views")
     def test_clear_recent_views(self, mock_clear):
-        url = self.get_action_url("clear-recent-views", self.valueset.slug)
+        url = self.get_action_url("clear-recent-views", self.valueset.external_id)
         response = self.client.post(url, format="json")
         self.assertEqual(response.status_code, 200)
         self.assertIn("All recent views cleared", response.json()["message"])
@@ -710,6 +721,6 @@ class TestValueSetRecentViews(ValueSetTestBase):
     def test_clear_recent_views_as_regular_user(self, mock_clear):
         user = self.create_user()
         self.client.force_authenticate(user=user)
-        url = self.get_action_url("clear-recent-views", self.valueset.slug)
+        url = self.get_action_url("clear-recent-views", self.valueset.external_id)
         response = self.client.post(url, format="json")
         self.assertEqual(response.status_code, 200)

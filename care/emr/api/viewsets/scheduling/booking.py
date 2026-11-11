@@ -12,6 +12,8 @@ from rest_framework.decorators import action
 from rest_framework.exceptions import PermissionDenied, ValidationError
 from rest_framework.response import Response
 
+from care.action_evaluator.context_engine.contexts.core import AppointmentContext
+from care.emr.api.viewsets.action_base import EMRActionBaseViewSet
 from care.emr.api.viewsets.base import (
     EMRBaseViewSet,
     EMRListMixin,
@@ -29,6 +31,7 @@ from care.emr.models.organization import (
 )
 from care.emr.models.scheduling import SchedulableResource, TokenBooking
 from care.emr.models.scheduling.token import Token, TokenCategory, TokenQueue
+from care.emr.resources.action.spec import ActionContextOptions
 from care.emr.resources.charge_item.handle_charge_item_cancel import (
     handle_charge_item_cancel,
 )
@@ -42,7 +45,7 @@ from care.emr.resources.scheduling.slot.spec import (
     TokenBookingWriteSpec,
 )
 from care.emr.resources.scheduling.token.spec import TokenReadSpec, TokenStatusOptions
-from care.emr.resources.tag.config_spec import TagResource
+from care.emr.resources.tag.config_spec import TagResource, TagSetRequest
 from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import SingleFacilityTagManager
 from care.emr.tagging.filters import SingleFacilityTagFilter
@@ -74,7 +77,7 @@ class RescheduleBookingSpec(BaseModel):
     new_booking_note: str
     previous_booking_note: str | None = None
 
-    tags: list[UUID4] = []
+    tags: list[TagSetRequest] = []
 
 
 class TokenBookingFilters(FilterSet):
@@ -92,7 +95,12 @@ class TokenBookingViewSet(
     EMRListMixin,
     EMRBaseViewSet,
     EMRTagMixin,
+    EMRActionBaseViewSet,
 ):
+    ACTION_CONTEXT = ActionContextOptions.APPOINTMENT.value
+    ACTION_CONTEXT_CLASS = AppointmentContext
+    PERFORM_INDEPENDENT_ACTIONS = True
+
     database_model = TokenBooking
     pydantic_model = TokenBookingWriteSpec
     pydantic_read_model = TokenBookingReadSpec

@@ -110,8 +110,14 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
         parent_location = self.create_facility_location(
             mode=FacilityLocationModeChoices.kind.value
         )
-        child_location_1 = self.create_facility_location(parent=parent_location["id"])
-        child_location_2 = self.create_facility_location(parent=parent_location["id"])
+        child_location_1 = self.create_facility_location(
+            parent=parent_location["id"],
+            mode=FacilityLocationModeChoices.instance.value,
+        )
+        child_location_2 = self.create_facility_location(
+            parent=parent_location["id"],
+            mode=FacilityLocationModeChoices.instance.value,
+        )
 
         # Delete the first child location
         url_1 = reverse(
@@ -129,6 +135,8 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
         )
         parent_location_instance.refresh_from_db()
         self.assertTrue(parent_location_instance.has_children)
+        self.assertFalse(parent_location_instance.has_sub_locations)
+        self.assertTrue(parent_location_instance.has_beds)
 
         # Delete the second child location
         url_2 = reverse(
@@ -143,6 +151,225 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
 
         parent_location_instance.refresh_from_db()
         self.assertFalse(parent_location_instance.has_children)
+        self.assertFalse(parent_location_instance.has_sub_locations)
+        self.assertFalse(parent_location_instance.has_beds)
+
+    def assert_location_child_flags(self, location_id, *, sub_locations, beds):
+        location = FacilityLocation.objects.get(external_id=location_id)
+        self.assertEqual(location.has_sub_locations, sub_locations)
+        self.assertEqual(location.has_beds, beds)
+        self.assertEqual(location.has_children, sub_locations or beds)
+
+    def test_child_flags_use_direct_child_modes(self):
+        parent = self.create_facility_location(
+            mode=FacilityLocationModeChoices.kind.value
+        )
+        self.assertFalse(parent["has_sub_locations"])
+        self.assertFalse(parent["has_beds"])
+
+        room = self.create_facility_location(
+            parent=parent["id"],
+            mode=FacilityLocationModeChoices.kind.value,
+            form=FacilityLocationFormChoices.bd.value,
+        )
+        self.assertTrue(room["parent"]["has_sub_locations"])
+        self.assertFalse(room["parent"]["has_beds"])
+        self.assert_location_child_flags(parent["id"], sub_locations=True, beds=False)
+
+        bed = self.create_facility_location(
+            parent=room["id"],
+            mode=FacilityLocationModeChoices.instance.value,
+            form=FacilityLocationFormChoices.ro.value,
+        )
+        self.assertFalse(bed["parent"]["has_sub_locations"])
+        self.assertTrue(bed["parent"]["has_beds"])
+        self.assert_location_child_flags(parent["id"], sub_locations=True, beds=False)
+        self.assert_location_child_flags(room["id"], sub_locations=False, beds=True)
+
+        sibling_bed = self.create_facility_location(
+            parent=parent["id"], mode=FacilityLocationModeChoices.instance.value
+        )
+        self.assertTrue(sibling_bed["parent"]["has_sub_locations"])
+        self.assertTrue(sibling_bed["parent"]["has_beds"])
+        self.assert_location_child_flags(parent["id"], sub_locations=True, beds=True)
+
+    def test_stale_parent_save_recalculates_child_flags(self):
+        parent = self.create_facility_location(
+            mode=FacilityLocationModeChoices.kind.value
+        )
+        stale_parent = FacilityLocation.objects.get(external_id=parent["id"])
+        child = self.create_facility_location(
+            parent=parent["id"], mode=FacilityLocationModeChoices.instance.value
+        )
+        stale_parent.description = "Updated after child creation"
+        stale_parent.save()
+        self.assert_location_child_flags(parent["id"], sub_locations=False, beds=True)
+
+        FacilityLocation.objects.get(external_id=child["id"]).delete()
+        stale_parent.description = "Updated after child deletion"
+        stale_parent.save()
+        self.assert_location_child_flags(parent["id"], sub_locations=False, beds=False)
+
+    def test_child_flags_are_read_only_and_in_list_and_retrieve(self):
+        parent = self.create_facility_location(
+            mode=FacilityLocationModeChoices.kind.value,
+            has_sub_locations=True,
+            has_beds=True,
+        )
+        self.assertFalse(parent["has_sub_locations"])
+        self.assertFalse(parent["has_beds"])
+        self.create_facility_location(
+            parent=parent["id"], mode=FacilityLocationModeChoices.instance.value
+        )
+        self.client.force_authenticate(user=self.super_user)
+        detail_url = f"{self.base_url}{parent['id']}/"
+        response = self.client.put(
+            detail_url,
+            data=self.generate_data_for_facility_location(
+                has_sub_locations=True, has_beds=False
+            ),
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.data["has_sub_locations"])
+        self.assertTrue(response.data["has_beds"])
+
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(response.data["has_sub_locations"])
+        self.assertTrue(response.data["has_beds"])
+
+        response = self.client.get(self.base_url, data={"parent": ""})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertFalse(response.data["results"][0]["has_sub_locations"])
+        self.assertTrue(response.data["results"][0]["has_beds"])
+
+    def test_deleting_mixed_children_updates_each_flag_independently(self):
+        parent = self.create_facility_location(
+            mode=FacilityLocationModeChoices.kind.value
+        )
+        room = self.create_facility_location(
+            parent=parent["id"], mode=FacilityLocationModeChoices.kind.value
+        )
+        bed = self.create_facility_location(
+            parent=parent["id"], mode=FacilityLocationModeChoices.instance.value
+        )
+        self.client.force_authenticate(user=self.super_user)
+        response = self.client.delete(f"{self.base_url}{room['id']}/")
+        self.assertEqual(response.status_code, 204)
+        self.assert_location_child_flags(parent["id"], sub_locations=False, beds=True)
+
+        response = self.client.delete(f"{self.base_url}{bed['id']}/")
+        self.assertEqual(response.status_code, 204)
+        self.assert_location_child_flags(parent["id"], sub_locations=False, beds=False)
+
+    def test_model_delete_and_restore_update_child_flags(self):
+        parent = self.create_facility_location(
+            mode=FacilityLocationModeChoices.kind.value
+        )
+        child = self.create_facility_location(
+            parent=parent["id"], mode=FacilityLocationModeChoices.kind.value
+        )
+        child_instance = FacilityLocation.objects.get(external_id=child["id"])
+        child_instance.delete()
+        self.assert_location_child_flags(parent["id"], sub_locations=False, beds=False)
+
+        child_instance.deleted = False
+        child_instance.save(update_fields=["deleted"])
+        self.assert_location_child_flags(parent["id"], sub_locations=True, beds=False)
+
+    def test_model_mode_changes_update_child_flags(self):
+        parent = self.create_facility_location(
+            mode=FacilityLocationModeChoices.kind.value
+        )
+        child = self.create_facility_location(
+            parent=parent["id"], mode=FacilityLocationModeChoices.kind.value
+        )
+        child_instance = FacilityLocation.objects.get(external_id=child["id"])
+        child_instance.mode = FacilityLocationModeChoices.instance.value
+        child_instance.save(update_fields=["mode"])
+        self.assert_location_child_flags(parent["id"], sub_locations=False, beds=True)
+
+    def test_sync_children_flags_can_skip_parent(self):
+        parent = self.create_facility_location(
+            mode=FacilityLocationModeChoices.kind.value
+        )
+        child = self.create_facility_location(
+            parent=parent["id"], mode=FacilityLocationModeChoices.kind.value
+        )
+        FacilityLocation.objects.filter(external_id=child["id"]).update(
+            mode=FacilityLocationModeChoices.instance.value
+        )
+        child_instance = FacilityLocation.objects.get(external_id=child["id"])
+        child_instance.sync_children_flags(sync_parent=False)
+        self.assert_location_child_flags(parent["id"], sub_locations=True, beds=False)
+
+        child_instance.sync_children_flags()
+        self.assert_location_child_flags(parent["id"], sub_locations=False, beds=True)
+
+    def test_child_flags_ignore_unsaved_mode_changes(self):
+        parent = self.create_facility_location(
+            mode=FacilityLocationModeChoices.kind.value
+        )
+        child = self.create_facility_location(
+            parent=parent["id"], mode=FacilityLocationModeChoices.kind.value
+        )
+        child_instance = FacilityLocation.objects.get(external_id=child["id"])
+        child_instance.mode = FacilityLocationModeChoices.instance.value
+        child_instance.description = "Updated description"
+        child_instance.save(update_fields=["description"])
+        self.assert_location_child_flags(parent["id"], sub_locations=True, beds=False)
+
+    def test_child_changes_update_only_immediate_parent(self):
+        grandparent = self.create_facility_location(
+            mode=FacilityLocationModeChoices.kind.value
+        )
+        parent = self.create_facility_location(
+            parent=grandparent["id"], mode=FacilityLocationModeChoices.kind.value
+        )
+        sibling = self.create_facility_location(
+            parent=parent["id"], mode=FacilityLocationModeChoices.kind.value
+        )
+        descendant = self.create_facility_location(
+            parent=sibling["id"], mode=FacilityLocationModeChoices.instance.value
+        )
+        unaffected_locations = FacilityLocation.objects.filter(
+            external_id__in=[grandparent["id"], sibling["id"], descendant["id"]]
+        ).order_by("pk")
+        unchanged_fields = (
+            "cached_parent_json",
+            "modified_date",
+            "has_children",
+            "has_sub_locations",
+            "has_beds",
+        )
+        for operation in ("mode", "delete"):
+            with self.subTest(operation=operation):
+                child = self.create_facility_location(
+                    parent=parent["id"], mode=FacilityLocationModeChoices.instance.value
+                )
+                previous_values = list(unaffected_locations.values(*unchanged_fields))
+                parent_instance = FacilityLocation.objects.get(external_id=parent["id"])
+                parent_cache = parent_instance.cached_parent_json
+                parent_modified_date = parent_instance.modified_date
+                child_instance = FacilityLocation.objects.get(external_id=child["id"])
+                if operation == "mode":
+                    child_instance.mode = FacilityLocationModeChoices.kind.value
+                    child_instance.save(update_fields=["mode"])
+                else:
+                    child_instance.delete()
+
+                self.assert_location_child_flags(
+                    parent["id"], sub_locations=True, beds=False
+                )
+                self.assertEqual(
+                    list(unaffected_locations.values(*unchanged_fields)),
+                    previous_values,
+                )
+                parent_instance.refresh_from_db()
+                self.assertEqual(parent_instance.cached_parent_json, parent_cache)
+                self.assertEqual(parent_instance.modified_date, parent_modified_date)
 
     # LIST TESTS
     def test_list_facility_locations(self):

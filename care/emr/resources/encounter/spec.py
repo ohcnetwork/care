@@ -14,6 +14,7 @@ from care.emr.models import (
 )
 from care.emr.models.patient import Patient
 from care.emr.resources.base import EMRResource, PeriodSpec, model_from_cache
+from care.emr.resources.encounter.care_team import EncounterCareTeamMemberSpec
 from care.emr.resources.encounter.constants import (
     AdmitSourcesChoices,
     ClassChoices,
@@ -22,7 +23,6 @@ from care.emr.resources.encounter.constants import (
     EncounterPriorityChoices,
     StatusChoices,
 )
-from care.emr.resources.encounter.valueset import PRACTITIONER_ROLE_VALUESET
 from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.facility_organization.spec import FacilityOrganizationReadSpec
 from care.emr.resources.location.spec import (
@@ -34,7 +34,6 @@ from care.emr.resources.permissions import EncounterPermissionsMixin
 from care.emr.resources.scheduling.slot.spec import TokenBookingReadSpec
 from care.emr.resources.user.spec import UserSpec
 from care.emr.tagging.base import SingleFacilityTagManager
-from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.facility.models import Facility
 from care.utils.shortcuts import get_object_or_404
 
@@ -198,11 +197,6 @@ class EncounterRetrieveSpec(EncounterListSpec, EncounterPermissionsMixin):
         mapping["care_team"] = care_team
 
         cls.serialize_audit_users(mapping, obj)
-
-
-class EncounterCareTeamMemberSpec(BaseModel):
-    user_id: UUID4
-    role: ValueSetBoundCoding[PRACTITIONER_ROLE_VALUESET.slug]
 
 
 class EncounterCareTeamMemberWriteSpec(BaseModel):

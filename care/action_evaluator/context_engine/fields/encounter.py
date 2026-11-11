@@ -1,0 +1,32 @@
+from care.action_evaluator.context_engine.base import StaticActionContextBase
+from care.action_evaluator.context_engine.contexts.core import EncounterContext
+from care.emr.registries.actions.field import ActionFieldRegistry
+
+
+class EncounterStatusContext(StaticActionContextBase):
+    context_type = EncounterContext
+    field = "status"
+
+    def get_context_value(self):
+        return self.context_obj.status
+
+
+class EncounterClassContext(StaticActionContextBase):
+    context_type = EncounterContext
+    field = "encounter_class"
+
+    def get_context_value(self):
+        return self.context_obj.encounter_class
+
+
+class EncounterPriorityContext(StaticActionContextBase):
+    context_type = EncounterContext
+    field = "priority"
+
+    def get_context_value(self):
+        return self.context_obj.priority
+
+
+ActionFieldRegistry.register(EncounterStatusContext)
+ActionFieldRegistry.register(EncounterClassContext)
+ActionFieldRegistry.register(EncounterPriorityContext)

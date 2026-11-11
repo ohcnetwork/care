@@ -50,6 +50,7 @@ class TagConfig(EMRBaseModel):
         null=True,
         blank=True,
     )
+    expiry_metadata = models.JSONField(default=dict)
     resource = models.CharField(max_length=255)
     metadata = models.JSONField(default=None, null=True, blank=True)
 
@@ -96,3 +97,27 @@ class TagConfig(EMRBaseModel):
             self.set_tag_config_cache()
         else:
             super().save(*args, **kwargs)
+
+
+class TagDeleteRequest(models.Model):
+    resource_type = models.CharField(max_length=255)
+    resource_id = models.IntegerField()
+    tag_config = models.ForeignKey(TagConfig, on_delete=models.CASCADE)
+    trigger_at = models.DateTimeField(db_index=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["resource_type", "resource_id", "tag_config"],
+                name="unique_tag_delete_request",
+            )
+        ]
+
+    @classmethod
+    def create_delete_request(cls, resource_type, resource_id, tag_config, trigger_at):
+        return cls.objects.update_or_create(
+            resource_type=getattr(resource_type, "value", resource_type),
+            resource_id=resource_id,
+            tag_config=tag_config,
+            defaults={"trigger_at": trigger_at},
+        )
