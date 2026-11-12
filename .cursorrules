@@ -12,7 +12,6 @@ Django/Python
 
 - Use Django’s class-based views (CBVs) for more complex views; prefer function-based views (FBVs) for simpler logic.
 - Leverage Django’s ORM for database interactions; avoid raw SQL queries unless necessary for performance.
-- Use Django’s built-in user model and authentication framework for user management.
 - Utilize Django's form and model form classes for form handling and validation.
 - Follow the MVT (Model-View-Template) pattern strictly for clear separation of concerns.
 - Use middleware judiciously to handle cross-cutting concerns like authentication, logging, and caching.
