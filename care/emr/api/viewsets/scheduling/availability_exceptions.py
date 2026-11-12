@@ -1,4 +1,5 @@
 from django.db import transaction
+from django.db.models import F, Q
 from django_filters import DateFilter, FilterSet, UUIDFilter
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import PermissionDenied, ValidationError
@@ -65,12 +66,20 @@ class AvailabilityExceptionsViewSet(
             )
             instance.resource = resource
 
+            # A slot conflicts with the exception when the two time ranges
+            # overlap on a day in the exception's range, the same rule
+            # convert_availability_and_exceptions_to_slots uses. Checking only
+            # the slot start misses slots that begin before the exception and
+            # run into it, and flags slots that start exactly at its end.
+            # A slot ending at midnight has an end time of 00:00, not after
+            # its start time, so it runs to the end of the day.
             slots = TokenSlot.objects.filter(
+                Q(end_datetime__time__gt=instance.start_time)
+                | Q(end_datetime__time__lte=F("start_datetime__time")),
                 resource=resource,
                 start_datetime__date__gte=instance.valid_from,
                 start_datetime__date__lte=instance.valid_to,
-                start_datetime__time__gte=instance.start_time,
-                start_datetime__time__lte=instance.end_time,
+                start_datetime__time__lt=instance.end_time,
             )
             if slots.filter(allocated__gt=0).exists():
                 raise ValidationError("There are bookings during this exception")
