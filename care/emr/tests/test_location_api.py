@@ -522,6 +522,71 @@ class TestFacilityLocationViewSet(FacilityLocationMixin, CareAPITestBase):
         response = self.client.delete(url, format="json")
         self.assertEqual(response.status_code, 204)
 
+    def _create_location_with_patient(self, status):
+        location = self.create_facility_location(
+            mode=FacilityLocationModeChoices.instance.value
+        )
+        location_obj = FacilityLocation.objects.get(external_id=location["id"])
+        encounter = self.create_encounter(
+            self.patient, self.facility, self.facility.default_internal_organization
+        )
+        FacilityLocationEncounter.objects.create(
+            location=location_obj,
+            encounter=encounter,
+            status=status,
+            start_datetime=timezone.now(),
+        )
+        return location_obj
+
+    def test_delete_location_with_patient_assigned_is_rejected(self):
+        self.authenticate_with_permissions(
+            [
+                FacilityLocationPermissions.can_list_facility_locations.name,
+                FacilityLocationPermissions.can_write_facility_locations.name,
+            ]
+        )
+        for status in [
+            LocationEncounterAvailabilityStatusChoices.planned.value,
+            LocationEncounterAvailabilityStatusChoices.active.value,
+            LocationEncounterAvailabilityStatusChoices.reserved.value,
+        ]:
+            with self.subTest(status=status):
+                location = self._create_location_with_patient(status)
+                url = reverse(
+                    "location-detail",
+                    kwargs={
+                        "facility_external_id": self.facility.external_id,
+                        "external_id": location.external_id,
+                    },
+                )
+                response = self.client.delete(url, format="json")
+                self.assertEqual(response.status_code, 400)
+                self.assertContains(
+                    response, "Location has patients assigned to it", status_code=400
+                )
+                location.refresh_from_db()
+                self.assertFalse(location.deleted)
+
+    def test_delete_location_with_completed_patient_association(self):
+        self.authenticate_with_permissions(
+            [
+                FacilityLocationPermissions.can_list_facility_locations.name,
+                FacilityLocationPermissions.can_write_facility_locations.name,
+            ]
+        )
+        location = self._create_location_with_patient(
+            LocationEncounterAvailabilityStatusChoices.completed.value
+        )
+        url = reverse(
+            "location-detail",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": location.external_id,
+            },
+        )
+        response = self.client.delete(url, format="json")
+        self.assertEqual(response.status_code, 204)
+
     def test_deleting_parent_location(self):
         self.authenticate_with_permissions(
             [
