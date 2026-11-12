@@ -39,7 +39,6 @@ Django-Specific Guidelines
 - Apply Django's security best practices (e.g., CSRF protection, SQL injection protection, XSS prevention).
 - Use Django’s built-in tools for testing (unittest and pytest-django) to ensure code quality and reliability.
 - Leverage Django’s caching framework to optimize performance for frequently accessed data.
-- Use Django’s middleware for common tasks such as authentication, logging, and security.
 
 Performance Optimization
 
