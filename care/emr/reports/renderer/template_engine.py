@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 
 from django.utils.timezone import is_aware, localtime, make_aware
 from jinja2 import (
@@ -150,7 +150,7 @@ class TemplateEngine:
             return ""
         try:
             amount = Decimal(value)
-        except (ValueError, TypeError):
+        except (ValueError, TypeError, InvalidOperation):
             return str(value)
 
         negative = amount < 0

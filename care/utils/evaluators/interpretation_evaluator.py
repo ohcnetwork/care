@@ -1,4 +1,4 @@
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 from typing import Any
 
 from care.emr.models.valueset import ValueSet
@@ -44,7 +44,9 @@ class InterpretationEvaluator:
             if isinstance(value, str):
                 try:
                     value = convert_to_decimal(value)
-                except ValueError:
+                except (ValueError, InvalidOperation):
+                    return False, False
+                if value.is_nan():
                     return False, False
             for value_range in rule.get("ranges", []):
                 min_val = value_range.get("min")
