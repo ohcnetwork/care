@@ -16,7 +16,6 @@ fi
 ./wait_for_redis.sh
 
 python manage.py migrate --noinput
-python manage.py compilemessages -v 0
 python manage.py sync_permissions_roles
 python manage.py sync_valueset
 

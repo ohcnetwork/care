@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+set -eo pipefail
+
+python install_plugins.py
+bash scripts/build_assets.sh -v 0
