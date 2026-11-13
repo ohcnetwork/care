@@ -471,6 +471,31 @@ class TestScheduleViewSet(CareAPITestBase):
             text="Cannot modify schedule validity as it would exclude some allocated slots. Old range has 1 allocated slots while new range has 0 allocated slots.",
         )
 
+    def test_update_schedule_with_valid_to_less_than_valid_from(self):
+        """Users cannot update schedule with valid_to date less than valid_from date"""
+        permissions = [
+            SchedulePermissions.can_write_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        updated_data = {
+            "name": "Updated Schedule Name",
+            "is_public": False,
+            "valid_from": self.schedule.valid_to,
+            "valid_to": self.schedule.valid_from,
+        }
+        update_url = self._get_schedule_url(self.schedule.external_id)
+        response = self.client.put(update_url, updated_data, format="json")
+        self.assertContains(
+            response,
+            "Valid from cannot be greater than valid to",
+            status_code=400,
+        )
+        self.schedule.refresh_from_db()
+        self.assertLess(self.schedule.valid_from, self.schedule.valid_to)
+
     def test_delete_schedule_with_future_bookings(self):
         """Users cannot delete schedules with bookings present in the future."""
         permissions = [

@@ -176,6 +176,12 @@ class ScheduleUpdateSpec(ScheduleBaseSpec):
     valid_from: datetime.datetime
     valid_to: datetime.datetime
 
+    @model_validator(mode="after")
+    def validate_period(self):
+        if self.valid_from > self.valid_to:
+            raise ValueError("Valid from cannot be greater than valid to")
+        return self
+
     def perform_extra_deserialization(self, is_update, obj):
         old_instance = Schedule.objects.get(id=obj.id)
 
