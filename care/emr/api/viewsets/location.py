@@ -85,7 +85,15 @@ class FacilityLocationViewSet(EMRModelViewSet, EMRTagMixin):
         # Validate that there is no children if exists
         if FacilityLocation.objects.filter(parent=instance).exists():
             raise ValidationError("Location has active children")
-        # TODO Add validation to check if patient association exists
+        if FacilityLocationEncounter.objects.filter(
+            location=instance,
+            status__in=[
+                LocationEncounterAvailabilityStatusChoices.planned.value,
+                LocationEncounterAvailabilityStatusChoices.active.value,
+                LocationEncounterAvailabilityStatusChoices.reserved.value,
+            ],
+        ).exists():
+            raise ValidationError("Location has patients assigned to it")
 
     def perform_destroy(self, instance):
         parent = instance.parent
