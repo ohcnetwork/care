@@ -1,8 +1,10 @@
 from datetime import UTC, datetime, timedelta
+from zoneinfo import ZoneInfo
 
 from django.conf import settings
 from django.test.utils import ignore_warnings
 from django.urls import reverse
+from django.utils import timezone
 from rest_framework import status
 
 from care.emr.models import (
@@ -308,7 +310,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_from=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
+            valid_from=(datetime.now(UTC) - timedelta(days=1)).replace(tzinfo=None)
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -324,7 +326,7 @@ class TestScheduleViewSet(CareAPITestBase):
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
         schedule_data = self.generate_schedule_data(
-            valid_to=(datetime.now(UTC) - timedelta(minutes=30)).replace(tzinfo=None)
+            valid_to=(datetime.now(UTC) - timedelta(days=1)).replace(tzinfo=None)
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertContains(
@@ -344,6 +346,179 @@ class TestScheduleViewSet(CareAPITestBase):
             valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
         )
         response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertContains(
+            response,
+            "Valid from cannot be greater than valid to",
+            status_code=400,
+        )
+
+    def test_create_schedule_starting_today_with_plain_date_string_succeeds(self):
+        """Creating a schedule with valid_from as today's plain date string succeeds."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        today_str = str(timezone.now().date())
+        next_month_str = str(timezone.now().date() + timedelta(days=30))
+
+        schedule_data = self.generate_schedule_data(
+            valid_from=today_str,
+            valid_to=next_month_str,
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], schedule_data["name"])
+
+    def test_create_schedule_starting_today_at_midnight_succeeds(self):
+        """Creating a schedule with valid_from starting today at 00:00:00 succeeds."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        today_midnight = datetime.combine(timezone.now().date(), datetime.min.time())
+        valid_to = today_midnight + timedelta(days=30)
+
+        schedule_data = self.generate_schedule_data(
+            valid_from=today_midnight.isoformat(),
+            valid_to=valid_to.isoformat(),
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_schedule_starting_earlier_today_succeeds(self):
+        """Creating a schedule starting at an earlier hour today succeeds."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        earlier_today = datetime.combine(timezone.now().date(), datetime.min.time()) + timedelta(hours=1)
+        valid_to = earlier_today + timedelta(days=7)
+
+        schedule_data = self.generate_schedule_data(
+            valid_from=earlier_today.isoformat(),
+            valid_to=valid_to.isoformat(),
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_schedule_with_timezone_aware_utc_string_succeeds(self):
+        """Schedule creation with UTC timezone-aware ISO string (Z) succeeds without 500 error."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        now_utc = datetime.now(UTC)
+        valid_from = now_utc.strftime("%Y-%m-%dT%H:%M:%SZ")
+        valid_to = (now_utc + timedelta(days=30)).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+        schedule_data = self.generate_schedule_data(
+            valid_from=valid_from,
+            valid_to=valid_to,
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_schedule_with_timezone_aware_positive_offset_succeeds(self):
+        """Schedule creation with positive offset (+05:30) ISO string succeeds without 500 error."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        ist = ZoneInfo("Asia/Kolkata")
+        now_ist = datetime.now(ist)
+
+        schedule_data = self.generate_schedule_data(
+            valid_from=now_ist.isoformat(),
+            valid_to=(now_ist + timedelta(days=30)).isoformat(),
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_schedule_with_timezone_aware_negative_offset_succeeds(self):
+        """Schedule creation with negative offset (-05:00) ISO string succeeds without 500 error."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        est = ZoneInfo("America/New_York")
+        now_est = datetime.now(est)
+
+        schedule_data = self.generate_schedule_data(
+            valid_from=now_est.isoformat(),
+            valid_to=(now_est + timedelta(days=30)).isoformat(),
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_schedule_with_past_date_fails_with_400(self):
+        """Schedule creation with a date before today fails with 400."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        yesterday = timezone.now().date() - timedelta(days=1)
+        schedule_data = self.generate_schedule_data(
+            valid_from=yesterday.isoformat(),
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertContains(
+            response,
+            "Date cannot be before the current date",
+            status_code=400,
+        )
+
+    def test_create_schedule_with_mixed_aware_and_naive_datetimes(self):
+        """Schedule creation when valid_from is naive and valid_to is aware succeeds without 500 error."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        today_naive = str(timezone.now().date())
+        future_aware = (datetime.now(UTC) + timedelta(days=14)).isoformat()
+
+        schedule_data = self.generate_schedule_data(
+            valid_from=today_naive,
+            valid_to=future_aware,
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_list_schedule_filtered_by_timezone_aware_parameters(self):
+        """Querying schedules with timezone-aware ISO date parameters succeeds without 500."""
+        permissions = [SchedulePermissions.can_list_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        response = self.client.get(
+            self.base_url,
+            {
+                "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+                "resource_id": str(self.user.external_id),
+                "valid_from": "2026-01-01T00:00:00+05:30",
+                "valid_to": "2026-12-31T23:59:59+05:30",
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_update_schedule_with_valid_to_less_than_valid_from(self):
+        """Updating a schedule with valid_to less than valid_from fails with 400."""
+        permissions = [
+            SchedulePermissions.can_write_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        now = datetime.now(UTC)
+        updated_data = {
+            "name": "Invalid Period Update",
+            "is_public": False,
+            "valid_from": (now + timedelta(days=10)).isoformat(),
+            "valid_to": (now + timedelta(days=5)).isoformat(),
+        }
+        update_url = self._get_schedule_url(self.schedule.external_id)
+        response = self.client.put(update_url, updated_data, format="json")
         self.assertContains(
             response,
             "Valid from cannot be greater than valid to",

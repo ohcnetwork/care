@@ -4,6 +4,7 @@ from enum import Enum
 
 from django.conf import settings
 from django.db.models import Sum
+from django.utils import timezone
 from pydantic import UUID4, Field, field_validator, model_validator
 from rest_framework.exceptions import ValidationError
 
@@ -141,15 +142,23 @@ class ScheduleCreateSpec(ScheduleBaseSpec):
     @field_validator("valid_from", "valid_to")
     @classmethod
     def validate_dates(cls, value):
-        now = care_now().replace(tzinfo=None)
-        if value < now:
+        now = care_now().date()
+        val_date = value.date() if isinstance(value, datetime.datetime) else value
+        if val_date < now:
             raise ValueError("Date cannot be before the current date")
         return value
 
     @model_validator(mode="after")
     def validate_period(self):
-        if self.valid_from > self.valid_to:
-            raise ValueError("Valid from cannot be greater than valid to")
+        if self.valid_from and self.valid_to:
+            from_dt = self.valid_from
+            to_dt = self.valid_to
+            if timezone.is_naive(from_dt) and not timezone.is_naive(to_dt):
+                from_dt = timezone.make_aware(from_dt)
+            elif not timezone.is_naive(from_dt) and timezone.is_naive(to_dt):
+                to_dt = timezone.make_aware(to_dt)
+            if from_dt > to_dt:
+                raise ValueError("Valid from cannot be greater than valid to")
         return self
 
     @field_validator("availabilities")
@@ -175,6 +184,19 @@ class ScheduleUpdateSpec(ScheduleBaseSpec):
     name: str
     valid_from: datetime.datetime
     valid_to: datetime.datetime
+
+    @model_validator(mode="after")
+    def validate_period(self):
+        if self.valid_from and self.valid_to:
+            from_dt = self.valid_from
+            to_dt = self.valid_to
+            if timezone.is_naive(from_dt) and not timezone.is_naive(to_dt):
+                from_dt = timezone.make_aware(from_dt)
+            elif not timezone.is_naive(from_dt) and timezone.is_naive(to_dt):
+                to_dt = timezone.make_aware(to_dt)
+            if from_dt > to_dt:
+                raise ValueError("Valid from cannot be greater than valid to")
+        return self
 
     def perform_extra_deserialization(self, is_update, obj):
         old_instance = Schedule.objects.get(id=obj.id)
