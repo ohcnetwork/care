@@ -64,7 +64,7 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
     dosage = Field(
         display="Dosage",
         mapping=lambda d: (
-            f"{int(d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', 0)) if Decimal(d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', 0)) % 1 == 0 else d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', '')} "
+            f"{int(Decimal(d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', 0))) if Decimal(d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', 0)) % 1 == 0 else d.get('dose_and_rate', {}).get('dose_quantity', {}).get('value', '')} "
             f"{d.get('dose_and_rate', {}).get('dose_quantity', {}).get('unit', {}).get('display', '')}"
             if d.get("dose_and_rate")
             and d.get("dose_and_rate", {}).get("dose_quantity")
@@ -90,7 +90,7 @@ class DosageInstructionContextBuilder(QuerysetContextBuilder):
     duration = Field(
         display="Duration",
         mapping=lambda d: (
-            f"{int(d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', 0)) if Decimal(d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', 0)) % 1 == 0 else d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', '')} "
+            f"{int(Decimal(d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', 0))) if Decimal(d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', 0)) % 1 == 0 else d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('value', '')} "
             f"{d.get('timing', {}).get('repeat', {}).get('bounds_duration', {}).get('unit', '')}"
             if d.get("timing", {}).get("repeat", {}).get("bounds_duration")
             else ""
