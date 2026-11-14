@@ -478,6 +478,114 @@ class SupplyRequestAPITestCase(CareAPITestBase):
         self.assertEqual(response.status_code, 403)
         self.assertIn("Cannot write supply requests", str(response.data))
 
+    def test_cannot_update_cancelled_supply_request(self):
+        """Test that updating a cancelled supply request raises ValidationError"""
+        supply_request = self.create_supply_request(
+            order=self.request_order_internal,
+            status=SupplyRequestStatusOptions.cancelled.value,
+            quantity=100,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_supply_request_data(
+            order=str(self.request_order_internal.external_id),
+            status=SupplyRequestStatusOptions.active.value,
+        )
+        response = self.client.patch(
+            self.get_detail_url(supply_request.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Supply request is cancelled or entered in error", str(response.data)
+        )
+        supply_request.refresh_from_db()
+        self.assertEqual(
+            supply_request.status, SupplyRequestStatusOptions.cancelled.value
+        )
+
+    def test_cannot_update_entered_in_error_supply_request(self):
+        """Test that updating an entered_in_error supply request raises ValidationError"""
+        supply_request = self.create_supply_request(
+            order=self.request_order_internal,
+            status=SupplyRequestStatusOptions.entered_in_error.value,
+            quantity=100,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_supply_request_data(
+            order=str(self.request_order_internal.external_id),
+            status=SupplyRequestStatusOptions.active.value,
+        )
+        response = self.client.patch(
+            self.get_detail_url(supply_request.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn(
+            "Supply request is cancelled or entered in error", str(response.data)
+        )
+        supply_request.refresh_from_db()
+        self.assertEqual(
+            supply_request.status, SupplyRequestStatusOptions.entered_in_error.value
+        )
+
+    def test_cannot_update_completed_supply_request(self):
+        """Test that updating a completed supply request raises ValidationError"""
+        supply_request = self.create_supply_request(
+            order=self.request_order_internal,
+            status=SupplyRequestStatusOptions.completed.value,
+            quantity=100,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        data = self.generate_supply_request_data(
+            order=str(self.request_order_internal.external_id),
+            status=SupplyRequestStatusOptions.active.value,
+        )
+        response = self.client.patch(
+            self.get_detail_url(supply_request.external_id), data, format="json"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertIn("Supply request is completed", str(response.data))
+        supply_request.refresh_from_db()
+        self.assertEqual(
+            supply_request.status, SupplyRequestStatusOptions.completed.value
+        )
+
+    def test_update_active_supply_request_to_cancelled_then_cannot_reactivate(self):
+        """Test transitioning from active to cancelled, then verifying reactivation fails"""
+        supply_request = self.create_supply_request(
+            order=self.request_order_internal,
+            status=SupplyRequestStatusOptions.active.value,
+            quantity=100,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        # Transition to cancelled
+        cancel_data = self.generate_supply_request_data(
+            order=str(self.request_order_internal.external_id),
+            status=SupplyRequestStatusOptions.cancelled.value,
+        )
+        cancel_response = self.client.patch(
+            self.get_detail_url(supply_request.external_id), cancel_data, format="json"
+        )
+        self.assertEqual(cancel_response.status_code, 200)
+        supply_request.refresh_from_db()
+        self.assertEqual(
+            supply_request.status, SupplyRequestStatusOptions.cancelled.value
+        )
+
+        # Attempt to reactivate to active
+        reactivate_data = self.generate_supply_request_data(
+            order=str(self.request_order_internal.external_id),
+            status=SupplyRequestStatusOptions.active.value,
+        )
+        reactivate_response = self.client.patch(
+            self.get_detail_url(supply_request.external_id),
+            reactivate_data,
+            format="json",
+        )
+        self.assertEqual(reactivate_response.status_code, 400)
+        self.assertIn(
+            "Supply request is cancelled or entered in error",
+            str(reactivate_response.data),
+        )
+
     # Test cases for list supply requests
 
     def test_list_supply_requests_as_superuser_with_order_filter(self):
