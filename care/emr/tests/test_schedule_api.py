@@ -370,6 +370,56 @@ class TestScheduleViewSet(CareAPITestBase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["name"], "Updated Schedule Name")
 
+    def test_update_schedule_with_valid_from_after_valid_to_fails(self):
+        """Updating a schedule with valid_from greater than valid_to should fail with 400."""
+        permissions = [
+            SchedulePermissions.can_write_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        updated_data = {
+            "name": "Updated Schedule Name",
+            "is_public": False,
+            "valid_from": self.schedule.valid_to,
+            "valid_to": self.schedule.valid_from,
+        }
+        update_url = self._get_schedule_url(self.schedule.external_id)
+        response = self.client.put(update_url, updated_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertContains(
+            response,
+            "Valid from cannot be greater than valid to",
+            status_code=400,
+        )
+
+    def test_update_schedule_with_valid_from_after_valid_to_with_bookings_fails(self):
+        """Updating a schedule with bookings where valid_from > valid_to returns 400 with period error."""
+        permissions = [
+            SchedulePermissions.can_write_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        self.create_booking()
+
+        updated_data = {
+            "name": "Updated Schedule Name",
+            "is_public": False,
+            "valid_from": self.schedule.valid_to,
+            "valid_to": self.schedule.valid_from,
+        }
+        update_url = self._get_schedule_url(self.schedule.external_id)
+        response = self.client.put(update_url, updated_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertContains(
+            response,
+            "Valid from cannot be greater than valid to",
+            status_code=400,
+        )
+
     def test_update_schedule_without_permissions(self):
         """Users without can_write_user_schedule permission cannot update schedules."""
         # First create a schedule with permissions
