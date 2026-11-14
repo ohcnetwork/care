@@ -450,6 +450,23 @@ class TestScheduleViewSet(CareAPITestBase):
         response = self.client.post(self.base_url, schedule_data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
+    def test_create_schedule_with_timezone_aware_across_midnight_boundary_succeeds(self):
+        """Schedule creation with a timezone offset whose local date precedes UTC date succeeds when instant is current."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        now_utc = care_now()
+        neg_tz = datetime.timezone(timedelta(hours=-5))
+        now_neg = now_utc.astimezone(neg_tz)
+
+        schedule_data = self.generate_schedule_data(
+            valid_from=now_neg.isoformat(),
+            valid_to=(now_neg + timedelta(days=30)).isoformat(),
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_create_schedule_with_past_date_fails_with_400(self):
         """Schedule creation with a date before today fails with 400."""
         permissions = [SchedulePermissions.can_write_schedule.name]

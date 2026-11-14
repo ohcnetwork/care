@@ -143,7 +143,13 @@ class ScheduleCreateSpec(ScheduleBaseSpec):
     @classmethod
     def validate_dates(cls, value):
         now = care_now().date()
-        val_date = value.date() if isinstance(value, datetime.datetime) else value
+        if isinstance(value, datetime.datetime):
+            if not timezone.is_naive(value):
+                val_date = value.astimezone(UTC).date()
+            else:
+                val_date = value.date()
+        else:
+            val_date = value
         if val_date < now:
             raise ValueError("Date cannot be before the current date")
         return value
