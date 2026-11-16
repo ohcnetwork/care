@@ -826,6 +826,132 @@ class TestAvailabilityExceptionsViewSet(CareAPITestBase):
             status_code=400,
         )
 
+    def test_create_exception_with_booking_starting_before_exception(self):
+        """Test that exception creation fails when a booked slot starts before and overlaps the exception."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        schedule = Schedule.objects.create(
+            resource=self.resource,
+            name="Test Schedule",
+            valid_from=datetime.now(UTC) - timedelta(days=30),
+            valid_to=datetime.now(UTC) + timedelta(days=30),
+        )
+
+        availability = Availability.objects.create(
+            schedule=schedule,
+            name="Test Availability",
+            slot_type=SlotTypeOptions.appointment.value,
+            slot_size_in_minutes=60,
+            tokens_per_slot=1,
+            create_tokens=False,
+            reason="Regular schedule",
+            availability=[
+                {
+                    "day_of_week": datetime.now(UTC).weekday(),
+                    "start_time": "09:00:00",
+                    "end_time": "17:00:00",
+                }
+            ],
+        )
+
+        slot_start = datetime.now(UTC).replace(
+            hour=9, minute=0, second=0, microsecond=0
+        )
+        slot = TokenSlot.objects.create(
+            resource=self.resource,
+            availability=availability,
+            start_datetime=slot_start,
+            end_datetime=slot_start + timedelta(minutes=60),
+            allocated=1,
+        )
+
+        patient = self.create_patient()
+        TokenBooking.objects.create(
+            token_slot=slot,
+            patient=patient,
+            booked_by=self.user,
+            status=BookingStatusChoices.booked.value,
+        )
+
+        # Exception from 09:30 to 10:30 overlaps with the 09:00-10:00 slot
+        exception_data = self.generate_exception_data(
+            valid_from=slot_start.date().isoformat(),
+            valid_to=slot_start.date().isoformat(),
+            start_time="09:30:00",
+            end_time="10:30:00",
+        )
+
+        response = self.client.post(self.base_url, exception_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertContains(
+            response,
+            "There are bookings during this exception",
+            status_code=400,
+        )
+
+    def test_create_exception_with_booking_touching_boundary_allowed(self):
+        """Test that exception creation succeeds when a booked slot only touches exception boundary."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        schedule = Schedule.objects.create(
+            resource=self.resource,
+            name="Test Schedule",
+            valid_from=datetime.now(UTC) - timedelta(days=30),
+            valid_to=datetime.now(UTC) + timedelta(days=30),
+        )
+
+        availability = Availability.objects.create(
+            schedule=schedule,
+            name="Test Availability",
+            slot_type=SlotTypeOptions.appointment.value,
+            slot_size_in_minutes=60,
+            tokens_per_slot=1,
+            create_tokens=False,
+            reason="Regular schedule",
+            availability=[
+                {
+                    "day_of_week": datetime.now(UTC).weekday(),
+                    "start_time": "09:00:00",
+                    "end_time": "17:00:00",
+                }
+            ],
+        )
+
+        # Slot from 10:30 to 11:30
+        slot_start = datetime.now(UTC).replace(
+            hour=10, minute=30, second=0, microsecond=0
+        )
+        slot = TokenSlot.objects.create(
+            resource=self.resource,
+            availability=availability,
+            start_datetime=slot_start,
+            end_datetime=slot_start + timedelta(minutes=60),
+            allocated=1,
+        )
+
+        patient = self.create_patient()
+        TokenBooking.objects.create(
+            token_slot=slot,
+            patient=patient,
+            booked_by=self.user,
+            status=BookingStatusChoices.booked.value,
+        )
+
+        # Exception from 09:30 to 10:30 touches the slot at 10:30 but does not overlap
+        exception_data = self.generate_exception_data(
+            valid_from=slot_start.date().isoformat(),
+            valid_to=slot_start.date().isoformat(),
+            start_time="09:30:00",
+            end_time="10:30:00",
+        )
+
+        response = self.client.post(self.base_url, exception_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
 
 @ignore_warnings(category=RuntimeWarning, message=r".*received a naive datetime.*")
 class TestAvailabilityViewSet(CareAPITestBase):
