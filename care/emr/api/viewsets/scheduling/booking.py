@@ -25,7 +25,6 @@ from care.emr.models import TokenSlot
 from care.emr.models.organization import (
     FacilityOrganization,
     FacilityOrganizationUser,
-    OrganizationUser,
 )
 from care.emr.models.scheduling import SchedulableResource, TokenBooking
 from care.emr.models.scheduling.token import Token, TokenCategory, TokenQueue
@@ -358,12 +357,11 @@ def authorize_booking_list(  # noqa PLR0912
                     "can_list_booking_organization",
                     organization,
                     user,
-                    facility,
                 ):
                     raise PermissionDenied(
                         "You do not have permission to list bookings"
                     )
-                users = OrganizationUser.objects.filter(
+                users = FacilityOrganizationUser.objects.filter(
                     organization=organization
                 ).values("user_id")
                 # TODO : Change to overlap to include children as well
