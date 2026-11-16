@@ -111,6 +111,46 @@ class QuestionnaireViewSet(EMRModelViewSet, EMRFavoritesMixin):
     def get_serializer_update_context(self):
         return {"user": self.request.user}
 
+    def validate_data(self, instance, model_obj=None):
+        if model_obj:
+            auth_context = model_obj.auth_context
+            facility = model_obj.facility.external_id if model_obj.facility else None
+            facility_organization = (
+                model_obj.facility_organization.external_id
+                if model_obj.facility_organization
+                else None
+            )
+            created_by = model_obj.created_by_id
+        else:
+            auth_context = instance.auth_context
+            facility = instance.facility
+            facility_organization = instance.facility_organization
+            created_by = self.request.user.id
+
+        queryset = Questionnaire.objects.filter(latest_revision__isnull=True)
+
+        if model_obj:
+            queryset = queryset.exclude(id=model_obj.id)
+
+        if auth_context == QuestionnaireAuthContext.facility:
+            queryset = queryset.filter(facility__external_id=facility)
+        elif auth_context == QuestionnaireAuthContext.facility_organization:
+            queryset = queryset.filter(
+                facility_organization__external_id=facility_organization
+            )
+        elif auth_context == QuestionnaireAuthContext.user:
+            queryset = queryset.filter(
+                facility__external_id=facility, created_by_id=created_by
+            )
+
+        queryset = queryset.filter(
+            slug__iexact=instance.slug, auth_context=auth_context
+        )
+
+        if instance.slug and queryset.exists():
+            raise ValidationError("Questionnaire with this slug already exists.")
+        return super().validate_data(instance, model_obj)
+
     def perform_create(self, instance):
         super().perform_create(instance)
         instance.sync_facility_org_cache()
