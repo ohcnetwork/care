@@ -420,6 +420,43 @@ class TestScheduleViewSet(CareAPITestBase):
             status_code=400,
         )
 
+    def test_update_schedule_with_mixed_timezone_validity_fails(self):
+        """Updating a schedule with mixed timezone awareness for valid_from and valid_to returns 400."""
+        permissions = [
+            SchedulePermissions.can_write_schedule.name,
+            SchedulePermissions.can_list_schedule.name,
+        ]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        update_url = self._get_schedule_url(self.schedule.external_id)
+
+        # Case 1: valid_from is timezone-aware, valid_to is naive
+        updated_data = {
+            "name": "Updated Schedule Name",
+            "is_public": False,
+            "valid_from": "2026-11-20T00:00:00Z",
+            "valid_to": "2026-11-25T00:00:00",
+        }
+        response = self.client.put(update_url, updated_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertContains(
+            response,
+            "Valid from and valid to must both include or omit timezone information",
+            status_code=400,
+        )
+
+        # Case 2: valid_from is naive, valid_to is timezone-aware
+        updated_data["valid_from"] = "2026-11-20T00:00:00"
+        updated_data["valid_to"] = "2026-11-25T00:00:00Z"
+        response = self.client.put(update_url, updated_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertContains(
+            response,
+            "Valid from and valid to must both include or omit timezone information",
+            status_code=400,
+        )
+
     def test_update_schedule_without_permissions(self):
         """Users without can_write_user_schedule permission cannot update schedules."""
         # First create a schedule with permissions
