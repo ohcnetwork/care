@@ -251,8 +251,8 @@ def has_overlapping_availability(availabilities: list[AvailabilityDateTimeSpec])
                 continue
             # Check if time ranges overlap
             if (
-                availabilities[i].start_time <= availabilities[j].end_time
-                and availabilities[j].start_time <= availabilities[i].end_time
+                availabilities[i].start_time < availabilities[j].end_time
+                and availabilities[j].start_time < availabilities[i].end_time
             ):
                 return True
     return False
