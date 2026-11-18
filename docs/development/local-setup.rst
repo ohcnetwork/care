@@ -170,11 +170,15 @@ $ python manage.py createsuperuser
 This will now prompt for the following details - Ignore any warnings.
 
 - username: give the username here
-- usertype: Give the value `10` [5 for doctor, 10 for hospital staff/hospital administrator, 15 for patient, 20 for volunteer]
-- gender: 1 for male, 2 for female, 3 for other
 - email: give e-mail id
-- phonenumber: give your ten digit phone number here
+- phone number: give your phone number with country code, for example `+919876543210`
 - password: Give the password here
+
+Accounts with TOTP enabled must also enter a code from their authenticator app
+before signing in to Django admin. The verification step expires after five
+minutes. Password and TOTP submissions are limited by both IP address and account
+using ``RATE_LIMIT`` (default: five attempts per ten minutes for each step).
+These admin limits apply even when ``DISABLE_RATELIMIT`` is enabled locally.
 
 To copy static files (css, js, images) into the care/care/media directory so that the website loads with images and CSS styles, you may use the command:
 

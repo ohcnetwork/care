@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.db import transaction
+from django.http import Http404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel, Field, model_validator
@@ -20,6 +21,7 @@ from care.emr.api.viewsets.base import (
     EMRUpdateMixin,
     EMRUpsertMixin,
 )
+from care.emr.locks.billing import AccountLock
 from care.emr.models.account import Account
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.charge_item_definition import ChargeItemDefinition
@@ -60,6 +62,7 @@ from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
 from care.users.models import User
 from care.utils.filters.multiselect import MultiSelectFilter
+from care.utils.lock import ObjectLocked
 from care.utils.shortcuts import get_object_or_404
 from care.utils.time_util import care_now
 
@@ -175,6 +178,14 @@ class ChargeItemViewSet(
     def get_serializer_create_context(self):
         return {"facility": self.get_facility_obj()}
 
+    def handle_update(self, instance, request_data):
+        account_id = instance.account_id
+        with AccountLock(instance.account):
+            instance.refresh_from_db()
+            if instance.account_id != account_id:
+                raise ObjectLocked
+            return super().handle_update(instance, request_data)
+
     def perform_create(self, instance):
         if (
             instance.performer_actor
@@ -199,6 +210,13 @@ class ChargeItemViewSet(
         super().perform_create(instance)
 
     def validate_data(self, instance, model_obj=None):
+        if instance.status in [
+            ChargeItemStatusOptions.billed.value,
+            ChargeItemStatusOptions.paid.value,
+        ] and (model_obj is None or model_obj.status != instance.status):
+            raise ValidationError(
+                "Billed and paid statuses can only be set by an invoice"
+            )
         if (
             model_obj
             and model_obj.paid_invoice
@@ -213,20 +231,15 @@ class ChargeItemViewSet(
             )
         if model_obj and model_obj.status in CHARGE_ITEM_CANCELLED_STATUS:
             raise ValidationError("No updates allowed on cancelled charge item")
-        last_obj = None
-        if model_obj:
-            last_obj = ChargeItem.objects.get(id=model_obj.id)
         if (
             model_obj
-            and last_obj
-            and last_obj.status != instance.status
-            and instance.status
-            in [
-                ChargeItemStatusOptions.billed.value,
-                ChargeItemStatusOptions.paid.value,
-            ]
+            and model_obj.paid_invoice_id is not None
+            and instance.status is not None
+            and model_obj.status != instance.status
         ):
-            raise ValidationError("Charge item status cannot be manually changed.")
+            raise ValidationError(
+                "Remove charge item from its invoice before changing its status"
+            )
         return super().validate_data(instance, model_obj)
 
     def authorize_cancel(self, instance):
@@ -245,7 +258,6 @@ class ChargeItemViewSet(
 
     def perform_update(self, instance):
         with transaction.atomic():
-            # TODO Lock Charge item and Invoice
             old_obj = ChargeItem.objects.get(id=instance.id)
             sync = True
             if (
@@ -262,7 +274,7 @@ class ChargeItemViewSet(
                 and instance.status in CHARGE_ITEM_CANCELLED_STATUS
             ):
                 self.authorize_cancel(instance)
-                handle_charge_item_cancel(instance)
+                handle_charge_item_cancel(instance, account_locked=True)
                 sync = False
             if sync:
                 sync_charge_item_costs(instance)
@@ -434,25 +446,38 @@ class ChargeItemViewSet(
         target_account = get_object_or_404(
             Account, external_id=request_params.target_account, facility=facility
         )
-        source_accounts = [target_account.id]  # For Rebalancing all related accounts
-        with transaction.atomic():
-            for charge_item_request in request_params.charge_items:
-                charge_item = get_object_or_404(
-                    ChargeItem,
-                    external_id=charge_item_request,
-                    facility=facility,
-                    patient=target_account.patient,
-                )
+        charge_item_ids = set(request_params.charge_items)
+        queryset = ChargeItem.objects.filter(
+            external_id__in=charge_item_ids,
+            facility=facility,
+            patient_id=target_account.patient_id,
+        )
+        charge_items = list(queryset)
+        if len(charge_items) != len(charge_item_ids):
+            raise Http404("No ChargeItem matches the given query.")
+        original_accounts = {item.id: item.account_id for item in charge_items}
+        account_ids = {target_account.id, *original_accounts.values()}
+        accounts = list(Account.objects.filter(id__in=account_ids))
+        with AccountLock(accounts):
+            charge_items = list(queryset.all())
+            if len(charge_items) != len(charge_item_ids):
+                raise Http404("No ChargeItem matches the given query.")
+            for charge_item in charge_items:
+                if charge_item.account_id != original_accounts[charge_item.id]:
+                    raise ObjectLocked
                 if charge_item.status != ChargeItemStatusOptions.billable.value:
                     raise ValidationError({"charge_item": "should be billable"})
-                source_accounts.append(charge_item.account_id)
+                if charge_item.paid_invoice_id is not None:
+                    raise ValidationError(
+                        "Charge item already belongs to another invoice"
+                    )
                 charge_item.account = target_account
                 charge_item.updated_by = request.user
                 charge_item.save(
                     update_fields=["account", "updated_by", "modified_date"]
                 )
 
-        for account_id in list(set(source_accounts)):
+        for account_id in account_ids:
             rebalance_account_task(account_id)
         return Response({}, status=status.HTTP_201_CREATED)
 

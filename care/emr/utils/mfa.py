@@ -10,23 +10,26 @@ from rest_framework_simplejwt.exceptions import (
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from care.users.models import User
+from config.authentication import CustomJWTAuthentication
 from config.ratelimit import ratelimit
 
 logger = logging.getLogger(__name__)
 
 
-def validate_temp_token(temp_token: str) -> tuple[RefreshToken, str]:
-    """Validate temporary token and return token object with user ID"""
+def validate_temp_token(temp_token: str) -> User:
+    """Validate a temporary token against the current user and password."""
     try:
         token = RefreshToken(temp_token)
-        user_id = str(token["user_id"])
 
         if not token.get("temp_token"):
             raise InvalidToken({"detail": "Invalid token type"})
 
-        return user_id
+        # A password reset must also invalidate an unfinished MFA login.
+        return CustomJWTAuthentication().get_user(token)
     except TokenError as e:
         raise InvalidToken({"detail": "Temp token is invalid or expired"}) from e
+    except AuthenticationFailed:
+        raise
     except Exception as e:
         logger.error("Unexpected error during token validation: %s", e)
         raise InvalidToken({"detail": "Invalid token"}) from None

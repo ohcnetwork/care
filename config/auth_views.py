@@ -15,6 +15,7 @@ from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 from rest_framework_simplejwt.views import TokenVerifyView, TokenViewBase
 
+from config.authentication import CustomJWTAuthentication
 from config.ratelimit import ratelimit
 
 User = get_user_model()
@@ -99,6 +100,9 @@ class TokenRefreshSerializer(serializers.Serializer):
         if cache.get(REFRESH_TOKEN_INVALIDATION_PREFIX + attrs["refresh"]):
             raise PermissionDenied("Invalid Token")
 
+        # Check the current user and password before minting or rotating tokens.
+        user = CustomJWTAuthentication().get_user(refresh)
+
         data = {"access": str(refresh.access_token)}
 
         if api_settings.ROTATE_REFRESH_TOKENS:
@@ -117,9 +121,7 @@ class TokenRefreshSerializer(serializers.Serializer):
             data["refresh"] = str(refresh)
 
         # Updating users active status
-        User.objects.filter(external_id=refresh["user_id"]).update(
-            last_login=localtime(now())
-        )
+        User.objects.filter(pk=user.pk).update(last_login=localtime(now()))
 
         return data
 

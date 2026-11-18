@@ -1,7 +1,7 @@
 from datetime import timedelta
 
 from django.conf import settings
-from django.db import transaction
+from django.http import Http404
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from pydantic import UUID4, BaseModel, Field
@@ -18,6 +18,7 @@ from care.emr.api.viewsets.base import (
     EMRRetrieveMixin,
     EMRUpdateMixin,
 )
+from care.emr.locks.billing import AccountLock
 from care.emr.models.account import Account
 from care.emr.models.invoice import Invoice
 from care.emr.models.location import FacilityLocation
@@ -32,6 +33,7 @@ from care.emr.resources.payment_reconciliation.spec import (
 )
 from care.facility.models.facility import Facility
 from care.security.authorization.base import AuthorizationController
+from care.utils.lock import ObjectLocked
 from care.utils.shortcuts import get_object_or_404
 from care.utils.time_util import care_now
 
@@ -94,9 +96,16 @@ class PaymentReconciliationViewSet(
         super().perform_create(instance)
         rebalance_account_task(instance.account.id)
 
-    def perform_update(self, instance):
-        old_instance = self.get_object()
-        if old_instance.status != instance.status:
+    def handle_update(self, instance, request_data):
+        account_id = instance.account_id
+        with AccountLock(instance.account):
+            instance.refresh_from_db()
+            if instance.account_id != account_id:
+                raise ObjectLocked
+            return super().handle_update(instance, request_data)
+
+    def validate_data(self, instance, model_obj=None):
+        if model_obj and model_obj.status != instance.status:
             if instance.status in [
                 PaymentReconciliationStatusOptions.cancelled.value,
                 PaymentReconciliationStatusOptions.entered_in_error.value,
@@ -104,13 +113,16 @@ class PaymentReconciliationViewSet(
                 raise ValidationError(
                     "Cannot update payment reconciliation, use the cancel endpoint instead"
                 )
-            if old_instance.status in [
+            if model_obj.status in [
                 PaymentReconciliationStatusOptions.cancelled.value,
                 PaymentReconciliationStatusOptions.entered_in_error.value,
             ]:
                 raise ValidationError(
                     "Payment reconciliation is already cancelled or entered in error"
                 )
+        return super().validate_data(instance, model_obj)
+
+    def perform_update(self, instance):
         super().perform_update(instance)
         rebalance_account_task(instance.account.id)
 
@@ -160,23 +172,28 @@ class PaymentReconciliationViewSet(
         ]:
             raise ValidationError("Invalid reason")
         instance = self.get_object()
-        if instance.created_date >= care_now() - timedelta(
-            minutes=settings.PAYMENT_RECONCILIATION_FREE_CANCEL_PERIOD_MINUTES
-        ):
-            self.authorize_update({}, instance)
-        elif not AuthorizationController.call(
-            "can_destroy_payment_reconciliation_in_facility",
-            self.request.user,
-            instance.facility,
-        ):
-            raise PermissionDenied(
-                "User does not have permission to cancel payment reconciliation"
-            )
-        instance.status = request_data.reason
-        instance.updated_by = self.request.user
-        instance.save(update_fields=["status", "updated_by", "modified_date"])
-        rebalance_account_task(instance.account.id)
-        return Response(PaymentReconciliationReadSpec.serialize(instance).to_json())
+        account_id = instance.account_id
+        with AccountLock(instance.account):
+            instance.refresh_from_db()
+            if instance.account_id != account_id:
+                raise ObjectLocked
+            if instance.created_date >= care_now() - timedelta(
+                minutes=settings.PAYMENT_RECONCILIATION_FREE_CANCEL_PERIOD_MINUTES
+            ):
+                self.authorize_update({}, instance)
+            elif not AuthorizationController.call(
+                "can_destroy_payment_reconciliation_in_facility",
+                self.request.user,
+                instance.facility,
+            ):
+                raise PermissionDenied(
+                    "User does not have permission to cancel payment reconciliation"
+                )
+            instance.status = request_data.reason
+            instance.updated_by = self.request.user
+            instance.save(update_fields=["status", "updated_by", "modified_date"])
+            rebalance_account_task(instance.account.id)
+            return Response(PaymentReconciliationReadSpec.serialize(instance).to_json())
 
     @extend_schema(
         request=PaymentReconciliationAccountChangeRequest,
@@ -194,17 +211,27 @@ class PaymentReconciliationViewSet(
         target_account = get_object_or_404(
             Account, external_id=request_params.target_account, facility=facility
         )
-        source_accounts = [target_account.id]  # For Rebalancing all related accounts
-        # Switch to sets maybe to optimize memory
-        with transaction.atomic():
-            for (
-                payment_reconciliation_request
-            ) in request_params.payment_reconciliations:
-                payment_reconciliation = get_object_or_404(
-                    PaymentReconciliation,
-                    external_id=payment_reconciliation_request,
-                    facility=facility,
-                )
+        payment_ids = set(request_params.payment_reconciliations)
+        queryset = PaymentReconciliation.objects.filter(
+            external_id__in=payment_ids,
+            facility=facility,
+        )
+        payments = list(queryset)
+        if len(payments) != len(payment_ids):
+            raise Http404("No PaymentReconciliation matches the given query.")
+        original_accounts = {item.id: item.account_id for item in payments}
+        account_ids = {target_account.id, *original_accounts.values()}
+        accounts = list(Account.objects.filter(id__in=account_ids))
+        with AccountLock(accounts):
+            payments = list(queryset.all())
+            if len(payments) != len(payment_ids):
+                raise Http404("No PaymentReconciliation matches the given query.")
+            for payment_reconciliation in payments:
+                if (
+                    payment_reconciliation.account_id
+                    != original_accounts[payment_reconciliation.id]
+                ):
+                    raise ObjectLocked
                 if payment_reconciliation.status not in [
                     PaymentReconciliationStatusOptions.active.value,
                     PaymentReconciliationStatusOptions.draft.value,
@@ -218,13 +245,12 @@ class PaymentReconciliationViewSet(
                             "payment_reconciliation": "Cannot change account for a payment reconciliation against an invoice"
                         }
                     )
-                source_accounts.append(payment_reconciliation.account_id)
                 payment_reconciliation.account = target_account
                 payment_reconciliation.updated_by = request.user
                 payment_reconciliation.save(
                     update_fields=["account", "updated_by", "modified_date"]
                 )
 
-        for account_id in list(set(source_accounts)):
-            rebalance_account_task(account_id)
+            for account_id in account_ids:
+                rebalance_account_task(account_id)
         return Response({}, status=status.HTTP_201_CREATED)

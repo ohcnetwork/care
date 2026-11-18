@@ -3,8 +3,12 @@ from django.db.models import Sum
 from care.emr.locks.billing import AccountLock
 from care.emr.models.account import Account
 from care.emr.models.charge_item import ChargeItem
+from care.emr.models.invoice import Invoice
 from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.resources.charge_item.spec import ChargeItemStatusOptions
+from care.emr.resources.invoice.spec import (
+    INVOICE_CANCELLED_STATUS,
+)
 from care.emr.resources.payment_reconciliation.spec import (
     PaymentReconciliationOutcomeOptions,
     PaymentReconciliationStatusOptions,
@@ -27,14 +31,11 @@ def sync_account_items(account: Account):
         charge_items_base = ChargeItem.objects.filter(
             account=account,
         )
-        charge_items = charge_items_base.filter(
-            status__in=[
-                ChargeItemStatusOptions.paid.value,
-                ChargeItemStatusOptions.billed.value,
-            ],
-        )
         billable_charge_items = charge_items_base.filter(
             status=ChargeItemStatusOptions.billable.value,
+        )
+        invoices = Invoice.objects.filter(account=account).exclude(
+            status__in=INVOICE_CANCELLED_STATUS,
         )
         payment_reconciliations = PaymentReconciliation.objects.filter(
             account=account,
@@ -52,7 +53,9 @@ def sync_account_items(account: Account):
         account.total_billable_charge_items = calculate_charge_item_amount_sum(
             billable_charge_items
         )
-        account.total_gross = calculate_charge_item_amount_sum(charge_items)
+        account.total_gross = care_round(
+            invoices.aggregate(total=Sum("total_gross"))["total"]
+        )
 
         payment_reconciliation_total = calculate_payment_reconciliation_summary(
             payment_reconciliations
@@ -81,5 +84,7 @@ def sync_account_items(account: Account):
 @app.task()
 def rebalance_account_task(account_id):
     account = Account.objects.get(id=account_id)
-    sync_account_items(account)
-    account.save()
+    with AccountLock(account):
+        account.refresh_from_db()
+        sync_account_items(account)
+        account.save()
