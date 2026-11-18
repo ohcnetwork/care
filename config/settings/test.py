@@ -1,5 +1,6 @@
 import base64
 import json
+from uuid import uuid4
 
 from authlib.jose import JsonWebKey
 
@@ -42,14 +43,15 @@ DATABASES = {"default": env.db("DATABASE_URL", default="postgres:///care-test")}
 # test in peace
 CACHES = {
     "default": {
-        "BACKEND": "django_redis.cache.RedisCache",
+        "BACKEND": "config.caches.TestRedisCache",
         "LOCATION": REDIS_URL,  # noqa F405
+        "KEY_PREFIX": f"care-tests:{uuid4().hex}",
+        "KEY_FUNCTION": "config.caches.test_cache_key",
         "OPTIONS": {
             "CLIENT_CLASS": "django_redis.client.DefaultClient",
             # Mimicing memcache behavior.
             # http://niwinz.github.io/django-redis/latest/#_memcached_exceptions_behavior
             "IGNORE_EXCEPTIONS": True,
-            "KEY_PREFIX": "test_",
         },
     },
 }

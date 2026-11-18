@@ -5,12 +5,16 @@ from care.utils.metrics import metrics_registry
 
 
 class UserCollector:
-    def collect(self):
+    def describe(self):
         yield GaugeMetricFamily(
             "care_users",
             "Current number of users, excluding deleted records.",
-            value=User.objects.count(),
         )
+
+    def collect(self):
+        metric = next(self.describe())
+        metric.add_metric([], User.objects.count())
+        yield metric
 
 
 metrics_registry.register(UserCollector())

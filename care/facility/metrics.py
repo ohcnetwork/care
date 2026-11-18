@@ -6,6 +6,13 @@ from care.utils.metrics import metrics_registry
 
 
 class FacilityCollector:
+    def describe(self):
+        yield GaugeMetricFamily(
+            "care_facilities",
+            "Current number of facilities by category, excluding deleted records.",
+            labels=["category"],
+        )
+
     def collect(self):
         categories = dict(FACILITY_TYPES)
         counts = dict.fromkeys(categories.values(), 0)
@@ -18,11 +25,7 @@ class FacilityCollector:
             category = categories.get(row["facility_type"], "unknown")
             counts[category] += row["count"]
 
-        metric = GaugeMetricFamily(
-            "care_facilities",
-            "Current number of facilities by category, excluding deleted records.",
-            labels=["category"],
-        )
+        metric = next(self.describe())
         for category, count in counts.items():
             metric.add_metric([category], count)
         yield metric

@@ -8,15 +8,30 @@ from care.utils.metrics import metrics_registry
 
 
 class PatientCollector:
-    def collect(self):
+    def describe(self):
         yield GaugeMetricFamily(
             "care_patients_registered",
             "Current number of registered patients, excluding deleted records.",
-            value=Patient.objects.count(),
         )
+
+    def collect(self):
+        metric = next(self.describe())
+        metric.add_metric([], Patient.objects.count())
+        yield metric
 
 
 class EncounterCollector:
+    def describe(self):
+        yield GaugeMetricFamily(
+            "care_encounters",
+            "Current number of encounters across all statuses, excluding deleted records.",
+        )
+        yield GaugeMetricFamily(
+            "care_encounters_by_type",
+            "Current number of encounters by encounter class, excluding deleted records.",
+            labels=["type"],
+        )
+
     def collect(self):
         counts = {encounter_type.value: 0 for encounter_type in ClassChoices}
         counts["unknown"] = 0
@@ -30,16 +45,9 @@ class EncounterCollector:
                 encounter_type = "unknown"
             counts[encounter_type] += row["count"]
 
-        yield GaugeMetricFamily(
-            "care_encounters",
-            "Current number of encounters across all statuses, excluding deleted records.",
-            value=sum(counts.values()),
-        )
-        by_type = GaugeMetricFamily(
-            "care_encounters_by_type",
-            "Current number of encounters by encounter class, excluding deleted records.",
-            labels=["type"],
-        )
+        total, by_type = self.describe()
+        total.add_metric([], sum(counts.values()))
+        yield total
         for encounter_type, count in counts.items():
             by_type.add_metric([encounter_type], count)
         yield by_type

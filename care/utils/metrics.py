@@ -2,7 +2,7 @@ from django.conf import settings
 from django.core.cache import cache
 from prometheus_client import CollectorRegistry, generate_latest
 
-metrics_registry = CollectorRegistry()
+metrics_registry = CollectorRegistry(auto_describe=False)
 
 
 def get_metrics_payload():
