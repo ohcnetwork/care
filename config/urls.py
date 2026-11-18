@@ -24,7 +24,7 @@ from .auth_views import (
     TokenObtainPairView,
     TokenRefreshView,
 )
-from .views import app_version, home_view, ping
+from .views import app_version, home_view, metrics, ping
 
 urlpatterns = [
     path("", home_view, name="home"),
@@ -110,3 +110,6 @@ if settings.DEBUG or not settings.IS_PRODUCTION:
 
 for plug in settings.PLUGIN_APPS:
     urlpatterns += [path(f"api/{plug}/", include(f"{plug}.urls"))]
+
+if settings.ENABLE_PROMETHEUS_METRICS:
+    urlpatterns += [path("metrics/", metrics, name="metrics")]
