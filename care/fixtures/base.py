@@ -11,7 +11,13 @@ from django.utils import timezone
 from faker import Faker
 from rest_framework import status as http_status
 
+from care.emr.models.condition import Condition
 from care.emr.models.invoice import Invoice
+from care.emr.models.medication_request import (
+    MedicationRequest,
+    MedicationRequestPrescription,
+)
+from care.emr.models.questionnaire import QuestionnaireResponse
 from care.emr.resources.device.spec import (
     DeviceAvailabilityStatusChoices,
     DeviceStatusChoices,
@@ -70,6 +76,10 @@ def generate_phone_number():
     return f"+91{prefix}{suffix}"
 
 
+def print_log(message):
+    print(message)  # noqa: T201
+
+
 def slugify(text, max_length=36):
     slug = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")[:max_length]
     return slug if len(slug) >= 5 else slug.ljust(5, "-")  # noqa: PLR2004
@@ -113,6 +123,28 @@ class CareFixtureBase:
             msg = f"GET {url} failed ({response.status_code}): {response.data}"
             raise FixtureError(msg)
         return to_attr_dict(response.data)
+
+    def list_all(self, url, params=None, page_size=200):
+        """Fetch every page from a CareLimitOffsetPagination endpoint."""
+        params = dict(params or {})
+        offset = 0
+        results = []
+        while True:
+            data = self.get(
+                url, params={**params, "limit": page_size, "offset": offset}
+            )
+            if isinstance(data, list):
+                return data
+            page = data.get("results", [])
+            results.extend(page)
+            count = data.get("count")
+            if count is not None:
+                if len(results) >= count or not page:
+                    break
+            elif len(page) < page_size:
+                break
+            offset += page_size
+        return results
 
     def create_organization(self, org_type="govt", **kwargs):
         data = {
@@ -208,9 +240,18 @@ class CareFixtureBase:
         }
         return self.post(url, data)
 
+    def associate_device_location(self, facility_id, device_id, location_id):
+        url = reverse(
+            "device-associate-location",
+            kwargs={
+                "facility_external_id": facility_id,
+                "external_id": device_id,
+            },
+        )
+        return self.post(url, {"location": location_id})
+
     def get_roles(self):
-        data = self.get(reverse("role-list"))
-        results = data.get("results", data)
+        results = self.list_all(reverse("role-list"))
         return {role.name: role for role in results}
 
     def create_user(self, geo_organization, role_orgs=None, **kwargs):
@@ -259,6 +300,89 @@ class CareFixtureBase:
             **kwargs,
         }
         return self.post(reverse("encounter-list"), data)
+
+    def associate_encounter_location(
+        self, facility_id, location_id, encounter_id, **kwargs
+    ):
+        url = reverse(
+            "association-list",
+            kwargs={
+                "facility_external_id": facility_id,
+                "location_external_id": location_id,
+            },
+        )
+        data = {
+            "status": "active",
+            "encounter": encounter_id,
+            "start_datetime": timezone.now().isoformat(),
+            **kwargs,
+        }
+        return self.post(url, data)
+
+    def update_encounter(self, encounter_id, data):
+        url = reverse("encounter-detail", kwargs={"external_id": encounter_id})
+        return self.patch(url, data)
+
+    def upsert_symptoms(self, patient_id, datapoints, created_date=None):
+        url = reverse(
+            "symptom-upsert",
+            kwargs={"patient_external_id": patient_id},
+        )
+        results = self.post(url, {"datapoints": datapoints})
+        if created_date is not None:
+            Condition.objects.filter(
+                external_id__in=[row.id for row in results]
+            ).update(created_date=created_date, modified_date=created_date)
+        return results
+
+    def upsert_diagnoses(self, patient_id, datapoints, created_date=None):
+        url = reverse(
+            "diagnosis-upsert",
+            kwargs={"patient_external_id": patient_id},
+        )
+        results = self.post(url, {"datapoints": datapoints})
+        if created_date is not None:
+            Condition.objects.filter(
+                external_id__in=[row.id for row in results]
+            ).update(created_date=created_date, modified_date=created_date)
+        return results
+
+    def upsert_medication_requests(self, patient_id, datapoints, created_date=None):
+        url = reverse(
+            "medication-request-upsert",
+            kwargs={"patient_external_id": patient_id},
+        )
+        results = self.post(url, {"datapoints": datapoints})
+        if created_date is not None:
+            MedicationRequest.objects.filter(
+                external_id__in=[row.id for row in results]
+            ).update(
+                created_date=created_date,
+                modified_date=created_date,
+                authored_on=created_date,
+            )
+            prescription_ids = [
+                row.prescription.id
+                for row in results
+                if getattr(row, "prescription", None)
+                and getattr(row.prescription, "id", None)
+            ]
+            if prescription_ids:
+                MedicationRequestPrescription.objects.filter(
+                    external_id__in=prescription_ids
+                ).update(created_date=created_date, modified_date=created_date)
+        return results
+
+    def submit_questionnaire(self, slug, data, created_date=None):
+        url = reverse("questionnaire-submit", kwargs={"slug": slug})
+        response = self.post(url, data)
+        # Submit API stamps created_date to now; backdate via ORM for pack realism.
+        if created_date is not None:
+            QuestionnaireResponse.objects.filter(external_id=response.id).update(
+                created_date=created_date,
+                modified_date=created_date,
+            )
+        return response
 
     def create_questionnaire(self, organizations, data):
         questionnaire_data = {**data, "organizations": organizations}
@@ -437,6 +561,16 @@ class CareFixtureBase:
         }
         return self.post(url, data)
 
+    def update_request_order(self, facility_id, order_id, **kwargs):
+        url = reverse(
+            "request-order-detail",
+            kwargs={
+                "facility_external_id": facility_id,
+                "external_id": order_id,
+            },
+        )
+        return self.patch(url, kwargs)
+
     def create_supply_request(self, order, item, quantity, **kwargs):
         data = {
             "status": "active",
@@ -459,6 +593,16 @@ class CareFixtureBase:
             **kwargs,
         }
         return self.post(url, data)
+
+    def update_delivery_order(self, facility_id, order_id, **kwargs):
+        url = reverse(
+            "delivery-order-detail",
+            kwargs={
+                "facility_external_id": facility_id,
+                "external_id": order_id,
+            },
+        )
+        return self.patch(url, kwargs)
 
     def create_supply_delivery(self, order, supplied_item_quantity, **kwargs):
         data = {
@@ -483,6 +627,13 @@ class CareFixtureBase:
             },
         )
         return self.get(url, params=params).get("results", [])
+
+    def apply_activity_definition(self, facility_id, data):
+        url = reverse(
+            "service_request-apply-activity-definition",
+            kwargs={"facility_external_id": facility_id},
+        )
+        return self.post(url, data)
 
     def create_lab_test(
         self,
@@ -547,6 +698,10 @@ class CareFixtureBase:
             **kwargs,
         }
         return self.post(url, data)
+
+    def list_accounts(self, facility_id, **params):
+        url = reverse("account-list", kwargs={"facility_external_id": facility_id})
+        return self.get(url, params=params).get("results", [])
 
     def create_charge_item(
         self,
@@ -764,6 +919,16 @@ class CareFixtureBase:
             **kwargs,
         }
         return self.post(url, data)
+
+    def set_token_category_default(self, facility_id, category_id):
+        url = reverse(
+            "token-category-set-default",
+            kwargs={
+                "facility_external_id": facility_id,
+                "external_id": category_id,
+            },
+        )
+        return self.post(url, {})
 
     def create_template(
         self,
