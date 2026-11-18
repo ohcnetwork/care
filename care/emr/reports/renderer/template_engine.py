@@ -56,7 +56,7 @@ class TemplateEngine:
             if not is_aware(value):
                 value = make_aware(value)
             value = localtime(value)
-        if isinstance(value, (datetime, date)):
+        if isinstance(value, datetime | date):
             return value.strftime(format_str)
         return str(value)
 

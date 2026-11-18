@@ -48,7 +48,7 @@ class Field:
         if value is None:
             return self.DEFAULT_NONE_VALUE
 
-        if isinstance(value, (list, dict)):
+        if isinstance(value, list | dict):
             return value
 
         return str(value)

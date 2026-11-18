@@ -5,27 +5,21 @@ class VariableExtractor(ast.NodeVisitor):
     def __init__(self):
         self.variables = set()
 
-    def visit_Call(self, node):
-        for arg in node.args:
-            self.visit(arg)
-        for keyword in node.keywords:
-            self.visit(keyword)
-
-    def visit_Name(self, node):
-        if isinstance(node.ctx, (ast.Store | ast.Load)):
-            self.variables.add(node.id)
-
-    def visit_Attribute(self, node):
-        path = self._resolve_path(node)
-        if path is not None:
-            self.variables.add(path)
-        else:
-            self.generic_visit(node)
-
-    def visit_Subscript(self, node):
-        path = self._resolve_path(node)
-        if path is not None:
-            self.variables.add(path)
+    def visit(self, node):
+        if isinstance(node, ast.Call):
+            for arg in node.args:
+                self.visit(arg)
+            for keyword in node.keywords:
+                self.visit(keyword)
+        elif isinstance(node, ast.Name):
+            if isinstance(node.ctx, ast.Store | ast.Load):
+                self.variables.add(node.id)
+        elif isinstance(node, ast.Attribute | ast.Subscript):
+            path = self._resolve_path(node)
+            if path is not None:
+                self.variables.add(path)
+            else:
+                self.generic_visit(node)
         else:
             self.generic_visit(node)
 

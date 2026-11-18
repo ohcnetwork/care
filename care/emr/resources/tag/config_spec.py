@@ -60,31 +60,21 @@ def tag_resource_to_model(resource_type: TagResource):
     from care.emr.models.supply_delivery import DeliveryOrder
     from care.emr.models.supply_request import RequestOrder
 
-    if resource_type == TagResource.encounter:
-        return Encounter
-    if resource_type == TagResource.activity_definition:
-        return ActivityDefinition
-    if resource_type == TagResource.service_request:
-        return ServiceRequest
-    if resource_type == TagResource.charge_item:
-        return ChargeItem
-    if resource_type == TagResource.charge_item_definition:
-        return ChargeItemDefinition
-    if resource_type == TagResource.patient:
-        return Patient
-    if resource_type == TagResource.token_booking:
-        return TokenBooking
-    if resource_type == TagResource.medication_request_prescription:
-        return MedicationRequestPrescription
-    if resource_type == TagResource.supply_request_order:
-        return RequestOrder
-    if resource_type == TagResource.supply_delivery_order:
-        return DeliveryOrder
-    if resource_type == TagResource.account:
-        return Account
-    if resource_type == TagResource.location:
-        return FacilityLocation
-    return None
+    resource_models = {
+        TagResource.encounter: Encounter,
+        TagResource.activity_definition: ActivityDefinition,
+        TagResource.service_request: ServiceRequest,
+        TagResource.charge_item: ChargeItem,
+        TagResource.charge_item_definition: ChargeItemDefinition,
+        TagResource.patient: Patient,
+        TagResource.token_booking: TokenBooking,
+        TagResource.medication_request_prescription: MedicationRequestPrescription,
+        TagResource.supply_request_order: RequestOrder,
+        TagResource.supply_delivery_order: DeliveryOrder,
+        TagResource.account: Account,
+        TagResource.location: FacilityLocation,
+    }
+    return resource_models.get(resource_type)
 
 
 class TagStatus(str, Enum):

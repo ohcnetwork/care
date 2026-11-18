@@ -113,6 +113,9 @@ class TagDeleteRequest(models.Model):
             )
         ]
 
+    def __str__(self):
+        return f"{self.resource_type}:{self.resource_id} - {self.tag_config_id}"
+
     @classmethod
     def create_delete_request(cls, resource_type, resource_id, tag_config, trigger_at):
         return cls.objects.update_or_create(

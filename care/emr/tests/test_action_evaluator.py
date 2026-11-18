@@ -56,6 +56,21 @@ class ActionEvaluatorTests(SimpleTestCase):
             {"patient.name", "patient.gender", "threshold"},
         )
 
+    def test_variable_extraction_handles_nested_nodes_and_dynamic_paths(self):
+        cases = [
+            (
+                "format_value(patient['name'], fallback=settings.language)",
+                {"patient.name", "settings.language"},
+            ),
+            ("patient.answers[question_id].value", {"patient.answers", "question_id"}),
+            ("result = patient.name", {"result", "patient.name"}),
+            ("del discarded", set()),
+            ("patient.calculate(threshold)", {"threshold"}),
+        ]
+        for expression, expected in cases:
+            with self.subTest(expression=expression):
+                self.assertEqual(get_all_variables(expression), expected)
+
     def test_false_and_empty_conditions_do_not_run_instructions(self):
         evaluator = self.evaluator(
             [self.message_action("False"), self.message_action("")]

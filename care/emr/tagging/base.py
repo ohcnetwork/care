@@ -214,7 +214,7 @@ class PatientInstanceTagManager(SingleFacilityTagManager):
 
 class PatientFacilityTagManager(SingleFacilityTagManager):
     def __init__(self, facility) -> None:
-        if isinstance(facility, (str, UUID)):
+        if isinstance(facility, str | UUID):
             facility = get_object_or_404(Facility, external_id=facility)
         self.facility = facility
 
@@ -239,8 +239,8 @@ class PatientFacilityTagManager(SingleFacilityTagManager):
     @classmethod
     def clean_expired_tags(cls, resource):
         tags_data = resource.tags_data
-        for facility in cls.get_all_facilities(resource):
-            facility = Facility.objects.filter(id=facility).first()
+        for facility_id in cls.get_all_facilities(resource):
+            facility = Facility.objects.filter(id=facility_id).first()
             if not facility:
                 continue
             manager = cls(facility)
