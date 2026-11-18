@@ -10,7 +10,10 @@ from care.emr.models.patient import Patient
 from care.emr.resources.encounter.constants import ClassChoices
 
 
-@override_settings(MAINTAIN_FACILITY_PATIENT_NAME_IDENTIFIER=False)
+@override_settings(
+    MAINTAIN_FACILITY_PATIENT_NAME_IDENTIFIER=False,
+    PROMETHEUS_METRICS_CACHE_TTL=0,
+)
 class MetricsTest(TestCase):
     def assert_metrics(self, **expected):
         response = self.client.get(reverse("metrics"))

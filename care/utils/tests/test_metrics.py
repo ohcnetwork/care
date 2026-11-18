@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.urls import reverse
 from model_bakery import baker
 from prometheus_client import Gauge
@@ -9,6 +9,7 @@ from care.users.models import User
 from care.utils.metrics import metrics_registry
 
 
+@override_settings(PROMETHEUS_METRICS_CACHE_TTL=0)
 class SharedMetricsTest(TestCase):
     def get_metrics(self):
         response = self.client.get(reverse("metrics"))
