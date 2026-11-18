@@ -765,3 +765,9 @@ TOTP_DISABLED_EMAIL_TEMPLATE_PATH = env(
 
 # Cleanup incomplete file uploads, set to 0 to disable
 FILE_UPLOAD_EXPIRY_HOURS = env.int("FILE_UPLOAD_EXPIRY_HOURS", default=24)
+
+# Prometheus Metrics
+
+ENABLE_PROMETHEUS_METRICS = env.bool("ENABLE_PROMETHEUS_METRICS", default=True)
+# Seconds to cache the collected metrics; set to 0 to collect on every scrape.
+PROMETHEUS_METRICS_CACHE_TTL = env.int("PROMETHEUS_METRICS_CACHE_TTL", default=600)

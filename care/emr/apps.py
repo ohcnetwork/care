@@ -8,6 +8,7 @@ class EMRConfig(AppConfig):
 
     def ready(self):
         import care.emr.extensions
+        import care.emr.metrics
         import care.emr.reports.context_builder
         import care.emr.signals  # noqa F401
         from care.utils.evaluators.evaluation_metric import EvaluationMetricBase  # noqa
