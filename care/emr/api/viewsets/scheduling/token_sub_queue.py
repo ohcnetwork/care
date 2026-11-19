@@ -83,6 +83,7 @@ class TokenSubQueueViewSet(EMRModelViewSet):
             )
 
     def validate_destroy(self, instance):
+        self.authorize_destroy(instance)
         if (
             Token._base_manager.filter(sub_queue=instance).exists()  # noqa: SLF001
             or instance.current_token_id is not None

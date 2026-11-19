@@ -1176,3 +1176,44 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
         token_sub_queue.refresh_from_db()
         token.refresh_from_db()
         self.assertFalse(token_sub_queue.deleted)
+
+    def test_delete_token_sub_queue_with_token_as_user_without_permissions_returns_403(
+        self,
+    ):
+        """
+        Test that deleting a token sub-queue referenced by a token returns 403 for user without write permission
+        """
+        role = self.create_role_with_permissions(
+            permissions=[
+                TokenPermissions.can_list_token.name,
+            ]
+        )
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.user_resource
+        )
+        token = self.create_token(
+            facility=self.facility,
+            sub_queue=token_sub_queue,
+            status=TokenStatusOptions.CREATED.value,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            role=role,
+            user=self.user,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.delete(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn(
+            "You do not have permission to update token sub queue",
+            response.data["detail"],
+        )
+        token_sub_queue.refresh_from_db()
+        token.refresh_from_db()
+        self.assertFalse(token_sub_queue.deleted)
+        self.assertFalse(token.deleted)
