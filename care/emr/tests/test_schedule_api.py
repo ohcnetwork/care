@@ -1,4 +1,4 @@
-from datetime import UTC, datetime, timedelta
+from datetime import UTC, datetime, timedelta, timezone as dt_timezone
 from zoneinfo import ZoneInfo
 
 from django.conf import settings
@@ -456,8 +456,8 @@ class TestScheduleViewSet(CareAPITestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_facility_organization_user(self.organization, self.user, role)
 
-        now_utc = care_now()
-        neg_tz = datetime.timezone(timedelta(hours=-5))
+        now_utc = timezone.now()
+        neg_tz = dt_timezone(timedelta(hours=-5))
         now_neg = now_utc.astimezone(neg_tz)
 
         schedule_data = self.generate_schedule_data(
