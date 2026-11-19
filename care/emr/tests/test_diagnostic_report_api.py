@@ -4,6 +4,7 @@ from django.urls import reverse
 from model_bakery import baker
 
 from care.emr.models.diagnostic_report import DiagnosticReport
+from care.emr.models.observation import Observation
 from care.emr.models.observation_definition import ObservationDefinition
 from care.emr.resources.activity_definition.spec import (
     ActivityDefinitionCategoryOptions,
@@ -752,3 +753,53 @@ class DiagnosticReportUpsertObservationAPITestCases(CareAPITestBase):
         }
         response = self.client.post(self.url, data=data, format="json")
         self.assertEqual(response.status_code, 404, response.data)
+
+    def test_upsert_non_numeric_value_saves_without_interpretation(self):
+        """
+        Results such as "<0.5" cannot be compared with numeric reference ranges.
+        They should be saved without an interpretation instead of failing.
+        "nan" is parsed as Decimal("NaN"), which cannot be compared either.
+        """
+        self.client.force_authenticate(user=self.superuser)
+        observation_definition = baker.make(
+            ObservationDefinition,
+            facility=self.facility,
+            slug="creatinine-observation",
+            code={
+                "code": "2160-0",
+                "system": "http://loinc.org",
+                "display": "Creatinine",
+            },
+            category="laboratory",
+            permitted_data_type="quantity",
+            status="active",
+            description="Test observation definition",
+            qualified_ranges=[
+                {
+                    "ranges": [{"max": "1.2", "interpretation": {"display": "normal"}}],
+                    "conditions": [],
+                }
+            ],
+        )
+        data = {
+            "observations": [
+                {
+                    "observation_definition": observation_definition.slug,
+                    "observation": self.generate_observation_data(
+                        value_type="quantity", value={"value": value}
+                    ),
+                }
+                for value in ("<0.5", "nan")
+            ]
+        }
+        response = self.client.post(self.url, data=data, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
+        observations = Observation.objects.filter(
+            diagnostic_report=self.diagnostic_report
+        )
+        self.assertEqual(
+            sorted(observation.value["value"] for observation in observations),
+            ["<0.5", "nan"],
+        )
+        for observation in observations:
+            self.assertEqual(observation.interpretation, {})

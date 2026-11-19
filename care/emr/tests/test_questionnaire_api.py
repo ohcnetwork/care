@@ -850,6 +850,47 @@ class QuestionnaireEnableWhenSubmissionTests(QuestionnaireTestBase):
             f"Expected enable_when_failed for Q2, got {errors}",
         )
 
+    # --- Numeric operators with a non-numeric answer ---
+    def test_numeric_operators_with_non_numeric_answer_return_type_error(self):
+        """
+        A non-numeric answer to a question used in a numeric enable_when
+        condition must give the usual 400 type error, not a server error.
+        """
+        for operator in ("greater", "less", "greater_or_equals", "less_or_equals"):
+            with self.subTest(operator=operator):
+                questions = [
+                    {"link_id": "1", "type": "integer", "text": "Q1"},
+                    {
+                        "link_id": "2",
+                        "type": "decimal",
+                        "text": "Q2",
+                        "enable_when": [
+                            {"question": "1", "operator": operator, "answer": "8"}
+                        ],
+                    },
+                ]
+                questionnaire = self._create_questionnaire(questions)
+                self.questionnaire_data = questionnaire
+                self.questions = questionnaire["questions"]
+
+                responses = [
+                    {
+                        "question_id": self.questions[0]["id"],
+                        "values": [{"value": "abc"}],
+                    },
+                ]
+                status, data = self._submit(responses)
+
+                self.assertEqual(status, 400, f"Expected 400 but got {status}: {data}")
+                self.assertIn(
+                    {
+                        "type": "type_error",
+                        "question_id": self.questions[0]["id"],
+                        "msg": "Invalid integer",
+                    },
+                    data.get("errors", []),
+                )
+
     # --- Exists operator ---
     def test_exists_operator_valid(self):
         # Q2 is enabled if Q1 has a non-empty value (exists condition)

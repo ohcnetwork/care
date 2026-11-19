@@ -180,7 +180,7 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
                     convert_to_decimal(v) > convert_to_decimal(expected_answer)
                     for v in all_values
                 )
-            except (TypeError, ValueError):
+            except (TypeError, ValueError, InvalidOperation):
                 result = False
         elif operator == "less":
             try:
@@ -188,7 +188,7 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
                     convert_to_decimal(v) < convert_to_decimal(expected_answer)
                     for v in all_values
                 )
-            except (TypeError, ValueError):
+            except (TypeError, ValueError, InvalidOperation):
                 result = False
         elif operator == "greater_or_equals":
             try:
@@ -196,7 +196,7 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
                     convert_to_decimal(v) >= convert_to_decimal(expected_answer)
                     for v in all_values
                 )
-            except (TypeError, ValueError):
+            except (TypeError, ValueError, InvalidOperation):
                 result = False
         elif operator == "less_or_equals":
             try:
@@ -204,7 +204,7 @@ def is_question_enabled(question, responses, questionnaire_obj):  # noqa PLR0912
                     convert_to_decimal(v) <= convert_to_decimal(expected_answer)
                     for v in all_values
                 )
-            except (TypeError, ValueError):
+            except (TypeError, ValueError, InvalidOperation):
                 result = False
         else:
             result = False
