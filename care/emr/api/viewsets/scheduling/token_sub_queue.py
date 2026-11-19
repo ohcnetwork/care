@@ -9,7 +9,7 @@ from care.emr.api.viewsets.scheduling.schedule import (
     get_schedulable_resource,
     validate_resource,
 )
-from care.emr.models.scheduling.token import TokenSubQueue
+from care.emr.models.scheduling.token import Token, TokenSubQueue
 from care.emr.resources.scheduling.token_sub_queue.spec import (
     TokenSubQueueBaseSpec,
     TokenSubQueueCreateSpec,
@@ -80,6 +80,15 @@ class TokenSubQueueViewSet(EMRModelViewSet):
         ):
             raise PermissionDenied(
                 "You do not have permission to update token sub queue"
+            )
+
+    def validate_destroy(self, instance):
+        if (
+            Token._base_manager.filter(sub_queue=instance).exists()  # noqa: SLF001
+            or instance.current_token_id is not None
+        ):
+            raise ValidationError(
+                "Cannot delete a token sub-queue referenced by tokens"
             )
 
     def authorize_destroy(self, instance):

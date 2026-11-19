@@ -1,9 +1,18 @@
 from django.urls import reverse
+from django.utils import timezone
 from model_bakery import baker
 
 from care.emr.models import FacilityLocation, FacilityLocationOrganization
-from care.emr.models.scheduling.token import Token, TokenSubQueue
-from care.emr.resources.scheduling.token.spec import SchedulableResourceTypeOptions
+from care.emr.models.scheduling.token import (
+    Token,
+    TokenCategory,
+    TokenQueue,
+    TokenSubQueue,
+)
+from care.emr.resources.scheduling.token.spec import (
+    SchedulableResourceTypeOptions,
+    TokenStatusOptions,
+)
 from care.emr.resources.scheduling.token_sub_queue.spec import (
     TokenSubQueueStatusOptions,
 )
@@ -52,6 +61,15 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             "token-sub-queue-list",
             kwargs={"facility_external_id": self.facility.external_id},
         )
+        self.token_category = baker.make(
+            TokenCategory, facility=self.facility, name="General"
+        )
+        self.token_queue = baker.make(
+            TokenQueue,
+            facility=self.facility,
+            resource=self.superuser_resource,
+            date=timezone.now().date(),
+        )
 
     def generate_token_sub_detail_url(self, facility_external_id, external_id):
         return reverse(
@@ -63,7 +81,13 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
         )
 
     def create_token(self, facility, **kwargs):
-        return baker.make(Token, facility=facility, **kwargs)
+        data = {
+            "queue": self.token_queue,
+            "category": self.token_category,
+            "number": 1,
+        }
+        data.update(kwargs)
+        return baker.make(Token, facility=facility, **data)
 
     def create_token_sub_queue(self, facility, **kwargs):
         data = {
@@ -994,3 +1018,161 @@ class TokenSubQueueAPITestCase(CareAPITestBase):
             "You do not have permission to update token sub queue",
             response.data["detail"],
         )
+
+    def test_delete_token_sub_queue_with_active_token_fails(self):
+        """
+        Test that deleting a token sub-queue referenced by an active token is rejected
+        """
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.superuser_resource
+        )
+        token = self.create_token(
+            facility=self.facility,
+            sub_queue=token_sub_queue,
+            status=TokenStatusOptions.IN_PROGRESS.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.delete(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot delete a token sub-queue referenced by tokens",
+        )
+        token_sub_queue.refresh_from_db()
+        token.refresh_from_db()
+        self.assertFalse(token_sub_queue.deleted)
+        self.assertFalse(token.deleted)
+        self.assertEqual(token.sub_queue_id, token_sub_queue.id)
+
+    def test_delete_token_sub_queue_with_completed_token_fails(self):
+        """
+        Test that deleting a token sub-queue referenced by a completed token is rejected
+        """
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.superuser_resource
+        )
+        token = self.create_token(
+            facility=self.facility,
+            sub_queue=token_sub_queue,
+            status=TokenStatusOptions.FULFILLED.value,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.delete(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot delete a token sub-queue referenced by tokens",
+        )
+        token_sub_queue.refresh_from_db()
+        token.refresh_from_db()
+        self.assertFalse(token_sub_queue.deleted)
+        self.assertFalse(token.deleted)
+        self.assertEqual(token.sub_queue_id, token_sub_queue.id)
+
+    def test_delete_token_sub_queue_with_soft_deleted_token_fails(self):
+        """
+        Test that deleting a token sub-queue referenced by a soft-deleted / entered-in-error token is rejected
+        """
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.superuser_resource
+        )
+        token = self.create_token(
+            facility=self.facility,
+            sub_queue=token_sub_queue,
+            status=TokenStatusOptions.ENTERED_IN_ERROR.value,
+            deleted=True,
+        )
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.delete(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot delete a token sub-queue referenced by tokens",
+        )
+        token_sub_queue.refresh_from_db()
+        token.refresh_from_db()
+        self.assertFalse(token_sub_queue.deleted)
+        self.assertTrue(token.deleted)
+        self.assertEqual(token.sub_queue_id, token_sub_queue.id)
+
+    def test_delete_token_sub_queue_with_current_token_fails(self):
+        """
+        Test that deleting a token sub-queue set as current_token is rejected
+        """
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.superuser_resource
+        )
+        token = self.create_token(
+            facility=self.facility,
+            sub_queue=None,
+            status=TokenStatusOptions.IN_PROGRESS.value,
+        )
+        token_sub_queue.current_token = token
+        token_sub_queue.save(update_fields=["current_token"])
+
+        self.client.force_authenticate(user=self.superuser)
+        response = self.client.delete(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot delete a token sub-queue referenced by tokens",
+        )
+        token_sub_queue.refresh_from_db()
+        token.refresh_from_db()
+        self.assertFalse(token_sub_queue.deleted)
+        self.assertEqual(token_sub_queue.current_token_id, token.id)
+
+    def test_delete_token_sub_queue_with_active_token_as_user_with_permissions_fails(
+        self,
+    ):
+        """
+        Test that deleting a token sub-queue referenced by a token is rejected for authorized regular user
+        """
+        token_sub_queue = self.create_token_sub_queue(
+            facility=self.facility, resource=self.user_resource
+        )
+        token = self.create_token(
+            facility=self.facility,
+            sub_queue=token_sub_queue,
+            status=TokenStatusOptions.CREATED.value,
+        )
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            user=self.user,
+            role=self.role,
+            facility_organization=self.facility_organization,
+        )
+        response = self.client.delete(
+            self.generate_token_sub_detail_url(
+                self.facility.external_id,
+                token_sub_queue.external_id,
+            )
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.data["errors"][0]["msg"],
+            "Cannot delete a token sub-queue referenced by tokens",
+        )
+        token_sub_queue.refresh_from_db()
+        token.refresh_from_db()
+        self.assertFalse(token_sub_queue.deleted)
