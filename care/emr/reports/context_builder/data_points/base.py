@@ -53,7 +53,7 @@ class Field:
             return self.DEFAULT_NONE_VALUE
 
         if isinstance(value, list | dict):
-            return value
+            return template_value(value)
 
         return str(value)
 
