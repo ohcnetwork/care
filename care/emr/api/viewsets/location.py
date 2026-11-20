@@ -59,6 +59,8 @@ class FacilityLocationFilter(filters.FilterSet):
     )
     status = filters.CharFilter(field_name="status", lookup_expr="iexact")
     available = AvailabilityFilter(field_name="available")
+    has_beds = filters.BooleanFilter(field_name="has_beds")
+    has_sub_locations = filters.BooleanFilter(field_name="has_sub_locations")
 
 
 class FacilityLocationViewSet(EMRModelViewSet, EMRTagMixin):
