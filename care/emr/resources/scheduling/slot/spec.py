@@ -41,6 +41,7 @@ class TokenSlotBaseSpec(EMRResource):
             "schedule": {
                 "name": obj.availability.schedule.name,
                 "id": obj.availability.schedule.external_id,
+                "encounter_type": obj.availability.schedule.encounter_type,
             },
         }
 
