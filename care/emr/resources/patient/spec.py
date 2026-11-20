@@ -67,7 +67,7 @@ class PatientBaseSpec(EMRResource):
     address: str | MISSING = MISSING
     permanent_address: str | MISSING = MISSING
     pincode: int | MISSING = MISSING
-    deceased_datetime: StrictTZAwareDateTime | None | MISSING = MISSING
+    deceased_datetime: StrictTZAwareDateTime | MISSING = MISSING
     blood_group: BloodGroupChoices | MISSING = MISSING
 
     @field_validator("deceased_datetime")

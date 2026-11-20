@@ -527,3 +527,15 @@ class PatientViewSet(EMRModelViewSet):
             ):
                 raise PermissionDenied("Cannot view facility tags")
         return {"facility": facility}
+
+    @action(detail=True, methods=["POST"])
+    def resurrect(self, request, *args, **kwargs):
+        if not self.request.user.is_superuser:
+            raise PermissionDenied(
+                "User does not have permission to resurrect this patient"
+            )
+        instance = self.get_object()
+        if instance.deceased_datetime is not None:
+            instance.deceased_datetime = None
+            instance.save(update_fields=["deceased_datetime", "modified_date"])
+        return self.retrieve(request, *args, **kwargs)
