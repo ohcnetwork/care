@@ -21,9 +21,5 @@ GUNICORN_WORKERS="${GUNICORN_WORKERS:="2"}"
 ./wait_for_db.sh
 ./wait_for_redis.sh
 
-python manage.py collectstatic --noinput
-python manage.py compilemessages -v 0
-
-
 gunicorn --config python:config.gunicorn config.wsgi:application --bind 0.0.0.0:9000 --chdir=/app --workers $GUNICORN_WORKERS \
   --access-logformat "$GUNICORN_LOG_FORMAT" --access-logfile $GUNICORN_ACCESS_LOGFILE --error-logfile $GUNICORN_ERROR_LOGFILE
