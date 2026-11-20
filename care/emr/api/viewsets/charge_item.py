@@ -186,7 +186,7 @@ class ChargeItemViewSet(
                 raise ObjectLocked
             return super().handle_update(instance, request_data)
 
-    def perform_create(self, instance):
+    def validate_performer(self, instance):
         if (
             instance.performer_actor
             and not FacilityOrganizationUser.objects.filter(
@@ -195,7 +195,10 @@ class ChargeItemViewSet(
             ).exists()
         ):
             raise ValidationError("Performer is not associated with the facility")
+
+    def perform_create(self, instance):
         instance.facility = self.get_facility_obj()
+        self.validate_performer(instance)
         if instance.service_resource and not validate_service_resource(
             instance.facility,
             instance.service_resource,
@@ -259,6 +262,8 @@ class ChargeItemViewSet(
     def perform_update(self, instance):
         with transaction.atomic():
             old_obj = ChargeItem.objects.get(id=instance.id)
+            if instance.performer_actor_id != old_obj.performer_actor_id:
+                self.validate_performer(instance)
             sync = True
             if (
                 instance.charge_item_definition
