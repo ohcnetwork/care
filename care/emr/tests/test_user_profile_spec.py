@@ -254,7 +254,8 @@ class UserProfileAPITestCase(CareAPITestBase):
 
     def test_update_preserves_profile_when_arrays_are_omitted(self):
         self.client.force_authenticate(user=self.user)
-        response = self.client.put(self.url, self.update_data, format="json")
+        with self.captureOnCommitCallbacks(execute=True):
+            response = self.client.put(self.url, self.update_data, format="json")
         self.assertEqual(response.status_code, 200, response.data)
         self.user.refresh_from_db()
         self.assertEqual(self.user.first_name, "Updated")
@@ -266,19 +267,21 @@ class UserProfileAPITestCase(CareAPITestBase):
         data = profile_data()
         data["communication"] = [data["communication"][1]]
         data["qualification"][0]["degree"]["code"] = "MD"
-        response = self.client.put(
-            self.url, {**self.update_data, **data}, format="json"
-        )
+        with self.captureOnCommitCallbacks(execute=True):
+            response = self.client.put(
+                self.url, {**self.update_data, **data}, format="json"
+            )
         self.assertEqual(response.status_code, 200, response.data)
         self.user.refresh_from_db()
         self.assertEqual(self.user.communication, data["communication"])
         self.assertEqual(self.user.qualifications, data["qualification"])
 
-        response = self.client.put(
-            self.url,
-            {**self.update_data, "communication": [], "qualification": []},
-            format="json",
-        )
+        with self.captureOnCommitCallbacks(execute=True):
+            response = self.client.put(
+                self.url,
+                {**self.update_data, "communication": [], "qualification": []},
+                format="json",
+            )
         self.assertEqual(response.status_code, 200, response.data)
         self.user.refresh_from_db()
         self.assertEqual(self.user.communication, [])
@@ -300,9 +303,10 @@ class UserProfileAPITestCase(CareAPITestBase):
         invalid_profiles.append(data)
         for profile in invalid_profiles:
             with self.subTest(profile=profile):
-                response = self.client.put(
-                    self.url, {**self.update_data, **profile}, format="json"
-                )
+                with self.captureOnCommitCallbacks(execute=True):
+                    response = self.client.put(
+                        self.url, {**self.update_data, **profile}, format="json"
+                    )
                 self.assertEqual(response.status_code, 400, response.data)
                 self.user.refresh_from_db()
                 self.assertEqual(self.user.first_name, "Profile")
