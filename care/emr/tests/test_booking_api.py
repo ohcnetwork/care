@@ -17,6 +17,7 @@ from care.emr.models import (
 )
 from care.emr.models.action import Action
 from care.emr.models.scheduling.token import Token, TokenCategory, TokenQueue
+from care.emr.resources.encounter.constants import ClassChoices
 from care.emr.resources.scheduling.schedule.spec import (
     SchedulableResourceTypeOptions,
     SlotTypeOptions,
@@ -311,6 +312,39 @@ class TestBookingViewSet(CareAPITestBase):
         booking = self.create_booking()
         response = self.client.get(self._get_booking_url(booking.external_id))
         self.assertEqual(response.status_code, 200)
+        self.assertIsNone(
+            response.data["token_slot"]["availability"]["schedule"]["encounter_type"]
+        )
+
+    def test_retrieve_booking_includes_current_schedule_metadata(self):
+        role = self.create_role_with_permissions(
+            [SchedulePermissions.can_list_booking.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        care_team_role = {"code": "TREATING_DOCTOR", "system": "local"}
+        self.schedule.organizations = [self.organization.id]
+        self.schedule.care_team = [{"user_id": self.user.id, "role": care_team_role}]
+        self.schedule.save(update_fields=["organizations", "care_team"])
+        booking = self.create_booking()
+
+        for encounter_type in (ClassChoices.amb.value, ClassChoices.imp.value, None):
+            with self.subTest(encounter_type=encounter_type):
+                self.schedule.encounter_type = encounter_type
+                self.schedule.save(update_fields=["encounter_type"])
+                response = self.client.get(self._get_booking_url(booking.external_id))
+                self.assertEqual(response.status_code, 200, response.data)
+                schedule = response.data["token_slot"]["availability"]["schedule"]
+                self.assertEqual(schedule["encounter_type"], encounter_type)
+                self.assertEqual(
+                    [organization["id"] for organization in schedule["organizations"]],
+                    [str(self.organization.external_id)],
+                )
+                self.assertEqual(len(schedule["care_team"]), 1)
+                self.assertEqual(
+                    schedule["care_team"][0]["member"]["id"],
+                    str(self.user.external_id),
+                )
+                self.assertEqual(schedule["care_team"][0]["role"], care_team_role)
 
     def test_retrieve_booking_without_permissions(self):
         """Users without can_list_user_booking permission cannot retrieve bookings."""
