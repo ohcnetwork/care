@@ -35,6 +35,19 @@ def backfill_child_flags(apps, schema_editor):
     )
 
 
+def migrate_specimen_definition_collection(apps, schema_editor):
+    specimen_definition = apps.get_model("emr", "SpecimenDefinition")
+    updates = []
+    for definition in specimen_definition.objects.all():
+        collection = definition.collection
+        if not collection:
+            continue
+        definition.collection = {"code": collection}
+        updates.append(definition)
+    if updates:
+        specimen_definition.objects.bulk_update(updates, ["collection"])
+
+
 class Migration(migrations.Migration):
     dependencies = [
         ("emr", "0083_inventoryitem_unique_active_inventory_product_location"),
@@ -1935,5 +1948,9 @@ class Migration(migrations.Migration):
             model_name="schedule",
             name="encounter_type",
             field=models.CharField(blank=True, max_length=100, null=True),
+        ),
+        migrations.RunPython(
+            code=migrate_specimen_definition_collection,
+            reverse_code=migrations.RunPython.noop,
         ),
     ]
