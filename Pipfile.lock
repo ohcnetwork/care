@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "f4df15710039d132bc9c8635c6f558070795e6339051f46747b0f39f44e57ee8"
+            "sha256": "97eca4907935fd2d84447d4100a7fa75d24287d7efa8891e41cd8e3ed380acad"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -302,12 +302,12 @@
         },
         "authlib": {
             "hashes": [
-                "sha256:0656d8482f28fc8221929d5f35b2bde5d13e10555ebc06b4561b0d622e83b1bd",
-                "sha256:e9229ad7fde610b139dd12f5edbe97eab9ee78bfb85691247e767727850b99ab"
+                "sha256:5c7d9848f47cac340f060f76ae0bc09b59f5c8e89cc1bb032d4370a0c55b5974",
+                "sha256:8b9be8b1e5174dcbf5520e984f1a22dc2edae5b6e40a61d4cedbf86b97e9e69b"
             ],
             "index": "pypi",
-            "markers": "python_version >= '3.9'",
-            "version": "==1.6.12"
+            "markers": "python_version >= '3.10'",
+            "version": "==1.9.1"
         },
         "billiard": {
             "hashes": [
@@ -1433,6 +1433,14 @@
             ],
             "markers": "python_version >= '3.9'",
             "version": "==1.1.0"
+        },
+        "joserfc": {
+            "hashes": [
+                "sha256:176b836ac7ed9a46a88629e24076314b475f33a75d0bad7f26146e572eed7c79",
+                "sha256:cbf03cb2c6db8cc5289f1ef8718842e53dba244b4c0de5fefa0c0eaee4bde8db"
+            ],
+            "markers": "python_version >= '3.11'",
+            "version": "==1.8.0"
         },
         "json-fingerprint": {
             "hashes": [
