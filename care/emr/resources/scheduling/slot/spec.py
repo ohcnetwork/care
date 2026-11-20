@@ -14,7 +14,7 @@ from care.emr.resources.patient.spec import PatientRetrieveSpec
 from care.emr.resources.scheduling.resource.spec import serialize_resource
 from care.emr.resources.scheduling.schedule.spec import (
     SchedulableResourceTypeOptions,
-    serialize_schedule_participants,
+    serialize_schedule_metadata,
 )
 from care.emr.resources.scheduling.token.spec import TokenReadSpec
 from care.emr.resources.user.spec import UserSpec
@@ -178,5 +178,5 @@ class TokenBookingRetrieveSpec(TokenBookingReadSpec):
                 obj.associated_encounter
             ).to_json()
         mapping["token_slot"]["availability"]["schedule"].update(
-            serialize_schedule_participants(obj.token_slot.availability.schedule)
+            serialize_schedule_metadata(obj.token_slot.availability.schedule)
         )

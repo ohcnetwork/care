@@ -263,7 +263,7 @@ class ScheduleUpdateSpec(ScheduleWriteSpec):
         super().perform_extra_deserialization(is_update, obj)
 
 
-def serialize_schedule_participants(obj):
+def serialize_schedule_metadata(obj):
     organizations = FacilityOrganization.objects.filter(id__in=obj.organizations)
     return {
         "organizations": [
@@ -271,6 +271,7 @@ def serialize_schedule_participants(obj):
             for organization in organizations
         ],
         "care_team": serialize_care_team(obj.care_team),
+        "encounter_type": obj.encounter_type,
     }
 
 
@@ -315,7 +316,7 @@ class ScheduleRetrieveSpec(ScheduleReadSpec):
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
         super().perform_extra_serialization(mapping, obj)
-        mapping.update(serialize_schedule_participants(obj))
+        mapping.update(serialize_schedule_metadata(obj))
 
 
 def has_overlapping_availability(availabilities: list[AvailabilityDateTimeSpec]):
