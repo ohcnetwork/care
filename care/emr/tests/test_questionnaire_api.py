@@ -2813,3 +2813,82 @@ class QuestionnaireRepeatableEnableWhenAnyBehaviorTests(CareAPITestBase):
             ),
             f"Expected enable_when_failed for Q2 ({self.q_text['id']}), got {errors}",
         )
+
+
+class QuestionnaireSlugUniquenessTests(CareAPITestBase):
+    """
+    Duplicate slugs must be rejected with a 400 validation error (scoped by
+    auth context) instead of failing with an IntegrityError on save.
+    """
+
+    def setUp(self):
+        super().setUp()
+        self.user = self.create_super_user()
+        self.facility = self.create_facility(user=self.user)
+        self.other_facility = self.create_facility(user=self.user)
+        self.client.force_authenticate(user=self.user)
+        self.base_url = reverse("questionnaire-list")
+
+    def _payload(self, slug, facility=None):
+        return {
+            "title": slug,
+            "slug": slug,
+            "description": "",
+            "status": "active",
+            "subject_type": "encounter",
+            "version": "1.0",
+            "questions": [],
+            "actions": [],
+            "auth_context": "facility",
+            "facility": str((facility or self.facility).external_id),
+        }
+
+    def _create(self, slug, facility=None):
+        return self.client.post(
+            self.base_url, self._payload(slug, facility), format="json"
+        )
+
+    def _detail_url(self, questionnaire):
+        return reverse(
+            "questionnaire-detail", kwargs={"external_id": questionnaire["id"]}
+        )
+
+    def assert_duplicate_slug_error(self, response):
+        self.assertEqual(response.status_code, 400, response.content)
+        self.assertEqual(
+            response.json()["errors"][0]["msg"],
+            "Questionnaire with this slug already exists.",
+        )
+
+    def test_duplicate_slug_in_same_facility_returns_400(self):
+        self.assertEqual(self._create("same-slug").status_code, 200)
+
+        response = self._create("same-slug")
+
+        self.assert_duplicate_slug_error(response)
+
+    def test_same_slug_in_different_facility_is_allowed(self):
+        self.assertEqual(self._create("same-slug").status_code, 200)
+
+        response = self._create("same-slug", facility=self.other_facility)
+
+        self.assertEqual(response.status_code, 200, response.content)
+
+    def test_update_to_existing_slug_returns_400(self):
+        self._create("first-slug")
+        second = self._create("second-slug").json()
+
+        response = self.client.put(
+            self._detail_url(second), self._payload("first-slug"), format="json"
+        )
+
+        self.assert_duplicate_slug_error(response)
+
+    def test_update_keeping_own_slug_is_allowed(self):
+        questionnaire = self._create("own-slug").json()
+
+        response = self.client.put(
+            self._detail_url(questionnaire), self._payload("own-slug"), format="json"
+        )
+
+        self.assertEqual(response.status_code, 200, response.content)
