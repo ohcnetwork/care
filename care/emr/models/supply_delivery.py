@@ -41,6 +41,8 @@ class DeliveryOrder(EMRBaseModel):
     status = models.CharField(max_length=255)
     note = models.TextField(null=True, blank=True)
     tags = ArrayField(models.IntegerField(), default=list)
+    tags_data = models.JSONField(default=dict)
+
     supplier = models.ForeignKey(
         "emr.Organization", on_delete=models.CASCADE, null=True, blank=True
     )

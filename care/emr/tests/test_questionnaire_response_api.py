@@ -269,9 +269,10 @@ class QuestionnaireTestBase(CareAPITestBase):
             tuple: A pair of (status_code, response_data) from the submission
         """
         submit_url = reverse(
-            "questionnaire-submit", kwargs={"slug": self.questionnaire["slug"]}
+            "questionnaire-submit", kwargs={"external_id": self.questionnaire["id"]}
         )
         response = self.client.post(submit_url, payload, format="json")
+        self.assertEqual(response.status_code, 200, response.data)
         return response.json()
 
     def _submit(self, responses):
@@ -303,6 +304,7 @@ class QuestionnaireTestBase(CareAPITestBase):
                 "A form to document respiratory status, including bilateral air entry and respiratory support details.",
             ),
             "status": kwargs.get("status", "active"),
+            "auth_context": "instance",
             "subject_type": kwargs.get("subject_type", "encounter"),
             "organizations": [str(self.organization.external_id)],
             "questions": questions,

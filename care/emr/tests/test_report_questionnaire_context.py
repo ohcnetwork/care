@@ -1,8 +1,8 @@
-from types import SimpleNamespace
 from unittest.mock import MagicMock, Mock, patch
 
 from django.test import SimpleTestCase
 
+from care.emr.models.questionnaire import Questionnaire, QuestionnaireResponse
 from care.emr.reports.context_builder.data_points.questionnaire import (
     QuestionnaireContextBuilder,
 )
@@ -39,8 +39,9 @@ class ReportQuestionnaireContextTests(SimpleTestCase):
         self.assertEqual(self.responses.mock_calls, [])
 
     def test_existing_questionnaire_filters_only_the_provided_scope(self):
-        response = SimpleNamespace(
-            questionnaire=SimpleNamespace(title="Encounter form")
+        questionnaire = Questionnaire(title="Encounter form", internal_revision=2)
+        response = QuestionnaireResponse(
+            questionnaire=questionnaire, revision=questionnaire.internal_revision
         )
         self.results.__iter__.return_value = iter([response])
 

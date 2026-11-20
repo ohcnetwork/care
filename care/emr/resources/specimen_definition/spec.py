@@ -6,6 +6,8 @@ from pydantic import UUID4, BaseModel, Field, model_validator
 from care.emr.models.specimen_definition import SpecimenDefinition
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common import Coding
+from care.emr.resources.observation.valueset import CARE_BODY_SITE_VALUESET
+from care.emr.resources.specimen.valueset import COLLECTION_METHOD_VALUESET
 from care.emr.resources.specimen_definition.valueset import (
     CONTAINER_CAP_VALUESET,
     PREPARE_PATIENT_PRIOR_SPECIMEN_CODE_VALUESET,
@@ -105,6 +107,13 @@ class TypeTestedSpec(BaseModel):
     handling: HandlingSpec | None = None
 
 
+class CollectionTemplateSpec(BaseModel):
+    code: ValueSetBoundCoding[SPECIMEN_COLLECTION_CODE_VALUESET.slug] | None = None
+    quantity: QuantitySpec | None = None
+    method: ValueSetBoundCoding[COLLECTION_METHOD_VALUESET.slug] | None = None
+    body_site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug] | None = None
+
+
 class BaseSpecimenDefinitionSpec(EMRResource):
     """Base model for specimen definition"""
 
@@ -120,9 +129,7 @@ class BaseSpecimenDefinitionSpec(EMRResource):
     patient_preparation: list[
         ValueSetBoundCoding[PREPARE_PATIENT_PRIOR_SPECIMEN_CODE_VALUESET.slug]
     ] = []
-    collection: ValueSetBoundCoding[SPECIMEN_COLLECTION_CODE_VALUESET.slug] | None = (
-        None
-    )
+    collection: CollectionTemplateSpec | None = None
     type_tested: TypeTestedSpec | None = None
 
 

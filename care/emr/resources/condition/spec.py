@@ -8,7 +8,10 @@ from care.emr.models.condition import Condition
 from care.emr.models.encounter import Encounter
 from care.emr.resources.base import EMRResource
 from care.emr.resources.common.coding import Coding
-from care.emr.resources.condition.valueset import CARE_CODITION_CODE_VALUESET
+from care.emr.resources.condition.valueset import (
+    CARE_CODITION_CODE_VALUESET,
+    CARE_SYMPTOM_CODE_VALUESET,
+)
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
 from care.utils.shortcuts import get_object_or_404
 from care.utils.time_util import care_now
@@ -102,6 +105,10 @@ class ConditionSpec(BaseConditionSpec):
             obj.patient = obj.encounter.patient
 
 
+class SymptomSpec(ConditionSpec):
+    code: ValueSetBoundCoding[CARE_SYMPTOM_CODE_VALUESET.slug]
+
+
 class ConditionReadSpec(BaseConditionSpec):
     """
     Validation for deeper models may not be required on read, Just an extra optimisation
@@ -139,6 +146,10 @@ class ConditionUpdateSpec(BaseConditionSpec):
     onset: ConditionOnSetSpec = {}
     abatement: ConditionAbatementSpec = {}
     note: str | None = None
+
+
+class SymptomUpdateSpec(ConditionUpdateSpec):
+    code: ValueSetBoundCoding[CARE_SYMPTOM_CODE_VALUESET.slug]
 
 
 class ChronicConditionUpdateSpec(ConditionUpdateSpec):

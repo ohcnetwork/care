@@ -1,5 +1,8 @@
 from datetime import UTC, datetime, timedelta
+from unittest.mock import patch
+from uuid import uuid4
 
+from django.core.cache.backends.locmem import LocMemCache
 from django.test.utils import ignore_warnings, override_settings
 from django.urls import reverse
 from django.utils import timezone
@@ -12,6 +15,7 @@ from care.emr.models import (
     TokenBooking,
     TokenSlot,
 )
+from care.emr.models.action import Action
 from care.emr.models.scheduling.token import Token, TokenCategory, TokenQueue
 from care.emr.resources.scheduling.schedule.spec import (
     SchedulableResourceTypeOptions,
@@ -30,6 +34,11 @@ from config.patient_otp_authentication import PatientOtpObject
 class TestBookingViewSet(CareAPITestBase):
     def setUp(self):
         super().setUp()
+        action_cache = patch(
+            "care.emr.models.action.cache", LocMemCache(str(uuid4()), {})
+        )
+        action_cache.start()
+        self.addCleanup(action_cache.stop)
         self.user = self.create_user()
         self.facility = self.create_facility(user=self.user)
         self.organization = self.create_facility_organization(facility=self.facility)
@@ -123,6 +132,131 @@ class TestBookingViewSet(CareAPITestBase):
         }
         data.update(kwargs)
         return Availability.objects.create(**data)
+
+    def create_action_configuration(self, message="Welcome", **kwargs):
+        return Action.objects.create(
+            **(
+                {
+                    "name": "Appointment notification",
+                    "action_context": "APPOINTMENT",
+                    "performable": True,
+                    "actions": [
+                        {
+                            "condition": "True",
+                            "instructions": [
+                                {
+                                    "slug": "show_message",
+                                    "context": "self",
+                                    "params": {"message": message},
+                                }
+                            ],
+                        }
+                    ],
+                }
+                | kwargs
+            )
+        )
+
+    def execute_action_url(self, booking):
+        return reverse(
+            "appointments-execute-action",
+            kwargs={
+                "facility_external_id": self.facility.external_id,
+                "external_id": booking.external_id,
+            },
+        )
+
+    def test_execute_action_resolves_booking_patient_fields(self):
+        role = self.create_role_with_permissions(
+            [SchedulePermissions.can_write_booking.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        booking = self.create_booking()
+        action = self.create_action_configuration("{{'Hello ' + patient['name']}}")
+        response = self.client.post(
+            self.execute_action_url(booking),
+            {"action": str(action.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            response.data,
+            [
+                {
+                    "slug": "show_message",
+                    "instruction_type": "NOTIFY",
+                    "results": {"message": f"Hello {self.patient.name}"},
+                }
+            ],
+        )
+
+    def test_execute_action_requires_booking_write_permission(self):
+        role = self.create_role_with_permissions(
+            [SchedulePermissions.can_list_booking.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        booking = self.create_booking()
+        action = self.create_action_configuration()
+        response = self.client.post(
+            self.execute_action_url(booking),
+            {"action": str(action.external_id)},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+        self.assertIn("update bookings", str(response.data))
+
+    def test_execute_action_rejects_nonperformable_wrong_context_and_unknown_actions(
+        self,
+    ):
+        self.client.force_authenticate(self.create_super_user())
+        booking = self.create_booking()
+        unavailable = self.create_action_configuration(performable=False)
+        patient_action = self.create_action_configuration(action_context="PATIENT")
+        for action_id in (unavailable.external_id, patient_action.external_id, uuid4()):
+            with self.subTest(action_id=action_id):
+                response = self.client.post(
+                    self.execute_action_url(booking),
+                    {"action": str(action_id)},
+                    format="json",
+                )
+                self.assertEqual(response.status_code, 404, response.data)
+
+    def test_appointment_creation_runs_only_instance_and_matching_facility_actions(
+        self,
+    ):
+        role = self.create_role_with_permissions(
+            [SchedulePermissions.can_write_booking.name]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.create_action_configuration("Instance notification")
+        self.create_action_configuration(
+            "Facility notification", facility=self.facility
+        )
+        self.create_action_configuration(
+            "Other facility", facility=self.create_facility(user=self.user)
+        )
+        self.create_action_configuration("Other context", action_context="PATIENT")
+        response = self.client.post(
+            reverse(
+                "slot-create-appointment",
+                kwargs={
+                    "facility_external_id": self.facility.external_id,
+                    "external_id": self.slot.external_id,
+                },
+            ),
+            {"patient": str(self.patient.external_id), "note": "Action evaluation"},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            [actions[0]["results"]["message"] for actions in response.data["_actions"]],
+            ["Instance notification", "Facility notification"],
+        )
+        booking = TokenBooking.objects.get(external_id=response.data["id"])
+        self.assertEqual(booking.patient, self.patient)
+        self.assertEqual(booking.token_slot, self.slot)
+        self.slot.refresh_from_db()
+        self.assertEqual(self.slot.allocated, 1)
 
     def test_list_booking_with_permissions(self):
         """Users with can_list_user_booking permission can list bookings."""

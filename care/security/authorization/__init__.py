@@ -22,6 +22,7 @@ from .product import *  # noqa
 from .product_knowledge import *  # noqa
 from .questionnaire import *  # noqa
 from .questionnaire_response_template import *  # noqa
+from .referral import *  # noqa
 from .resource_category import *  # noqa
 from .scheduling import *  # noqa
 from .service_account import *  # noqa
@@ -33,3 +34,6 @@ from .tag_config import *  # noqa
 from .template import *  # noqa
 from .token import *  # noqa
 from .user import *  # noqa
+from .valueset import *  # noqa
+from .immunization import *  # noqa
+from .workspace import *  # noqa

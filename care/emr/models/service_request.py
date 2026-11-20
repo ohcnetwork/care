@@ -44,3 +44,4 @@ class ServiceRequest(EMRBaseModel):
         blank=True,
     )
     tags = ArrayField(models.IntegerField(), default=list)
+    tags_data = models.JSONField(default=dict)

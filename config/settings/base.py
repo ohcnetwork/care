@@ -66,6 +66,38 @@ LANGUAGES = [
     ("hi", _("Hindi")),
     ("ta", _("Tamil")),
 ]
+
+USER_QUALIFICATION_DEGREES = env.json(
+    "USER_QUALIFICATION_DEGREES",
+    default=[
+        {
+            "code": "mbbs",
+            "system": "http://ohc.network/codes/qualification-degree",
+            "display": "MBBS",
+        },
+        {
+            "code": "md",
+            "system": "http://ohc.network/codes/qualification-degree",
+            "display": "MD",
+        },
+        {
+            "code": "ms",
+            "system": "http://ohc.network/codes/qualification-degree",
+            "display": "MS",
+        },
+        {
+            "code": "bds",
+            "system": "http://ohc.network/codes/qualification-degree",
+            "display": "BDS",
+        },
+        {
+            "code": "bsc-nursing",
+            "system": "http://ohc.network/codes/qualification-degree",
+            "display": "B.Sc. Nursing",
+        },
+    ],
+)
+
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases

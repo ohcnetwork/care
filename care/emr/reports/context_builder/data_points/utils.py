@@ -29,7 +29,7 @@ def _extract_fields_from_context(context_class, visited=None):  # noqa: PLR0912
                 }
 
                 if attr.preview_value is not None:
-                    if isinstance(attr.preview_value, (list, dict)):
+                    if isinstance(attr.preview_value, list | dict):
                         field_schema["preview_value"] = attr.preview_value
                     else:
                         field_schema["preview_value"] = str(attr.preview_value)
