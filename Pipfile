@@ -37,7 +37,7 @@ prometheus-client = "==0.26.0"
 psycopg = { extras = ["c"], version = "==3.3.2" }
 pydantic = "==2.12.5"
 pycountry = "==26.2.16"
-pyjwt = "==2.12.0"
+pyjwt = "==2.15.0"
 pyotp = "==2.9.0"
 python-slugify = "==8.0.4"
 pywebpush = "==2.1.2"
