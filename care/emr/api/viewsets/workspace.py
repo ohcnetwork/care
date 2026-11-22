@@ -88,7 +88,7 @@ class WorkspaceViewSet(EMRModelViewSet):
             model_instance.auth_context == WorkspaceAuthContext.instance
             and not self.request.user.is_superuser
         ):
-            raise PermissionDenied("You are not authorized to create a workspace")
+            raise PermissionDenied("You are not authorized to manage this workspace")
         if (
             model_instance.auth_context == WorkspaceAuthContext.facility
             and not AuthorizationController.call(
@@ -99,7 +99,7 @@ class WorkspaceViewSet(EMRModelViewSet):
                 read_only=False,
             )
         ):
-            raise PermissionDenied("You are not authorized to create a workspace")
+            raise PermissionDenied("You are not authorized to manage this workspace")
         if (
             model_instance.auth_context == WorkspaceAuthContext.facility_organization
             and not AuthorizationController.call(
@@ -109,7 +109,7 @@ class WorkspaceViewSet(EMRModelViewSet):
                 read_only=False,
             )
         ):
-            raise PermissionDenied("You are not authorized to create a workspace")
+            raise PermissionDenied("You are not authorized to manage this workspace")
         if (
             model_instance.auth_context == WorkspaceAuthContext.user
             and not AuthorizationController.call(
@@ -119,7 +119,7 @@ class WorkspaceViewSet(EMRModelViewSet):
                 read_only=False,
             )
         ):
-            raise PermissionDenied("You are not authorized to create a workspace")
+            raise PermissionDenied("You are not authorized to manage this workspace")
         if (
             model_instance.auth_context == WorkspaceAuthContext.user
             and model_instance.created_by != self.request.user

@@ -266,6 +266,45 @@ class WorkspaceAPITests(CareAPITestBase):
         )
         self.assertEqual(response.status_code, 200, response.data)
 
+    def test_refused_changes_do_not_mention_creating_a_workspace(self):
+        organization = self.create_organization(org_type="root")
+        role = self.create_role_with_permissions(
+            [WorkspacePermissions.can_read_workspace.name]
+        )
+        self.attach_role_organization_user(organization, self.user, role)
+        self.attach_role_facility_organization_user(self.root_org, self.user, role)
+        workspaces = [
+            self.workspace(organization_cache=[organization.id]),
+            self.workspace(
+                auth_context="facility",
+                facility=self.facility,
+                internal_organization_cache=[self.root_org.id],
+            ),
+            self.workspace(
+                auth_context="facility_organization",
+                facility=self.facility,
+                facility_organization=self.department,
+                internal_organization_cache=[self.root_org.id],
+            ),
+            self.workspace(
+                auth_context="user", facility=self.facility, created_by=self.user
+            ),
+        ]
+        self.client.force_authenticate(self.user)
+        for workspace in workspaces:
+            url = self.detail_url(workspace)
+            responses = {
+                "update": self.client.put(url, self.payload(), format="json"),
+                "delete": self.client.delete(url),
+            }
+            for name, response in responses.items():
+                with self.subTest(auth_context=workspace.auth_context, action=name):
+                    self.assertContains(
+                        response,
+                        "You are not authorized to manage this workspace",
+                        status_code=403,
+                    )
+
     def test_set_facility_organizations_replaces_links_and_ancestor_cache(self):
         workspace = self.workspace(auth_context="facility", facility=self.facility)
         url = self.detail_url(workspace, "set-facility-organizations")
