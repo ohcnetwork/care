@@ -7,8 +7,6 @@ from model_bakery import baker
 
 from care.emr.models.inventory_item import InventoryItem
 from care.emr.models.location import FacilityLocation
-from care.emr.models.medication_dispense import MedicationDispense
-from care.emr.models.supply_delivery import SupplyDelivery
 
 
 class InventoryItemUniquenessMigrationTests(TransactionTestCase):
@@ -20,47 +18,76 @@ class InventoryItemUniquenessMigrationTests(TransactionTestCase):
     def setUp(self):
         super().setUp()
         executor = MigrationExecutor(connection)
-        executor.migrate(self.migrate_from)
-        self.old_apps = executor.loader.project_state(self.migrate_from).apps
+        self.latest_migrations = executor.loader.graph.leaf_nodes()
         self.addCleanup(self.restore_schema)
+        executor.migrate(self.migrate_from)
+        executor = MigrationExecutor(connection)
+        self.old_apps = executor.loader.project_state(
+            [
+                node
+                for node in executor.loader.applied_migrations
+                if node in executor.loader.graph.nodes
+            ]
+        ).apps
+        self.location_model = self.old_apps.get_model("emr", "FacilityLocation")
+        self.inventory_model = self.old_apps.get_model("emr", "InventoryItem")
+        self.delivery_model = self.old_apps.get_model("emr", "SupplyDelivery")
+        self.dispense_model = self.old_apps.get_model("emr", "MedicationDispense")
+        self.order_model = self.old_apps.get_model("emr", "DeliveryOrder")
         self.facility = baker.make(
-            "facility.Facility", created_by=baker.make("users.User")
+            self.old_apps.get_model("facility", "Facility"),
+            created_by=baker.make(self.old_apps.get_model("users", "User")),
         )
 
     def restore_schema(self):
-        MigrationExecutor(connection).migrate(self.migrate_to)
+        MigrationExecutor(connection).migrate(self.latest_migrations)
 
     def test_duplicates_are_consolidated_before_enforcing_uniqueness(self):
-        historical_location = self.old_apps.get_model("emr", "FacilityLocation")
-        location = baker.make(historical_location, facility_id=self.facility.pk)
-        destination = baker.make(historical_location, facility_id=self.facility.pk)
-        knowledge = baker.make("emr.ProductKnowledge", facility=self.facility)
+        location = baker.make(self.location_model, facility_id=self.facility.pk)
+        destination = baker.make(self.location_model, facility_id=self.facility.pk)
+        knowledge = baker.make(
+            self.old_apps.get_model("emr", "ProductKnowledge"), facility=self.facility
+        )
         product = baker.make(
-            "emr.Product", facility=self.facility, product_knowledge=knowledge
+            self.old_apps.get_model("emr", "Product"),
+            facility=self.facility,
+            product_knowledge=knowledge,
         )
         first = baker.make(
-            InventoryItem, product=product, location_id=location.pk, net_content=123
+            self.inventory_model,
+            product=product,
+            location_id=location.pk,
+            net_content=123,
         )
         duplicate = baker.make(
-            InventoryItem, product=product, location_id=location.pk, net_content=200
+            self.inventory_model,
+            product=product,
+            location_id=location.pk,
+            net_content=200,
         )
         extra_duplicate = baker.make(
-            InventoryItem, product=product, location_id=location.pk, net_content=300
+            self.inventory_model,
+            product=product,
+            location_id=location.pk,
+            net_content=300,
         )
         unrelated = baker.make(
-            InventoryItem, product=product, location_id=destination.pk, net_content=777
+            self.inventory_model,
+            product=product,
+            location_id=destination.pk,
+            net_content=777,
         )
         previously_deleted = baker.make(
-            InventoryItem,
+            self.inventory_model,
             product=product,
             location_id=location.pk,
             net_content=666,
             deleted=True,
         )
-        incoming_order = baker.make("emr.DeliveryOrder", destination_id=location.pk)
+        incoming_order = baker.make(self.order_model, destination_id=location.pk)
         for item in (first, duplicate):
             baker.make(
-                SupplyDelivery,
+                self.delivery_model,
                 order=incoming_order,
                 supplied_item=product,
                 supplied_inventory_item=item,
@@ -68,19 +95,23 @@ class InventoryItemUniquenessMigrationTests(TransactionTestCase):
                 status="completed",
             )
         outgoing_order = baker.make(
-            "emr.DeliveryOrder", origin_id=location.pk, destination_id=destination.pk
+            self.order_model, origin_id=location.pk, destination_id=destination.pk
         )
         outgoing = baker.make(
-            SupplyDelivery,
+            self.delivery_model,
             order=outgoing_order,
             supplied_inventory_item=duplicate,
             supplied_item_quantity=40,
             status="in_progress",
         )
-        patient = baker.make("emr.Patient")
-        encounter = baker.make("emr.Encounter", patient=patient, facility=self.facility)
+        patient = baker.make(self.old_apps.get_model("emr", "Patient"))
+        encounter = baker.make(
+            self.old_apps.get_model("emr", "Encounter"),
+            patient=patient,
+            facility=self.facility,
+        )
         dispense = baker.make(
-            MedicationDispense,
+            self.dispense_model,
             item=duplicate,
             quantity=60,
             status="completed",
@@ -89,7 +120,7 @@ class InventoryItemUniquenessMigrationTests(TransactionTestCase):
             patient=patient,
         )
         cancelled_dispense = baker.make(
-            MedicationDispense,
+            self.dispense_model,
             item=extra_duplicate,
             quantity=999,
             status="cancelled",
@@ -98,7 +129,7 @@ class InventoryItemUniquenessMigrationTests(TransactionTestCase):
             patient=patient,
         )
         deleted_delivery = baker.make(
-            SupplyDelivery,
+            self.delivery_model,
             order=incoming_order,
             supplied_inventory_item=duplicate,
             supplied_item_quantity=999,
@@ -106,7 +137,7 @@ class InventoryItemUniquenessMigrationTests(TransactionTestCase):
             deleted=True,
         )
         deleted_dispense = baker.make(
-            MedicationDispense,
+            self.dispense_model,
             item=extra_duplicate,
             quantity=999,
             status="completed",
@@ -115,11 +146,12 @@ class InventoryItemUniquenessMigrationTests(TransactionTestCase):
             patient=patient,
             deleted=True,
         )
-        all_deliveries = SupplyDelivery._base_manager.all()  # noqa: SLF001
-        all_dispenses = MedicationDispense._base_manager.all()  # noqa: SLF001
+        all_deliveries = self.delivery_model._base_manager.all()  # noqa: SLF001
+        all_dispenses = self.dispense_model._base_manager.all()  # noqa: SLF001
         delivery_ids = list(all_deliveries.order_by("pk").values_list("pk", flat=True))
         dispense_ids = list(all_dispenses.order_by("pk").values_list("pk", flat=True))
 
+        MigrationExecutor(connection).migrate(self.migrate_to)
         self.restore_schema()
 
         self.assertEqual(
@@ -158,9 +190,9 @@ class InventoryItemUniquenessMigrationTests(TransactionTestCase):
         )
         self.assertEqual(
             InventoryItem.objects.filter(
-                product=product, location_id=location.pk
+                product_id=product.pk, location_id=location.pk
             ).count(),
             1,
         )
         with self.assertRaises(IntegrityError), transaction.atomic():
-            baker.make(InventoryItem, product=product, location_id=location.pk)
+            baker.make(self.inventory_model, product=product, location_id=location.pk)

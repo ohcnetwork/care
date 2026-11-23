@@ -7,12 +7,12 @@ from enum import Enum
 
 from django.db.models.signals import post_save
 from pydantic import UUID4, BaseModel, model_validator
+from pydantic.experimental.missing_sentinel import MISSING
 from rest_framework.exceptions import ValidationError
 
 from care.emr.models.organization import FacilityOrganization, Organization
 from care.emr.models.tag_config import TagConfig
 from care.emr.resources.base import EMRResource, cacheable, model_string
-from care.emr.resources.facility.spec import FacilityBareMinimumSpec
 from care.emr.resources.tag.cache_invalidation import invalidate_tag_config_cache
 from care.facility.models.facility import Facility
 from care.utils.shortcuts import get_object_or_404
@@ -46,6 +46,37 @@ class TagResource(str, Enum):
     location = "location"
 
 
+def tag_resource_to_model(resource_type: TagResource):
+    from care.emr.models.account import Account
+    from care.emr.models.activity_definition import ActivityDefinition
+    from care.emr.models.charge_item import ChargeItem
+    from care.emr.models.charge_item_definition import ChargeItemDefinition
+    from care.emr.models.encounter import Encounter
+    from care.emr.models.location import FacilityLocation
+    from care.emr.models.medication_request import MedicationRequestPrescription
+    from care.emr.models.patient import Patient
+    from care.emr.models.scheduling.booking import TokenBooking
+    from care.emr.models.service_request import ServiceRequest
+    from care.emr.models.supply_delivery import DeliveryOrder
+    from care.emr.models.supply_request import RequestOrder
+
+    resource_models = {
+        TagResource.encounter: Encounter,
+        TagResource.activity_definition: ActivityDefinition,
+        TagResource.service_request: ServiceRequest,
+        TagResource.charge_item: ChargeItem,
+        TagResource.charge_item_definition: ChargeItemDefinition,
+        TagResource.patient: Patient,
+        TagResource.token_booking: TokenBooking,
+        TagResource.medication_request_prescription: MedicationRequestPrescription,
+        TagResource.supply_request_order: RequestOrder,
+        TagResource.supply_delivery_order: DeliveryOrder,
+        TagResource.account: Account,
+        TagResource.location: FacilityLocation,
+    }
+    return resource_models.get(resource_type)
+
+
 class TagStatus(str, Enum):
     active = "active"
     archived = "archived"
@@ -54,6 +85,30 @@ class TagStatus(str, Enum):
 class TagConfigMetadata(BaseModel):
     color: str | None = None
     icon: str | None = None
+
+
+class ExpiryOffset(BaseModel):
+    days: int | MISSING = MISSING
+    hours: int | MISSING = MISSING
+    minutes: int | MISSING = MISSING
+    seconds: int | MISSING = MISSING
+
+
+class TagSetRequest(BaseModel):
+    tag: UUID4
+    expiry_offset: ExpiryOffset | None = None
+
+
+class TagConfigExpiryMetadata(BaseModel):
+    modification_allowed: bool | MISSING = MISSING
+    expiry_offset: ExpiryOffset | MISSING = MISSING
+    autoset_expiry: bool | MISSING = MISSING
+
+    @model_validator(mode="after")
+    def validate_autoset_expiry(self):
+        if self.autoset_expiry is True and self.expiry_offset is MISSING:
+            raise ValueError("Expiry offset is required when autoset expiry is set")
+        return self
 
 
 class TagConfigBaseSpec(EMRResource):
@@ -66,6 +121,7 @@ class TagConfigBaseSpec(EMRResource):
     priority: int = 100
     status: TagStatus
     metadata: TagConfigMetadata | None = None
+    expiry_metadata: TagConfigExpiryMetadata | MISSING = MISSING
 
 
 class TagConfigUpdateSpec(TagConfigBaseSpec):
@@ -169,6 +225,8 @@ class TagConfigReadSpec(TagConfigBaseSpec):
 
     @classmethod
     def perform_extra_serialization(cls, mapping, obj):
+        from care.emr.resources.facility.spec import FacilityBareMinimumSpec
+
         mapping["id"] = obj.external_id
         parent = obj.get_parent_json()
         if parent:

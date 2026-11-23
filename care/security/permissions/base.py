@@ -14,6 +14,7 @@ from care.security.permissions.facility_organization import (
     FacilityOrganizationPermissions,
 )
 from care.security.permissions.healthcare_service import HealthcareServicePermissions
+from care.security.permissions.immunization import ImmunizationPermissions
 from care.security.permissions.inventory_item import InventoryItemPermissions
 from care.security.permissions.invoice import InvoicePermissions
 from care.security.permissions.location import FacilityLocationPermissions
@@ -35,6 +36,7 @@ from care.security.permissions.questionnaire import QuestionnairePermissions
 from care.security.permissions.questionnaire_response_template import (
     QuestionnaireResponseTemplatePermissions,
 )
+from care.security.permissions.referral import ReferralPermissions
 from care.security.permissions.resource_category import ResourceCategoryPermissions
 from care.security.permissions.schedule import SchedulePermissions
 from care.security.permissions.service_account import ServiceAccountPermissions
@@ -47,6 +49,8 @@ from care.security.permissions.tag_config import TagConfigPermissions
 from care.security.permissions.template import TemplatePermissions
 from care.security.permissions.token import TokenPermissions
 from care.security.permissions.user import UserPermissions
+from care.security.permissions.valueset import ValueSetPermissions
+from care.security.permissions.workspace import WorkspacePermissions
 
 
 class PermissionHandler:
@@ -99,6 +103,10 @@ class PermissionController:
         ServiceAccountPermissions,
         ResourceCategoryPermissions,
         QuestionnaireResponseTemplatePermissions,
+        ReferralPermissions,
+        ValueSetPermissions,
+        ImmunizationPermissions,
+        WorkspacePermissions,
     ]
 
     cache = {}

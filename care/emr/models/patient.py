@@ -48,6 +48,7 @@ class Patient(EMRBaseModel):
 
     instance_tags = ArrayField(models.IntegerField(), default=list)
     facility_tags = models.JSONField(default=dict, null=True, blank=True)
+    tags_data = models.JSONField(default=dict)
 
     extensions = models.JSONField(default=dict)
 

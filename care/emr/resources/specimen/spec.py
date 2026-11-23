@@ -53,7 +53,6 @@ class CollectionSpec(BaseModel):
     collected_date_time: datetime.datetime | None = None  # Check for TZ
     quantity: QuantitySpec | None = None
     method: ValueSetBoundCoding[COLLECTION_METHOD_VALUESET.slug] | None = None
-    procedure: UUID4 | None = None
     body_site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug] | None = None
     fasting_status_codeable_concept: (
         ValueSetBoundCoding[FASTING_STATUS_VALUESET.slug] | None

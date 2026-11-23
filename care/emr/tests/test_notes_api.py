@@ -2,6 +2,7 @@ from django.urls import reverse
 from model_bakery import baker
 
 from care.emr.models.notes import NoteMessage, NoteThread
+from care.emr.resources.notes.constants import NoteThreadType
 from care.emr.signals.patient.facility_name_identifier import (
     FacilityPatientNameIdentifierConfig,
 )
@@ -48,6 +49,7 @@ class NoteThreadApiTestCase(CareAPITestBase):
             NoteThread,
             patient=self.patient,
             encounter=encounter,
+            thread_type=NoteThreadType.patient,
             _fill_optional=True,
         )
 
@@ -108,6 +110,31 @@ class NoteThreadApiTestCase(CareAPITestBase):
         self.assertContains(
             response, "You do not have permission for this action", status_code=403
         )
+
+    def test_thread_type_is_automatically_assigned_and_cannot_be_changed(self):
+        self.client.force_authenticate(user=self.create_super_user())
+        response = self.client.post(
+            self._get_thread_list_url(),
+            {"title": "Patient discussion", "thread_type": NoteThreadType.referral},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["thread_type"], NoteThreadType.patient)
+        thread = NoteThread.objects.get(external_id=response.data["id"])
+        self.assertEqual(thread.thread_type, NoteThreadType.patient)
+
+        for method in (self.client.put, self.client.patch):
+            with self.subTest(method=method.__name__):
+                response = method(
+                    self._get_thread_detail_url(thread.external_id),
+                    {"title": "Updated title", "thread_type": NoteThreadType.referral},
+                    format="json",
+                )
+                self.assertEqual(response.status_code, 200, response.data)
+                self.assertEqual(response.data["thread_type"], NoteThreadType.patient)
+                thread.refresh_from_db()
+                self.assertEqual(thread.thread_type, NoteThreadType.patient)
+                self.assertEqual(thread.title, "Updated title")
 
     def test_create_thread_on_encounter_with_permission(self):
         role = self.create_role_with_permissions(
@@ -258,6 +285,7 @@ class NoteMessageApiTestCase(CareAPITestBase):
             NoteThread,
             patient=self.patient,
             encounter=encounter,
+            thread_type=NoteThreadType.patient,
             _fill_optional=True,
         )
 
@@ -268,6 +296,30 @@ class NoteMessageApiTestCase(CareAPITestBase):
             created_by=self.user,
             _fill_optional=True,
         )
+
+    def test_note_writes_cannot_change_the_thread_type(self):
+        self.client.force_authenticate(user=self.superuser)
+        thread = self._create_thread()
+        response = self.client.post(
+            self._get_note_list_url(thread.external_id),
+            {"message": "Patient note", "thread_type": NoteThreadType.referral},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        thread.refresh_from_db()
+        self.assertEqual(thread.thread_type, NoteThreadType.patient)
+        note_id = response.data["id"]
+
+        for method in (self.client.put, self.client.patch):
+            with self.subTest(method=method.__name__):
+                response = method(
+                    self._get_note_detail_url(thread.external_id, note_id),
+                    {"message": "Updated note", "thread_type": NoteThreadType.referral},
+                    format="json",
+                )
+                self.assertEqual(response.status_code, 200, response.data)
+                thread.refresh_from_db()
+                self.assertEqual(thread.thread_type, NoteThreadType.patient)
 
     def test_list_notes_on_thread(self):
         role = self.create_role_with_permissions(

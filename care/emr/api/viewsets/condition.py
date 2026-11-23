@@ -15,6 +15,8 @@ from care.emr.resources.condition.spec import (
     ConditionReadSpec,
     ConditionSpec,
     ConditionUpdateSpec,
+    SymptomSpec,
+    SymptomUpdateSpec,
 )
 from care.emr.resources.questionnaire.spec import SubjectType
 from care.security.authorization import AuthorizationController
@@ -63,9 +65,9 @@ class SymptomViewSet(
     EMRModelViewSet,
 ):
     database_model = Condition
-    pydantic_model = ConditionSpec
+    pydantic_model = SymptomSpec
     pydantic_read_model = ConditionReadSpec
-    pydantic_update_model = ConditionUpdateSpec
+    pydantic_update_model = SymptomUpdateSpec
     # Filters
     filterset_class = ConditionFilters
     filter_backends = [

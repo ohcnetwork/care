@@ -13,6 +13,11 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*
 
+# GitHub release downloads can stall beyond pip's default 15-second timeout.
+ENV PIP_DEFAULT_TIMEOUT=120 \
+    PIP_RETRIES=10 \
+    PIP_RESUME_RETRIES=10
+
 # use pipenv to manage virtualenv
 ENV PATH=/.venv/bin:$PATH
 RUN python -m venv /.venv

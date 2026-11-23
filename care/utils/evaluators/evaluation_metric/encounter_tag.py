@@ -1,9 +1,24 @@
+from datetime import datetime
+
 from care.emr.models.tag_config import TagConfig
 from care.utils.evaluators.evaluation_metric.base import EvaluationMetricBase
 from care.utils.registries.evaluation_metric import (
     AllowedOperations,
     EvaluatorMetricsRegistry,
 )
+from care.utils.time_util import care_now
+
+
+def active_tags(tags, tags_data):
+    tags_data = tags_data or {}
+    now = care_now()
+    active = []
+    for tag in tags or []:
+        expiry = (tags_data.get(str(tag)) or {}).get("expiry")
+        if expiry and now > datetime.fromisoformat(expiry):
+            continue
+        active.append(tag)
+    return active
 
 
 class EncounterTagsMetric(EvaluationMetricBase):
@@ -34,13 +49,14 @@ class EncounterTagsMetric(EvaluationMetricBase):
     def get_value(self):
         encounter = self.context_object
         if self._value_type == "encounter":
-            return [*encounter.tags]
+            return active_tags(encounter.tags, encounter.tags_data)
         patient = encounter.patient
         patient_facility_tags = patient.facility_tags.get(
             str(encounter.facility.id), []
         )
         patient_instance_tags = patient.instance_tags
-        return [*patient_facility_tags, *patient_instance_tags]
+        tags = [*patient_facility_tags, *patient_instance_tags]
+        return active_tags(tags, patient.tags_data)
 
 
 EvaluatorMetricsRegistry.register(EncounterTagsMetric)

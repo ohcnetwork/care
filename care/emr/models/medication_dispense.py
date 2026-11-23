@@ -43,6 +43,7 @@ class DispenseOrder(EMRBaseModel):
     note = models.TextField(null=True, blank=True)
     location = models.ForeignKey("emr.FacilityLocation", on_delete=models.CASCADE)
     tags = ArrayField(models.IntegerField(), default=list)
+    tags_data = models.JSONField(default=dict)
     patient = models.ForeignKey("emr.Patient", on_delete=models.CASCADE)
     facility = models.ForeignKey("facility.Facility", on_delete=models.CASCADE)
     alternate_identifier = models.CharField(max_length=100, null=True, blank=True)

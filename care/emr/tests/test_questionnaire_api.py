@@ -22,6 +22,18 @@ def deterministic_uuid(string):
     return str(uuid.uuid5(uuid.NAMESPACE_DNS, string))
 
 
+def with_question_ids(payload):
+    """Assign stable UUIDs to every nested question in these legacy fixtures."""
+
+    def add_ids(questions):
+        for question in questions or []:
+            question.setdefault("id", deterministic_uuid(question["link_id"]))
+            add_ids(question.get("questions", []))
+
+    add_ids(payload.get("questions", []))
+    return payload
+
+
 class QuestionnaireTestBase(CareAPITestBase):
     """
     Foundation test class that provides common setup and helper methods for testing questionnaire functionality.
@@ -52,7 +64,8 @@ class QuestionnaireTestBase(CareAPITestBase):
             tuple: A pair of (status_code, response_data) from the submission
         """
         submit_url = reverse(
-            "questionnaire-submit", kwargs={"slug": self.questionnaire_data["slug"]}
+            "questionnaire-submit",
+            kwargs={"external_id": self.questionnaire_data["id"]},
         )
         response = self.client.post(submit_url, payload, format="json")
         return response.status_code, response.json()
@@ -151,12 +164,13 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             "description": "Complete health assessment questionnaire with various response types",
             "status": "active",
             "subject_type": "patient",
+            "auth_context": "instance",
             "organizations": [str(self.organization.external_id)],
             "questions": questions,
         }
 
         response = self.client.post(
-            self.base_url, questionnaire_definition, format="json"
+            self.base_url, with_question_ids(questionnaire_definition), format="json"
         )
         self.assertEqual(
             response.status_code,
@@ -234,6 +248,13 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
 
         status_code, response_data = self._submit_questionnaire(payload)
         self.assertEqual(status_code, 200, f"Valid submission failed: {response_data}")
+        cleaned_response = response_data["cleaned_response"]
+        expected_boolean = True
+        self.assertIs(cleaned_response["1"], expected_boolean)
+        self.assertEqual(cleaned_response["2"], 37.5)
+        self.assertEqual(cleaned_response["3"], 7)
+        self.assertEqual(cleaned_response["4"], "Jane Smith")
+        self.assertEqual(cleaned_response["12"], "EXCELLENT")
 
     def test_individual_invalid_submissions(self):
         """
@@ -283,6 +304,7 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             "description": "This questionnaire is inactive.",
             "status": "draft",
             "subject_type": "patient",
+            "auth_context": "instance",
             "organizations": [str(self.organization.external_id)],
             "questions": [
                 {
@@ -293,12 +315,12 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             ],
         }
         response = self.client.post(
-            self.base_url, questionnaire_definition, format="json"
+            self.base_url, with_question_ids(questionnaire_definition), format="json"
         )
         self.assertEqual(response.status_code, 200)
 
         submit_url = reverse(
-            "questionnaire-submit", kwargs={"slug": response.json()["slug"]}
+            "questionnaire-submit", kwargs={"external_id": response.json()["id"]}
         )
 
         payload = {
@@ -320,6 +342,7 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             "description": "Complete health assessment questionnaire with various response types",
             "status": "active",
             "subject_type": "patient",
+            "auth_context": "instance",
             "organizations": [str(self.organization.external_id)],
             "questions": [
                 {
@@ -336,7 +359,7 @@ class QuestionnaireValidationTests(QuestionnaireTestBase):
             ],
         }
         response = self.client.post(
-            self.base_url, questionnaire_definition, format="json"
+            self.base_url, with_question_ids(questionnaire_definition), format="json"
         )
         data = response.json()
         status_code = response.status_code
@@ -381,11 +404,12 @@ class QuestionnaireEnableWhenSubmissionTests(QuestionnaireTestBase):
             "description": "Questionnaire for testing enable_when operators",
             "status": "active",
             "subject_type": "patient",
+            "auth_context": "instance",
             "organizations": [str(self.organization.external_id)],
             "questions": questions,
         }
         response = self.client.post(
-            self.base_url, questionnaire_definition, format="json"
+            self.base_url, with_question_ids(questionnaire_definition), format="json"
         )
         self.assertEqual(
             response.status_code,
@@ -1710,6 +1734,7 @@ class RequiredFieldValidationTests(QuestionnaireTestBase):
             "description": "Questionnaire testing required field validation",
             "status": "active",
             "subject_type": "patient",
+            "auth_context": "instance",
             "organizations": [str(self.organization.external_id)],
             "questions": [
                 {
@@ -1727,7 +1752,7 @@ class RequiredFieldValidationTests(QuestionnaireTestBase):
         }
 
         response = self.client.post(
-            self.base_url, questionnaire_definition, format="json"
+            self.base_url, with_question_ids(questionnaire_definition), format="json"
         )
         self.assertEqual(
             response.status_code,
@@ -1793,11 +1818,12 @@ class RepeatableGroupsValidationTests(QuestionnaireTestBase):
             "description": "Questionnaire for testing repeatable groups",
             "status": "active",
             "subject_type": "encounter",
+            "auth_context": "instance",
             "organizations": [str(self.organization.external_id)],
             "questions": questions,
         }
         response = self.client.post(
-            self.base_url, questionnaire_definition, format="json"
+            self.base_url, with_question_ids(questionnaire_definition), format="json"
         )
         self.assertEqual(
             response.status_code,
@@ -1897,6 +1923,10 @@ class RepeatableGroupsValidationTests(QuestionnaireTestBase):
         self.assertEqual(
             status_code, 200, f"Questionnaire submission failed: {response}"
         )
+        self.assertEqual(
+            response["cleaned_response"],
+            {"1": [{"1.1": True}, {"1.1": False, "1.2": 34.5}]},
+        )
         observations = Observation.objects.filter(
             questionnaire_response__external_id=response["id"],
         )
@@ -1976,7 +2006,8 @@ class RepeatableGroupsValidationTests(QuestionnaireTestBase):
             ]
         )
         submit_url = reverse(
-            "questionnaire-submit", kwargs={"slug": self.questionnaire_data["slug"]}
+            "questionnaire-submit",
+            kwargs={"external_id": self.questionnaire_data["id"]},
         )
         response = self.client.post(submit_url, payload, format="json")
         self.assertEqual(
@@ -2009,6 +2040,7 @@ class RequiredGroupValidationTests(QuestionnaireTestBase):
             "description": "Questionnaire testing required group validation",
             "status": "active",
             "subject_type": "patient",
+            "auth_context": "instance",
             "organizations": [str(self.organization.external_id)],
             "questions": [
                 {
@@ -2039,7 +2071,7 @@ class RequiredGroupValidationTests(QuestionnaireTestBase):
         }
 
         response = self.client.post(
-            self.base_url, questionnaire_definition, format="json"
+            self.base_url, with_question_ids(questionnaire_definition), format="json"
         )
         self.assertEqual(
             response.status_code,
@@ -2096,6 +2128,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
             "description": "Questionnaire for testing access controls",
             "status": "active",
             "subject_type": "patient",
+            "auth_context": "instance",
             "organizations": [str(self.organization.external_id)],
             "questions": [
                 {
@@ -2112,29 +2145,32 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
             ],
         }
 
-    def create_questionnaire_instance(self):
-        """
-        Helper method to create a questionnaire instance for testing permissions.
-        Temporarily authenticates as super user to ensure creation, then reverts
-        to regular user authentication.
-
-        Returns:
-            dict: The created questionnaire instance data
-        """
+    def create_questionnaire_instance(self, **kwargs):
         self.client.force_authenticate(self.super_user)
         response = self.client.post(
-            self.base_url, self._create_questionnaire(), format="json"
+            self.base_url,
+            with_question_ids(self._create_questionnaire() | kwargs),
+            format="json",
         )
+        self.assertEqual(response.status_code, 200, response.data)
+        if kwargs.get("auth_context", "instance") == "instance":
+            linked = self.client.post(
+                reverse(
+                    "questionnaire-set-organizations",
+                    kwargs={"external_id": response.data["id"]},
+                ),
+                {"organizations": [str(self.organization.external_id)]},
+                format="json",
+            )
+            self.assertEqual(linked.status_code, 200, linked.data)
         self.client.force_authenticate(self.user)
         return response.json()
 
-    def test_questionnaire_list_access_denied(self):
-        """
-        Verifies that users without proper permissions cannot list questionnaires.
-        Tests the basic access control for questionnaire listing functionality.
-        """
+    def test_questionnaire_list_hides_inaccessible_questionnaires(self):
+        self.create_questionnaire_instance()
         response = self.client.get(self.base_url)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(response.data["count"], 0)
 
     def test_questionnaire_list_access_granted(self):
         """
@@ -2145,8 +2181,12 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         role = self.create_role_with_permissions(permissions)
         self.attach_role_organization_user(self.organization, self.user, role)
 
+        questionnaire = self.create_questionnaire_instance()
         response = self.client.get(self.base_url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            [item["id"] for item in response.data["results"]], [questionnaire["id"]]
+        )
 
     def test_questionnaire_creation_access_denied(self):
         """
@@ -2154,36 +2194,50 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         Tests the write permission enforcement for questionnaire creation.
         """
         response = self.client.post(
-            self.base_url, self._create_questionnaire(), format="json"
+            self.base_url,
+            with_question_ids(self._create_questionnaire()),
+            format="json",
         )
         self.assertEqual(response.status_code, 403)
 
-    def test_questionnaire_creation_access_granted(self):
-        """
-        Verifies that users with write permissions can successfully create questionnaires.
-        Tests proper access grant for users with explicit write permissions.
-        """
+    def test_instance_questionnaire_creation_requires_a_superuser(self):
+        """Organization write permission does not grant instance creation rights."""
         permissions = [QuestionnairePermissions.can_write_questionnaire.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_organization_user(self.organization, self.user, role)
 
         questionnaire_data = self._create_questionnaire()
         questionnaire_data["title"] = ""
-        response = self.client.post(self.base_url, questionnaire_data, format="json")
+        response = self.client.post(
+            self.base_url, with_question_ids(questionnaire_data), format="json"
+        )
         self.assertEqual(response.status_code, 400)
 
         questionnaire_data["title"] = self.fake.text(max_nb_chars=255)
-        response = self.client.post(self.base_url, questionnaire_data, format="json")
-        self.assertEqual(response.status_code, 200)
+        response = self.client.post(
+            self.base_url, with_question_ids(questionnaire_data), format="json"
+        )
+        self.assertEqual(response.status_code, 403, response.data)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.post(
+            self.base_url, with_question_ids(questionnaire_data), format="json"
+        )
+        self.assertEqual(response.status_code, 200, response.data)
 
     def test_questionnaire_retrieval_access_denied(self):
         """
         Verifies that users without proper permissions cannot retrieve individual questionnaires.
         Tests access control for detailed questionnaire viewing.
         """
-        questionnaire = self.create_questionnaire_instance()
+        facility = self.create_facility(user=self.super_user)
+        self.create_facility_organization(facility=facility, org_type="root")
+        questionnaire = self.create_questionnaire_instance(
+            auth_context="facility",
+            facility=str(facility.external_id),
+            subject_type="encounter",
+        )
         detail_url = reverse(
-            "questionnaire-detail", kwargs={"slug": questionnaire["slug"]}
+            "questionnaire-detail", kwargs={"external_id": questionnaire["id"]}
         )
         response = self.client.get(detail_url)
         self.assertEqual(response.status_code, 403)
@@ -2199,7 +2253,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
 
         questionnaire = self.create_questionnaire_instance()
         detail_url = reverse(
-            "questionnaire-detail", kwargs={"slug": questionnaire["slug"]}
+            "questionnaire-detail", kwargs={"external_id": questionnaire["id"]}
         )
         response = self.client.get(detail_url)
         self.assertEqual(response.status_code, 200)
@@ -2219,7 +2273,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
 
         questionnaire = self.create_questionnaire_instance()
         detail_url = reverse(
-            "questionnaire-detail", kwargs={"slug": questionnaire["slug"]}
+            "questionnaire-detail", kwargs={"external_id": questionnaire["id"]}
         )
         response = self.client.delete(detail_url)
         self.assertEqual(response.status_code, 403)
@@ -2231,7 +2285,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         """
         questionnaire = self.create_questionnaire_instance()
         detail_url = reverse(
-            "questionnaire-detail", kwargs={"slug": questionnaire["slug"]}
+            "questionnaire-detail", kwargs={"external_id": questionnaire["id"]}
         )
         self.client.force_authenticate(user=self.super_user)
 
@@ -2252,7 +2306,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
 
         questionnaire = self.create_questionnaire_instance()
         detail_url = reverse(
-            "questionnaire-detail", kwargs={"slug": questionnaire["slug"]}
+            "questionnaire-detail", kwargs={"external_id": questionnaire["id"]}
         )
 
         updated_data = self._create_questionnaire()
@@ -2260,7 +2314,9 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
             {"link_id": "1", "type": "boolean", "text": "Modified question text"}
         ]
 
-        response = self.client.put(detail_url, updated_data, format="json")
+        response = self.client.put(
+            detail_url, with_question_ids(updated_data), format="json"
+        )
         self.assertEqual(response.status_code, 403)
 
     def test_questionnaire_update_super_user_allowed(self):
@@ -2271,7 +2327,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         """
         questionnaire = self.create_questionnaire_instance()
         detail_url = reverse(
-            "questionnaire-detail", kwargs={"slug": questionnaire["slug"]}
+            "questionnaire-detail", kwargs={"external_id": questionnaire["id"]}
         )
         self.client.force_authenticate(user=self.super_user)
 
@@ -2290,7 +2346,9 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
             }
         ]
 
-        response = self.client.put(detail_url, updated_data, format="json")
+        response = self.client.put(
+            detail_url, with_question_ids(updated_data), format="json"
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.json()["questions"][0]["text"], "Modified question text"
@@ -2307,7 +2365,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
     #     questionnaire = self.create_questionnaire_instance()
     #     self.questionnaire_data = questionnaire
     #     detail_url = reverse(
-    #         "questionnaire-detail", kwargs={"slug": questionnaire["slug"]}
+    #         "questionnaire-detail", kwargs={"external_id": questionnaire["id"]}
     #     )
     #     self.client.force_authenticate(user=self.super_user)
     #
@@ -2322,7 +2380,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
     #         {"link_id": "1", "type": "boolean", "text": "Modified question text"}
     #     ]
     #
-    #     response = self.client.put(detail_url, updated_data, format="json")
+    #     response = self.client.put(detail_url, with_question_ids(updated_data), format="json")
     #     response_data = response.json()
     #
     #     self.assertEqual(response.status_code, 400)
@@ -2339,35 +2397,42 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         """
         questionnaire = self.create_questionnaire_instance()
         organization_list_url = reverse(
-            "questionnaire-get-organizations", kwargs={"slug": questionnaire["slug"]}
+            "questionnaire-get-organizations",
+            kwargs={"external_id": questionnaire["id"]},
         )
         response = self.client.get(organization_list_url)
         self.assertEqual(response.status_code, 403)
 
-    def test_questionnaire_organization_list_access_granted(self):
-        """
-        Verifies that users with read permissions can successfully view the organizations
-        associated with a questionnaire.
-
-        """
+    def test_questionnaire_organization_list_requires_a_superuser(self):
+        """Instance organization links are visible to instance administrators."""
         permissions = [QuestionnairePermissions.can_read_questionnaire.name]
         role = self.create_role_with_permissions(permissions)
         self.attach_role_organization_user(self.organization, self.user, role)
 
         questionnaire = self.create_questionnaire_instance()
         organization_list_url = reverse(
-            "questionnaire-get-organizations", kwargs={"slug": questionnaire["slug"]}
+            "questionnaire-get-organizations",
+            kwargs={"external_id": questionnaire["id"]},
         )
         response = self.client.get(organization_list_url)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403, response.data)
+        self.client.force_authenticate(self.super_user)
+        response = self.client.get(organization_list_url)
+        self.assertEqual(response.status_code, 200, response.data)
+        self.assertEqual(
+            [item["id"] for item in response.data["results"]],
+            [str(self.organization.external_id)],
+        )
 
     def test_set_organizations_without_authentication(self):
         """Tests that setting organizations without authentication returns 403 forbidden."""
         questionnaire = self.create_questionnaire_instance()
         url = reverse(
-            "questionnaire-set-organizations", kwargs={"slug": questionnaire["slug"]}
+            "questionnaire-set-organizations",
+            kwargs={"external_id": questionnaire["id"]},
         )
 
+        self.client.force_authenticate(None)
         payload = {"organizations": [self.create_organization().external_id]}
         response = self.client.post(url, payload, format="json")
         self.assertEqual(response.status_code, 403)
@@ -2376,7 +2441,8 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         """Tests that setting organizations with read-only permissions returns 403 forbidden."""
         questionnaire = self.create_questionnaire_instance()
         url = reverse(
-            "questionnaire-set-organizations", kwargs={"slug": questionnaire["slug"]}
+            "questionnaire-set-organizations",
+            kwargs={"external_id": questionnaire["id"]},
         )
 
         permissions = [QuestionnairePermissions.can_read_questionnaire.name]
@@ -2391,7 +2457,8 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         """Tests that setting organizations with non-existent organization ID returns 404 not found."""
         questionnaire = self.create_questionnaire_instance()
         url = reverse(
-            "questionnaire-set-organizations", kwargs={"slug": questionnaire["slug"]}
+            "questionnaire-set-organizations",
+            kwargs={"external_id": questionnaire["id"]},
         )
 
         permissions = [
@@ -2402,6 +2469,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         self.attach_role_organization_user(self.organization, self.user, role)
 
         payload = {"organizations": [uuid.uuid4()]}
+        self.client.force_authenticate(self.super_user)
         response = self.client.post(url, payload, format="json")
         self.assertEqual(response.status_code, 404)
 
@@ -2409,7 +2477,8 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         """Tests that setting organizations without access to target organization returns 403 forbidden."""
         questionnaire = self.create_questionnaire_instance()
         url = reverse(
-            "questionnaire-set-organizations", kwargs={"slug": questionnaire["slug"]}
+            "questionnaire-set-organizations",
+            kwargs={"external_id": questionnaire["id"]},
         )
 
         permissions = [
@@ -2427,7 +2496,8 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         """Tests that setting organizations succeeds with proper permissions and organization access."""
         questionnaire = self.create_questionnaire_instance()
         url = reverse(
-            "questionnaire-set-organizations", kwargs={"slug": questionnaire["slug"]}
+            "questionnaire-set-organizations",
+            kwargs={"external_id": questionnaire["id"]},
         )
 
         permissions = [
@@ -2438,6 +2508,7 @@ class QuestionnairePermissionTests(QuestionnaireTestBase):
         self.attach_role_organization_user(self.organization, self.user, role)
 
         payload = {"organizations": [self.organization.external_id]}
+        self.client.force_authenticate(self.super_user)
         response = self.client.post(url, payload, format="json")
         self.assertEqual(response.status_code, 200)
 
@@ -2469,6 +2540,7 @@ class QuestionnaireRepeatableEnableWhenAllBehaviorTests(CareAPITestBase):
             "slug": "appointment",
             "status": "active",
             "subject_type": "encounter",
+            "auth_context": "instance",
             "organizations": [str(self.organization.external_id)],
             "questions": [
                 {
@@ -2492,7 +2564,7 @@ class QuestionnaireRepeatableEnableWhenAllBehaviorTests(CareAPITestBase):
                 },
             ],
         }
-        resp = self.client.post(self.base_url, data, format="json")
+        resp = self.client.post(self.base_url, with_question_ids(data), format="json")
         self.assertEqual(resp.status_code, 200)
         return resp.json()
 
@@ -2504,7 +2576,7 @@ class QuestionnaireRepeatableEnableWhenAllBehaviorTests(CareAPITestBase):
             "results": results,
         }
         url = reverse(
-            "questionnaire-submit", kwargs={"slug": self.questionnaire["slug"]}
+            "questionnaire-submit", kwargs={"external_id": self.questionnaire["id"]}
         )
         resp = self.client.post(url, payload, format="json")
         return resp.status_code, resp.json()
@@ -2625,6 +2697,7 @@ class QuestionnaireRepeatableEnableWhenAnyBehaviorTests(CareAPITestBase):
             "slug": "appointment-any",
             "status": "active",
             "subject_type": "encounter",
+            "auth_context": "instance",
             "organizations": [str(self.organization.external_id)],
             "questions": [
                 {
@@ -2648,7 +2721,7 @@ class QuestionnaireRepeatableEnableWhenAnyBehaviorTests(CareAPITestBase):
                 },
             ],
         }
-        resp = self.client.post(self.base_url, data, format="json")
+        resp = self.client.post(self.base_url, with_question_ids(data), format="json")
         self.assertEqual(resp.status_code, 200)
         return resp.json()
 
@@ -2660,7 +2733,7 @@ class QuestionnaireRepeatableEnableWhenAnyBehaviorTests(CareAPITestBase):
             "results": results,
         }
         url = reverse(
-            "questionnaire-submit", kwargs={"slug": self.questionnaire["slug"]}
+            "questionnaire-submit", kwargs={"external_id": self.questionnaire["id"]}
         )
         resp = self.client.post(url, payload, format="json")
         return resp.status_code, resp.json()

@@ -1,8 +1,10 @@
 from datetime import datetime
 from enum import Enum
+from typing import ClassVar, Literal
 
-from pydantic import UUID4, BaseModel, Field
+from pydantic import UUID4, AwareDatetime, BaseModel, ConfigDict, Field
 
+from care.emr.models.encounter import Encounter
 from care.emr.models.observation import Observation
 from care.emr.resources.base import EMRResource, model_from_cache
 from care.emr.resources.common import Coding
@@ -18,6 +20,7 @@ from care.emr.resources.questionnaire_response.spec import (
 )
 from care.emr.resources.user.spec import UserSpec
 from care.emr.utils.valueset_coding_type import ValueSetBoundCoding
+from care.utils.shortcuts import get_object_or_404
 
 
 class ObservationStatus(str, Enum):
@@ -58,7 +61,7 @@ class BaseObservationSpec(EMRResource):
     id: UUID4 | None = Field(None, description="Unique ID in the system")
 
     status: ObservationStatus = Field(
-        description="Status of the observation (final or amended)"
+        description="Status of the observation (final, amended or entered in error)"
     )
 
     category: Coding | None = None
@@ -96,6 +99,35 @@ class BaseObservationSpec(EMRResource):
     component: list[Component] = []
 
 
+class ObservationCreateSpec(EMRResource):
+    """An observation entered independently of a questionnaire or diagnostic report."""
+
+    __model__ = Observation
+    model_config = ConfigDict(extra="forbid")
+    meta: ClassVar[dict] = {}
+
+    encounter: UUID4
+    status: Literal[ObservationStatus.final] = ObservationStatus.final
+    main_code: Coding
+    effective_datetime: AwareDatetime
+    value_type: QuestionType
+    value: QuestionnaireSubmitResultValue
+    category: Coding | None = None
+    alternate_coding: CodeableConcept | None = None
+    performer: Performer | None = None
+    note: str | None = None
+    body_site: ValueSetBoundCoding[CARE_BODY_SITE_VALUESET.slug] | None = None
+    method: ValueSetBoundCoding[CARE_OBSERVATION_COLLECTION_METHOD.slug] | None = None
+    component: list[Component] = []
+
+    def perform_extra_deserialization(self, is_update, obj):
+        obj.encounter = get_object_or_404(Encounter, external_id=self.encounter)
+        obj.patient = obj.encounter.patient
+        obj.subject_type = SubjectType.encounter.value
+        obj.subject_id = obj.encounter.external_id
+        obj.status = self.status.value
+
+
 class ObservationUpdateSpec(BaseObservationSpec):
     effective_datetime: datetime | None = None
     value: QuestionnaireSubmitResultValue | None = None
@@ -118,6 +150,9 @@ class ObservationSpec(BaseObservationSpec):
 
 
 class ObservationReadSpec(BaseObservationSpec):
+    is_random: bool = Field(
+        description="Whether the observation was entered independently of a questionnaire or diagnostic report"
+    )
     created_by: UserSpec = {}
     updated_by: UserSpec = {}
     data_entered_by: UserSpec | None = None
@@ -129,6 +164,7 @@ class ObservationReadSpec(BaseObservationSpec):
         mapping["encounter"] = None
         mapping["patient"] = None
         mapping["questionnaire_response"] = None
+        mapping["is_random"] = obj.is_random
 
         cls.serialize_audit_users(mapping, obj)
         if obj.data_entered_by:

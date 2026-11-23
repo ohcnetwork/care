@@ -31,6 +31,7 @@ class ActivityDefinition(SlugBaseModel):
         blank=True,
     )
     tags = ArrayField(models.IntegerField(), default=list)
+    tags_data = models.JSONField(default=dict)
     category = models.ForeignKey(
         "emr.ResourceCategory",
         on_delete=models.PROTECT,

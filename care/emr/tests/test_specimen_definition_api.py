@@ -33,7 +33,7 @@ class SpecimenDefinitionAPITest(CareAPITestBase):
             "description": "This is a test specimen definition.",
             "type_collected": {"code": "blood", "display": "Blood"},
             "patient_preparation": [{"code": "fasting", "display": "Fasting"}],
-            "collection": {"code": "venipuncture", "display": "Venipuncture"},
+            "collection": {"code": {"code": "venipuncture", "display": "Venipuncture"}},
             "type_tested": {
                 "is_derived": False,
                 "preference": PreferenceOptions.preferred,
@@ -71,7 +71,7 @@ class SpecimenDefinitionAPITest(CareAPITestBase):
             description="This is a test specimen definition.",
             type_collected={"code": "blood", "display": "Blood"},
             patient_preparation=[{"code": "fasting", "display": "Fasting"}],
-            collection={"code": "venipuncture", "display": "Venipuncture"},
+            collection={"code": {"code": "venipuncture", "display": "Venipuncture"}},
             type_tested={"code": "cbc", "display": "Complete Blood Count"},
             **kwargs,
         )
@@ -88,6 +88,9 @@ class SpecimenDefinitionAPITest(CareAPITestBase):
         get_response = self.client.get(self.get_detail_url(response.data["slug"]))
         self.assertEqual(get_response.status_code, 200)
         self.assertEqual(get_response.data["id"], response.data["id"])
+        self.assertEqual(
+            get_response.data["collection"], self.specimen_definition_data["collection"]
+        )
 
     def test_create_specimen_definition_as_user_with_permission(self):
         """Test creating a specimen definition as a user with permission."""

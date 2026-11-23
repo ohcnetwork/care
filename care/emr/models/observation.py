@@ -55,4 +55,10 @@ class Observation(EMRBaseModel):
         default=None,
     )
 
+    @property
+    def is_random(self):
+        return (
+            self.questionnaire_response_id is None and self.diagnostic_report_id is None
+        )
+
     # TODO Add index for patient -> encounter -> system -> code
