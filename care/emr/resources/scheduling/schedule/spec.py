@@ -229,6 +229,16 @@ class ScheduleUpdateSpec(ScheduleWriteSpec):
     valid_from: datetime.datetime
     valid_to: datetime.datetime
 
+    @model_validator(mode="after")
+    def validate_period(self):
+        if (self.valid_from.tzinfo is None) != (self.valid_to.tzinfo is None):
+            raise ValueError(
+                "Valid from and valid to must both include or omit timezone information"
+            )
+        if self.valid_from > self.valid_to:
+            raise ValueError("Valid from cannot be greater than valid to")
+        return self
+
     def perform_extra_deserialization(self, is_update, obj):
         old_instance = Schedule.objects.get(id=obj.id)
 
