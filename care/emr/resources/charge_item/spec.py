@@ -184,7 +184,7 @@ class ChargeItemReadSpec(ChargeItemSpec):
                 obj.paid_invoice
             ).to_json()
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
-        if obj.performer_actor:
+        if obj.performer_actor_id:
             mapping["performer_actor"] = model_from_cache(
                 UserSpec, id=obj.performer_actor_id
             )

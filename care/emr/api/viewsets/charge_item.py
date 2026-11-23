@@ -42,6 +42,7 @@ from care.emr.resources.charge_item.apply_charge_item_definition import (
 from care.emr.resources.charge_item.handle_charge_item_cancel import (
     handle_charge_item_cancel,
 )
+from care.emr.resources.charge_item.queryset import charge_items_for_serialization
 from care.emr.resources.charge_item.spec import (
     CHARGE_ITEM_CANCELLED_STATUS,
     ChargeItemReadSpec,
@@ -324,7 +325,7 @@ class ChargeItemViewSet(
         ):
             raise PermissionDenied("Access Denied to Charge Item")
 
-        return queryset.select_related("paid_invoice", "charge_item_definition")
+        return charge_items_for_serialization(queryset)
 
     @extend_schema(
         request=ApplyMultipleChargeItemDefinitionRequest,
