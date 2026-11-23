@@ -22,6 +22,7 @@ from care.emr.resources.inventory.supply_request.request_order import (
 )
 from care.emr.resources.inventory.supply_request.spec import (
     SupplyRequestReadSpec,
+    SupplyRequestStatusOptions,
     SupplyRequestUpdateSpec,
     SupplyRequestWriteSpec,
 )
@@ -99,12 +100,12 @@ class SupplyRequestViewSet(
         old_instance = SupplyRequest.objects.get(id=instance.id)
         if old_instance.status != instance.status:
             if old_instance.status in [
-                SupplyRequestOrderStatusOptions.abandoned.value,
-                SupplyRequestOrderStatusOptions.entered_in_error.value,
+                SupplyRequestStatusOptions.cancelled.value,
+                SupplyRequestStatusOptions.entered_in_error.value,
             ]:
-                raise ValidationError("Request order is abandoned or entered in error")
-            if old_instance.status == SupplyRequestOrderStatusOptions.completed.value:
-                raise ValidationError("Request order is completed")
+                raise ValidationError("Supply request is cancelled or entered in error")
+            if old_instance.status == SupplyRequestStatusOptions.completed.value:
+                raise ValidationError("Supply request is completed")
         return super().perform_update(instance)
 
     def authorize_order_read(self, order):
