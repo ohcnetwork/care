@@ -663,6 +663,51 @@ class TestScheduleViewSet(CareAPITestBase):
             response, "Availability time ranges are overlapping", status_code=400
         )
 
+    def test_create_schedule_with_adjacent_availabilities(self):
+        """Schedule creation succeeds when availability sessions are adjacent (#3788)"""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        schedule_data = self.generate_schedule_data(
+            valid_from=(datetime.now(UTC) + timedelta(minutes=30)).replace(tzinfo=None),
+            valid_to=(datetime.now(UTC) + timedelta(hours=2)).replace(tzinfo=None),
+            availabilities=[
+                {
+                    "name": "Morning Session",
+                    "slot_type": SlotTypeOptions.appointment.value,
+                    "slot_size_in_minutes": 30,
+                    "tokens_per_slot": 1,
+                    "create_tokens": True,
+                    "reason": "Regular schedule",
+                    "availability": [
+                        {
+                            "day_of_week": 1,
+                            "start_time": "09:00:00",
+                            "end_time": "13:00:00",
+                        },
+                    ],
+                },
+                {
+                    "name": "Afternoon Session",
+                    "slot_type": SlotTypeOptions.appointment.value,
+                    "slot_size_in_minutes": 30,
+                    "tokens_per_slot": 1,
+                    "create_tokens": True,
+                    "reason": "Regular schedule",
+                    "availability": [
+                        {
+                            "day_of_week": 1,
+                            "start_time": "13:00:00",
+                            "end_time": "17:00:00",
+                        },
+                    ],
+                },
+            ],
+        )
+        response = self.client.post(self.base_url, schedule_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_create_schedule_with_user_not_part_of_facility(self):
         """Users cannot write schedules for user not belonging to the facility."""
         permissions = [SchedulePermissions.can_write_schedule.name]
@@ -1484,6 +1529,50 @@ class TestAvailabilityViewSet(CareAPITestBase):
             ]
         )
 
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_availability_adjacent_sessions_allowed(self):
+        """Test that adjacent availability sessions sharing boundaries are allowed (#3788)."""
+        permissions = [SchedulePermissions.can_write_schedule.name]
+        role = self.create_role_with_permissions(permissions)
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+
+        # 1. Forward order adjacent sessions: 09:00-13:00 and 13:00-17:00
+        data = self.generate_availability_data(
+            name="Adjacent Sessions Forward",
+            availability=[
+                {
+                    "day_of_week": 2,
+                    "start_time": "09:00:00",
+                    "end_time": "13:00:00",
+                },
+                {
+                    "day_of_week": 2,
+                    "start_time": "13:00:00",
+                    "end_time": "17:00:00",
+                },
+            ],
+        )
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        # 2. Reverse order adjacent sessions: 13:00-17:00 and 09:00-13:00
+        data = self.generate_availability_data(
+            name="Adjacent Sessions Reverse",
+            availability=[
+                {
+                    "day_of_week": 3,
+                    "start_time": "13:00:00",
+                    "end_time": "17:00:00",
+                },
+                {
+                    "day_of_week": 3,
+                    "start_time": "09:00:00",
+                    "end_time": "13:00:00",
+                },
+            ],
+        )
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
