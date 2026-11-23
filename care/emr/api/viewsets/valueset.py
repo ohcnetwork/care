@@ -28,6 +28,7 @@ from care.emr.resources.valueset.spec import (
     ValuesetDatabaseModel,
     ValueSetReadSpec,
     ValueSetSpec,
+    ValueSetStatusOptions,
     ValueSetUpdateSpec,
 )
 from care.facility.models.facility import Facility
@@ -62,7 +63,7 @@ class ValueSetFilter(filters.FilterSet):
 
 
 def get_closest_valueset(queryset, slug, user, facility=None):
-    valuesets = queryset.filter(slug=slug)
+    valuesets = queryset.filter(slug=slug, status=ValueSetStatusOptions.active.value)
     valueset = None
     if facility:
         preference = UserFacilityValueSetPreference.objects.filter(
