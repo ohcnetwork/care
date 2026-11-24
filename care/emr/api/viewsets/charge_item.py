@@ -34,7 +34,10 @@ from care.emr.registries.system_questionnaire.system_questionnaire import (
     InternalQuestionnaireRegistry,
 )
 from care.emr.resources.account.default_account import get_default_account
-from care.emr.resources.account.spec import AccountStatusOptions
+from care.emr.resources.account.spec import (
+    AccountBillingStatusOptions,
+    AccountStatusOptions,
+)
 from care.emr.resources.account.sync_items import rebalance_account_task
 from care.emr.resources.charge_item.apply_charge_item_definition import (
     apply_charge_item_definition,
@@ -447,6 +450,13 @@ class ChargeItemViewSet(
         target_account = get_object_or_404(
             Account, external_id=request_params.target_account, facility=facility
         )
+        if (
+            target_account.billing_status
+            == AccountBillingStatusOptions.closed_completed.value
+        ):
+            raise ValidationError(
+                "Cannot transfer charge item to a closed and completed account"
+            )
         charge_item_ids = set(request_params.charge_items)
         queryset = ChargeItem.objects.filter(
             external_id__in=charge_item_ids,
@@ -460,12 +470,29 @@ class ChargeItemViewSet(
         account_ids = {target_account.id, *original_accounts.values()}
         accounts = list(Account.objects.filter(id__in=account_ids))
         with AccountLock(accounts):
+            closed_accounts = [
+                account
+                for account in accounts
+                if account.billing_status
+                == AccountBillingStatusOptions.closed_completed.value
+            ]
+            if closed_accounts:
+                raise ValidationError(
+                    "Cannot transfer charge items from closed and completed accounts"
+                )
             charge_items = list(queryset.all())
             if len(charge_items) != len(charge_item_ids):
                 raise Http404("No ChargeItem matches the given query.")
             for charge_item in charge_items:
                 if charge_item.account_id != original_accounts[charge_item.id]:
                     raise ObjectLocked
+                if (
+                    charge_item.account.billing_status
+                    == AccountBillingStatusOptions.closed_completed.value
+                ):
+                    raise ValidationError(
+                        "Cannot transfer charge item from a closed and completed account"
+                    )
                 if charge_item.status != ChargeItemStatusOptions.billable.value:
                     raise ValidationError({"charge_item": "should be billable"})
                 if charge_item.paid_invoice_id is not None:
