@@ -18,7 +18,6 @@ from care.emr.reports import report_utils
 from care.emr.reports.authorizers import report_authorizer
 from care.emr.reports.authorizers.utils import (
     read_report_authorizer,
-    write_report_authorizer,
 )
 from care.emr.reports.renderer.generators import GeneratorRegistry
 from care.emr.resources.report.report_upload.spec import (
@@ -88,11 +87,6 @@ class ReportUploadViewSet(EMRRetrieveMixin, EMRListMixin, EMRBaseViewSet):
             model_instance.associating_id,
         )
         return super().authorize_retrieve(model_instance)
-
-    def authorize_update(self, request_obj, model_instance):
-        write_report_authorizer(
-            self.request.user, model_instance.report_type, model_instance.associating_id
-        )
 
     @extend_schema(
         description="Generate a report from a template with patient/encounter data",
