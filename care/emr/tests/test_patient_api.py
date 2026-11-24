@@ -14,6 +14,13 @@ from care.emr.models.patient import (
 )
 from care.emr.models.tag_config import TagConfig
 from care.emr.resources.patient.spec import BloodGroupChoices, GenderChoices
+from care.emr.signals.patient.facility_name_identifier import (
+    FacilityPatientNameIdentifierConfig,
+)
+from care.emr.signals.patient.name_identifier import NameIdentifierConfig
+from care.emr.signals.patient.phone_number_identifier import (
+    PhoneNumberIdentifierConfig,
+)
 from care.security.permissions.patient import PatientPermissions
 from care.utils.tests.base import CareAPITestBase
 from care.utils.time_util import care_now
@@ -44,6 +51,23 @@ class TestPatientViewSet(CareAPITestBase):
     def setUp(self):
         """Set up test data that's needed for all tests"""
         self.base_url = reverse("patient-list")
+        self.user = self.create_user()
+        self.superuser = self.create_super_user()
+        self.facility = self.create_facility(user=self.superuser)
+        self.facility_organization = self.create_facility_organization(
+            facility=self.facility, org_type="govt"
+        )
+        self.role = self.create_role_with_permissions(
+            permissions=[
+                PatientPermissions.can_write_patient.name,
+                PatientPermissions.can_list_patients.name,
+                PatientPermissions.can_create_patient.name,
+            ]
+        )
+
+        NameIdentifierConfig.CACHED_CONFIG = {}
+        PhoneNumberIdentifierConfig.CACHED_CONFIG = {}
+        FacilityPatientNameIdentifierConfig.CACHED_CONFIG = {}
 
     def generate_patient_data(self, geo_organization, **kwargs):
         data = {
@@ -56,6 +80,7 @@ class TestPatientViewSet(CareAPITestBase):
             "phone_number": generate_random_valid_phone_number(),
             "emergency_phone_number": generate_random_valid_phone_number(),
             "geo_organization": geo_organization,
+            "date_of_birth": self.fake.date_of_birth().isoformat(),
         }
         if "age" not in kwargs and "date_of_birth" not in kwargs:
             kwargs["age"] = self.fake.random_int(min=1, max=100)
@@ -231,6 +256,71 @@ class TestPatientViewSet(CareAPITestBase):
         PatientCreateLock().release()
         response = self.client.post(self.base_url, patient_data, format="json")
         self.assertEqual(response.status_code, 400)
+
+    def test_update_patient_with_zero_age_after_death_year(self):
+        superuser = self.create_super_user()
+        geo_organization = self.create_organization(org_type="govt")
+        self.client.force_authenticate(user=superuser)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            date_of_birth=datetime.date(1950, 1, 1),
+            deceased_datetime=care_now() - datetime.timedelta(days=730),
+        )
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+
+        update_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        response = self.client.patch(update_url, {"age": 0}, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn(
+            "Year of birth cannot be after the year of death",
+            response.json()["errors"][0]["msg"],
+        )
+
+    def test_update_patient_without_age_still_validates_date_of_birth(self):
+        superuser = self.create_super_user()
+        geo_organization = self.create_organization(org_type="govt")
+        self.client.force_authenticate(user=superuser)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            date_of_birth=datetime.date(2000, 1, 1),
+        )
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+
+        update_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        response = self.client.patch(
+            update_url,
+            {
+                "deceased_datetime": care_now()
+                .replace(year=1999, month=1, day=1)
+                .isoformat()
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn(
+            "Date of birth cannot be after the date of death",
+            response.json()["errors"][0]["msg"],
+        )
+
+    def test_create_patient_with_age_still_validates_date_of_birth(self):
+        superuser = self.create_super_user()
+        geo_organization = self.create_organization(org_type="govt")
+        self.client.force_authenticate(user=superuser)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            age=30,
+            date_of_birth=datetime.date(2000, 1, 1),
+            deceased_datetime=care_now().replace(year=1999),
+        )
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_create_patient_with_unique_patient_identifier(self):
         """
@@ -819,3 +909,173 @@ class TestPatientViewSet(CareAPITestBase):
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["facility_tags"], [])
+
+    def test_create_patient_with_missing_fields_to_default_missing(self):
+        superuser = self.create_super_user()
+        geo_organization = self.create_organization(org_type="govt")
+        self.client.force_authenticate(user=superuser)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id
+        )
+        patient_data.pop("pincode")
+        patient_data.pop("blood_group")
+
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNone(response.data["pincode"])
+        self.assertFalse(response.data["blood_group"])
+        self.assertIsNone(response.data["deceased_datetime"])
+
+    def test_update_patient_with_missing_fields_not_getting_updated(self):
+        superuser = self.create_super_user()
+        geo_organization = self.create_organization(org_type="govt")
+        self.client.force_authenticate(user=superuser)
+        deceased_datetime = care_now() - datetime.timedelta(days=2)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            deceased_datetime=deceased_datetime,
+        )
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+
+        update_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        response = self.client.patch(
+            update_url, {"name": "Updated Name"}, format="json"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["name"], "Updated Name")
+        self.assertEqual(response.data["blood_group"], patient_data["blood_group"])
+        self.assertIsNotNone(response.data["deceased_datetime"])
+
+    # Testcases for resurrecting a deceased patient
+    def test_resurrect_deceased_patient_as_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        geo_organization = self.create_organization(org_type="govt")
+        deceased_datetime = care_now() - datetime.timedelta(days=2)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            deceased_datetime=deceased_datetime,
+        )
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+
+        resurrect_url = reverse("patient-resurrect", kwargs={"external_id": patient_id})
+        response = self.client.post(resurrect_url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNone(response.data["deceased_datetime"])
+
+    def test_resurrect_deceased_patient_as_non_superuser(self):
+        self.client.force_authenticate(user=self.user)
+        self.attach_role_facility_organization_user(
+            facility_organization=self.facility_organization,
+            user=self.user,
+            role=self.role,
+        )
+        geo_organization = self.create_organization(org_type="govt")
+        deceased_datetime = care_now() - datetime.timedelta(days=2)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+            deceased_datetime=deceased_datetime,
+        )
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+
+        resurrect_url = reverse("patient-resurrect", kwargs={"external_id": patient_id})
+        response = self.client.post(resurrect_url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertIn("detail", response.data)
+        self.assertEqual(
+            response.data["detail"],
+            "User does not have permission to resurrect this patient",
+        )
+
+    def test_resurrect_non_deceased_patient(self):
+        self.client.force_authenticate(user=self.superuser)
+        geo_organization = self.create_organization(org_type="govt")
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+        )
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+
+        resurrect_url = reverse("patient-resurrect", kwargs={"external_id": patient_id})
+        response = self.client.post(resurrect_url, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNone(response.data["deceased_datetime"])
+
+    def test_update_patient_as_deceased_superuser(self):
+        self.client.force_authenticate(user=self.superuser)
+        geo_organization = self.create_organization(org_type="govt")
+        deceased_datetime = care_now() - datetime.timedelta(days=2)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+        )
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+
+        update_data = {"deceased_datetime": deceased_datetime}
+        update_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        response = self.client.patch(update_url, update_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(response.data["deceased_datetime"])
+
+    def test_update_patient_as_deceased_user_with_permission(self):
+        self.client.force_authenticate(user=self.user)
+        geo_organization = self.create_organization(org_type="govt")
+        deceased_datetime = care_now() - datetime.timedelta(days=2)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+        )
+        role = self.create_role_with_permissions(
+            permissions=[
+                PatientPermissions.can_list_patients.name,
+                PatientPermissions.can_create_patient.name,
+                PatientPermissions.can_write_patient.name,
+            ]
+        )
+        self.attach_role_organization_user(geo_organization, self.user, role)
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+
+        update_data = {"deceased_datetime": deceased_datetime}
+        update_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        response = self.client.patch(update_url, update_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIsNotNone(response.data["deceased_datetime"])
+
+    def test_update_patient_as_deceased_user_without_permission(self):
+        self.client.force_authenticate(user=self.user)
+        geo_organization = self.create_organization(org_type="govt")
+        role = self.create_role_with_permissions(
+            permissions=[
+                PatientPermissions.can_list_patients.name,
+                PatientPermissions.can_create_patient.name,
+            ]
+        )
+        self.attach_role_organization_user(geo_organization, self.user, role)
+        deceased_datetime = care_now() - datetime.timedelta(days=2)
+        patient_data = self.generate_patient_data(
+            geo_organization=geo_organization.external_id,
+        )
+        PatientCreateLock().release()
+        response = self.client.post(self.base_url, patient_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        patient_id = response.data["id"]
+
+        update_data = {"deceased_datetime": deceased_datetime}
+        update_url = reverse("patient-detail", kwargs={"external_id": patient_id})
+        response = self.client.patch(update_url, update_data, format="json")
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
