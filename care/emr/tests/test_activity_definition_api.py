@@ -1133,6 +1133,30 @@ class ActivityDefinitionAPITestBase(CareAPITestBase):
             ActivityDefinitionStatusOptions.active.value,
         )
 
+    def test_list_activity_definition_with_title_acronym_filter(self):
+        """Test listing activity definitions with an acronym in the title."""
+        self.client.force_authenticate(user=self.superuser)
+        activity_definition = self.create_activity_definition(
+            facility=self.facility,
+            slug="c-reactive-protein",
+            title="C-reactive protein (CRP including new born)",
+            category=self.resource_category,
+        )
+        self.create_activity_definition(
+            facility=self.facility,
+            slug="complete-blood-count",
+            title="Complete blood count",
+            category=self.resource_category,
+        )
+
+        response = self.client.get(self.base_url, {"title": "CRP"}, format="json")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data["results"]), 1)
+        self.assertEqual(
+            response.data["results"][0]["slug"], str(activity_definition.slug)
+        )
+
     def test_list_activity_definition_with_category_filter(self):
         """Test filtering activity definitions by dummy category filter."""
 
