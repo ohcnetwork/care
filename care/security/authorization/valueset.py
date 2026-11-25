@@ -30,17 +30,25 @@ class ValueSetAccess(AuthorizationHandler):
         self, user, facility_organization, read_only
     ):
         """
-        Permission to access a questionnaire for a specific facility
+        Permission to access a valueset for a specific facility.
+        Write permission also grants read access.
         """
         if read_only:
-            permission = [ValueSetPermissions.can_read_valueset.name]
+            permissions = [
+                ValueSetPermissions.can_read_valueset.name,
+                ValueSetPermissions.can_write_valueset.name,
+            ]
         else:
-            permission = [ValueSetPermissions.can_write_valueset.name]
-        return self.check_permission_in_facility_organization(
-            permission,
-            user,
-            facility=facility_organization.facility,
-            orgs=[*facility_organization.parent_cache, facility_organization.id],
+            permissions = [ValueSetPermissions.can_write_valueset.name]
+
+        return any(
+            self.check_permission_in_facility_organization(
+                [permission],
+                user,
+                facility=facility_organization.facility,
+                orgs=[*facility_organization.parent_cache, facility_organization.id],
+            )
+            for permission in permissions
         )
 
     def can_access_user_valueset_in_faciltiy(self, user, facility, read_only):
@@ -61,16 +69,30 @@ class ValueSetAccess(AuthorizationHandler):
         if user.is_superuser:
             return qs
         roles = self.get_role_from_permissions(
-            [ValueSetPermissions.can_read_valueset.name]
+            [
+                ValueSetPermissions.can_read_valueset.name,
+                ValueSetPermissions.can_write_valueset.name,
+            ]
         )
         facility_organization_ids = list(
             FacilityOrganizationUser.objects.filter(
                 user=user, role_id__in=roles
             ).values_list("organization_id", flat=True)
         )
+        write_roles = self.get_role_from_permissions(
+            [ValueSetPermissions.can_write_valueset.name]
+        )
+
+        writable_facility_ids = FacilityOrganizationUser.objects.filter(
+            user=user,
+            role_id__in=write_roles,
+            organization__org_type="root",
+        ).values_list("organization__facility_id", flat=True)
+
         return qs.filter(
             Q(auth_context="instance")
             | Q(internal_organization_cache__overlap=facility_organization_ids)
+            | Q(auth_context="facility", facility_id__in=writable_facility_ids)
             | Q(auth_context="user", created_by=user)
         )
 
