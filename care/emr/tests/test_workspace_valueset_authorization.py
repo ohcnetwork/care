@@ -80,6 +80,93 @@ class WorkspaceAndValueSetReadAuthorizationTests(CareAPITestBase):
                     handler(self.user, self.other_facility, read_only=True)
                 )
 
+    def test_department_write_permission_grants_read(self):
+        writer = self.create_user()
+        write_role = self.create_role_with_permissions(
+            [ValueSetPermissions.can_write_valueset.name]
+        )
+        self.attach_role_facility_organization_user(self.department, writer, write_role)
+        handler = ValueSetAccess().can_access_facility_organization_valueset
+        self.assertTrue(handler(writer, self.department, read_only=True))
+        self.assertFalse(handler(writer, self.sibling, read_only=True))
+        self.assertFalse(handler(writer, self.other_department, read_only=True))
+
+        valueset = ValueSet.objects.create(
+            slug="writer-only-department-codes",
+            name="Department codes",
+            status="active",
+            compose={"include": []},
+            auth_context="facility_organization",
+            facility=self.facility,
+            facility_organization=self.department,
+            internal_organization_cache=[self.department.pk],
+        )
+        self.client.force_authenticate(writer)
+        response = self.client.get(
+            reverse("value-set-detail", kwargs={"external_id": valueset.external_id})
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_root_writer_can_see_and_assign_new_facility_valueset(self):
+        writer = self.create_user()
+        write_role = self.create_role_with_permissions(
+            [ValueSetPermissions.can_write_valueset.name]
+        )
+        self.attach_role_facility_organization_user(
+            self.facility.default_internal_organization, writer, write_role
+        )
+        self.client.force_authenticate(writer)
+        response = self.client.post(
+            reverse("value-set-list"),
+            {
+                "slug": "facility-codes",
+                "name": "Facility codes",
+                "description": "",
+                "status": "active",
+                "compose": {"include": [], "exclude": []},
+                "auth_context": "facility",
+                "facility": str(self.facility.external_id),
+                "disable_composition": False,
+                "inherited": False,
+            },
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+        valueset_id = response.data["id"]
+
+        list_ids = {
+            item["id"]
+            for item in self.client.get(reverse("value-set-list")).data["results"]
+        }
+        self.assertIn(valueset_id, list_ids)
+        response = self.client.post(
+            reverse(
+                "value-set-set-facility-organizations",
+                kwargs={"external_id": valueset_id},
+            ),
+            {"facility_organizations": [str(self.department.external_id)]},
+            format="json",
+        )
+        self.assertEqual(response.status_code, 200, response.data)
+
+        department_writer = self.create_user()
+        self.attach_role_facility_organization_user(
+            self.sibling, department_writer, write_role
+        )
+        other_root_writer = self.create_user()
+        self.attach_role_facility_organization_user(
+            self.other_facility.default_internal_organization,
+            other_root_writer,
+            write_role,
+        )
+        for user in (department_writer, other_root_writer):
+            self.client.force_authenticate(user)
+            list_ids = {
+                item["id"]
+                for item in self.client.get(reverse("value-set-list")).data["results"]
+            }
+            self.assertNotIn(valueset_id, list_ids)
+
     def test_department_writer_can_create_a_valueset_scoped_to_their_department(self):
         role = self.create_role_with_permissions(
             [ValueSetPermissions.can_write_valueset.name]
