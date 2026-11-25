@@ -200,8 +200,15 @@ class ScheduleCreateSpec(ScheduleWriteSpec):
 
     @model_validator(mode="after")
     def validate_period(self):
-        if self.valid_from > self.valid_to:
-            raise ValueError("Valid from cannot be greater than valid to")
+        if self.valid_from and self.valid_to:
+            from_dt = self.valid_from
+            to_dt = self.valid_to
+            if timezone.is_naive(from_dt) and not timezone.is_naive(to_dt):
+                from_dt = timezone.make_aware(from_dt)
+            elif not timezone.is_naive(from_dt) and timezone.is_naive(to_dt):
+                to_dt = timezone.make_aware(to_dt)
+            if from_dt > to_dt:
+                raise ValueError("Valid from cannot be greater than valid to")
         return self
 
     @field_validator("availabilities")
@@ -228,6 +235,19 @@ class ScheduleUpdateSpec(ScheduleWriteSpec):
     name: str
     valid_from: datetime.datetime
     valid_to: datetime.datetime
+
+    @model_validator(mode="after")
+    def validate_period(self):
+        if self.valid_from and self.valid_to:
+            from_dt = self.valid_from
+            to_dt = self.valid_to
+            if timezone.is_naive(from_dt) and not timezone.is_naive(to_dt):
+                from_dt = timezone.make_aware(from_dt)
+            elif not timezone.is_naive(from_dt) and timezone.is_naive(to_dt):
+                to_dt = timezone.make_aware(to_dt)
+            if from_dt > to_dt:
+                raise ValueError("Valid from cannot be greater than valid to")
+        return self
 
     def perform_extra_deserialization(self, is_update, obj):
         old_instance = Schedule.objects.get(id=obj.id)
