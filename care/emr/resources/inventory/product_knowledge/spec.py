@@ -105,7 +105,7 @@ class BaseProductKnowledgeSpec(EMRResource):
     name: str
     names: list[ProductName] | None = None
     storage_guidelines: list[StorageGuideline] | None = None
-    definitional: ProductDefinitionSpec | None = None
+    definitional: ProductDefinitionSpec | None
 
 
 class ProductKnowledgeUpdateSpec(BaseProductKnowledgeSpec):
@@ -116,6 +116,8 @@ class ProductKnowledgeUpdateSpec(BaseProductKnowledgeSpec):
         if self.category:
             obj.category = ResourceCategory.objects.get(slug=self.category)
         obj.slug = self.slug_value
+        if self.definitional is None:
+            obj.definitional = None
 
 
 class ProductKnowledgeWriteSpec(ProductKnowledgeUpdateSpec):
