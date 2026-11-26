@@ -2061,6 +2061,29 @@ class TokenQueueAPIGenerateTokenTestCase(CareAPITestBase):
             self.assertEqual(response.data["number"], i)
             self.assertEqual(response.data["note"], f"Test token note {i}")
 
+    def test_generate_token_does_not_reuse_deleted_token_number(self):
+        """Numbers of deleted tokens are not given to newly generated tokens."""
+        self.client.force_authenticate(user=self.superuser)
+        data = {
+            "patient": str(self.patient.external_id),
+            "category": str(self.token_category.external_id),
+            "resource_type": SchedulableResourceTypeOptions.practitioner.value,
+            "resource_id": str(self.superuser.external_id),
+            "date": (timezone.now() + timedelta(days=1)).date().isoformat(),
+        }
+        numbers = []
+        for _ in range(2):
+            response = self.client.post(self.base_url, data, format="json")
+            self.assertEqual(response.status_code, 200)
+            numbers.append(response.data["number"])
+        self.assertEqual(numbers, [1, 2])
+
+        Token.objects.get(number=1, category=self.token_category).delete()
+
+        response = self.client.post(self.base_url, data, format="json")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["number"], 3)
+
     def test_generate_token_with_invalid_category(self):
         """
         Test generating a token with an invalid category UUID.

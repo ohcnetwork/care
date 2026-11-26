@@ -194,7 +194,7 @@ class TokenQueueViewSet(EMRModelViewSet):
                 patient = get_object_or_404(
                     Patient.objects.only("id"), external_id=request_data.patient
                 )
-            number = Token.objects.filter(queue=queue, category=category).count() + 1
+            number = Token.get_next_number(queue, category)
             token = Token.objects.create(
                 facility=facility,
                 queue=queue,
