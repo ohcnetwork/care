@@ -34,7 +34,10 @@ from care.emr.registries.system_questionnaire.system_questionnaire import (
     InternalQuestionnaireRegistry,
 )
 from care.emr.resources.account.default_account import get_default_account
-from care.emr.resources.account.spec import AccountStatusOptions
+from care.emr.resources.account.spec import (
+    AccountBillingStatusOptions,
+    AccountStatusOptions,
+)
 from care.emr.resources.account.sync_items import rebalance_account_task
 from care.emr.resources.charge_item.apply_charge_item_definition import (
     apply_charge_item_definition,
@@ -188,6 +191,7 @@ class ChargeItemViewSet(
             return super().handle_update(instance, request_data)
 
     def perform_create(self, instance):
+        instance.facility = self.get_facility_obj()
         if (
             instance.performer_actor
             and not FacilityOrganizationUser.objects.filter(
@@ -196,7 +200,6 @@ class ChargeItemViewSet(
             ).exists()
         ):
             raise ValidationError("Performer is not associated with the facility")
-        instance.facility = self.get_facility_obj()
         if instance.service_resource and not validate_service_resource(
             instance.facility,
             instance.service_resource,
@@ -447,6 +450,13 @@ class ChargeItemViewSet(
         target_account = get_object_or_404(
             Account, external_id=request_params.target_account, facility=facility
         )
+        if (
+            target_account.billing_status
+            == AccountBillingStatusOptions.closed_completed.value
+        ):
+            raise ValidationError(
+                "Cannot transfer charge item to a closed and completed account"
+            )
         charge_item_ids = set(request_params.charge_items)
         queryset = ChargeItem.objects.filter(
             external_id__in=charge_item_ids,
@@ -460,6 +470,16 @@ class ChargeItemViewSet(
         account_ids = {target_account.id, *original_accounts.values()}
         accounts = list(Account.objects.filter(id__in=account_ids))
         with AccountLock(accounts):
+            closed_account_ids = set(
+                Account.objects.filter(
+                    id__in=account_ids,
+                    billing_status=AccountBillingStatusOptions.closed_completed.value,
+                ).values_list("id", flat=True)
+            )
+            if closed_account_ids:
+                raise ValidationError(
+                    "Cannot transfer charge items from closed and completed accounts"
+                )
             charge_items = list(queryset.all())
             if len(charge_items) != len(charge_item_ids):
                 raise Http404("No ChargeItem matches the given query.")
