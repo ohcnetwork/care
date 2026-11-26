@@ -31,7 +31,7 @@ Dependencies
 - Django REST Framework (for API development)
 - Celery (for background tasks)
 - Redis (for caching and task queues)
-- PostgreSQL or MySQL (preferred databases for production)
+- PostgreSQL (preferred database for production)
 
 Django-Specific Guidelines
 
