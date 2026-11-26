@@ -470,13 +470,13 @@ class ChargeItemViewSet(
         account_ids = {target_account.id, *original_accounts.values()}
         accounts = list(Account.objects.filter(id__in=account_ids))
         with AccountLock(accounts):
-            closed_accounts = [
-                account
-                for account in accounts
-                if account.billing_status
-                == AccountBillingStatusOptions.closed_completed.value
-            ]
-            if closed_accounts:
+            closed_account_ids = set(
+                Account.objects.filter(
+                    id__in=account_ids,
+                    billing_status=AccountBillingStatusOptions.closed_completed.value,
+                ).values_list("id", flat=True)
+            )
+            if closed_account_ids:
                 raise ValidationError(
                     "Cannot transfer charge items from closed and completed accounts"
                 )
@@ -486,13 +486,6 @@ class ChargeItemViewSet(
             for charge_item in charge_items:
                 if charge_item.account_id != original_accounts[charge_item.id]:
                     raise ObjectLocked
-                if (
-                    charge_item.account.billing_status
-                    == AccountBillingStatusOptions.closed_completed.value
-                ):
-                    raise ValidationError(
-                        "Cannot transfer charge item from a closed and completed account"
-                    )
                 if charge_item.status != ChargeItemStatusOptions.billable.value:
                     raise ValidationError({"charge_item": "should be billable"})
                 if charge_item.paid_invoice_id is not None:

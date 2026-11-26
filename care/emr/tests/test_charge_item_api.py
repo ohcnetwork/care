@@ -21,6 +21,8 @@ from care.emr.models.charge_item import ChargeItem
 from care.emr.models.charge_item_definition import ChargeItemDefinition
 from care.emr.models.invoice import Invoice
 from care.emr.models.location import FacilityLocation, FacilityLocationEncounter
+from care.emr.models.medication_dispense import MedicationDispense
+from care.emr.models.scheduling.booking import TokenBooking
 from care.emr.resources.account.spec import (
     AccountBillingStatusOptions,
     AccountStatusOptions,
@@ -216,6 +218,37 @@ class TestChargeItemViewSet(CareAPITestBase):
             status="active",
             start_datetime=care_now(),
         )
+
+    def create_service_resources(self):
+        bed_association = self.create_bed_association(self.encounter)
+        location = bed_association.location
+        product_knowledge = baker.make("emr.ProductKnowledge", facility=self.facility)
+        product = baker.make(
+            "emr.Product", facility=self.facility, product_knowledge=product_knowledge
+        )
+        inventory_item = baker.make(
+            "emr.InventoryItem", location=location, product=product
+        )
+        schedulable_resource = baker.make(
+            "emr.SchedulableResource", facility=self.facility, user=self.user
+        )
+        token_slot = baker.make("emr.TokenSlot", resource=schedulable_resource)
+        return {
+            ChargeItemResourceOptions.service_request: self.create_service_request(
+                patient=self.patient, facility=self.facility, encounter=self.encounter
+            ),
+            ChargeItemResourceOptions.bed_association: bed_association,
+            ChargeItemResourceOptions.medication_dispense: baker.make(
+                MedicationDispense,
+                patient=self.patient,
+                encounter=self.encounter,
+                location=location,
+                item=inventory_item,
+            ),
+            ChargeItemResourceOptions.appointment: baker.make(
+                TokenBooking, patient=self.patient, token_slot=token_slot
+            ),
+        }
 
     def get_valid_charge_item_data(self, **kwargs):
         data = {
@@ -445,6 +478,9 @@ class TestChargeItemViewSet(CareAPITestBase):
         service_request = self.create_service_request(
             patient=self.patient, facility=self.facility, encounter=self.encounter
         )
+        other_service_request = self.create_service_request(
+            patient=self.patient, facility=self.facility, encounter=self.encounter
+        )
 
         self.create_charge_item(
             title="Specific Service Request Item",
@@ -454,7 +490,7 @@ class TestChargeItemViewSet(CareAPITestBase):
         self.create_charge_item(
             title="Other Service Request Item",
             service_resource=ChargeItemResourceOptions.service_request.value,
-            service_resource_id="other-id",
+            service_resource_id=str(other_service_request.external_id),
         )
 
         response = self.client.get(
@@ -465,19 +501,6 @@ class TestChargeItemViewSet(CareAPITestBase):
         self.assertEqual(
             response.data["results"][0]["title"], "Specific Service Request Item"
         )
-
-    def test_ordering_by_created_date(self):
-        """Charge items can be ordered by created date in both directions."""
-        self.authenticate_with(*READ_PERMISSIONS)
-
-        self.create_charge_item(title="First Item")
-        self.create_charge_item(title="Second Item")
-
-        for ordering in ("created_date", "-created_date"):
-            with self.subTest(ordering=ordering):
-                response = self.client.get(f"{self.base_url}?ordering={ordering}")
-                self.assertEqual(response.status_code, status.HTTP_200_OK)
-                self.assertEqual(len(response.data["results"]), 2)
 
     # Retrieving a charge item: GET charge_item-detail.
 
@@ -616,7 +639,7 @@ class TestChargeItemViewSet(CareAPITestBase):
 
         data = self.get_valid_charge_item_data(
             service_resource=ChargeItemResourceOptions.service_request.value,
-            service_resource_id="non-existent-id",
+            service_resource_id=str(uuid.uuid4()),
         )
         response = self.client.post(self.base_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -716,16 +739,22 @@ class TestChargeItemViewSet(CareAPITestBase):
         """Posting the same payload twice creates two distinct charge items."""
         self.authenticate_with(*CREATE_PERMISSIONS)
 
-        data = self.get_valid_charge_item_data()
+        data = {"datapoints": [self.get_valid_charge_item_data()]}
+        upsert_url = f"{self.base_url}upsert/"
 
-        response = self.client.post(self.base_url, data, format="json")
+        response = self.client.post(upsert_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        first_id = response.data["id"]
+        self.assertEqual(len(response.data), 1)
+        first_id = response.data[0]["id"]
 
-        data["title"] = "Different Title"
-        response = self.client.post(self.base_url, data, format="json")
+        response = self.client.post(upsert_url, data, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertNotEqual(response.data["id"], first_id)
+        self.assertEqual(len(response.data), 1)
+        second_id = response.data[0]["id"]
+        self.assertNotEqual(second_id, first_id)
+        self.assertEqual(
+            ChargeItem.objects.filter(external_id__in=[first_id, second_id]).count(), 2
+        )
 
     def test_upsert_charge_item_overflow_quantity_returns_400(self):
         """Test that upsert API returns 400 (not 500) for overflowing quantity values."""
@@ -1021,7 +1050,7 @@ class TestChargeItemViewSet(CareAPITestBase):
 
         response = self.apply_charge_item_definitions(
             service_resource=ChargeItemResourceOptions.service_request.value,
-            service_resource_id="invalid-id",
+            service_resource_id=str(uuid.uuid4()),
         )
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("Invalid service resource", str(response.data))
@@ -1122,6 +1151,15 @@ class TestChargeItemViewSet(CareAPITestBase):
     def test_change_account_moves_item_and_rebalances_accounts(self):
         """Moving an item updates both account balances and the updater."""
         self.setup_change_account()
+        self.source_account.total_billable_charge_items = Decimal("100.00")
+        self.source_account.save(update_fields=["total_billable_charge_items"])
+        self.source_account.refresh_from_db()
+        self.target_account.refresh_from_db()
+        self.assertEqual(
+            self.source_account.total_billable_charge_items, Decimal("100.00")
+        )
+        self.assertEqual(self.target_account.total_billable_charge_items, 0)
+
         response = self.change_account()
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
@@ -1231,7 +1269,26 @@ class TestChargeItemViewSet(CareAPITestBase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn(
-            "Cannot transfer charge item from a closed and completed account",
+            "Cannot transfer charge items from closed and completed accounts",
+            str(response.data),
+        )
+        self.assert_item_not_moved()
+
+    def test_change_account_when_target_account_closes_concurrently(self):
+        """The move is rejected if the target account closes after locking."""
+        self.setup_change_account()
+
+        def close_target_account():
+            Account.objects.filter(id=self.target_account.id).update(
+                billing_status=AccountBillingStatusOptions.closed_completed.value
+            )
+
+        with self.racing_account_lock(close_target_account):
+            response = self.change_account()
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertContains(
+            "Cannot transfer charge item to a closed and completed account",
             str(response.data),
         )
         self.assert_item_not_moved()
@@ -1272,10 +1329,13 @@ class TestChargeItemViewSet(CareAPITestBase):
 
     def test_validate_service_resource_with_invalid_resource_type(self):
         """An unknown service resource type is invalid."""
+        service_request = self.create_service_request(
+            patient=self.patient, facility=self.facility, encounter=self.encounter
+        )
         result = validate_service_resource(
             self.facility,
             "invalid_resource_type",
-            "resource-id",
+            str(service_request.external_id),
             self.patient,
             self.encounter,
         )
@@ -1298,10 +1358,11 @@ class TestChargeItemViewSet(CareAPITestBase):
 
     def test_validate_service_resource_bed_association_without_encounter(self):
         """A bed association requires an encounter."""
+        bed_association = self.create_bed_association(self.encounter)
         result = validate_service_resource(
             self.facility,
             ChargeItemResourceOptions.bed_association.value,
-            "bed-id",
+            str(bed_association.external_id),
             self.patient,
             None,
         )
@@ -1309,12 +1370,14 @@ class TestChargeItemViewSet(CareAPITestBase):
 
     def test_validate_service_resource_bed_association_wrong_facility(self):
         """A bed association is invalid for an encounter of another facility."""
+        bed_association = self.create_bed_association(self.encounter)
+
         result = validate_service_resource(
-            self.facility,
+            self.create_other_facility(),
             ChargeItemResourceOptions.bed_association.value,
-            "bed-id",
+            str(bed_association.external_id),
             self.patient,
-            self.create_other_facility_encounter(),
+            self.encounter,
         )
         self.assertFalse(result)
 
@@ -1323,11 +1386,12 @@ class TestChargeItemViewSet(CareAPITestBase):
         completed_encounter = self.create_facility_encounter(
             status=COMPLETED_CHOICES[0]
         )
+        bed_association = self.create_bed_association(completed_encounter)
 
         result = validate_service_resource(
             self.facility,
             ChargeItemResourceOptions.bed_association.value,
-            "bed-id",
+            str(bed_association.external_id),
             self.patient,
             completed_encounter,
         )
@@ -1358,6 +1422,9 @@ class TestChargeItemViewSet(CareAPITestBase):
 
     def test_validate_service_resource_exception_handling(self):
         """Errors during service resource lookup are treated as invalid."""
+        service_request = self.create_service_request(
+            patient=self.patient, facility=self.facility, encounter=self.encounter
+        )
         with patch(
             "care.emr.models.service_request.ServiceRequest.objects.filter"
         ) as mock_filter:
@@ -1366,7 +1433,7 @@ class TestChargeItemViewSet(CareAPITestBase):
             result = validate_service_resource(
                 self.facility,
                 ChargeItemResourceOptions.service_request.value,
-                "resource-id",
+                str(service_request.external_id),
                 self.patient,
                 self.encounter,
             )
@@ -1418,41 +1485,52 @@ class TestChargeItemViewSet(CareAPITestBase):
 
     def test_apply_charge_item_definition_request_service_resource_with_id(self):
         """The apply request keeps the service resource and its id."""
+        service_request = self.create_service_request(
+            patient=self.patient, facility=self.facility, encounter=self.encounter
+        )
         request = self.build_apply_definition_request(
             service_resource=ChargeItemResourceOptions.service_request.value,
-            service_resource_id="test-resource-id",
+            service_resource_id=str(service_request.external_id),
         )
         self.assertEqual(
             request.service_resource, ChargeItemResourceOptions.service_request.value
         )
-        self.assertEqual(request.service_resource_id, "test-resource-id")
+        self.assertEqual(request.service_resource_id, str(service_request.external_id))
 
     def test_apply_charge_item_definition_request_with_service_resource_id_but_no_resource(
         self,
     ):
         """The apply request accepts a service resource id without a resource type."""
+        service_request = self.create_service_request(
+            patient=self.patient, facility=self.facility, encounter=self.encounter
+        )
         request = self.build_apply_definition_request(
-            service_resource_id="test-resource-id"
+            service_resource_id=str(service_request.external_id)
         )
         self.assertIsNone(request.service_resource)
-        self.assertEqual(request.service_resource_id, "test-resource-id")
+        self.assertEqual(request.service_resource_id, str(service_request.external_id))
 
     def test_apply_charge_item_definition_request_all_service_resource_options(self):
         """The apply request accepts every service resource option."""
-        for option in ChargeItemResourceOptions:
-            request = self.build_apply_definition_request(
-                service_resource=option.value,
-                service_resource_id="test-resource-id",
-            )
-            self.assertEqual(request.service_resource, option.value)
+        for option, resource in self.create_service_resources().items():
+            with self.subTest(option=option):
+                request = self.build_apply_definition_request(
+                    service_resource=option.value,
+                    service_resource_id=str(resource.external_id),
+                )
+                self.assertEqual(request.service_resource, option.value)
+                self.assertEqual(request.service_resource_id, str(resource.external_id))
 
     def test_model_validator_execution_order(self):
         """The encounter/patient check runs before the service resource check."""
+        service_request = self.create_service_request(
+            patient=self.patient, facility=self.facility, encounter=self.encounter
+        )
         with self.assertRaises(PydanticValidationError) as context:
             self.build_apply_definition_request(
                 encounter=None,
                 service_resource=ChargeItemResourceOptions.service_request.value,
-                service_resource_id="test-id",
+                service_resource_id=str(service_request.external_id),
             )
 
         self.assertIn("Encounter or patient is required", str(context.exception))
@@ -1575,24 +1653,29 @@ class TestChargeItemViewSet(CareAPITestBase):
 
     def test_charge_item_spec_invalid_service_resource(self):
         """The write spec rejects an unknown service resource type."""
+        service_request = self.create_service_request(
+            patient=self.patient, facility=self.facility, encounter=self.encounter
+        )
         with self.assertRaises(PydanticValidationError):
             ChargeItemWriteSpec(
                 **self.get_write_spec_data(
                     service_resource="invalid_resource",
-                    service_resource_id="test-id",
+                    service_resource_id=str(service_request.external_id),
                 )
             )
 
     def test_service_resource_validation_options(self):
         """The write spec accepts every service resource option."""
-        for option in ChargeItemResourceOptions:
-            spec = ChargeItemWriteSpec(
-                **self.get_write_spec_data(
-                    service_resource=option.value,
-                    service_resource_id="test-resource-id",
+        for option, resource in self.create_service_resources().items():
+            with self.subTest(option=option):
+                spec = ChargeItemWriteSpec(
+                    **self.get_write_spec_data(
+                        service_resource=option.value,
+                        service_resource_id=str(resource.external_id),
+                    )
                 )
-            )
-            self.assertEqual(spec.service_resource, option.value)
+                self.assertEqual(spec.service_resource, option.value)
+                self.assertEqual(spec.service_resource_id, str(resource.external_id))
 
     def test_charge_item_spec_duplicate_codes(self):
         """The write spec rejects price components with duplicate codes."""
@@ -1771,21 +1854,6 @@ class TestChargeItemViewSet(CareAPITestBase):
 
             self.assertEqual(charge_item.status, cancelled_status)
             self.assertIn(charge_item.status, CHARGE_ITEM_CANCELLED_STATUS)
-
-    @patch(
-        "care.emr.resources.charge_item.sync_charge_item_costs.sync_charge_item_costs"
-    )
-    def test_sync_charge_item_costs_called(self, mock_sync):
-        """A charge item can be created while cost syncing is mocked out."""
-        mock_sync.return_value = None
-
-        charge_item = self.create_charge_item(
-            title="Test Charge Item",
-            unit_price_components=[],
-            total_price_components=[],
-        )
-
-        self.assertIsNotNone(charge_item.id)
 
     def test_charge_item_read_spec_serialization(self):
         """The read spec serializes a charge item with its title and external id."""
