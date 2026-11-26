@@ -1285,10 +1285,9 @@ class TestChargeItemViewSet(CareAPITestBase):
 
         with self.racing_account_lock(close_target_account):
             response = self.change_account()
-
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertContains(
-            "Cannot transfer charge item to a closed and completed account",
+        self.assertIn(
+            "Cannot transfer charge items from closed and completed accounts",
             str(response.data),
         )
         self.assert_item_not_moved()
