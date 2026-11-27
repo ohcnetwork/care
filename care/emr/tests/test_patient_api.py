@@ -691,7 +691,7 @@ class TestPatientViewSet(CareAPITestBase):
         )
         url = reverse("patient-set-instance-tags", kwargs={"external_id": patient_id})
         response = self.client.post(
-            url, {"tags": [str(tag.external_id)]}, format="json"
+            url, {"tags": [{"tag": str(tag.external_id)}]}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         tag_displays = [t["display"] for t in response.data["instance_tags"]]
@@ -722,12 +722,14 @@ class TestPatientViewSet(CareAPITestBase):
         set_url = reverse(
             "patient-set-instance-tags", kwargs={"external_id": patient_id}
         )
-        self.client.post(set_url, {"tags": [str(tag.external_id)]}, format="json")
+        self.client.post(
+            set_url, {"tags": [{"tag": str(tag.external_id)}]}, format="json"
+        )
         remove_url = reverse(
             "patient-remove-instance-tags", kwargs={"external_id": patient_id}
         )
         response = self.client.post(
-            remove_url, {"tags": [str(tag.external_id)]}, format="json"
+            remove_url, {"tags": [{"tag": str(tag.external_id)}]}, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.data["instance_tags"], [])
@@ -760,7 +762,7 @@ class TestPatientViewSet(CareAPITestBase):
         response = self.client.post(
             url,
             {
-                "tags": [str(tag.external_id)],
+                "tags": [{"tag": str(tag.external_id)}],
                 "facility": str(facility.external_id),
             },
             format="json",
@@ -799,7 +801,7 @@ class TestPatientViewSet(CareAPITestBase):
         self.client.post(
             set_url,
             {
-                "tags": [str(tag.external_id)],
+                "tags": [{"tag": str(tag.external_id)}],
                 "facility": str(facility.external_id),
             },
             format="json",
@@ -810,7 +812,7 @@ class TestPatientViewSet(CareAPITestBase):
         response = self.client.post(
             remove_url,
             {
-                "tags": [str(tag.external_id)],
+                "tags": [{"tag": str(tag.external_id)}],
                 "facility": str(facility.external_id),
             },
             format="json",

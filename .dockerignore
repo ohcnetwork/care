@@ -1,4 +1,5 @@
 .venv
+.venv.*
 .git
 htmlcov
 staticfiles

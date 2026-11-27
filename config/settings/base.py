@@ -66,6 +66,38 @@ LANGUAGES = [
     ("hi", _("Hindi")),
     ("ta", _("Tamil")),
 ]
+
+USER_QUALIFICATION_DEGREES = env.json(
+    "USER_QUALIFICATION_DEGREES",
+    default=[
+        {
+            "code": "mbbs",
+            "system": "http://ohc.network/codes/qualification-degree",
+            "display": "MBBS",
+        },
+        {
+            "code": "md",
+            "system": "http://ohc.network/codes/qualification-degree",
+            "display": "MD",
+        },
+        {
+            "code": "ms",
+            "system": "http://ohc.network/codes/qualification-degree",
+            "display": "MS",
+        },
+        {
+            "code": "bds",
+            "system": "http://ohc.network/codes/qualification-degree",
+            "display": "BDS",
+        },
+        {
+            "code": "bsc-nursing",
+            "system": "http://ohc.network/codes/qualification-degree",
+            "display": "B.Sc. Nursing",
+        },
+    ],
+)
+
 # DATABASES
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
@@ -115,7 +147,7 @@ DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    "django.contrib.admin",
+    "config.apps.CareAdminConfig",
     "django.forms",
 ]
 THIRD_PARTY_APPS = [
@@ -409,6 +441,7 @@ SIMPLE_JWT = {
     ),
     "ROTATE_REFRESH_TOKENS": True,
     "USER_ID_FIELD": "external_id",
+    "CHECK_REVOKE_TOKEN": True,
 }
 
 # Celery (background tasks)
@@ -694,6 +727,30 @@ FACILITY_S3_BUCKET_EXTERNAL_ENDPOINT = env(
 )
 FACILITY_CDN = env("FACILITY_CDN", default=None)
 
+# REPORT RENDERING
+# ------------------------------------------------------------------------------
+REPORT_MAX_RESOURCE_SIZE_BYTES = env.int(
+    "REPORT_MAX_RESOURCE_SIZE_BYTES", default=10 * 1024 * 1024
+)
+REPORT_ALLOWED_RESOURCE_ORIGINS = env.list(
+    "REPORT_ALLOWED_RESOURCE_ORIGINS",
+    default=env.list(
+        "REPORT_ALLOWED_IMAGE_ORIGINS", default=[FACILITY_CDN] if FACILITY_CDN else []
+    ),
+)
+REPORT_CONTENT_SECURITY_POLICY = env(
+    "REPORT_CONTENT_SECURITY_POLICY",
+    default=(
+        "default-src 'none'; img-src "
+        + " ".join(["data:", *REPORT_ALLOWED_RESOURCE_ORIGINS])
+        + "; font-src "
+        + " ".join(["data:", *REPORT_ALLOWED_RESOURCE_ORIGINS])
+        + "; style-src "
+        + " ".join(["'unsafe-inline'", *REPORT_ALLOWED_RESOURCE_ORIGINS])
+        + "; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"
+    ),
+)
+
 # current hosted domain
 CURRENT_DOMAIN = env("CURRENT_DOMAIN", default="localhost:4000")
 BACKEND_DOMAIN = env("BACKEND_DOMAIN", default="localhost:9000")
@@ -740,3 +797,9 @@ TOTP_DISABLED_EMAIL_TEMPLATE_PATH = env(
 
 # Cleanup incomplete file uploads, set to 0 to disable
 FILE_UPLOAD_EXPIRY_HOURS = env.int("FILE_UPLOAD_EXPIRY_HOURS", default=24)
+
+# Prometheus Metrics
+
+ENABLE_PROMETHEUS_METRICS = env.bool("ENABLE_PROMETHEUS_METRICS", default=True)
+# Seconds to cache the collected metrics; set to 0 to collect on every scrape.
+PROMETHEUS_METRICS_CACHE_TTL = env.int("PROMETHEUS_METRICS_CACHE_TTL", default=600)

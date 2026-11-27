@@ -31,6 +31,13 @@ class ChargeItemStatusOptions(str, Enum):
     entered_in_error = "entered_in_error"
 
 
+class ChargeItemWriteStatusOptions(str, Enum):
+    billable = ChargeItemStatusOptions.billable.value
+    not_billable = ChargeItemStatusOptions.not_billable.value
+    aborted = ChargeItemStatusOptions.aborted.value
+    entered_in_error = ChargeItemStatusOptions.entered_in_error.value
+
+
 CHARGE_ITEM_CANCELLED_STATUS = [
     ChargeItemStatusOptions.entered_in_error.value,
     ChargeItemStatusOptions.not_billable.value,
@@ -96,6 +103,7 @@ class ChargeItemSpec(EMRResource):
 
 
 class ChargeItemWriteSpec(ChargeItemSpec):
+    status: ChargeItemWriteStatusOptions
     encounter: UUID4 | None = None
     patient: UUID4 | None = None
     account: UUID4 | None = None
@@ -133,6 +141,7 @@ class ChargeItemWriteSpec(ChargeItemSpec):
 
 
 class ChargeItemUpdateSpec(ChargeItemSpec):
+    status: ChargeItemStatusOptions | None = None
     performer_actor: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
@@ -175,7 +184,7 @@ class ChargeItemReadSpec(ChargeItemSpec):
                 obj.paid_invoice
             ).to_json()
         mapping["tags"] = SingleFacilityTagManager().render_tags(obj)
-        if obj.performer_actor:
+        if obj.performer_actor_id:
             mapping["performer_actor"] = model_from_cache(
                 UserSpec, id=obj.performer_actor_id
             )

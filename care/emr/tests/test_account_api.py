@@ -9,6 +9,7 @@ from care.emr.resources.account.spec import (
     AccountBillingStatusOptions,
     AccountStatusOptions,
 )
+from care.emr.resources.invoice.spec import InvoiceStatusOptions
 from care.security.permissions.account import AccountPermissions
 from care.utils.tests.base import CareAPITestBase
 
@@ -918,3 +919,118 @@ class RebalanceAccountTests(CareAPITestBase):
         self.assertEqual(self.account.total_paid, Decimal("100.00"))
         self.assertEqual(self.account.total_balance, Decimal("400.00"))
         self.assertIsNotNone(self.account.calculated_at)
+
+    def test_rebalance_account_sums_eligible_invoice_totals(self):
+        self.client.force_authenticate(user=self.superuser)
+        self.invoice.total_gross = Decimal("500.25")
+        self.invoice.save(update_fields=["total_gross"])
+        for invoice_status in (
+            InvoiceStatusOptions.draft.value,
+            InvoiceStatusOptions.balanced.value,
+            InvoiceStatusOptions.entered_in_error.value,
+        ):
+            baker.make(
+                "emr.Invoice",
+                facility=self.facility,
+                patient=self.patient,
+                account=self.account,
+                status=invoice_status,
+                total_gross=Decimal("100.10"),
+            )
+        other_account = baker.make(
+            "emr.Account", facility=self.facility, patient=self.patient
+        )
+        baker.make(
+            "emr.Invoice",
+            facility=self.facility,
+            patient=self.patient,
+            account=other_account,
+            status=InvoiceStatusOptions.issued.value,
+            total_gross=Decimal("999.00"),
+        )
+
+        response = self.client.post(
+            self.get_rebalance_url(self.facility.external_id, self.account.external_id)
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.account.refresh_from_db()
+        self.assertEqual(self.account.total_gross, Decimal("700.45"))
+        self.assertEqual(self.account.total_balance, Decimal("700.45"))
+
+    def test_rebalance_account_excludes_cancelled_and_entered_in_error_invoices(self):
+        self.client.force_authenticate(user=self.superuser)
+        for invoice_status in (
+            InvoiceStatusOptions.cancelled.value,
+            InvoiceStatusOptions.entered_in_error.value,
+        ):
+            with self.subTest(invoice_status=invoice_status):
+                for is_refund, total_gross in ((False, "200.00"), (True, "-75.00")):
+                    baker.make(
+                        "emr.Invoice",
+                        facility=self.facility,
+                        patient=self.patient,
+                        account=self.account,
+                        status=invoice_status,
+                        is_refund=is_refund,
+                        total_gross=Decimal(total_gross),
+                    )
+
+                response = self.client.post(
+                    self.get_rebalance_url(
+                        self.facility.external_id, self.account.external_id
+                    )
+                )
+
+                self.assertEqual(response.status_code, 200)
+                self.account.refresh_from_db()
+                self.assertEqual(self.account.total_gross, Decimal("500.00"))
+                self.assertEqual(self.account.total_balance, Decimal("500.00"))
+
+    def test_rebalance_account_deducts_refund_invoice(self):
+        self.client.force_authenticate(user=self.superuser)
+        baker.make(
+            "emr.Invoice",
+            facility=self.facility,
+            patient=self.patient,
+            account=self.account,
+            status=InvoiceStatusOptions.issued.value,
+            is_refund=True,
+            total_gross=Decimal("-200.00"),
+        )
+        self.create_payment_reconciliation(self.account, self.invoice)
+
+        response = self.client.post(
+            self.get_rebalance_url(self.facility.external_id, self.account.external_id)
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.account.refresh_from_db()
+        self.assertEqual(self.account.total_gross, Decimal("300.00"))
+        self.assertEqual(self.account.total_paid, Decimal("300.00"))
+        self.assertEqual(self.account.total_balance, Decimal("0.00"))
+
+    def test_rebalance_account_without_eligible_invoices(self):
+        self.client.force_authenticate(user=self.superuser)
+
+        for invoice_status in (
+            InvoiceStatusOptions.cancelled.value,
+            InvoiceStatusOptions.entered_in_error.value,
+            None,
+        ):
+            with self.subTest(invoice_status=invoice_status):
+                if invoice_status is None:
+                    self.invoice.delete()
+                else:
+                    self.invoice.status = invoice_status
+                    self.invoice.save(update_fields=["status"])
+                response = self.client.post(
+                    self.get_rebalance_url(
+                        self.facility.external_id, self.account.external_id
+                    )
+                )
+
+                self.assertEqual(response.status_code, 200)
+                self.account.refresh_from_db()
+                self.assertEqual(self.account.total_gross, Decimal("0.00"))
+                self.assertEqual(self.account.total_balance, Decimal("0.00"))

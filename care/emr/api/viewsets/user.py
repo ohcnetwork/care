@@ -4,7 +4,7 @@ from django.utils.decorators import method_decorator
 from django_filters import rest_framework as filters
 from drf_spectacular.utils import extend_schema
 from jsonschema import validate
-from pydantic import BaseModel, model_validator
+from pydantic import BaseModel, RootModel, model_validator
 from rest_framework import filters as drf_filters
 from rest_framework import serializers
 from rest_framework.authtoken.models import Token
@@ -17,6 +17,7 @@ from rest_framework.response import Response
 from care.emr.api.viewsets.base import EMRModelViewSet
 from care.emr.models import Organization
 from care.emr.models.organization import OrganizationUser
+from care.emr.resources.common.coding import Coding
 from care.emr.resources.common.mail_type import MailTypeChoices
 from care.emr.resources.organization.spec import OrganizationTypeChoices
 from care.emr.resources.user.spec import (
@@ -29,6 +30,7 @@ from care.emr.resources.user.spec import (
 from care.emr.utils.reset_password import send_password_reset_email
 from care.security.authorization import AuthorizationController
 from care.security.models import RoleModel
+from care.users.locks import lock_user_auth
 from care.users.models import User
 from care.utils.file_uploads.cover_image import delete_cover_image, upload_cover_image
 from care.utils.filters.default_filter import DefaultBooleanFilter
@@ -80,6 +82,10 @@ class UserPreferenceRequest(BaseModel):
         return self
 
 
+class UserDegreesResponse(RootModel[list[Coding]]):
+    pass
+
+
 class UserFilter(filters.FilterSet):
     email = filters.CharFilter(field_name="email", lookup_expr="icontains")
     phone_number = filters.CharFilter(
@@ -104,6 +110,11 @@ class UserViewSet(EMRModelViewSet):
 
     def get_queryset(self):
         return super().get_queryset().filter(deleted=False)
+
+    def update(self, request, *args, **kwargs):
+        instance = self.get_object()
+        with lock_user_auth(instance.external_id):
+            return super().update(request, *args, **kwargs)
 
     def perform_create(self, instance):
         with transaction.atomic():
@@ -175,6 +186,11 @@ class UserViewSet(EMRModelViewSet):
     @action(detail=False, methods=["GET"])
     def getcurrentuser(self, request):
         return Response(CurrentUserRetrieveSpec.serialize(request.user).to_json())
+
+    @extend_schema(responses={200: UserDegreesResponse})
+    @action(detail=False, methods=["GET"])
+    def degrees(self, request):
+        return Response(settings.USER_QUALIFICATION_DEGREES)
 
     @action(methods=["GET"], detail=True)
     def check_availability(self, request, username):

@@ -10,6 +10,7 @@ from care.emr.models.invoice import Invoice
 from care.emr.models.payment_reconciliation import PaymentReconciliation
 from care.emr.resources.account.spec import AccountMinimalReadSpec, AccountReadSpec
 from care.emr.resources.base import EMRResource, model_from_cache
+from care.emr.resources.charge_item.queryset import charge_items_for_serialization
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
 from care.emr.resources.payment_reconciliation.spec import (
     PaymentReconciliationOutcomeOptions,
@@ -101,9 +102,9 @@ class InvoiceRetrieveSpec(InvoiceReadSpec):
         if obj.status in (InvoiceStatusOptions.draft.value,):
             mapping["charge_items"] = [
                 ChargeItemReadSpec.serialize(charge_item)
-                for charge_item in ChargeItem.objects.filter(
-                    id__in=obj.charge_items
-                ).select_related("paid_invoice", "charge_item_definition")
+                for charge_item in charge_items_for_serialization(
+                    ChargeItem.objects.filter(id__in=obj.charge_items)
+                )
             ]
         else:
             mapping["charge_items"] = obj.charge_items_copy

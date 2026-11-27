@@ -110,6 +110,51 @@ class TestAttachAccountToInvoice(CareAPITestBase):
         self.assertEqual(self.charge_item_1.paid_invoice, invoice)
         self.assertEqual(self.charge_item_2.paid_invoice, invoice)
 
+    def test_attach_account_to_invoice_keeps_existing_charge_items(self):
+        role = self.create_role_with_permissions(
+            [
+                InvoicePermissions.can_read_invoice.name,
+                InvoicePermissions.can_write_invoice.name,
+            ]
+        )
+        self.attach_role_facility_organization_user(self.organization, self.user, role)
+        self.client.force_authenticate(user=self.user)
+
+        # charge_item_1 is already on the draft invoice, charge_item_2 is still billable
+        invoice = baker.make(
+            "emr.Invoice",
+            facility=self.facility,
+            account=self.account,
+            patient=self.patient,
+            status=InvoiceStatusOptions.draft.value,
+            charge_items=[self.charge_item_1.id],
+            total_net=Decimal("100.00"),
+            total_gross=Decimal("100.00"),
+        )
+        self.charge_item_1.status = ChargeItemStatusOptions.billed.value
+        self.charge_item_1.paid_invoice = invoice
+        self.charge_item_1.save()
+
+        response = self.client.post(self._get_url(invoice.external_id))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+        invoice.refresh_from_db()
+        self.assertEqual(
+            sorted(invoice.charge_items),
+            sorted([self.charge_item_1.id, self.charge_item_2.id]),
+        )
+
+        self.charge_item_1.refresh_from_db()
+        self.charge_item_2.refresh_from_db()
+        self.assertEqual(
+            self.charge_item_1.status, ChargeItemStatusOptions.billed.value
+        )
+        self.assertEqual(
+            self.charge_item_2.status, ChargeItemStatusOptions.billed.value
+        )
+        self.assertEqual(self.charge_item_1.paid_invoice, invoice)
+        self.assertEqual(self.charge_item_2.paid_invoice, invoice)
+
     def test_attach_account_to_invoice_rejects_negative_total_without_refund(self):
         role = self.create_role_with_permissions(
             [
@@ -188,3 +233,77 @@ class TestAttachAccountToInvoice(CareAPITestBase):
 
         response = self.client.post(self._get_url(invoice.external_id))
         self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+
+class TestCancelInvoice(CareAPITestBase):
+    def test_cancel_invoice_rebalances_account(self):
+        self.cancel_invoice_and_assert_account_totals(
+            InvoiceStatusOptions.cancelled.value
+        )
+
+    def test_entered_in_error_invoice_rebalances_account(self):
+        self.cancel_invoice_and_assert_account_totals(
+            InvoiceStatusOptions.entered_in_error.value
+        )
+
+    def cancel_invoice_and_assert_account_totals(self, reason):
+        user = self.create_super_user()
+        facility = self.create_facility(user=user)
+        patient = self.create_patient()
+        account = baker.make(
+            "emr.Account",
+            facility=facility,
+            patient=patient,
+            status=AccountStatusOptions.active.value,
+            billing_status=AccountBillingStatusOptions.open.value,
+            total_gross=Decimal("300.00"),
+            total_paid=Decimal("40.00"),
+            total_balance=Decimal("260.00"),
+        )
+        invoice = baker.make(
+            "emr.Invoice",
+            facility=facility,
+            patient=patient,
+            account=account,
+            status=InvoiceStatusOptions.issued.value,
+            total_gross=Decimal("100.00"),
+        )
+        remaining_invoice = baker.make(
+            "emr.Invoice",
+            facility=facility,
+            patient=patient,
+            account=account,
+            status=InvoiceStatusOptions.issued.value,
+            total_gross=Decimal("200.00"),
+        )
+        baker.make(
+            "emr.PaymentReconciliation",
+            facility=facility,
+            target_invoice=remaining_invoice,
+            account=account,
+            status="active",
+            outcome="complete",
+            amount=Decimal("40.00"),
+            is_credit_note=False,
+        )
+        self.client.force_authenticate(user=user)
+
+        response = self.client.post(
+            reverse(
+                "invoice-cancel-invoice",
+                kwargs={
+                    "facility_external_id": facility.external_id,
+                    "external_id": invoice.external_id,
+                },
+            ),
+            data={"reason": reason},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        invoice.refresh_from_db()
+        account.refresh_from_db()
+        self.assertEqual(invoice.status, reason)
+        self.assertEqual(account.total_gross, Decimal("200.00"))
+        self.assertEqual(account.total_paid, Decimal("40.00"))
+        self.assertEqual(account.total_balance, Decimal("160.00"))

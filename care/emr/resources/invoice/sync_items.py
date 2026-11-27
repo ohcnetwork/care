@@ -7,6 +7,7 @@ from rest_framework.exceptions import ValidationError
 
 from care.emr.models.charge_item import ChargeItem
 from care.emr.models.invoice import Invoice
+from care.emr.resources.charge_item.queryset import charge_items_for_serialization
 from care.emr.resources.charge_item.spec import ChargeItemReadSpec
 from care.emr.resources.common.monetary_component import (
     MonetaryComponent,
@@ -45,13 +46,11 @@ def update_amount(price_component, total_price_components):
 
 
 def sync_invoice_items(invoice: Invoice):
-    charge_items = ChargeItem.objects.filter(id__in=invoice.charge_items)
-    summary = calculate_charge_items_summary(charge_items)
-    invoice.total_net = care_round(
-        convert_to_decimal(summary["net"]),
-        precision=settings.INVOICE_FINAL_AMOUNT_PRECISION,
-        care_method=settings.INVOICE_FINAL_AMOUNT_ROUNDING_METHOD,
+    charge_items = charge_items_for_serialization(
+        ChargeItem.objects.filter(id__in=invoice.charge_items)
     )
+    summary = calculate_charge_items_summary(charge_items)
+    invoice.total_net = care_round(convert_to_decimal(summary["net"]))
     invoice.total_gross = care_round(
         convert_to_decimal(summary["gross"]),
         precision=settings.INVOICE_FINAL_AMOUNT_PRECISION,
@@ -88,10 +87,9 @@ def calculate_charge_items_summary(charge_items):
 
     for charge_item in charge_items:
         for price_component in charge_item.total_price_components:
-            costs[price_component["monetary_component_type"]] = [
-                *costs.get(price_component["monetary_component_type"], []),
-                price_component,
-            ]
+            costs.setdefault(price_component["monetary_component_type"], []).append(
+                price_component
+            )
         charge_items_copy.append(ChargeItemReadSpec.serialize(charge_item).to_json())
 
     for price_component in costs.get(MonetaryComponentType.base.value, []):

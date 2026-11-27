@@ -126,7 +126,8 @@ class OrganizationUser(EMRBaseModel):
         super().save(*args, **kwargs)
         if self.organization.org_type == OrganizationTypeChoices.role.value:
             self.user.cached_role_orgs = None
-            self.user.save(update_fields=["cached_role_orgs"])
+            self.user.populate_role_orgs_array()
+            self.user.save(update_fields=["cached_role_orgs", "role_org_ids"])
 
     @classmethod
     def get_cached_role_orgs(cls, user_id):

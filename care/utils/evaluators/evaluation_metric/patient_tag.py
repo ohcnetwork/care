@@ -1,5 +1,6 @@
 from care.emr.models.tag_config import TagConfig
 from care.utils.evaluators.evaluation_metric.base import EvaluationMetricBase
+from care.utils.evaluators.evaluation_metric.encounter_tag import active_tags
 from care.utils.registries.evaluation_metric import (
     AllowedOperations,
     EvaluatorMetricsRegistry,
@@ -37,7 +38,8 @@ class PatientTagsMetric(EvaluationMetricBase):
             return []
         patient_facility_tags = patient.facility_tags.get(str(facility.id), [])
         patient_instance_tags = patient.instance_tags
-        return [*patient_facility_tags, *patient_instance_tags]
+        tags = [*patient_facility_tags, *patient_instance_tags]
+        return active_tags(tags, patient.tags_data)
 
 
 EvaluatorMetricsRegistry.register(PatientTagsMetric)

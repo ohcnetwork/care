@@ -8,8 +8,11 @@ from drf_spectacular.utils import extend_schema, extend_schema_view
 from pydantic import BaseModel, ValidationInfo, field_validator, model_validator
 from rest_framework.generics import UpdateAPIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.tokens import Token
 
 from care.emr.api.viewsets.base import emr_exception_handler
+from care.users.locks import lock_user_auth
+from config.authentication import CustomJWTAuthentication
 
 
 class ChangePasswordSpec(BaseModel):
@@ -60,10 +63,14 @@ class ChangePasswordView(UpdateAPIView):
         """
         Handle password update request for the authenticated user.
         """
-        data = ChangePasswordSpec.model_validate(
-            request.data, context={"user": request.user}
-        )
+        with lock_user_auth(request.user.external_id):
+            request.user.refresh_from_db()
+            if isinstance(request.auth, Token):
+                request.user = CustomJWTAuthentication().get_user(request.auth)
+            data = ChangePasswordSpec.model_validate(
+                request.data, context={"user": request.user}
+            )
 
-        request.user.set_password(data.new_password)
-        request.user.save()
+            request.user.set_password(data.new_password)
+            request.user.save(update_fields=["password"])
         return Response({"message": "Password updated successfully"})

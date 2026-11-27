@@ -22,6 +22,7 @@ from care.emr.utils.reset_password import (
     send_password_reset_email,
     verify_password_reset_token,
 )
+from care.users.locks import lock_user_auth
 from config.ratelimit import ratelimit
 
 User = get_user_model()
@@ -125,15 +126,21 @@ class ResetPasswordConfirm(GenericAPIView):
             response = ResetPasswordResponse(detail=error_message).model_dump()
             return Response(response, status=status.HTTP_400_BAD_REQUEST)
 
-        validate_password(
-            password,
-            user=user,
-            password_validators=get_password_validators(
-                settings.AUTH_PASSWORD_VALIDATORS
-            ),
-        )
-        user.set_password(password)
-        user.save()
+        with lock_user_auth(user.external_id):
+            user, error_message = verify_password_reset_token(token)
+            if not user:
+                response = ResetPasswordResponse(detail=error_message).model_dump()
+                return Response(response, status=status.HTTP_400_BAD_REQUEST)
+
+            validate_password(
+                password,
+                user=user,
+                password_validators=get_password_validators(
+                    settings.AUTH_PASSWORD_VALIDATORS
+                ),
+            )
+            user.set_password(password)
+            user.save(update_fields=["password"])
 
         return Response({"status": "OK"})
 

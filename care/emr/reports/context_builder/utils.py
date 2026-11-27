@@ -9,7 +9,7 @@ def format_date(value, format_str="%d/%m/%Y"):
             value = datetime.fromisoformat(value)
         except ValueError:
             return value
-    if isinstance(value, (datetime, date)):
+    if isinstance(value, datetime | date):
         return value.strftime(format_str)
     return str(value)
 

@@ -1,6 +1,8 @@
 from decimal import Decimal
 from types import SimpleNamespace
 
+from django.conf import settings
+from django.test import override_settings
 from django.urls import reverse
 from model_bakery import baker
 
@@ -583,7 +585,9 @@ class DeliveryOrderAPITest(CareAPITestBase):
         )
         self.client.force_authenticate(user=self.superuser)
         url = self.generate_base_url(self.facility.external_id)
-        response = self.client.get(url, format="json")
+        response = self.client.get(
+            url, {"destination": self.destination.external_id}, format="json"
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
         self.assertIn(
@@ -612,7 +616,9 @@ class DeliveryOrderAPITest(CareAPITestBase):
             user=self.user,
         )
         url = self.generate_base_url(self.facility.external_id)
-        response = self.client.get(url, format="json")
+        response = self.client.get(
+            url, {"destination": self.destination.external_id}, format="json"
+        )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.data), 2)
         self.assertIn(
@@ -625,28 +631,34 @@ class DeliveryOrderAPITest(CareAPITestBase):
         )
 
     def test_list_delivery_orders_as_user_without_permission(self):
-        """Test listing delivery orders as a user without permission without filters"""
-        delivery_order1 = self.create_delivery_order(
+        """Test listing delivery orders as a user without destination permission"""
+        self.create_delivery_order(
             origin=self.origin,
             destination=self.destination,
         )
-        delivery_order2 = self.create_delivery_order(
+        self.create_delivery_order(
             supplier=self.supplier,
             destination=self.destination,
         )
         self.client.force_authenticate(user=self.user)
         url = self.generate_base_url(self.facility.external_id)
-        response = self.client.get(url, format="json")
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
-        self.assertIn(
-            str(delivery_order1.external_id),
-            [order["id"] for order in response.data["results"]],
+        response = self.client.get(
+            url, {"destination": self.destination.external_id}, format="json"
         )
-        self.assertIn(
-            str(delivery_order2.external_id),
-            [order["id"] for order in response.data["results"]],
-        )
+        self.assertEqual(response.status_code, 403)
+        self.assertIn("Cannot list delivery orders", response.data["detail"])
+
+    def test_list_delivery_orders_requires_origin_or_destination(self):
+        url = self.generate_base_url(self.facility.external_id)
+        for user in (self.superuser, self.user):
+            self.client.force_authenticate(user=user)
+            for params in (
+                {},
+                {"status": SupplyDeliveryOrderStatusOptions.draft.value},
+            ):
+                with self.subTest(user=user.username, params=params):
+                    response = self.client.get(url, params, format="json")
+                    self.assertEqual(response.status_code, 400, response.data)
 
     def test_list_delivery_orders_with_origin_filter(self):
         """Test listing delivery orders with origin filter"""
@@ -757,7 +769,10 @@ class DeliveryOrderAPITest(CareAPITestBase):
         url = self.generate_base_url(self.facility.external_id)
         response = self.client.get(
             url,
-            {"status": SupplyDeliveryOrderStatusOptions.draft.value},
+            {
+                "destination": self.destination.external_id,
+                "status": SupplyDeliveryOrderStatusOptions.draft.value,
+            },
             format="json",
         )
         self.assertEqual(response.status_code, 200)
@@ -784,7 +799,10 @@ class DeliveryOrderAPITest(CareAPITestBase):
         url = self.generate_base_url(self.facility.external_id)
         response = self.client.get(
             url,
-            {"supplier": self.supplier.external_id},
+            {
+                "destination": self.destination.external_id,
+                "supplier": self.supplier.external_id,
+            },
             format="json",
         )
         self.assertEqual(response.status_code, 200)
@@ -937,6 +955,7 @@ class DeliveryOrderAPITest(CareAPITestBase):
         response = self.client.get(
             url,
             {
+                "destination": self.destination.external_id,
                 "origin_isnull": "true",
                 "status": SupplyDeliveryOrderStatusOptions.draft.value,
             },
@@ -968,6 +987,7 @@ class DeliveryOrderAPITest(CareAPITestBase):
         response = self.client.get(
             url,
             {
+                "destination": self.destination.external_id,
                 "origin_isnull": "false",
                 "status": SupplyDeliveryOrderStatusOptions.draft.value,
             },
@@ -1470,6 +1490,16 @@ class DeliveryOrderCancellationAPITestCase(TestSupplyDeliveryViewSetBase):
                 sync_inventory_item(inventory_item=self.inventory_item_origin)
 
 
+# Parallel workers use separate databases but share numeric account lock keys.
+@override_settings(
+    CACHES={
+        **settings.CACHES,
+        "default": {
+            **settings.CACHES["default"],
+            "KEY_PREFIX": "medication-return-delivery-order-tests",
+        },
+    }
+)
 class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
     def setUp(self):
         """
@@ -1513,8 +1543,7 @@ class MedicationReturnDeliveryOrderAPITestCase(TestSupplyDeliveryViewSetBase):
         )
         self.role = self.create_role_with_permissions(
             permissions=[
-                SupplyDeliveryPermissions.can_write_supply_delivery.name,
-                SupplyDeliveryPermissions.can_write_external_supply_delivery.name,
+                SupplyDeliveryPermissions.can_write_medication_return.name,
                 InvoicePermissions.can_read_invoice.name,
                 InvoicePermissions.can_write_invoice.name,
                 ChargeItemPermissions.can_read_charge_item.name,

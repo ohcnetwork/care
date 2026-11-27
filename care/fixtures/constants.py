@@ -345,7 +345,7 @@ LAB_TESTS = [
             ),
             "type_collected": HL7_BLDV,
             "patient_preparation": [SNOMED_AFTER_FASTING],
-            "collection": SNOMED_PUNCTURE,
+            "collection": {"code": SNOMED_PUNCTURE},
             "type_tested": make_type_tested(
                 make_container(
                     HL7_GREY_CAP,
@@ -410,7 +410,7 @@ LAB_TESTS = [
             ),
             "type_collected": HL7_BLDV,
             "patient_preparation": [],
-            "collection": SNOMED_PUNCTURE,
+            "collection": {"code": SNOMED_PUNCTURE},
             "type_tested": make_type_tested(
                 make_container(
                     HL7_LAVENDER_CAP,
@@ -570,7 +570,7 @@ LAB_TESTS = [
             ),
             "type_collected": HL7_BLDV,
             "patient_preparation": [SNOMED_AFTER_FASTING],
-            "collection": SNOMED_PUNCTURE,
+            "collection": {"code": SNOMED_PUNCTURE},
             "type_tested": make_type_tested(
                 make_container(
                     HL7_DARK_YELLOW_CAP,
@@ -643,7 +643,7 @@ LAB_TESTS = [
             ),
             "type_collected": HL7_UR,
             "patient_preparation": [SNOMED_SAME_DAY_BEFORE],
-            "collection": SNOMED_URINE_CLEAN_CATCH,
+            "collection": {"code": SNOMED_URINE_CLEAN_CATCH},
             "type_tested": make_type_tested(
                 make_container(
                     HL7_YELLOW_CAP,

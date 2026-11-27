@@ -2,11 +2,13 @@ import datetime
 from enum import Enum
 
 from pydantic import UUID4
+from rest_framework.exceptions import ValidationError
 
 from care.emr.models.encounter import Encounter
 from care.emr.models.patient import Patient
 from care.emr.models.questionnaire import FormSubmission, Questionnaire
 from care.emr.resources.base import EMRResource
+from care.emr.resources.questionnaire.spec import SubjectType
 from care.emr.resources.user.spec import UserSpec
 from care.utils.shortcuts import get_object_or_404
 
@@ -35,12 +37,18 @@ class FormSubmissionUpdateSpec(BaseFormSubmissionSpec):
 class FormSubmissionWriteSpec(FormSubmissionUpdateSpec):
     """Form submission write specification"""
 
-    questionnaire: str
+    questionnaire: UUID4
     patient: UUID4
     encounter: UUID4 | None = None
 
     def perform_extra_deserialization(self, is_update, obj):
-        obj.questionnaire = get_object_or_404(Questionnaire, slug=self.questionnaire)
+        obj.questionnaire = get_object_or_404(
+            Questionnaire, external_id=self.questionnaire
+        )
+        if obj.questionnaire.subject_type == SubjectType.referral:
+            raise ValidationError(
+                "Referral questionnaires must be submitted through a referral"
+            )
         obj.patient = get_object_or_404(Patient, external_id=self.patient)
         if self.encounter:
             obj.encounter = get_object_or_404(Encounter, external_id=self.encounter)

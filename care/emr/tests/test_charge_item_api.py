@@ -1137,6 +1137,13 @@ class TestChargeItemBusinessLogicValidation(CareAPITestBase):
                 ],
                 "encounter": self.encounter.external_id,
             }
+            if status_option in (
+                ChargeItemStatusOptions.billed,
+                ChargeItemStatusOptions.paid,
+            ):
+                with self.assertRaises(PydanticValidationError):
+                    ChargeItemWriteSpec(**spec_data)
+                continue
             spec = ChargeItemWriteSpec(**spec_data)
             self.assertEqual(spec.status, status_option.value)
 
